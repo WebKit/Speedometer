@@ -1,0 +1,4 @@
+*.mode*
+*.pyc
+.DS_Store
+.directory
