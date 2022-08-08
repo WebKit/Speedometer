@@ -467,3 +467,85 @@ Suites.push({
         }),
     ]
 });
+
+Suites.push({
+    name: 'React-Stockcharts',
+    url: 'react-stockcharts/build/index.html?type=hybrid',
+    prepare: function (runner, contentWindow, contentDocument) {
+        return runner.waitForElement('#render');
+    },
+    tests: [
+        new BenchmarkTestStep('Render', function (params, contentWindow, contentDocument) {
+            contentDocument.getElementById("render").click();
+        }),
+        new BenchmarkTestStep('PanTheChart', function (params, contentWindow, contentDocument) {
+            const cursor = contentDocument.querySelector('.react-stockcharts-crosshair-cursor');
+            let x = 150;
+            let y = 200;
+            const coords = (i) => ({ clientX: x + i * 10, clientY: y + i * 2, bubbles: true, cancelable: true });
+            for (let i = 0; i < 100; ) {
+                cursor.dispatchEvent(new MouseEvent('mousedown', coords(i)));
+                for (let j = 10; j--; ) {
+                    cursor.dispatchEvent(new MouseEvent('mousemove', coords(++i)));
+                }
+                cursor.dispatchEvent(new MouseEvent('mouseup', coords(i)));
+            }
+        }),
+        new BenchmarkTestStep('ZoomTheChart', function (params, contentWindow, contentDocument) {
+            const cursor = contentDocument.querySelector('.react-stockcharts-crosshair-cursor');
+            let ev = { clientX: 200, clientY: 200, deltaMode: 0, delta: -10, deltaY: -10, bubbles: true, cancelable: true  };
+            for (let delta = 0; delta < 30; delta++) {
+                cursor.dispatchEvent(new WheelEvent('wheel', ev));
+            }
+            ev = { clientX: 650, clientY: 200, deltaMode: 0, delta: 10, deltaY: 10, bubbles: true, cancelable: true  };
+            for (let delta = 0; delta < 50; delta += 5) {
+                cursor.dispatchEvent(new WheelEvent('wheel', ev));
+            }
+            ev = { clientX: 200, clientY: 200, deltaMode: 0, delta: -10, deltaY: -10, bubbles: true, cancelable: true  };
+            for (let delta = 0; delta < 20; delta += 2) {
+                cursor.dispatchEvent(new WheelEvent('wheel', ev));
+            }
+        }),
+    ],
+});
+
+Suites.push({
+    name: 'React-Stockcharts-SVG',
+    url: 'react-stockcharts/build/index.html?type=svg',
+    prepare: function (runner, contentWindow, contentDocument) {
+        return runner.waitForElement('#render');
+    },
+    tests: [
+        new BenchmarkTestStep('Render', function (params, contentWindow, contentDocument) {
+            contentDocument.getElementById("render").click();
+        }),
+        new BenchmarkTestStep('PanTheChart', function (params, contentWindow, contentDocument) {
+            const cursor = contentDocument.querySelector('.react-stockcharts-crosshair-cursor');
+            let x = 150;
+            let y = 200;
+            const coords = (i) => ({ clientX: x + i * 10, clientY: y + i * 2, bubbles: true, cancelable: true });
+            for (let i = 0; i < 100; ) {
+                cursor.dispatchEvent(new MouseEvent('mousedown', coords(i)));
+                for (let j = 10; j--; ) {
+                    cursor.dispatchEvent(new MouseEvent('mousemove', coords(++i)));
+                }
+                cursor.dispatchEvent(new MouseEvent('mouseup', coords(i)));
+            }
+        }),
+        new BenchmarkTestStep('ZoomTheChart', function (params, contentWindow, contentDocument) {
+            const cursor = contentDocument.querySelector('.react-stockcharts-crosshair-cursor');
+            let ev = { clientX: 200, clientY: 200, deltaMode: 0, delta: -10, deltaY: -10, bubbles: true, cancelable: true  };
+            for (let delta = 0; delta < 30; delta++) {
+                cursor.dispatchEvent(new WheelEvent('wheel', ev));
+            }
+            ev = { clientX: 650, clientY: 200, deltaMode: 0, delta: 10, deltaY: 10, bubbles: true, cancelable: true  };
+            for (let delta = 0; delta < 50; delta += 5) {
+                cursor.dispatchEvent(new WheelEvent('wheel', ev));
+            }
+            ev = { clientX: 200, clientY: 200, deltaMode: 0, delta: -10, deltaY: -10, bubbles: true, cancelable: true  };
+            for (let delta = 0; delta < 20; delta += 2) {
+                cursor.dispatchEvent(new WheelEvent('wheel', ev));
+            }
+        }),
+    ],
+});
