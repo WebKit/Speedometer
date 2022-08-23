@@ -1,4 +1,3 @@
-
 # What is Speedometer?
 
 Speedometer is a benchmark for web browsers that measures Web application responsiveness by timing simulated user interactions on various workloads. Our primary goal is to make it reflect the real-world Web as much as possible. When a browser improves its score on the benchmark, actual users should benefit. In order to achieve this, it should:
