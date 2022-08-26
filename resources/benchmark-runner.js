@@ -1,37 +1,3 @@
-// FIXME: Use the real promise if available.
-// FIXME: Make sure this interface is compatible with the real Promise.
-function SimplePromise() {
-    this._chainedPromise = null;
-    this._callback = null;
-}
-
-SimplePromise.prototype.then = function (callback) {
-    if (this._callback)
-        throw "SimplePromise doesn't support multiple calls to then";
-    this._callback = callback;
-    this._chainedPromise = new SimplePromise;
-    
-    if (this._resolved)
-        this.resolve(this._resolvedValue);
-
-    return this._chainedPromise;
-}
-
-SimplePromise.prototype.resolve = function (value) {
-    if (!this._callback) {
-        this._resolved = true;
-        this._resolvedValue = value;
-        return;
-    }
-
-    var result = this._callback(value);
-    if (result instanceof SimplePromise) {
-        var chainedPromise = this._chainedPromise;
-        result.then(function (result) { chainedPromise.resolve(result); });
-    } else
-        this._chainedPromise.resolve(result);
-}
-
 function BenchmarkTestStep(testName, testFunction) {
     this.name = testName;
     this.run = testFunction;
@@ -44,22 +10,22 @@ function BenchmarkRunner(suites, client) {
 }
 
 BenchmarkRunner.prototype.waitForElement = function (selector) {
-    var promise = new SimplePromise;
-    var contentDocument = this._frame.contentDocument;
+    return new Promise((resolve) => {
+        const contentDocument = this._frame.contentDocument;
 
-    function resolveIfReady() {
-        var element = contentDocument.querySelector(selector);
-        if (element) {
-            window.requestAnimationFrame(function () {
-                return promise.resolve(element);
-            });
-            return;
+        function resolveIfReady() {
+            var element = contentDocument.querySelector(selector);
+            if (element) {
+                window.requestAnimationFrame(function () {
+                    return resolve(element);
+                });
+                return;
+            }
+            setTimeout(resolveIfReady, 50);
         }
-        setTimeout(resolveIfReady, 50);
-    }
 
-    resolveIfReady();
-    return promise;
+        resolveIfReady();
+    });
 }
 
 BenchmarkRunner.prototype._removeFrame = function () {
@@ -95,33 +61,12 @@ BenchmarkRunner.prototype._appendFrame = function (src) {
     return frame;
 }
 
-BenchmarkRunner.prototype._waitAndWarmUp = function () {
-    var startTime = Date.now();
-
-    function Fibonacci(n) {
-        if (Date.now() - startTime > 100)
-            return;
-        if (n <= 0)
-            return 0;
-        else if (n == 1)
-            return 1;
-        return Fibonacci(n - 2) + Fibonacci(n - 1);
-    }
-
-    var promise = new SimplePromise;
-    setTimeout(function () {
-        Fibonacci(100);
-        promise.resolve();
-    }, 200);
-    return promise;
-}
-
 BenchmarkRunner.prototype._writeMark = function(name) {
     if (window.performance && window.performance.mark)
         window.performance.mark(name);
 }
 
-// This function ought be as simple as possible. Don't even use SimplePromise.
+// This function ought be as simple as possible. Don't even use Promise.
 BenchmarkRunner.prototype._runTest = function(suite, test, prepareReturnValue, callback)
 {
     var self = this;
@@ -188,13 +133,13 @@ BenchmarkState.prototype.isFirstTest = function () {
 }
 
 BenchmarkState.prototype.prepareCurrentSuite = function (runner, frame) {
-    var suite = this.currentSuite();
-    var promise = new SimplePromise;
-    frame.onload = function () {
-        suite.prepare(runner, frame.contentWindow, frame.contentDocument).then(function (result) { promise.resolve(result); });
-    }
-    frame.src = 'resources/' + suite.url;
-    return promise;
+    const suite = this.currentSuite();
+    return new Promise((resolve) => {
+        frame.onload = function () {
+            suite.prepare(runner, frame.contentWindow, frame.contentDocument).then(resolve);
+        }
+        frame.src = 'resources/' + suite.url;
+    });
 }
 
 BenchmarkRunner.prototype.step = function (state) {
@@ -206,9 +151,7 @@ BenchmarkRunner.prototype.step = function (state) {
     var suite = state.currentSuite();
     if (!suite) {
         this._finalize();
-        var promise = new SimplePromise;
-        promise.resolve();
-        return promise;
+        return Promise.resolve();
     }
 
     if (state.isFirstTest()) {
@@ -250,30 +193,29 @@ BenchmarkRunner.prototype.runMultipleIterations = function (iterationCount) {
 }
 
 BenchmarkRunner.prototype._runTestAndRecordResults = function (state) {
-    var promise = new SimplePromise;
-    var suite = state.currentSuite();
-    var test = state.currentTest();
+    return new Promise((resolve) => {
+        const suite = state.currentSuite();
+        const test = state.currentTest();
 
-    if (this._client && this._client.willRunTest)
-        this._client.willRunTest(suite, test);
+        if (this._client && this._client.willRunTest)
+            this._client.willRunTest(suite, test);
 
-    var self = this;
-    setTimeout(function () {
-        self._runTest(suite, test, self._prepareReturnValue, function (syncTime, asyncTime) {
-            var suiteResults = self._measuredValues.tests[suite.name] || {tests:{}, total: 0};
-            var total = syncTime + asyncTime;
-            self._measuredValues.tests[suite.name] = suiteResults;
-            suiteResults.tests[test.name] = {tests: {'Sync': syncTime, 'Async': asyncTime}, total: total};
-            suiteResults.total += total;
+        setTimeout(() => {
+            this._runTest(suite, test, this._prepareReturnValue, (syncTime, asyncTime) => {
+                const suiteResults = this._measuredValues.tests[suite.name] || {tests:{}, total: 0};
+                const total = syncTime + asyncTime;
+                this._measuredValues.tests[suite.name] = suiteResults;
+                suiteResults.tests[test.name] = {tests: {'Sync': syncTime, 'Async': asyncTime}, total: total};
+                suiteResults.total += total;
 
-            if (self._client && self._client.didRunTest)
-                self._client.didRunTest(suite, test);
+                if (this._client && this._client.didRunTest)
+                    this._client.didRunTest(suite, test);
 
-            state.next();
-            promise.resolve(state);
-        });
-    }, 0);
-    return promise;
+                state.next();
+                resolve(state);
+            });
+        }, 0);
+    });
 }
 
 BenchmarkRunner.prototype._finalize = function () {
