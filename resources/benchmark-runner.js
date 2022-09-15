@@ -1,15 +1,65 @@
-function BenchmarkTestStep(testName, testFunction) {
-    this.name = testName;
-    this.run = testFunction;
+class BenchmarkTestStep {
+    constructor(testName, testFunction) {
+        this.name = testName;
+        this.run = testFunction;
+    }
 }
 
-function BenchmarkRunner(suites, client) {
+class BenchmarkState {
+    constructor(suites) {
+        this._suites = suites;
+        this._suiteIndex = -1;
+        this._testIndex = 0;
+        this.next();
+    }
+    
+    currentSuite() {
+        return this._suites[this._suiteIndex];
+    }
+    
+    currentTest() {
+        let suite = this.currentSuite();
+        return suite ? suite.tests[this._testIndex] : null;
+    }
+    
+    next() {
+        this._testIndex++;
+    
+        const suite = this._suites[this._suiteIndex];
+        if (suite && this._testIndex < suite.tests.length)
+            return this;
+    
+        this._testIndex = 0;
+        do {
+            this._suiteIndex++;
+        } while (this._suiteIndex < this._suites.length && this._suites[this._suiteIndex].disabled);
+    
+        return this;
+    }
+    
+    isFirstTest() {
+        return !this._testIndex;
+    }
+    
+    prepareCurrentSuite(runner, frame) {
+        const suite = this.currentSuite();
+        return new Promise((resolve) => {
+            frame.onload = () => {
+                suite.prepare(runner, frame.contentWindow, frame.contentDocument).then(resolve);
+            }
+            frame.src = 'resources/' + suite.url;
+        });
+    }
+}
+
+class BenchmarkRunner {
+constructor(suites, client) {
     this._suites = suites;
     this._prepareReturnValue = null;
     this._client = client;
 }
 
-BenchmarkRunner.prototype.waitForElement = function (selector) {
+waitForElement(selector) {
     return new Promise((resolve) => {
         const contentDocument = this._frame.contentDocument;
 
@@ -28,14 +78,14 @@ BenchmarkRunner.prototype.waitForElement = function (selector) {
     });
 }
 
-BenchmarkRunner.prototype._removeFrame = function () {
+_removeFrame() {
     if (this._frame) {
         this._frame.parentNode.removeChild(this._frame);
         this._frame = null;
     }
 }
 
-BenchmarkRunner.prototype._appendFrame = function (src) {
+_appendFrame(src) {
     const frame = document.createElement('iframe');
     frame.style.width = '800px';
     frame.style.height = '600px';
@@ -61,13 +111,13 @@ BenchmarkRunner.prototype._appendFrame = function (src) {
     return frame;
 }
 
-BenchmarkRunner.prototype._writeMark = function(name) {
+_writeMark(name) {
     if (window.performance && window.performance.mark)
         window.performance.mark(name);
 }
 
 // This function ought be as simple as possible. Don't even use Promise.
-BenchmarkRunner.prototype._runTest = function(suite, test, prepareReturnValue, callback)
+_runTest(suite, test, prepareReturnValue, callback)
 {
     const self = this;
     const now = window.performance && window.performance.now ? () => window.performance.now() : Date.now;
@@ -97,52 +147,7 @@ BenchmarkRunner.prototype._runTest = function(suite, test, prepareReturnValue, c
     }, 0);
 }
 
-function BenchmarkState(suites) {
-    this._suites = suites;
-    this._suiteIndex = -1;
-    this._testIndex = 0;
-    this.next();
-}
-
-BenchmarkState.prototype.currentSuite = function() {
-    return this._suites[this._suiteIndex];
-}
-
-BenchmarkState.prototype.currentTest = function () {
-    let suite = this.currentSuite();
-    return suite ? suite.tests[this._testIndex] : null;
-}
-
-BenchmarkState.prototype.next = function () {
-    this._testIndex++;
-
-    const suite = this._suites[this._suiteIndex];
-    if (suite && this._testIndex < suite.tests.length)
-        return this;
-
-    this._testIndex = 0;
-    do {
-        this._suiteIndex++;
-    } while (this._suiteIndex < this._suites.length && this._suites[this._suiteIndex].disabled);
-
-    return this;
-}
-
-BenchmarkState.prototype.isFirstTest = function () {
-    return !this._testIndex;
-}
-
-BenchmarkState.prototype.prepareCurrentSuite = function (runner, frame) {
-    const suite = this.currentSuite();
-    return new Promise((resolve) => {
-        frame.onload = () => {
-            suite.prepare(runner, frame.contentWindow, frame.contentDocument).then(resolve);
-        }
-        frame.src = 'resources/' + suite.url;
-    });
-}
-
-BenchmarkRunner.prototype.step = function (state) {
+step(state) {
     if (!state) {
         state = new BenchmarkState(this._suites);
         this._measuredValues = {tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN};
@@ -166,7 +171,7 @@ BenchmarkRunner.prototype.step = function (state) {
     return this._runTestAndRecordResults(state);
 }
 
-BenchmarkRunner.prototype.runAllSteps = function (startingState) {
+runAllSteps(startingState) {
     const nextCallee = this.runAllSteps.bind(this);
     this.step(startingState).then(nextState => {
         if (nextState)
@@ -174,7 +179,7 @@ BenchmarkRunner.prototype.runAllSteps = function (startingState) {
     });
 }
 
-BenchmarkRunner.prototype.runMultipleIterations = function (iterationCount) {
+runMultipleIterations(iterationCount) {
     const self = this;
     let currentIteration = 0;
 
@@ -192,7 +197,7 @@ BenchmarkRunner.prototype.runMultipleIterations = function (iterationCount) {
     self.runAllSteps();
 }
 
-BenchmarkRunner.prototype._runTestAndRecordResults = function (state) {
+_runTestAndRecordResults(state) {
     return new Promise((resolve) => {
         const suite = state.currentSuite();
         const test = state.currentTest();
@@ -218,7 +223,7 @@ BenchmarkRunner.prototype._runTestAndRecordResults = function (state) {
     });
 }
 
-BenchmarkRunner.prototype._finalize = function () {
+_finalize() {
     this._removeFrame();
 
     if (this._client && this._client.didRunSuites) {
@@ -244,4 +249,5 @@ BenchmarkRunner.prototype._finalize = function () {
 
     if (this._runNextIteration)
         this._runNextIteration();
+}
 }

@@ -1,33 +1,33 @@
-window.benchmarkClient = {
-    displayUnit: 'runs/min',
-    iterationCount: 10,
-    stepCount: null,
-    suitesCount: null,
-    _measuredValuesList: [],
-    _finishedTestCount: 0,
-    _progressCompleted: null,
+class BenchmarkClient {
+    displayUnit = 'runs/min';
+    iterationCount = 10;
+    stepCount = null;
+    suitesCount = null;
+    _measuredValuesList = [];
+    _finishedTestCount =  0;
+    _progressCompleted = null;
     willAddTestFrame(frame) {
         const main = document.querySelector('main');
         const style = getComputedStyle(main);
         frame.style.left = main.offsetLeft + parseInt(style.borderLeftWidth) + parseInt(style.paddingLeft) + 'px';
         frame.style.top = main.offsetTop + parseInt(style.borderTopWidth) + parseInt(style.paddingTop) + 'px';
-    },
+    }
     willRunTest(suite, test) {
         document.getElementById('info').textContent = suite.name + ' ( ' + this._finishedTestCount + ' / ' + this.stepCount + ' )';
-    },
+    }
     didRunTest() {
         this._finishedTestCount++;
         this._progressCompleted.style.width = (this._finishedTestCount * 100 / this.stepCount) + '%';
-    },
+    }
     didRunSuites(measuredValues) {
         this._measuredValuesList.push(measuredValues);
-    },
+    }
     willStartFirstIteration() {
         this._measuredValuesList = [];
         this._finishedTestCount = 0;
         this._progressCompleted = document.getElementById('progress-completed');
         document.getElementById('logo-link').onclick = event => { event.preventDefault(); return false; };
-    },
+    }
     didFinishLastIteration() {
         document.getElementById('logo-link').onclick = null;
 
@@ -46,7 +46,7 @@ window.benchmarkClient = {
             showResultDetails();
         } else
             showResultsSummary();
-    },
+    }
     _computeResults(measuredValuesList, displayUnit) {
         const suitesCount = this.suitesCount;
         function valueForUnit(measuredValues) {
@@ -91,7 +91,7 @@ window.benchmarkClient = {
             formattedDelta: formattedDelta,
             formattedMeanAndDelta: formattedMean + (formattedDelta ? ' \xb1 ' + formattedDelta + ' (' + formattedPercentDelta + ')' : ''),
         };
-    },
+    }
     _addDetailedResultsRow(table, iterationNumber, value) {
         const row = document.createElement('tr');
         const th = document.createElement('th');
@@ -101,7 +101,7 @@ window.benchmarkClient = {
         row.appendChild(th);
         row.appendChild(td);
         table.appendChild(row);
-    },
+    }
     _updateGaugeNeedle(rpm) {
         const needleAngle = Math.max(0, Math.min(rpm, 140)) - 70;
         const needleRotationValue = 'rotate(' + needleAngle + 'deg)';
@@ -111,7 +111,7 @@ window.benchmarkClient = {
         gaugeNeedleElement.style.setProperty('-moz-transform', needleRotationValue);
         gaugeNeedleElement.style.setProperty('-ms-transform', needleRotationValue);
         gaugeNeedleElement.style.setProperty('transform', needleRotationValue);
-    },
+    }
     _populateDetailedResults(formattedValues) {
         const resultsTables = document.querySelectorAll('.results-table');
         let i = 0;
@@ -121,7 +121,7 @@ window.benchmarkClient = {
         resultsTables[1].innerHTML = '';
         for (; i < formattedValues.length; i++)
             this._addDetailedResultsRow(resultsTables[1], i, formattedValues[i]);
-    },
+    }
     prepareUI() {
         window.addEventListener('popstate', event => {
             if (event.state) {
@@ -148,6 +148,8 @@ window.benchmarkClient = {
         updateScreenSize();
     }
 }
+
+window.benchmarkClient = new BenchmarkClient();
 
 function enableOneSuite(suites, suiteToEnable)
 {
