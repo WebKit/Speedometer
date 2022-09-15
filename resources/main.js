@@ -6,32 +6,32 @@ window.benchmarkClient = {
     _measuredValuesList: [],
     _finishedTestCount: 0,
     _progressCompleted: null,
-    willAddTestFrame: function (frame) {
-        var main = document.querySelector('main');
-        var style = getComputedStyle(main);
+    willAddTestFrame(frame) {
+        const main = document.querySelector('main');
+        const style = getComputedStyle(main);
         frame.style.left = main.offsetLeft + parseInt(style.borderLeftWidth) + parseInt(style.paddingLeft) + 'px';
         frame.style.top = main.offsetTop + parseInt(style.borderTopWidth) + parseInt(style.paddingTop) + 'px';
     },
-    willRunTest: function (suite, test) {
+    willRunTest(suite, test) {
         document.getElementById('info').textContent = suite.name + ' ( ' + this._finishedTestCount + ' / ' + this.stepCount + ' )';
     },
-    didRunTest: function () {
+    didRunTest() {
         this._finishedTestCount++;
         this._progressCompleted.style.width = (this._finishedTestCount * 100 / this.stepCount) + '%';
     },
-    didRunSuites: function (measuredValues) {
+    didRunSuites(measuredValues) {
         this._measuredValuesList.push(measuredValues);
     },
-    willStartFirstIteration: function () {
+    willStartFirstIteration() {
         this._measuredValuesList = [];
         this._finishedTestCount = 0;
         this._progressCompleted = document.getElementById('progress-completed');
-        document.getElementById('logo-link').onclick = function (event) { event.preventDefault(); return false; }
+        document.getElementById('logo-link').onclick = event => { event.preventDefault(); return false; };
     },
-    didFinishLastIteration: function () {
+    didFinishLastIteration() {
         document.getElementById('logo-link').onclick = null;
 
-        var results = this._computeResults(this._measuredValuesList, this.displayUnit);
+        const results = this._computeResults(this._measuredValuesList, this.displayUnit);
 
         this._updateGaugeNeedle(results.mean);
         document.getElementById('result-number').textContent = results.formattedMean;
@@ -47,8 +47,8 @@ window.benchmarkClient = {
         } else
             showResultsSummary();
     },
-    _computeResults: function (measuredValuesList, displayUnit) {
-        var suitesCount = this.suitesCount;
+    _computeResults(measuredValuesList, displayUnit) {
+        const suitesCount = this.suitesCount;
         function valueForUnit(measuredValues) {
             if (displayUnit == 'ms')
                 return measuredValues.geomean;
@@ -60,30 +60,30 @@ window.benchmarkClient = {
         }
 
         function toSigFigPrecision(number, sigFig) {
-            var nonDecimalDigitCount = number < 1 ? 0 : (Math.floor(Math.log(number)/Math.log(10)) + 1);
+            const nonDecimalDigitCount = number < 1 ? 0 : (Math.floor(Math.log(number)/Math.log(10)) + 1);
             return number.toPrecision(Math.max(nonDecimalDigitCount, Math.min(6, sigFig)));
         }
 
-        var values = measuredValuesList.map(valueForUnit);
-        var sum = values.reduce(function (a, b) { return a + b; }, 0);
-        var arithmeticMean = sum / values.length;
-        var meanSigFig = 4;
-        var formattedDelta;
-        var formattedPercentDelta;
+        const values = measuredValuesList.map(valueForUnit);
+        const sum = values.reduce((a, b) => { return a + b; }, 0);
+        const arithmeticMean = sum / values.length;
+        let meanSigFig = 4;
+        let formattedDelta;
+        let formattedPercentDelta;
         if (window.Statistics) {
-            var delta = Statistics.confidenceIntervalDelta(0.95, values.length, sum, Statistics.squareSum(values));
+            const delta = Statistics.confidenceIntervalDelta(0.95, values.length, sum, Statistics.squareSum(values));
             if (!isNaN(delta)) {
-                var percentDelta = delta * 100 / arithmeticMean;
+                const percentDelta = delta * 100 / arithmeticMean;
                 meanSigFig = sigFigFromPercentDelta(percentDelta);
                 formattedDelta = toSigFigPrecision(delta, 2);
                 formattedPercentDelta = toSigFigPrecision(percentDelta, 2) + '%';
             }
         }
 
-        var formattedMean = toSigFigPrecision(arithmeticMean, Math.max(meanSigFig, 3));
+        const formattedMean = toSigFigPrecision(arithmeticMean, Math.max(meanSigFig, 3));
 
         return {
-            formattedValues: values.map(function (value) {
+            formattedValues: values.map(value =>  {
                 return toSigFigPrecision(value, 4) + ' ' + displayUnit;
             }),
             mean: arithmeticMean,
@@ -92,29 +92,29 @@ window.benchmarkClient = {
             formattedMeanAndDelta: formattedMean + (formattedDelta ? ' \xb1 ' + formattedDelta + ' (' + formattedPercentDelta + ')' : ''),
         };
     },
-    _addDetailedResultsRow: function (table, iterationNumber, value) {
-        var row = document.createElement('tr');
-        var th = document.createElement('th');
+    _addDetailedResultsRow(table, iterationNumber, value) {
+        const row = document.createElement('tr');
+        const th = document.createElement('th');
         th.textContent = 'Iteration ' + (iterationNumber + 1);
-        var td = document.createElement('td');
+        const td = document.createElement('td');
         td.textContent = value;
         row.appendChild(th);
         row.appendChild(td);
         table.appendChild(row);
     },
-    _updateGaugeNeedle: function (rpm) {
-        var needleAngle = Math.max(0, Math.min(rpm, 140)) - 70;
-        var needleRotationValue = 'rotate(' + needleAngle + 'deg)';
+    _updateGaugeNeedle(rpm) {
+        const needleAngle = Math.max(0, Math.min(rpm, 140)) - 70;
+        const needleRotationValue = 'rotate(' + needleAngle + 'deg)';
 
-        var gaugeNeedleElement = document.querySelector('#summarized-results > .gauge .needle');
+        const gaugeNeedleElement = document.querySelector('#summarized-results > .gauge .needle');
         gaugeNeedleElement.style.setProperty('-webkit-transform', needleRotationValue);
         gaugeNeedleElement.style.setProperty('-moz-transform', needleRotationValue);
         gaugeNeedleElement.style.setProperty('-ms-transform', needleRotationValue);
         gaugeNeedleElement.style.setProperty('transform', needleRotationValue);
     },
-    _populateDetailedResults: function (formattedValues) {
-        var resultsTables = document.querySelectorAll('.results-table');
-        var i = 0;
+    _populateDetailedResults(formattedValues) {
+        const resultsTables = document.querySelectorAll('.results-table');
+        let i = 0;
         resultsTables[0].innerHTML = '';
         for (; i < Math.ceil(formattedValues.length / 2); i++)
             this._addDetailedResultsRow(resultsTables[0], i, formattedValues[i]);
@@ -122,13 +122,13 @@ window.benchmarkClient = {
         for (; i < formattedValues.length; i++)
             this._addDetailedResultsRow(resultsTables[1], i, formattedValues[i]);
     },
-    prepareUI: function () {
-        window.addEventListener('popstate', function (event) {
+    prepareUI() {
+        window.addEventListener('popstate', event => {
             if (event.state) {
-                var sectionToShow = event.state.section;
+                const sectionToShow = event.state.section;
                 if (sectionToShow) {
-                    var sections = document.querySelectorAll('main > section');
-                    for (var i = 0; i < sections.length; i++) {
+                    const sections = document.querySelectorAll('main > section');
+                    for (let i = 0; i < sections.length; i++) {
                         if (sections[i].id === sectionToShow)
                             return showSection(sectionToShow, false);
                     }
@@ -139,7 +139,7 @@ window.benchmarkClient = {
 
         function updateScreenSize() {
             // FIXME: Detect when the window size changes during the test.
-            var screenIsTooSmall = window.innerWidth < 850 || window.innerHeight < 650;
+            const screenIsTooSmall = window.innerWidth < 850 || window.innerHeight < 650;
             document.getElementById('screen-size').textContent = window.innerWidth + 'px by ' + window.innerHeight + 'px';
             document.getElementById('screen-size-warning').style.display = screenIsTooSmall ? null : 'none';
         }
@@ -152,9 +152,9 @@ window.benchmarkClient = {
 function enableOneSuite(suites, suiteToEnable)
 {
     suiteToEnable = suiteToEnable.toLowerCase();
-    var found = false;
-    for (var i = 0; i < suites.length; i++) {
-        var currentSuite = suites[i];
+    let found = false;
+    for (let i = 0; i < suites.length; i++) {
+        const currentSuite = suites[i];
         if (currentSuite.name.toLowerCase() == suiteToEnable) {
             currentSuite.disabled = false;
             found = true;
@@ -166,11 +166,11 @@ function enableOneSuite(suites, suiteToEnable)
 
 function startBenchmark() {
     if (location.search.length > 1) {
-        var parts = location.search.substring(1).split('&');
-        for (var i = 0; i < parts.length; i++) {
-            var keyValue = parts[i].split('=');
-            var key = keyValue[0];
-            var value = keyValue[1];
+        let parts = location.search.substring(1).split('&');
+        for (let i = 0; i < parts.length; i++) {
+            const keyValue = parts[i].split('=');
+            const key = keyValue[0];
+            const value = keyValue[1];
             switch (key) {
             case 'unit':
                 if (value == 'ms')
@@ -179,7 +179,7 @@ function startBenchmark() {
                     console.error('Invalid unit: ' + value);
                 break;
             case 'iterationCount':
-                var parsedValue = parseInt(value);
+                const parsedValue = parseInt(value);
                 if (!isNaN(parsedValue))
                     benchmarkClient.iterationCount = parsedValue;
                 else
@@ -195,21 +195,21 @@ function startBenchmark() {
         }
     }
 
-    var enabledSuites = Suites.filter(function (suite) { return !suite.disabled; });
-    var totalSubtestsCount = enabledSuites.reduce(function (testsCount, suite) { return testsCount + suite.tests.length; }, 0);
+    const enabledSuites = Suites.filter(suite => !suite.disabled);
+    const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => { return testsCount + suite.tests.length; }, 0);
     benchmarkClient.stepCount = benchmarkClient.iterationCount * totalSubtestsCount;
     benchmarkClient.suitesCount = enabledSuites.length;
-    var runner = new BenchmarkRunner(Suites, benchmarkClient);
+    const runner = new BenchmarkRunner(Suites, benchmarkClient);
     runner.runMultipleIterations(benchmarkClient.iterationCount);
 
     return true;
 }
 
 function showSection(sectionIdentifier, pushState) {
-    var currentSectionElement = document.querySelector('section.selected');
+    const currentSectionElement = document.querySelector('section.selected');
     console.assert(currentSectionElement);
 
-    var newSectionElement = document.getElementById(sectionIdentifier);
+    const newSectionElement = document.getElementById(sectionIdentifier);
     console.assert(newSectionElement);
 
     currentSectionElement.classList.remove('selected');
@@ -240,7 +240,7 @@ function showAbout() {
     showSection('about', true);
 }
 
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', () => {
     if (benchmarkClient.prepareUI)
         benchmarkClient.prepareUI();
 });

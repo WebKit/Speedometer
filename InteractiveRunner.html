@@ -22,13 +22,13 @@ function formatTestName(suiteName, testName) {
 }
 
 function createUIForSuites(suites, onstep, onrun) {
-    var control = document.createElement('nav');
-    var ol = document.createElement('ol');
-    var checkboxes = [];
-    for (var suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
-        var suite = suites[suiteIndex];
-        var li = document.createElement('li');
-        var checkbox = document.createElement('input');
+    const control = document.createElement('nav');
+    const ol = document.createElement('ol');
+    const checkboxes = [];
+    for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
+        const suite = suites[suiteIndex];
+        const li = document.createElement('li');
+        const checkbox = document.createElement('input');
         checkbox.id = suite.name;
         checkbox.type = 'checkbox';
         checkbox.checked = !suite.disabled;
@@ -42,11 +42,11 @@ function createUIForSuites(suites, onstep, onrun) {
         li.appendChild(label);
         label.htmlFor = checkbox.id;
 
-        var testList = document.createElement('ol');
-        for (var testIndex = 0; testIndex < suite.tests.length; testIndex++) {
-            var testItem = document.createElement('li');
-            var test = suite.tests[testIndex];
-            var anchor = document.createElement('a');
+        const testList = document.createElement('ol');
+        for (let testIndex = 0; testIndex < suite.tests.length; testIndex++) {
+            const testItem = document.createElement('li');
+            const test = suite.tests[testIndex];
+            const anchor = document.createElement('a');
             anchor.id = suite.name + '-' + test.name;
             test.anchor = anchor;
             anchor.appendChild(document.createTextNode(formatTestName(suite.name, test.name)));
@@ -60,18 +60,18 @@ function createUIForSuites(suites, onstep, onrun) {
 
     control.appendChild(ol);
 
-    var button = document.createElement('button');
+    let button = document.createElement('button');
     button.textContent = 'Step';
     button.onclick = onstep;
     control.appendChild(button);
 
-    var button = document.createElement('button');
+    button = document.createElement('button');
     button.textContent = 'Run';
     button.id = 'runSuites';
     button.onclick = onrun;
     control.appendChild(button);
 
-    var button = document.createElement('button');
+    button = document.createElement('button');
     button.textContent = 'Select all';
     button.onclick = function () {
         for (var suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
@@ -81,7 +81,7 @@ function createUIForSuites(suites, onstep, onrun) {
     };
     control.appendChild(button);
 
-    var button = document.createElement('button');
+    button = document.createElement('button');
     button.textContent = 'Unselect all';
     button.onclick = function () {
         for (var suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
@@ -95,10 +95,10 @@ function createUIForSuites(suites, onstep, onrun) {
     return control;
 }
 
-var parseQueryString = (function (pairList) {
-    var pairs = {};
-    for (var i = 0; i < pairList.length; ++i) {
-        var keyValue = pairList[i].split('=', 2);
+const parseQueryString = (function (pairList) {
+    const pairs = {};
+    for (let i = 0; i < pairList.length; ++i) {
+        const keyValue = pairList[i].split('=', 2);
         if (keyValue.length == 1)
             pairs[keyValue[0]] = '';
         else
@@ -115,26 +115,26 @@ function disableAllSuitesExcept(suiteName) {
 }
 
 function startTest() {
-    var queryParam = parseQueryString['suite'];
+    const queryParam = parseQueryString['suite'];
     if (queryParam !== undefined)
         disableAllSuitesExcept(queryParam);
 
-    var runner = new BenchmarkRunner(Suites, {
-        willRunTest: function (suite, test) {
+    const runner = new BenchmarkRunner(Suites, {
+        willRunTest(suite, test) {
             test.anchor.classList.add('running');
         },
-        didRunTest: function (suite, test) {
-            var classList = test.anchor.classList;
+        didRunTest(suite, test) {
+            const classList = test.anchor.classList;
             classList.remove('running');
             classList.add('ran');
         },
-        didRunSuites: function (measuredValues) {
-            var results = '';
-            for (var suiteName in measuredValues.tests) {
-                var suiteResults = measuredValues.tests[suiteName];
-                for (var testName in suiteResults.tests) {
-                    var testResults = suiteResults.tests[testName];
-                    for (var subtestName in testResults.tests) {
+        didRunSuites(measuredValues) {
+            let results = '';
+            for (let suiteName in measuredValues.tests) {
+                let suiteResults = measuredValues.tests[suiteName];
+                for (let testName in suiteResults.tests) {
+                    let testResults = suiteResults.tests[testName];
+                    for (let subtestName in testResults.tests) {
                         results += suiteName + ' : ' + testName + ' : ' + subtestName
                             + ': ' + testResults.tests[subtestName] + ' ms\n';
                     }
@@ -149,18 +149,18 @@ function startTest() {
             if (!results)
                 return;
 
-            var pre = document.createElement('pre');
+            const pre = document.createElement('pre');
             document.body.appendChild(pre);
             pre.textContent = results;
         }
     });
 
-    var currentState = null;
+    let currentState = null;
 
     // Don't call step while step is already executing.
     document.body.appendChild(createUIForSuites(Suites,
-        function () { runner.step(currentState).then(function (state) { currentState = state; }); },
-        function () { runner.runAllSteps(currentState); currentState = null; }));
+            () => runner.step(currentState).then((state) => { currentState = state; }),
+            () => { runner.runAllSteps(currentState); currentState = null; }));
 
     if (parseQueryString['startAutomatically'] !== undefined)
         document.getElementById('runSuites').click();
