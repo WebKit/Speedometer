@@ -2,7 +2,7 @@ const numberOfItemsToAdd = 100;
 const Suites = [];
 const ENTER_KEY_CODE = 13;
 
-let triggerEnter = function triggerEnter(element, type) {
+function triggerEnter(element, type) {
     const event = document.createEvent('Events');
     event.initEvent(type, true, true);
     event.keyCode = ENTER_KEY_CODE;
