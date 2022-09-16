@@ -56,11 +56,11 @@
             const scores = [];
             valuesByIteration.forEach(measuredValues => {
                 scores.push(measuredValues.score);
-                for (let suiteName in measuredValues.tests) {
+                for (const suiteName in measuredValues.tests) {
                     const suite = measuredValues.tests[suiteName];
-                    for (let testName in suite.tests) {
+                    for (const testName in suite.tests) {
                         const test = suite.tests[testName];
-                        for (let subtestName in test.tests)
+                        for (const subtestName in test.tests)
                             addToMeasuredValue(test.tests[subtestName], suiteName + '/' + testName + '/' + subtestName);
                         addToMeasuredValue(test.total, suiteName + '/' + testName, 'Total');
                     }
@@ -71,7 +71,7 @@
             PerfTestRunner.reportValues(createTest(null, null, false, 'pt'), scores);
 
             const fullNames = new Array;
-            for (let fullName in measuredValuesByFullName)
+            for (const fullName in measuredValuesByFullName)
                 fullNames.push(fullName);
 
             for (let i = 0; i < fullNames.length; i++) {

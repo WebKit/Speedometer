@@ -130,11 +130,11 @@ function startTest() {
         },
         didRunSuites(measuredValues) {
             let results = '';
-            for (let suiteName in measuredValues.tests) {
+            for (const suiteName in measuredValues.tests) {
                 let suiteResults = measuredValues.tests[suiteName];
-                for (let testName in suiteResults.tests) {
+                for (const testName in suiteResults.tests) {
                     let testResults = suiteResults.tests[testName];
-                    for (let subtestName in testResults.tests) {
+                    for (const subtestName in testResults.tests) {
                         results += suiteName + ' : ' + testName + ' : ' + subtestName
                             + ': ' + testResults.tests[subtestName] + ' ms\n';
                     }

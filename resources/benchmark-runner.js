@@ -224,7 +224,7 @@ BenchmarkRunner.prototype._finalize = function () {
     if (this._client && this._client.didRunSuites) {
         let product = 1;
         const values = [];
-        for (let suiteName in this._measuredValues.tests) {
+        for (const suiteName in this._measuredValues.tests) {
             const suiteTotal = this._measuredValues.tests[suiteName].total;
             product *= suiteTotal;
             values.push(suiteTotal);
