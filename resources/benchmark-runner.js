@@ -14,7 +14,7 @@ BenchmarkRunner.prototype.waitForElement = function (selector) {
         const contentDocument = this._frame.contentDocument;
 
         function resolveIfReady() {
-            var element = contentDocument.querySelector(selector);
+            const element = contentDocument.querySelector(selector);
             if (element) {
                 window.requestAnimationFrame(function () {
                     return resolve(element);
@@ -36,15 +36,15 @@ BenchmarkRunner.prototype._removeFrame = function () {
 }
 
 BenchmarkRunner.prototype._appendFrame = function (src) {
-    var frame = document.createElement('iframe');
+    const frame = document.createElement('iframe');
     frame.style.width = '800px';
     frame.style.height = '600px';
     frame.style.border = '0px none';
     frame.style.position = 'absolute';
     frame.setAttribute('scrolling', 'no');
 
-    var marginLeft = parseInt(getComputedStyle(document.body).marginLeft);
-    var marginTop = parseInt(getComputedStyle(document.body).marginTop);
+    const marginLeft = parseInt(getComputedStyle(document.body).marginLeft);
+    const marginTop = parseInt(getComputedStyle(document.body).marginTop);
     if (window.innerWidth > 800 + marginLeft && window.innerHeight > 600 + marginTop) {
         frame.style.left = marginLeft + 'px';
         frame.style.top = marginTop + 'px';
@@ -69,29 +69,29 @@ BenchmarkRunner.prototype._writeMark = function(name) {
 // This function ought be as simple as possible. Don't even use Promise.
 BenchmarkRunner.prototype._runTest = function(suite, test, prepareReturnValue, callback)
 {
-    var self = this;
-    var now = window.performance && window.performance.now ? function () { return window.performance.now(); } : Date.now;
+    const self = this;
+    const now = window.performance && window.performance.now ? () => window.performance.now() : Date.now;
 
-    var contentWindow = self._frame.contentWindow;
-    var contentDocument = self._frame.contentDocument;
+    const contentWindow = self._frame.contentWindow;
+    const contentDocument = self._frame.contentDocument;
 
     self._writeMark(suite.name + '.' + test.name + '-start');
-    var startTime = now();
+    let startTime = now();
     test.run(prepareReturnValue, contentWindow, contentDocument);
-    var endTime = now();
+    let endTime = now();
     self._writeMark(suite.name + '.' + test.name + '-sync-end');
 
-    var syncTime = endTime - startTime;
+    const syncTime = endTime - startTime;
 
-    var startTime = now();
-    setTimeout(function () {
+    startTime = now();
+    setTimeout(() => {
         // Some browsers don't immediately update the layout for paint.
         // Force the layout here to ensure we're measuring the layout time.
-        var height = self._frame.contentDocument.body.getBoundingClientRect().height;
-        var endTime = now();
+        const height = self._frame.contentDocument.body.getBoundingClientRect().height;
+        endTime = now();
         self._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
         self._writeMark(suite.name + '.' + test.name + '-async-end');
-        window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(() => {
             callback(syncTime, endTime - startTime, height);
         });
     }, 0);
@@ -109,14 +109,14 @@ BenchmarkState.prototype.currentSuite = function() {
 }
 
 BenchmarkState.prototype.currentTest = function () {
-    var suite = this.currentSuite();
+    let suite = this.currentSuite();
     return suite ? suite.tests[this._testIndex] : null;
 }
 
 BenchmarkState.prototype.next = function () {
     this._testIndex++;
 
-    var suite = this._suites[this._suiteIndex];
+    const suite = this._suites[this._suiteIndex];
     if (suite && this._testIndex < suite.tests.length)
         return this;
 
@@ -135,7 +135,7 @@ BenchmarkState.prototype.isFirstTest = function () {
 BenchmarkState.prototype.prepareCurrentSuite = function (runner, frame) {
     const suite = this.currentSuite();
     return new Promise((resolve) => {
-        frame.onload = function () {
+        frame.onload = () => {
             suite.prepare(runner, frame.contentWindow, frame.contentDocument).then(resolve);
         }
         frame.src = 'resources/' + suite.url;
@@ -148,7 +148,7 @@ BenchmarkRunner.prototype.step = function (state) {
         this._measuredValues = {tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN};
     }
 
-    var suite = state.currentSuite();
+    const suite = state.currentSuite();
     if (!suite) {
         this._finalize();
         return Promise.resolve();
@@ -156,8 +156,8 @@ BenchmarkRunner.prototype.step = function (state) {
 
     if (state.isFirstTest()) {
         this._removeFrame();
-        var self = this;
-        return state.prepareCurrentSuite(this, this._appendFrame()).then(function (prepareReturnValue) {
+        let self = this;
+        return state.prepareCurrentSuite(this, this._appendFrame()).then(prepareReturnValue => {
             self._prepareReturnValue = prepareReturnValue;
             return self._runTestAndRecordResults(state);
         });
@@ -167,18 +167,18 @@ BenchmarkRunner.prototype.step = function (state) {
 }
 
 BenchmarkRunner.prototype.runAllSteps = function (startingState) {
-    var nextCallee = this.runAllSteps.bind(this);
-    this.step(startingState).then(function (nextState) {
+    const nextCallee = this.runAllSteps.bind(this);
+    this.step(startingState).then(nextState => {
         if (nextState)
             nextCallee(nextState);
     });
 }
 
 BenchmarkRunner.prototype.runMultipleIterations = function (iterationCount) {
-    var self = this;
-    var currentIteration = 0;
+    const self = this;
+    let currentIteration = 0;
 
-    this._runNextIteration = function () {
+    this._runNextIteration = () => {
         currentIteration++;
         if (currentIteration < iterationCount)
             self.runAllSteps();
@@ -222,19 +222,19 @@ BenchmarkRunner.prototype._finalize = function () {
     this._removeFrame();
 
     if (this._client && this._client.didRunSuites) {
-        var product = 1;
-        var values = [];
-        for (var suiteName in this._measuredValues.tests) {
-            var suiteTotal = this._measuredValues.tests[suiteName].total;
+        let product = 1;
+        const values = [];
+        for (const suiteName in this._measuredValues.tests) {
+            const suiteTotal = this._measuredValues.tests[suiteName].total;
             product *= suiteTotal;
             values.push(suiteTotal);
         }
 
-        values.sort(function (a, b) { return a - b }); // Avoid the loss of significance for the sum.
-        var total = values.reduce(function (a, b) { return a + b });
-        var geomean = Math.pow(product, 1 / values.length);
+        values.sort((a, b) => a - b); // Avoid the loss of significance for the sum.
+        const total = values.reduce((a, b) => a + b);
+        const geomean = Math.pow(product, 1 / values.length);
 
-        var correctionFactor = 3; // This factor makes the test score look reasonably fit within 0 to 140.
+        const correctionFactor = 3; // This factor makes the test score look reasonably fit within 0 to 140.
         this._measuredValues.total = total;
         this._measuredValues.mean = total / values.length;
         this._measuredValues.geomean = geomean;
