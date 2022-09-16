@@ -18,7 +18,7 @@ currentSuite() {
 }
 
 currentTest() {
-    let suite = this.currentSuite();
+    const suite = this.currentSuite();
     return suite ? suite.tests[this._testIndex] : null;
 }
 
