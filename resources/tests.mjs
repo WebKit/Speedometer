@@ -1,6 +1,6 @@
 import{ BenchmarkTestStep} from "./benchmark-runner.mjs";
 
-const numberOfItemsToAdd = 1;
+const numberOfItemsToAdd = 100;
 export const Suites = [];
 const ENTER_KEY_CODE = 13;
 
