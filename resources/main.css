@@ -134,6 +134,10 @@ section#home > p:first-child {
     text-align: center;
 }
 
+.show-about {
+    cursor: pointer;
+}
+
 section#home > .show-about {
     margin-top: 100px;
 }
@@ -244,7 +248,7 @@ th {
     height: 78px;
     background-image: url(gauge.png);
     background-size: 100% 100%;
-    background-repat: no-repeat;
+    background-repeat: no-repeat;
     margin: 0 auto;
 }
 

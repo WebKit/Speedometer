@@ -1,5 +1,11 @@
 // FIXME(camillobruni): Add base class
 
+import {BenchmarkRunner} from "./benchmark-runner.mjs";
+import "./benchmark-report.mjs";
+import * as Statistics from "./statistics.mjs";
+import {Suites} from "./tests.mjs";
+
+
 class MainBenchmarkClient {
     displayUnit = 'runs/min';
     iterationCount = 10;
@@ -79,14 +85,12 @@ class MainBenchmarkClient {
         let meanSigFig = 4;
         let formattedDelta;
         let formattedPercentDelta;
-        if (window.Statistics) {
-            const delta = Statistics.confidenceIntervalDelta(0.95, values.length, sum, Statistics.squareSum(values));
-            if (!isNaN(delta)) {
-                const percentDelta = delta * 100 / arithmeticMean;
-                meanSigFig = sigFigFromPercentDelta(percentDelta);
-                formattedDelta = toSigFigPrecision(delta, 2);
-                formattedPercentDelta = toSigFigPrecision(percentDelta, 2) + '%';
-            }
+        const delta = Statistics.confidenceIntervalDelta(0.95, values.length, sum, Statistics.squareSum(values));
+        if (!isNaN(delta)) {
+            const percentDelta = delta * 100 / arithmeticMean;
+            meanSigFig = sigFigFromPercentDelta(percentDelta);
+            formattedDelta = toSigFigPrecision(delta, 2);
+            formattedPercentDelta = toSigFigPrecision(percentDelta, 2) + '%';
         }
 
         const formattedMean = toSigFigPrecision(arithmeticMean, Math.max(meanSigFig, 3));
@@ -234,28 +238,36 @@ function showSection(sectionIdentifier, pushState) {
         history.pushState({section: sectionIdentifier}, document.title);
 }
 
-function showHome() {
-    showSection('home', true);
-}
-
-function startTest() {
-    if (startBenchmark())
-        showSection('running');
+function showResultDetails() {
+    showSection('detailed-results', true);
 }
 
 function showResultsSummary() {
     showSection('summarized-results', true);
 }
 
-function showResultDetails() {
-    showSection('detailed-results', true);
-}
-
-function showAbout() {
-    showSection('about', true);
-}
-
-window.addEventListener('DOMContentLoaded', () => {
+function prepareUI() {
     if (benchmarkClient.prepareUI)
         benchmarkClient.prepareUI();
-});
+
+    document.getElementById("logo-link").onclick = () => {
+        showSection('home', true);
+    };
+    document.getElementById("show-summary").onclick = showResultsSummary;
+    document.getElementById("show-details").onclick = showResultDetails;
+    document.querySelectorAll(".show-about").forEach(
+        each => {
+            each.onclick = () => showSection('about', true);
+        }
+    );
+    document.querySelectorAll(".start-tests-button").forEach(
+        button => {
+            button.onclick = () => {
+                if (startBenchmark())
+                    showSection('running');
+            };
+        }
+    );
+}
+
+window.addEventListener('DOMContentLoaded', () => prepareUI());
