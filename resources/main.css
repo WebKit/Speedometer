@@ -54,6 +54,7 @@ main {
     top: 115px;
     width: 75px;
     height: 406px;
+    cursor: pointer;
 }
 
 h1 {

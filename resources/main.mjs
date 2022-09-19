@@ -238,11 +238,11 @@ function showSection(sectionIdentifier, pushState) {
         history.pushState({section: sectionIdentifier}, document.title);
 }
 
-function showResultDetails() {
+function showResultDetails(e) {
     showSection('detailed-results', true);
 }
 
-function showResultsSummary() {
+function showResultsSummary(e) {
     showSection('summarized-results', true);
 }
 
@@ -250,7 +250,7 @@ function prepareUI() {
     if (benchmarkClient.prepareUI)
         benchmarkClient.prepareUI();
 
-    document.getElementById("logo-link").onclick = () => {
+    document.getElementById("logo").onclick = () => {
         showSection('home', true);
     };
     document.getElementById("show-summary").onclick = showResultsSummary;
