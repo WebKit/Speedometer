@@ -1,11 +1,9 @@
-// FIXME(camillobruni): Add base class
-
 import {BenchmarkRunner} from "./benchmark-runner.mjs";
 import "./benchmark-report.mjs";
 import * as Statistics from "./statistics.mjs";
 import {Suites} from "./tests.mjs";
 
-
+// FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
     displayUnit = 'runs/min';
     iterationCount = 10;
