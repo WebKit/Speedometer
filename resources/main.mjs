@@ -14,6 +14,67 @@ class MainBenchmarkClient {
     _measuredValuesList = [];
     _finishedTestCount =  0;
     _progressCompleted = null;
+    _isRunning = false;
+
+    constructor() {
+        window.addEventListener('DOMContentLoaded', () => this.prepareUI());
+    }
+
+    // FIXME: Move this method to the tests/suites module.
+    enableOneSuite(suites, suiteToEnable) {
+        suiteToEnable = suiteToEnable.toLowerCase();
+        let found = false;
+        for (let i = 0; i < suites.length; i++) {
+            const currentSuite = suites[i];
+            if (currentSuite.name.toLowerCase() == suiteToEnable) {
+                currentSuite.disabled = false;
+                found = true;
+            } else
+                currentSuite.disabled = true;
+        }
+        return found;
+    }
+
+    startBenchmark() {
+        if (location.search.length > 1) {
+            // FIXME: Use URLSearchParams
+            let parts = location.search.substring(1).split('&');
+            for (let i = 0; i < parts.length; i++) {
+                const keyValue = parts[i].split('=');
+                const key = keyValue[0];
+                const value = keyValue[1];
+                switch (key) {
+                case 'unit':
+                    if (value == 'ms')
+                        this.displayUnit = 'ms';
+                    else
+                        console.error('Invalid unit: ' + value);
+                    break;
+                case 'iterationCount':
+                    const parsedValue = parseInt(value);
+                    if (!isNaN(parsedValue))
+                        this.iterationCount = parsedValue;
+                    else
+                        console.error('Invalid iteration count: ' + value);
+                    break;
+                case 'suite':
+                    if (!this.enableOneSuite(Suites, value)) {
+                        alert('Suite "' + value + '" does not exist. No tests to run.');
+                        return false;
+                    }
+                    break;
+                }
+            }
+        }
+
+        const enabledSuites = Suites.filter(suite => !suite.disabled);
+        const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => { return testsCount + suite.tests.length; }, 0);
+        this.stepCount = this.iterationCount * totalSubtestsCount;
+        this.suitesCount = enabledSuites.length;
+        const runner = new BenchmarkRunner(Suites, this);
+        runner.runMultipleIterations(this.iterationCount);
+        return true;
+    }
 
     willAddTestFrame(frame) {
         const main = document.querySelector('main');
@@ -36,15 +97,15 @@ class MainBenchmarkClient {
     }
 
     willStartFirstIteration() {
+        this._isRunning = true;
         this._measuredValuesList = [];
         this._finishedTestCount = 0;
         this._progressCompleted = document.getElementById('progress-completed');
-        document.getElementById('logo-link').onclick = event => { event.preventDefault(); return false; };
     }
 
     didFinishLastIteration() {
-        document.getElementById('logo-link').onclick = null;
-
+        console.assert(this._isRunning);
+        this._isRunning = false;
         const results = this._computeResults(this._measuredValuesList, this.displayUnit);
 
         this._updateGaugeNeedle(results.mean);
@@ -57,9 +118,9 @@ class MainBenchmarkClient {
 
         if (this.displayUnit == 'ms') {
             document.getElementById('show-summary').style.display = 'none';
-            showResultDetails();
+            this.showResultDetails();
         } else
-            showResultsSummary();
+            this.showResultsSummary();
     }
 
     _computeResults(measuredValuesList, displayUnit) {
@@ -140,134 +201,75 @@ class MainBenchmarkClient {
     }
 
     prepareUI() {
-        window.addEventListener('popstate', event => {
-            if (event.state) {
-                const sectionToShow = event.state.section;
-                if (sectionToShow) {
-                    const sections = document.querySelectorAll('main > section');
-                    for (let i = 0; i < sections.length; i++) {
-                        if (sections[i].id === sectionToShow)
-                            return showSection(sectionToShow, false);
-                    }
+        window.addEventListener('popstate', this._popStateHandler.bind(this), false);
+        window.addEventListener('resize', this._resizeScreeHandler.bind(this));
+        this._resizeScreeHandler();
+
+        document.getElementById("logo").onclick = this._logoClickHandler.bind(this);
+        document.getElementById("show-summary").onclick = (e) => this.showResultsSummary();
+        document.getElementById("show-details").onclick = (e) => this.showResultsDetails();
+        document.querySelectorAll(".show-about").forEach(
+            each => { each.onclick = () => this._showSection('about', true); }
+        );
+        document.querySelectorAll(".start-tests-button").forEach(
+            button => { button.onclick = this._startBenchmarkHandler.bind(this); }
+        );
+    }
+
+    _popStateHandler(event) {
+        if (event.state) {
+            const sectionToShow = event.state.section;
+            if (sectionToShow) {
+                const sections = document.querySelectorAll('main > section');
+                for (let i = 0; i < sections.length; i++) {
+                    if (sections[i].id === sectionToShow)
+                        return this._showSection(sectionToShow, false);
                 }
             }
-            return showSection('home', false);
-        }, false);
-
-        function updateScreenSize() {
-            // FIXME: Detect when the window size changes during the test.
-            const screenIsTooSmall = window.innerWidth < 850 || window.innerHeight < 650;
-            document.getElementById('screen-size').textContent = window.innerWidth + 'px by ' + window.innerHeight + 'px';
-            document.getElementById('screen-size-warning').style.display = screenIsTooSmall ? null : 'none';
         }
+        return this._showSection('home', false);
+    }
 
-        window.addEventListener('resize', updateScreenSize);
-        updateScreenSize();
+    _resizeScreeHandler() {
+        // FIXME: Detect when the window size changes during the test.
+        const screenIsTooSmall = window.innerWidth < 850 || window.innerHeight < 650;
+        document.getElementById('screen-size').textContent = window.innerWidth + 'px by ' + window.innerHeight + 'px';
+        document.getElementById('screen-size-warning').style.display = screenIsTooSmall ? null : 'none';
+    }
+
+    _startBenchmarkHandler() {
+        if (this.startBenchmark())
+            this._showSection('running');
+    }
+
+    _logoClickHandler(event) {
+        // Prevent any accidental UI changes during benchmark runs.
+        if (!this._isRunning) this._showSection('home', true);
+        event.preventDefault();
+        return false;
+    }
+
+    showResultsSummary() {
+        this._showSection('summarized-results', true);
+    }
+
+    showResultsDetails() {
+        this._showSection('detailed-results', true);
+    }
+
+    _showSection(sectionIdentifier, pushState) {
+        const currentSectionElement = document.querySelector('section.selected');
+        console.assert(currentSectionElement);
+
+        const newSectionElement = document.getElementById(sectionIdentifier);
+        console.assert(newSectionElement);
+
+        currentSectionElement.classList.remove('selected');
+        newSectionElement.classList.add('selected');
+
+        if (pushState)
+            history.pushState({section: sectionIdentifier}, document.title);
     }
 }
 
 window.benchmarkClient = new MainBenchmarkClient();
-
-function enableOneSuite(suites, suiteToEnable)
-{
-    suiteToEnable = suiteToEnable.toLowerCase();
-    let found = false;
-    for (let i = 0; i < suites.length; i++) {
-        const currentSuite = suites[i];
-        if (currentSuite.name.toLowerCase() == suiteToEnable) {
-            currentSuite.disabled = false;
-            found = true;
-        } else
-            currentSuite.disabled = true;
-    }
-    return found;
-}
-
-function startBenchmark() {
-    if (location.search.length > 1) {
-        let parts = location.search.substring(1).split('&');
-        for (let i = 0; i < parts.length; i++) {
-            const keyValue = parts[i].split('=');
-            const key = keyValue[0];
-            const value = keyValue[1];
-            switch (key) {
-            case 'unit':
-                if (value == 'ms')
-                    benchmarkClient.displayUnit = 'ms';
-                else
-                    console.error('Invalid unit: ' + value);
-                break;
-            case 'iterationCount':
-                const parsedValue = parseInt(value);
-                if (!isNaN(parsedValue))
-                    benchmarkClient.iterationCount = parsedValue;
-                else
-                    console.error('Invalid iteration count: ' + value);
-                break;
-            case 'suite':
-                if (!enableOneSuite(Suites, value)) {
-                    alert('Suite "' + value + '" does not exist. No tests to run.');
-                    return false;
-                }
-                break;
-            }
-        }
-    }
-
-    const enabledSuites = Suites.filter(suite => !suite.disabled);
-    const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => { return testsCount + suite.tests.length; }, 0);
-    benchmarkClient.stepCount = benchmarkClient.iterationCount * totalSubtestsCount;
-    benchmarkClient.suitesCount = enabledSuites.length;
-    const runner = new BenchmarkRunner(Suites, benchmarkClient);
-    runner.runMultipleIterations(benchmarkClient.iterationCount);
-
-    return true;
-}
-
-function showSection(sectionIdentifier, pushState) {
-    const currentSectionElement = document.querySelector('section.selected');
-    console.assert(currentSectionElement);
-
-    const newSectionElement = document.getElementById(sectionIdentifier);
-    console.assert(newSectionElement);
-
-    currentSectionElement.classList.remove('selected');
-    newSectionElement.classList.add('selected');
-
-    if (pushState)
-        history.pushState({section: sectionIdentifier}, document.title);
-}
-
-function showResultDetails(e) {
-    showSection('detailed-results', true);
-}
-
-function showResultsSummary(e) {
-    showSection('summarized-results', true);
-}
-
-function prepareUI() {
-    if (benchmarkClient.prepareUI)
-        benchmarkClient.prepareUI();
-
-    document.getElementById("logo").onclick = () => {
-        showSection('home', true);
-    };
-    document.getElementById("show-summary").onclick = showResultsSummary;
-    document.getElementById("show-details").onclick = showResultDetails;
-    document.querySelectorAll(".show-about").forEach(
-        each => {
-            each.onclick = () => showSection('about', true);
-        }
-    );
-    document.querySelectorAll(".start-tests-button").forEach(
-        button => {
-            button.onclick = () => {
-                if (startBenchmark())
-                    showSection('running');
-            };
-        }
-    );
-}
-
-window.addEventListener('DOMContentLoaded', () => prepareUI());
