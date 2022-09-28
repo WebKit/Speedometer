@@ -18,9 +18,11 @@ clang-format -i $FILE
 done
 
 if [[ $(git diff --stat) != '' ]]; then
-  echo "# PRE-PUSH HOOK FAILURE ############################"
-  echo "Some JS files were auto-formatted, please re-commit:"
+  echo "######################################################"
+  echo "# Some JS files were auto-formatted, please re-commit:"
+  echo ""
   git --no-pager diff --stat
-  echo "####################################################"
+  echo ""
+  echo "######################################################"
   exit 1
 fi
