@@ -1,4 +1,4 @@
-import{ BenchmarkTestStep} from "./benchmark-runner.mjs";
+import { BenchmarkTestStep } from "./benchmark-runner.mjs";
 
 const numberOfItemsToAdd = 100;
 export const Suites = [];
