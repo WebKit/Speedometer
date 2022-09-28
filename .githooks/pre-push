@@ -6,7 +6,9 @@ then
     exit
 fi
 
-for FILE in $(git diff --cached --name-only | grep -E '.*\.(js|mjs)')
+UPSTREAM_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name @{u})
+
+for FILE in $(git diff --cached --name-only $UPSTREAM_BRANCH | grep -E 'resources/runner/.*\.(js|mjs)')
 do
 clang-format -i $FILE
 done
