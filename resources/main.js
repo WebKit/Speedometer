@@ -1,6 +1,5 @@
 // FIXME(camillobruni): Add base class
 
-
 class MainBenchmarkClient {
     displayUnit = 'runs/min';
     iterationCount = 10;
