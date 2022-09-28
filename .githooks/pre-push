@@ -8,6 +8,9 @@ fi
 
 UPSTREAM_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name @{u})
 
+echo $UPSTREAM_BRANCH
+echo $(git diff --cached --name-only $UPSTREAM_BRANCH)
+
 for FILE in $(git diff --cached --name-only $UPSTREAM_BRANCH | grep -E 'resources/.*\.(js|mjs)')
 do
 echo $FILE
