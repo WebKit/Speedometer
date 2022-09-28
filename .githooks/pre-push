@@ -12,3 +12,5 @@ for FILE in $(git diff --cached --name-only $UPSTREAM_BRANCH | grep -E 'resource
 do
 clang-format -i $FILE
 done
+
+exit 0
