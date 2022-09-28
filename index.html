@@ -8,7 +8,7 @@
 </head>
 <body>
 <main>
-    <img id="logo" src="resources/logo.png">
+    <a id="logo"><img src="resources/logo.png" alt="Speedometer"></a>
 
     <section id="home" class="selected">
         <p>
@@ -20,9 +20,11 @@
             It's currently <span id="screen-size"></span>.
         </strong></p>
         <div class="buttons">
-            <button class="start-tests-button">Start Test</button>
+            <button class="start-tests-button" tabindex="1" >Start Test</button>
         </div>
-        <p class="show-about">About Speedometer</p>
+        <p class="show-about">
+            <button>About Speedometer</button>
+        </p>
     </section>
 
     <section id="running">
@@ -52,7 +54,9 @@
             <button class="start-tests-button">Test Again</button>
             <button id="show-summary"> Summary</button>
         </div>
-        <p class="show-about">About Speedometer</p>
+        <p class="show-about">
+            <button>About Speedometer</button>
+        </p>
     </section>
 
     <section id="about">

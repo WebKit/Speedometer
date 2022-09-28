@@ -124,7 +124,7 @@ section.selected {
     height: 600px;
 }
 
-section#home > p {
+section#home > p, p.show-about{
     margin: 0 auto;
     width: 70%;
     text-align: center;
@@ -135,12 +135,9 @@ section#home > p:first-child {
     text-align: center;
 }
 
-.show-about {
-    cursor: pointer;
-}
-
-section#home > .show-about {
+.show-about > button {
     margin-top: 100px;
+    font-size: 16px;
 }
 
 section#home > .buttons {
