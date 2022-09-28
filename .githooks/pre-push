@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if ! command -v clang-format &> /dev/null
+then
+    echo "clang_format could not be found"
+    exit
+fi
+
+for FILE in $(git diff --cached --name-only | grep -E '.*\.(js|mjs)')
+do
+clang-format -i $FILE
+done
