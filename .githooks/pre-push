@@ -8,10 +8,13 @@ fi
 
 UPSTREAM_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name @{u})
 
-for FILE in $(git diff --cached --name-only $UPSTREAM_BRANCH | grep -E 'resources/runner/.*\.(js|mjs)')
+for FILE in $(git diff --cached --name-only $UPSTREAM_BRANCH | grep -E 'resources/.*\.(js|mjs)')
 do
 echo $FILE
 clang-format -i $FILE
 done
 
-exit 1
+if [[ $(git diff --stat) != '' ]]; then
+  echo "Some JS files were auto-formatted, please re-commit:"
+  git diff --stat
+fi
