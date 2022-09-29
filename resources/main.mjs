@@ -242,7 +242,8 @@ class MainBenchmarkClient {
 
     _logoClickHandler(event) {
         // Prevent any accidental UI changes during benchmark runs.
-        if (!this._isRunning) this._showSection('home', true);
+        if (!this._isRunning)
+            this._showSection('home', true);
         event.preventDefault();
         return false;
     }
