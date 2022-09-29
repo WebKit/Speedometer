@@ -206,7 +206,7 @@ class MainBenchmarkClient {
         document.getElementById("logo").onclick = this._logoClickHandler.bind(this);
         document.getElementById("show-summary").onclick = (e) => this.showResultsSummary();
         document.getElementById("show-details").onclick = (e) => this.showResultsDetails();
-        document.querySelectorAll(".show-about button").forEach(
+        document.querySelectorAll(".show-about").forEach(
             each => { each.onclick = () => this._showSection('about', true); }
         );
         document.querySelectorAll(".start-tests-button").forEach(

@@ -19,10 +19,6 @@ code {
     font-size: smaller;
 }
 
-button {
-    cursor: pointer;
-}
-
 hr {
     border: 1px solid rgb(235, 235, 235);
     width: 50%;
@@ -55,6 +51,7 @@ main {
     width: 75px;
     height: 406px;
     cursor: pointer;
+
 }
 
 h1 {
@@ -81,6 +78,15 @@ a {
 
 button {
     -webkit-appearance: none;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    margin: 0px;
+    padding: 0px;
+}
+
+.buttons button {
+    -webkit-appearance: none;
     border: 3px solid rgb(235, 235, 235);
     border-radius: 10px;
     min-width: 200px;
@@ -89,17 +95,17 @@ button {
     font-size: 25px;
     color: rgb(235, 235, 235);
     background-color: transparent;
-
+    cursor: pointer;
     -webkit-user-select: none;
 }
 
-button:active {
+.buttons button:active {
     background-color: rgb(235, 235, 235);
     color: rgb(46, 51, 55);
     border-color: rgb(235, 235, 235) !important;
 }
 
-button:focus {
+.buttons button:focus {
     outline: none;
     border-color: rgb(232, 79, 79);
 }
@@ -124,7 +130,7 @@ section.selected {
     height: 600px;
 }
 
-section#home > p, p.show-about{
+section#home > p{
     margin: 0 auto;
     width: 70%;
     text-align: center;
@@ -135,9 +141,10 @@ section#home > p:first-child {
     text-align: center;
 }
 
-.show-about > button {
+button.show-about {
     margin-top: 100px;
     font-size: 16px;
+    clear: both;
 }
 
 section#home > .buttons {
