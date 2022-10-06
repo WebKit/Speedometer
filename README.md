@@ -14,3 +14,4 @@ benchmark, actual users should benefit. In order to achieve this, it should:
 - Be accessible to the public and useful to browser engineers. It should run in every modern
   browser by visiting a normal web page. It should run relatively quickly, while providing
   enough test coverage to be reflective of the real-world Web.
+test
