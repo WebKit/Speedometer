@@ -26,6 +26,7 @@ hr {
 }
 
 img {
+    user-select: none;
     -webkit-user-select: none;
     -webkit-user-drag: none;
 }
@@ -77,7 +78,7 @@ a {
 }
 
 button {
-    -webkit-appearance: none;
+    appearance: none;
     border: none;
     background-color: transparent;
     cursor: pointer;
@@ -86,7 +87,7 @@ button {
 }
 
 .buttons button {
-    -webkit-appearance: none;
+    appearance: none;
     border: 3px solid rgb(235, 235, 235);
     border-radius: 10px;
     min-width: 200px;
@@ -96,7 +97,7 @@ button {
     color: rgb(235, 235, 235);
     background-color: transparent;
     cursor: pointer;
-    -webkit-user-select: none;
+    user-select: none;
 }
 
 .buttons button:active {
@@ -273,18 +274,11 @@ th {
     width: 4px;
     height: 400px;
     background-color: rgb(247, 148, 29);
-
-    -webkit-transform: rotate(-70deg);
-    -webkit-transform-origin: 2px 400px;
-
-    -moz-transform: rotate(-70deg);
-    -moz-transform-origin: 2px 400px;
-
     transform: rotate(-70deg);
     transform-origin: 2px 400px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 2), (min--moz-device-pixel-ratio: 2), (min-resolution: 2dppx), (min-resolution: 192dpi) {
+@media (min-resolution: 2dppx), (min-resolution: 192dpi) {
     #logo {
         content: url(logo@2x.png); /* FIXME: This does not work in Firefox. */
     }
