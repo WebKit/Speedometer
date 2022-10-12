@@ -1,4 +1,4 @@
-import { BenchmarkTestStep } from "./benchmark-runner.mjs";
+import { BenchmarkTestStep } from "./benchmark-page.mjs";
 
 const numberOfItemsToAdd = 100;
 export const Suites = [];
@@ -16,8 +16,8 @@ let triggerEnter = function (element, type) {
 Suites.push({
     name: 'VanillaJS-TodoMVC',
     url: 'todomvc/vanilla-examples/vanillajs/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('.new-todo').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('.new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -46,8 +46,8 @@ Suites.push({
 Suites.push({
     name: 'Vanilla-ES2015-TodoMVC',
     url: 'todomvc/vanilla-examples/es2015/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('.new-todo').then((element)  => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('.new-todo').then((element)  => {
             element.focus();
             return element;
         });
@@ -76,8 +76,8 @@ Suites.push({
 Suites.push({
     name: 'Vanilla-ES2015-Babel-Webpack-TodoMVC',
     url: 'todomvc/vanilla-examples/es2015-babel-webpack/dist/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('.new-todo').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('.new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -106,9 +106,9 @@ Suites.push({
 Suites.push({
     name: 'React-TodoMVC',
     url: 'todomvc/architecture-examples/react/index.html',
-    prepare(runner, contentWindow, contentDocument) {
+    prepare(page, contentWindow, contentDocument) {
         contentWindow.app.Utils.store = () => {};
-        return runner.waitForElement('.new-todo').then(element => {
+        return page.waitForElement('.new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -140,8 +140,8 @@ Suites.push({
 Suites.push({
     name: 'React-Redux-TodoMVC',
     url: 'todomvc/architecture-examples/react-redux/dist/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('.new-todo').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('.new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -169,8 +169,8 @@ Suites.push({
 Suites.push({
     name: 'EmberJS-TodoMVC',
     url: 'todomvc/architecture-examples/emberjs/dist/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('#new-todo').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('#new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -198,8 +198,8 @@ Suites.push({
 Suites.push({
     name: 'EmberJS-Debug-TodoMVC',
     url: 'todomvc/architecture-examples/emberjs-debug/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('#new-todo').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('#new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -227,9 +227,9 @@ Suites.push({
 Suites.push({
     name: 'BackboneJS-TodoMVC',
     url: 'todomvc/architecture-examples/backbone/index.html',
-    prepare(runner, contentWindow, contentDocument) {
+    prepare(page, contentWindow, contentDocument) {
         contentWindow.Backbone.sync = () => {};
-        return runner.waitForElement('#appIsReady').then(element => {
+        return page.waitForElement('#appIsReady').then(element => {
             const newTodo = contentDocument.querySelector('.new-todo');
             newTodo.focus();
             return newTodo;
@@ -258,8 +258,8 @@ Suites.push({
 Suites.push({
     name: 'AngularJS-TodoMVC',
     url: 'todomvc/architecture-examples/angularjs/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('#new-todo').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('#new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -291,8 +291,8 @@ Suites.push({
 Suites.push({
     name: 'Angular2-TypeScript-TodoMVC',
     url: 'todomvc/architecture-examples/angular/dist/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('.new-todo').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('.new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -324,8 +324,8 @@ Suites.push({
 Suites.push({
     name: 'VueJS-TodoMVC',
     url: 'todomvc/architecture-examples/vuejs-cli/dist/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('.new-todo').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('.new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -357,8 +357,8 @@ Suites.push({
 Suites.push({
     name: 'jQuery-TodoMVC',
     url: 'todomvc/architecture-examples/jquery/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('#appIsReady').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('#appIsReady').then(element => {
             const newTodo = contentDocument.getElementById('new-todo');
             newTodo.focus();
             return newTodo;
@@ -386,8 +386,8 @@ Suites.push({
 Suites.push({
     name: 'Preact-TodoMVC',
     url: 'todomvc/architecture-examples/preact/dist/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('.new-todo').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('.new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -415,8 +415,8 @@ Suites.push({
 Suites.push({
     name: 'Inferno-TodoMVC',
     url: 'todomvc/architecture-examples/inferno/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('.new-todo').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('.new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -459,8 +459,8 @@ function processElmWorkQueue(contentWindow) {
 Suites.push({
     name: 'Elm-TodoMVC',
     url: 'todomvc/functional-prog-examples/elm/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('.new-todo').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('.new-todo').then(element => {
             element.focus();
             return element;
         });
@@ -497,8 +497,8 @@ Suites.push({
 Suites.push({
     name: 'Flight-TodoMVC',
     url: 'todomvc/dependency-examples/flight/flight/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('#appIsReady').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('#appIsReady').then(element => {
             const newTodo = contentDocument.getElementById('new-todo');
             newTodo.focus();
             return newTodo;
@@ -529,8 +529,8 @@ Suites.push({
     disabled: true,
     name: 'FlightJS-MailClient',
     url: 'flightjs-example-app/index.html',
-    prepare(runner, contentWindow, contentDocument) {
-        return runner.waitForElement('.span8').then(element => {
+    prepare(page, contentWindow, contentDocument) {
+        return page.waitForElement('.span8').then(element => {
             element.focus();
             return element;
         });
