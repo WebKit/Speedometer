@@ -204,10 +204,10 @@ class MainBenchmarkClient {
         this._resizeScreeHandler();
 
         document.getElementById("logo").onclick = this._logoClickHandler.bind(this);
-        document.getElementById("show-summary").onclick = (e) => this.showResultsSummary();
-        document.getElementById("show-details").onclick = (e) => this.showResultsDetails();
+        document.getElementById("show-summary").onclick = this.showResultsSummary.bind(this);
+        document.getElementById("show-details").onclick = this.showResultsDetails.bind(this);
         document.querySelectorAll(".show-about").forEach(
-            each => { each.onclick = () => this._showSection('about', true); }
+            each => { each.onclick = this.showAbout.bind(this) }
         );
         document.querySelectorAll(".start-tests-button").forEach(
             button => { button.onclick = this._startBenchmarkHandler.bind(this); }
@@ -254,6 +254,10 @@ class MainBenchmarkClient {
 
     showResultsDetails() {
         this._showSection('detailed-results', true);
+    }
+
+    showAbout() {
+        this._showSection('about', true);
     }
 
     _showSection(sectionIdentifier, pushState) {
