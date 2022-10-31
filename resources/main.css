@@ -52,7 +52,6 @@ main {
     width: 75px;
     height: 406px;
     cursor: pointer;
-
 }
 
 h1 {
@@ -131,7 +130,7 @@ section.selected {
     height: 600px;
 }
 
-section#home > p{
+section#home > p {
     margin: 0 auto;
     width: 70%;
     text-align: center;
