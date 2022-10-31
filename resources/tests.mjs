@@ -1,5 +1,7 @@
+import { BenchmarkTestStep } from "./benchmark-runner.mjs";
+
 const numberOfItemsToAdd = 100;
-const Suites = [];
+export const Suites = [];
 const ENTER_KEY_CODE = 13;
 
 let triggerEnter = function (element, type) {

@@ -19,10 +19,6 @@ code {
     font-size: smaller;
 }
 
-button {
-    cursor: pointer;
-}
-
 hr {
     border: 1px solid rgb(235, 235, 235);
     width: 50%;
@@ -30,6 +26,7 @@ hr {
 }
 
 img {
+    user-select: none;
     -webkit-user-select: none;
     -webkit-user-drag: none;
 }
@@ -54,6 +51,7 @@ main {
     top: 115px;
     width: 75px;
     height: 406px;
+    cursor: pointer;
 }
 
 h1 {
@@ -79,7 +77,16 @@ a {
 }
 
 button {
-    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    margin: 0px;
+    padding: 0px;
+}
+
+.buttons button {
+    appearance: none;
     border: 3px solid rgb(235, 235, 235);
     border-radius: 10px;
     min-width: 200px;
@@ -88,17 +95,17 @@ button {
     font-size: 25px;
     color: rgb(235, 235, 235);
     background-color: transparent;
-
-    -webkit-user-select: none;
+    cursor: pointer;
+    user-select: none;
 }
 
-button:active {
+.buttons button:active {
     background-color: rgb(235, 235, 235);
     color: rgb(46, 51, 55);
     border-color: rgb(235, 235, 235) !important;
 }
 
-button:focus {
+.buttons button:focus {
     outline: none;
     border-color: rgb(232, 79, 79);
 }
@@ -134,8 +141,10 @@ section#home > p:first-child {
     text-align: center;
 }
 
-section#home > .show-about {
+button.show-about {
     margin-top: 100px;
+    font-size: 16px;
+    clear: both;
 }
 
 section#home > .buttons {
@@ -244,7 +253,7 @@ th {
     height: 78px;
     background-image: url(gauge.png);
     background-size: 100% 100%;
-    background-repat: no-repeat;
+    background-repeat: no-repeat;
     margin: 0 auto;
 }
 
@@ -264,18 +273,11 @@ th {
     width: 4px;
     height: 400px;
     background-color: rgb(247, 148, 29);
-
-    -webkit-transform: rotate(-70deg);
-    -webkit-transform-origin: 2px 400px;
-
-    -moz-transform: rotate(-70deg);
-    -moz-transform-origin: 2px 400px;
-
     transform: rotate(-70deg);
     transform-origin: 2px 400px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 2), (min--moz-device-pixel-ratio: 2), (min-resolution: 2dppx), (min-resolution: 192dpi) {
+@media (min-resolution: 2dppx), (min-resolution: 192dpi) {
     #logo {
         content: url(logo@2x.png); /* FIXME: This does not work in Firefox. */
     }

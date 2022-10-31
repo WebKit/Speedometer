@@ -4,15 +4,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Speedometer 2.1</title>
     <link rel="stylesheet" href="resources/main.css">
-    <script src="resources/main.js" defer></script>
-    <script src="resources/benchmark-runner.js" defer></script>
-    <script src="resources/benchmark-report.js" defer></script>
-    <script src="../resources/statistics.js" defer></script>
-    <script src="resources/tests.js" defer></script>
+    <script src="resources/main.mjs" type="module"></script>
 </head>
 <body>
 <main>
-    <a id="logo-link" href="javascript:showHome()"><img id="logo" src="resources/logo.png"></a>
+    <button id="logo"><img src="resources/logo.png" alt="Speedometer"></button>
 
     <section id="home" class="selected">
         <p>
@@ -24,9 +20,10 @@
             It's currently <span id="screen-size"></span>.
         </strong></p>
         <div class="buttons">
-            <button onclick="startTest()">Start Test</button>
+            <button class="start-tests-button">Start Test</button>
+            <br>
+            <button class="show-about">About Speedometer</button>
         </div>
-        <p class="show-about"><a href="javascript:showAbout()">About Speedometer</a></p>
     </section>
 
     <section id="running">
@@ -42,8 +39,8 @@
         <div id="result-number"></div>
         <div id="confidence-number"></div>
         <div class="buttons">
-            <button onclick="startTest()">Test Again</button>
-            <button class="show-details" onclick="showResultDetails()">Details</button>
+            <button class="start-tests-button">Test Again</button>
+            <button id="show-details">Details</button>
         </div>
     </section>
 
@@ -53,10 +50,11 @@
         <table class="results-table"></table>
         <div class="arithmetic-mean"><label>Arithmetic Mean:</label><span id="results-with-statistics"></span></div>
         <div class="buttons">
-            <button onclick="startTest()">Test Again</button>
-            <button id="show-summary" onclick="showResultsSummary()">Summary</button>
+            <button class="start-tests-button">Test Again</button>
+            <button id="show-summary"> Summary</button>
+            <br>
+            <button class="show-about">About Speedometer</button>
         </div>
-        <p class="show-about"><a href="javascript:showAbout()">About Speedometer</a></p>
     </section>
 
     <section id="about">

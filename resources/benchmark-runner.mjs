@@ -1,4 +1,4 @@
-class BenchmarkTestStep {
+export class BenchmarkTestStep {
     constructor(testName, testFunction) {
         this.name = testName;
         this.run = testFunction;
@@ -52,7 +52,7 @@ class BenchmarkState {
     }
 }
 
-class BenchmarkRunner {
+export class BenchmarkRunner {
     constructor(suites, client) {
         this._suites = suites;
         this._prepareReturnValue = null;
