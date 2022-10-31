@@ -53,9 +53,17 @@ class BenchmarkState {
     }
 }
 
+<<<<<<< HEAD
 class Page {
     constructor(frame) {
         this._frame = frame;
+=======
+export class BenchmarkRunner {
+    constructor(suites, client) {
+        this._suites = suites;
+        this._prepareReturnValue = null;
+        this._client = client;
+>>>>>>> main
     }
 
     async waitForElement(selector, measureAsyncOperation) {
