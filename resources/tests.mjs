@@ -4,15 +4,6 @@ const numberOfItemsToAdd = 100;
 export const Suites = [];
 const ENTER_KEY_CODE = 13;
 
-let triggerEnter = function (element, type) {
-    const event = document.createEvent('Events');
-    event.initEvent(type, true, true);
-    event.keyCode = ENTER_KEY_CODE;
-    event.which = ENTER_KEY_CODE;
-    event.key = 'ENTER';
-    element.dispatchEvent(event);
-}
-
 Suites.push({
     name: 'VanillaJS-TodoMVC',
     url: 'todomvc/vanilla-examples/vanillajs/index.html',
@@ -26,7 +17,7 @@ Suites.push({
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
                 newTodo.dispatchEvent(new Event('change'));
-                triggerEnter(newTodo, 'keypress');
+                page.triggerEnter(newTodo, 'keypress');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -55,7 +46,7 @@ Suites.push({
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
                 newTodo.dispatchEvent(new Event('change'));
-                triggerEnter(newTodo, 'keypress');
+                page.triggerEnter(newTodo, 'keypress');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -84,7 +75,7 @@ Suites.push({
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
                 newTodo.dispatchEvent(new Event('change'));
-                triggerEnter(newTodo, 'keypress');
+                page.triggerEnter(newTodo, 'keypress');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -118,7 +109,7 @@ Suites.push({
                   bubbles: true,
                   cancelable: true
                 }));
-                triggerEnter(newTodo, 'keydown');
+                page.triggerEnter(newTodo, 'keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -146,7 +137,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                triggerEnter(newTodo, 'keydown');
+                page.triggerEnter(newTodo, 'keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -174,7 +165,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                triggerEnter(newTodo, 'keydown');
+                page.triggerEnter(newTodo, 'keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -202,7 +193,7 @@ Suites.push({
             const newTodo = page.getElementById("new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                triggerEnter(newTodo, 'keydown');
+                page.triggerEnter(newTodo, 'keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -233,7 +224,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                triggerEnter(newTodo, 'keypress');
+                page.triggerEnter(newTodo, 'keypress');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -297,7 +288,7 @@ Suites.push({
                   bubbles: true,
                   cancelable: true
                 }));
-                triggerEnter(newTodo, 'keyup');
+                page.triggerEnter(newTodo, 'keyup');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -329,7 +320,7 @@ Suites.push({
                   bubbles: true,
                   cancelable: true
                 }));
-                triggerEnter(newTodo, 'keyup');
+                page.triggerEnter(newTodo, 'keyup');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -358,7 +349,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                triggerEnter(newTodo, 'keyup');
+                page.triggerEnter(newTodo, 'keyup');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -385,7 +376,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                triggerEnter(newTodo, 'keydown');
+                page.triggerEnter(newTodo, 'keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -417,7 +408,7 @@ Suites.push({
                   bubbles: true,
                   cancelable: true
                 }));
-                triggerEnter(newTodo, 'keydown');
+                page.triggerEnter(newTodo, 'keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -463,7 +454,7 @@ Suites.push({
                   cancelable: true
                 }));
                 processElmWorkQueue(page);
-                triggerEnter(newTodo, 'keydown');
+                page.triggerEnter(newTodo, 'keydown');
                 processElmWorkQueue(page);
             }
         }),
@@ -496,7 +487,7 @@ Suites.push({
             const newTodo = page.getElementById("new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                triggerEnter(newTodo, 'keydown');
+                page.triggerEnter(newTodo, 'keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {

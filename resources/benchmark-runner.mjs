@@ -53,17 +53,11 @@ class BenchmarkState {
     }
 }
 
-<<<<<<< HEAD
 class Page {
+    // Abstract interface to interact with a test-frame.
+
     constructor(frame) {
         this._frame = frame;
-=======
-export class BenchmarkRunner {
-    constructor(suites, client) {
-        this._suites = suites;
-        this._prepareReturnValue = null;
-        this._client = client;
->>>>>>> main
     }
 
     async waitForElement(selector, measureAsyncOperation) {
@@ -93,7 +87,17 @@ export class BenchmarkRunner {
     getElementById(id) {
         return this._frame.contentDocument.getElementById(id);
     }
+
+    triggerEnter(node, type) {
+        const event = document.createEvent('Events');
+        event.initEvent(type, true, true);
+        event.keyCode = ENTER_KEY_CODE;
+        event.which = ENTER_KEY_CODE;
+        event.key = 'ENTER';
+        element.dispatchEvent(event);
+    }
 }
+
 
 export class BenchmarkRunner {
     constructor(suites, client) {
