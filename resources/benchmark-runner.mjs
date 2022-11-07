@@ -92,7 +92,7 @@ class Page {
         event.keyCode = ENTER_KEY_CODE;
         event.which = ENTER_KEY_CODE;
         event.key = 'ENTER';
-        element.dispatchEvent(event);
+        node.dispatchEvent(event);
     }
 }
 
