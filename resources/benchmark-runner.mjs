@@ -85,14 +85,24 @@ class Page {
     getElementById(id) {
         return this._frame.contentDocument.getElementById(id);
     }
+}
 
-    triggerEnter(node, type) {
+class PageNode {
+    constructor(node) {
+        this._node = node
+    }
+
+    click() {
+
+    }
+
+    enter(type) {
         const event = document.createEvent('Events');
         event.initEvent(type, true, true);
         event.keyCode = ENTER_KEY_CODE;
         event.which = ENTER_KEY_CODE;
         event.key = 'ENTER';
-        element.dispatchEvent(event);
+        this._.dispatchEvent(event);
     }
 }
 
