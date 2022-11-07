@@ -54,8 +54,6 @@ class BenchmarkState {
 }
 
 class Page {
-    // Abstract interface to interact with a test-frame.
-
     constructor(frame) {
         this._frame = frame;
     }
