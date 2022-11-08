@@ -53,6 +53,8 @@ class BenchmarkState {
     }
 }
 
+const ENTER_KEY_CODE = 13;
+
 class Page {
     constructor(frame) {
         this._frame = frame;
@@ -86,13 +88,13 @@ class Page {
         return this._frame.contentDocument.getElementById(id);
     }
 
-    triggerEnter(node, type) {
+    triggerEnter(element, type) {
         const event = document.createEvent('Events');
         event.initEvent(type, true, true);
         event.keyCode = ENTER_KEY_CODE;
         event.which = ENTER_KEY_CODE;
         event.key = 'ENTER';
-        node.dispatchEvent(event);
+        element.dispatchEvent(event);
     }
 }
 
