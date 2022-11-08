@@ -58,7 +58,7 @@ class Page {
         this._frame = frame;
     }
 
-    async waitForElement(selector, measureAsyncOperation) {
+    async waitForElement(selector) {
         return new Promise((resolve) => {
           const resolveIfReady = () => {
             const element = this.querySelector(selector);
