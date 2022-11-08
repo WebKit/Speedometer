@@ -2,7 +2,6 @@ import { BenchmarkTestStep } from "./benchmark-runner.mjs";
 
 const numberOfItemsToAdd = 100;
 export const Suites = [];
-const ENTER_KEY_CODE = 13;
 
 Suites.push({
     name: 'VanillaJS-TodoMVC',
@@ -16,18 +15,18 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.dispatchEvent(new Event('change'));
-                page.triggerEnter(newTodo, 'keypress');
+                newTodo.change();
+                newTodo.enter('keypress');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingAllItems', page => {
             const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < deleteButtons.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
     ]
@@ -45,18 +44,18 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.dispatchEvent(new Event('change'));
-                page.triggerEnter(newTodo, 'keypress');
+                newTodo.change();
+                newTodo.enter('keypress');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingItems', page => {
             const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < deleteButtons.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
     ]
@@ -74,18 +73,18 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.dispatchEvent(new Event('change'));
-                page.triggerEnter(newTodo, 'keypress');
+                newTodo.change();
+                newTodo.enter('keypress');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingItems', page => {
             const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < deleteButtons.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
     ]
@@ -95,8 +94,6 @@ Suites.push({
     name: 'React-TodoMVC',
     url: 'todomvc/architecture-examples/react/index.html',
     async prepare(page) {
-        // FIXME: use app code
-        page._frame.contentWindow.app.Utils.store = () => {};
         const element = await page.waitForElement('.new-todo');
         element.focus();
     },
@@ -105,21 +102,18 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.dispatchEvent(new Event('input', {
-                  bubbles: true,
-                  cancelable: true
-                }));
-                page.triggerEnter(newTodo, 'keydown');
+                newTodo.input();
+                newTodo.enter('keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingAllItems', page => {
             const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < deleteButtons.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
     ]
@@ -137,17 +131,17 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                page.triggerEnter(newTodo, 'keydown');
+                newTodo.enter('keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingItems', page => {
             const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < deleteButtons.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
     ]
@@ -165,17 +159,17 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                page.triggerEnter(newTodo, 'keydown');
+                newTodo.enter('keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingItems', page => {
             const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < deleteButtons.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
     ]
@@ -193,17 +187,17 @@ Suites.push({
             const newTodo = page.getElementById("new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                page.triggerEnter(newTodo, 'keydown');
+                newTodo.enter('keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingItems', page => {
             const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < deleteButtons.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
     ]
@@ -213,8 +207,6 @@ Suites.push({
     name: 'BackboneJS-TodoMVC',
     url: 'todomvc/architecture-examples/backbone/index.html',
     async prepare(page) {
-        // FIXME: use app code
-        page._frame.contentWindow.Backbone.sync  = () => {};
         await page.waitForElement('#appIsReady');
         const newTodo = page.querySelector('.new-todo');
         newTodo.focus();
@@ -224,7 +216,8 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                page.triggerEnter(newTodo, 'keypress');
+                newTodo.change()
+                newTodo.enter('keypress');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -249,20 +242,17 @@ Suites.push({
     },
     tests: [
         new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
-            const submitEvent = document.createEvent('Event');
-            submitEvent.initEvent('submit', true, true);
-            const inputEvent = document.createEvent('Event');
-            inputEvent.initEvent('input', true, true);
             const newTodo = page.querySelector(".new-todo");
+            const form = page.querySelector("form");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.dispatchEvent(inputEvent);
-                newTodo.form.dispatchEvent(submitEvent);
+                newTodo.input()
+                form.submit()
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingAllItems', page => {
@@ -284,21 +274,18 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.dispatchEvent(new Event('input', {
-                  bubbles: true,
-                  cancelable: true
-                }));
-                page.triggerEnter(newTodo, 'keyup');
+                newTodo.input();
+                newTodo.enter('keyup');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingItems', page => {
             const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < deleteButtons.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
     ]
@@ -316,21 +303,18 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.dispatchEvent(new Event('input', {
-                  bubbles: true,
-                  cancelable: true
-                }));
-                page.triggerEnter(newTodo, 'keyup');
+                newTodo.input();
+                newTodo.enter('keyup');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingAllItems', page => {
             const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < deleteButtons.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
     ]
@@ -349,17 +333,17 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                page.triggerEnter(newTodo, 'keyup');
+                newTodo.enter('keyup');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingAllItems', page => {
             for (let i = 0; i < numberOfItemsToAdd; i++)
-            page.querySelector('.destroy').click();
+                page.querySelector('.destroy').click();
         }),
     ]
 })
@@ -376,17 +360,17 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                page.triggerEnter(newTodo, 'keydown');
+                newTodo.enter('keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingItems', page => {
             const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < deleteButtons.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
     ]
@@ -404,16 +388,13 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.dispatchEvent(new Event('change', {
-                  bubbles: true,
-                  cancelable: true
-                }));
-                page.triggerEnter(newTodo, 'keydown');
+                newTodo.change();
+                newTodo.enter('keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingItems', page => {
@@ -424,18 +405,6 @@ Suites.push({
     ]
 });
 
-function processElmWorkQueue(page) {
-    // TODO move workload to test
-    const contentWindow = page._frame.contentWindow;
-    contentWindow.elmWork();
-    const callbacks = contentWindow.rAFCallbackList;
-    let i = 0;
-    while (i < callbacks.length) {
-        callbacks[i]();
-        i++;
-    }
-    contentWindow.rAFCallbackList = [];
-}
 
 Suites.push({
     name: 'Elm-TodoMVC',
@@ -449,26 +418,23 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.dispatchEvent(new Event('input', {
-                  bubbles: true,
-                  cancelable: true
-                }));
-                processElmWorkQueue(page);
-                page.triggerEnter(newTodo, 'keydown');
-                processElmWorkQueue(page);
+                newTodo.input();
+                page.eval("processElmWorkQueue()");
+                newTodo.enter('keydown');
+                page.eval("processElmWorkQueue()");
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             let checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++) {
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
                 checkboxes[i].click();
-                processElmWorkQueue(page);
+                page.eval("processElmWorkQueue()");
             }
         }),
         new BenchmarkTestStep('DeletingItems', page => {
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 page.querySelector('.destroy').click();
-                processElmWorkQueue(page);
+                page.eval("processElmWorkQueue()");
             }
         }),
     ]
@@ -487,17 +453,17 @@ Suites.push({
             const newTodo = page.getElementById("new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                page.triggerEnter(newTodo, 'keydown');
+                newTodo.enter('keydown');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             let checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < checkboxes.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep('DeletingItems', page => {
             let deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < deleteButtons.length; i++)
+            for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
     ]

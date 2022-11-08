@@ -75,34 +75,87 @@ class Page {
     }
 
     querySelector(selector) {
-        return this._frame.contentDocument.querySelector(selector);
+        const element = this._frame.contentDocument.querySelector(selector);
+        if (element === null) return null
+        return this._wrapElement(element);
     }
 
     querySelectorAll(selector) {
-        return this._frame.contentDocument.querySelectorAll(selector);
+        const elements = Array.from(this._frame.contentDocument.querySelectorAll(selector));
+        for (let i = 0; i < elements.length; i++) {
+            elements[i] = this._wrapElement(elements[i]);
+        }
+        return elements
     }
 
     getElementById(id) {
-        return this._frame.contentDocument.getElementById(id);
+        const element = this._frame.contentDocument.getElementById(id);
+        if (element === null) return null
+        return this._wrapElement(element)
+    }
+
+    eval(source) {
+        this._frame.contentWindow.eval(source);
+        return null;
+    }
+
+    _wrapElement(element) {
+        return new PageElement(element);
     }
 }
 
-class PageNode {
+const ENTER_KEY_CODE = 13;
+
+const NATIVE_OPTIONS = {
+    bubbles: true,
+    cancellable: true,
+}
+
+class PageElement {
     constructor(node) {
         this._node = node
     }
 
-    click() {
-
+    set value(value) {
+        this._node.value = value
     }
 
-    enter(type) {
-        const event = document.createEvent('Events');
-        event.initEvent(type, true, true);
-        event.keyCode = ENTER_KEY_CODE;
-        event.which = ENTER_KEY_CODE;
-        event.key = 'ENTER';
-        this._.dispatchEvent(event);
+    click() {
+        this._node.click()
+    }
+
+    focus() {
+        this._node.focus()
+    }
+
+    change(options = NATIVE_OPTIONS) {
+        this._node.dispatchEvent(new Event('change', options))
+    }
+
+    input(options = NATIVE_OPTIONS) {
+        this._node.dispatchEvent(new Event('input', options))
+    }
+
+    submit(options = NATIVE_OPTIONS) {
+        // FIXME FireFox doesn't like `new Event('submit')
+        const submitEvent = document.createEvent('Event');
+        submitEvent.initEvent('submit', true, true);
+        this._node.dispatchEvent(submitEvent);
+    }    
+
+    enter(type, options = undefined ) {
+        let event_options = {
+            bubbles: true, 
+            cancelable: true,
+            keyCode: ENTER_KEY_CODE,
+            which: ENTER_KEY_CODE,
+            key: 'ENTER'
+        };
+        if (options !== undefined) {
+            event_options = Object.assign(event_options, options)
+        }
+        const event = new KeyboardEvent(type, event_options);
+        this._node.dispatchEvent(event);
     }
 }
 

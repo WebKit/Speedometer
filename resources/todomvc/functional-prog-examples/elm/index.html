@@ -27,6 +27,17 @@
         //  localStorage.setItem('elm-todo-model', JSON.stringify(model));
         // });
     }());
+
+    function processElmWorkQueue() {
+        window.elmWork();
+        const callbacks = window.rAFCallbackList;
+        let i = 0;
+        while (i < callbacks.length) {
+            callbacks[i]();
+            i++;
+        }
+        window.rAFCallbackList = [];
+    }
 </script>
 </body>
 </html>
