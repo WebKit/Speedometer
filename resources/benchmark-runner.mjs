@@ -266,7 +266,7 @@ export class BenchmarkRunner
         });
     }
 
-   _finalize() {
+    _finalize() {
         this._removeFrame();
 
         if (this._client && this._client.didRunSuites) {
