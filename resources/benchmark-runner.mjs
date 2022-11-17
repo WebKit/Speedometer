@@ -41,12 +41,12 @@ class BenchmarkState {
         return !this._testIndex;
     }
 
-    async prepareCurrentSuite(frame, page) {
+    prepareCurrentSuite(page) {
         const suite = this.currentSuite();
-        await new Promise((resolve) => {
-            frame.onload = async () => {
-                await suite.prepare(page);
-                resolve();
+        return new Promise((resolve) => {
+            const frame = page._frame;
+            frame.onload = () => {
+                suite.prepare(page).then(resolve);
             }
             frame.src = 'resources/' + suite.url;
         });
@@ -61,7 +61,7 @@ class Page
         this._frame = frame;
     }
 
-    async waitForElement(selector)
+    waitForElement(selector)
     {
         return new Promise((resolve) => {
             const resolveIfReady = () => {
@@ -179,7 +179,7 @@ export class BenchmarkRunner {
         }, 0);
     }
 
-    async step(state) {
+    step(state) {
         if (!state) {
             state = new BenchmarkState(this._suites);
             this._measuredValues = {tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN};
@@ -187,46 +187,48 @@ export class BenchmarkRunner {
 
         const suite = state.currentSuite();
         if (!suite) {
-            await this._finalize();
-            return;
+            this._finalize();
+            return Promise.resolve();
         }
 
         if (state.isFirstTest()) {
             this._removeFrame();
             this._appendFrame();
             this._page = new Page(this._frame);
-            await state.prepareCurrentSuite(this._frame, this._page);
+            return state.prepareCurrentSuite(this._page).then(
+                () => this._runTestAndRecordResults(state))
         }
 
-        return await this._runTestAndRecordResults(state);
+        return this._runTestAndRecordResults(state);
     }
 
-    async runAllSteps(startingState) {
+    runAllSteps(startingState) {
         const nextCallee = this.runAllSteps.bind(this);
-        const nextState = await this.step(startingState);
-        if (nextState)
-            await nextCallee(nextState);
+        this.step(startingState).then(nextState => {
+            if (nextState)
+                nextCallee(nextState);
+        });
     }
 
-    async runMultipleIterations(iterationCount) {
+    runMultipleIterations(iterationCount) {
         const self = this;
         let currentIteration = 0;
 
-        this._runNextIteration = async () => {
+        this._runNextIteration = () => {
             currentIteration++;
             if (currentIteration < iterationCount)
-                await self.runAllSteps();
+                self.runAllSteps();
             else if (this._client && this._client.didFinishLastIteration)
                 this._client.didFinishLastIteration();
-        };
+        }
 
         if (this._client && this._client.willStartFirstIteration)
             this._client.willStartFirstIteration(iterationCount);
 
-        await self.runAllSteps();
+        self.runAllSteps();
     }
 
-    async _runTestAndRecordResults(state) {
+    _runTestAndRecordResults(state) {
         return new Promise((resolve) => {
             const suite = state.currentSuite();
             const test = state.currentTest();
@@ -252,7 +254,7 @@ export class BenchmarkRunner {
         });
     }
 
-   async _finalize() {
+   _finalize() {
         this._removeFrame();
 
         if (this._client && this._client.didRunSuites) {
@@ -277,6 +279,6 @@ export class BenchmarkRunner {
         }
 
         if (this._runNextIteration)
-            await this._runNextIteration();
+            this._runNextIteration();
     }
 }
