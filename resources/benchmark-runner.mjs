@@ -5,24 +5,29 @@ export class BenchmarkTestStep {
     }
 }
 
-class BenchmarkState {
-    constructor(suites) {
+class BenchmarkState
+{
+    constructor(suites)
+    {
         this._suites = suites;
         this._suiteIndex = -1;
         this._testIndex = 0;
         this.next();
     }
 
-    currentSuite() {
+    currentSuite()
+    {
         return this._suites[this._suiteIndex];
     }
 
-    currentTest() {
+    currentTest()
+    {
         const suite = this.currentSuite();
         return suite ? suite.tests[this._testIndex] : null;
     }
 
-    next() {
+    next()
+    {
         this._testIndex++;
 
         const suite = this._suites[this._suiteIndex];
@@ -37,11 +42,13 @@ class BenchmarkState {
         return this;
     }
 
-    isFirstTest() {
+    isFirstTest()
+    {
         return !this._testIndex;
     }
 
-    prepareCurrentSuite(page) {
+    prepareCurrentSuite(page)
+    {
         const suite = this.currentSuite();
         return new Promise((resolve) => {
             const frame = page._frame;
@@ -106,21 +113,25 @@ class Page
 }
 
 
-export class BenchmarkRunner {
-    constructor(suites, client) {
+export class BenchmarkRunner
+{
+    constructor(suites, client)
+    {
         this._suites = suites;
         this._client = client;
         this._page = null;
     }
 
-    _removeFrame() {
+    _removeFrame()
+    {
         if (this._frame) {
             this._frame.parentNode.removeChild(this._frame);
             this._frame = null;
         }
     }
 
-    _appendFrame(src) {
+    _appendFrame(src)
+    {
         const frame = document.createElement('iframe');
         frame.style.width = '800px';
         frame.style.height = '600px';
@@ -146,7 +157,8 @@ export class BenchmarkRunner {
         return frame;
     }
 
-    _writeMark(name) {
+    _writeMark(name)
+    {
         if (window.performance && window.performance.mark)
             window.performance.mark(name);
     }
