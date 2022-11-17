@@ -53,42 +53,49 @@ class BenchmarkState {
     }
 }
 
-const ENTER_KEY_CODE = 13;
 
-class Page {
-    constructor(frame) {
+class Page
+{
+    constructor(frame)
+    {
         this._frame = frame;
     }
 
-    async waitForElement(selector) {
+    async waitForElement(selector)
+    {
         return new Promise((resolve) => {
-          const resolveIfReady = () => {
-            const element = this.querySelector(selector);
-            if (element) {
-                window.requestAnimationFrame(() => {
-                    return resolve(element);
-                });
-            } else {
-                setTimeout(resolveIfReady, 50);
-            }
-          };
-          resolveIfReady();
+            const resolveIfReady = () => {
+                const element = this.querySelector(selector);
+                if (element) {
+                    window.requestAnimationFrame(() => {
+                        return resolve(element);
+                    });
+                } else {
+                    setTimeout(resolveIfReady, 50);
+                }
+            };
+            resolveIfReady();
         });
     }
 
-    querySelector(selector) {
+    querySelector(selector)
+    {
         return this._frame.contentDocument.querySelector(selector);
     }
 
-    querySelectorAll(selector) {
+    querySelectorAll(selector)
+    {
         return this._frame.contentDocument.querySelectorAll(selector);
     }
 
-    getElementById(id) {
+    getElementById(id)
+    {
         return this._frame.contentDocument.getElementById(id);
     }
 
-    triggerEnter(element, type) {
+    triggerEnter(element, type)
+    {
+        const ENTER_KEY_CODE = 13;
         const event = document.createEvent('Events');
         event.initEvent(type, true, true);
         event.keyCode = ENTER_KEY_CODE;

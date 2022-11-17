@@ -8,8 +8,7 @@ Suites.push({
     name: 'VanillaJS-TodoMVC',
     url: 'todomvc/vanilla-examples/vanillajs/index.html',
     async prepare(page) {
-        const element = await page.waitForElement('.new-todo');
-        element.focus();
+        (await page.waitForElement('.new-todo')).focus();
     },
     tests: [
         new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
@@ -95,7 +94,7 @@ Suites.push({
     name: 'React-TodoMVC',
     url: 'todomvc/architecture-examples/react/index.html',
     async prepare(page) {
-        // FIXME: use app code
+        // FIXME: Move this custom code to the react app.
         page._frame.contentWindow.app.Utils.store = () => {};
         const element = await page.waitForElement('.new-todo');
         element.focus();
@@ -213,7 +212,7 @@ Suites.push({
     name: 'BackboneJS-TodoMVC',
     url: 'todomvc/architecture-examples/backbone/index.html',
     async prepare(page) {
-        // FIXME: use app code
+        // FIXME: Move this custom code to the backboneJS app.
         page._frame.contentWindow.Backbone.sync  = () => {};
         await page.waitForElement('#appIsReady');
         const newTodo = page.querySelector('.new-todo');
@@ -359,7 +358,7 @@ Suites.push({
         }),
         new BenchmarkTestStep('DeletingAllItems', page => {
             for (let i = 0; i < numberOfItemsToAdd; i++)
-            page.querySelector('.destroy').click();
+                page.querySelector('.destroy').click();
         }),
     ]
 })
@@ -425,7 +424,7 @@ Suites.push({
 });
 
 function processElmWorkQueue(page) {
-    // TODO move workload to test
+    // FIXME: Move code to the Elm app itself.
     const contentWindow = page._frame.contentWindow;
     contentWindow.elmWork();
     const callbacks = contentWindow.rAFCallbackList;
