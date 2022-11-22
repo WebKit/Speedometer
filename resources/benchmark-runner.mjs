@@ -5,8 +5,7 @@ export class BenchmarkTestStep {
     }
 }
 
-class BenchmarkState
-{
+class BenchmarkState {
     constructor(suites)
     {
         this._suites = suites;
@@ -61,8 +60,7 @@ class BenchmarkState
 }
 
 
-class Page
-{
+class Page {
     constructor(frame)
     {
         this._frame = frame;
@@ -113,8 +111,7 @@ class Page
 }
 
 
-export class BenchmarkRunner
-{
+export class BenchmarkRunner {
     constructor(suites, client)
     {
         this._suites = suites;

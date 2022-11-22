@@ -423,7 +423,8 @@ Suites.push({
     ]
 });
 
-function processElmWorkQueue(page) {
+function processElmWorkQueue(page)
+{
     // FIXME: Move code to the Elm app itself.
     const contentWindow = page._frame.contentWindow;
     contentWindow.elmWork();
