@@ -7,8 +7,7 @@ Suites.push({
     name: 'VanillaJS-TodoMVC',
     url: 'todomvc/vanilla-examples/vanillajs/index.html',
     async prepare(page) {
-        const element = await page.waitForElement('.new-todo');
-        element.focus();
+        (await page.waitForElement('.new-todo')).focus();
     },
     tests: [
         new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {

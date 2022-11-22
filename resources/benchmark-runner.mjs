@@ -6,23 +6,27 @@ export class BenchmarkTestStep {
 }
 
 class BenchmarkState {
-    constructor(suites) {
+    constructor(suites)
+    {
         this._suites = suites;
         this._suiteIndex = -1;
         this._testIndex = 0;
         this.next();
     }
 
-    currentSuite() {
+    currentSuite()
+    {
         return this._suites[this._suiteIndex];
     }
 
-    currentTest() {
+    currentTest()
+    {
         const suite = this.currentSuite();
         return suite ? suite.tests[this._testIndex] : null;
     }
 
-    next() {
+    next()
+    {
         this._testIndex++;
 
         const suite = this._suites[this._suiteIndex];
@@ -37,16 +41,18 @@ class BenchmarkState {
         return this;
     }
 
-    isFirstTest() {
+    isFirstTest()
+    {
         return !this._testIndex;
     }
 
-    async prepareCurrentSuite(frame, page) {
+    prepareCurrentSuite(page)
+    {
         const suite = this.currentSuite();
-        await new Promise((resolve) => {
-            frame.onload = async () => {
-                await suite.prepare(page);
-                resolve();
+        return new Promise((resolve) => {
+            const frame = page._frame;
+            frame.onload = () => {
+                suite.prepare(page).then(resolve);
             }
             frame.src = 'resources/' + suite.url;
         });
@@ -54,33 +60,37 @@ class BenchmarkState {
 }
 
 class Page {
-    constructor(frame) {
+    constructor(frame)
+    {
         this._frame = frame;
     }
 
-    async waitForElement(selector) {
+    waitForElement(selector)
+    {
         return new Promise((resolve) => {
-          const resolveIfReady = () => {
-            const element = this.querySelector(selector);
-            if (element) {
-                window.requestAnimationFrame(() => {
-                    return resolve(element);
-                });
-            } else {
-                setTimeout(resolveIfReady, 50);
-            }
-          };
-          resolveIfReady();
+            const resolveIfReady = () => {
+                const element = this.querySelector(selector);
+                if (element) {
+                    window.requestAnimationFrame(() => {
+                        return resolve(element);
+                    });
+                } else {
+                    setTimeout(resolveIfReady, 50);
+                }
+            };
+            resolveIfReady();
         });
     }
 
-    querySelector(selector) {
+    querySelector(selector)
+    {
         const element = this._frame.contentDocument.querySelector(selector);
         if (element === null) return null
         return this._wrapElement(element);
     }
 
-    querySelectorAll(selector) {
+    querySelectorAll(selector)
+    {
         const elements = Array.from(this._frame.contentDocument.querySelectorAll(selector));
         for (let i = 0; i < elements.length; i++) {
             elements[i] = this._wrapElement(elements[i]);
@@ -88,23 +98,24 @@ class Page {
         return elements
     }
 
-    getElementById(id) {
+    getElementById(id)
+    {
         const element = this._frame.contentDocument.getElementById(id);
         if (element === null) return null
         return this._wrapElement(element)
     }
 
-    eval(source) {
+    eval(source)
+    {
         this._frame.contentWindow.eval(source);
         return null;
     }
 
-    _wrapElement(element) {
+    _wrapElement(element)
+    {
         return new PageElement(element);
     }
 }
-
-const ENTER_KEY_CODE = 13;
 
 const NATIVE_OPTIONS = {
     bubbles: true,
@@ -112,39 +123,48 @@ const NATIVE_OPTIONS = {
 }
 
 class PageElement {
-    constructor(node) {
+    constructor(node)
+    {
         this._node = node
     }
 
-    set value(value) {
+    set value(value)
+    {
         this._node.value = value
     }
 
-    click() {
+    click()
+    {
         this._node.click()
     }
 
-    focus() {
+    focus()
+    {
         this._node.focus()
     }
 
-    change(options = NATIVE_OPTIONS) {
+    change(options = NATIVE_OPTIONS)
+    {
         this._node.dispatchEvent(new Event('change', options))
     }
 
-    input(options = NATIVE_OPTIONS) {
+    input(options = NATIVE_OPTIONS)
+    {
         this._node.dispatchEvent(new Event('input', options))
     }
 
-    submit(options = NATIVE_OPTIONS) {
+    submit(options = NATIVE_OPTIONS)
+    {
         // FIXME FireFox doesn't like `new Event('submit')
         const submitEvent = document.createEvent('Event');
         submitEvent.initEvent('submit', true, true);
         this._node.dispatchEvent(submitEvent);
-    }    
+    }
 
-    enter(type, options = undefined ) {
-        let event_options = {
+    enter(type, options = undefined)
+    {
+        const ENTER_KEY_CODE = 13;
+        let eventOptions = {
             bubbles: true, 
             cancelable: true,
             keyCode: ENTER_KEY_CODE,
@@ -152,29 +172,32 @@ class PageElement {
             key: 'ENTER'
         };
         if (options !== undefined) {
-            event_options = Object.assign(event_options, options)
+            eventOptions = Object.assign(eventOptions, options)
         }
-        const event = new KeyboardEvent(type, event_options);
+        const event = new KeyboardEvent(type, eventOptions);
         this._node.dispatchEvent(event);
     }
 }
 
 
 export class BenchmarkRunner {
-    constructor(suites, client) {
+    constructor(suites, client)
+    {
         this._suites = suites;
         this._client = client;
         this._page = null;
     }
 
-    _removeFrame() {
+    _removeFrame()
+    {
         if (this._frame) {
             this._frame.parentNode.removeChild(this._frame);
             this._frame = null;
         }
     }
 
-    _appendFrame(src) {
+    _appendFrame(src)
+    {
         const frame = document.createElement('iframe');
         frame.style.width = '800px';
         frame.style.height = '600px';
@@ -200,7 +223,8 @@ export class BenchmarkRunner {
         return frame;
     }
 
-    _writeMark(name) {
+    _writeMark(name)
+    {
         if (window.performance && window.performance.mark)
             window.performance.mark(name);
     }
@@ -233,7 +257,7 @@ export class BenchmarkRunner {
         }, 0);
     }
 
-    async step(state) {
+    step(state) {
         if (!state) {
             state = new BenchmarkState(this._suites);
             this._measuredValues = {tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN};
@@ -241,46 +265,48 @@ export class BenchmarkRunner {
 
         const suite = state.currentSuite();
         if (!suite) {
-            await this._finalize();
-            return;
+            this._finalize();
+            return Promise.resolve();
         }
 
         if (state.isFirstTest()) {
             this._removeFrame();
             this._appendFrame();
             this._page = new Page(this._frame);
-            await state.prepareCurrentSuite(this._frame, this._page);
+            return state.prepareCurrentSuite(this._page).then(
+                () => this._runTestAndRecordResults(state))
         }
 
-        return await this._runTestAndRecordResults(state);
+        return this._runTestAndRecordResults(state);
     }
 
-    async runAllSteps(startingState) {
+    runAllSteps(startingState) {
         const nextCallee = this.runAllSteps.bind(this);
-        const nextState = await this.step(startingState);
-        if (nextState)
-            await nextCallee(nextState);
+        this.step(startingState).then(nextState => {
+            if (nextState)
+                nextCallee(nextState);
+        });
     }
 
-    async runMultipleIterations(iterationCount) {
+    runMultipleIterations(iterationCount) {
         const self = this;
         let currentIteration = 0;
 
-        this._runNextIteration = async () => {
+        this._runNextIteration = () => {
             currentIteration++;
             if (currentIteration < iterationCount)
-                await self.runAllSteps();
+                self.runAllSteps();
             else if (this._client && this._client.didFinishLastIteration)
                 this._client.didFinishLastIteration();
-        };
+        }
 
         if (this._client && this._client.willStartFirstIteration)
             this._client.willStartFirstIteration(iterationCount);
 
-        await self.runAllSteps();
+        self.runAllSteps();
     }
 
-    async _runTestAndRecordResults(state) {
+    _runTestAndRecordResults(state) {
         return new Promise((resolve) => {
             const suite = state.currentSuite();
             const test = state.currentTest();
@@ -306,7 +332,7 @@ export class BenchmarkRunner {
         });
     }
 
-   async _finalize() {
+    _finalize() {
         this._removeFrame();
 
         if (this._client && this._client.didRunSuites) {
@@ -331,6 +357,6 @@ export class BenchmarkRunner {
         }
 
         if (this._runNextIteration)
-            await this._runNextIteration();
+            this._runNextIteration();
     }
 }
