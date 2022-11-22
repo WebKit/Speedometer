@@ -6,23 +6,27 @@ export class BenchmarkTestStep {
 }
 
 class BenchmarkState {
-    constructor(suites) {
+    constructor(suites)
+    {
         this._suites = suites;
         this._suiteIndex = -1;
         this._testIndex = 0;
         this.next();
     }
 
-    currentSuite() {
+    currentSuite()
+    {
         return this._suites[this._suiteIndex];
     }
 
-    currentTest() {
+    currentTest()
+    {
         const suite = this.currentSuite();
         return suite ? suite.tests[this._testIndex] : null;
     }
 
-    next() {
+    next()
+    {
         this._testIndex++;
 
         const suite = this._suites[this._suiteIndex];
@@ -37,55 +41,94 @@ class BenchmarkState {
         return this;
     }
 
-    isFirstTest() {
+    isFirstTest()
+    {
         return !this._testIndex;
     }
 
-    prepareCurrentSuite(runner, frame) {
+    prepareCurrentSuite(page)
+    {
         const suite = this.currentSuite();
         return new Promise((resolve) => {
+            const frame = page._frame;
             frame.onload = () => {
-                suite.prepare(runner, frame.contentWindow, frame.contentDocument).then(resolve);
+                suite.prepare(page).then(resolve);
             }
             frame.src = 'resources/' + suite.url;
         });
     }
 }
 
-export class BenchmarkRunner {
-    constructor(suites, client) {
-        this._suites = suites;
-        this._prepareReturnValue = null;
-        this._client = client;
+
+class Page {
+    constructor(frame)
+    {
+        this._frame = frame;
     }
 
-    waitForElement(selector) {
+    waitForElement(selector)
+    {
         return new Promise((resolve) => {
-            const contentDocument = this._frame.contentDocument;
-
-            function resolveIfReady() {
-                const element = contentDocument.querySelector(selector);
+            const resolveIfReady = () => {
+                const element = this.querySelector(selector);
                 if (element) {
-                    window.requestAnimationFrame(function () {
+                    window.requestAnimationFrame(() => {
                         return resolve(element);
                     });
-                    return;
+                } else {
+                    setTimeout(resolveIfReady, 50);
                 }
-                setTimeout(resolveIfReady, 50);
-            }
-
+            };
             resolveIfReady();
         });
     }
 
-    _removeFrame() {
+    querySelector(selector)
+    {
+        return this._frame.contentDocument.querySelector(selector);
+    }
+
+    querySelectorAll(selector)
+    {
+        return this._frame.contentDocument.querySelectorAll(selector);
+    }
+
+    getElementById(id)
+    {
+        return this._frame.contentDocument.getElementById(id);
+    }
+
+    triggerEnter(element, type)
+    {
+        const ENTER_KEY_CODE = 13;
+        const event = document.createEvent('Events');
+        event.initEvent(type, true, true);
+        event.keyCode = ENTER_KEY_CODE;
+        event.which = ENTER_KEY_CODE;
+        event.key = 'ENTER';
+        element.dispatchEvent(event);
+    }
+}
+
+
+export class BenchmarkRunner {
+    constructor(suites, client)
+    {
+        this._suites = suites;
+        this._client = client;
+        this._page = null;
+    }
+
+    _removeFrame()
+    {
         if (this._frame) {
             this._frame.parentNode.removeChild(this._frame);
             this._frame = null;
         }
     }
 
-    _appendFrame(src) {
+    _appendFrame(src)
+    {
         const frame = document.createElement('iframe');
         frame.style.width = '800px';
         frame.style.height = '600px';
@@ -111,23 +154,21 @@ export class BenchmarkRunner {
         return frame;
     }
 
-    _writeMark(name) {
+    _writeMark(name)
+    {
         if (window.performance && window.performance.mark)
             window.performance.mark(name);
     }
 
     // This function ought be as simple as possible. Don't even use Promise.
-    _runTest(suite, test, prepareReturnValue, callback)
+    _runTest(suite, test, page, callback)
     {
         const self = this;
         const now = window.performance && window.performance.now ? () => window.performance.now() : Date.now;
 
-        const contentWindow = self._frame.contentWindow;
-        const contentDocument = self._frame.contentDocument;
-
         self._writeMark(suite.name + '.' + test.name + '-start');
         let startTime = now();
-        test.run(prepareReturnValue, contentWindow, contentDocument);
+        test.run(page);
         let endTime = now();
         self._writeMark(suite.name + '.' + test.name + '-sync-end');
 
@@ -161,11 +202,10 @@ export class BenchmarkRunner {
 
         if (state.isFirstTest()) {
             this._removeFrame();
-            let self = this;
-            return state.prepareCurrentSuite(this, this._appendFrame()).then(prepareReturnValue => {
-                self._prepareReturnValue = prepareReturnValue;
-                return self._runTestAndRecordResults(state);
-            });
+            this._appendFrame();
+            this._page = new Page(this._frame);
+            return state.prepareCurrentSuite(this._page).then(
+                () => this._runTestAndRecordResults(state))
         }
 
         return this._runTestAndRecordResults(state);
@@ -206,7 +246,7 @@ export class BenchmarkRunner {
                 this._client.willRunTest(suite, test);
 
             setTimeout(() => {
-                this._runTest(suite, test, this._prepareReturnValue, (syncTime, asyncTime) => {
+                this._runTest(suite, test, this._page, (syncTime, asyncTime) => {
                     const suiteResults = this._measuredValues.tests[suite.name] || {tests:{}, total: 0};
                     const total = syncTime + asyncTime;
                     this._measuredValues.tests[suite.name] = suiteResults;
