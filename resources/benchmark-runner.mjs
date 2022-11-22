@@ -90,19 +90,18 @@ class PageElement {
         this._node.focus()
     }
 
-    change(options = NATIVE_OPTIONS)
+    dispatchEvent(eventName, options = NATIVE_OPTIONS)
     {
-        this._node.dispatchEvent(new Event('change', options))
+        if (eventName == "submit") {
+            // FIXME FireFox doesn't like `new Event('submit')
+            this._dispatchSubmitEvent();
+        }  else {
+            this._node.dispatchEvent(new Event(eventName, options))
+        }
     }
 
-    input(options = NATIVE_OPTIONS)
+    _dispatchSubmitEvent()
     {
-        this._node.dispatchEvent(new Event('input', options))
-    }
-
-    submit(options = NATIVE_OPTIONS)
-    {
-        // FIXME FireFox doesn't like `new Event('submit')
         const submitEvent = document.createEvent('Event');
         submitEvent.initEvent('submit', true, true);
         this._node.dispatchEvent(submitEvent);

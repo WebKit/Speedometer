@@ -14,7 +14,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.change();
+                newTodo.dispatchEvent("change");
                 newTodo.enter('keypress');
             }
         }),
@@ -43,7 +43,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.change();
+                newTodo.dispatchEvent("change");
                 newTodo.enter('keypress');
             }
         }),
@@ -72,7 +72,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.change();
+                newTodo.dispatchEvent("change");
                 newTodo.enter('keypress');
             }
         }),
@@ -101,7 +101,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.input();
+                newTodo.dispatchEvent("input");
                 newTodo.enter('keydown');
             }
         }),
@@ -215,7 +215,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.change()
+                newTodo.dispatchEvent("change")
                 newTodo.enter('keypress');
             }
         }),
@@ -245,8 +245,8 @@ Suites.push({
             const form = page.querySelector("form");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.input()
-                form.submit()
+                newTodo.dispatchEvent("input")
+                form.dispatchEvent("submit")
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
@@ -273,7 +273,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.input();
+                newTodo.dispatchEvent("input");
                 newTodo.enter('keyup');
             }
         }),
@@ -302,7 +302,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.input();
+                newTodo.dispatchEvent("input");
                 newTodo.enter('keyup');
             }
         }),
@@ -387,7 +387,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.change();
+                newTodo.dispatchEvent("change");
                 newTodo.enter('keydown');
             }
         }),
@@ -417,7 +417,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.value = 'Something to do ' + i;
-                newTodo.input();
+                newTodo.dispatchEvent("input");
                 page.eval("processElmWorkQueue()");
                 newTodo.enter('keydown');
                 page.eval("processElmWorkQueue()");
