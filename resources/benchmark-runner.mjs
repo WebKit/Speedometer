@@ -5,59 +5,6 @@ export class BenchmarkTestStep {
     }
 }
 
-class BenchmarkState {
-    constructor(suites)
-    {
-        this._suites = suites;
-        this._suiteIndex = -1;
-        this._testIndex = 0;
-        this.next();
-    }
-
-    currentSuite()
-    {
-        return this._suites[this._suiteIndex];
-    }
-
-    currentTest()
-    {
-        const suite = this.currentSuite();
-        return suite ? suite.tests[this._testIndex] : null;
-    }
-
-    next()
-    {
-        this._testIndex++;
-
-        const suite = this._suites[this._suiteIndex];
-        if (suite && this._testIndex < suite.tests.length)
-            return this;
-
-        this._testIndex = 0;
-        do {
-            this._suiteIndex++;
-        } while (this._suiteIndex < this._suites.length && this._suites[this._suiteIndex].disabled);
-
-        return this;
-    }
-
-    isFirstTest()
-    {
-        return !this._testIndex;
-    }
-
-    prepareCurrentSuite(page)
-    {
-        const suite = this.currentSuite();
-        return new Promise((resolve) => {
-            const frame = page._frame;
-            frame.onload = () => {
-                suite.prepare(page).then(resolve);
-            }
-            frame.src = 'resources/' + suite.url;
-        });
-    }
-}
 
 class Page {
     constructor(frame)
@@ -65,7 +12,7 @@ class Page {
         this._frame = frame;
     }
 
-    waitForElement(selector)
+    async waitForElement(selector)
     {
         return new Promise((resolve) => {
             const resolveIfReady = () => {
@@ -229,6 +176,77 @@ export class BenchmarkRunner {
             window.performance.mark(name);
     }
 
+    async runMultipleIterations(iterationCount)
+    {
+        const self = this;
+        if (this._client && this._client.willStartFirstIteration)
+            this._client.willStartFirstIteration(iterationCount);
+        for (let i= 0; i< iterationCount; i++) {
+            await self._runAllSuites();
+        }
+        if (this._client && this._client.didFinishLastIteration)
+            this._client.didFinishLastIteration();
+    }
+
+    async _runAllSuites()
+    {
+        this._measuredValues = {tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN};
+
+        this._removeFrame();
+        this._appendFrame();
+        this._page = new Page(this._frame);
+
+        for (const suite of this._suites) {
+            await this._runSuite(suite)
+        }
+
+        this._removeFrame();
+        await this._finalize();
+    }
+
+    async _runSuite(suite)
+    {
+        await this._prepareSuite(suite);
+        for (const test of suite.tests) {
+            await this._runTestAndRecordResults(suite, test)
+        }
+    }
+
+    async _prepareSuite(suite)
+    {
+        return new Promise((resolve) => {
+            const frame = this._page._frame;
+            frame.onload = async () => {
+                await suite.prepare(this._page)
+                resolve();
+            }
+            frame.src = 'resources/' + suite.url;
+        });
+    }
+
+    async _runTestAndRecordResults(suite, test)
+    {
+        return new Promise((resolve) => {
+            if (this._client && this._client.willRunTest)
+                this._client.willRunTest(suite, test);
+
+            setTimeout(() => {
+                this._runTest(suite, test, this._page, (syncTime, asyncTime) => {
+                    const suiteResults = this._measuredValues.tests[suite.name] || {tests:{}, total: 0};
+                    const total = syncTime + asyncTime;
+                    this._measuredValues.tests[suite.name] = suiteResults;
+                    suiteResults.tests[test.name] = {tests: {'Sync': syncTime, 'Async': asyncTime}, total: total};
+                    suiteResults.total += total;
+
+                    if (this._client && this._client.didRunTest)
+                        this._client.didRunTest(suite, test);
+
+                    resolve();
+                });
+            }, 0);
+        });
+    }
+
     // This function ought be as simple as possible. Don't even use Promise.
     _runTest(suite, test, page, callback)
     {
@@ -257,83 +275,7 @@ export class BenchmarkRunner {
         }, 0);
     }
 
-    step(state) {
-        if (!state) {
-            state = new BenchmarkState(this._suites);
-            this._measuredValues = {tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN};
-        }
-
-        const suite = state.currentSuite();
-        if (!suite) {
-            this._finalize();
-            return Promise.resolve();
-        }
-
-        if (state.isFirstTest()) {
-            this._removeFrame();
-            this._appendFrame();
-            this._page = new Page(this._frame);
-            return state.prepareCurrentSuite(this._page).then(
-                () => this._runTestAndRecordResults(state))
-        }
-
-        return this._runTestAndRecordResults(state);
-    }
-
-    runAllSteps(startingState) {
-        const nextCallee = this.runAllSteps.bind(this);
-        this.step(startingState).then(nextState => {
-            if (nextState)
-                nextCallee(nextState);
-        });
-    }
-
-    runMultipleIterations(iterationCount) {
-        const self = this;
-        let currentIteration = 0;
-
-        this._runNextIteration = () => {
-            currentIteration++;
-            if (currentIteration < iterationCount)
-                self.runAllSteps();
-            else if (this._client && this._client.didFinishLastIteration)
-                this._client.didFinishLastIteration();
-        }
-
-        if (this._client && this._client.willStartFirstIteration)
-            this._client.willStartFirstIteration(iterationCount);
-
-        self.runAllSteps();
-    }
-
-    _runTestAndRecordResults(state) {
-        return new Promise((resolve) => {
-            const suite = state.currentSuite();
-            const test = state.currentTest();
-
-            if (this._client && this._client.willRunTest)
-                this._client.willRunTest(suite, test);
-
-            setTimeout(() => {
-                this._runTest(suite, test, this._page, (syncTime, asyncTime) => {
-                    const suiteResults = this._measuredValues.tests[suite.name] || {tests:{}, total: 0};
-                    const total = syncTime + asyncTime;
-                    this._measuredValues.tests[suite.name] = suiteResults;
-                    suiteResults.tests[test.name] = {tests: {'Sync': syncTime, 'Async': asyncTime}, total: total};
-                    suiteResults.total += total;
-
-                    if (this._client && this._client.didRunTest)
-                        this._client.didRunTest(suite, test);
-
-                    state.next();
-                    resolve(state);
-                });
-            }, 0);
-        });
-    }
-
-    _finalize() {
-        this._removeFrame();
+    async _finalize() {
 
         if (this._client && this._client.didRunSuites) {
             let product = 1;
@@ -355,8 +297,5 @@ export class BenchmarkRunner {
             this._measuredValues.score = 60 * 1000 / geomean / correctionFactor;
             this._client.didRunSuites(this._measuredValues);
         }
-
-        if (this._runNextIteration)
-            this._runNextIteration();
     }
 }
