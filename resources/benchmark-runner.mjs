@@ -75,7 +75,7 @@ class PageElement {
         this._node = node
     }
 
-    set value(value)
+    setValue(value)
     {
         this._node.value = value
     }
@@ -92,7 +92,7 @@ class PageElement {
 
     dispatchEvent(eventName, options = NATIVE_OPTIONS)
     {
-        if (eventName == "submit") {
+        if (eventName == 'submit') {
             // FIXME FireFox doesn't like `new Event('submit')
             this._dispatchSubmitEvent();
         }  else {
