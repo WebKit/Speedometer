@@ -106,14 +106,31 @@ export class BenchmarkRunner {
             window.performance.mark(name);
     }
 
-    async runMultipleIterations(iterationCount)
+    // This function ought be as simple as possible. Don't even use Promise.
+    _runTest(suite, test, page, callback)
     {
-        if (this._client && this._client.willStartFirstIteration)
-            this._client.willStartFirstIteration(iterationCount);
-        for (let i = 0; i < iterationCount; i++)
-            await this._runAllSuites();
-        if (this._client && this._client.didFinishLastIteration)
-            this._client.didFinishLastIteration();
+        const now = window.performance && window.performance.now ? () => window.performance.now() : Date.now;
+
+        this._writeMark(suite.name + '.' + test.name + '-start');
+        let startTime = now();
+        test.run(page);
+        let endTime = now();
+        this._writeMark(suite.name + '.' + test.name + '-sync-end');
+
+        const syncTime = endTime - startTime;
+
+        startTime = now();
+        setTimeout(() => {
+            // Some browsers don't immediately update the layout for paint.
+            // Force the layout here to ensure we're measuring the layout time.
+            const height = this._frame.contentDocument.body.getBoundingClientRect().height;
+            endTime = now();
+            this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
+            this._writeMark(suite.name + '.' + test.name + '-async-end');
+            window.requestAnimationFrame(() => {
+                callback(syncTime, endTime - startTime, height);
+            });
+        }, 0);
     }
 
     async _runAllSuites()
@@ -151,6 +168,16 @@ export class BenchmarkRunner {
         });
     }
 
+    async runMultipleIterations(iterationCount)
+    {
+        if (this._client && this._client.willStartFirstIteration)
+            this._client.willStartFirstIteration(iterationCount);
+        for (let i = 0; i < iterationCount; i++)
+            await this._runAllSuites();
+        if (this._client && this._client.didFinishLastIteration)
+            this._client.didFinishLastIteration();
+    }
+
     async _runTestAndRecordResults(suite, test)
     {
         return new Promise((resolve) => {
@@ -172,33 +199,6 @@ export class BenchmarkRunner {
                 });
             }, 0);
         });
-    }
-
-    // This function ought be as simple as possible. Don't even use Promise.
-    _runTest(suite, test, page, callback)
-    {
-        const now = window.performance && window.performance.now ? () => window.performance.now() : Date.now;
-
-        this._writeMark(suite.name + '.' + test.name + '-start');
-        let startTime = now();
-        test.run(page);
-        let endTime = now();
-        this._writeMark(suite.name + '.' + test.name + '-sync-end');
-
-        const syncTime = endTime - startTime;
-
-        startTime = now();
-        setTimeout(() => {
-            // Some browsers don't immediately update the layout for paint.
-            // Force the layout here to ensure we're measuring the layout time.
-            const height = this._frame.contentDocument.body.getBoundingClientRect().height;
-            endTime = now();
-            this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
-            this._writeMark(suite.name + '.' + test.name + '-async-end');
-            window.requestAnimationFrame(() => {
-                callback(syncTime, endTime - startTime, height);
-            });
-        }, 0);
     }
 
     async _finalize()
