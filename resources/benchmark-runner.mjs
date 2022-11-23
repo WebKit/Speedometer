@@ -39,9 +39,8 @@ class Page {
     querySelectorAll(selector)
     {
         const elements = Array.from(this._frame.contentDocument.querySelectorAll(selector));
-        for (let i = 0; i < elements.length; i++) {
+        for (let i = 0; i < elements.length; i++)
             elements[i] = this._wrapElement(elements[i]);
-        }
         return elements
     }
 
@@ -117,9 +116,8 @@ class PageElement {
             which: ENTER_KEY_CODE,
             key: 'ENTER'
         };
-        if (options !== undefined) {
+        if (options !== undefined)
             eventOptions = Object.assign(eventOptions, options)
-        }
         const event = new KeyboardEvent(type, eventOptions);
         this._node.dispatchEvent(event);
     }
