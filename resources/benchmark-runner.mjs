@@ -201,8 +201,8 @@ export class BenchmarkRunner {
         }, 0);
     }
 
-    async _finalize() {
-
+    async _finalize()
+    {
         if (this._client && this._client.didRunSuites) {
             let product = 1;
             const values = [];
