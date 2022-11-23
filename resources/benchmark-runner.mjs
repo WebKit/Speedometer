@@ -108,12 +108,10 @@ export class BenchmarkRunner {
 
     async runMultipleIterations(iterationCount)
     {
-        const self = this;
         if (this._client && this._client.willStartFirstIteration)
             this._client.willStartFirstIteration(iterationCount);
-        for (let i= 0; i< iterationCount; i++) {
-            await self._runAllSuites();
-        }
+        for (let i = 0; i < iterationCount; i++)
+            await this._runAllSuites();
         if (this._client && this._client.didFinishLastIteration)
             this._client.didFinishLastIteration();
     }
@@ -126,10 +124,10 @@ export class BenchmarkRunner {
         this._appendFrame();
         this._page = new Page(this._frame);
 
-        for (const suite of this._suites) {
+        for (const suite of this._suites)
             await this._runSuite(suite)
-        }
 
+        // Remove frame to clear the view for displaying the results.
         this._removeFrame();
         await this._finalize();
     }
@@ -137,9 +135,8 @@ export class BenchmarkRunner {
     async _runSuite(suite)
     {
         await this._prepareSuite(suite);
-        for (const test of suite.tests) {
+        for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test)
-        }
     }
 
     async _prepareSuite(suite)
@@ -180,14 +177,13 @@ export class BenchmarkRunner {
     // This function ought be as simple as possible. Don't even use Promise.
     _runTest(suite, test, page, callback)
     {
-        const self = this;
         const now = window.performance && window.performance.now ? () => window.performance.now() : Date.now;
 
-        self._writeMark(suite.name + '.' + test.name + '-start');
+        this._writeMark(suite.name + '.' + test.name + '-start');
         let startTime = now();
         test.run(page);
         let endTime = now();
-        self._writeMark(suite.name + '.' + test.name + '-sync-end');
+        this._writeMark(suite.name + '.' + test.name + '-sync-end');
 
         const syncTime = endTime - startTime;
 
@@ -195,10 +191,10 @@ export class BenchmarkRunner {
         setTimeout(() => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
-            const height = self._frame.contentDocument.body.getBoundingClientRect().height;
+            const height = this._frame.contentDocument.body.getBoundingClientRect().height;
             endTime = now();
-            self._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
-            self._writeMark(suite.name + '.' + test.name + '-async-end');
+            this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
+            this._writeMark(suite.name + '.' + test.name + '-async-end');
             window.requestAnimationFrame(() => {
                 callback(syncTime, endTime - startTime, height);
             });
