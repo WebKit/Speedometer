@@ -215,7 +215,7 @@ Suites.push({
             const newTodo = page.querySelector('.new-todo');
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.setValue('Something to do ' + i);
-                newTodo.dispatchEvent('change')
+                newTodo.dispatchEvent('change');
                 newTodo.enter('keypress');
             }
         }),
@@ -245,8 +245,8 @@ Suites.push({
             const form = page.querySelector('form');
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.setValue('Something to do ' + i);
-                newTodo.dispatchEvent('input')
-                form.dispatchEvent('submit')
+                newTodo.dispatchEvent('input');
+                form.dispatchEvent('submit');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
