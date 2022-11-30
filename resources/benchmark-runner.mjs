@@ -53,9 +53,9 @@ class Page {
         return this._wrapElement(element);
     }
 
-    eval(source)
+    call(function_name)
     {
-        this._frame.contentWindow.eval(source);
+        this._frame.contentWindow[function_name]();
         return null;
     }
 

@@ -418,22 +418,22 @@ Suites.push({
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.setValue('Something to do ' + i);
                 newTodo.dispatchEvent('input');
-                page.eval('processElmWorkQueue()');
+                page.call('processElmWorkQueue');
                 newTodo.enter('keydown');
-                page.eval('processElmWorkQueue()');
+                page.call('processElmWorkQueue');
             }
         }),
         new BenchmarkTestStep('CompletingAllItems', page => {
             let checkboxes = page.querySelectorAll('.toggle');
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 checkboxes[i].click();
-                page.eval('processElmWorkQueue()');
+                page.call('processElmWorkQueue');
             }
         }),
         new BenchmarkTestStep('DeletingItems', page => {
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 page.querySelector('.destroy').click();
-                page.eval('processElmWorkQueue()');
+                page.call('processElmWorkQueue');
             }
         }),
     ]
