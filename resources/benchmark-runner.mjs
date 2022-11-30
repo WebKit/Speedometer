@@ -31,28 +31,98 @@ class Page {
 
     querySelector(selector)
     {
-        return this._frame.contentDocument.querySelector(selector);
+        const element = this._frame.contentDocument.querySelector(selector);
+        if (element === null)
+            return null;
+        return this._wrapElement(element);
     }
 
     querySelectorAll(selector)
     {
-        return this._frame.contentDocument.querySelectorAll(selector);
+        const elements = Array.from(this._frame.contentDocument.querySelectorAll(selector));
+        for (let i = 0; i < elements.length; i++)
+            elements[i] = this._wrapElement(elements[i]);
+        return elements;
     }
 
     getElementById(id)
     {
-        return this._frame.contentDocument.getElementById(id);
+        const element = this._frame.contentDocument.getElementById(id);
+        if (element === null)
+            return null;
+        return this._wrapElement(element);
     }
 
-    triggerEnter(element, type)
+    call(function_name)
+    {
+        this._frame.contentWindow[function_name]();
+        return null;
+    }
+
+    _wrapElement(element)
+    {
+        return new PageElement(element);
+    }
+}
+
+const NATIVE_OPTIONS = {
+    bubbles: true,
+    cancellable: true,
+};
+
+class PageElement {
+    #node;
+
+    constructor(node)
+    {
+        this.#node = node;
+    }
+
+    setValue(value)
+    {
+        this.#node.value = value;
+    }
+
+    click()
+    {
+        this.#node.click();
+    }
+
+    focus()
+    {
+        this.#node.focus();
+    }
+
+    dispatchEvent(eventName, options = NATIVE_OPTIONS)
+    {
+        if (eventName === 'submit')
+            // FIXME FireFox doesn't like `new Event('submit')
+            this._dispatchSubmitEvent();
+        else
+            this.#node.dispatchEvent(new Event(eventName, options));
+    }
+
+    _dispatchSubmitEvent()
+    {
+        const submitEvent = document.createEvent('Event');
+        submitEvent.initEvent('submit', true, true);
+        this.#node.dispatchEvent(submitEvent);
+    }
+
+    enter(type, options = undefined)
     {
         const ENTER_KEY_CODE = 13;
-        const event = document.createEvent('Events');
-        event.initEvent(type, true, true);
-        event.keyCode = ENTER_KEY_CODE;
-        event.which = ENTER_KEY_CODE;
-        event.key = 'ENTER';
-        element.dispatchEvent(event);
+        let eventOptions = {
+            bubbles: true, 
+            cancelable: true,
+            keyCode: ENTER_KEY_CODE,
+            which: ENTER_KEY_CODE,
+            key: 'ENTER'
+        };
+        if (options !== undefined)
+            eventOptions = Object.assign(eventOptions, options);
+        const event = new KeyboardEvent(type, eventOptions);
+        this.#node.dispatchEvent(event);
     }
 }
 
@@ -125,7 +195,7 @@ export class BenchmarkRunner {
         this._page = new Page(this._frame);
 
         for (const suite of this._suites)
-            await this._runSuite(suite)
+            await this._runSuite(suite);
 
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
@@ -136,7 +206,7 @@ export class BenchmarkRunner {
     {
         await this._prepareSuite(suite);
         for (const test of suite.tests)
-            await this._runTestAndRecordResults(suite, test)
+            await this._runTestAndRecordResults(suite, test);
     }
 
     async _prepareSuite(suite)
@@ -144,7 +214,7 @@ export class BenchmarkRunner {
         return new Promise((resolve) => {
             const frame = this._page._frame;
             frame.onload = async () => {
-                await suite.prepare(this._page)
+                await suite.prepare(this._page);
                 resolve();
             }
             frame.src = 'resources/' + suite.url;
