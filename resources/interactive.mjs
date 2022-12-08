@@ -1,6 +1,10 @@
 import {BenchmarkRunner} from "./benchmark-runner.mjs";
 import {Suites} from "./tests.mjs";
 
+// Expose Suites/BenchmarkRunner for backwards compatibility
+window.Suites = Suites;
+window.BenchmarkRunner = BenchmarkRunner;
+
 function formatTestName(suiteName, testName) {
     return suiteName + (testName ? '/' + testName : '');
 }
