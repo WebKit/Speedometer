@@ -223,12 +223,12 @@ export class BenchmarkRunner {
 
     async _runTestAndRecordResults(suite, test)
     {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             if (this._client && this._client.willRunTest)
-                this._client.willRunTest(suite, test);
+                await this._client.willRunTest(suite, test);
 
             setTimeout(() => {
-                this._runTest(suite, test, this._page, (syncTime, asyncTime) => {
+                this._runTest(suite, test, this._page, async (syncTime, asyncTime) => {
                     const suiteResults = this._measuredValues.tests[suite.name] || {tests:{}, total: 0};
                     const total = syncTime + asyncTime;
                     this._measuredValues.tests[suite.name] = suiteResults;
@@ -236,7 +236,7 @@ export class BenchmarkRunner {
                     suiteResults.total += total;
 
                     if (this._client && this._client.didRunTest)
-                        this._client.didRunTest(suite, test);
+                        await this._client.didRunTest(suite, test);
 
                     resolve();
                 });
