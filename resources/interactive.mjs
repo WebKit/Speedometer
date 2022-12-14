@@ -5,11 +5,13 @@ import {Suites} from "./tests.mjs";
 window.Suites = Suites;
 window.BenchmarkRunner = BenchmarkRunner;
 
-function formatTestName(suiteName, testName) {
+function formatTestName(suiteName, testName)
+{
     return suiteName + (testName ? '/' + testName : '');
 }
 
-function createUIForSuites(suites, onStep, onRunSuites) {
+function createUIForSuites(suites, onStep, onRunSuites)
+{
     const control = document.createElement('nav');
     const ol = document.createElement('ol');
     const checkboxes = [];
@@ -83,7 +85,8 @@ function createUIForSuites(suites, onStep, onRunSuites) {
     return control;
 }
 
-const parseQueryString = (function (pairList) {
+const parseQueryString = (function (pairList)
+{
     const pairs = {};
     for (let i = 0; i < pairList.length; ++i) {
         const keyValue = pairList[i].split('=', 2);
@@ -95,14 +98,16 @@ const parseQueryString = (function (pairList) {
     return pairs;
 })(window.location.search.substr(1).split('&'));
 
-function disableAllSuitesExcept(suiteName) {
+function disableAllSuitesExcept(suiteName)
+{
     Suites.forEach(function(element) {
         if (element.name !== suiteName)
             element.disabled = true;
     });
 }
 
-function startTest() {
+function startTest()
+{
     const queryParam = parseQueryString['suite'];
     if (queryParam !== undefined)
         disableAllSuitesExcept(queryParam);
@@ -159,9 +164,9 @@ function startTest() {
     let currentState = null;
     const iterationCount = parseQueryString["iterationCount"] || 1
     const onRunStep = () => {
-        if (benchmarkClient.stepperPromise) {
+        if (benchmarkClient.stepperPromise)
             benchmarkClient.stepper()
-        } else {
+        else {
             benchmarkClient.step()
             runner.runMultipleIterations(iterationCount);
         }
