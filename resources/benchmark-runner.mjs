@@ -143,7 +143,7 @@ export class BenchmarkRunner {
         }
     }
 
-    _appendFrame(src)
+    async _appendFrame(src)
     {
         const frame = document.createElement('iframe');
         frame.style.width = '800px';
@@ -162,8 +162,8 @@ export class BenchmarkRunner {
             frame.style.top = '0px';
         }
 
-        if (this._client && this._client.willAddTestFrame)
-            this._client.willAddTestFrame(frame);
+        if (this._client?.willAddTestFrame)
+            await this._client.willAddTestFrame(frame);
 
         document.body.insertBefore(frame, document.body.firstChild);
         this._frame = frame;
@@ -178,12 +178,12 @@ export class BenchmarkRunner {
 
     async runMultipleIterations(iterationCount)
     {
-        if (this._client && this._client.willStartFirstIteration)
-            this._client.willStartFirstIteration(iterationCount);
+        if (this._client?.willStartFirstIteration)
+            await this._client.willStartFirstIteration(iterationCount);
         for (let i = 0; i < iterationCount; i++)
             await this._runAllSuites();
-        if (this._client && this._client.didFinishLastIteration)
-            this._client.didFinishLastIteration();
+        if (this._client?.didFinishLastIteration)
+            await this._client.didFinishLastIteration();
     }
 
     async _runAllSuites()
@@ -191,7 +191,7 @@ export class BenchmarkRunner {
         this._measuredValues = {tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN};
 
         this._removeFrame();
-        this._appendFrame();
+        await this._appendFrame();
         this._page = new Page(this._frame);
 
         for (const suite of this._suites)
@@ -224,7 +224,7 @@ export class BenchmarkRunner {
     async _runTestAndRecordResults(suite, test)
     {
         return new Promise(async (resolve) => {
-            if (this._client && this._client.willRunTest)
+            if (this._client?.willRunTest)
                 await this._client.willRunTest(suite, test);
 
             setTimeout(() => {
@@ -235,7 +235,7 @@ export class BenchmarkRunner {
                     suiteResults.tests[test.name] = {tests: {'Sync': syncTime, 'Async': asyncTime}, total: total};
                     suiteResults.total += total;
 
-                    if (this._client && this._client.didRunTest)
+                    if (this._client?.didRunTest)
                         await this._client.didRunTest(suite, test);
 
                     resolve();
@@ -273,7 +273,7 @@ export class BenchmarkRunner {
 
     async _finalize()
     {
-        if (this._client && this._client.didRunSuites) {
+        if (this._client?.didRunSuites) {
             let product = 1;
             const values = [];
             for (const suiteName in this._measuredValues.tests) {
@@ -291,7 +291,7 @@ export class BenchmarkRunner {
             this._measuredValues.mean = total / values.length;
             this._measuredValues.geomean = geomean;
             this._measuredValues.score = 60 * 1000 / geomean / correctionFactor;
-            this._client.didRunSuites(this._measuredValues);
+            await this._client.didRunSuites(this._measuredValues);
         }
     }
 }

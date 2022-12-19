@@ -1,5 +1,5 @@
-import {BenchmarkRunner} from "./benchmark-runner.mjs";
-import {Suites} from "./tests.mjs";
+import {BenchmarkRunner} from './benchmark-runner.mjs';
+import {Suites} from './tests.mjs';
 
 // Expose Suites/BenchmarkRunner for backwards compatibility
 window.Suites = Suites;
@@ -85,55 +85,73 @@ function createUIForSuites(suites, onStep, onRunSuites)
     return control;
 }
 
-const parseQueryString = (function (pairList)
-{
-    const pairs = {};
-    for (let i = 0; i < pairList.length; ++i) {
-        const keyValue = pairList[i].split('=', 2);
-        if (keyValue.length == 1)
-            pairs[keyValue[0]] = '';
-        else
-            pairs[keyValue[0]] = decodeURIComponent(keyValue[1].replace(/\+/g, ' '));
-    }
-    return pairs;
-})(window.location.search.substr(1).split('&'));
+const searchParams = new URLSearchParams(window.location.search);
 
 function disableAllSuitesExcept(suiteName)
 {
-    Suites.forEach(function(element) {
+    let foundMatching = false;
+    Suites.forEach(element => {
         if (element.name !== suiteName)
             element.disabled = true;
+        else
+            foundMatching = true;
     });
+    if (!foundMatching)
+        throw Error(`No matching suite for: "${suiteName}"`)
+
 }
 
 function startTest()
 {
-    const queryParam = parseQueryString['suite'];
+    const queryParam = searchParams.get('suite');
     if (queryParam !== undefined)
         disableAllSuitesExcept(queryParam);
 
     const benchmarkClient = {
-        stepperPromise: undefined,
-        stepper: undefined,
-        step() {
-            this.stepperPromise = new Promise(resolve => {
-                this.stepper = () => {
-                    this.step()
-                    resolve()
-                }
-            });
+        _stepPromise: undefined,
+        _stepPromiseResolve: undefined,
+        isRunning: false,
+        isStepping: false,
+        willStartFirstIteration()
+        {
+            if (this.isRunning)
+                throw Error('Runner was not stopped before starting;');
+            this.isRunning = true
+            if (this.isStepping)
+                this._stepPromise = this._newStepPromise();
         },
-        willRunTest(suite, test) {
+        step()
+        {
+            if (!this._stepPromise) {
+                // Allow switching to stepping mid-run.
+                this._stepPromise = this._newStepPromise();
+            } else {
+                const resolve = this._stepPromiseResolve;
+                this._stepPromise = this._newStepPromise();
+                resolve();
+            }
+        },
+        _newStepPromise()
+        {
+            return new Promise(resolve => {
+                this._stepPromiseResolve = resolve;
+            })
+        },
+  
+        willRunTest(suite, test)
+        {
             test.anchor.classList.add('running');
         },
-        async didRunTest(suite, test) {
+        async didRunTest(suite, test)
+        {
             const classList = test.anchor.classList;
             classList.remove('running');
             classList.add('ran');
-            if (this.stepperPromise)
-                await this.stepperPromise;
+            if (this.isStepping)
+                await this._stepPromise;
         },
-        didRunSuites(measuredValues) {
+        didRunSuites(measuredValues)
+        {
             let results = '';
             for (const suiteName in measuredValues.tests) {
                 let suiteResults = measuredValues.tests[suiteName];
@@ -157,29 +175,40 @@ function startTest()
             const pre = document.createElement('pre');
             document.body.appendChild(pre);
             pre.textContent = results;
+        },
+        didFinishLastIteration()
+        {
+            this.isRunning = false;
         }
     }
     const runner = new BenchmarkRunner(Suites,benchmarkClient);
 
-    let currentState = null;
-    const iterationCount = parseQueryString["iterationCount"] || 1
+    const iterationCount = searchParams.get('iterationCount') || 1;
     const onRunStep = () => {
-        if (benchmarkClient.stepperPromise)
-            benchmarkClient.stepper()
-        else {
-            benchmarkClient.step()
+        benchmarkClient.isStepping = true;
+        if (!benchmarkClient.isRunning) {
             runner.runMultipleIterations(iterationCount);
+        } else {
+            benchmarkClient.step();
         }
     }
     const onRunSuites = () => {
-        benchmarkClient.stepperPromise = undefined;
-        runner.runMultipleIterations(iterationCount);
-    }
+        if (benchmarkClient.isRunning) {
+            if (benchmarkClient.isStepping) {
+                // Switch to continuous running only if we've been stepping.
+                benchmarkClient.isStepping = false
+                benchmarkClient.step();
+            }
+        } else {
+            benchmarkClient.isStepping = false
+            runner.runMultipleIterations(iterationCount);
+        }
+    };
 
     // Don't call step while step is already executing.
     document.body.appendChild(createUIForSuites(Suites, onRunStep, onRunSuites));
 
-    if (parseQueryString['startAutomatically'] !== undefined)
+    if (searchParams.has('startAutomatically'))
         document.getElementById('runSuites').click();
 }
 
