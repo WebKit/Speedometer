@@ -135,9 +135,8 @@ function startTest()
         {
             return new Promise(resolve => {
                 this._stepPromiseResolve = resolve;
-            })
+            });
         },
-  
         willRunTest(suite, test)
         {
             test.anchor.classList.add('running');
