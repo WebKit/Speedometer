@@ -116,7 +116,7 @@ function startTest()
         {
             if (this.isRunning)
                 throw Error('Runner was not stopped before starting;');
-            this.isRunning = true
+            this.isRunning = true;
             if (this.isStepping)
                 this._stepPromise = this._newStepPromise();
         },
@@ -186,21 +186,20 @@ function startTest()
     const iterationCount = searchParams.get('iterationCount') || 1;
     const onRunStep = () => {
         benchmarkClient.isStepping = true;
-        if (!benchmarkClient.isRunning) {
+        if (!benchmarkClient.isRunning)
             runner.runMultipleIterations(iterationCount);
-        } else {
+        else
             benchmarkClient.step();
-        }
     }
     const onRunSuites = () => {
         if (benchmarkClient.isRunning) {
             if (benchmarkClient.isStepping) {
                 // Switch to continuous running only if we've been stepping.
-                benchmarkClient.isStepping = false
+                benchmarkClient.isStepping = false;
                 benchmarkClient.step();
             }
         } else {
-            benchmarkClient.isStepping = false
+            benchmarkClient.isStepping = false;
             runner.runMultipleIterations(iterationCount);
         }
     };
