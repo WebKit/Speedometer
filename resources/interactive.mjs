@@ -1,9 +1,130 @@
 import {BenchmarkRunner} from './benchmark-runner.mjs';
 import {Suites} from './tests.mjs';
 
+class InteractiveBenchmarkRunner extends BenchmarkRunner {
+    _stepPromise = undefined;
+    _stepPromiseResolve = undefined;
+    _isRunning = false;
+    _isStepping = false;
+
+    constructor(suites, iterationCount) {
+        super(suites);
+        this._client = this._createClient();
+        if (!Number.isInteger(iterationCount) || iterationCount <= 0)
+            throw Error("iterationCount must be a positive integer.");
+        this._iterationCount = iterationCount;
+    }
+
+    _createClient() {
+        return  {
+            willStartFirstIteration: this._start.bind(this),
+            willRunTest: this._testStart.bind(this),
+            didRunTest: this._testDone.bind(this),
+            didRunSuites: this._iterationDone.bind(this),
+            didFinishLastIteration: this._done.bind(this),
+        };
+    }
+
+    _start()
+    {
+        if (this._isRunning)
+            throw Error('Runner was not stopped before starting;');
+        this._isRunning = true;
+        if (this._isStepping)
+            this._stepPromise = this._newStepPromise();
+    }
+
+    _step()
+    {
+        if (!this._stepPromise) {
+            // Allow switching to stepping mid-run.
+            this._stepPromise = this._newStepPromise();
+        } else {
+            const resolve = this._stepPromiseResolve;
+            this._stepPromise = this._newStepPromise();
+            resolve();
+        }
+    }
+
+    _newStepPromise()
+    {
+        return new Promise(resolve => {
+            this._stepPromiseResolve = resolve;
+        });
+    }
+
+    _testStart(suite, test)
+    {
+        test.anchor.classList.add('running');
+    }
+
+    async _testDone(suite, test)
+    {
+        const classList = test.anchor.classList;
+        classList.remove('running');
+        classList.add('ran');
+        if (this._isStepping)
+            await this._stepPromise;
+    }
+
+    _iterationDone(measuredValues)
+    {
+        let results = '';
+        for (const suiteName in measuredValues.tests) {
+            let suiteResults = measuredValues.tests[suiteName];
+            for (const testName in suiteResults.tests) {
+                let testResults = suiteResults.tests[testName];
+                for (const subtestName in testResults.tests) {
+                    results += suiteName + ' : ' + testName + ' : ' + subtestName
+                        + ': ' + testResults.tests[subtestName] + ' ms\n';
+                }
+            }
+            results += suiteName + ' : ' + suiteResults.total + ' ms\n';
+        }
+        results += 'Arithmetic Mean : ' + measuredValues.mean  + ' ms\n';
+        results += 'Geometric Mean : ' + measuredValues.geomean  + ' ms\n';
+        results += 'Total : ' + measuredValues.total + ' ms\n';
+        results += 'Score : ' + measuredValues.score + ' rpm\n';
+
+        if (!results)
+            return;
+
+        const pre = document.createElement('pre');
+        document.body.appendChild(pre);
+        pre.textContent = results;
+    }
+
+    _done() {
+        this.isRunning = false;
+    }
+
+    runStep()
+    {
+        this._isStepping = true;
+        if (!this._isRunning)
+            this.runMultipleIterations(this._iterationCount);
+        else
+        this._step();
+    }
+
+    runSuites() 
+    {
+        if (this._isRunning) {
+            if (this._isStepping) {
+                // Switch to continuous running only if we've been stepping.
+                this._isStepping = false;
+                this._step();
+            }
+        } else {
+            this._isStepping = false;
+            this.runMultipleIterations(this._iterationCount);
+        }
+    }
+}
+
 // Expose Suites/BenchmarkRunner for backwards compatibility
 window.Suites = Suites;
-window.BenchmarkRunner = BenchmarkRunner;
+window.BenchmarkRunner = InteractiveBenchmarkRunner;
 
 function formatTestName(suiteName, testName)
 {
@@ -97,114 +218,28 @@ function disableAllSuitesExcept(suiteName)
             foundMatching = true;
     });
     if (!foundMatching)
-        throw Error(`No matching suite for: "${suiteName}"`)
+        throw Error(`No matching suite for: "${suiteName}"`);
 
 }
 
 function startTest()
 {
-    const queryParam = searchParams.get('suite');
-    if (queryParam !== undefined)
-        disableAllSuitesExcept(queryParam);
-
-    const benchmarkClient = {
-        _stepPromise: undefined,
-        _stepPromiseResolve: undefined,
-        isRunning: false,
-        isStepping: false,
-        willStartFirstIteration()
-        {
-            if (this.isRunning)
-                throw Error('Runner was not stopped before starting;');
-            this.isRunning = true;
-            if (this.isStepping)
-                this._stepPromise = this._newStepPromise();
-        },
-        step()
-        {
-            if (!this._stepPromise) {
-                // Allow switching to stepping mid-run.
-                this._stepPromise = this._newStepPromise();
-            } else {
-                const resolve = this._stepPromiseResolve;
-                this._stepPromise = this._newStepPromise();
-                resolve();
-            }
-        },
-        _newStepPromise()
-        {
-            return new Promise(resolve => {
-                this._stepPromiseResolve = resolve;
-            });
-        },
-        willRunTest(suite, test)
-        {
-            test.anchor.classList.add('running');
-        },
-        async didRunTest(suite, test)
-        {
-            const classList = test.anchor.classList;
-            classList.remove('running');
-            classList.add('ran');
-            if (this.isStepping)
-                await this._stepPromise;
-        },
-        didRunSuites(measuredValues)
-        {
-            let results = '';
-            for (const suiteName in measuredValues.tests) {
-                let suiteResults = measuredValues.tests[suiteName];
-                for (const testName in suiteResults.tests) {
-                    let testResults = suiteResults.tests[testName];
-                    for (const subtestName in testResults.tests) {
-                        results += suiteName + ' : ' + testName + ' : ' + subtestName
-                            + ': ' + testResults.tests[subtestName] + ' ms\n';
-                    }
-                }
-                results += suiteName + ' : ' + suiteResults.total + ' ms\n';
-            }
-            results += 'Arithmetic Mean : ' + measuredValues.mean  + ' ms\n';
-            results += 'Geometric Mean : ' + measuredValues.geomean  + ' ms\n';
-            results += 'Total : ' + measuredValues.total + ' ms\n';
-            results += 'Score : ' + measuredValues.score + ' rpm\n';
-
-            if (!results)
-                return;
-
-            const pre = document.createElement('pre');
-            document.body.appendChild(pre);
-            pre.textContent = results;
-        },
-        didFinishLastIteration()
-        {
-            this.isRunning = false;
-        }
-    }
-    const runner = new BenchmarkRunner(Suites,benchmarkClient);
+    if (searchParams.has('suite'))
+        disableAllSuitesExcept(searchParams.get('suite'));
 
     const iterationCount = searchParams.get('iterationCount') || 1;
-    const onRunStep = () => {
-        benchmarkClient.isStepping = true;
-        if (!benchmarkClient.isRunning)
-            runner.runMultipleIterations(iterationCount);
-        else
-            benchmarkClient.step();
-    }
-    const onRunSuites = () => {
-        if (benchmarkClient.isRunning) {
-            if (benchmarkClient.isStepping) {
-                // Switch to continuous running only if we've been stepping.
-                benchmarkClient.isStepping = false;
-                benchmarkClient.step();
-            }
-        } else {
-            benchmarkClient.isStepping = false;
-            runner.runMultipleIterations(iterationCount);
-        }
-    };
+    const interactiveRunner =  new window.BenchmarkRunner(Suites, iterationCount);
 
+    if (!(interactiveRunner instanceof InteractiveBenchmarkRunner)) {
+        throw Error(
+            "window.BenchmarkRunner must be "+
+            "a subclass of InteractiveBenchmarkRunner");
+    }
+    
     // Don't call step while step is already executing.
-    document.body.appendChild(createUIForSuites(Suites, onRunStep, onRunSuites));
+    document.body.appendChild(createUIForSuites(Suites, 
+        interactiveRunner.runStep.bind(interactiveRunner), 
+        interactiveRunner.runSuites.bind(interactiveRunner)));
 
     if (searchParams.has('startAutomatically'))
         document.getElementById('runSuites').click();
