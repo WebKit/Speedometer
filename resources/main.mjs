@@ -230,7 +230,9 @@ class MainBenchmarkClient {
 
     _resizeScreeHandler() {
         // FIXME: Detect when the window size changes during the test.
-        const screenIsTooSmall = window.innerWidth < 850 || window.innerHeight < 650;
+        const mainSize = document.querySelector('main').getBoundingClientRect()
+        const screenIsTooSmall = window.innerWidth <  mainSize.width 
+            || window.innerHeight < mainSize.height;
         document.getElementById('screen-size').textContent = window.innerWidth + 'px by ' + window.innerHeight + 'px';
         document.getElementById('screen-size-warning').style.display = screenIsTooSmall ? null : 'none';
     }
