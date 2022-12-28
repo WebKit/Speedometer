@@ -470,7 +470,7 @@ Suites.push({
 
 Suites.push({
     name: 'React-Stockcharts',
-    url: 'react-stockcharts/build/index.html?type=hybrid',
+    url: 'tentative/react-stockcharts/build/index.html?type=hybrid',
     async prepare(page) {
         await page.waitForElement('#render');
     },
@@ -511,7 +511,7 @@ Suites.push({
 
 Suites.push({
     name: 'React-Stockcharts-SVG',
-    url: 'react-stockcharts/build/index.html?type=svg',
+    url: 'tentative/react-stockcharts/build/index.html?type=svg',
     async prepare(page) {
         await page.waitForElement('#render');
     },
