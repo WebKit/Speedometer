@@ -483,28 +483,49 @@ Suites.push({
             let x = 150;
             let y = 200;
             const coords = (i) => ({ clientX: x + i * 10, clientY: y + i * 2, bubbles: true, cancelable: true });
-            for (let i = 0; i < 100; ) {
+            for (let i = 0; i < 100; )
                 cursor.dispatchEvent('mousedown', coords(i), MouseEvent);
-                for (let j = 10; j--; ) {
+                for (let j = 10; j--; )
                     cursor.dispatchEvent('mousemove', coords(++i), MouseEvent);
-                }
                 cursor.dispatchEvent('mouseup', coords(i), MouseEvent);
-            }
         }),
         new BenchmarkTestStep('ZoomTheChart', page => {
             const cursor = page.querySelector('.react-stockcharts-crosshair-cursor');
-            let ev = { clientX: 200, clientY: 200, deltaMode: 0, delta: -10, deltaY: -10, bubbles: true, cancelable: true  };
-            for (let delta = 0; delta < 30; delta++) {
-                cursor.dispatchEvent('wheel', ev, WheelEvent);
-            }
-            ev = { clientX: 650, clientY: 200, deltaMode: 0, delta: 10, deltaY: 10, bubbles: true, cancelable: true  };
-            for (let delta = 0; delta < 50; delta += 5) {
-                cursor.dispatchEvent('wheel', ev, WheelEvent);
-            }
-            ev = { clientX: 200, clientY: 200, deltaMode: 0, delta: -10, deltaY: -10, bubbles: true, cancelable: true  };
-            for (let delta = 0; delta < 20; delta += 2) {
-                cursor.dispatchEvent('wheel', ev, WheelEvent);
-            }
+            let event = {
+                clientX: 200,
+                clientY: 200,
+                deltaMode: 0,
+                delta: -10,
+                deltaY: -10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let delta = 0; delta < 30; delta++)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
+
+            event = {
+                clientX: 650,
+                clientY: 200,
+                deltaMode: 0,
+                delta: 10,
+                deltaY: 10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let delta = 0; delta < 50; delta += 5)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
+
+            event = {
+                clientX: 200,
+                clientY: 200,
+                deltaMode: 0,
+                delta: -10,
+                deltaY: -10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let delta = 0; delta < 20; delta += 2)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
         }),
     ],
 });
@@ -524,28 +545,49 @@ Suites.push({
             let x = 150;
             let y = 200;
             const coords = (i) => ({ clientX: x + i * 10, clientY: y + i * 2, bubbles: true, cancelable: true });
-            for (let i = 0; i < 100; ) {
+            for (let i = 0; i < 100; )
                 cursor.dispatchEvent('mousedown', coords(i), MouseEvent);
-                for (let j = 10; j--; ) {
+                for (let j = 10; j--; )
                     cursor.dispatchEvent('mousemove', coords(++i), MouseEvent);
-                }
                 cursor.dispatchEvent('mouseup', coords(i), MouseEvent);
-            }
         }),
         new BenchmarkTestStep('ZoomTheChart', page => {
             const cursor = page.querySelector('.react-stockcharts-crosshair-cursor');
-            let ev = { clientX: 200, clientY: 200, deltaMode: 0, delta: -10, deltaY: -10, bubbles: true, cancelable: true  };
-            for (let delta = 0; delta < 30; delta++) {
-                cursor.dispatchEvent('wheel', ev, WheelEvent);
-            }
-            ev = { clientX: 650, clientY: 200, deltaMode: 0, delta: 10, deltaY: 10, bubbles: true, cancelable: true  };
-            for (let delta = 0; delta < 50; delta += 5) {
-                cursor.dispatchEvent('wheel', ev, WheelEvent);
-            }
-            ev = { clientX: 200, clientY: 200, deltaMode: 0, delta: -10, deltaY: -10, bubbles: true, cancelable: true  };
-            for (let delta = 0; delta < 20; delta += 2) {
-                cursor.dispatchEvent('wheel', ev, WheelEvent);
-            }
+            let event = {
+                clientX: 200,
+                clientY: 200,
+                deltaMode: 0,
+                delta: -10,
+                deltaY: -10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let delta = 0; delta < 30; delta++)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
+
+            event = {
+                clientX: 650,
+                clientY: 200,
+                deltaMode: 0,
+                delta: 10,
+                deltaY: 10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let delta = 0; delta < 50; delta += 5)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
+
+            event = {
+                clientX: 200,
+                clientY: 200,
+                deltaMode: 0,
+                delta: -10,
+                deltaY: -10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let delta = 0; delta < 20; delta += 2)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
         }),
     ],
 });
