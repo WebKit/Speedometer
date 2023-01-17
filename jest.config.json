@@ -1,0 +1,4 @@
+{
+    "testEnvironment": "jsdom",
+    "testPathIgnorePatterns": ["<rootDir>/resources", "<rootDir>/node_modules/"]
+}
