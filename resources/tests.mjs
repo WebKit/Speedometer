@@ -500,7 +500,7 @@ Suites.push({
                 bubbles: true,
                 cancelable: true
             };
-            for (let delta = 0; delta < 30; delta++)
+            for (let i = 0; i < 30; i++)
                 cursor.dispatchEvent('wheel', event, WheelEvent);
 
             event = {
@@ -512,7 +512,7 @@ Suites.push({
                 bubbles: true,
                 cancelable: true
             };
-            for (let delta = 0; delta < 50; delta += 5)
+            for (let i = 0; i < 10; i++)
                 cursor.dispatchEvent('wheel', event, WheelEvent);
 
             event = {
@@ -524,7 +524,7 @@ Suites.push({
                 bubbles: true,
                 cancelable: true
             };
-            for (let delta = 0; delta < 20; delta += 2)
+            for (let i = 0; i < 10; i++)
                 cursor.dispatchEvent('wheel', event, WheelEvent);
         }),
     ],
@@ -562,7 +562,7 @@ Suites.push({
                 bubbles: true,
                 cancelable: true
             };
-            for (let delta = 0; delta < 30; delta++)
+            for (let i = 0; i < 30; i++)
                 cursor.dispatchEvent('wheel', event, WheelEvent);
 
             event = {
@@ -574,7 +574,7 @@ Suites.push({
                 bubbles: true,
                 cancelable: true
             };
-            for (let delta = 0; delta < 50; delta += 5)
+            for (let i = 0; i < 10; i++)
                 cursor.dispatchEvent('wheel', event, WheelEvent);
 
             event = {
@@ -586,7 +586,7 @@ Suites.push({
                 bubbles: true,
                 cancelable: true
             };
-            for (let delta = 0; delta < 20; delta += 2)
+            for (let i = 0; i < 10; i++)
                 cursor.dispatchEvent('wheel', event, WheelEvent);
         }),
     ],
