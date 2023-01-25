@@ -8,7 +8,7 @@ export function renderMetricView(metric)
             <dd>
                 <div class="metric-chart">
                     ${renderScatterPlot({
-                        height: 30 + children.length * 16,
+                        height: 30 + children.length * 20,
                         width: 500,
                         values: scatterPlotValues(metric),
                         unit: "ms",
@@ -16,7 +16,10 @@ export function renderMetricView(metric)
                     <ul class="chart chart-legend">
                         ${children.map(
                             (metric, i) => `
-                                <li class=${COLORS[i % COLORS.length]}>${metric.shortName}</li>
+                                <li class=${COLORS[i % COLORS.length]}>
+                                    ${metric.shortName}
+                                    ${metric.valueString}
+                                </li>
                             `
                         ).join("")}
                     </ul>
@@ -25,10 +28,6 @@ export function renderMetricView(metric)
             </dd>
         </dl>
     `;
-}
-globalThis.toggleSubMetric = function(event)
-{
-    console.log(e);
 }
 
 function renderSubMetrics(metric)
@@ -39,7 +38,7 @@ function renderSubMetrics(metric)
       return""
     return `
         <label class="details-toggle"
-                onclick="this.nextElementSibling.classList.toggle('visible')">
+               onclick="this.nextElementSibling.classList.toggle('visible')">
             <input type="checkbox"/>
             Details
         </label>
@@ -168,7 +167,7 @@ function renderScatterPlot({ values, width = 500, height = 200, xAxisLabel, unit
     const yspread = ymax - ymin || 1;
     const xspread = xmax - xmin;
     const vaxis = 16;
-    const vbuf = 10;
+    const vbuf = 15;
     const haxis = 10;
     const axisWidth = width - haxis * 2;
     const unitToXpos = axisWidth / xspread;

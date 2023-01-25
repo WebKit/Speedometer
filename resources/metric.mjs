@@ -84,13 +84,13 @@ export class Metric {
     compute()
     {
          // Avoid the loss of significance for the sum.
-        this.values.sort((a, b) => a - b);
-        const squareSum = Statistics.squareSum(this.values);
-        this.sum = Statistics.sum(this.values);
-        this.min = Statistics.min(this.values);
-        this.max = Statistics.max(this.values);
+        const sortedValues = this.values.concat().sort((a, b) => a - b);
+        const squareSum = Statistics.squareSum(sortedValues);
+        this.sum = Statistics.sum(sortedValues);
+        this.min = sortedValues[0];
+        this.max = sortedValues[sortedValues.length - 1];
         this.mean = this.sum / this.values.length;
-        const product = Statistics.product(this.values);
+        const product = Statistics.product(sortedValues);
         this.geomean = Math.pow(product, 1 / this.values.length);
         this.delta = Statistics.confidenceIntervalDelta(0.95, this.values.length, this.sum, squareSum);
         this.percentDelta = isNaN(this.delta) ? undefined : (this.delta * 100) / this.mean;

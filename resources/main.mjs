@@ -216,6 +216,11 @@ class MainBenchmarkClient {
             html += renderMetricView(metric);
         }
         document.getElementById('metrics-results').innerHTML = html
+
+        const jsonData = JSON.stringify(this._measuredValuesList);
+        const blob = new Blob([jsonData], {type: "application/json"});
+        const url  = URL.createObjectURL(blob);
+        document.getElementById("download-json").href = url;
     }
 
     prepareUI()
@@ -226,6 +231,7 @@ class MainBenchmarkClient {
 
         document.getElementById("logo").onclick = this._logoClickHandler.bind(this);
         document.getElementById("show-summary").onclick = this.showResultsSummary.bind(this);
+        document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
         document.getElementById("show-details").onclick = this.showResultsDetails.bind(this);
         document.querySelectorAll(".show-about").forEach(
             each => { each.onclick = this.showAbout.bind(this) }
@@ -288,6 +294,16 @@ class MainBenchmarkClient {
     showAbout() 
     {
         this._showSection('about', true);
+    }
+
+    copyJsonResults()
+    {
+        navigator.clipboard.writeText(JSON.stringify(this._measuredValuesList));
+    }
+
+    downloadJsonResults()
+    {
+        navigator.clipboard.writeText(JSON.stringify(this._measuredValuesList));
     }
 
     _showSection(sectionIdentifier, pushState) 

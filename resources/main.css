@@ -16,8 +16,11 @@ body {
 }
 
 h1,
-button {
+button, .button {
     font-family: "Futura-Medium", Futura, "Helvetica Neue", Helvetica, Verdana, sans-serif;
+}
+.button {
+    text-decoration: none;
 }
 
 code {
@@ -82,7 +85,7 @@ a {
     text-align: center;
 }
 
-button {
+button, .button {
     appearance: none;
     border: none;
     background-color: transparent;
@@ -91,7 +94,7 @@ button {
     padding: 0px;
 }
 
-.buttons button {
+.buttons button, .buttons .button {
     appearance: none;
     border: 3px solid var(--foreground);
     border-radius: 10px;
