@@ -4,6 +4,7 @@ import * as Statistics from './statistics.mjs';
 const MILLIS_PER_MIN = 60 * 1000;
 
 export class Metric {
+
     /** @param {string} name */
     constructor(name, unit = 'ms')
     {
@@ -54,6 +55,7 @@ export class Metric {
             return `${mean} ${this.unit}`;
         return `${mean} ± ${this.delta.toFixed(2)} (${this.percentDelta.toFixed(1)}%) ${this.unit}`;
     }
+
     get length()
     {
         return this.values.length;

@@ -2,6 +2,7 @@ import {BenchmarkRunner} from "./benchmark-runner.mjs";
 import "./benchmark-report.mjs";
 import * as Statistics from "./statistics.mjs";
 import {Suites} from "./tests.mjs";
+import {renderMetricView, renderBarChart} from "./metric-ui.mjs"
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -14,12 +15,14 @@ class MainBenchmarkClient {
     _progressCompleted = null;
     _isRunning = false;
 
-    constructor() {
+    constructor()
+    {
         window.addEventListener('DOMContentLoaded', () => this.prepareUI());
     }
 
     // FIXME: Move this method to the tests/suites module.
-    enableOneSuite(suites, suiteToEnable) {
+    enableOneSuite(suites, suiteToEnable)
+    {
         suiteToEnable = suiteToEnable.toLowerCase();
         let found = false;
         for (let i = 0; i < suites.length; i++) {
@@ -33,7 +36,8 @@ class MainBenchmarkClient {
         return found;
     }
 
-    startBenchmark() {
+    startBenchmark()
+    {
         if (location.search.length > 1) {
             // FIXME: Use URLSearchParams
             let parts = location.search.substring(1).split('&');
@@ -74,27 +78,32 @@ class MainBenchmarkClient {
         return true;
     }
 
-    willAddTestFrame(frame) {
+    willAddTestFrame(frame)
+    {
         const main = document.querySelector('main');
         const style = getComputedStyle(main);
         frame.style.left = main.offsetLeft + parseInt(style.borderLeftWidth) + parseInt(style.paddingLeft) + 'px';
         frame.style.top = main.offsetTop + parseInt(style.borderTopWidth) + parseInt(style.paddingTop) + 'px';
     }
 
-    willRunTest(suite, test) {
+    willRunTest(suite, test)
+    {
         document.getElementById('info').textContent = suite.name + ' ( ' + this._finishedTestCount + ' / ' + this.stepCount + ' )';
     }
 
-    didRunTest() {
+    didRunTest()
+    {
         this._finishedTestCount++;
         this._progressCompleted.style.width = (this._finishedTestCount * 100 / this.stepCount) + '%';
     }
 
-    didRunSuites(measuredValues) {
+    didRunSuites(measuredValues)
+    {
         this._measuredValuesList.push(measuredValues);
     }
 
-    willStartFirstIteration() {
+    willStartFirstIteration()
+    {
         this._isRunning = true;
         this._measuredValuesList = [];
         this._finishedTestCount = 0;
@@ -121,7 +130,8 @@ class MainBenchmarkClient {
             this.showResultsSummary();
     }
 
-    _computeResults(measuredValuesList, displayUnit) {
+    _computeResults(measuredValuesList, displayUnit)
+    {
         const suitesCount = this.suitesCount;
         function valueForUnit(measuredValues) {
             if (displayUnit == 'ms')
@@ -165,7 +175,8 @@ class MainBenchmarkClient {
         };
     }
 
-    _addDetailedResultsRow(table, iterationNumber, value) {
+    _addDetailedResultsRow(table, iterationNumber, value)
+    {
         const row = document.createElement('tr');
         const th = document.createElement('th');
         th.textContent = 'Iteration ' + (iterationNumber + 1);
@@ -176,7 +187,8 @@ class MainBenchmarkClient {
         table.appendChild(row);
     }
 
-    _updateGaugeNeedle(rpm) {
+    _updateGaugeNeedle(rpm)
+    {
         const needleAngle = Math.max(0, Math.min(rpm, 140)) - 70;
         const needleRotationValue = 'rotate(' + needleAngle + 'deg)';
 
@@ -187,7 +199,8 @@ class MainBenchmarkClient {
         gaugeNeedleElement.style.setProperty('transform', needleRotationValue);
     }
 
-    _populateDetailedResults(metrics) {
+    _populateDetailedResults(metrics)
+    {
         const scoreMetric = metrics['Score'];
         document.getElementById('score-chart').innerHTML = renderBarChart({metric: scoreMetric});
         document.getElementById('score-results-with-statistics').innerHTML = scoreMetric.valueString;
@@ -206,7 +219,8 @@ class MainBenchmarkClient {
         document.getElementById('metrics-results').innerHTML = html
     }
 
-    prepareUI() {
+    prepareUI()
+    {
         window.addEventListener('popstate', this._popStateHandler.bind(this), false);
         window.addEventListener('resize', this._resizeScreeHandler.bind(this));
         this._resizeScreeHandler();
@@ -222,7 +236,8 @@ class MainBenchmarkClient {
         );
     }
 
-    _popStateHandler(event) {
+    _popStateHandler(event)
+    {
         if (event.state) {
             const sectionToShow = event.state.section;
             if (sectionToShow) {
@@ -236,7 +251,8 @@ class MainBenchmarkClient {
         return this._showSection('home', false);
     }
 
-    _resizeScreeHandler() {
+    _resizeScreeHandler()
+    {
         // FIXME: Detect when the window size changes during the test.
         const mainSize = document.querySelector('main').getBoundingClientRect()
         const screenIsTooSmall = window.innerWidth <  mainSize.width 
@@ -245,12 +261,14 @@ class MainBenchmarkClient {
         document.getElementById('screen-size-warning').style.display = screenIsTooSmall ? null : 'none';
     }
 
-    _startBenchmarkHandler() {
+    _startBenchmarkHandler()
+    {
         if (this.startBenchmark())
             this._showSection('running');
     }
 
-    _logoClickHandler(event) {
+    _logoClickHandler(event)
+    {
         // Prevent any accidental UI changes during benchmark runs.
         if (!this._isRunning)
             this._showSection('home', true);
@@ -258,19 +276,23 @@ class MainBenchmarkClient {
         return false;
     }
 
-    showResultsSummary() {
+    showResultsSummary()
+    {
         this._showSection('summarized-results', true);
     }
 
-    showResultsDetails() {
+    showResultsDetails()
+    {
         this._showSection('detailed-results', true);
     }
 
-    showAbout() {
+    showAbout() 
+    {
         this._showSection('about', true);
     }
 
-    _showSection(sectionIdentifier, pushState) {
+    _showSection(sectionIdentifier, pushState) 
+    {
         const currentSectionElement = document.querySelector('section.selected');
         console.assert(currentSectionElement);
 
@@ -286,232 +308,3 @@ class MainBenchmarkClient {
 }
 
 window.benchmarkClient = new MainBenchmarkClient();
-
-
-function renderMetricView(metric) {
-	const children = metric.children;
-	return `
-		<dl>
-			<dt>${metric.name}</dt>
-			<dd>
-				${renderScatterPlot({
-					height: 30 + children.length * 10,
-					width: 350,
-					values: scatterPlotValues(metric),
-					unit: "ms",
-					xAxisLabel: "Duration [ms]"})}
-				<ul class="chart">
-					${children.map(
-						(metric, i) => `
-							<li class=${COLORS[i % COLORS.length]}>${metric.shortName}</li>
-						`
-					).join("")}
-				</ul>
-			</dd>
-		</dl>
-		${renderTestDetails(metric)}
-	`;
-}
-function renderTestDetails(metric) {
-	const children = metric.children;
-	const hasChildMetric = children.length > 0 && children[0].children.length > 0;
-    if (!hasChildMetric)
-      return""
-	return `
-		<label class="details-toggle">
-			<input type="checkbox"/>
-			Timing Details
-		</label>
-		${metric.children.map(metric => renderMetricView(metric)).join("")}
-	`;
-}
-
-function scatterPlotValues(metric) {
-	let points = [];
-	const metrics = metric.children;
-	for (let metricIndex = 0; metricIndex < metrics.length; metricIndex++) {
-		const subMetric = metric.children[metricIndex];
-		// Add variation data point
-		const point = [
-			subMetric.mean - subMetric.delta/2,
-			metricIndex,
-			`Mean: ${subMetric.valueString}`,
-			subMetric.delta
-		];
-		points.push(point);
-		const values = subMetric.values;
-		for (let i = 0; i < values.length; i++) {
-			const value = values[i];
-			const point = [
-				value,
-				metricIndex + i / values.length,
-				`Iteration ${i}: ${value.toFixed(2)}ms`
-			];
-			points.push(point);
-		}
-	}
-	return points;
-}
-
-export const COLORS = ['blue', 'green', 'purple', 'orange', 'violet', 'green-light'];
-
-function renderBarChart({ metric, width = 500, height = 200, min = 0, max})
-{
-	const values = metric.values;
-	let maxValue = max;
-	if (max == null) {
-		maxValue = metric.max;
-		max = (maxValue + (maxValue / height) * 20) | 0;
-	}
-    const unit = metric.unit;
-	const meanValue = metric.mean;
-	const w = (width / values.length) | 0;
-	const large = w < 50;
-	const innerHeight = height - 2;
-	const toYPos = (value) => ((value / max) * innerHeight) | 0;
-	const maxLabelWidth = 70;
-	const maxYPos = height - toYPos(maxValue);
-	const meanYPos = height - toYPos(meanValue);
-	const minYPos = height - toYPos(metric.min);
-	const barBorder = 14;
-	const minLabelHeight = 14;
-
-	return `
-		<svg
-			class="bar-chart chart"
-			height=${height + 20}
-			width=${width + maxLabelWidth}
-			viewBox="${`-${maxLabelWidth} 0 ${width + maxLabelWidth} ${height + 20}`}"
-			preserveAspectRatio="xMinYMin slice"
-		>
-			<text class="label" x="4" y=${maxYPos}>${maxValue.toFixed(1)}${unit}–</text>
-			<text class="label" x="-1" y=${height}>${min}${unit}</text>
-			<text x=${width / 2} y=${height + 5}>Iteration</text>
-			<line x1="0" x2="0" y1="0" y2=${height} class="axis" />
-			<line x1="0" x2=${width} y1=${height} y2=${height} class="axis" />
-			${Math.abs(maxYPos - meanYPos) < minLabelHeight
-				? null
-				: `
-						<text class="label" x="4" y=${meanYPos}>
-							${meanValue.toFixed(1)}${unit}–
-						</text>
-				  `}
-			${Math.abs(maxYPos - minYPos) < minLabelHeight &&
-			Math.abs(meanYPos - minYPos) < minLabelHeight
-				? null
-				: `
-						<text class="label" x="4" y=${minYPos}>
-							${metric.min.toFixed(1)}${unit}–
-						</text>
-				  `}
-			<line x1="0" x2=${width} y1=${maxYPos} y2=${maxYPos} class="minMax" />
-			<line x1="0" x2=${width} y1=${meanYPos} y2=${meanYPos} class="mean">
-				<title>Mean: ${metric.valueString}</title>
-			</line>
-			<line x1="0" x2=${width} y1=${minYPos} y2=${minYPos} class="minMax" />
-			${values.map(
-				(value, i) => `
-					<g
-						class=${large ? 'bar large' : 'bar'}
-						transform="translate(${i * w} ${(innerHeight + 1 - toYPos(value)) | 0})"
-					>
-						<rect x=${barBorder / 2} height=${toYPos(value)} width=${w - barBorder}>
-							<title>Iteration ${i}: ${value.toFixed(2)}${unit}</title>
-						</rect>
-						<text y="5" x=${w / 2} text-anchor="middle">
-							${value.toFixed(1).replace('.0', '')}
-						</text>
-					</g>
-				`
-			).join("")}
-		</svg>
-	`;
-}
-
-function renderScatterPlot({ values, width = 500, height = 200, xAxisLabel, unit = '' }) {
-	let xmin = Infinity,
-		xmax = 0;
-	let ymin = Infinity,
-		ymax = 0;
-	for (let value of values) {
-		let [x, y] = value;
-		xmin = Math.min(xmin, x);
-		xmax = Math.max(xmax, x);
-		ymin = Math.min(ymin, y);
-		ymax = Math.max(ymax, y);
-	}
-
-	const yspread = ymax - ymin || 1;
-	const xspread = xmax - xmin;
-	const vaxis = 16;
-	const vbuf = 10;
-	const haxis = 10;
-	const axisWidth = width - haxis * 2;
-	const unitToXpos = axisWidth / xspread;
-	const unitToYPos = (height - vaxis - vbuf * 2) / yspread;
-	const vaxisY = height - vaxis + 4;
-	const markerSize = 2;
-
-	return `
-		<svg
-			class="scatter-plot chart"
-			width=${width}
-			height=${height}
-			viewBox="${`0 0 ${width} ${height}`}"
-		>
-			<line
-				x1=${haxis}
-				x1=${haxis + axisWidth}
-				y1=${vaxisY - 4}
-				y2=${vaxisY - 4}
-				class="axis"
-			/>
-			<text y=${vaxisY} x="0" text-anchor="start">${xmin.toFixed(2)}${unit}</text>
-			<text y=${vaxisY} x=${width / 2} text-anchor="middle">${xAxisLabel}</text>
-			<text y=${vaxisY} x=${width - haxis} text-anchor="end">${xmax.toFixed(2)}${unit}</text>
-			<defs>
-				<g id="marker">
-					<circle r=${markerSize - 1} />
-				</g>
-			</defs>
-			${values.map(renderValue).join("")}
-		</svg>
-	`;
-
-	function renderValue(value) {
-		const [rawX, rawY, label, rawWidth = 0] = value;
-		let w = rawWidth * unitToXpos;
-		let x = (rawX - xmin) * unitToXpos + haxis - rawWidth / 2;
-		let y = (rawY - ymin) * unitToYPos + vbuf;
-		const trackIndex = rawY | 0;
-		const cssClass = COLORS[trackIndex % COLORS.length];
-
-		if (value.length <= 3) {
-			return `
-				<use href="#marker" x=${x} y=${y} class="marker ${cssClass}">
-					<title>${label}</title>
-				</use>
-			`;
-		}
-
-		const boxY = y - markerSize;
-		const boxY2 = y + vbuf;
-		const height = vbuf + markerSize;
-		return `
-			<g class="percentile ${cssClass}">
-				<rect x=${x} y=${boxY} width=${w} height=${height}>
-					<title>${label}</title>
-				</rect>
-				<line x1=${x} x2=${x} y1=${boxY} y2=${boxY2} />
-				<line
-					x1=${x + w / 2}
-					x2=${x + w / 2}
-					y1=${boxY}
-					y2=${boxY2}
-					stroke-dasharray=${height / 3}
-				/>
-				<line x1=${x + w} x2=${x + w} y1=${boxY} y2=${boxY2} />
-			</g>
-		`;
-	}
-}
