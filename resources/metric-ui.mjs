@@ -3,40 +3,49 @@ export function renderMetricView(metric)
 {
     const children = metric.children;
     return `
-        <dl>
-            <dt>${metric.name}</dt>
+        <dl class="metric">
+            <dt><h3>${metric.name}<h3></dt>
             <dd>
-                ${renderScatterPlot({
-                    height: 30 + children.length * 10,
-                    width: 350,
-                    values: scatterPlotValues(metric),
-                    unit: "ms",
-                    xAxisLabel: "Duration [ms]"})}
-                <ul class="chart">
-                    ${children.map(
-                        (metric, i) => `
-                            <li class=${COLORS[i % COLORS.length]}>${metric.shortName}</li>
-                        `
-                    ).join("")}
-                </ul>
+                <div class="metric-chart">
+                    ${renderScatterPlot({
+                        height: 30 + children.length * 16,
+                        width: 500,
+                        values: scatterPlotValues(metric),
+                        unit: "ms",
+                        xAxisLabel: "Duration [ms]"})}
+                    <ul class="chart chart-legend">
+                        ${children.map(
+                            (metric, i) => `
+                                <li class=${COLORS[i % COLORS.length]}>${metric.shortName}</li>
+                            `
+                        ).join("")}
+                    </ul>
+                </div>
+                ${renderSubMetrics(metric)}
             </dd>
         </dl>
-        ${renderTestDetails(metric)}
     `;
 }
+globalThis.toggleSubMetric = function(event)
+{
+    console.log(e);
+}
 
-function renderTestDetails(metric)
+function renderSubMetrics(metric)
 {
     const children = metric.children;
     const hasChildMetric = children.length > 0 && children[0].children.length > 0;
     if (!hasChildMetric)
       return""
     return `
-        <label class="details-toggle">
+        <label class="details-toggle"
+                onclick="this.nextElementSibling.classList.toggle('visible')">
             <input type="checkbox"/>
-            Timing Details
+            Details
         </label>
-        ${metric.children.map(metric => renderMetricView(metric)).join("")}
+        <div class="submetrics">
+            ${metric.children.map(metric => renderMetricView(metric)).join("")}
+        </div>
     `;
 }
 
@@ -48,7 +57,7 @@ function scatterPlotValues(metric)
         const subMetric = metric.children[metricIndex];
         // Add variation data point
         const point = [
-            subMetric.mean - subMetric.delta/2,
+            subMetric.mean - subMetric.delta / 2,
             metricIndex,
             `Mean: ${subMetric.valueString}`,
             subMetric.delta
@@ -68,7 +77,7 @@ function scatterPlotValues(metric)
     return points;
 }
 
-export const COLORS = ['blue', 'green', 'purple', 'orange', 'violet', 'green-light'];
+export const COLORS = ['blue', 'green', 'orange', 'violet', 'green-light', 'red', 'purple' ];
 
 export function renderBarChart({ metric, width = 500, height = 200, min = 0, max})
 {

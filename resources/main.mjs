@@ -121,7 +121,6 @@ class MainBenchmarkClient {
             document.getElementById('confidence-number').textContent = '\u00b1 ' + results.formattedDelta;
 
         this._populateDetailedResults(metrics);
-        document.getElementById('results-with-statistics').textContent = results.formattedMeanAndDelta;
 
         if (this.displayUnit == 'ms') {
             document.getElementById('show-summary').style.display = 'none';

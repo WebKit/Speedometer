@@ -46,29 +46,22 @@
 
     <section id="detailed-results">
         <h1>Detailed Results</h1>
-        <div class="aggregated-metric-result">
-            <h2>Score</h2>
-            <div class="arithmetic-mean">
-                <label>Arithmetic Mean:</label>
-                <span id="score-results-with-statistics"></span>
+        <div class="all-metric-results">
+            <div class="aggregated-metric-result">
+                <h2>Score: <span id="score-results-with-statistics"></span></h2>
+                <div id="score-chart"></div>
             </div>
-            <div id="score-chart"></div>
-        </div>
-        <div class="aggregated-metric-result">
-            <h2>Total</h2>
-            <div class="arithmetic-mean">
-                <label>Arithmetic Mean:</label>
-                <span id="total-results-with-statistics"></span>
+            <div class="aggregated-metric-result">
+                <h2>Total: <span id="total-results-with-statistics"></span></h2>
+                <div id="total-chart"></div>
             </div>
-            <div id="total-chart"></div>
+            <h2>Detailed Metrics</h2>
+            <div id="metrics-results"></div>
         </div>
-        <div id="metrics-results"></div>
-
-        <div class="arithmetic-mean"><label>Arithmetic Mean:</label><span id="results-with-statistics"></span></div>
         <div class="buttons">
-            <button class="start-tests-button">Test Again</button>
-            <button id="show-summary"> Summary</button>
-            <button id="copy-json"> Copy JSON Results</button>
+            <button class="start-tests-button" title="Discard the current results and re-run all tests.">Test Again</button>
+            <button id="show-summary" title="Go back to the simplified summary view.">Summary</button>
+            <button id="copy-json" title="Copy all result metrics as json string.">Copy JSON</button>
             <br>
             <button class="show-about">About Speedometer</button>
         </div>
