@@ -1,3 +1,5 @@
+import * as Statistics from "./statistics.mjs";
+
 export class BenchmarkTestStep {
     constructor(testName, testFunction) {
         this.name = testName;
@@ -133,6 +135,11 @@ export class BenchmarkRunner {
         this._suites = suites;
         this._client = client;
         this._page = null;
+        this._metrics = {
+            __proto__:null,
+            Total: new Metric('Total'),
+            Score: new Metric('Score', 'rpm')
+        };
     }
 
     _removeFrame()
@@ -183,7 +190,7 @@ export class BenchmarkRunner {
         for (let i = 0; i < iterationCount; i++)
             await this._runAllSuites();
         if (this._client && this._client.didFinishLastIteration)
-            this._client.didFinishLastIteration();
+            this._client.didFinishLastIteration(this._metrics);
     }
 
     async _runAllSuites()
@@ -273,6 +280,7 @@ export class BenchmarkRunner {
 
     async _finalize()
     {
+       this._appendIterationMetrics() 
         if (this._client && this._client.didRunSuites) {
             let product = 1;
             const values = [];
@@ -294,4 +302,124 @@ export class BenchmarkRunner {
             this._client.didRunSuites(this._measuredValues);
         }
     }
+    _appendIterationMetrics() {
+        const getMetric = (name) => this._metrics[name] || (this._metrics[name] = new Metric(name));
+    
+        const collectSubMetrics = (prefix, items, parent) => {
+            for (let name in items) {
+                const results = items[name];
+                const metric = getMetric(prefix + name);
+                metric.add(results.total ?? results);
+                if (metric.parent != parent) parent.addChild(metric);
+                if (results.tests)
+                    collectSubMetrics(`${metric.name}-`, results.tests, metric);
+            }
+        };
+    
+        const iterationData = this._measuredValues.tests;
+        const iterationTotal = getMetric(`Iteration-${ this._metrics.Total.length }-Total`);
+        for (const results of Object.values(iterationData)) {
+            iterationTotal.add(results.total);
+        }
+        iterationTotal.compute();
+
+        this._metrics.Total.add(iterationTotal.sum);
+        this._metrics.Score.add(MILLIS_PER_MIN / iterationTotal.sum);
+        collectSubMetrics('', iterationData);
+
+        for (const metric of Object.values(this._metrics))
+            metric.compute()
+    }
+}
+
+/** Number of milliseconds in a single minute. */
+const MILLIS_PER_MIN = 60e3;
+
+class Metric {
+	/** @param {string} name */
+	constructor(name, unit = 'ms')
+    {
+		if (typeof name !== 'string')
+			throw new Error(`Invalid metric.name=${name}, expected string.`);
+		this.name = name;
+		this.unit = unit;
+
+		this.mean = 0.0;
+        this.geomean = 0.0;
+		this.delta = 0.0;
+		this.percentDelta = 0.0;
+
+		this.sum = 0.0;
+		this.min = 0.0;
+		this.max = 0.0;
+
+		/** @type {number[]} */
+		this.values = [];
+
+		/** @type {Metric} */
+		this.parent = undefined;
+		/** @type {Metric[]} */
+		this.children = [];
+
+		// Mark Metric references as non-enumerable to allow JSON.stringify usage:
+		Object.defineProperties(this, {
+			parent: {
+				writable: true
+			},
+			children: {
+				writable: true
+			}
+		});
+	}
+
+	get shortName() 
+    {
+		return this.parent ? this.name.replace(this.parent.name + '-', '') : this.name;
+	}
+
+	get valueString()
+    {
+        if (!this.percentDelta || !this.delta)
+		    return `${this.mean.toFixed(2)} ${this.unit}`;
+		return `${this.mean.toFixed(2)} ± ${this.delta.toFixed(2)} (${this.percentDelta.toFixed(1)}%) ${this.unit}`;
+	}
+    get length()
+    {
+        return this.values.length;
+    }
+
+	/** @param {Metric} metric */
+	addChild(metric)
+    {
+		if (metric.parent)
+            throw new Error('Cannot re-add sub metric');
+		metric.parent = this;
+		this.children.push(metric);
+	}
+
+	/** @param {number} value */
+	add(value)
+    {
+		if (typeof value !== 'number')
+			throw new Error(`Adding invalid value=${value} to metric=${this.name}`);
+		this.values.push(value);
+	}
+
+	/**
+	 * Calculate aggregate metrics for collected values.
+	 */
+	compute()
+    {
+         // Avoid the loss of significance for the sum.
+        this.values.sort((a, b) => a - b);
+        const squareSum = Statistics.squareSum(this.values);
+		this.sum = Statistics.sum(this.values);
+		this.min = Statistics.min(this.values);
+		this.max = Statistics.max(this.values);
+		this.mean = this.sum / this.values.length;
+        const product = Statistics.product(this.values);
+        this.geomean = Math.pow(product, 1 / this.values.length);
+		this.delta = Statistics.confidenceIntervalDelta(0.95, this.values.length, this.sum, squareSum);
+		this.percentDelta = isNaN(this.delta) ? undefined : (this.delta * 100) / this.mean;
+	}
 }

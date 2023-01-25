@@ -32,11 +32,15 @@ export function min(values) {
 }
 
 export function sum(values) {
-    return values.reduce(function (a, b) { return a + b; }, 0);
+    return values.reduce((a, b) => a + b, 0);
+}
+
+export function product(values) {
+    return values.reduce((a, b) => a * b, 1);
 }
 
 export function squareSum(values) {
-    return values.reduce(function (sum, value) { return sum + value * value;}, 0);
+    return values.reduce((sum, value) => sum + value * value, 0);
 }
 
 // With sum and sum of squares, we can compute the sample standard deviation in O(1).
@@ -76,9 +80,9 @@ export function confidenceIntervalDelta(confidenceLevel, numberOfSamples, sum, s
 }
 
 export function confidenceInterval(values, probability) {
-    var sum = sum(values);
-    var mean = sum / values.length;
-    var delta = confidenceIntervalDelta(probability || 0.95, values.length, sum, squareSum(values));
+    let sum_value = sum(values);
+    let mean = sum_value / values.length;
+    let delta = confidenceIntervalDelta(probability || 0.95, values.length, sum_value, squareSum(values));
     return [mean - delta, mean + delta];
 }
 

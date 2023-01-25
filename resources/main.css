@@ -200,10 +200,15 @@ section#summarized-results > #confidence-number {
     color: rgb(128, 128, 128);
 }
 
-section#detailed-results > table {
+section#detailed-results, section#summarized-results, section#about {
+    padding: 0 100px 0 100px;
+}
+
+section#detailed-results > table, section#detailed-results > .aggregated-metric-result{
     float: left;
     width: 50%;
 }
+
 
 section#detailed-results > .arithmetic-mean {
     clear: both;
@@ -285,4 +290,146 @@ th {
     .gauge {
         background-image: url(gauge@2x.png);
     }
+}
+
+
+.details-toggle {
+	display: inline-block;
+	padding: 2px 10px 2px 5px;
+	margin: 0 300px 2px 0;
+	background: #fff;
+	border-radius: 5px;
+	border: 1px solid #ddd;
+	opacity: 0.7;
+	cursor: pointer;
+	user-select: none;
+	transition: border-color 250ms ease, opacity 250ms ease;
+}
+.details-toggle:hover,
+.details-toggle:focus-within {
+	border-color: #bbb;
+	opacity: 1;
+}
+.details-toggle input {
+	display: inline-block;
+	appearance: none;
+	width: 1em;
+	height: 1em;
+	border: none;
+	background: none;
+}
+.details-toggle input:after {
+	content: '▶';
+	opacity: 0.5;
+	display: inline-block;
+	transform-origin: 50%;
+	position: relative;
+	transition: all 250ms ease;
+}
+.details-toggle input:checked:after {
+	opacity: 1;
+	transform: rotate(90deg);
+}
+
+/* Charts (lib/charts.js) */
+.bar-chart text,
+.scatter-plot text {
+	font-size: 11px;
+	fill: #777;
+	dominant-baseline: hanging;
+}
+.bar-chart .axis,
+.scatter-plot .axis {
+	stroke: #aaa;
+}
+.bar-chart .minMax {
+	stroke: #777;
+	stroke-width: 1;
+	stroke-opacity: 0.5;
+	stroke-dasharray: 2;
+}
+.bar-chart .mean {
+	stroke: #777;
+	stroke-width: 2;
+	stroke-opacity: 0.5;
+}
+.bar-chart .mean:hover {
+	stroke-opacity: 1;
+}
+.bar-chart g.bar {
+	fill: #8ad;
+}
+.bar-chart g.bar.large text {
+	display: none;
+}
+.bar-chart g.bar:hover {
+	filter: brightness(1.1);
+}
+.bar-chart g.bar text {
+	fill: #ddd;
+	text-anchor: middle;
+	text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.bar-chart g.bar:hover text {
+	display: block;
+	fill: #fff;
+	text-shadow: 0 0 5px #000;
+}
+.bar-chart .label {
+	text-anchor: end;
+	dominant-baseline: middle;
+}
+
+.scatter-plot .marker {
+	stroke-width: 1px;
+	fill: currentColor;
+	opacity: 0.6;
+	fill-opacity: 0.3;
+}
+.scatter-plot .marker:hover {
+	opacity: 1;
+	filter: drop-shadow(0 0 2px currentColor);
+}
+.scatter-plot .percentile {
+	fill: currentColor;
+	opacity: 0.6;
+	fill-opacity: 0.3;
+	stroke-width: 0px;
+}
+.scatter-plot .percentile line {
+	stroke-width: 1px;
+}
+.scatter-plot .percentile:hover {
+	opacity: 1;
+}
+
+/* Chart colors */
+.chart .blue {
+	color: #4081ec;
+	stroke: #4081ec;
+}
+
+.chart .green {
+	color: #699023;
+	stroke: #699023;
+}
+
+.chart .purple {
+	color: #391d74;
+	stroke: #391d74;
+}
+
+.chart .orange {
+	color: #fe8f06;
+	stroke: #fe8f06;
+}
+
+.chart .violet {
+	color: #8711ac;
+	stroke: #8711ac;
+}
+
+.chart .green-light {
+	color: #3bb502;
+	stroke: #3bb502;
 }
