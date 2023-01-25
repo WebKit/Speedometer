@@ -7,7 +7,8 @@ class InteractiveBenchmarkRunner extends BenchmarkRunner {
     _isRunning = false;
     _isStepping = false;
 
-    constructor(suites, iterationCount) {
+    constructor(suites, iterationCount)
+    {
         super(suites);
         this._client = this._createClient();
         if (!Number.isInteger(iterationCount) || iterationCount <= 0)
@@ -15,8 +16,9 @@ class InteractiveBenchmarkRunner extends BenchmarkRunner {
         this._iterationCount = iterationCount;
     }
 
-    _createClient() {
-        return  {
+    _createClient()
+    {
+        return {
             willStartFirstIteration: this._start.bind(this),
             willRunTest: this._testStart.bind(this),
             didRunTest: this._testDone.bind(this),
