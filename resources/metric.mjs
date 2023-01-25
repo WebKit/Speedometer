@@ -1,7 +1,7 @@
 import * as Statistics from './statistics.mjs';
 
 /** Number of milliseconds in a single minute. */
-const MILLIS_PER_MIN = 60 * 1000;
+export const MILLIS_PER_MIN = 60 * 1000;
 
 export class Metric {
 

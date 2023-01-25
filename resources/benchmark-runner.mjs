@@ -1,4 +1,4 @@
-import Metric from './metric.mjs';
+import {Metric, MILLIS_PER_MIN} from './metric.mjs';
 
 export class BenchmarkTestStep {
     constructor(testName, testFunction) {
