@@ -73,7 +73,6 @@ describe("BenchmarkRunner", () => {
 
             it("should remove the frame if a frame is defined", () => {
                 expect(runner._frame).to.equal(frame);
-                expect(true).to.be(false);
 
                 runner._removeFrame();
 
