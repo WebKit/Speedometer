@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        browser: [chrome, firefox, safari]
+    env:
+      BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Enable Safari WebDriver
+        if: env.BROWSER == 'safari'
+        run: |                      
+          defaults write com.apple.Safari IncludeDevelopMenu YES
+          defaults write com.apple.Safari AllowRemoteAutomation 1
+          sudo safaridriver --enable
+
+      - name: Run test
+        run: |
+          echo "Running in $BROWSER"
+          npm install
+          node tests/unit-test-run.js
+    

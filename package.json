@@ -1,0 +1,10 @@
+{
+  "name": "crossbrowser-selenium-action-test",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "selenium-webdriver": "^4.8.0",
+    "serve-static": "^1.15.0"
+  }
+}
