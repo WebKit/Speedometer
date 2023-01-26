@@ -12,20 +12,14 @@ async function test() {
     switch (process.env.BROWSER) {
         case "safari":
             capabilities = Capabilities.safari();
-            capabilities.set("safari.options", { technologyPreview: false });
             break;
 
         case "firefox": {
-            capabilities = Capabilities.firefox().setLoggingPrefs({
-                browser: "ALL",
-            });
+            capabilities = Capabilities.firefox();
             break;
         }
         case "chrome": {
-            capabilities = Capabilities.chrome().setLoggingPrefs({
-                browser: "ALL",
-            });
-            // capabilities.set("chromeOptions", { });
+            capabilities = Capabilities.chrome();
             break;
         }
     }
