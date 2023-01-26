@@ -175,34 +175,6 @@ Suites.push({
 });
 
 Suites.push({
-    name: 'EmberJS-Debug-TodoMVC',
-    url: 'todomvc/architecture-examples/emberjs-debug/index.html',
-    async prepare(page) {
-        const element = await page.waitForElement('#new-todo');
-        element.focus();
-    },
-    tests: [
-        new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
-            const newTodo = page.getElementById('new-todo');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue('Something to do ' + i);
-                newTodo.enter('keydown');
-            }
-        }),
-        new BenchmarkTestStep('CompletingAllItems', page => {
-            const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                checkboxes[i].click();
-        }),
-        new BenchmarkTestStep('DeletingItems', page => {
-            const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                deleteButtons[i].click();
-        }),
-    ]
-});
-
-Suites.push({
     name: 'BackboneJS-TodoMVC',
     url: 'todomvc/architecture-examples/backbone/index.html',
     async prepare(page) {
@@ -228,35 +200,6 @@ Suites.push({
             const deleteButtons = page.querySelectorAll('.destroy');
             for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
-        }),
-    ]
-});
-
-Suites.push({
-    name: 'AngularJS-TodoMVC',
-    url: 'todomvc/architecture-examples/angularjs/index.html',
-    async prepare(page) {
-        const element = await page.waitForElement('#new-todo');
-        element.focus();
-    },
-    tests: [
-        new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
-            const newTodo = page.querySelector('.new-todo');
-            const form = page.querySelector('form');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue('Something to do ' + i);
-                newTodo.dispatchEvent('input');
-                form.dispatchEvent('submit');
-            }
-        }),
-        new BenchmarkTestStep('CompletingAllItems', page => {
-            const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                checkboxes[i].click();
-        }),
-        new BenchmarkTestStep('DeletingAllItems', page => {
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                page.querySelector('.destroy').click();
         }),
     ]
 });
@@ -369,99 +312,6 @@ Suites.push({
         }),
         new BenchmarkTestStep('DeletingItems', page => {
             const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                deleteButtons[i].click();
-        }),
-    ]
-});
-
-Suites.push({
-    name: 'Inferno-TodoMVC',
-    url: 'todomvc/architecture-examples/inferno/index.html',
-    async prepare(page) {
-        const element = await page.waitForElement('.new-todo');
-        element.focus();
-    },
-    tests: [
-        new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
-            const newTodo = page.querySelector('.new-todo');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue('Something to do ' + i);
-                newTodo.dispatchEvent('change');
-                newTodo.enter('keydown');
-            }
-        }),
-        new BenchmarkTestStep('CompletingAllItems', page => {
-            const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                checkboxes[i].click();
-        }),
-        new BenchmarkTestStep('DeletingItems', page => {
-            const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                page.querySelector('.destroy').click();
-        }),
-    ]
-});
-
-
-Suites.push({
-    name: 'Elm-TodoMVC',
-    url: 'todomvc/functional-prog-examples/elm/index.html',
-    async prepare(page) {
-        const element = await page.waitForElement('.new-todo');
-        element.focus();
-    },
-    tests: [
-        new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
-            const newTodo = page.querySelector('.new-todo');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue('Something to do ' + i);
-                newTodo.dispatchEvent('input');
-                page.call('processElmWorkQueue');
-                newTodo.enter('keydown');
-                page.call('processElmWorkQueue');
-            }
-        }),
-        new BenchmarkTestStep('CompletingAllItems', page => {
-            let checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                checkboxes[i].click();
-                page.call('processElmWorkQueue');
-            }
-        }),
-        new BenchmarkTestStep('DeletingItems', page => {
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                page.querySelector('.destroy').click();
-                page.call('processElmWorkQueue');
-            }
-        }),
-    ]
-});
-
-Suites.push({
-    name: 'Flight-TodoMVC',
-    url: 'todomvc/dependency-examples/flight/flight/index.html',
-    async prepare(page) {
-        await page.waitForElement('#appIsReady');
-        const newTodo = page.getElementById('new-todo');
-        newTodo.focus();
-    },
-    tests: [
-        new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
-            const newTodo = page.getElementById('new-todo');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue('Something to do ' + i);
-                newTodo.enter('keydown');
-            }
-        }),
-        new BenchmarkTestStep('CompletingAllItems', page => {
-            let checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                checkboxes[i].click();
-        }),
-        new BenchmarkTestStep('DeletingItems', page => {
-            let deleteButtons = page.querySelectorAll('.destroy');
             for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
         }),
