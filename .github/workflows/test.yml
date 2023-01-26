@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ "main", "mocha-in-ci" ]
+    branches: [ "main", "tests-in-ci" ]
   pull_request:
     branches: [ "main" ]
 
@@ -31,5 +31,5 @@ jobs:
         run: |
           echo "Running in $BROWSER"
           npm install
-          node tests/unit-test-run.js
+          node tests/unit-test-run.mjs
     
