@@ -1,52 +1,5 @@
 
-
-// https://developer.mozilla.org/en-US/docs/Learn/Server-side/Node_server_without_framework:
-import * as fs from 'node:fs';
-import * as http from 'node:http';
-import * as path from 'node:path';
-
-const PORT = 8010;
-const MIME_TYPES = {
-  default: 'application/octet-stream',
-  html: 'text/html; charset=UTF-8',
-  js: 'application/javascript; charset=UTF-8',
-  mjs: 'application/javascript; charset=UTF-8',
-  css: 'text/css',
-  png: 'image/png',
-  jpg: 'image/jpg',
-  gif: 'image/gif',
-  ico: 'image/x-icon',
-  svg: 'image/svg+xml',
-};
-
-const STATIC_PATH = path.join(process.cwd(), './');
-
-const toBool = [() => true, () => false];
-
-const prepareFile = async (url) => {
-  const paths = [STATIC_PATH, url];
-  if (url.endsWith('/')) paths.push('index.html');
-  const filePath = path.join(...paths);
-  const pathTraversal = !filePath.startsWith(STATIC_PATH);
-  const exists = await fs.promises.access(filePath).then(...toBool);
-  const found = !pathTraversal && exists;
-  const streamPath = found ? filePath : STATIC_PATH + '/README.md';
-  const ext = path.extname(streamPath).substring(1).toLowerCase();
-  const stream = fs.createReadStream(streamPath);
-  return { found, ext, stream };
-};
-
-const server = http.createServer(async (req, res) => {
-  const file = await prepareFile(req.url);
-  const statusCode = file.found ? 200 : 404;
-  const mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
-  res.writeHead(statusCode, { 'Content-Type': mimeType });
-  file.stream.pipe(res);
-  console.log(`${req.method} ${req.url} ${statusCode}`);
-}).listen(PORT);
-
-console.log(`Server running at http://127.0.0.1:${PORT}/`);
-
+import serve from "./unit-test-server.mjs";
 import {
   Builder,
   By,
@@ -54,23 +7,26 @@ import {
 } from "selenium-webdriver";
 import assert from "assert";
 
+const PORT = 8010;
+const server = serve(PORT);
+
 let driver;
 
 async function test() {
   let capabilities;
   switch (process.env.BROWSER) {
-    case 'safari':
+    case "safari":
       capabilities = Capabilities.safari();
-      capabilities.set('safari.options', { technologyPreview: false });
+      capabilities.set("safari.options", { technologyPreview: false });
       break;
 
-    case 'firefox': {
-      capabilities = Capabilities.firefox().setLoggingPrefs({ browser: 'ALL' });
+    case "firefox": {
+      capabilities = Capabilities.firefox().setLoggingPrefs({ browser: "ALL" });
       break;
     }
-    case 'chrome': {
-      capabilities = Capabilities.chrome().setLoggingPrefs({ browser: 'ALL' });
-      // capabilities.set('chromeOptions', { });
+    case "chrome": {
+      capabilities = Capabilities.chrome().setLoggingPrefs({ browser: "ALL" });
+      // capabilities.set("chromeOptions", { });
       break;
     }
   }
@@ -79,24 +35,28 @@ async function test() {
 
   try {
     await driver.get(`http://localhost:${PORT}/tests/index.html`);
+    console.log("Waiting for tests to finish");
     await driver.wait(function () {
       return driver.executeScript("return window.mochaResults.state === 'stopped'");
     }, 5000);
+    console.log("Checking for passed tests");
     assert(await driver.executeScript("return window.mochaResults.stats.passes") > 0);
+    console.log("Checking for failed tests");
     assert(await driver.executeScript("return window.mochaResults.stats.failures") == 0);
   } catch (e) {
     throw e;
   } finally {
+    console.log("Tests complete");
     driver.quit();
     server.close();
   }
 }
 
-process.on('unhandledRejection', err => {
+process.on("unhandledRejection", err => {
   console.error(err);
   process.exit(1);
 });
-process.once('uncaughtException', err => {
+process.once("uncaughtException", err => {
   console.error(err);
   process.exit(1);
 });

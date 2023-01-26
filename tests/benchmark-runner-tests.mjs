@@ -65,6 +65,7 @@ describe("BenchmarkRunner", () => {
     describe("Frame", () => {
         describe("_removeFrame", () => {
             let frame, removeChildSpy;
+
             before(async () => {
                 frame = await runner._appendFrame();
 
