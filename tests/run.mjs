@@ -1,4 +1,4 @@
-import serve from "./unit-test-server.mjs";
+import serve from "./server.mjs";
 import { Builder, Capabilities } from "selenium-webdriver";
 import assert from "assert";
 

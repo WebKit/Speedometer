@@ -24,4 +24,4 @@ jobs:
         run: |
           echo "Running in $BROWSER"
           npm install
-          node tests/unit-test-run.mjs
+          node tests/run.mjs
