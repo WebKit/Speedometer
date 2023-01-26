@@ -1,9 +1,8 @@
 {
-  "name": "crossbrowser-selenium-action-test",
-  "type": "module",
-  "version": "1.0.0",
-  "description": "",
-  "dependencies": {
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^10.2.0",
+    "sinon": "^15.0.1",
     "selenium-webdriver": "^4.8.0"
   }
 }

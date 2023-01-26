@@ -2,4 +2,4 @@
 *.pyc
 .DS_Store
 .directory
-node_modules
+/node_modules

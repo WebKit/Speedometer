@@ -5,8 +5,13 @@ function TEST_FIXTURE(name)
     return {
         name,
         run: sinon.stub(),
+<<<<<<< HEAD
     }
 };
+=======
+    };
+}
+>>>>>>> main
 
 const SUITES_FIXTURE = [
     {
@@ -29,7 +34,11 @@ const CLIENT_FIXTURE = {
     didRunSuites: sinon.stub(),
 };
 
+<<<<<<< HEAD
 function stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd) 
+=======
+function stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd)
+>>>>>>> main
 {
     sinon
         .stub(window.performance, "now")
@@ -92,9 +101,17 @@ describe("BenchmarkRunner", () => {
                     frame.nodeName.toLowerCase()
                 );
 
+<<<<<<< HEAD
                 expect(frame.style.width).to.be("800px");
                 expect(frame.style.height).to.be("600px");
                 expect(frame.style.position).to.be("absolute");
+=======
+                const { width, height, position } = getComputedStyle(frame);
+
+                expect(parseInt(width)).to.equal(800);
+                expect(parseInt(height)).to.equal(600);
+                expect(position).to.be("absolute");
+>>>>>>> main
             });
 
             it("should disable scrolling in the frame", async () => {
@@ -235,7 +252,11 @@ describe("BenchmarkRunner", () => {
                 _writeMarkSpy = spy(runner, "_writeMark");
                 _testFnSpy = suite.tests[0].run.callsFake(() => null);
 
+<<<<<<< HEAD
                 stubPerformanceNowCalls(8000000, 10000000, 12000000, 13000000);
+=======
+                stubPerformanceNowCalls(8000, 10000, 12000, 13000);
+>>>>>>> main
                 runner._runTest(suite, suite.tests[0], page, callback);
             });
 
@@ -256,7 +277,11 @@ describe("BenchmarkRunner", () => {
                         .height;
 
                 await new Promise((resolve) => requestAnimationFrame(resolve));
+<<<<<<< HEAD
                 assert.calledWith(callback, 2000000, 1000000, height);
+=======
+                assert.calledWith(callback, 2000, 1000, height);
+>>>>>>> main
             });
         });
 
@@ -264,10 +289,17 @@ describe("BenchmarkRunner", () => {
             describe("_finalize", () => {
                 const suite = SUITES_FIXTURE[1];
 
+<<<<<<< HEAD
                 const syncStart = 8000000;
                 const syncEnd = 10000000;
                 const asyncStart = 12000000;
                 const asyncEnd = 13000000;
+=======
+                const syncStart = 8000;
+                const syncEnd = 10000;
+                const asyncStart = 12000;
+                const asyncEnd = 13000;
+>>>>>>> main
 
                 before(async () => {
                     stub(runner, "_measuredValues").value({
