@@ -1,5 +1,5 @@
 import serve from "./unit-test-server.mjs";
-import { Builder, By, Capabilities } from "selenium-webdriver";
+import { Builder, Capabilities } from "selenium-webdriver";
 import assert from "assert";
 
 const PORT = 8010;
