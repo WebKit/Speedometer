@@ -2,7 +2,7 @@
 
 ## Prerequisite
 Node is required for local development.
-We recommend using a Node version manager to ensure a stable development environment is used. 
+We recommend using a Node version manager ([nvm](https://github.com/nvm-sh/nvm) for example) to ensure a stable development environment is used. 
 Below are the required node / npm versions:
 ```sh
     "node": "18.13.0",

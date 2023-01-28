@@ -13,6 +13,7 @@
   "bugs": {
     "url": "https://github.com/WebKit/Speedometer/issues"
   },
+  "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "dev": "http-server ./ -p 7000 -c-1 --cors",
     "test:chrome": "BROWSER=chrome node tests/run.mjs",
