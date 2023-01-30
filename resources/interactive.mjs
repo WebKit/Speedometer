@@ -229,7 +229,7 @@ function startTest()
     if (searchParams.has('suite'))
         disableAllSuitesExcept(searchParams.get('suite'));
 
-    const iterationCount = searchParams.get('iterationCount') || 1;
+    const iterationCount = +searchParams.get('iterationCount') || 1;
     const interactiveRunner =  new window.BenchmarkRunner(Suites, iterationCount);
 
     if (!(interactiveRunner instanceof InteractiveBenchmarkRunner)) {
