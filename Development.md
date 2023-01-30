@@ -17,7 +17,7 @@ In your working directory, open terminal and paste the following commands:
     npm install
 ````
 
-## Run
+## Run Development Server
 1. In your terminal run:
     ```sh
         npm run dev
