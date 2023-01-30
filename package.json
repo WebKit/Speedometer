@@ -15,7 +15,7 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
-    "dev": "http-server ./ -p 7000 -c-1 --cors -o",
+    "dev": "http-server ./ -p 7000 -c-1 --cors",
     "test:chrome": "BROWSER=chrome node tests/run.mjs",
     "test:firefox": "BROWSER=firefox node tests/run.mjs",
     "test:safari": "BROWSER=safari node tests/run.mjs"
