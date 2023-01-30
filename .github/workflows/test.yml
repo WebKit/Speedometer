@@ -18,10 +18,16 @@ jobs:
     env:
       BROWSER: ${{ matrix.browser }}
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Run test
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.13.0
+      - name: Install
+        run: |
+          npm install
+      - name: Run tests
         run: |
           echo "Running in $BROWSER"
-          npm install
           node tests/run.mjs
