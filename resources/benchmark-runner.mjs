@@ -95,13 +95,13 @@ class PageElement {
         this.#node.focus();
     }
 
-    dispatchEvent(eventName, options = NATIVE_OPTIONS)
+    dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event)
     {
         if (eventName === 'submit')
             // FIXME FireFox doesn't like `new Event('submit')
             this._dispatchSubmitEvent();
         else
-            this.#node.dispatchEvent(new Event(eventName, options));
+            this.#node.dispatchEvent(new eventType(eventName, options));
     }
 
     _dispatchSubmitEvent()

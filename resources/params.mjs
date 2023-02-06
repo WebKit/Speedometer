@@ -21,7 +21,10 @@ class Params {
             }
         }
         this.startAutomatically = searchParams.has("startAutomatically")
-        this.iterationCount = parseInt(searchParams.has("iterationCount")) || this.iterationCount;
+        this.iterationCount = parseInt(searchParams.get("iterationCount")) || this.iterationCount;
+        if (this.iterationCount <= 1) {
+            throw Error(`Invalid iterationCount param: ${this.iterationCount}`);
+        }
 
         Object.freeze(this.viewport);
         Object.freeze(this);
