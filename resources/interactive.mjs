@@ -1,4 +1,5 @@
 import {BenchmarkRunner} from './benchmark-runner.mjs';
+import { params } from './params.mjs';
 import {Suites} from './tests.mjs';
 
 class InteractiveBenchmarkRunner extends BenchmarkRunner {
@@ -226,11 +227,11 @@ function disableAllSuitesExcept(suiteName)
 
 function startTest()
 {
+    // FIXME: Use global params here 
     if (searchParams.has('suite'))
         disableAllSuitesExcept(searchParams.get('suite'));
 
-    const iterationCount = searchParams.get('iterationCount') || 1;
-    const interactiveRunner =  new window.BenchmarkRunner(Suites, iterationCount);
+    const interactiveRunner =  new window.BenchmarkRunner(Suites, params.iterationCount);
 
     if (!(interactiveRunner instanceof InteractiveBenchmarkRunner)) {
         throw Error(
@@ -243,7 +244,7 @@ function startTest()
         interactiveRunner.runStep.bind(interactiveRunner), 
         interactiveRunner.runSuites.bind(interactiveRunner)));
 
-    if (searchParams.has('startAutomatically'))
+    if (params.startAutomatically)
         document.getElementById('runSuites').click();
 }
 
