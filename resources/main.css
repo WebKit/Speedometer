@@ -227,6 +227,9 @@ section#detailed-results table, section#detailed-results .aggregated-metric-resu
     width: 50%;
 }
 
+section#detailed-results button, section#detailed-results .button {
+    min-width: 300px;
+}
 
 section#detailed-results .all-metric-results {
     flex: auto;
