@@ -1,3 +1,8 @@
+::root {
+ --viewport-width: 800px;
+ --viewport-height: 600px;
+}
+
 body {
     background-color: rgb(46, 51, 55);
     color: rgb(235, 235, 235);
@@ -34,12 +39,12 @@ img {
 main {
     display: block;
     position: absolute;
-    width: 800px;
-    height: 600px;
+    width: var(--viewport-width);
+    height: var(--viewport-height);
     top: 50%;
     left: 50%;
-    margin-top: -321px;
-    margin-left: -421px;
+    margin-top: calc(var(--viewport-height) / -2);
+    margin-left: calc(var(--viewport-width) / -2);
     padding: 15px;
     border: 6px solid rgb(235, 235, 235);
     border-radius: 20px;

@@ -1,4 +1,5 @@
 import { BenchmarkRunner } from "../resources/benchmark-runner.mjs";
+import {defaultParams} from "../resources/params.mjs"
 
 function TEST_FIXTURE(name)
 {
@@ -83,7 +84,9 @@ describe("BenchmarkRunner", () => {
         });
 
         describe("_appendFrame", () => {
-            it("should create an absolutely positioned iframe with 800px x 600px dimensions", async () => {
+            const DEFAULT_WIDTH = defaultParams.viewport.width;
+            const DEFAULT_HEIGHT = defaultParams.viewport.height;
+            it(`should create an absolutely positioned iframe with ${DEFAULT_WIDTH}px x ${DEFAULT_WIDTH}px dimensions`, async () => {
                 const createElementSpy = spy(document, "createElement");
 
                 const frame = await runner._appendFrame();
@@ -95,8 +98,8 @@ describe("BenchmarkRunner", () => {
 
                 const { width, height, position } = getComputedStyle(frame);
 
-                expect(parseInt(width)).to.equal(800);
-                expect(parseInt(height)).to.equal(600);
+                expect(parseInt(width)).to.equal(DEFAULT_WIDTH);
+                expect(parseInt(height)).to.equal(DEFAULT_HEIGHT);
                 expect(position).to.be("absolute");
             });
 
@@ -105,17 +108,17 @@ describe("BenchmarkRunner", () => {
                 expect(scrolling).to.be("no");
             });
 
-            it("should add body margins to the frame if the window is larger than 800px x 600px", async () => {
-                stub(window, "innerWidth").get(() => 900);
-                stub(window, "innerHeight").get(() => 700);
+            it(`should add body margins to the frame if the window is larger than ${DEFAULT_WIDTH}px x ${DEFAULT_HEIGHT}px`, async () => {
+                stub(window, "innerWidth").get(() => DEFAULT_WIDTH + 100);
+                stub(window, "innerHeight").get(() => DEFAULT_HEIGHT + 100);
 
                 const { style } = await runner._appendFrame();
                 expect(style.left).to.be("8px");
                 expect(style.top).to.be("8px");
             });
 
-            it("should not add outer spacing to the frame if the window is smaller than 800px x 600px", async () => {
-                stub(window, "innerWidth").get(() => 700);
+            it(`should not add outer spacing to the frame if the window is smaller than ${DEFAULT_WIDTH}px x ${DEFAULT_HEIGHT}px`, async () => {
+                stub(window, "innerWidth").get(() => DEFAULT_WIDTH - 100);
 
                 const { style } = await runner._appendFrame();
                 expect(style.left).to.be("0px");

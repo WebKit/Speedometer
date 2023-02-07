@@ -1,3 +1,5 @@
+import {params} from "./params.mjs"
+
 export class BenchmarkTestStep {
     constructor(testName, testFunction) {
         this.name = testName;
@@ -146,15 +148,16 @@ export class BenchmarkRunner {
     async _appendFrame(src)
     {
         const frame = document.createElement('iframe');
-        frame.style.width = '800px';
-        frame.style.height = '600px';
+        frame.style.width = `${params.viewport.width}px`;
+        frame.style.height = `${params.viewport.height}px`;
         frame.style.border = '0px none';
         frame.style.position = 'absolute';
         frame.setAttribute('scrolling', 'no');
 
         const marginLeft = parseInt(getComputedStyle(document.body).marginLeft);
         const marginTop = parseInt(getComputedStyle(document.body).marginTop);
-        if (window.innerWidth > 800 + marginLeft && window.innerHeight > 600 + marginTop) {
+        if (window.innerWidth > params.viewport.width + marginLeft 
+                && window.innerHeight > params.viewport.height + marginTop) {
             frame.style.left = marginLeft + 'px';
             frame.style.top = marginTop + 'px';
         } else {

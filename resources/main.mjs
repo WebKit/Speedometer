@@ -2,6 +2,7 @@ import {BenchmarkRunner} from "./benchmark-runner.mjs";
 import "./benchmark-report.mjs";
 import * as Statistics from "./statistics.mjs";
 import {Suites} from "./tests.mjs";
+import {params} from "./params.mjs"
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -230,7 +231,11 @@ class MainBenchmarkClient {
 
     _resizeScreeHandler() {
         // FIXME: Detect when the window size changes during the test.
-        const screenIsTooSmall = window.innerWidth < 850 || window.innerHeight < 650;
+        const mainSize = document.querySelector('main').getBoundingClientRect()
+        const screenIsTooSmall = window.innerWidth <  mainSize.width 
+            || window.innerHeight < mainSize.height;
+        document.getElementById('min-screen-width').textContent = `${params.viewport.width + 50}px`;
+        document.getElementById('min-screen-height').textContent = `${params.viewport.height + 50}px`;
         document.getElementById('screen-size').textContent = window.innerWidth + 'px by ' + window.innerHeight + 'px';
         document.getElementById('screen-size-warning').style.display = screenIsTooSmall ? null : 'none';
     }
@@ -274,5 +279,9 @@ class MainBenchmarkClient {
             history.pushState({section: sectionIdentifier}, document.title);
     }
 }
+
+const rootStyle = document.documentElement.style;
+rootStyle.setProperty('--viewport-width', `${params.viewport.width}px`);
+rootStyle.setProperty('--viewport-height', `${params.viewport.height}px`);
 
 window.benchmarkClient = new MainBenchmarkClient();
