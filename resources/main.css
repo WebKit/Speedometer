@@ -1,6 +1,6 @@
 ::root {
- --viewport-width: 1366px;
- --viewport-height: 768px;
+ --viewport-width: 800px;
+ --viewport-height: 600px;
 }
 
 body {

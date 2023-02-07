@@ -1,4 +1,5 @@
 import { BenchmarkRunner } from "../resources/benchmark-runner.mjs";
+import {defaultParams} from "../resources/params.mjs"
 
 function TEST_FIXTURE(name)
 {
@@ -83,8 +84,8 @@ describe("BenchmarkRunner", () => {
         });
 
         describe("_appendFrame", () => {
-            const DEFAULT_WIDTH = 1366;
-            const DEFAULT_HEIGHT = 768;
+            const DEFAULT_WIDTH = defaultParams.viewport.width;
+            const DEFAULT_HEIGHT = defaultParams.viewport.height;
             it(`should create an absolutely positioned iframe with ${DEFAULT_WIDTH}px x ${DEFAULT_WIDTH}px dimensions`, async () => {
                 const createElementSpy = spy(document, "createElement");
 

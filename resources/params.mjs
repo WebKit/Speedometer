@@ -1,16 +1,22 @@
 
 class Params {
     viewport = {
-        width: 1366,
-        height: 768,
+        width: 800,
+        height: 600,
     };
     startAutomatically = false;
     iterationCount = 10;
     unit = "ms";
 
-    constructor()
+    constructor(searchParams = undefined)
     {
-        const searchParams = new URLSearchParams(window.location.search);
+        if (searchParams)
+            this._copyFromParams(searchParams)
+        Object.freeze(this.viewport);
+        Object.freeze(this);
+    }
+
+    _copyFromParams(searchParams) {
         const viewportParam = searchParams.get("viewport");
         if (viewportParam) {
             const [width, height] = viewportParam.split("x");
@@ -25,9 +31,6 @@ class Params {
         if (this.iterationCount <= 1) {
             throw Error(`Invalid iterationCount param: ${this.iterationCount}`);
         }
-
-        Object.freeze(this.viewport);
-        Object.freeze(this);
     }
 
     toSearchParams()
@@ -39,4 +42,7 @@ class Params {
 
 }
 
-export const params = new Params();
+export const defaultParams = new Params();
+
+const searchParams = new URLSearchParams(window.location.search);
+export const params = new Params(searchParams);
