@@ -16,17 +16,24 @@
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "dev": "http-server ./ -p 7000 -c-1 --cors",
+    "lint:check": "eslint **/*.mjs",
+    "lint:fix": "eslint **/*.mjs --fix",
+    "pretty:check": "prettier --check ./",
+    "pretty:fix": "prettier --write ./",
+    "format": "npm run pretty:fix ; npm run lint:fix",
     "test:chrome": "BROWSER=chrome node tests/run.mjs",
     "test:firefox": "BROWSER=firefox node tests/run.mjs",
     "test:safari": "BROWSER=safari node tests/run.mjs"
   },
   "devDependencies": {
+    "command-line-args": "^5.2.1",
+    "command-line-usage": "^6.1.3",
+    "eslint": "^8.33.0",
     "expect.js": "^0.3.1",
     "http-server": "^14.1.1",
     "mocha": "^10.2.0",
+    "prettier": "^2.8.3",
     "selenium-webdriver": "^4.8.0",
-    "sinon": "^15.0.1",
-    "command-line-args": "^5.2.1",
-    "command-line-usage": "^6.1.3"
+    "sinon": "^15.0.1"
   }
 }
