@@ -24,7 +24,8 @@ export default function serve(port) {
     }
     const prepareFile = async (url) => {
         const paths = [STATIC_PATH, url];
-        if (url.endsWith("/")) paths.push("index.html");
+        if (url.endsWith("/"))
+            paths.push("index.html");
         const filePath = path.join(...paths);
         const pathTraversal = !filePath.startsWith(STATIC_PATH);
         const exists = await fs.promises.access(filePath).then(...toBool);
@@ -32,7 +33,7 @@ export default function serve(port) {
         const streamPath = found ? filePath : STATIC_PATH + "/index.html";
         const ext = path.extname(streamPath).substring(1).toLowerCase();
         const stream = fs.createReadStream(streamPath);
-        return { found, ext, stream };
+        return {found, ext, stream};
     };
 
     const server = http
@@ -40,7 +41,7 @@ export default function serve(port) {
             const file = await prepareFile(req.url);
             const statusCode = file.found ? 200 : 404;
             const mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
-            res.writeHead(statusCode, { "Content-Type": mimeType });
+            res.writeHead(statusCode, {"Content-Type": mimeType});
             file.stream.pipe(res);
         })
         .listen(port);

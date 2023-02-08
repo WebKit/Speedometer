@@ -1,8 +1,7 @@
-import { BenchmarkRunner } from "../resources/benchmark-runner.mjs";
-import {defaultParams} from "../resources/params.mjs"
+import {BenchmarkRunner} from "../resources/benchmark-runner.mjs";
+import {defaultParams} from "../resources/params.mjs";
 
-function TEST_FIXTURE(name)
-{
+function TEST_FIXTURE(name) {
     return {
         name,
         run: sinon.stub(),
@@ -12,11 +11,7 @@ function TEST_FIXTURE(name)
 const SUITES_FIXTURE = [
     {
         name: "Suite 1",
-        tests: [
-            TEST_FIXTURE("Test 1"),
-            TEST_FIXTURE("Test 2"),
-            TEST_FIXTURE("Test 3"),
-        ],
+        tests: [TEST_FIXTURE("Test 1"), TEST_FIXTURE("Test 2"), TEST_FIXTURE("Test 3")],
     },
     {
         name: "Suite 2",
@@ -30,8 +25,7 @@ const CLIENT_FIXTURE = {
     didRunSuites: sinon.stub(),
 };
 
-function stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd)
-{
+function stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd) {
     sinon
         .stub(window.performance, "now")
         .onFirstCall()
@@ -44,7 +38,7 @@ function stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd)
 }
 
 describe("BenchmarkRunner", () => {
-    const { spy, stub, assert } = sinon;
+    const {spy, stub, assert} = sinon;
     let runner;
 
     before(() => {
@@ -91,12 +85,9 @@ describe("BenchmarkRunner", () => {
 
                 const frame = await runner._appendFrame();
                 expect(frame).to.be.a(HTMLIFrameElement);
-                assert.calledWith(
-                    createElementSpy,
-                    frame.nodeName.toLowerCase()
-                );
+                assert.calledWith(createElementSpy, frame.nodeName.toLowerCase());
 
-                const { width, height, position } = getComputedStyle(frame);
+                const {width, height, position} = getComputedStyle(frame);
 
                 expect(parseInt(width)).to.equal(DEFAULT_WIDTH);
                 expect(parseInt(height)).to.equal(DEFAULT_HEIGHT);
@@ -104,7 +95,7 @@ describe("BenchmarkRunner", () => {
             });
 
             it("should disable scrolling in the frame", async () => {
-                const { scrolling } = await runner._appendFrame();
+                const {scrolling} = await runner._appendFrame();
                 expect(scrolling).to.be("no");
             });
 
@@ -112,7 +103,7 @@ describe("BenchmarkRunner", () => {
                 stub(window, "innerWidth").get(() => DEFAULT_WIDTH + 100);
                 stub(window, "innerHeight").get(() => DEFAULT_HEIGHT + 100);
 
-                const { style } = await runner._appendFrame();
+                const {style} = await runner._appendFrame();
                 expect(style.left).to.be("8px");
                 expect(style.top).to.be("8px");
             });
@@ -120,7 +111,7 @@ describe("BenchmarkRunner", () => {
             it(`should not add outer spacing to the frame if the window is smaller than ${DEFAULT_WIDTH}px x ${DEFAULT_HEIGHT}px`, async () => {
                 stub(window, "innerWidth").get(() => DEFAULT_WIDTH - 100);
 
-                const { style } = await runner._appendFrame();
+                const {style} = await runner._appendFrame();
                 expect(style.left).to.be("0px");
                 expect(style.top).to.be("0px");
             });
@@ -146,9 +137,7 @@ describe("BenchmarkRunner", () => {
             before(async () => {
                 _runSuiteStub = stub(runner, "_runSuite").callsFake(() => null);
                 _finalizeStub = stub(runner, "_finalize").callsFake(() => null);
-                _removeFrameStub = stub(runner, "_removeFrame").callsFake(
-                    () => null
-                );
+                _removeFrameStub = stub(runner, "_removeFrame").callsFake(() => null);
 
                 await runner._runAllSuites();
             });
@@ -172,14 +161,9 @@ describe("BenchmarkRunner", () => {
             const suite = SUITES_FIXTURE[0];
 
             before(async () => {
-                _prepareSuiteStub = stub(runner, "_prepareSuite").callsFake(
-                    () => null
-                );
+                _prepareSuiteStub = stub(runner, "_prepareSuite").callsFake(() => null);
 
-                _runTestAndRecordResultsStub = stub(
-                    runner,
-                    "_runTestAndRecordResults"
-                ).callsFake(() => null);
+                _runTestAndRecordResultsStub = stub(runner, "_runTestAndRecordResults").callsFake(() => null);
 
                 runner._runSuite(suite);
             });
@@ -209,25 +193,12 @@ describe("BenchmarkRunner", () => {
             });
 
             it("should run the test with the correct arguments", () => {
-                assert.calledWith(
-                    _runTestSpy,
-                    suite,
-                    suite.tests[0],
-                    runner._page
-                );
+                assert.calledWith(_runTestSpy, suite, suite.tests[0], runner._page);
             });
 
             it("should run client pre and post hooks if present", () => {
-                assert.calledWith(
-                    runner._client.willRunTest,
-                    suite,
-                    suite.tests[0]
-                );
-                assert.calledWith(
-                    runner._client.didRunTest,
-                    suite,
-                    suite.tests[0]
-                );
+                assert.calledWith(runner._client.willRunTest, suite, suite.tests[0]);
+                assert.calledWith(runner._client.didRunTest, suite, suite.tests[0]);
             });
         });
 
@@ -237,7 +208,7 @@ describe("BenchmarkRunner", () => {
             const suite = SUITES_FIXTURE[0];
 
             before(async () => {
-                page = { _frame: await runner._appendFrame() };
+                page = {_frame: await runner._appendFrame()};
                 _writeMarkSpy = spy(runner, "_writeMark");
                 _testFnSpy = suite.tests[0].run.callsFake(() => null);
 
@@ -257,9 +228,7 @@ describe("BenchmarkRunner", () => {
             });
 
             it("should fire the callback with correct arguments for sync time, async time, and frame height", async () => {
-                const height =
-                    runner._frame.contentDocument.body.getBoundingClientRect()
-                        .height;
+                const height = runner._frame.contentDocument.body.getBoundingClientRect().height;
 
                 await new Promise((resolve) => requestAnimationFrame(resolve));
                 assert.calledWith(callback, 2000, 1000, height);
@@ -280,18 +249,10 @@ describe("BenchmarkRunner", () => {
                         tests: {},
                     });
 
-                    stubPerformanceNowCalls(
-                        syncStart,
-                        syncEnd,
-                        asyncStart,
-                        asyncEnd
-                    );
+                    stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd);
 
                     // instantiate recorded test results
-                    await runner._runTestAndRecordResults(
-                        suite,
-                        suite.tests[0]
-                    );
+                    await runner._runTestAndRecordResults(suite, suite.tests[0]);
 
                     await runner._finalize();
                 });
@@ -305,22 +266,14 @@ describe("BenchmarkRunner", () => {
                     const geomean = Math.pow(total, 1 / suite.tests.length);
                     const score = (60 * 1000) / geomean / 3; // correctionFactor = 3
 
-                    const {
-                        total: measuredTotal,
-                        mean: measuredMean,
-                        geomean: measuredGeomean,
-                        score: measuredScore,
-                    } = runner._measuredValues;
+                    const {total: measuredTotal, mean: measuredMean, geomean: measuredGeomean, score: measuredScore} = runner._measuredValues;
 
                     expect(measuredTotal).to.equal(total);
                     expect(measuredMean).to.equal(mean);
                     expect(measuredGeomean).to.equal(geomean);
                     expect(measuredScore).to.equal(score);
 
-                    assert.calledWith(
-                        runner._client.didRunSuites,
-                        runner._measuredValues
-                    );
+                    assert.calledWith(runner._client.didRunSuites, runner._measuredValues);
                 });
             });
         });

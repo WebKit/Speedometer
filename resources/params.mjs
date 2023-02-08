@@ -1,4 +1,3 @@
-
 class Params {
     viewport = {
         width: 800,
@@ -8,10 +7,9 @@ class Params {
     iterationCount = 10;
     unit = "ms";
 
-    constructor(searchParams = undefined)
-    {
+    constructor(searchParams = undefined) {
         if (searchParams)
-            this._copyFromParams(searchParams)
+            this._copyFromParams(searchParams);
         Object.freeze(this.viewport);
         Object.freeze(this);
     }
@@ -26,20 +24,17 @@ class Params {
                 throw Error(`Invalid viewport param: ${viewportParam}`);
             }
         }
-        this.startAutomatically = searchParams.has("startAutomatically")
-        this.iterationCount = parseInt(searchParams.get("iterationCount"))
-                || this.iterationCount;
+        this.startAutomatically = searchParams.has("startAutomatically");
+        this.iterationCount = parseInt(searchParams.get("iterationCount")) || this.iterationCount;
         if (this.iterationCount <= 1)
             throw Error(`Invalid iterationCount param: ${this.iterationCount}`);
     }
 
-    toSearchParams()
-    {
-        const rawParams = {... this}
-        rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`
+    toSearchParams() {
+        const rawParams = {...this};
+        rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`;
         return new URLSearchParams(rawParams).toString();
     }
-
 }
 
 export const defaultParams = new Params();
