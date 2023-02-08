@@ -175,34 +175,6 @@ Suites.push({
 });
 
 Suites.push({
-    name: 'EmberJS-Debug-TodoMVC',
-    url: 'todomvc/architecture-examples/emberjs-debug/index.html',
-    async prepare(page) {
-        const element = await page.waitForElement('#new-todo');
-        element.focus();
-    },
-    tests: [
-        new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
-            const newTodo = page.getElementById('new-todo');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue('Something to do ' + i);
-                newTodo.enter('keydown');
-            }
-        }),
-        new BenchmarkTestStep('CompletingAllItems', page => {
-            const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                checkboxes[i].click();
-        }),
-        new BenchmarkTestStep('DeletingItems', page => {
-            const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                deleteButtons[i].click();
-        }),
-    ]
-});
-
-Suites.push({
     name: 'BackboneJS-TodoMVC',
     url: 'todomvc/architecture-examples/backbone/index.html',
     async prepare(page) {
@@ -228,35 +200,6 @@ Suites.push({
             const deleteButtons = page.querySelectorAll('.destroy');
             for (let i = 0; i < numberOfItemsToAdd; i++)
                 deleteButtons[i].click();
-        }),
-    ]
-});
-
-Suites.push({
-    name: 'AngularJS-TodoMVC',
-    url: 'todomvc/architecture-examples/angularjs/index.html',
-    async prepare(page) {
-        const element = await page.waitForElement('#new-todo');
-        element.focus();
-    },
-    tests: [
-        new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
-            const newTodo = page.querySelector('.new-todo');
-            const form = page.querySelector('form');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue('Something to do ' + i);
-                newTodo.dispatchEvent('input');
-                form.dispatchEvent('submit');
-            }
-        }),
-        new BenchmarkTestStep('CompletingAllItems', page => {
-            const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                checkboxes[i].click();
-        }),
-        new BenchmarkTestStep('DeletingAllItems', page => {
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                page.querySelector('.destroy').click();
         }),
     ]
 });
@@ -376,94 +319,127 @@ Suites.push({
 });
 
 Suites.push({
-    name: 'Inferno-TodoMVC',
-    url: 'todomvc/architecture-examples/inferno/index.html',
+    name: 'React-Stockcharts',
+    url: 'tentative/react-stockcharts/build/index.html?type=hybrid',
     async prepare(page) {
-        const element = await page.waitForElement('.new-todo');
-        element.focus();
+        await page.waitForElement('#render');
     },
     tests: [
-        new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
-            const newTodo = page.querySelector('.new-todo');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue('Something to do ' + i);
-                newTodo.dispatchEvent('change');
-                newTodo.enter('keydown');
+        new BenchmarkTestStep('Render', page => {
+            page.getElementById("render").click();
+        }),
+        new BenchmarkTestStep('PanTheChart', page => {
+            const cursor = page.querySelector('.react-stockcharts-crosshair-cursor');
+            let x = 150;
+            let y = 200;
+            const coords = (i) => ({ clientX: x + i * 10, clientY: y + i * 2, bubbles: true, cancelable: true });
+            for (let i = 0; i < 100; ) {
+                cursor.dispatchEvent('mousedown', coords(i), MouseEvent);
+                for (let j = 10; j--; )
+                    cursor.dispatchEvent('mousemove', coords(++i), MouseEvent);
+                cursor.dispatchEvent('mouseup', coords(i), MouseEvent);
             }
         }),
-        new BenchmarkTestStep('CompletingAllItems', page => {
-            const checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                checkboxes[i].click();
+        new BenchmarkTestStep('ZoomTheChart', page => {
+            const cursor = page.querySelector('.react-stockcharts-crosshair-cursor');
+            let event = {
+                clientX: 200,
+                clientY: 200,
+                deltaMode: 0,
+                delta: -10,
+                deltaY: -10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let i = 0; i < 30; i++)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
+
+            event = {
+                clientX: 650,
+                clientY: 200,
+                deltaMode: 0,
+                delta: 10,
+                deltaY: 10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let i = 0; i < 10; i++)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
+
+            event = {
+                clientX: 200,
+                clientY: 200,
+                deltaMode: 0,
+                delta: -10,
+                deltaY: -10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let i = 0; i < 10; i++)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
         }),
-        new BenchmarkTestStep('DeletingItems', page => {
-            const deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                page.querySelector('.destroy').click();
-        }),
-    ]
+    ],
 });
 
-
 Suites.push({
-    name: 'Elm-TodoMVC',
-    url: 'todomvc/functional-prog-examples/elm/index.html',
+    name: 'React-Stockcharts-SVG',
+    url: 'tentative/react-stockcharts/build/index.html?type=svg',
     async prepare(page) {
-        const element = await page.waitForElement('.new-todo');
-        element.focus();
+        await page.waitForElement('#render');
     },
     tests: [
-        new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
-            const newTodo = page.querySelector('.new-todo');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue('Something to do ' + i);
-                newTodo.dispatchEvent('input');
-                page.call('processElmWorkQueue');
-                newTodo.enter('keydown');
-                page.call('processElmWorkQueue');
+        new BenchmarkTestStep('Render', page => {
+            page.getElementById("render").click();
+        }),
+        new BenchmarkTestStep('PanTheChart', page => {
+            const cursor = page.querySelector('.react-stockcharts-crosshair-cursor');
+            let x = 150;
+            let y = 200;
+            const coords = (i) => ({ clientX: x + i * 10, clientY: y + i * 2, bubbles: true, cancelable: true });
+            for (let i = 0; i < 100; ) {
+                cursor.dispatchEvent('mousedown', coords(i), MouseEvent);
+                for (let j = 10; j--; )
+                    cursor.dispatchEvent('mousemove', coords(++i), MouseEvent);
+                cursor.dispatchEvent('mouseup', coords(i), MouseEvent);
             }
         }),
-        new BenchmarkTestStep('CompletingAllItems', page => {
-            let checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                checkboxes[i].click();
-                page.call('processElmWorkQueue');
-            }
-        }),
-        new BenchmarkTestStep('DeletingItems', page => {
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                page.querySelector('.destroy').click();
-                page.call('processElmWorkQueue');
-            }
-        }),
-    ]
-});
+        new BenchmarkTestStep('ZoomTheChart', page => {
+            const cursor = page.querySelector('.react-stockcharts-crosshair-cursor');
+            let event = {
+                clientX: 200,
+                clientY: 200,
+                deltaMode: 0,
+                delta: -10,
+                deltaY: -10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let i = 0; i < 30; i++)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
 
-Suites.push({
-    name: 'Flight-TodoMVC',
-    url: 'todomvc/dependency-examples/flight/flight/index.html',
-    async prepare(page) {
-        await page.waitForElement('#appIsReady');
-        const newTodo = page.getElementById('new-todo');
-        newTodo.focus();
-    },
-    tests: [
-        new BenchmarkTestStep('Adding' + numberOfItemsToAdd + 'Items', page => {
-            const newTodo = page.getElementById('new-todo');
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue('Something to do ' + i);
-                newTodo.enter('keydown');
-            }
+            event = {
+                clientX: 650,
+                clientY: 200,
+                deltaMode: 0,
+                delta: 10,
+                deltaY: 10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let i = 0; i < 10; i++)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
+
+            event = {
+                clientX: 200,
+                clientY: 200,
+                deltaMode: 0,
+                delta: -10,
+                deltaY: -10,
+                bubbles: true,
+                cancelable: true
+            };
+            for (let i = 0; i < 10; i++)
+                cursor.dispatchEvent('wheel', event, WheelEvent);
         }),
-        new BenchmarkTestStep('CompletingAllItems', page => {
-            let checkboxes = page.querySelectorAll('.toggle');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                checkboxes[i].click();
-        }),
-        new BenchmarkTestStep('DeletingItems', page => {
-            let deleteButtons = page.querySelectorAll('.destroy');
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                deleteButtons[i].click();
-        }),
-    ]
+    ],
 });

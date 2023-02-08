@@ -1,4 +1,5 @@
 import {Metric, MILLIS_PER_MIN} from './metric.mjs';
+import {params} from "./params.mjs"
 
 export class BenchmarkTestStep {
     constructor(testName, testFunction) {
@@ -95,13 +96,13 @@ class PageElement {
         this.#node.focus();
     }
 
-    dispatchEvent(eventName, options = NATIVE_OPTIONS)
+    dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event)
     {
         if (eventName === 'submit')
             // FIXME FireFox doesn't like `new Event('submit')
             this._dispatchSubmitEvent();
         else
-            this.#node.dispatchEvent(new Event(eventName, options));
+            this.#node.dispatchEvent(new eventType(eventName, options));
     }
 
     _dispatchSubmitEvent()
@@ -153,15 +154,16 @@ export class BenchmarkRunner {
     async _appendFrame(src)
     {
         const frame = document.createElement('iframe');
-        frame.style.width = '1500px';
-        frame.style.height = '800px';
+        frame.style.width = `${params.viewport.width}px`;
+        frame.style.height = `${params.viewport.height}px`;
         frame.style.border = '0px none';
         frame.style.position = 'absolute';
         frame.setAttribute('scrolling', 'no');
 
         const marginLeft = parseInt(getComputedStyle(document.body).marginLeft);
         const marginTop = parseInt(getComputedStyle(document.body).marginTop);
-        if (window.innerWidth > 1500 + marginLeft && window.innerHeight > 800 + marginTop) {
+        if (window.innerWidth > params.viewport.width + marginLeft 
+                && window.innerHeight > params.viewport.height + marginTop) {
             frame.style.left = marginLeft + 'px';
             frame.style.top = marginTop + 'px';
         } else {

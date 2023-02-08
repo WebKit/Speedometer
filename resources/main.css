@@ -1,7 +1,7 @@
-:root {
-    --width: 1500px;
-    --height: 800px;
-    --foreground: rgb(235, 235, 235)
+::root {
+ --viewport-width: 800px;
+ --viewport-height: 600px;
+ --foreground: rgb(235, 235, 235)
 }
 
 body {
@@ -43,12 +43,12 @@ img {
 main {
     display: block;
     position: absolute;
-    width: var(--width);
-    height: var(--height);
+    width: var(--viewport-width);
+    height: var(--viewport-height);
     top: 50%;
     left: 50%;
-    margin-top: -421px;
-    margin-left: -771px;
+    margin-top: calc(var(--viewport-height) / -2);
+    margin-left: calc(var(--viewport-width) / -2);
     padding: 15px;
     border: 6px solid var(--foreground);
     border-radius: 20px;

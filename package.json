@@ -1,0 +1,32 @@
+{
+  "name": "speedometer",
+  "version": "3.0.0-alpha",
+  "description": "An open source repository for the Speedometer benchmark.",
+  "engines": {
+    "node": ">=18.13.0",
+    "npm": ">=8.19.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebKit/Speedometer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WebKit/Speedometer/issues"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "dev": "http-server ./ -p 7000 -c-1 --cors",
+    "test:chrome": "BROWSER=chrome node tests/run.mjs",
+    "test:firefox": "BROWSER=firefox node tests/run.mjs",
+    "test:safari": "BROWSER=safari node tests/run.mjs"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "http-server": "^14.1.1",
+    "mocha": "^10.2.0",
+    "selenium-webdriver": "^4.8.0",
+    "sinon": "^15.0.1",
+    "command-line-args": "^5.2.1",
+    "command-line-usage": "^6.1.3"
+  }
+}
