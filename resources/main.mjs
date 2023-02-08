@@ -201,10 +201,6 @@ class MainBenchmarkClient {
 
     _populateDetailedResults(metrics)
     {
-        const scoreMetric = metrics['Score'];
-        document.getElementById('score-chart').innerHTML = renderBarChart({metric: scoreMetric});
-        document.getElementById('score-results-with-statistics').innerHTML = scoreMetric.valueString;
-
         const totalMetric = metrics['Total'];
         document.getElementById('total-chart').innerHTML = renderBarChart({metric: totalMetric});
         document.getElementById('total-results-with-statistics').innerHTML = totalMetric.valueString;
@@ -265,6 +261,8 @@ class MainBenchmarkClient {
             || window.innerHeight < mainSize.height;
         document.getElementById('min-screen-width').textContent = `${params.viewport.width + 50}px`;
         document.getElementById('min-screen-height').textContent = `${params.viewport.height + 50}px`;
+        document.getElementById('screen-size').textContent = window.innerWidth + 'px by ' + window.innerHeight + 'px';
+        document.getElementById('screen-size-warning').style.display = screenIsTooSmall ? null : 'none';
     }
 
     _startBenchmarkHandler()

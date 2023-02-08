@@ -13,16 +13,17 @@ export function renderMetricView(metric)
                         values: scatterPlotValues(metric),
                         unit: "ms",
                         xAxisLabel: "Duration [ms]"})}
-                    <ul class="chart chart-legend">
+                    <table class="chart chart-legend">
                         ${children.map(
                             (metric, i) => `
-                                <li class=${COLORS[i % COLORS.length]}>
-                                    ${metric.shortName}
-                                    ${metric.valueString}
-                                </li>
+                                <tr class=${COLORS[i % COLORS.length]}>
+                                    <td>⏺</td>
+                                    <td>${metric.shortName}</td>
+                                    <td>${metric.valueString}</td>
+                                </tr>
                             `
                         ).join("")}
-                    </ul>
+                    </table>
                 </div>
                 ${renderSubMetrics(metric)}
             </dd>
@@ -78,7 +79,7 @@ function scatterPlotValues(metric)
 
 export const COLORS = ['blue', 'green', 'orange', 'violet', 'green-light', 'red', 'purple' ];
 
-export function renderBarChart({ metric, width = 500, height = 200, min = 0, max})
+export function renderBarChart({ metric, width = 700, height = 200, min = 0, max})
 {
     const values = metric.values;
     let maxValue = max;

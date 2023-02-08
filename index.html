@@ -21,9 +21,12 @@
             It's currently <span id="screen-size"></span>.
         </strong></p>
         <div class="buttons">
+            <span></span>
             <button class="start-tests-button">Start Test</button>
-            <br>
+            <span></span>
+            <span></span>
             <button class="show-about">About Speedometer</button>
+            <span></span>
         </div>
     </section>
 
@@ -41,6 +44,7 @@
         <div id="confidence-number"></div>
         <div class="buttons">
             <button class="start-tests-button">Test Again</button>
+            <span></span>
             <button id="show-details">Details</button>
         </div>
     </section>
@@ -48,10 +52,6 @@
     <section id="detailed-results">
         <h1>Detailed Results</h1>
         <div class="all-metric-results">
-            <div class="aggregated-metric-result">
-                <h2>Score: <span id="score-results-with-statistics"></span></h2>
-                <div id="score-chart"></div>
-            </div>
             <div class="aggregated-metric-result">
                 <h2>Total: <span id="total-results-with-statistics"></span></h2>
                 <div id="total-chart"></div>
@@ -61,10 +61,11 @@
         </div>
         <div class="buttons">
             <a class="button" id="download-json" download="speedometer.json" title="Download all result metrics as json string.">Download JSON</a>
+            <span></span>
             <button id="copy-json" title="Copy all result metrics as json string.">Copy JSON</button>
-            <br>
-            <br>
+
             <button class="start-tests-button" title="Discard the current results and re-run all tests.">Test Again</button>
+            <span></span>
             <button id="show-summary" title="Go back to the simplified summary view.">Summary</button>
         </div>
     </section>

@@ -283,7 +283,7 @@ export class BenchmarkRunner {
 
     async _finalize()
     {
-       this._appendIterationMetrics() 
+       this._appendIterationMetrics();
         if (this._client?.didRunSuites) {
             let product = 1;
             const values = [];
@@ -308,7 +308,7 @@ export class BenchmarkRunner {
     _appendIterationMetrics() {
         const getMetric = (name) => this._metrics[name]
                 || (this._metrics[name] = new Metric(name));
-    
+
         const collectSubMetrics = (prefix, items, parent) => {
             for (let name in items) {
                 const results = items[name];
@@ -319,7 +319,7 @@ export class BenchmarkRunner {
                     collectSubMetrics(`${metric.name}-`, results.tests, metric);
             }
         };
-    
+
         const iterationResults = this._measuredValues.tests;
         const iterationTotal = getMetric(
                 `Iteration-${ this._metrics.Total.length }-Total`);
