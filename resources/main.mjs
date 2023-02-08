@@ -177,8 +177,8 @@ class MainBenchmarkClient {
         table.appendChild(row);
     }
 
-    _updateGaugeNeedle(rpm) {
-        const needleAngle = Math.max(0, Math.min(rpm, 140)) - 70;
+    _updateGaugeNeedle(score) {
+        const needleAngle = Math.max(0, Math.min(score, 140)) - 70;
         const needleRotationValue = 'rotate(' + needleAngle + 'deg)';
 
         const gaugeNeedleElement = document.querySelector('#summarized-results > .gauge .needle');
