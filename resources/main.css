@@ -1,22 +1,26 @@
-::root {
- --viewport-width: 800px;
- --viewport-height: 600px;
+:root {
+--viewport-width: 800px;
+--viewport-height: 600px;
+--foreground: rgb(235, 235, 235);
 }
 
 body {
     background-color: rgb(46, 51, 55);
-    color: rgb(235, 235, 235);
+    color: var(--foreground);
     font-family: "Helvetica Neue", Helvetica, Verdana, sans-serif;
 }
 
 ::selection {
     color: rgb(46, 51, 55);
-    background-color: rgb(235, 235, 235);
+    background-color: var(--foreground);
 }
 
 h1,
-button {
+button, .button {
     font-family: "Futura-Medium", Futura, "Helvetica Neue", Helvetica, Verdana, sans-serif;
+}
+.button {
+    text-decoration: none;
 }
 
 code {
@@ -25,7 +29,7 @@ code {
 }
 
 hr {
-    border: 1px solid rgb(235, 235, 235);
+    border: 1px solid var(--foreground);
     width: 50%;
     margin: 40px auto;
 }
@@ -37,16 +41,18 @@ img {
 }
 
 main {
+    --padding-width: 15px;
+    --border-width: 6px;
     display: block;
     position: absolute;
     width: var(--viewport-width);
     height: var(--viewport-height);
     top: 50%;
     left: 50%;
-    margin-top: calc(var(--viewport-height) / -2);
-    margin-left: calc(var(--viewport-width) / -2);
-    padding: 15px;
-    border: 6px solid rgb(235, 235, 235);
+    margin-top: calc(var(--viewport-height) / -2 - var(--padding-width) - var(--border-width));
+    margin-left: calc(var(--viewport-width) / -2 - var(--padding-width) - var(--border-width));
+    padding: var(--padding-width);
+    border: var(--border-width) solid var(--foreground);
     border-radius: 20px;
 }
 
@@ -63,8 +69,19 @@ h1 {
     margin-top: 30px;
     font-size: 40px;
     font-weight: normal;
-    color: rgb(235, 235, 235);
+    color: var(--foreground);
     text-align: center;
+}
+
+h2 {
+    margin-top: 0px;
+    font-weight: normal;
+    color: var(--foreground);
+}
+
+h3 {
+    margin: 5px 0 5px 0;
+    font-weight: normal;
 }
 
 p {
@@ -76,38 +93,45 @@ a {
     color: inherit;
 }
 
-.buttons {
-    margin-top: 30px;
-    text-align: center;
+section#home > .buttons {
+    margin-top: 80px;
+}
+section > .buttons {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    align-items: center;
 }
 
-button {
+button, .button {
     appearance: none;
     border: none;
     background-color: transparent;
     cursor: pointer;
     margin: 0px;
     padding: 0px;
+    text-align: center;
 }
 
-.buttons button {
+.buttons button, .buttons .button {
     appearance: none;
-    border: 3px solid rgb(235, 235, 235);
+    border: 3px solid var(--foreground);
     border-radius: 10px;
     min-width: 200px;
     padding: 5px 20px;
     margin: 0 40px;
     font-size: 25px;
-    color: rgb(235, 235, 235);
+    color: var(--foreground);
     background-color: transparent;
     cursor: pointer;
     user-select: none;
 }
 
 .buttons button:active {
-    background-color: rgb(235, 235, 235);
+    background-color: var(--foreground);
     color: rgb(46, 51, 55);
-    border-color: rgb(235, 235, 235) !important;
+    border-color: var(--foreground) !important;
 }
 
 .buttons button:focus {
@@ -117,6 +141,8 @@ button {
 
 section {
     display: none;
+    width: var(--viewport-width);
+    height: var(--viewport-height);
 }
 
 section > p {
@@ -131,8 +157,8 @@ section.selected {
     position: absolute;
     top: 15px;
     left: 15px;
-    width: 800px;
-    height: 600px;
+    width: var(--viewport-width);
+    height: var(--viewport-height);
 }
 
 section#home > p {
@@ -152,8 +178,8 @@ button.show-about {
     clear: both;
 }
 
-section#home > .buttons {
-    margin-top: 80px;
+#screen-size-warning {
+    display: none;
 }
 
 section#running > #progress {
@@ -173,7 +199,7 @@ section#running #progress-completed {
     left: 0;
     height: 6px;
     width: 0;
-    background-color: rgb(235, 235, 235);
+    background-color: var(--foreground);
 }
 
 section#running > #info {
@@ -205,26 +231,65 @@ section#summarized-results > #confidence-number {
     color: rgb(128, 128, 128);
 }
 
-section#detailed-results > table {
-    float: left;
-    width: 50%;
+section#about p {
+    width: 700px;
+    padding-left: calc((var(--viewport-width) - 700px) / 2);
 }
 
-section#detailed-results > .arithmetic-mean {
+section#detailed-results.selected {
+    display: flex;
+    flex-direction: column;
+}
+
+section#detailed-results table, section#detailed-results .aggregated-metric-result{
+    width: calc(var(--viewport-width) - 80px);
+}
+
+section#detailed-results button, section#detailed-results .button {
+    min-width: 300px;
+}
+
+section#detailed-results .all-metric-results {
+    flex: auto;
+    overflow-y: auto;
+    padding: 0px 20px;
+}
+
+section#detailed-results .arithmetic-mean {
     clear: both;
-    padding-top: 32px;
-    text-align: center;
 }
 
-section#detailed-results > .arithmetic-mean > label {
+section#detailed-results .arithmetic-mean > label {
     font-weight: bold;
     margin-right: 10px;
-    color: rgb(128, 128, 128);
 }
 
-section#detailed-results > .show-about {
+section#detailed-results .show-about {
     margin-top: 30px;
     text-align: center;
+}
+
+section#detailed-results .metric {
+    margin: 0px 0 10px 0;
+    display: inline-block
+}
+
+.submetrics h3 {
+    font-size: medium;
+}
+
+.chart-legend {
+    display: inline;
+    padding-left: 30px;
+    vertical-align: top;
+    margin-top: 0;
+}
+
+.chart-legend td {
+    padding: 0 5px 0 0;
+}
+section#detailed-results h1 {
+    margin-bottom: 10px;
 }
 
 section#about h1 {
@@ -236,6 +301,7 @@ section#about h1 {
 section#about .note {
     color: rgb(128, 128, 128);
 }
+
 
 table {
     border-spacing: 0;
@@ -291,3 +357,143 @@ th {
         background-image: url(gauge@2x.png);
     }
 }
+
+.all-metric-results .submetrics {
+    display: none;
+}
+.all-metric-results .submetrics.visible {
+    display: block;
+}
+
+.details-toggle {
+	display: inline-block;
+	margin: 0 0 0 -35px;
+	cursor: pointer;
+	user-select: none;
+}
+.details-toggle input {
+	display: inline-block;
+	appearance: none;
+	width: 1em;
+	height: 1em;
+	border: none;
+	background: none;
+}
+.details-toggle input:after {
+	content: '▶';
+    color: var(--foreground);
+	display: inline-block;
+	transform-origin: 50%;
+	position: relative;
+	transition: all 250ms ease;
+}
+.details-toggle input:checked:after {
+	transform: rotate(90deg);
+}
+
+
+/* Charts (lib/charts.js) */
+.bar-chart text,
+.scatter-plot text {
+	font-size: 11px;
+	fill: var(--foreground);
+	dominant-baseline: hanging;
+}
+.bar-chart .axis,
+.scatter-plot .axis {
+	stroke: #aaa;
+}
+.bar-chart .minMax {
+	stroke: var(--foreground);
+	stroke-width: 1;
+	stroke-opacity: 0.5;
+	stroke-dasharray: 2;
+}
+.bar-chart .mean {
+	stroke: var(--foreground);
+	stroke-width: 2;
+	stroke-opacity: 0.5;
+}
+.bar-chart .mean:hover {
+	stroke-opacity: 1;
+}
+.bar-chart g.bar {
+	fill: #8ad;
+}
+.bar-chart g.bar.large text {
+	display: none;
+}
+.bar-chart g.bar:hover {
+	filter: brightness(1.1);
+}
+.bar-chart g.bar text {
+	fill: #ddd;
+	text-anchor: middle;
+	text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.bar-chart g.bar:hover text {
+	display: block;
+	fill: #fff;
+	text-shadow: 0 0 5px #000;
+}
+.bar-chart .label {
+	text-anchor: end;
+	dominant-baseline: middle;
+}
+
+.scatter-plot .marker {
+	stroke-width: 1px;
+	fill: currentColor;
+}
+.scatter-plot .marker:hover {
+	opacity: 1;
+	filter: drop-shadow(0 0 2px currentColor);
+}
+.scatter-plot .percentile {
+	fill: currentColor;
+	fill-opacity: 0.3;
+	stroke-width: 0px;
+}
+.scatter-plot .percentile line {
+	stroke-width: 1px;
+}
+.scatter-plot .percentile:hover {
+	opacity: 1;
+}
+
+/* Chart colors */
+.chart .blue {
+	color: #5b9aff;
+	stroke: #5b9aff;
+}
+
+.chart .green {
+	color: #94bc4b;
+	stroke: #94bc4b;
+}
+
+.chart .orange {
+	color: #fe8f06;
+	stroke: #fe8f06;
+}
+
+.chart .violet {
+	color: #a41ecd;
+	stroke: #a41ecd;
+}
+
+.chart .green-light {
+	color: #73d147;
+	stroke: #73d147;
+}
+
+.chart .red {
+	color: #de4040;
+	stroke: #de4040;
+}
+
+.chart .purple {
+	color: #7b3eff;
+	stroke: #7b3eff;
+}
+

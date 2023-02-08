@@ -21,9 +21,12 @@
             It's currently <span id="screen-size"></span>.
         </strong></p>
         <div class="buttons">
+            <span></span>
             <button class="start-tests-button">Start Test</button>
-            <br>
+            <span></span>
+            <span></span>
             <button class="show-about">About Speedometer</button>
+            <span></span>
         </div>
     </section>
 
@@ -41,20 +44,29 @@
         <div id="confidence-number"></div>
         <div class="buttons">
             <button class="start-tests-button">Test Again</button>
+            <span></span>
             <button id="show-details">Details</button>
         </div>
     </section>
 
     <section id="detailed-results">
         <h1>Detailed Results</h1>
-        <table class="results-table"></table>
-        <table class="results-table"></table>
-        <div class="arithmetic-mean"><label>Arithmetic Mean:</label><span id="results-with-statistics"></span></div>
+        <div class="all-metric-results">
+            <div class="aggregated-metric-result">
+                <h2>Total: <span id="total-results-with-statistics"></span></h2>
+                <div id="total-chart"></div>
+            </div>
+            <h2>Detailed Metrics</h2>
+            <div id="metrics-results"></div>
+        </div>
         <div class="buttons">
-            <button class="start-tests-button">Test Again</button>
-            <button id="show-summary"> Summary</button>
-            <br>
-            <button class="show-about">About Speedometer</button>
+            <a class="button" id="download-json" download="speedometer.json" title="Download all result metrics as json string.">Download JSON</a>
+            <span></span>
+            <button id="copy-json" title="Copy all result metrics as json string.">Copy JSON</button>
+
+            <button class="start-tests-button" title="Discard the current results and re-run all tests.">Test Again</button>
+            <span></span>
+            <button id="show-summary" title="Go back to the simplified summary view.">Summary</button>
         </div>
     </section>
 
