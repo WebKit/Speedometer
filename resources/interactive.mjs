@@ -1,6 +1,6 @@
-import {BenchmarkRunner} from "./benchmark-runner.mjs";
-import {params} from "./params.mjs";
-import {Suites} from "./tests.mjs";
+import { BenchmarkRunner } from "./benchmark-runner.mjs";
+import { params } from "./params.mjs";
+import { Suites } from "./tests.mjs";
 
 class InteractiveBenchmarkRunner extends BenchmarkRunner {
     _stepPromise = undefined;

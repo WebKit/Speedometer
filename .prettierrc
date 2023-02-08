@@ -1,7 +1,7 @@
 {
     "arrowParens": "always",
     "bracketSameLine": false,
-    "bracketSpacing": false,
+    "bracketSpacing": true,
     "htmlWhitespaceSensitivity": "css",
     "printWidth": 250,
     "semi": true,

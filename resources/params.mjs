@@ -31,7 +31,7 @@ class Params {
     }
 
     toSearchParams() {
-        const rawParams = {...this};
+        const rawParams = { ...this };
         rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`;
         return new URLSearchParams(rawParams).toString();
     }

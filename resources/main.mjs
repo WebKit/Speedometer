@@ -1,8 +1,8 @@
-import {BenchmarkRunner} from "./benchmark-runner.mjs";
+import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import "./benchmark-report.mjs";
 import * as Statistics from "./statistics.mjs";
-import {Suites} from "./tests.mjs";
-import {params} from "./params.mjs";
+import { Suites } from "./tests.mjs";
+import { params } from "./params.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -279,7 +279,7 @@ class MainBenchmarkClient {
         newSectionElement.classList.add("selected");
 
         if (pushState)
-            history.pushState({section: sectionIdentifier}, document.title);
+            history.pushState({ section: sectionIdentifier }, document.title);
     }
 }
 

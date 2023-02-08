@@ -1,5 +1,5 @@
-import {BenchmarkRunner} from "../resources/benchmark-runner.mjs";
-import {defaultParams} from "../resources/params.mjs";
+import { BenchmarkRunner } from "../resources/benchmark-runner.mjs";
+import { defaultParams } from "../resources/params.mjs";
 
 function TEST_FIXTURE(name) {
     return {
@@ -38,7 +38,7 @@ function stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd) {
 }
 
 describe("BenchmarkRunner", () => {
-    const {spy, stub, assert} = sinon;
+    const { spy, stub, assert } = sinon;
     let runner;
 
     before(() => {
@@ -87,7 +87,7 @@ describe("BenchmarkRunner", () => {
                 expect(frame).to.be.a(HTMLIFrameElement);
                 assert.calledWith(createElementSpy, frame.nodeName.toLowerCase());
 
-                const {width, height, position} = getComputedStyle(frame);
+                const { width, height, position } = getComputedStyle(frame);
 
                 expect(parseInt(width)).to.equal(DEFAULT_WIDTH);
                 expect(parseInt(height)).to.equal(DEFAULT_HEIGHT);
@@ -95,7 +95,7 @@ describe("BenchmarkRunner", () => {
             });
 
             it("should disable scrolling in the frame", async () => {
-                const {scrolling} = await runner._appendFrame();
+                const { scrolling } = await runner._appendFrame();
                 expect(scrolling).to.be("no");
             });
 
@@ -103,7 +103,7 @@ describe("BenchmarkRunner", () => {
                 stub(window, "innerWidth").get(() => DEFAULT_WIDTH + 100);
                 stub(window, "innerHeight").get(() => DEFAULT_HEIGHT + 100);
 
-                const {style} = await runner._appendFrame();
+                const { style } = await runner._appendFrame();
                 expect(style.left).to.be("8px");
                 expect(style.top).to.be("8px");
             });
@@ -111,7 +111,7 @@ describe("BenchmarkRunner", () => {
             it(`should not add outer spacing to the frame if the window is smaller than ${DEFAULT_WIDTH}px x ${DEFAULT_HEIGHT}px`, async () => {
                 stub(window, "innerWidth").get(() => DEFAULT_WIDTH - 100);
 
-                const {style} = await runner._appendFrame();
+                const { style } = await runner._appendFrame();
                 expect(style.left).to.be("0px");
                 expect(style.top).to.be("0px");
             });
@@ -208,7 +208,7 @@ describe("BenchmarkRunner", () => {
             const suite = SUITES_FIXTURE[0];
 
             before(async () => {
-                page = {_frame: await runner._appendFrame()};
+                page = { _frame: await runner._appendFrame() };
                 _writeMarkSpy = spy(runner, "_writeMark");
                 _testFnSpy = suite.tests[0].run.callsFake(() => null);
 
@@ -266,7 +266,7 @@ describe("BenchmarkRunner", () => {
                     const geomean = Math.pow(total, 1 / suite.tests.length);
                     const score = (60 * 1000) / geomean / 3; // correctionFactor = 3
 
-                    const {total: measuredTotal, mean: measuredMean, geomean: measuredGeomean, score: measuredScore} = runner._measuredValues;
+                    const { total: measuredTotal, mean: measuredMean, geomean: measuredGeomean, score: measuredScore } = runner._measuredValues;
 
                     expect(measuredTotal).to.equal(total);
                     expect(measuredMean).to.equal(mean);
