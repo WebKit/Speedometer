@@ -323,9 +323,8 @@ export class BenchmarkRunner {
         const iterationResults = this._measuredValues.tests;
         const iterationTotal = getMetric(
                 `Iteration-${ this._metrics.Total.length }-Total`);
-        for (const results of Object.values(iterationResults)) {
+        for (const results of Object.values(iterationResults))
             iterationTotal.add(results.total);
-        }
         iterationTotal.compute();
 
         this._metrics.Total.add(iterationTotal.sum);
