@@ -24,7 +24,8 @@ export default function serve(port) {
     }
     const prepareFile = async (url) => {
         const paths = [STATIC_PATH, url];
-        if (url.endsWith("/")) paths.push("index.html");
+        if (url.endsWith("/"))
+            paths.push("index.html");
         const filePath = path.join(...paths);
         const pathTraversal = !filePath.startsWith(STATIC_PATH);
         const exists = await fs.promises.access(filePath).then(...toBool);

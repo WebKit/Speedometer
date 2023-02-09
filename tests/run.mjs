@@ -1,39 +1,35 @@
 #! /usr/bin/env node
-
-import { argv } from 'node:process';
+/* eslint-disable-next-line  no-unused-vars */
+import { argv } from "node:process";
 import serve from "./server.mjs";
 import { Builder, Capabilities } from "selenium-webdriver";
-import commandLineArgs  from "command-line-args";
-import commandLineUsage  from "command-line-usage";
+import commandLineArgs from "command-line-args";
+import commandLineUsage from "command-line-usage";
 import assert from "assert";
 
-
 const optionDefinitions = [
-    { name: "browser", type: String, 
-        description: "Set the browser to test, choices are [safari, firefox, chrome]. By default the $BROWSER env variable is used." },
-    { name: "port", type: Number, defaultValue: 8010, 
-      description: "Set the test-server port, The default value is 8010."},
-    { name: "help", alias: "h", description: "Print this help text."}
+    { name: "browser", type: String, description: "Set the browser to test, choices are [safari, firefox, chrome]. By default the $BROWSER env variable is used." },
+    { name: "port", type: Number, defaultValue: 8010, description: "Set the test-server port, The default value is 8010." },
+    { name: "help", alias: "h", description: "Print this help text." },
 ];
 
-function printHelp(message = "")
-{
+function printHelp(message = "") {
     const usage = commandLineUsage([
         {
-          header: 'Run all tests',
+            header: "Run all tests",
         },
         {
-          header: 'Options',
-          optionList: optionDefinitions
-        }
-      ])
+            header: "Options",
+            optionList: optionDefinitions,
+        },
+    ]);
     if (!message) {
         console.log(usage);
         process.exit(0);
     } else {
-        console.error(message)
-        console.error()
-        console.error(usage)
+        console.error(message);
+        console.error();
+        console.error(usage);
         process.exit(1);
     }
 }
@@ -43,10 +39,9 @@ const options = commandLineArgs(optionDefinitions);
 if ("help" in options)
     printHelp();
 
-
 const BROWSER = options?.browser || process.env.BROWSER;
 if (!BROWSER)
-    printHelp("No browser specified, use $BROWSER or --browser")
+    printHelp("No browser specified, use $BROWSER or --browser");
 
 let capabilities;
 switch (BROWSER) {
@@ -79,24 +74,12 @@ async function test() {
         await driver.get(`http://localhost:${PORT}/tests/index.html`);
         console.log("Waiting for tests to finish");
         await driver.wait(function () {
-            return driver.executeScript(
-                "return window.mochaResults.state === 'stopped'"
-            );
+            return driver.executeScript("return window.mochaResults.state === 'stopped'");
         }, 5000);
         console.log("Checking for passed tests");
-        assert(
-            (await driver.executeScript(
-                "return window.mochaResults.stats.passes"
-            )) > 0
-        );
+        assert(await driver.executeScript("return window.mochaResults.stats.passes") > 0);
         console.log("Checking for failed tests");
-        assert(
-            (await driver.executeScript(
-                "return window.mochaResults.stats.failures"
-            )) == 0
-        );
-    } catch (e) {
-        throw e;
+        assert(await driver.executeScript("return window.mochaResults.stats.failures") === 0);
     } finally {
         console.log("Tests complete");
         driver.quit();

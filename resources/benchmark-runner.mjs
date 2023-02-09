@@ -1,4 +1,4 @@
-import {params} from "./params.mjs"
+import { params } from "./params.mjs";
 
 export class BenchmarkTestStep {
     constructor(testName, testFunction) {
@@ -7,15 +7,12 @@ export class BenchmarkTestStep {
     }
 }
 
-
 class Page {
-    constructor(frame)
-    {
+    constructor(frame) {
         this._frame = frame;
     }
 
-    async waitForElement(selector)
-    {
+    async waitForElement(selector) {
         return new Promise((resolve) => {
             const resolveIfReady = () => {
                 const element = this.querySelector(selector);
@@ -31,38 +28,33 @@ class Page {
         });
     }
 
-    querySelector(selector)
-    {
+    querySelector(selector) {
         const element = this._frame.contentDocument.querySelector(selector);
         if (element === null)
             return null;
         return this._wrapElement(element);
     }
 
-    querySelectorAll(selector)
-    {
+    querySelectorAll(selector) {
         const elements = Array.from(this._frame.contentDocument.querySelectorAll(selector));
         for (let i = 0; i < elements.length; i++)
             elements[i] = this._wrapElement(elements[i]);
         return elements;
     }
 
-    getElementById(id)
-    {
+    getElementById(id) {
         const element = this._frame.contentDocument.getElementById(id);
         if (element === null)
             return null;
         return this._wrapElement(element);
     }
 
-    call(function_name)
-    {
+    call(function_name) {
         this._frame.contentWindow[function_name]();
         return null;
     }
 
-    _wrapElement(element)
-    {
+    _wrapElement(element) {
         return new PageElement(element);
     }
 }
@@ -75,51 +67,44 @@ const NATIVE_OPTIONS = {
 class PageElement {
     #node;
 
-    constructor(node)
-    {
+    constructor(node) {
         this.#node = node;
     }
 
-    setValue(value)
-    {
+    setValue(value) {
         this.#node.value = value;
     }
 
-    click()
-    {
+    click() {
         this.#node.click();
     }
 
-    focus()
-    {
+    focus() {
         this.#node.focus();
     }
 
-    dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event)
-    {
-        if (eventName === 'submit')
+    dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
+        if (eventName === "submit")
             // FIXME FireFox doesn't like `new Event('submit')
             this._dispatchSubmitEvent();
         else
             this.#node.dispatchEvent(new eventType(eventName, options));
     }
 
-    _dispatchSubmitEvent()
-    {
-        const submitEvent = document.createEvent('Event');
-        submitEvent.initEvent('submit', true, true);
+    _dispatchSubmitEvent() {
+        const submitEvent = document.createEvent("Event");
+        submitEvent.initEvent("submit", true, true);
         this.#node.dispatchEvent(submitEvent);
     }
 
-    enter(type, options = undefined)
-    {
+    enter(type, options = undefined) {
         const ENTER_KEY_CODE = 13;
         let eventOptions = {
-            bubbles: true, 
+            bubbles: true,
             cancelable: true,
             keyCode: ENTER_KEY_CODE,
             which: ENTER_KEY_CODE,
-            key: 'ENTER'
+            key: "ENTER",
         };
         if (options !== undefined)
             eventOptions = Object.assign(eventOptions, options);
@@ -128,41 +113,36 @@ class PageElement {
     }
 }
 
-
 export class BenchmarkRunner {
-    constructor(suites, client)
-    {
+    constructor(suites, client) {
         this._suites = suites;
         this._client = client;
         this._page = null;
     }
 
-    _removeFrame()
-    {
+    _removeFrame() {
         if (this._frame) {
             this._frame.parentNode.removeChild(this._frame);
             this._frame = null;
         }
     }
 
-    async _appendFrame(src)
-    {
-        const frame = document.createElement('iframe');
+    async _appendFrame(src) {
+        const frame = document.createElement("iframe");
         frame.style.width = `${params.viewport.width}px`;
         frame.style.height = `${params.viewport.height}px`;
-        frame.style.border = '0px none';
-        frame.style.position = 'absolute';
-        frame.setAttribute('scrolling', 'no');
+        frame.style.border = "0px none";
+        frame.style.position = "absolute";
+        frame.setAttribute("scrolling", "no");
 
         const marginLeft = parseInt(getComputedStyle(document.body).marginLeft);
         const marginTop = parseInt(getComputedStyle(document.body).marginTop);
-        if (window.innerWidth > params.viewport.width + marginLeft 
-                && window.innerHeight > params.viewport.height + marginTop) {
-            frame.style.left = marginLeft + 'px';
-            frame.style.top = marginTop + 'px';
+        if (window.innerWidth > params.viewport.width + marginLeft && window.innerHeight > params.viewport.height + marginTop) {
+            frame.style.left = marginLeft + "px";
+            frame.style.top = marginTop + "px";
         } else {
-            frame.style.left = '0px';
-            frame.style.top = '0px';
+            frame.style.left = "0px";
+            frame.style.top = "0px";
         }
 
         if (this._client?.willAddTestFrame)
@@ -173,14 +153,12 @@ export class BenchmarkRunner {
         return frame;
     }
 
-    _writeMark(name)
-    {
+    _writeMark(name) {
         if (window.performance && window.performance.mark)
             window.performance.mark(name);
     }
 
-    async runMultipleIterations(iterationCount)
-    {
+    async runMultipleIterations(iterationCount) {
         if (this._client?.willStartFirstIteration)
             await this._client.willStartFirstIteration(iterationCount);
         for (let i = 0; i < iterationCount; i++)
@@ -189,9 +167,8 @@ export class BenchmarkRunner {
             await this._client.didFinishLastIteration();
     }
 
-    async _runAllSuites()
-    {
-        this._measuredValues = {tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN};
+    async _runAllSuites() {
+        this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
 
         this._removeFrame();
         await this._appendFrame();
@@ -206,37 +183,35 @@ export class BenchmarkRunner {
         await this._finalize();
     }
 
-    async _runSuite(suite)
-    {
+    async _runSuite(suite) {
         await this._prepareSuite(suite);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
     }
 
-    async _prepareSuite(suite)
-    {
+    async _prepareSuite(suite) {
         return new Promise((resolve) => {
             const frame = this._page._frame;
             frame.onload = async () => {
                 await suite.prepare(this._page);
                 resolve();
-            }
-            frame.src = 'resources/' + suite.url;
+            };
+            frame.src = "resources/" + suite.url;
         });
     }
 
-    async _runTestAndRecordResults(suite, test)
-    {
+    async _runTestAndRecordResults(suite, test) {
+        /* eslint-disable-next-line  no-async-promise-executor */
         return new Promise(async (resolve) => {
             if (this._client?.willRunTest)
                 await this._client.willRunTest(suite, test);
 
             setTimeout(() => {
                 this._runTest(suite, test, this._page, async (syncTime, asyncTime) => {
-                    const suiteResults = this._measuredValues.tests[suite.name] || {tests:{}, total: 0};
+                    const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
                     const total = syncTime + asyncTime;
                     this._measuredValues.tests[suite.name] = suiteResults;
-                    suiteResults.tests[test.name] = {tests: {'Sync': syncTime, 'Async': asyncTime}, total: total};
+                    suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
                     suiteResults.total += total;
 
                     if (this._client?.didRunTest)
@@ -249,15 +224,14 @@ export class BenchmarkRunner {
     }
 
     // This function ought be as simple as possible. Don't even use Promise.
-    _runTest(suite, test, page, callback)
-    {
+    _runTest(suite, test, page, callback) {
         const now = window.performance && window.performance.now ? () => window.performance.now() : Date.now;
 
-        this._writeMark(suite.name + '.' + test.name + '-start');
+        this._writeMark(suite.name + "." + test.name + "-start");
         let startTime = now();
         test.run(page);
         let endTime = now();
-        this._writeMark(suite.name + '.' + test.name + '-sync-end');
+        this._writeMark(suite.name + "." + test.name + "-sync-end");
 
         const syncTime = endTime - startTime;
 
@@ -268,15 +242,14 @@ export class BenchmarkRunner {
             const height = this._frame.contentDocument.body.getBoundingClientRect().height;
             endTime = now();
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
-            this._writeMark(suite.name + '.' + test.name + '-async-end');
+            this._writeMark(suite.name + "." + test.name + "-async-end");
             window.requestAnimationFrame(() => {
                 callback(syncTime, endTime - startTime, height);
             });
         }, 0);
     }
 
-    async _finalize()
-    {
+    async _finalize() {
         if (this._client?.didRunSuites) {
             let product = 1;
             const values = [];
@@ -294,7 +267,7 @@ export class BenchmarkRunner {
             this._measuredValues.total = total;
             this._measuredValues.mean = total / values.length;
             this._measuredValues.geomean = geomean;
-            this._measuredValues.score = 60 * 1000 / geomean / correctionFactor;
+            this._measuredValues.score = (60 * 1000) / geomean / correctionFactor;
             await this._client.didRunSuites(this._measuredValues);
         }
     }
