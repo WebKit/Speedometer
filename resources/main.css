@@ -236,58 +236,26 @@ section#about p {
     padding-left: calc((var(--viewport-width) - 700px) / 2);
 }
 
-section#detailed-results.selected {
-    display: flex;
-    flex-direction: column;
-}
-
-section#detailed-results table, section#detailed-results .aggregated-metric-result{
-    width: calc(var(--viewport-width) - 80px);
-}
-
 section#detailed-results button, section#detailed-results .button {
     min-width: 300px;
 }
 
-section#detailed-results .all-metric-results {
-    flex: auto;
-    overflow-y: auto;
-    padding: 0px 20px;
-}
-
-section#detailed-results .arithmetic-mean {
+section#detailed-results >.arithmetic-mean {
     clear: both;
+    padding-top: 32px;
+    text-align: center;
 }
 
-section#detailed-results .arithmetic-mean > label {
+section#detailed-results > .arithmetic-mean > label {
     font-weight: bold;
     margin-right: 10px;
 }
 
-section#detailed-results .show-about {
+section#detailed-results > .show-about {
     margin-top: 30px;
     text-align: center;
 }
 
-section#detailed-results .metric {
-    margin: 0px 0 10px 0;
-    display: inline-block
-}
-
-.submetrics h3 {
-    font-size: medium;
-}
-
-.chart-legend {
-    display: inline;
-    padding-left: 30px;
-    vertical-align: top;
-    margin-top: 0;
-}
-
-.chart-legend td {
-    padding: 0 5px 0 0;
-}
 section#detailed-results h1 {
     margin-bottom: 10px;
 }
@@ -357,143 +325,3 @@ th {
         background-image: url(gauge@2x.png);
     }
 }
-
-.all-metric-results .submetrics {
-    display: none;
-}
-.all-metric-results .submetrics.visible {
-    display: block;
-}
-
-.details-toggle {
-	display: inline-block;
-	margin: 0 0 0 -35px;
-	cursor: pointer;
-	user-select: none;
-}
-.details-toggle input {
-	display: inline-block;
-	appearance: none;
-	width: 1em;
-	height: 1em;
-	border: none;
-	background: none;
-}
-.details-toggle input:after {
-	content: '▶';
-    color: var(--foreground);
-	display: inline-block;
-	transform-origin: 50%;
-	position: relative;
-	transition: all 250ms ease;
-}
-.details-toggle input:checked:after {
-	transform: rotate(90deg);
-}
-
-
-/* Charts (lib/charts.js) */
-.bar-chart text,
-.scatter-plot text {
-	font-size: 11px;
-	fill: var(--foreground);
-	dominant-baseline: hanging;
-}
-.bar-chart .axis,
-.scatter-plot .axis {
-	stroke: #aaa;
-}
-.bar-chart .minMax {
-	stroke: var(--foreground);
-	stroke-width: 1;
-	stroke-opacity: 0.5;
-	stroke-dasharray: 2;
-}
-.bar-chart .mean {
-	stroke: var(--foreground);
-	stroke-width: 2;
-	stroke-opacity: 0.5;
-}
-.bar-chart .mean:hover {
-	stroke-opacity: 1;
-}
-.bar-chart g.bar {
-	fill: #8ad;
-}
-.bar-chart g.bar.large text {
-	display: none;
-}
-.bar-chart g.bar:hover {
-	filter: brightness(1.1);
-}
-.bar-chart g.bar text {
-	fill: #ddd;
-	text-anchor: middle;
-	text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-}
-.bar-chart g.bar:hover text {
-	display: block;
-	fill: #fff;
-	text-shadow: 0 0 5px #000;
-}
-.bar-chart .label {
-	text-anchor: end;
-	dominant-baseline: middle;
-}
-
-.scatter-plot .marker {
-	stroke-width: 1px;
-	fill: currentColor;
-}
-.scatter-plot .marker:hover {
-	opacity: 1;
-	filter: drop-shadow(0 0 2px currentColor);
-}
-.scatter-plot .percentile {
-	fill: currentColor;
-	fill-opacity: 0.3;
-	stroke-width: 0px;
-}
-.scatter-plot .percentile line {
-	stroke-width: 1px;
-}
-.scatter-plot .percentile:hover {
-	opacity: 1;
-}
-
-/* Chart colors */
-.chart .blue {
-	color: #5b9aff;
-	stroke: #5b9aff;
-}
-
-.chart .green {
-	color: #94bc4b;
-	stroke: #94bc4b;
-}
-
-.chart .orange {
-	color: #fe8f06;
-	stroke: #fe8f06;
-}
-
-.chart .violet {
-	color: #a41ecd;
-	stroke: #a41ecd;
-}
-
-.chart .green-light {
-	color: #73d147;
-	stroke: #73d147;
-}
-
-.chart .red {
-	color: #de4040;
-	stroke: #de4040;
-}
-
-.chart .purple {
-	color: #7b3eff;
-	stroke: #7b3eff;
-}
-
