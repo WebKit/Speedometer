@@ -6,7 +6,8 @@ export const MILLIS_PER_MIN = 60 * 1000;
 export class Metric {
     /** @param {string} name */
     constructor(name, unit = "ms") {
-        if (typeof name !== "string") throw new Error(`Invalid metric.name=${name}, expected string.`);
+        if (typeof name !== "string")
+            throw new Error(`Invalid metric.name=${name}, expected string.`);
         this.name = name;
         this.unit = unit;
 
@@ -46,7 +47,8 @@ export class Metric {
 
     get valueString() {
         const mean = this.mean.toFixed(2);
-        if (!this.percentDelta || !this.delta) return `${mean} ${this.unit}`;
+        if (!this.percentDelta || !this.delta)
+            return `${mean} ${this.unit}`;
         return `${mean} ± ${this.delta.toFixed(2)} (${this.percentDelta.toFixed(1)}%) ${this.unit}`;
     }
 
@@ -56,14 +58,16 @@ export class Metric {
 
     /** @param {Metric} metric */
     addChild(metric) {
-        if (metric.parent) throw new Error("Cannot re-add sub metric");
+        if (metric.parent)
+            throw new Error("Cannot re-add sub metric");
         metric.parent = this;
         this.children.push(metric);
     }
 
     /** @param {number} value */
     add(value) {
-        if (typeof value !== "number") throw new Error(`Adding invalid value=${value} to metric=${this.name}`);
+        if (typeof value !== "number")
+            throw new Error(`Adding invalid value=${value} to metric=${this.name}`);
         this.values.push(value);
     }
 
