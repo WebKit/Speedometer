@@ -1,7 +1,8 @@
-::root {
+:root {
     --viewport-width: 800px;
     --viewport-height: 600px;
     --foreground: rgb(235, 235, 235);
+    --text-width: 650px;
 }
 
 body {
@@ -93,15 +94,20 @@ a {
     color: inherit;
 }
 
+.buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
 section#home > .buttons {
     margin-top: 80px;
 }
-section > .buttons {
-    margin-top: 10px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    align-items: center;
+
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 button, .button {
@@ -223,6 +229,10 @@ button.show-about {
     text-align: right;
 }
 
+section#detailed-results > .results-table {
+    float: left;
+    width: 50%;
+}
 
 section#summarized-results > #result-number,
 section#summarized-results > #confidence-number {
@@ -242,11 +252,6 @@ section#summarized-results > #confidence-number {
     color: rgb(128, 128, 128);
 }
 
-section#about p {
-    width: 700px;
-    padding-left: calc((var(--viewport-width) - 700px) / 2);
-}
-
 section#detailed-results button, section#detailed-results .button {
     min-width: 300px;
 }
@@ -262,13 +267,21 @@ section#detailed-results > .arithmetic-mean > label {
     margin-right: 10px;
 }
 
-section#detailed-results > .show-about {
+section#detailed-results button.show-about {
     margin-top: 30px;
-    text-align: center;
 }
 
 section#detailed-results h1 {
     margin-bottom: 10px;
+}
+
+section#about {
+    overflow-y: auto;
+}
+
+section#about p {
+    width: var(--text-width);
+    padding-left: calc((var(--viewport-width) - var(--text-width)) / 2);
 }
 
 section#about h1 {
