@@ -86,7 +86,8 @@ class MainBenchmarkClient {
     }
 
     willRunTest(suite, test) {
-        document.getElementById("info").textContent = suite.name + " ( " + this._finishedTestCount + " / " + this.stepCount + " )";
+        document.getElementById('info-label').textContent = suite.name
+        document.getElementById('info-progress').textContent = `${this._finishedTestCount} / ${this.stepCount}`;
     }
 
     didRunTest() {

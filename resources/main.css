@@ -156,7 +156,7 @@ section#home > .buttons {
     margin-top: 80px;
 }
 
-section#running > #progress {
+#progress {
     position: absolute;
     bottom: -6px;
     left: 60px;
@@ -167,7 +167,7 @@ section#running > #progress {
     border-right: 6px solid rgb(46, 51, 55);
 }
 
-section#running #progress-completed {
+#progress-completed {
     position: absolute;
     top: 0;
     left: 0;
@@ -176,7 +176,8 @@ section#running #progress-completed {
     background-color: rgb(235, 235, 235);
 }
 
-section#running > #info {
+
+#info {
     position: absolute;
     bottom: -25px;
     left: 60px;
@@ -186,6 +187,16 @@ section#running > #info {
     text-align: center;
     font-size: 12px;
 }
+#info-label {
+    position: absolute;
+    left: 6px;
+}
+#info-progress {
+    position: absolute;
+    right: 6px;
+    text-align: right;
+}
+
 
 section#summarized-results > #result-number,
 section#summarized-results > #confidence-number {
