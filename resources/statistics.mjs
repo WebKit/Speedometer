@@ -86,9 +86,9 @@ export function confidenceIntervalDelta(confidenceLevel, numberOfSamples, sum, s
 }
 
 export function confidenceInterval(values, probability) {
-    const sum_value = sum(values);
-    const mean = sum_value / values.length;
-    const delta = confidenceIntervalDelta(probability || 0.95, values.length, sum_value, squareSum(values));
+    const sumValue = sum(values);
+    const mean = sumValue / values.length;
+    const delta = confidenceIntervalDelta(probability || 0.95, values.length, sumValue, squareSum(values));
     return [mean - delta, mean + delta];
 }
 

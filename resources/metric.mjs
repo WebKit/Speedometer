@@ -1,10 +1,9 @@
 import * as Statistics from "./statistics.mjs";
 
 /** Number of milliseconds in a single minute. */
-export const MILLIS_PER_MIN = 60 * 1000;
+export const MILLISECONDS_PER_MIN = 60 * 1000;
 
 export class Metric {
-    /** @param {string} name */
     constructor(name, unit = "ms") {
         if (typeof name !== "string")
             throw new Error(`Invalid metric.name=${name}, expected string.`);
@@ -20,12 +19,9 @@ export class Metric {
         this.min = 0.0;
         this.max = 0.0;
 
-        /** @type {number[]} */
         this.values = [];
 
-        /** @type {Metric} */
         this.parent = undefined;
-        /** @type {Metric[]} */
         this.children = [];
 
         // Mark properties which refer to other Metric objects as
@@ -56,7 +52,6 @@ export class Metric {
         return this.values.length;
     }
 
-    /** @param {Metric} metric */
     addChild(metric) {
         if (metric.parent)
             throw new Error("Cannot re-add sub metric");
@@ -64,17 +59,13 @@ export class Metric {
         this.children.push(metric);
     }
 
-    /** @param {number} value */
     add(value) {
         if (typeof value !== "number")
             throw new Error(`Adding invalid value=${value} to metric=${this.name}`);
         this.values.push(value);
     }
 
-    /**
-     * Calculate aggregate metrics for collected values.
-     */
-    compute() {
+    computeAggregatedMetrics() {
         // Avoid the loss of significance for the sum.
         const sortedValues = this.values.concat().sort((a, b) => a - b);
         const squareSum = Statistics.squareSum(sortedValues);
