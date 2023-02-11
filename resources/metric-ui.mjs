@@ -11,8 +11,8 @@ export function renderMetricView(metric)
                         height: 30 + children.length * 20,
                         width: 500,
                         values: scatterPlotValues(metric),
-                        unit: "ms",
-                        xAxisLabel: "Duration [ms]"})}
+                        unit: "%",
+                        xAxisLabel: "Spread Normalized"})}
                     <table class="chart chart-legend">
                         ${children.map(
                             (metric, i) => `
@@ -56,18 +56,19 @@ function scatterPlotValues(metric)
     for (let metricIndex = 0; metricIndex < metrics.length; metricIndex++) {
         const subMetric = metric.children[metricIndex];
         // Add variation data point
+        const mean = subMetric.mean;
         const point = [
-            subMetric.mean - subMetric.delta / 2,
+            (0 - subMetric.delta / mean / 2) * 100,
             metricIndex,
             `Mean: ${subMetric.valueString}`,
-            subMetric.delta
+            subMetric.delta / mean * 100
         ];
         points.push(point);
         const values = subMetric.values;
         for (let i = 0; i < values.length; i++) {
             const value = values[i];
             const point = [
-                value,
+                value / mean * 100 - 100,
                 metricIndex + i / values.length,
                 `Iteration ${i}: ${value.toFixed(2)}ms`
             ];
@@ -175,7 +176,7 @@ function renderScatterPlot({ values, width = 500, height = 200, xAxisLabel, unit
     const unitToYPos = (height - vaxis - vbuf * 2) / yspread;
     const vaxisY = height - vaxis + 4;
     const markerSize = 2;
-
+    console.log(values);
     return `
         <svg
             class="scatter-plot chart"
