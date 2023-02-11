@@ -1,4 +1,4 @@
-import { Metric, MILLISECONDS_PER_MIN } from "./metric.mjs";
+import { Metric, MILLISECONDS_PER_MINUTE } from "./metric.mjs";
 import { params } from "./params.mjs";
 
 export class BenchmarkTestStep {
@@ -300,7 +300,7 @@ export class BenchmarkRunner {
         iterationTotal.computeAggregatedMetrics();
 
         this._metrics.Total.add(iterationTotal.sum);
-        this._metrics.Score.add(MILLISECONDS_PER_MIN / iterationTotal.sum);
+        this._metrics.Score.add(MILLISECONDS_PER_MINUTE / iterationTotal.sum);
         collectSubMetrics("", iterationResults);
 
         for (const metric of Object.values(this._metrics))

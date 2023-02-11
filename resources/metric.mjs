@@ -1,7 +1,7 @@
 import * as Statistics from "./statistics.mjs";
 
 /** Number of milliseconds in a single minute. */
-export const MILLISECONDS_PER_MIN = 60 * 1000;
+export const MILLISECONDS_PER_MINUTE = 60 * 1000;
 
 export class Metric {
     constructor(name, unit = "ms") {
