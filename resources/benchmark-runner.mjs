@@ -1,3 +1,4 @@
+import { Metric, MILLISECONDS_PER_MINUTE } from "./metric.mjs";
 import { params } from "./params.mjs";
 
 export class BenchmarkTestStep {
@@ -118,6 +119,11 @@ export class BenchmarkRunner {
         this._suites = suites;
         this._client = client;
         this._page = null;
+        this._metrics = {
+            __proto__: null,
+            Total: new Metric("Total"),
+            Score: new Metric("Score", "score"),
+        };
     }
 
     _removeFrame() {
@@ -164,7 +170,7 @@ export class BenchmarkRunner {
         for (let i = 0; i < iterationCount; i++)
             await this._runAllSuites();
         if (this._client?.didFinishLastIteration)
-            await this._client.didFinishLastIteration();
+            await this._client.didFinishLastIteration(this._metrics);
     }
 
     async _runAllSuites() {
@@ -201,7 +207,7 @@ export class BenchmarkRunner {
     }
 
     async _runTestAndRecordResults(suite, test) {
-        /* eslint-disable-next-line  no-async-promise-executor */
+        /* eslint-disable-next-line no-async-promise-executor */
         return new Promise(async (resolve) => {
             if (this._client?.willRunTest)
                 await this._client.willRunTest(suite, test);
@@ -250,6 +256,7 @@ export class BenchmarkRunner {
     }
 
     async _finalize() {
+        this._appendIterationMetrics();
         if (this._client?.didRunSuites) {
             let product = 1;
             const values = [];
@@ -270,5 +277,33 @@ export class BenchmarkRunner {
             this._measuredValues.score = (60 * 1000) / geomean / correctionFactor;
             await this._client.didRunSuites(this._measuredValues);
         }
+    }
+    _appendIterationMetrics() {
+        const getMetric = (name) => this._metrics[name] || (this._metrics[name] = new Metric(name));
+
+        const collectSubMetrics = (prefix, items, parent) => {
+            for (let name in items) {
+                const results = items[name];
+                const metric = getMetric(prefix + name);
+                metric.add(results.total ?? results);
+                if (metric.parent !== parent)
+                    parent.addChild(metric);
+                if (results.tests)
+                    collectSubMetrics(`${metric.name}-`, results.tests, metric);
+            }
+        };
+
+        const iterationResults = this._measuredValues.tests;
+        const iterationTotal = getMetric(`Iteration-${this._metrics.Total.length}-Total`);
+        for (const results of Object.values(iterationResults))
+            iterationTotal.add(results.total);
+        iterationTotal.computeAggregatedMetrics();
+
+        this._metrics.Total.add(iterationTotal.sum);
+        this._metrics.Score.add(MILLISECONDS_PER_MINUTE / iterationTotal.sum);
+        collectSubMetrics("", iterationResults);
+
+        for (const metric of Object.values(this._metrics))
+            metric.computeAggregatedMetrics();
     }
 }

@@ -32,15 +32,15 @@ export function min(values) {
 }
 
 export function sum(values) {
-    return values.reduce(function (a, b) {
-        return a + b;
-    }, 0);
+    return values.reduce((a, b) => a + b, 0);
+}
+
+export function product(values) {
+    return values.reduce((a, b) => a * b, 1);
 }
 
 export function squareSum(values) {
-    return values.reduce(function (sum, value) {
-        return sum + value * value;
-    }, 0);
+    return values.reduce((sum, value) => sum + value * value, 0);
 }
 
 // With sum and sum of squares, we can compute the sample standard deviation in O(1).
@@ -52,15 +52,15 @@ export function sampleStandardDeviation(numberOfSamples, sum, squareSum) {
 }
 
 export function supportedConfidenceLevels() {
-    var supportedLevels = [];
-    for (var quantile in tDistributionInverseCDF)
+    const supportedLevels = [];
+    for (let quantile in tDistributionInverseCDF)
         supportedLevels.push((1 - (1 - quantile) * 2).toFixed(2));
     return supportedLevels;
 }
 
 // Computes the delta d s.t. (mean - d, mean + d) is the confidence interval with the specified confidence level in O(1).
 export function confidenceIntervalDelta(confidenceLevel, numberOfSamples, sum, squareSum) {
-    var probability = 1 - (1 - confidenceLevel) / 2;
+    const probability = 1 - (1 - confidenceLevel) / 2;
     if (!(probability in tDistributionInverseCDF)) {
         throw (
             "We only support "
@@ -75,20 +75,20 @@ export function confidenceIntervalDelta(confidenceLevel, numberOfSamples, sum, s
     if (numberOfSamples - 2 < 0)
         return NaN;
 
-    var cdfForProbability = tDistributionInverseCDF[probability];
-    var degreesOfFreedom = numberOfSamples - 1;
+    const cdfForProbability = tDistributionInverseCDF[probability];
+    const degreesOfFreedom = numberOfSamples - 1;
     if (degreesOfFreedom > cdfForProbability.length)
         throw "We only support up to " + deltas.length + " degrees of freedom";
 
     // tDistributionQuantile(degreesOfFreedom, confidenceLevel) * sampleStandardDeviation / sqrt(numberOfSamples) * S/sqrt(numberOfSamples)
-    var quantile = cdfForProbability[degreesOfFreedom - 1]; // The first entry is for the one degree of freedom.
+    const quantile = cdfForProbability[degreesOfFreedom - 1]; // The first entry is for the one degree of freedom.
     return (quantile * sampleStandardDeviation(numberOfSamples, sum, squareSum)) / Math.sqrt(numberOfSamples);
 }
 
 export function confidenceInterval(values, probability) {
-    var sum = sum(values);
-    var mean = sum / values.length;
-    var delta = confidenceIntervalDelta(probability || 0.95, values.length, sum, squareSum(values));
+    const sumValue = sum(values);
+    const mean = sumValue / values.length;
+    const delta = confidenceIntervalDelta(probability || 0.95, values.length, sumValue, squareSum(values));
     return [mean - delta, mean + delta];
 }
 
