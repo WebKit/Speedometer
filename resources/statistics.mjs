@@ -63,13 +63,13 @@ export function confidenceIntervalDelta(confidenceLevel, numberOfSamples, sum, s
     const probability = 1 - (1 - confidenceLevel) / 2;
     if (!(probability in tDistributionInverseCDF)) {
         throw (
-            "We only support "
-            + supportedConfidenceLevels()
-                .map(function (level) {
-                    return level * 100 + "%";
-                })
-                .join(", ")
-            + " confidence intervals."
+            `We only support ${
+                supportedConfidenceLevels()
+                    .map(function (level) {
+                        return `${level * 100 }%`;
+                    })
+                    .join(", ")
+            } confidence intervals.`
         );
     }
     if (numberOfSamples - 2 < 0)
@@ -78,7 +78,7 @@ export function confidenceIntervalDelta(confidenceLevel, numberOfSamples, sum, s
     const cdfForProbability = tDistributionInverseCDF[probability];
     const degreesOfFreedom = numberOfSamples - 1;
     if (degreesOfFreedom > cdfForProbability.length)
-        throw "We only support up to " + deltas.length + " degrees of freedom";
+        throw `We only support up to ${ deltas.length } degrees of freedom`;
 
     // tDistributionQuantile(degreesOfFreedom, confidenceLevel) * sampleStandardDeviation / sqrt(numberOfSamples) * S/sqrt(numberOfSamples)
     const quantile = cdfForProbability[degreesOfFreedom - 1]; // The first entry is for the one degree of freedom.

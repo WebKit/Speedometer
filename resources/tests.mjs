@@ -10,10 +10,10 @@ Suites.push({
         (await page.waitForElement(".new-todo")).focus();
     },
     tests: [
-        new BenchmarkTestStep("Adding" + numberOfItemsToAdd + "Items", (page) => {
+        new BenchmarkTestStep(`Adding${ numberOfItemsToAdd }Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue("Something to do " + i);
+                newTodo.setValue(`Something to do ${ i}`);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -39,10 +39,10 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep("Adding" + numberOfItemsToAdd + "Items", (page) => {
+        new BenchmarkTestStep(`Adding${ numberOfItemsToAdd }Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue("Something to do " + i);
+                newTodo.setValue(`Something to do ${ i}`);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -68,10 +68,10 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep("Adding" + numberOfItemsToAdd + "Items", (page) => {
+        new BenchmarkTestStep(`Adding${ numberOfItemsToAdd }Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue("Something to do " + i);
+                newTodo.setValue(`Something to do ${ i}`);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -97,10 +97,10 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep("Adding" + numberOfItemsToAdd + "Items", (page) => {
+        new BenchmarkTestStep(`Adding${ numberOfItemsToAdd }Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue("Something to do " + i);
+                newTodo.setValue(`Something to do ${ i}`);
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keydown");
             }
@@ -126,10 +126,10 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep("Adding" + numberOfItemsToAdd + "Items", (page) => {
+        new BenchmarkTestStep(`Adding${ numberOfItemsToAdd }Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue("Something to do " + i);
+                newTodo.setValue(`Something to do ${ i}`);
                 newTodo.enter("keydown");
             }
         }),
@@ -154,10 +154,10 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep("Adding" + numberOfItemsToAdd + "Items", (page) => {
+        new BenchmarkTestStep(`Adding${ numberOfItemsToAdd }Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue("Something to do " + i);
+                newTodo.setValue(`Something to do ${ i}`);
                 newTodo.enter("keydown");
             }
         }),
@@ -183,10 +183,10 @@ Suites.push({
         newTodo.focus();
     },
     tests: [
-        new BenchmarkTestStep("Adding" + numberOfItemsToAdd + "Items", (page) => {
+        new BenchmarkTestStep(`Adding${ numberOfItemsToAdd }Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue("Something to do " + i);
+                newTodo.setValue(`Something to do ${ i}`);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -212,10 +212,10 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep("Adding" + numberOfItemsToAdd + "Items", (page) => {
+        new BenchmarkTestStep(`Adding${ numberOfItemsToAdd }Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue("Something to do " + i);
+                newTodo.setValue(`Something to do ${ i}`);
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keyup");
             }
@@ -241,10 +241,10 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep("Adding" + numberOfItemsToAdd + "Items", (page) => {
+        new BenchmarkTestStep(`Adding${ numberOfItemsToAdd }Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue("Something to do " + i);
+                newTodo.setValue(`Something to do ${ i}`);
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keyup");
             }
@@ -271,10 +271,10 @@ Suites.push({
         newTodo.focus();
     },
     tests: [
-        new BenchmarkTestStep("Adding" + numberOfItemsToAdd + "Items", (page) => {
+        new BenchmarkTestStep(`Adding${ numberOfItemsToAdd }Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue("Something to do " + i);
+                newTodo.setValue(`Something to do ${ i}`);
                 newTodo.enter("keyup");
             }
         }),
@@ -298,10 +298,10 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep("Adding" + numberOfItemsToAdd + "Items", (page) => {
+        new BenchmarkTestStep(`Adding${ numberOfItemsToAdd }Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue("Something to do " + i);
+                newTodo.setValue(`Something to do ${ i}`);
                 newTodo.enter("keydown");
             }
         }),

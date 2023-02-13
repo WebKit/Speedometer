@@ -47,7 +47,7 @@ class MainBenchmarkClient {
                         if (value === "ms")
                             this.displayUnit = "ms";
                         else
-                            console.error("Invalid unit: " + value);
+                            console.error(`Invalid unit: ${ value}`);
                         break;
                     case "iterationCount":
                         /* eslint-disable-next-line  no-case-declarations */
@@ -55,11 +55,11 @@ class MainBenchmarkClient {
                         if (!isNaN(parsedValue))
                             this.iterationCount = parsedValue;
                         else
-                            console.error("Invalid iteration count: " + value);
+                            console.error(`Invalid iteration count: ${ value}`);
                         break;
                     case "suite":
                         if (!this.enableOneSuite(Suites, value)) {
-                            alert('Suite "' + value + '" does not exist. No tests to run.');
+                            alert(`Suite "${ value }" does not exist. No tests to run.`);
                             return false;
                         }
                         break;
@@ -81,8 +81,8 @@ class MainBenchmarkClient {
     willAddTestFrame(frame) {
         const main = document.querySelector("main");
         const style = getComputedStyle(main);
-        frame.style.left = main.offsetLeft + parseInt(style.borderLeftWidth) + parseInt(style.paddingLeft) + "px";
-        frame.style.top = main.offsetTop + parseInt(style.borderTopWidth) + parseInt(style.paddingTop) + "px";
+        frame.style.left = `${main.offsetLeft + parseInt(style.borderLeftWidth) + parseInt(style.paddingLeft) }px`;
+        frame.style.top = `${main.offsetTop + parseInt(style.borderTopWidth) + parseInt(style.paddingTop) }px`;
     }
 
     willRunTest(suite, test) {
@@ -92,7 +92,7 @@ class MainBenchmarkClient {
 
     didRunTest() {
         this._finishedTestCount++;
-        this._progressCompleted.style.width = (this._finishedTestCount * 100) / this.stepCount + "%";
+        this._progressCompleted.style.width = `${(this._finishedTestCount * 100) / this.stepCount }%`;
     }
 
     didRunSuites(measuredValues) {
@@ -114,7 +114,7 @@ class MainBenchmarkClient {
         this._updateGaugeNeedle(results.mean);
         document.getElementById("result-number").textContent = results.formattedMean;
         if (results.formattedDelta)
-            document.getElementById("confidence-number").textContent = "\u00b1 " + results.formattedDelta;
+            document.getElementById("confidence-number").textContent = `\u00b1 ${ results.formattedDelta}`;
 
         this._populateDetailedResults(results.formattedValues);
         document.getElementById("results-with-statistics").textContent = results.formattedMeanAndDelta;
@@ -155,26 +155,26 @@ class MainBenchmarkClient {
             const percentDelta = (delta * 100) / arithmeticMean;
             meanSigFig = sigFigFromPercentDelta(percentDelta);
             formattedDelta = toSigFigPrecision(delta, 2);
-            formattedPercentDelta = toSigFigPrecision(percentDelta, 2) + "%";
+            formattedPercentDelta = `${toSigFigPrecision(percentDelta, 2) }%`;
         }
 
         const formattedMean = toSigFigPrecision(arithmeticMean, Math.max(meanSigFig, 3));
 
         return {
             formattedValues: values.map((value) => {
-                return toSigFigPrecision(value, 4) + " " + displayUnit;
+                return `${toSigFigPrecision(value, 4) } ${ displayUnit}`;
             }),
             mean: arithmeticMean,
             formattedMean: formattedMean,
             formattedDelta: formattedDelta,
-            formattedMeanAndDelta: formattedMean + (formattedDelta ? " \xb1 " + formattedDelta + " (" + formattedPercentDelta + ")" : ""),
+            formattedMeanAndDelta: formattedMean + (formattedDelta ? ` \xb1 ${ formattedDelta } (${ formattedPercentDelta })` : ""),
         };
     }
 
     _addDetailedResultsRow(table, iterationNumber, value) {
         const row = document.createElement("tr");
         const th = document.createElement("th");
-        th.textContent = "Iteration " + (iterationNumber + 1);
+        th.textContent = `Iteration ${ iterationNumber + 1}`;
         const td = document.createElement("td");
         td.textContent = value;
         row.appendChild(th);
@@ -184,7 +184,7 @@ class MainBenchmarkClient {
 
     _updateGaugeNeedle(score) {
         const needleAngle = Math.max(0, Math.min(score, 140)) - 70;
-        const needleRotationValue = "rotate(" + needleAngle + "deg)";
+        const needleRotationValue = `rotate(${ needleAngle }deg)`;
 
         const gaugeNeedleElement = document.querySelector("#summarized-results > .gauge .needle");
         gaugeNeedleElement.style.setProperty("-webkit-transform", needleRotationValue);
@@ -248,7 +248,7 @@ class MainBenchmarkClient {
         const screenIsTooSmall = window.innerWidth < mainSize.width || window.innerHeight < mainSize.height;
         document.getElementById("min-screen-width").textContent = `${params.viewport.width + 50}px`;
         document.getElementById("min-screen-height").textContent = `${params.viewport.height + 50}px`;
-        document.getElementById("screen-size").textContent = window.innerWidth + "px by " + window.innerHeight + "px";
+        document.getElementById("screen-size").textContent = `${window.innerWidth }px by ${ window.innerHeight }px`;
         document.getElementById("screen-size-warning").style.display = screenIsTooSmall ? null : "none";
     }
 

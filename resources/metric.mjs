@@ -37,7 +37,7 @@ export class Metric {
     }
 
     get shortName() {
-        return this.parent ? this.name.replace(this.parent.name + "-", "") : this.name;
+        return this.parent ? this.name.replace(`${this.parent.name }-`, "") : this.name;
     }
 
     get valueString() {
