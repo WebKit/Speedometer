@@ -219,7 +219,7 @@ function startTest() {
     const interactiveRunner = new window.BenchmarkRunner(Suites, params.iterationCount);
 
     if (!(interactiveRunner instanceof InteractiveBenchmarkRunner)) {
-        throw Error("window.BenchmarkRunner must be " + "a subclass of InteractiveBenchmarkRunner");
+        throw Error("window.BenchmarkRunner must be a subclass of InteractiveBenchmarkRunner");
     }
 
     // Don't call step while step is already executing.
