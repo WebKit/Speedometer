@@ -122,7 +122,7 @@ export class BenchmarkRunner {
         this._metrics = {
             __proto__: null,
             Total: new Metric("Total"),
-            Score: new Metric("Score", "rpm"),
+            Score: new Metric("Score", "score"),
         };
     }
 
