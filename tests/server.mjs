@@ -30,7 +30,7 @@ export default function serve(port) {
         const pathTraversal = !filePath.startsWith(STATIC_PATH);
         const exists = await fs.promises.access(filePath).then(...toBool);
         const found = !pathTraversal && exists;
-        const streamPath = found ? filePath : `${STATIC_PATH }/index.html`;
+        const streamPath = found ? filePath : `${STATIC_PATH}/index.html`;
         const ext = path.extname(streamPath).substring(1).toLowerCase();
         const stream = fs.createReadStream(streamPath);
         return { found, ext, stream };

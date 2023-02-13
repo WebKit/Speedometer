@@ -70,15 +70,15 @@ class InteractiveBenchmarkRunner extends BenchmarkRunner {
             for (const testName in suiteResults.tests) {
                 let testResults = suiteResults.tests[testName];
                 for (const subtestName in testResults.tests) {
-                    results += `${suiteName } : ${ testName } : ${ subtestName }: ${ testResults.tests[subtestName] } ms\n`;
+                    results += `${suiteName} : ${testName} : ${subtestName}: ${testResults.tests[subtestName]} ms\n`;
                 }
             }
-            results += `${suiteName } : ${ suiteResults.total } ms\n`;
+            results += `${suiteName} : ${suiteResults.total} ms\n`;
         }
-        results += `Arithmetic Mean : ${ measuredValues.mean } ms\n`;
-        results += `Geometric Mean : ${ measuredValues.geomean } ms\n`;
-        results += `Total : ${ measuredValues.total } ms\n`;
-        results += `Score : ${ measuredValues.score } rpm\n`;
+        results += `Arithmetic Mean : ${measuredValues.mean} ms\n`;
+        results += `Geometric Mean : ${measuredValues.geomean} ms\n`;
+        results += `Total : ${measuredValues.total} ms\n`;
+        results += `Score : ${measuredValues.score} rpm\n`;
 
         if (!results)
             return;
@@ -119,7 +119,7 @@ window.Suites = Suites;
 window.BenchmarkRunner = InteractiveBenchmarkRunner;
 
 function formatTestName(suiteName, testName) {
-    return suiteName + (testName ? `/${ testName}` : "");
+    return suiteName + (testName ? `/${testName}` : "");
 }
 
 function createUIForSuites(suites, onStep, onRunSuites) {
@@ -150,7 +150,7 @@ function createUIForSuites(suites, onStep, onRunSuites) {
             const testItem = document.createElement("li");
             const test = suite.tests[testIndex];
             const anchor = document.createElement("a");
-            anchor.id = `${suite.name }-${ test.name}`;
+            anchor.id = `${suite.name}-${test.name}`;
             test.anchor = anchor;
             anchor.appendChild(document.createTextNode(formatTestName(suite.name, test.name)));
             testItem.appendChild(anchor);

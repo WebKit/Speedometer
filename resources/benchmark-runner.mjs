@@ -144,8 +144,8 @@ export class BenchmarkRunner {
         const marginLeft = parseInt(getComputedStyle(document.body).marginLeft);
         const marginTop = parseInt(getComputedStyle(document.body).marginTop);
         if (window.innerWidth > params.viewport.width + marginLeft && window.innerHeight > params.viewport.height + marginTop) {
-            frame.style.left = `${marginLeft }px`;
-            frame.style.top = `${marginTop }px`;
+            frame.style.left = `${marginLeft}px`;
+            frame.style.top = `${marginTop}px`;
         } else {
             frame.style.left = "0px";
             frame.style.top = "0px";
@@ -202,7 +202,7 @@ export class BenchmarkRunner {
                 await suite.prepare(this._page);
                 resolve();
             };
-            frame.src = `resources/${ suite.url}`;
+            frame.src = `resources/${suite.url}`;
         });
     }
 
@@ -233,11 +233,11 @@ export class BenchmarkRunner {
     _runTest(suite, test, page, callback) {
         const now = window.performance && window.performance.now ? () => window.performance.now() : Date.now;
 
-        this._writeMark(`${suite.name }.${ test.name }-start`);
+        this._writeMark(`${suite.name}.${test.name}-start`);
         let startTime = now();
         test.run(page);
         let endTime = now();
-        this._writeMark(`${suite.name }.${ test.name }-sync-end`);
+        this._writeMark(`${suite.name}.${test.name}-sync-end`);
 
         const syncTime = endTime - startTime;
 
@@ -248,7 +248,7 @@ export class BenchmarkRunner {
             const height = this._frame.contentDocument.body.getBoundingClientRect().height;
             endTime = now();
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
-            this._writeMark(`${suite.name }.${ test.name }-async-end`);
+            this._writeMark(`${suite.name}.${test.name}-async-end`);
             window.requestAnimationFrame(() => {
                 callback(syncTime, endTime - startTime, height);
             });
