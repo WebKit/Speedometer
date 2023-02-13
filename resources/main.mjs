@@ -204,7 +204,7 @@ class MainBenchmarkClient {
             this._addDetailedResultsRow(resultsTables[1], i, formattedValues[i]);
 
         const jsonData = JSON.stringify(this._measuredValuesList);
-        const blob = new Blob([jsonData], {type: "application/json"});
+        const blob = new Blob([jsonData], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const link = document.getElementById("download-json");
         link.href = url;
@@ -277,20 +277,16 @@ class MainBenchmarkClient {
         this._showSection("about", true);
     }
 
-    _getFormattedJSONResult()
-    {
+    _getFormattedJSONResult() {
         const indent = "    ";
         return JSON.stringify(this._measuredValuesList, undefined, indent);
     }
 
-    copyJsonResults()
-    {
-
+    copyJsonResults() {
         navigator.clipboard.writeText(this._getFormattedJSONResult());
     }
 
-    downloadJsonResults()
-    {
+    downloadJsonResults() {
         navigator.clipboard.writeText(this._getFormattedJSONResult());
     }
 
