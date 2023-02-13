@@ -20,9 +20,6 @@ h1,
 button, .button {
     font-family: "Futura-Medium", Futura, "Helvetica Neue", Helvetica, Verdana, sans-serif;
 }
-.button {
-    text-decoration: none;
-}
 
 code {
     font-family: Menlo, Monaco, monospace;
@@ -108,6 +105,7 @@ section#home > .buttons {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    margin: 5px 0px
 }
 
 button, .button {
@@ -120,13 +118,18 @@ button, .button {
     text-align: center;
 }
 
+.button {
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
 .buttons button, .buttons .button {
     appearance: none;
     border: 3px solid var(--foreground);
     border-radius: 10px;
     min-width: 200px;
-    padding: 5px 20px;
-    margin: 0 40px;
+    padding: 5px 0px;
+    margin: 0 20px;
     font-size: 25px;
     color: var(--foreground);
     background-color: transparent;
