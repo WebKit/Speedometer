@@ -47,8 +47,8 @@
                 <div id="confidence-number"></div>
                 <div class="buttons">
                     <div class="button-row">
-                        <button class="start-tests-button">Test Again</button>
-                        <button id="show-details">Details</button>
+                        <button class="start-tests-button" title="Discard the current results and re-run all tests.">Test Again</button>
+                        <button id="show-details" title="Show detailed results data.">Details</button>
                     </div>
                 </div>
             </section>
@@ -60,8 +60,12 @@
                 <div class="arithmetic-mean"><label>Arithmetic Mean:</label><span id="results-with-statistics"></span></div>
                 <div class="buttons">
                     <div class="button-row">
-                        <button class="start-tests-button">Test Again</button>
-                        <button id="show-summary">Summary</button>
+                        <a class="button" id="download-json" download="speedometer.json" title="Download all result metrics as json string.">Download JSON</a>
+                        <button id="copy-json" title="Copy all result metrics as json string.">Copy JSON</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="start-tests-button" title="Discard the current results and re-run all tests.">Test Again</button>
+                        <button id="show-summary" title="Go back to the simplified summary view.">Summary</button>
                     </div>
                 </div>
             </section>

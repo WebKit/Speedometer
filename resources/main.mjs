@@ -202,6 +202,13 @@ class MainBenchmarkClient {
         resultsTables[1].innerHTML = "";
         for (; i < formattedValues.length; i++)
             this._addDetailedResultsRow(resultsTables[1], i, formattedValues[i]);
+
+        const jsonData = JSON.stringify(this._measuredValuesList);
+        const blob = new Blob([jsonData], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const link = document.getElementById("download-json");
+        link.href = url;
+        link.setAttribute("download", `speedometer_3-${new Date().toISOString()}.json`);
     }
 
     prepareUI() {
@@ -212,6 +219,7 @@ class MainBenchmarkClient {
         document.getElementById("logo").onclick = this._logoClickHandler.bind(this);
         document.getElementById("show-summary").onclick = this.showResultsSummary.bind(this);
         document.getElementById("show-details").onclick = this.showResultsDetails.bind(this);
+        document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
         document.querySelectorAll(".show-about").forEach((each) => {
             each.onclick = this.showAbout.bind(this);
         });
@@ -267,6 +275,23 @@ class MainBenchmarkClient {
 
     showAbout() {
         this._showSection("about", true);
+    }
+
+    _getFormattedJSONResult()
+    {
+        const indent = "    ";
+        return JSON.stringify(this._measuredValuesList, undefined, indent);
+    }
+
+    copyJsonResults()
+    {
+
+        navigator.clipboard.writeText(this._getFormattedJSONResult());
+    }
+
+    downloadJsonResults()
+    {
+        navigator.clipboard.writeText(this._getFormattedJSONResult());
     }
 
     _showSection(sectionIdentifier, pushState) {
