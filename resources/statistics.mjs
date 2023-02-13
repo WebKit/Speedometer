@@ -62,11 +62,8 @@ export function supportedConfidenceLevels() {
 export function confidenceIntervalDelta(confidenceLevel, numberOfSamples, sum, squareSum) {
     const probability = 1 - (1 - confidenceLevel) / 2;
     if (!(probability in tDistributionInverseCDF)) {
-        throw `We only support ${supportedConfidenceLevels()
-            .map(function (level) {
-                return `${level * 100}%`;
-            })
-            .join(", ")} confidence intervals.`;
+        const supportedIntervals = supportedConfidenceLevels().map((level) => `${level * 100}%`);
+        throw `We only support ${supportedIntervals.join(", ")} confidence intervals.`;
     }
     if (numberOfSamples - 2 < 0)
         return NaN;
