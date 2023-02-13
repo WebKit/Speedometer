@@ -86,8 +86,8 @@ class MainBenchmarkClient {
     }
 
     willRunTest(suite, test) {
-        document.getElementById('info-label').textContent = suite.name
-        document.getElementById('info-progress').textContent = `${this._finishedTestCount} / ${this.stepCount}`;
+        document.getElementById("info-label").textContent = suite.name;
+        document.getElementById("info-progress").textContent = `${this._finishedTestCount} / ${this.stepCount}`;
     }
 
     didRunTest() {
@@ -184,7 +184,7 @@ class MainBenchmarkClient {
 
     _updateGaugeNeedle(score) {
         const needleAngle = Math.max(0, Math.min(score, 140)) - 70;
-        const needleRotationValue = 'rotate(' + needleAngle + 'deg)';
+        const needleRotationValue = "rotate(" + needleAngle + "deg)";
 
         const gaugeNeedleElement = document.querySelector("#summarized-results > .gauge .needle");
         gaugeNeedleElement.style.setProperty("-webkit-transform", needleRotationValue);
