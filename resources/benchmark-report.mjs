@@ -62,8 +62,8 @@
                     for (const testName in suite.tests) {
                         const test = suite.tests[testName];
                         for (const subtestName in test.tests)
-                            addToMeasuredValue(test.tests[subtestName], suiteName + "/" + testName + "/" + subtestName);
-                        addToMeasuredValue(test.total, suiteName + "/" + testName, "Total");
+                            addToMeasuredValue(test.tests[subtestName], `${suiteName} / ${testName} / ${subtestName}`);
+                        addToMeasuredValue(test.total, `${suiteName}/${testName}`, "Total");
                     }
                     addToMeasuredValue(suite.total, suiteName, "Total");
                 }

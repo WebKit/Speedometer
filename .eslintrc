@@ -86,6 +86,7 @@
         "nonblock-statement-body-position": ["error", "below"],
         "object-curly-spacing": ["error", "always"],
         "operator-linebreak": ["error", "before"],
+        "prefer-template": 2,
         "quotes": [2, "double", { "avoidEscape": true }],
         "semi": 2,
         "semi-spacing": [2, { "before": false, "after": true }],

@@ -17,7 +17,8 @@ body {
 }
 
 h1,
-button, .button {
+button,
+.button {
     font-family: "Futura-Medium", Futura, "Helvetica Neue", Helvetica, Verdana, sans-serif;
 }
 
@@ -105,10 +106,11 @@ section#home > .buttons {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    margin: 5px 0px
+    margin: 5px 0px;
 }
 
-button, .button {
+button,
+.button {
     appearance: none;
     border: none;
     background-color: transparent;
@@ -123,7 +125,8 @@ button, .button {
     text-decoration: none;
 }
 
-.buttons button, .buttons .button {
+.buttons button,
+.buttons .button {
     appearance: none;
     border: 3px solid var(--foreground);
     border-radius: 10px;
@@ -211,7 +214,6 @@ button.show-about {
     background-color: var(--foreground);
 }
 
-
 #info {
     position: absolute;
     bottom: -25px;
@@ -255,11 +257,12 @@ section#summarized-results > #confidence-number {
     color: rgb(128, 128, 128);
 }
 
-section#detailed-results button, section#detailed-results .button {
+section#detailed-results button,
+section#detailed-results .button {
     min-width: 300px;
 }
 
-section#detailed-results >.arithmetic-mean {
+section#detailed-results > .arithmetic-mean {
     clear: both;
     padding-top: 32px;
     text-align: center;
@@ -296,7 +299,6 @@ section#about h1 {
 section#about .note {
     color: rgb(128, 128, 128);
 }
-
 
 table {
     border-spacing: 0;
