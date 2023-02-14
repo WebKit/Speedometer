@@ -30,7 +30,12 @@
         <script src="../resources/benchmark-runner.mjs" type="module"></script>
         <script src="benchmark-runner-tests.mjs" type="module"></script>
         <script type="module">
-            window.mochaResults = mocha.run();
+            const runner = mocha.run();
+            runner.on("end", function () {
+                const event = new Event("complete");
+                window.dispatchEvent(event);
+            });
+            window.mochaResults = runner;
         </script>
     </body>
 </html>
