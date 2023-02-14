@@ -73,13 +73,14 @@ async function test() {
     try {
         await driver.get(`http://localhost:${PORT}/tests/index.html`);
         console.log("Waiting for tests to finish");
-        await driver.wait(function () {
-            return driver.executeScript("return window.mochaResults.state === 'stopped'");
-        }, 5000);
+        const stats = await driver.executeAsyncScript(function (callback) {
+            window.addEventListener("complete", () => callback(window.mochaResults.stats), { once: true });
+        });
+        console.log("stats", stats);
         console.log("Checking for passed tests");
-        assert(await driver.executeScript("return window.mochaResults.stats.passes") > 0);
+        assert(stats.passes > 0);
         console.log("Checking for failed tests");
-        assert(await driver.executeScript("return window.mochaResults.stats.failures") === 0);
+        assert(stats.failures === 0);
     } finally {
         console.log("Tests complete");
         driver.quit();
