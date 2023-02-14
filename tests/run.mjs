@@ -76,6 +76,7 @@ async function test() {
         const stats = await driver.executeAsyncScript(function (callback) {
             window.addEventListener("complete", () => callback(window.mochaResults.stats), { once: true });
         });
+        console.log("stats", stats);
         console.log("Checking for passed tests");
         assert(stats.passes > 0);
         console.log("Checking for failed tests");
