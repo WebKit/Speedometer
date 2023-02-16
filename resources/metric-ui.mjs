@@ -1,6 +1,4 @@
-
-export function renderMetricView(metric)
-{
+export function renderMetricView(metric) {
     const children = metric.children;
     return `
         <dl class="metric">
@@ -8,21 +6,24 @@ export function renderMetricView(metric)
             <dd>
                 <div class="metric-chart">
                     ${renderScatterPlot({
-                        height: 30 + children.length * 20,
-                        width: 500,
-                        values: scatterPlotValues(metric),
-                        unit: "%",
-                        xAxisLabel: "Spread Normalized"})}
+        height: 30 + children.length * 20,
+        width: 500,
+        values: scatterPlotValues(metric),
+        unit: "%",
+        xAxisLabel: "Spread Normalized",
+    })}
                     <table class="chart chart-legend">
-                        ${children.map(
-                            (metric, i) => `
+                        ${children
+        .map(
+            (metric, i) => `
                                 <tr class=${COLORS[i % COLORS.length]}>
                                     <td>⏺</td>
                                     <td>${metric.shortName}</td>
                                     <td>${metric.valueString}</td>
                                 </tr>
                             `
-                        ).join("")}
+        )
+        .join("")}
                     </table>
                 </div>
                 ${renderSubMetrics(metric)}
@@ -31,12 +32,11 @@ export function renderMetricView(metric)
     `;
 }
 
-function renderSubMetrics(metric)
-{
+function renderSubMetrics(metric) {
     const children = metric.children;
     const hasChildMetric = children.length > 0 && children[0].children.length > 0;
     if (!hasChildMetric)
-      return""
+        return "";
     return `
         <label class="details-toggle"
                onclick="this.nextElementSibling.classList.toggle('visible')">
@@ -44,44 +44,33 @@ function renderSubMetrics(metric)
             Details
         </label>
         <div class="submetrics">
-            ${metric.children.map(metric => renderMetricView(metric)).join("")}
+            ${metric.children.map((metric) => renderMetricView(metric)).join("")}
         </div>
     `;
 }
 
-function scatterPlotValues(metric)
-{
+function scatterPlotValues(metric) {
     let points = [];
     const metrics = metric.children;
     for (let metricIndex = 0; metricIndex < metrics.length; metricIndex++) {
         const subMetric = metric.children[metricIndex];
         // Add variation data point
         const mean = subMetric.mean;
-        const point = [
-            (0 - subMetric.delta / mean / 2) * 100,
-            metricIndex,
-            `Mean: ${subMetric.valueString}`,
-            subMetric.delta / mean * 100
-        ];
+        const point = [(0 - subMetric.delta / mean / 2) * 100, metricIndex, `Mean: ${subMetric.valueString}`, (subMetric.delta / mean) * 100];
         points.push(point);
         const values = subMetric.values;
         for (let i = 0; i < values.length; i++) {
             const value = values[i];
-            const point = [
-                value / mean * 100 - 100,
-                metricIndex + i / values.length,
-                `Iteration ${i}: ${value.toFixed(2)}ms`
-            ];
+            const point = [(value / mean) * 100 - 100, metricIndex + i / values.length, `Iteration ${i}: ${value.toFixed(2)}ms`];
             points.push(point);
         }
     }
     return points;
 }
 
-export const COLORS = ['blue', 'green', 'orange', 'violet', 'green-light', 'red', 'purple' ];
+export const COLORS = ["blue", "green", "orange", "violet", "green-light", "red", "purple"];
 
-export function renderBarChart({ metric, width = 700, height = 200, min = 0, max})
-{
+export function renderBarChart({ metric, width = 700, height = 200, min = 0, max }) {
     const values = metric.values;
     let maxValue = max;
     if (max == null) {
@@ -114,46 +103,51 @@ export function renderBarChart({ metric, width = 700, height = 200, min = 0, max
             <text x=${width / 2} y=${height + 5}>Iteration</text>
             <line x1="0" x2="0" y1="0" y2=${height} class="axis" />
             <line x1="0" x2=${width} y1=${height} y2=${height} class="axis" />
-            ${Math.abs(maxYPos - meanYPos) < minLabelHeight
-                ? null
-                : `
+            ${
+    Math.abs(maxYPos - meanYPos) < minLabelHeight
+        ? null
+        : `
                         <text class="label" x="4" y=${meanYPos}>
                             ${meanValue.toFixed(1)}${unit}–
                         </text>
-                  `}
-            ${Math.abs(maxYPos - minYPos) < minLabelHeight &&
-            Math.abs(meanYPos - minYPos) < minLabelHeight
-                ? null
-                : `
+                  `
+}
+            ${
+    Math.abs(maxYPos - minYPos) < minLabelHeight && Math.abs(meanYPos - minYPos) < minLabelHeight
+        ? null
+        : `
                         <text class="label" x="4" y=${minYPos}>
                             ${metric.min.toFixed(1)}${unit}–
                         </text>
-                  `}
+                  `
+}
             <line x1="0" x2=${width} y1=${maxYPos} y2=${maxYPos} class="minMax" />
             <line x1="0" x2=${width} y1=${meanYPos} y2=${meanYPos} class="mean">
                 <title>Mean: ${metric.valueString}</title>
             </line>
             <line x1="0" x2=${width} y1=${minYPos} y2=${minYPos} class="minMax" />
-            ${values.map(
-                (value, i) => `
+            ${values
+        .map(
+            (value, i) => `
                     <g
-                        class=${large ? 'bar large' : 'bar'}
+                        class=${large ? "bar large" : "bar"}
                         transform="translate(${i * w} ${(innerHeight + 1 - toYPos(value)) | 0})"
                     >
                         <rect x=${barBorder / 2} height=${toYPos(value)} width=${w - barBorder}>
                             <title>Iteration ${i}: ${value.toFixed(2)}${unit}</title>
                         </rect>
                         <text y="5" x=${w / 2} text-anchor="middle">
-                            ${value.toFixed(1).replace('.0', '')}
+                            ${value.toFixed(1).replace(".0", "")}
                         </text>
                     </g>
                 `
-            ).join("")}
+        )
+        .join("")}
         </svg>
     `;
 }
 
-function renderScatterPlot({ values, width = 500, height = 200, xAxisLabel, unit = '' }) {
+function renderScatterPlot({ values, width = 500, height = 200, xAxisLabel, unit = "" }) {
     let xmin = Infinity,
         xmax = 0;
     let ymin = Infinity,

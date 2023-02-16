@@ -2,7 +2,7 @@ import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import "./benchmark-report.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
-import {renderMetricView, renderBarChart} from "./metric-ui.mjs";
+import { renderMetricView, renderBarChart } from "./metric-ui.mjs";
 import { params } from "./params.mjs";
 
 // FIXME(camillobruni): Add base class
@@ -21,8 +21,7 @@ class MainBenchmarkClient {
     }
 
     // FIXME: Move this method to the tests/suites module.
-    enableOneSuite(suites, suiteToEnable)
-    {
+    enableOneSuite(suites, suiteToEnable) {
         suiteToEnable = suiteToEnable.toLowerCase();
         let found = false;
         for (let i = 0; i < suites.length; i++) {
@@ -36,8 +35,7 @@ class MainBenchmarkClient {
         return found;
     }
 
-    startBenchmark()
-    {
+    startBenchmark() {
         if (location.search.length > 1) {
             // FIXME: Use URLSearchParams
             let parts = location.search.substring(1).split("&");
@@ -93,19 +91,16 @@ class MainBenchmarkClient {
         document.getElementById("info-progress").textContent = `${this._finishedTestCount} / ${this.stepCount}`;
     }
 
-    didRunTest()
-    {
+    didRunTest() {
         this._finishedTestCount++;
         this._progressCompleted.style.width = `${(this._finishedTestCount * 100) / this.stepCount}%`;
     }
 
-    didRunSuites(measuredValues)
-    {
+    didRunSuites(measuredValues) {
         this._measuredValuesList.push(measuredValues);
     }
 
-    willStartFirstIteration()
-    {
+    willStartFirstIteration() {
         this._isRunning = true;
         this._measuredValuesList = [];
         this._finishedTestCount = 0;
@@ -199,18 +194,16 @@ class MainBenchmarkClient {
     }
 
     _populateDetailedResults(metrics) {
-        const totalMetric = metrics['Total'];
-        document.getElementById('total-chart').innerHTML = renderBarChart({metric: totalMetric});
-        document.getElementById('total-results-with-statistics').innerHTML = totalMetric.valueString;
+        const totalMetric = metrics["Total"];
+        document.getElementById("total-chart").innerHTML = renderBarChart({ metric: totalMetric });
+        document.getElementById("total-results-with-statistics").innerHTML = totalMetric.valueString;
 
-        const toplevelMetrics = Object.values(metrics).filter(
-            (each) => !each.parent && each.children.length > 0
-        );
+        const toplevelMetrics = Object.values(metrics).filter((each) => !each.parent && each.children.length > 0);
         let html = "";
         for (const metric of toplevelMetrics) {
             html += renderMetricView(metric);
         }
-        document.getElementById('metrics-results').innerHTML = html
+        document.getElementById("metrics-results").innerHTML = html;
 
         const jsonData = JSON.stringify(this._measuredValuesList);
         const blob = new Blob([jsonData], { type: "application/json" });
@@ -221,8 +214,8 @@ class MainBenchmarkClient {
     }
 
     prepareUI() {
-        window.addEventListener('popstate', this._popStateHandler.bind(this), false);
-        window.addEventListener('resize', this._resizeScreeHandler.bind(this));
+        window.addEventListener("popstate", this._popStateHandler.bind(this), false);
+        window.addEventListener("resize", this._resizeScreeHandler.bind(this));
         this._resizeScreeHandler();
 
         document.getElementById("logo").onclick = this._logoClickHandler.bind(this);
@@ -238,8 +231,7 @@ class MainBenchmarkClient {
         });
     }
 
-    _popStateHandler(event)
-    {
+    _popStateHandler(event) {
         if (event.state) {
             const sectionToShow = event.state.section;
             if (sectionToShow) {
@@ -253,8 +245,7 @@ class MainBenchmarkClient {
         return this._showSection("home", false);
     }
 
-    _resizeScreeHandler()
-    {
+    _resizeScreeHandler() {
         // FIXME: Detect when the window size changes during the test.
         const mainSize = document.querySelector("main").getBoundingClientRect();
         const screenIsTooSmall = window.innerWidth < mainSize.width || window.innerHeight < mainSize.height;
@@ -264,14 +255,12 @@ class MainBenchmarkClient {
         document.getElementById("screen-size-warning").style.display = screenIsTooSmall ? null : "none";
     }
 
-    _startBenchmarkHandler()
-    {
+    _startBenchmarkHandler() {
         if (this.startBenchmark())
             this._showSection("running");
     }
 
-    _logoClickHandler(event)
-    {
+    _logoClickHandler(event) {
         // Prevent any accidental UI changes during benchmark runs.
         if (!this._isRunning)
             this._showSection("home", true);
