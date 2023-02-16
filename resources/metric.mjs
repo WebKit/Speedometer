@@ -44,7 +44,13 @@ export class Metric {
         const mean = this.mean.toFixed(2);
         if (!this.percentDelta || !this.delta)
             return `${mean} ${this.unit}`;
-        return `${mean} ± ${this.delta.toFixed(2)} (${this.percentDelta.toFixed(1)}%) ${this.unit}`;
+        return `${mean} ± ${this.deltaString} ${this.unit}`;
+    }
+
+    get deltaString() {
+        if (!this.percentDelta || !this.delta)
+            return "";
+        return `${this.delta.toFixed(2)} (${this.percentDelta.toFixed(1)}%)`;
     }
 
     get length() {

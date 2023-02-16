@@ -195,13 +195,14 @@ class MainBenchmarkClient {
 
     _populateDetailedResults(metrics) {
         const totalMetric = metrics["Total"];
-        document.getElementById("total-chart").innerHTML = renderBarChart({ metric: totalMetric });
+        const width = params.viewport.width - 100;
+        document.getElementById("total-chart").innerHTML = renderBarChart({ metric: totalMetric, width: width });
         document.getElementById("total-results-with-statistics").innerHTML = totalMetric.valueString;
 
         const toplevelMetrics = Object.values(metrics).filter((each) => !each.parent && each.children.length > 0);
         let html = "";
         for (const metric of toplevelMetrics) {
-            html += renderMetricView(metric);
+            html += renderMetricView(metric, width / 2);
         }
         document.getElementById("metrics-results").innerHTML = html;
 

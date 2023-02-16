@@ -2,17 +2,40 @@
     --viewport-width: 800px;
     --viewport-height: 600px;
     --foreground: rgb(235, 235, 235);
+    --inactive-color: rgb(128, 128, 128);
+    --background: rgb(46, 51, 55);
     --text-width: 650px;
 }
 
 body {
-    background-color: rgb(46, 51, 55);
+    background-color: var(--background);
     color: var(--foreground);
     font-family: "Helvetica Neue", Helvetica, Verdana, sans-serif;
 }
 
 ::selection {
-    color: rgb(46, 51, 55);
+    color: var(--background);
+    background-color: var(--foreground);
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+    background-color: var(--background);
+}
+::-webkit-scrollbar,
+::-webkit-scrollbar-track {
+    background-color: var(--inactive-color);
+    border-radius: 8px;
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--foreground);
+    border-radius: 8px;
+    cursor: pointer;
+}
+::-webkit-scrollbar-thumb:hover {
     background-color: var(--foreground);
 }
 
@@ -145,7 +168,7 @@ button,
 
 .buttons button:active {
     background-color: var(--foreground);
-    color: rgb(46, 51, 55);
+    color: var(--background);
     border-color: var(--foreground) !important;
 }
 
@@ -203,9 +226,9 @@ button.show-about {
     left: 60px;
     right: 60px;
     height: 6px;
-    background-color: rgb(128, 128, 128);
-    border-left: 6px solid rgb(46, 51, 55);
-    border-right: 6px solid rgb(46, 51, 55);
+    background-color: var(--inactive-color);
+    border-left: 6px solid var(--background);
+    border-right: 6px solid var(--background);
 }
 
 #progress-completed {
@@ -223,7 +246,7 @@ button.show-about {
     left: 60px;
     right: 60px;
     height: 12px;
-    color: rgb(128, 128, 128);
+    color: var(--inactive-color);
     text-align: center;
     font-size: 12px;
 }
@@ -257,7 +280,7 @@ section#summarized-results > #confidence-number {
     text-align: center;
     font-size: 36px;
     line-height: 36px;
-    color: rgb(128, 128, 128);
+    color: var(--inactive-color);
 }
 
 section#detailed-results button,
@@ -321,11 +344,16 @@ section#detailed-results .metric {
     font-size: medium;
 }
 
+table .number {
+    text-align: right;
+}
+
 .chart-legend {
     display: inline;
     padding-left: 30px;
     vertical-align: top;
     margin-top: 0;
+    line-height: 20px;
 }
 
 .chart-legend td {
@@ -342,7 +370,7 @@ section#about h1 {
 }
 
 section#about .note {
-    color: rgb(128, 128, 128);
+    color: var(--inactive-color);
 }
 
 table {
@@ -357,7 +385,7 @@ td {
 
 th {
     text-align: right;
-    color: rgb(128, 128, 128);
+    color: var(--inactive-color);
 }
 
 .gauge {
