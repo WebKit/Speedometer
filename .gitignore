@@ -3,3 +3,4 @@
 .DS_Store
 .directory
 /node_modules
+resources/todomvc/architecture-examples/svelte/node_modules
