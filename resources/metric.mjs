@@ -1,14 +1,10 @@
-import * as Statistics from './statistics.mjs';
+import * as Statistics from "./statistics.mjs";
 
-/** Number of milliseconds in a single minute. */
-export const MILLIS_PER_MIN = 60 * 1000;
+export const MILLISECONDS_PER_MINUTE = 60 * 1000;
 
 export class Metric {
-
-    /** @param {string} name */
-    constructor(name, unit = 'ms')
-    {
-        if (typeof name !== 'string')
+    constructor(name, unit = "ms") {
+        if (typeof name !== "string")
             throw new Error(`Invalid metric.name=${name}, expected string.`);
         this.name = name;
         this.unit = unit;
@@ -22,68 +18,54 @@ export class Metric {
         this.min = 0.0;
         this.max = 0.0;
 
-        /** @type {number[]} */
         this.values = [];
 
-        /** @type {Metric} */
         this.parent = undefined;
-        /** @type {Metric[]} */
         this.children = [];
 
-        // Mark properties which refer to other Metric objects as 
+        // Mark properties which refer to other Metric objects as
         // non-enumerable to avoid issue with JSON.stringify due to circular
         // references.
         Object.defineProperties(this, {
             parent: {
-                writable: true
+                writable: true,
             },
             children: {
-                writable: true
-            }
+                writable: true,
+            },
         });
     }
 
-    get shortName() 
-    {
-        return this.parent ? this.name.replace(this.parent.name + '-', '') : this.name;
+    get shortName() {
+        return this.parent ? this.name.replace(`${this.parent.name}-`, "") : this.name;
     }
 
-    get valueString()
-    {
+    get valueString() {
         const mean = this.mean.toFixed(2);
         if (!this.percentDelta || !this.delta)
             return `${mean} ${this.unit}`;
         return `${mean} ± ${this.delta.toFixed(2)} (${this.percentDelta.toFixed(1)}%) ${this.unit}`;
     }
 
-    get length()
-    {
+    get length() {
         return this.values.length;
     }
 
-    /** @param {Metric} metric */
-    addChild(metric)
-    {
+    addChild(metric) {
         if (metric.parent)
-            throw new Error('Cannot re-add sub metric');
+            throw new Error("Cannot re-add sub metric");
         metric.parent = this;
         this.children.push(metric);
     }
 
-    /** @param {number} value */
-    add(value)
-    {
-        if (typeof value !== 'number')
+    add(value) {
+        if (typeof value !== "number")
             throw new Error(`Adding invalid value=${value} to metric=${this.name}`);
         this.values.push(value);
     }
 
-    /**
-     * Calculate aggregate metrics for collected values.
-     */
-    compute()
-    {
-         // Avoid the loss of significance for the sum.
+    computeAggregatedMetrics() {
+        // Avoid the loss of significance for the sum.
         const sortedValues = this.values.concat().sort((a, b) => a - b);
         const squareSum = Statistics.squareSum(sortedValues);
         this.sum = Statistics.sum(sortedValues);
