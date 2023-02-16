@@ -319,7 +319,7 @@ th {
     position: relative;
     width: 738px;
     height: 78px;
-    background-image: url(gauge.png);
+    background-image: image-set(url(gauge@2x.png) 2x, url(gauge.png) 1x);
     background-size: 100% 100%;
     background-repeat: no-repeat;
     margin: 0 auto;
@@ -343,14 +343,4 @@ th {
     background-color: rgb(247, 148, 29);
     transform: rotate(-70deg);
     transform-origin: 2px 400px;
-}
-
-@media (min-resolution: 2dppx), (min-resolution: 192dpi) {
-    #logo {
-        content: url(logo@2x.png); /* FIXME: This does not work in Firefox. */
-    }
-
-    .gauge {
-        background-image: url(gauge@2x.png);
-    }
 }
