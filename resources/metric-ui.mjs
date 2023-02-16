@@ -110,11 +110,11 @@ export function renderBarChart({ metric, width = 700, height = 200, min = 0, max
     let meanLabel = "";
     let minLabel = "";
     if (Math.abs(maxYPos - meanYPos) < minLabelHeight) {
-        meanLabel = `<text class="label" x="4" y=${meanYPos}>
+        meanLabel = `<text class="label" x="4" y="${meanYPos}">
                         ${meanValue.toFixed(1)}${unit}–
                      </text>`;
         if (Math.abs(maxYPos - minYPos) < minLabelHeight) {
-            minLabel = `<text class="label" x="4" y=${minYPos}>
+            minLabel = `<text class="label" x="4" y="${minYPos}">
                             ${metric.min.toFixed(1)}${unit}–
                         </text>`;
         }
@@ -123,12 +123,12 @@ export function renderBarChart({ metric, width = 700, height = 200, min = 0, max
         .map(
             (value, i) => `
                 <g
-                    class=${large ? "bar large" : "bar"}
+                    class="${large ? "bar large" : "bar"}"
                     transform="translate(${i * w} ${(innerHeight + 1 - toYPos(value)) | 0})">
-                    <rect x=${barBorder / 2} height=${toYPos(value)} width=${w - barBorder}>
+                    <rect x="${barBorder / 2}" height="${toYPos(value)}" width="${w - barBorder}">
                         <title>Iteration ${i}: ${value.toFixed(2)}${unit}</title>
                     </rect>
-                    <text y="5" x=${w / 2} text-anchor="middle">
+                    <text y="5" x="${w / 2}" text-anchor="middle">
                         ${value.toFixed(1).replace(".0", "")}
                     </text>
                 </g>
@@ -136,24 +136,23 @@ export function renderBarChart({ metric, width = 700, height = 200, min = 0, max
         )
         .join("");
     return `
-        <svg
-                class="bar-chart chart"
-                height=${height + 20}
-                width=${width + maxLabelWidth}
+        <svg class="bar-chart chart"
+                height="${height + 20}"
+                width="${width + maxLabelWidth}"
                 viewBox="${`-${maxLabelWidth} 0 ${width + maxLabelWidth} ${height + 20}`}"
                 preserveAspectRatio="xMinYMin slice">
-            <text class="label" x="4" y=${maxYPos}>${maxValue.toFixed(1)}${unit}–</text>
-            <text class="label" x="-1" y=${height}>${min}${unit}</text>
-            <text x=${width / 2} y=${height + 5}>Iteration</text>
+            <text class="label" x="4" y="${maxYPos}">${maxValue.toFixed(1)}${unit}–</text>
+            <text class="label" x="-1" y="${height}">${min}${unit}</text>
+            <text x="${width / 2}" y="${height + 5}">Iteration</text>
             <line x1="0" x2="0" y1="0" y2=${height} class="axis" />
-            <line x1="0" x2=${width} y1=${height} y2=${height} class="axis"/>
+            <line x1="0" x2="${width}" y1="${height}" y2="${height}" class="axis" />
             ${meanLabel}
             ${minLabel}
-            <line x1="0" x2=${width} y1=${maxYPos} y2=${maxYPos} class="minMax"/>
-            <line x1="0" x2=${width} y1=${meanYPos} y2=${meanYPos} class="mean">
+            <line x1="0" x2="${width}" y1="${maxYPos}" y2="${maxYPos}" class="minMax" />
+            <line x1="0" x2="${width}" y1="${meanYPos}" y2="${meanYPos}" class="mean">
                 <title>Mean: ${metric.valueString}</title>
             </line>
-            <line x1="0" x2=${width} y1=${minYPos} y2=${minYPos} class="minMax"/>
+            <line x1="0" x2="${width}" y1="${minYPos}" y2="${minYPos}" class="minMax" />
             ${bars}
         </svg>
     `;
@@ -193,20 +192,20 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabe
     const unitToPosY = trackHeight - trackMargin;
     return `
         <svg class="scatter-plot chart"
-            width=${width} height=${height}
+            width="${width}" height="${height}"
             viewBox="${`0 0 ${width} ${height}`}">
             <g class="horizontal-axis">
                 <line
-                    x1=${0} x2=${width}
-                    y1=${axisY - axisMarginY} y2=${axisY - axisMarginY}
-                    class="axis"/>
-                <text y=${axisY} x="0" text-anchor="start">${xmin.toFixed(2)}${unit}</text>
-                <text y=${axisY} x=${width / 2} text-anchor="middle">${xAxisLabel}</text>
-                <text y=${axisY} x=${width} text-anchor="end">${xmax.toFixed(2)}${unit}</text>
+                    x1="${0}" x2="${width}"
+                    y1="${axisY - axisMarginY}" y2="${axisY - axisMarginY}"
+                    class="axis" />
+                <text y="${axisY}" x="0" text-anchor="start">${xmin.toFixed(2)}${unit}</text>
+                <text y="${axisY}" x="${width / 2}" text-anchor="middle">${xAxisLabel}</text>
+                <text y="${axisY}" x="${width}" text-anchor="end">${xmax.toFixed(2)}${unit}</text>
             </g>
             <defs>
                 <g id="marker">
-                    <circle r=${markerSize - 1}/>
+                    <circle r="${markerSize - 1}" />
                 </g>
             </defs>
             ${values.map(renderValue).join("")}
@@ -224,7 +223,7 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabe
             const x = (rawX - xmin) * unitToPosX;
             const adjustedY = y + trackMargin;
             return `
-                <use href="#marker" x=${x} y=${adjustedY} class="marker ${cssClass}">
+                <use href="#marker" x="${x}" y="${adjustedY}" class="marker ${cssClass}">
                     <title>${label}</title>
                 </use>
             `;
@@ -238,15 +237,15 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabe
             const bottom = top + height;
             return `
             <g class="percentile ${cssClass}">
-                <rect x=${x} y=${top} width=${w} height=${height}>
+                <rect x="${x}" y="${top}" width="${w}" height="${height}">
                     <title>${label}</title>
                 </rect>
-                <line x1=${x} x2=${x} y1=${top} y2=${bottom}/>
+                <line x1="${x}" x2="${x}" y1="${top}" y2="${bottom}" />
                 <line
-                    x1=${centerX} x2=${centerX}
-                    y1=${top}     y2=${bottom}
-                    stroke-dasharray=${height / 3}/>
-                <line x1=${x + w} x2=${x + w} y1=${top} y2=${bottom}/>
+                    x1="${centerX}" x2="${centerX}"
+                    y1="${top}"     y2="${bottom}"
+                    stroke-dasharray="${height / 3}" />
+                <line x1="${x + w}" x2="${x + w}" y1="${top}" y2="${bottom}" />
             </g>
         `;
         }
