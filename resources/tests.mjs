@@ -3,6 +3,20 @@ import { BenchmarkTestStep } from "./benchmark-runner.mjs";
 const numberOfItemsToAdd = 100;
 export const Suites = [];
 
+Suites.enable = function(names) {
+    this.forEach(suite => { suite.disabled = true; });
+    const lowerCaseNames = names.map(each => each.toLowerCase());
+    let found = false;
+    this.forEach(suite => {
+        if (lowerCaseNames.includes(suite.name.toLowerCase())) {
+            suite.disabled = false;
+            found = true;
+        }
+    });
+    return found;
+};
+
+
 Suites.push({
     name: "VanillaJS-TodoMVC",
     url: "todomvc/vanilla-examples/vanillajs/index.html",
@@ -443,3 +457,8 @@ Suites.push({
         }),
     ],
 });
+
+Object.freeze(Suites);
+
+// Expose Suites for backwards compatibility.
+globalThis.Suites = Suites;
