@@ -319,6 +319,34 @@ Suites.push({
 });
 
 Suites.push({
+    name: "Svelte-TodoMVC",
+    url: "todomvc/architecture-examples/svelte/public/index.html",
+    async prepare(page) {
+        const element = await page.waitForElement(".new-todo");
+        element.focus();
+    },
+    tests: [
+        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            const newTodo = page.querySelector(".new-todo");
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                newTodo.setValue(`Something to do ${i}`);
+                newTodo.enter("keydown");
+            }
+        }),
+        new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const checkboxes = page.querySelectorAll(".toggle");
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
+        }),
+        new BenchmarkTestStep("DeletingItems", (page) => {
+            const deleteButtons = page.querySelectorAll(".destroy");
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                deleteButtons[i].click();
+        }),
+    ],
+});
+
+Suites.push({
     name: "React-Stockcharts",
     url: "tentative/react-stockcharts/build/index.html?type=hybrid",
     async prepare(page) {
