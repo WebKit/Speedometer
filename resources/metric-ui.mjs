@@ -122,9 +122,8 @@ export function renderBarChart({ metric, width = 700, height = 200, min = 0, max
     const bars = values
         .map(
             (value, i) => `
-                <g
-                    class="${large ? "bar large" : "bar"}"
-                    transform="translate(${i * w} ${(innerHeight + 1 - toYPos(value)) | 0})">
+                <g class="${large ? "bar large" : "bar"}"
+                        transform="translate(${i * w} ${(innerHeight + 1 - toYPos(value)) | 0})">
                     <rect x="${barBorder / 2}" height="${toYPos(value)}" width="${w - barBorder}">
                         <title>Iteration ${i}: ${value.toFixed(2)}${unit}</title>
                     </rect>
@@ -144,7 +143,7 @@ export function renderBarChart({ metric, width = 700, height = 200, min = 0, max
             <text class="label" x="4" y="${maxYPos}">${maxValue.toFixed(1)}${unit}–</text>
             <text class="label" x="-1" y="${height}">${min}${unit}</text>
             <text x="${width / 2}" y="${height + 5}">Iteration</text>
-            <line x1="0" x2="0" y1="0" y2=${height} class="axis" />
+            <line x1="0" x2="0" y1="0" y2="${height}" class="axis" />
             <line x1="0" x2="${width}" y1="${height}" y2="${height}" class="axis" />
             ${meanLabel}
             ${minLabel}
@@ -161,10 +160,10 @@ export function renderBarChart({ metric, width = 700, height = 200, min = 0, max
 function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabel, unit = "" }) {
     if (!height && !trackHeight)
         throw new Error("Either height or trackHeight must be specified");
-    let xmin = Infinity,
-        xmax = 0;
-    let ymin = Infinity,
-        ymax = 0;
+    let xmin = Infinity;
+    let xmax = 0;
+    let ymin = Infinity;
+    let ymax = 0;
     for (let value of values) {
         let [x, y] = value;
         xmin = Math.min(xmin, x);
@@ -205,7 +204,7 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabe
             </g>
             <defs>
                 <g id="marker">
-                    <circle r="${markerSize - 1}" />
+                    <circle r="${markerSize / 2}" />
                 </g>
             </defs>
             ${values.map(renderValue).join("")}
