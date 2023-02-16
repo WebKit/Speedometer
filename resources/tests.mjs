@@ -3,11 +3,13 @@ import { BenchmarkTestStep } from "./benchmark-runner.mjs";
 const numberOfItemsToAdd = 100;
 export const Suites = [];
 
-Suites.enable = function(names) {
-    this.forEach(suite => { suite.disabled = true; });
-    const lowerCaseNames = names.map(each => each.toLowerCase());
+Suites.enable = function (names) {
+    this.forEach((suite) => {
+        suite.disabled = true;
+    });
+    const lowerCaseNames = names.map((each) => each.toLowerCase());
     let found = false;
-    this.forEach(suite => {
+    this.forEach((suite) => {
         if (lowerCaseNames.includes(suite.name.toLowerCase())) {
             suite.disabled = false;
             found = true;
@@ -15,7 +17,6 @@ Suites.enable = function(names) {
     });
     return found;
 };
-
 
 Suites.push({
     name: "VanillaJS-TodoMVC",

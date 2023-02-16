@@ -26,7 +26,12 @@ class MainBenchmarkClient {
             if (!Suites.enable(params.suites)) {
                 const message = `Suite "${params.suites}" does not exist. No tests to run.`;
                 alert(message);
-                console.error(message, params.suites, "\nValid values:", Suites.map(each => each.name));
+                console.error(
+                    message,
+                    params.suites,
+                    "\nValid values:",
+                    Suites.map((each) => each.name)
+                );
                 return false;
             }
         }
