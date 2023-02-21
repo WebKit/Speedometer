@@ -195,7 +195,7 @@ class MainBenchmarkClient {
     }
 
     _populateDetailedResults(metrics) {
-        const trackHeight = 25;
+        const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
         const toplevelMetrics = Object.values(metrics).filter((each) => !each.parent && each.children.length > 0);
@@ -243,7 +243,6 @@ class MainBenchmarkClient {
 
         document.getElementById("logo").onclick = this._logoClickHandler.bind(this);
         document.getElementById("show-summary").onclick = this.showResultsSummary.bind(this);
-        document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
         document.getElementById("show-details").onclick = this.showResultsDetails.bind(this);
         document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
         document.querySelectorAll(".show-about").forEach((each) => {
