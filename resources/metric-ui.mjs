@@ -91,8 +91,8 @@ function prepareScatterPlotValues(metric, normalize = true) {
     const toPercent = 100;
     for (let metricIndex = 0; metricIndex < metrics.length; metricIndex++) {
         const subMetric = metrics[metricIndex];
-        // Add coordinated for deviation rect:
-        const mean = subMetric.mean;
+        // If the mean is 0 we can't normalize values properly.
+        const mean = subMetric.mean || 1;
         const unit = subMetric.unit;
         let width = subMetric.delta;
         let center = mean;
@@ -114,10 +114,10 @@ function prepareScatterPlotValues(metric, normalize = true) {
             const sign = normalized < 0 ? "" : "+";
             if (normalize)
                 x = normalized;
-            // Each value is mapped to a y-coordinate in the range [metricIndex, metricIndex + 1]
+            // Each value is mapped to a y-coordinate in the range of [metricIndex, metricIndex + 1]
             const valueOffsetY = i / values.length;
             const y = metricIndex + valueOffsetY;
-            let label = `Iteration ${i}: ${value.toFixed(2)}${unit}\n` + `Normalized: $mean${sign}${normalized.toFixed(2)}%`;
+            let label = `Iteration ${i}: ${value.toFixed(2)}${unit}\n` + `Normalized: ${subMetric.mean}${sign}${normalized.toFixed(2)}%`;
             const point = [x, y, label];
             points.push(point);
         }
