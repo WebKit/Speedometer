@@ -4,7 +4,7 @@
 
 A to-do application allows a user to keep track of tasks that need to get done. The user can enter a new task, update an existing task, mark a task as completed, or delete a task. In addition to the basic CRUD operations, the TodoMVC app has some added functionality. The user can select or deselect the currently visible tasks and has the option to remove all completed tasks entirely. In addition, filters are available to change the view to “all”, “active” or “completed” tasks. A status text displays the number of active tasks to complete.
 
-The to-do applications have been ported from [TodoMVC](https://todomvc.com/) and have been adapted to serve as workload applications for Speedmoeter 3.
+The to-do applications have been ported from [TodoMVC](https://todomvc.com/) and have been adapted to serve as workload applications for Speedometer 3.
 
 ## Screenshot
 
