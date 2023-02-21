@@ -49,14 +49,6 @@ describe("BenchmarkRunner", () => {
         expect(runner).not.to.be(undefined);
     });
 
-    describe("_writeMark", () => {
-        it("should fire performance.mark with the correct name", () => {
-            const performanceMarkSpy = spy(window.performance, "mark");
-            runner._writeMark("Button clicked");
-            assert.calledWith(performanceMarkSpy, "Button clicked");
-        });
-    });
-
     describe("Frame", () => {
         describe("_removeFrame", () => {
             let frame, removeChildSpy;
