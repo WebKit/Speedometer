@@ -137,20 +137,21 @@ export class BenchmarkRunner {
 
     async _appendFrame(src) {
         const frame = document.createElement("iframe");
-        frame.style.width = `${params.viewport.width}px`;
-        frame.style.height = `${params.viewport.height}px`;
-        frame.style.border = "0px none";
-        frame.style.position = "absolute";
+        const style = frame.style;
+        style.width = `${params.viewport.width}px`;
+        style.height = `${params.viewport.height}px`;
+        style.border = "0px none";
+        style.position = "absolute";
         frame.setAttribute("scrolling", "no");
-
-        const marginLeft = parseInt(getComputedStyle(document.body).marginLeft);
-        const marginTop = parseInt(getComputedStyle(document.body).marginTop);
+        const computedStyle = getComputedStyle(document.body);
+        const marginLeft = parseInt(computedStyle.marginLeft);
+        const marginTop = parseInt(computedStyle.marginTop);
         if (window.innerWidth > params.viewport.width + marginLeft && window.innerHeight > params.viewport.height + marginTop) {
-            frame.style.left = `${marginLeft}px`;
-            frame.style.top = `${marginTop}px`;
+            style.left = `${marginLeft}px`;
+            style.top = `${marginTop}px`;
         } else {
-            frame.style.left = "0px";
-            frame.style.top = "0px";
+            style.left = "0px";
+            style.top = "0px";
         }
 
         if (this._client?.willAddTestFrame)
