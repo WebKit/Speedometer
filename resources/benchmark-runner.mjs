@@ -162,10 +162,6 @@ export class BenchmarkRunner {
         return frame;
     }
 
-    _writeMark(name) {
-        window.performance.mark(name);
-    }
-
     async runMultipleIterations(iterationCount) {
         if (this._client?.willStartFirstIteration)
             await this._client.willStartFirstIteration(iterationCount);
