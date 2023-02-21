@@ -1,7 +1,9 @@
 export const COLORS = Object.freeze(["blue", "blue-light", "green-light", "green", "yellow", "orange", "red", "magenta", "violet", "purple", "blue-dark", "green-dark", "ochre", "rust"]);
 
 export function renderMetricView(params) {
-    let { metric, width = 500, trackHeight = 20, subMetricMargin, title = "", mode = "normalized", colors = COLORS, renderChildren = true } = params;
+    let { metric, width = 500, trackHeight = 20, subMetricMargin = 35, title = "", mode = "normalized", colors = COLORS, renderChildren = true } = params;
+    // Make sure subMetricMargin is set for use in renderSubMetrics.
+    params.subMetricMargin = subMetricMargin;
     const children = metric.children;
     let scatterPlotParams = { width, trackHeight, colors };
     if (mode === "normalized") {
@@ -45,7 +47,7 @@ export function renderMetricView(params) {
 }
 
 function renderSubMetrics(params) {
-    let { metric, width, subMetricMargin = 35, colors = COLORS } = params;
+    let { metric, width, subMetricMargin, colors = COLORS } = params;
     const children = metric.children;
     const hasChildMetric = children.length > 0 && children[0].children.length > 0;
     if (!hasChildMetric)

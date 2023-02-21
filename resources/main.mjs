@@ -2,7 +2,7 @@ import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import "./benchmark-report.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
-import { COLORS, renderMetricView } from "./metric-ui.mjs";
+import { renderMetricView } from "./metric-ui.mjs";
 import { params } from "./params.mjs";
 import { Metric } from "./metric.mjs";
 
