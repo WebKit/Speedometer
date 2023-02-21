@@ -296,11 +296,6 @@ section#detailed-results.selected {
     flex-direction: column;
 }
 
-section#detailed-results table,
-section#detailed-results .aggregated-metric-result {
-    width: calc(var(--viewport-width) - 30px);
-}
-
 section#detailed-results button,
 section#detailed-results .button {
     min-width: 300px;
@@ -448,6 +443,11 @@ th {
     display: block;
 }
 
+.metric-chart {
+    display: grid;
+    grid-template-columns: calc((var(--viewport-width) - 120px) / 2) 1fr;
+}
+
 .details-toggle {
     display: inline-block;
     cursor: pointer;
@@ -588,7 +588,7 @@ th {
 
 .chart .violet {
     color: #a41ecd;
-    stroke: #090809;
+    stroke: #a41ecd;
 }
 
 .chart .purple {
