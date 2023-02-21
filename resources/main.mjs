@@ -2,8 +2,9 @@ import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import "./benchmark-report.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
-import { renderMetricView, renderBarChart } from "./metric-ui.mjs";
+import { renderMetricView } from "./metric-ui.mjs";
 import { params } from "./params.mjs";
+import { Metric } from "./metric.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -194,15 +195,24 @@ class MainBenchmarkClient {
     }
 
     _populateDetailedResults(metrics) {
+        const plotWidth = (params.viewport.width - 100) / 2;
         const totalMetric = metrics["Total"];
-        const width = params.viewport.width - 100;
-        document.getElementById("total-chart").innerHTML = renderBarChart({ metric: totalMetric, width: width });
-        document.getElementById("total-results-with-statistics").innerHTML = totalMetric.valueString;
+        const rootMetric = new Metric("Root");
+        rootMetric.addChild(totalMetric);
+        const trackHeight = 25;
+        document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
+        document.getElementById("total-chart").innerHTML = renderMetricView({
+            metric: rootMetric,
+            width: plotWidth,
+            trackHeight,
+            mode: "absolute",
+            colors: ["white"],
+        });
 
         const toplevelMetrics = Object.values(metrics).filter((each) => !each.parent && each.children.length > 0);
         let html = "";
         for (const metric of toplevelMetrics) {
-            html += renderMetricView(metric, width / 2);
+            html += renderMetricView({ metric, width: plotWidth, trackHeight, title: metric.name });
         }
         document.getElementById("metrics-results").innerHTML = html;
 

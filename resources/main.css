@@ -5,6 +5,7 @@
     --inactive-color: rgb(128, 128, 128);
     --background: rgb(46, 51, 55);
     --text-width: 650px;
+    --metrics-line-height: 25px;
 }
 
 body {
@@ -101,6 +102,7 @@ h1 {
 h2 {
     margin-top: 0px;
     font-weight: normal;
+    text-align: center;
     color: var(--foreground);
 }
 
@@ -339,6 +341,9 @@ section#detailed-results .metric {
     margin: 0px 0 10px 0;
     display: inline-block;
 }
+section#detailed-results .metric dd {
+    margin-left: 0;
+}
 
 .submetrics h3 {
     font-size: medium;
@@ -353,7 +358,7 @@ table .number {
     padding-left: 30px;
     vertical-align: top;
     margin-top: 0;
-    line-height: 20px;
+    line-height: var(--metrics-line-height);
 }
 
 .chart-legend td {
@@ -430,6 +435,7 @@ th {
 
 .all-metric-results .submetrics {
     display: none;
+    margin-left: 35px;
 }
 .all-metric-results .submetrics.visible {
     display: block;
@@ -437,7 +443,6 @@ th {
 
 .details-toggle {
     display: inline-block;
-    margin: 0 0 0 -35px;
     cursor: pointer;
     user-select: none;
 }
@@ -511,7 +516,8 @@ th {
 }
 
 .scatter-plot .marker {
-    stroke-width: 1px;
+    stroke-width: 0px;
+    opacity: 0.8;
     fill: currentColor;
 }
 .scatter-plot .marker:hover {
