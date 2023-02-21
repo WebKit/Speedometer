@@ -114,7 +114,9 @@ function prepareScatterPlotValues(metric, normalize = true) {
             const sign = normalized < 0 ? "" : "+";
             if (normalize)
                 x = normalized;
-            const y = metricIndex + i / values.length;
+            // Each value is mapped to a y-coordinate in the range [metricIndex, metricIndex + 1]
+            const valueOffsetY = i / values.length;
+            const y = metricIndex + valueOffsetY;
             let label = `Iteration ${i}: ${value.toFixed(2)}${unit}\n` + `Normalized: $mean${sign}${normalized.toFixed(2)}%`;
             const point = [x, y, label];
             points.push(point);
