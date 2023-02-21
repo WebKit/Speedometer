@@ -347,11 +347,11 @@ Suites.push({
         new BenchmarkTestStep("ZoomTheChart", (page) => {
             const cursor = page.querySelector(".react-stockcharts-crosshair-cursor");
             for (let i = 0; i < 30; i++)
-                cursor.scroll(-10, -10, 200, 200);
+                cursor.wheel(-10, -10, 200, 200);
             for (let i = 0; i < 10; i++)
-                cursor.scroll(10, 10, 650, 200);
+                cursor.wheel(10, 10, 650, 200);
             for (let i = 0; i < 10; i++)
-                cursor.scroll(-10, -10, 200, 200);
+                cursor.wheel(-10, -10, 200, 200);
         }),
     ],
 });
@@ -385,11 +385,11 @@ Suites.push({
         new BenchmarkTestStep("ZoomTheChart", (page) => {
             const cursor = page.querySelector(".react-stockcharts-crosshair-cursor");
             for (let i = 0; i < 30; i++)
-                cursor.scroll(-10, -10, 200, 200);
+                cursor.wheel(-10, -10, 200, 200);
             for (let i = 0; i < 10; i++)
-                cursor.scroll(10, 10, 650, 200);
+                cursor.wheel(10, 10, 650, 200);
             for (let i = 0; i < 10; i++)
-                cursor.scroll(-10, -10, 200, 200);
+                cursor.wheel(-10, -10, 200, 200);
         }),
     ],
 });
