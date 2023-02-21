@@ -4,6 +4,7 @@
     --foreground: rgb(235, 235, 235);
     --inactive-color: rgb(128, 128, 128);
     --background: rgb(46, 51, 55);
+    --highlight: rgb(232, 79, 79);
     --text-width: 650px;
     --metrics-line-height: 25px;
 }
@@ -176,7 +177,7 @@ button,
 
 .buttons button:focus {
     outline: none;
-    border-color: rgb(232, 79, 79);
+    border-color: var(--highlight);
 }
 
 section {
