@@ -8,7 +8,7 @@ import { Metric } from "./metric.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
-    displayUnit = "runs/min";
+    displayUnit = "score";
     iterationCount = 10;
     stepCount = null;
     suitesCount = null;
@@ -21,51 +21,20 @@ class MainBenchmarkClient {
         window.addEventListener("DOMContentLoaded", () => this.prepareUI());
     }
 
-    // FIXME: Move this method to the tests/suites module.
-    enableOneSuite(suites, suiteToEnable) {
-        suiteToEnable = suiteToEnable.toLowerCase();
-        let found = false;
-        for (let i = 0; i < suites.length; i++) {
-            const currentSuite = suites[i];
-            if (currentSuite.name.toLowerCase() === suiteToEnable) {
-                currentSuite.disabled = false;
-                found = true;
-            } else
-                currentSuite.disabled = true;
-        }
-        return found;
-    }
-
     startBenchmark() {
-        if (location.search.length > 1) {
-            // FIXME: Use URLSearchParams
-            let parts = location.search.substring(1).split("&");
-            for (let i = 0; i < parts.length; i++) {
-                const keyValue = parts[i].split("=");
-                const key = keyValue[0];
-                const value = keyValue[1];
-                switch (key) {
-                    case "unit":
-                        if (value === "ms")
-                            this.displayUnit = "ms";
-                        else
-                            console.error(`Invalid unit: ${value}`);
-                        break;
-                    case "iterationCount":
-                        /* eslint-disable-next-line  no-case-declarations */
-                        const parsedValue = parseInt(value);
-                        if (!isNaN(parsedValue))
-                            this.iterationCount = parsedValue;
-                        else
-                            console.error(`Invalid iteration count: ${value}`);
-                        break;
-                    case "suite":
-                        if (!this.enableOneSuite(Suites, value)) {
-                            alert(`Suite "${value}" does not exist. No tests to run.`);
-                            return false;
-                        }
-                        break;
-                }
+        this.displayUnit = params.unit;
+        this.iterationCount = params.iterationCount;
+        if (params.suites.length > 0) {
+            if (!Suites.enable(params.suites)) {
+                const message = `Suite "${params.suites}" does not exist. No tests to run.`;
+                alert(message);
+                console.error(
+                    message,
+                    params.suites,
+                    "\nValid values:",
+                    Suites.map((each) => each.name)
+                );
+                return false;
             }
         }
 
@@ -122,7 +91,7 @@ class MainBenchmarkClient {
 
         if (this.displayUnit === "ms") {
             document.getElementById("show-summary").style.display = "none";
-            this.showResultDetails();
+            this.showResultsDetails();
         } else
             this.showResultsSummary();
     }
@@ -251,6 +220,9 @@ class MainBenchmarkClient {
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
+
+        if (params.startAutomatically)
+            this._startBenchmarkHandler();
     }
 
     _popStateHandler(event) {
@@ -334,4 +306,4 @@ const rootStyle = document.documentElement.style;
 rootStyle.setProperty("--viewport-width", `${params.viewport.width}px`);
 rootStyle.setProperty("--viewport-height", `${params.viewport.height}px`);
 
-window.benchmarkClient = new MainBenchmarkClient();
+globalThis.benchmarkClient = new MainBenchmarkClient();

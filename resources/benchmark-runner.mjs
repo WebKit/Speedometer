@@ -1,6 +1,8 @@
 import { Metric, MILLISECONDS_PER_MINUTE } from "./metric.mjs";
 import { params } from "./params.mjs";
 
+const performance = globalThis.performance;
+
 export class BenchmarkTestStep {
     constructor(testName, testFunction) {
         this.name = testName;
@@ -135,20 +137,21 @@ export class BenchmarkRunner {
 
     async _appendFrame(src) {
         const frame = document.createElement("iframe");
-        frame.style.width = `${params.viewport.width}px`;
-        frame.style.height = `${params.viewport.height}px`;
-        frame.style.border = "0px none";
-        frame.style.position = "absolute";
+        const style = frame.style;
+        style.width = `${params.viewport.width}px`;
+        style.height = `${params.viewport.height}px`;
+        style.border = "0px none";
+        style.position = "absolute";
         frame.setAttribute("scrolling", "no");
-
-        const marginLeft = parseInt(getComputedStyle(document.body).marginLeft);
-        const marginTop = parseInt(getComputedStyle(document.body).marginTop);
+        const computedStyle = getComputedStyle(document.body);
+        const marginLeft = parseInt(computedStyle.marginLeft);
+        const marginTop = parseInt(computedStyle.marginTop);
         if (window.innerWidth > params.viewport.width + marginLeft && window.innerHeight > params.viewport.height + marginTop) {
-            frame.style.left = `${marginLeft}px`;
-            frame.style.top = `${marginTop}px`;
+            style.left = `${marginLeft}px`;
+            style.top = `${marginTop}px`;
         } else {
-            frame.style.left = "0px";
-            frame.style.top = "0px";
+            style.left = "0px";
+            style.top = "0px";
         }
 
         if (this._client?.willAddTestFrame)
@@ -157,11 +160,6 @@ export class BenchmarkRunner {
         document.body.insertBefore(frame, document.body.firstChild);
         this._frame = frame;
         return frame;
-    }
-
-    _writeMark(name) {
-        if (window.performance && window.performance.mark)
-            window.performance.mark(name);
     }
 
     async runMultipleIterations(iterationCount) {
@@ -231,26 +229,25 @@ export class BenchmarkRunner {
 
     // This function ought be as simple as possible. Don't even use Promise.
     _runTest(suite, test, page, callback) {
-        const now = window.performance && window.performance.now ? () => window.performance.now() : Date.now;
-
-        this._writeMark(`${suite.name}.${test.name}-start`);
-        let startTime = now();
+        performance.mark(`${suite.name}.${test.name}-start`);
+        const syncStartTime = performance.now();
         test.run(page);
-        let endTime = now();
-        this._writeMark(`${suite.name}.${test.name}-sync-end`);
+        const syncEndTime = performance.now();
+        performance.mark(`${suite.name}.${test.name}-sync-end`);
 
-        const syncTime = endTime - startTime;
+        const syncTime = syncEndTime - syncStartTime;
 
-        startTime = now();
+        const asyncStartTime = performance.now();
         setTimeout(() => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
             const height = this._frame.contentDocument.body.getBoundingClientRect().height;
-            endTime = now();
+            const asyncEndTime = performance.now();
+            const asyncTime = asyncEndTime - asyncStartTime;
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
-            this._writeMark(`${suite.name}.${test.name}-async-end`);
+            performance.mark(`${suite.name}.${test.name}-async-end`);
             window.requestAnimationFrame(() => {
-                callback(syncTime, endTime - startTime, height);
+                callback(syncTime, asyncTime, height);
             });
         }, 0);
     }
