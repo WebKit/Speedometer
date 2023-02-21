@@ -2,6 +2,7 @@
     --viewport-width: 800px;
     --viewport-height: 600px;
     --foreground: rgb(235, 235, 235);
+    --highlight: rgb(232, 79, 79);
     --text-width: 650px;
 }
 
@@ -148,7 +149,7 @@ button,
 
 .buttons button:focus {
     outline: none;
-    border-color: rgb(232, 79, 79);
+    border-color: var(--highlight);
 }
 
 section {
