@@ -37,7 +37,7 @@ class Params {
         }
 
         if (searchParams.has("unit")) {
-            this.unit = searchParams.get("unit");
+            this.unit = searchParams.get("unit").toLowerCase();
             if (!UNITS.includes(this.unit))
                 throw new Error(`Invalid unit=${this.unit}. Valid values are ${UNITS}`);
             searchParams.delete("unit");
