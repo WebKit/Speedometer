@@ -425,16 +425,6 @@ th {
     transform-origin: 2px 400px;
 }
 
-@media (min-resolution: 2dppx), (min-resolution: 192dpi) {
-    #logo {
-        content: url(logo@2x.png); /* FIXME: This does not work in Firefox. */
-    }
-
-    .gauge {
-        background-image: url(gauge@2x.png);
-    }
-}
-
 .all-metric-results .submetrics {
     display: none;
     margin-left: 35px;
