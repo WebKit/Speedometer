@@ -1,17 +1,17 @@
-export const COLORS = ["blue", "green", "orange", "violet", "green-light", "red", "purple"];
+export const COLORS = Object.freeze(["blue", "blue-light", "green-light", "green", "yellow", "orange", "red", "magenta", "violet", "purple", "blue-dark", "green-dark", "ochre", "rust"]);
 
 export function renderMetricView(params) {
-    let { metric, width = 500, trackHeight = 20, subMetricMargin, title = "", mode = "normalized", colors = COLORS } = params;
+    let { metric, width = 500, trackHeight = 20, subMetricMargin, title = "", mode = "normalized", colors = COLORS, renderChildren = true } = params;
     const children = metric.children;
     let scatterPlotParams = { width, trackHeight, colors };
     if (mode === "normalized") {
-        scatterPlotParams["values"] = prepareScatterPlotValues(metric, true);
-        scatterPlotParams["unit"] = "%";
-        scatterPlotParams["xAxisLabel"] = "Spread Normalized";
+        scatterPlotParams.values = prepareScatterPlotValues(metric, true);
+        scatterPlotParams.unit = "%";
+        scatterPlotParams.xAxisLabel = "Spread Normalized";
     } else if (mode === "absolute") {
-        scatterPlotParams["values"] = prepareScatterPlotValues(metric, false);
-        scatterPlotParams["unit"] = metric.unit;
-        scatterPlotParams["xAxisLabel"] = metric.unit;
+        scatterPlotParams.values = prepareScatterPlotValues(metric, false);
+        scatterPlotParams.unit = metric.unit;
+        scatterPlotParams.xAxisLabel = metric.unit;
     } else {
         throw new Error(`Invalid metric view mode = "${mode}"`);
     }
@@ -19,9 +19,9 @@ export function renderMetricView(params) {
     const legend = children
         .map(
             (metric, i) => `
-                <tr class=${colors[i % colors.length]}>
-                    <td>⏺</td>
-                    <td>${metric.shortName}</td>
+                <tr >
+                    <td class=${colors[i % colors.length]} >●</td>
+                    <td class="label">${metric.shortName}</td>
                     <td class="number">${metric.mean.toFixed(2)}</td>
                     <td>±</td>
                     <td>${metric.deltaString}</td>
@@ -29,6 +29,7 @@ export function renderMetricView(params) {
                 </tr>`
         )
         .join("");
+    const subMetrics = renderChildren ? renderSubMetrics(params) : "";
     return `
         <dl class="metric">
             <dt><h3>${title}<h3></dt>
@@ -37,22 +38,28 @@ export function renderMetricView(params) {
                     ${scatterPlot}
                     <table class="chart chart-legend">${legend}</table>
                 </div>
-                ${renderSubMetrics(params)}
+                ${subMetrics}
             </dd>
         </dl>
     `;
 }
 
 function renderSubMetrics(params) {
-    let { metric, width, subMetricMargin = 35 } = params;
+    let { metric, width, subMetricMargin = 35, colors = COLORS } = params;
     const children = metric.children;
     const hasChildMetric = children.length > 0 && children[0].children.length > 0;
     if (!hasChildMetric)
         return "";
     const subMetricWidth = width - subMetricMargin;
+    let childColors = [...colors];
     const subMetrics = metric.children
         .map((metric) => {
-            const subMetricParams = { ...params, metric, width: subMetricWidth };
+            // Rotate colors to get different colors for sub-plots.
+            for (let i = 0; i < metric.children.length; i++) {
+                const color = childColors.pop();
+                childColors.unshift(color);
+            }
+            const subMetricParams = { ...params, metric, title: metric.name, width: subMetricWidth, colors: childColors };
             return renderMetricView(subMetricParams);
         })
         .join("");
@@ -81,7 +88,7 @@ function prepareScatterPlotValues(metric, normalize = true) {
     // Example: [90ms, 100ms, 110ms] =>  [-10%, 0%, +10%]
     const toPercent = 100;
     for (let metricIndex = 0; metricIndex < metrics.length; metricIndex++) {
-        const subMetric = metric.children[metricIndex];
+        const subMetric = metrics[metricIndex];
         // Add coordinated for deviation rect:
         const mean = subMetric.mean;
         const unit = subMetric.unit;
@@ -101,10 +108,12 @@ function prepareScatterPlotValues(metric, normalize = true) {
         for (let i = 0; i < values.length; i++) {
             const value = values[i];
             let x = value;
+            const normalized = (value / mean - 1) * toPercent;
+            const sign = normalized < 0 ? "" : "+";
             if (normalize)
-                x = (value / mean - 1) * toPercent;
+                x = normalized;
             const y = metricIndex + i / values.length;
-            const label = `Iteration ${i}: ${value.toFixed(2)}${unit}`;
+            let label = `Iteration ${i}: ${value.toFixed(2)}${unit}\n` + `Normalized: $mean${sign}${normalized.toFixed(2)}%`;
             const point = [x, y, label];
             points.push(point);
         }

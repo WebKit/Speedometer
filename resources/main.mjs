@@ -2,7 +2,7 @@ import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import "./benchmark-report.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
-import { renderMetricView } from "./metric-ui.mjs";
+import { COLORS, renderMetricView } from "./metric-ui.mjs";
 import { params } from "./params.mjs";
 import { Metric } from "./metric.mjs";
 
@@ -195,12 +195,14 @@ class MainBenchmarkClient {
     }
 
     _populateDetailedResults(metrics) {
-        const plotWidth = (params.viewport.width - 100) / 2;
-        const totalMetric = metrics["Total"];
-        const rootMetric = new Metric("Root");
-        rootMetric.addChild(totalMetric);
         const trackHeight = 25;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
+        const plotWidth = (params.viewport.width - 120) / 2;
+        const toplevelMetrics = Object.values(metrics).filter((each) => !each.parent && each.children.length > 0);
+        const totalMetric = metrics["Total"];
+        // Create temporary "Root" metric for rendering
+        const rootMetric = new Metric("Root");
+        rootMetric.addChild(totalMetric);
         document.getElementById("total-chart").innerHTML = renderMetricView({
             metric: rootMetric,
             width: plotWidth,
@@ -208,8 +210,18 @@ class MainBenchmarkClient {
             mode: "absolute",
             colors: ["white"],
         });
+        // Create temporary "Overview" metric for rendering
+        const overviewMetric = new Metric("Overview");
+        for (const metric of toplevelMetrics) {
+            overviewMetric.addChild(metric);
+        }
+        document.getElementById("tests-chart").innerHTML = renderMetricView({
+            metric: overviewMetric,
+            width: plotWidth,
+            trackHeight,
+            renderChildren: false,
+        });
 
-        const toplevelMetrics = Object.values(metrics).filter((each) => !each.parent && each.children.length > 0);
         let html = "";
         for (const metric of toplevelMetrics) {
             html += renderMetricView({ metric, width: plotWidth, trackHeight, title: metric.name });
