@@ -1,6 +1,8 @@
 import { Metric, MILLISECONDS_PER_MINUTE } from "./metric.mjs";
 import { params } from "./params.mjs";
 
+const performance = globalThis.performance;
+
 export class BenchmarkTestStep {
     constructor(testName, testFunction) {
         this.name = testName;
@@ -160,8 +162,7 @@ export class BenchmarkRunner {
     }
 
     _writeMark(name) {
-        if (window.performance && window.performance.mark)
-            window.performance.mark(name);
+        window.performance.mark(name);
     }
 
     async runMultipleIterations(iterationCount) {
@@ -231,26 +232,25 @@ export class BenchmarkRunner {
 
     // This function ought be as simple as possible. Don't even use Promise.
     _runTest(suite, test, page, callback) {
-        const now = window.performance && window.performance.now ? () => window.performance.now() : Date.now;
-
-        this._writeMark(`${suite.name}.${test.name}-start`);
-        let startTime = now();
+        performance.mark(`${suite.name}.${test.name}-start`);
+        const syncStartTime = performance.now();
         test.run(page);
-        let endTime = now();
-        this._writeMark(`${suite.name}.${test.name}-sync-end`);
+        const syncEndTime = performance.now();
+        performance.mark(`${suite.name}.${test.name}-sync-end`);
 
-        const syncTime = endTime - startTime;
+        const syncTime = syncEndTime - syncStartTime;
 
-        startTime = now();
+        const asyncStartTime = performance.now();
         setTimeout(() => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
             const height = this._frame.contentDocument.body.getBoundingClientRect().height;
-            endTime = now();
+            const asyncEndTime = performance.now();
+            const asyncTime = asyncEndTime - asyncStartTime;
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
-            this._writeMark(`${suite.name}.${test.name}-async-end`);
+            performance.mark(`${suite.name}.${test.name}-async-end`);
             window.requestAnimationFrame(() => {
-                callback(syncTime, endTime - startTime, height);
+                callback(syncTime, asyncTime, height);
             });
         }, 0);
     }
