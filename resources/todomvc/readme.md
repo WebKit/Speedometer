@@ -13,7 +13,7 @@ The to-do applications have been ported from [TodoMVC](https://todomvc.com/) and
 ## What are we testing
 
 - Stress-test DOM manipulations of a repeated action.
-- Impact of JavaScript version releases.
+- Impact of JavaScript version releases and their language features.
 - Tools (bundlers & transpilers) for build optimizations.
 - Libraries & frameworks for render strategies and architectural patterns
 
@@ -24,7 +24,6 @@ The test that repeats a set number of times allows us to stress-test DOM manipul
 The test consist of the following steps:
 
 - Wait for the “add task” input field to be present in the DOM
-- Add a task
-- Check off a task
-- Delete a task
-- Repeat steps 2 - 4 a set number of times (100 by default).
+- Add 100 tasks
+- Check off all tasks
+- Delete all tasks
