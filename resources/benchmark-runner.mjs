@@ -76,20 +76,59 @@ class PageElement {
         this.#node.value = value;
     }
 
-    click() {
-        this.#node.click();
-    }
-
     focus() {
         this.#node.focus();
     }
 
-    dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
+    click() {
+        this.#node.click();
+    }
+
+    mouseMove(clientX = 0, clientY = 0) {
+        this._dispatchMouseEvent("mousemove", clientX, clientY);
+    }
+
+    mouseDown(clientX = 0, clientY = 0) {
+        this._dispatchMouseEvent("mousemove", clientX, clientY);
+    }
+
+    mouseUp(clientX = 0, clientY = 0) {
+        this._dispatchMouseEvent("mouseup", clientX, clientY);
+    }
+
+    _dispatchMouseEvent(eventName, clientX, clientY) {
+        let options = {
+            clientX: clientX,
+            clientY: clientY,
+            bubbles: NATIVE_OPTIONS.bubbles,
+            cancelable: NATIVE_OPTIONS.cancellable,
+        };
+        this._dispatchEvent(eventName, options, MouseEvent);
+    }
+
+    scroll(deltaX = 0, deltaY = 0, clientX = 0, clientY = 0) {
+        let options = {
+            clientX: clientX,
+            clientY: clientY,
+            deltaMode: 0,
+            delta: deltaX,
+            deltaY: deltaY,
+            bubbles: NATIVE_OPTIONS.bubbles,
+            cancelable: NATIVE_OPTIONS.cancellable,
+        };
+        this._dispatchEvent("wheel", options, WheelEvent);
+    }
+
+    dispatchEvent(eventName, options = NATIVE_OPTIONS) {
         if (eventName === "submit")
             // FIXME FireFox doesn't like `new Event('submit')
             this._dispatchSubmitEvent();
         else
-            this.#node.dispatchEvent(new eventType(eventName, options));
+            this._dispatchEvent(eventName, options, Event);
+    }
+
+    _dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
+        this.#node.dispatchEvent(new eventType(eventName, options));
     }
 
     _dispatchSubmitEvent() {
