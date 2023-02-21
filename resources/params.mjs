@@ -42,9 +42,10 @@ class Params {
                 throw new Error(`Invalid unit=${this.unit}. Valid values are ${UNITS}`);
             searchParams.delete("unit");
         }
-
         if (searchParams.has("suite") || searchParams.has("suites")) {
-            const value = searchParams.get("suites") || searchParams.get("suites");
+            if (searchParams.has("suite") && searchParams.has("suites"))
+                throw new Error("Params 'suite' and 'suites' can not be used together.");
+            const value = searchParams.get("suite") || searchParams.get("suites");
             this.suites = value.split(",");
             if (this.suites.length === 0)
                 throw new Error("No suites selected");
