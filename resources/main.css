@@ -100,7 +100,6 @@ h1 {
 }
 
 h2 {
-    margin-top: 0px;
     font-weight: normal;
     text-align: center;
     color: var(--foreground);
@@ -588,7 +587,7 @@ th {
 
 .chart .violet {
     color: #a41ecd;
-    stroke: #a41ecd;
+    stroke: #090809;
 }
 
 .chart .purple {

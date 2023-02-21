@@ -332,12 +332,7 @@ Suites.push({
             const cursor = page.querySelector(".react-stockcharts-crosshair-cursor");
             let x = 150;
             let y = 200;
-            const coords = (i) => ({
-                clientX: x + i * 10,
-                clientY: y + i * 2,
-                bubbles: true,
-                cancelable: true,
-            });
+            const coords = (i) => ({ clientX: x + i * 10, clientY: y + i * 2, bubbles: true, cancelable: true });
             for (let i = 0; i < 100; ) {
                 cursor.dispatchEvent("mousedown", coords(i), MouseEvent);
                 for (let j = 10; j--; )
@@ -400,12 +395,7 @@ Suites.push({
             const cursor = page.querySelector(".react-stockcharts-crosshair-cursor");
             let x = 150;
             let y = 200;
-            const coords = (i) => ({
-                clientX: x + i * 10,
-                clientY: y + i * 2,
-                bubbles: true,
-                cancelable: true,
-            });
+            const coords = (i) => ({ clientX: x + i * 10, clientY: y + i * 2, bubbles: true, cancelable: true });
             for (let i = 0; i < 100; ) {
                 cursor.dispatchEvent("mousedown", coords(i), MouseEvent);
                 for (let j = 10; j--; )
