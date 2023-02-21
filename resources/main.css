@@ -438,6 +438,17 @@ th {
     grid-template-columns: calc((var(--viewport-width) - 120px) / 2) 1fr;
 }
 
+.metric-chart-relative {
+    display: none;
+}
+
+.relative-charts .metric-chart-absolute {
+    display: none;
+}
+.relative-charts .metric-chart-relative {
+    display: block;
+}
+
 .details-toggle {
     display: inline-block;
     cursor: pointer;

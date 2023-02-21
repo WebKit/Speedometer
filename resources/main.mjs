@@ -90,7 +90,6 @@ class MainBenchmarkClient {
         this._populateDetailedResults(metrics);
 
         if (this.displayUnit === "ms") {
-            document.getElementById("show-summary").style.display = "none";
             this.showResultsDetails();
         } else
             this.showResultsSummary();
@@ -189,11 +188,13 @@ class MainBenchmarkClient {
             width: plotWidth,
             trackHeight,
             renderChildren: false,
+            mode: "absolute",
         });
 
         let html = "";
         for (const metric of toplevelMetrics) {
-            html += renderMetricView({ metric, width: plotWidth, trackHeight, title: metric.name });
+            html += renderMetricView({ metric, width: plotWidth, trackHeight, title: metric.name, 
+                mode: "absolute" });
         }
         document.getElementById("metrics-results").innerHTML = html;
 

@@ -1,23 +1,19 @@
 export const COLORS = Object.freeze(["blue", "blue-light", "green-light", "green", "yellow", "orange", "red", "magenta", "violet", "purple", "blue-dark", "green-dark", "ochre", "rust"]);
 
 export function renderMetricView(params) {
-    let { metric, width = 500, trackHeight = 20, subMetricMargin = 35, title = "", mode = "normalized", colors = COLORS, renderChildren = true } = params;
+    let { metric, width = 500, trackHeight = 20, subMetricMargin = 35, title = "", colors = COLORS, renderChildren = true } = params;
     // Make sure subMetricMargin is set for use in renderSubMetrics.
     params.subMetricMargin = subMetricMargin;
     const children = metric.children;
-    let scatterPlotParams = { width, trackHeight, colors };
-    if (mode === "normalized") {
-        scatterPlotParams.values = prepareScatterPlotValues(metric, true);
-        scatterPlotParams.unit = "%";
-        scatterPlotParams.xAxisLabel = "Spread Normalized";
-    } else if (mode === "absolute") {
-        scatterPlotParams.values = prepareScatterPlotValues(metric, false);
-        scatterPlotParams.unit = metric.unit;
-        scatterPlotParams.xAxisLabel = metric.unit;
-    } else {
-        throw new Error(`Invalid metric view mode = "${mode}"`);
-    }
-    const scatterPlot = renderScatterPlot(scatterPlotParams);
+    const scatterPlotParams = { width, trackHeight, colors };
+    scatterPlotParams.values = prepareScatterPlotValues(metric, true);
+    scatterPlotParams.unit = "%";
+    scatterPlotParams.xAxisLabel = "Spread Normalized";
+    const normalizedScatterPlot = renderScatterPlot(scatterPlotParams);
+    scatterPlotParams.values = prepareScatterPlotValues(metric, false);
+    scatterPlotParams.unit = metric.unit;
+    scatterPlotParams.xAxisLabel = metric.unit;
+    const absoluteScatterPlot = renderScatterPlot(scatterPlotParams);
     const legend = children
         .map(
             (metric, i) => `
@@ -36,8 +32,13 @@ export function renderMetricView(params) {
         <dl class="metric">
             <dt><h3>${title}<h3></dt>
             <dd>
-                <div class="metric-chart">
-                    ${scatterPlot}
+                <div class="metric-chart" onclick="document.body.classList.toggle('relative-charts')">
+                    <div class="metric-chart-absolute">
+                        ${absoluteScatterPlot}
+                    </div>
+                    <div class="metric-chart-relative">
+                        ${normalizedScatterPlot}
+                    </div>
                     <table class="chart chart-legend">${legend}</table>
                 </div>
                 ${subMetrics}
