@@ -443,3 +443,6 @@ Suites.push({
         }),
     ],
 });
+
+Object.freeze(Suites);
+globalThis.Suites = Suites;
