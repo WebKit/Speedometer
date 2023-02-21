@@ -115,8 +115,7 @@ class InteractiveBenchmarkRunner extends BenchmarkRunner {
 }
 
 // Expose Suites/BenchmarkRunner for backwards compatibility
-window.Suites = Suites;
-window.BenchmarkRunner = InteractiveBenchmarkRunner;
+globalThis.BenchmarkRunner = InteractiveBenchmarkRunner;
 
 function formatTestName(suiteName, testName) {
     return suiteName + (testName ? `/${testName}` : "");
@@ -197,27 +196,21 @@ function createUIForSuites(suites, onStep, onRunSuites) {
     return control;
 }
 
-const searchParams = new URLSearchParams(window.location.search);
-
-function disableAllSuitesExcept(suiteName) {
-    let foundMatching = false;
-    Suites.forEach((element) => {
-        if (element.name !== suiteName)
-            element.disabled = true;
-        else
-            foundMatching = true;
-    });
-    if (!foundMatching)
-        throw Error(`No matching suite for: "${suiteName}"`);
-}
-
 function startTest() {
-    // FIXME: Use global params here
-    if (searchParams.has("suite"))
-        disableAllSuitesExcept(searchParams.get("suite"));
+    if (params.suites.length > 0) {
+        if (!Suites.enable(params.suites)) {
+            const message = `Suite "${params.suites}" does not exist. No tests to run.`;
+            alert(message);
+            console.error(
+                message,
+                params.suites,
+                "\nValid values:",
+                Suites.map((each) => each.name)
+            );
+        }
+    }
 
     const interactiveRunner = new window.BenchmarkRunner(Suites, params.iterationCount);
-
     if (!(interactiveRunner instanceof InteractiveBenchmarkRunner)) {
         throw Error("window.BenchmarkRunner must be a subclass of InteractiveBenchmarkRunner");
     }

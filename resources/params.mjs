@@ -1,3 +1,5 @@
+const UNITS = ["ms", "score"];
+
 class Params {
     viewport = {
         width: 800,
@@ -6,6 +8,7 @@ class Params {
     startAutomatically = false;
     iterationCount = 10;
     unit = "ms";
+    suites = [];
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -15,19 +18,43 @@ class Params {
     }
 
     _copyFromParams(searchParams) {
-        const viewportParam = searchParams.get("viewport");
-        if (viewportParam) {
+        if (searchParams.has("viewport")) {
+            const viewportParam = searchParams.get("viewport");
             const [width, height] = viewportParam.split("x");
             this.viewport.width = parseInt(width) || this.viewport.width;
             this.viewport.height = parseInt(height) || this.viewport.height;
-            if (this.viewport.width < 800 || this.viewport.height < 600) {
-                throw Error(`Invalid viewport param: ${viewportParam}`);
-            }
+            if (this.viewport.width < 800 || this.viewport.height < 600)
+                throw new Error(`Invalid viewport param: ${viewportParam}`);
+            searchParams.delete("viewport");
         }
         this.startAutomatically = searchParams.has("startAutomatically");
-        this.iterationCount = parseInt(searchParams.get("iterationCount")) || this.iterationCount;
-        if (this.iterationCount <= 1)
-            throw Error(`Invalid iterationCount param: ${this.iterationCount}`);
+        searchParams.delete("startAutomatically");
+        if (searchParams.has("iterationCount")) {
+            this.iterationCount = parseInt(searchParams.get("iterationCount")) || this.iterationCount;
+            if (this.iterationCount <= 1)
+                throw new Error(`Invalid iterationCount param: ${this.iterationCount}`);
+            searchParams.delete("iterationCount");
+        }
+
+        if (searchParams.has("unit")) {
+            this.unit = searchParams.get("unit").toLowerCase();
+            if (!UNITS.includes(this.unit))
+                throw new Error(`Invalid unit=${this.unit}. Valid values are ${UNITS}`);
+            searchParams.delete("unit");
+        }
+        if (searchParams.has("suite") || searchParams.has("suites")) {
+            if (searchParams.has("suite") && searchParams.has("suites"))
+                throw new Error("Params 'suite' and 'suites' can not be used together.");
+            const value = searchParams.get("suite") || searchParams.get("suites");
+            this.suites = value.split(",");
+            if (this.suites.length === 0)
+                throw new Error("No suites selected");
+            searchParams.delete("suite");
+            searchParams.delete("suites");
+        }
+        const unused = Array.from(searchParams.keys());
+        if (unused.length > 0)
+            console.error("Got unused search params", unused);
     }
 
     toSearchParams() {
@@ -40,4 +67,11 @@ class Params {
 export const defaultParams = new Params();
 
 const searchParams = new URLSearchParams(window.location.search);
-export const params = new Params(searchParams);
+let maybeCustomParams = defaultParams;
+try {
+    maybeCustomParams = new Params(searchParams);
+} catch (e) {
+    console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
+    alert(`Invalid URL Param: ${e}`);
+}
+export const params = maybeCustomParams;
