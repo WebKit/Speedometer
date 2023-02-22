@@ -231,7 +231,6 @@ export class BenchmarkRunner {
     _runTest(suite, test, page, callback) {
         performance.mark(`${suite.name}.${test.name}-start`);
         test.run(page);
-        performance.mark(`${suite.name}.${test.name}-sync-end`);
         const syncTime = performance.measure(`${suite.name}.${test.name}-sync`, `${suite.name}.${test.name}-start`).duration;
 
         performance.mark(`${suite.name}.${test.name}-async-start`);
