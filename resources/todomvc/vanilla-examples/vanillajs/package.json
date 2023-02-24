@@ -9,8 +9,10 @@
     "private": true,
     "scripts": {
         "dev": "http-server ./ -p 7001 -c-1 --cors",
-        "lint:check": "eslint **/*.js",
-        "lint:fix": "eslint **/*.js --fix",
+        "build": "node scripts/build.js",
+        "serve": "http-server ./dist -p 7002 -c-1 --cors",
+        "lint:check": "eslint src/**/*.js",
+        "lint:fix": "eslint src/**/*.js --fix",
         "pretty:check": "prettier --check ./",
         "pretty:fix": "prettier --write ./",
         "format": "npm run pretty:fix ; npm run lint:fix"
