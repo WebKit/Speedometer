@@ -23,7 +23,8 @@
         this.$clearCompleted = qs(".clear-completed");
         this.$main = qs(".main");
         this.$footer = qs(".footer");
-        this.$toggleAll = qs(".toggle-all");
+        this.$toggleAllInput = qs(".toggle-all");
+        this.$toggleAll = qs(".toggle-all-label");
         this.$newTodo = qs(".new-todo");
     }
 
@@ -182,7 +183,8 @@
             });
         } else if (event === "toggleAll") {
             $on(self.$toggleAll, "click", function () {
-                handler({ completed: this.checked });
+                self.$toggleAllInput.click();
+                handler({ completed: self.$toggleAllInput.checked });
             });
         } else if (event === "itemEdit") {
             $delegate(self.$todoList, "li label", "dblclick", function () {
