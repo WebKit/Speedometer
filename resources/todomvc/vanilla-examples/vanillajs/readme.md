@@ -14,8 +14,12 @@ This implementation uses an explicit MVC pattern, with a clear file structure to
 
 ## Built steps
 
-There are no built steps needed to serve this application.
+A simple build script copies all necessary files to a `dist` folder.
 It does not rely on compilers or transpilers and serves raw html, css and js files to the user.
+
+```
+npm run build
+```
 
 ## Requirements
 
