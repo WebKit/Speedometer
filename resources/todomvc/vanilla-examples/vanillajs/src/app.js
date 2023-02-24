@@ -1,6 +1,6 @@
-/*global app, $on */
+/* global app, $on */
 (function () {
-    'use strict';
+    "use strict";
 
     /**
      * Sets up a brand new Todo list.
@@ -15,11 +15,11 @@
         this.controller = new app.Controller(this.model, this.view);
     }
 
-    var todo = new Todo('todos-vanillajs');
+    var todo = new Todo("todos-vanillajs");
 
     function setView() {
         todo.controller.setView(document.location.hash);
     }
-    $on(window, 'load', setView);
-    $on(window, 'hashchange', setView);
+    $on(window, "load", setView);
+    $on(window, "hashchange", setView);
 })();

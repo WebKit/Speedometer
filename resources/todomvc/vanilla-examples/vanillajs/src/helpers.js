@@ -1,6 +1,6 @@
-/*global NodeList */
+/* global NodeList */
 (function (window) {
-    'use strict';
+    "use strict";
 
     // Get element(s) by CSS selector:
     window.qs = function (selector, scope) {
@@ -29,7 +29,7 @@
         }
 
         // https://developer.mozilla.org/en-US/docs/Web/Events/blur
-        var useCapture = type === 'blur' || type === 'focus';
+        var useCapture = type === "blur" || type === "focus";
 
         window.$on(target, type, dispatchEvent, useCapture);
     };
@@ -38,7 +38,7 @@
     // $parent(qs('a'), 'div');
     window.$parent = function (element, tagName) {
         if (!element.parentNode) {
-            return;
+            return undefined;
         }
         if (element.parentNode.tagName.toLowerCase() === tagName.toLowerCase()) {
             return element.parentNode;

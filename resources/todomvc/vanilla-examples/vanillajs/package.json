@@ -1,20 +1,27 @@
 {
-  "name": "javascript-es5",
-  "version": "1.0.0",
-  "description": "TodoMVC app written with JavaScript es5 features.",
-  "engines": {
-      "node": ">=18.13.0",
-      "npm": ">=8.19.3"
-  },
-  "private": true,
-  "scripts": {
-    "dev": "http-server ./ -p 7001 -c-1 --cors"
-  },
-  "dependencies": {
-    "todomvc-common": "^1.0.4",
-    "todomvc-app-css": "^2.1.0"
-  },
-  "devDependencies": {
-    "http-server": "^14.1.1"
-  }
+    "name": "javascript-es5",
+    "version": "1.0.0",
+    "description": "TodoMVC app written with JavaScript es5 features.",
+    "engines": {
+        "node": ">=18.13.0",
+        "npm": ">=8.19.3"
+    },
+    "private": true,
+    "scripts": {
+        "dev": "http-server ./ -p 7001 -c-1 --cors",
+        "lint:check": "eslint **/*.js",
+        "lint:fix": "eslint **/*.js --fix",
+        "pretty:check": "prettier --check ./",
+        "pretty:fix": "prettier --write ./",
+        "format": "npm run pretty:fix ; npm run lint:fix"
+    },
+    "dependencies": {
+        "todomvc-common": "^1.0.4",
+        "todomvc-app-css": "^2.1.0"
+    },
+    "devDependencies": {
+        "http-server": "^14.1.1",
+        "eslint": "^8.33.0",
+        "prettier": "^2.8.3"
+    }
 }
