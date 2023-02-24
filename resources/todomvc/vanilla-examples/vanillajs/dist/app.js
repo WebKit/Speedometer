@@ -15,7 +15,7 @@
         this.controller = new app.Controller(this.model, this.view);
     }
 
-    var todo = new Todo("todos-vanillajs");
+    var todo = new Todo("javascript-es5");
 
     function setView() {
         todo.controller.setView(document.location.hash);
