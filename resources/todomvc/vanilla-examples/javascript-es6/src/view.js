@@ -63,7 +63,8 @@ class View {
         this.$clearCompleted = qs(".clear-completed");
         this.$main = qs(".main");
         this.$footer = qs(".footer");
-        this.$toggleAll = qs(".toggle-all");
+        this.$toggleAll = qs(".toggle-all-label");
+        this.$toggleAllInput = qs(".toggle-all");
         this.$newTodo = qs(".new-todo");
 
         this.viewCommands = {
@@ -148,13 +149,15 @@ class View {
     }
 
     bind(event, handler) {
+        var self = this;
         if (event === "newTodo") {
             $on(this.$newTodo, "change", () => handler(this.$newTodo.value));
         } else if (event === "removeCompleted") {
             $on(this.$clearCompleted, "click", handler);
         } else if (event === "toggleAll") {
             $on(this.$toggleAll, "click", function () {
-                handler({ completed: this.checked });
+                self.$toggleAllInput.click();
+                handler({ completed: self.$toggleAllInput.checked });
             });
         } else if (event === "itemEdit") {
             $delegate(this.$todoList, "li label", "dblclick", function () {
