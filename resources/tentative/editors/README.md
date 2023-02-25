@@ -4,15 +4,13 @@ Lots of people edit text content in the browser. Lots of that content, like WYSI
 
 ## Screenshot
 
-TODO
+![screenshot](./screenshot.jpg)
 
 ## What are we testing
 
--
--   Stress-test DOM manipulations of a repeated action.
--   Impact of JavaScript version releases and their language features.
-    Tools (bundlers & transpilers) for build optimizations.
-    Libraries & frameworks for render strategies and architectural patterns
+-   Basic DOM and editing
+-   Virtualization (DOM content changing during scroll)
+-   Basic flex layout with SVG icons
 
 ## How are we testing
 
@@ -24,12 +22,6 @@ The test simulates a real-world user flow by loading a number of popular editor 
 
 ## Developer Documentation
 
-The app was created with
+The app was created with `npm create vite@latest editors`, and can be previewed with `npm run dev`. In order to update the files run in the harness you have to use `npm run build` which will recreate the `dist/` directory.
 
-```
-npm create vite@latest editors
-```
-
-And can be previewed with `npm run dev`. In order to run in the harness you must use `npm run build` which will recreate the `dist/` directory.
-
-The test can be loaded from within the project root using i.e. http://localhost:7000/?suite=Editor-CodeMirror&startAutomatically=true or http://localhost:7000/resources/tentative/editors/dist/
+The built test can be loaded within the harness using i.e. http://localhost:7000/?suite=Editor-CodeMirror&startAutomatically=true, or the static versions at http://localhost:7000/resources/tentative/editors/dist/.
