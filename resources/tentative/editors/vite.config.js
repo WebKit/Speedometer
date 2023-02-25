@@ -1,6 +1,5 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
-import fs from "fs";
 export default defineConfig({
     base: "./", // Since this will be loaded from the project root
     build: {
