@@ -1,3 +1,4 @@
+// https://tiptap.dev/examples/default
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 
@@ -14,6 +15,7 @@ export default async function (element, value) {
     });
     return {
         editor,
+        // Anything before this promise resolves will happen before timing starts
         ready: Promise.resolve(),
         getScrollHeight() {
             return element.scrollHeight;
