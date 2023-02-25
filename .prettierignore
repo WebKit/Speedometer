@@ -1,4 +1,6 @@
 /node_modules
 
-/resources/tentative
+**/dist
+/resources/tentative/*
+!/resources/tentative/editors
 /resources/todomvc

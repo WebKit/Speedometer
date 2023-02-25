@@ -1,0 +1,15 @@
+import { resolve } from "path";
+import { defineConfig } from "vite";
+import fs from "fs";
+export default defineConfig({
+    base: "./", // Since this will be loaded from the project root
+    build: {
+        rollupOptions: {
+            input: {
+                codemirror: resolve(__dirname, "codemirror.html"),
+                main: resolve(__dirname, "index.html"),
+                tiptap: resolve(__dirname, "tiptap.html"),
+            },
+        },
+    },
+});
