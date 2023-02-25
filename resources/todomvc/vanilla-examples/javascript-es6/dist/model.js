@@ -1,5 +1,5 @@
-'use strict';
-
+/* eslint no-unused-vars: 0 */
+"use strict";
 
 /**
  * Creates a new Model instance and hooks up the storage.
@@ -17,12 +17,12 @@ class Model {
      * @param {string} [title] The title of the task
      * @param {function} [callback] The callback to fire after the model is created
      */
-    create(title, callback){
-        title = title || '';
+    create(title, callback) {
+        title = title || "";
 
         let newItem = {
             title: title.trim(),
-            completed: false
+            completed: false,
         };
 
         this.storage.save(newItem, callback);
@@ -43,15 +43,15 @@ class Model {
      * //Below will find a model with foo equalling bar and hello equalling world.
      * model.read({ foo: 'bar', hello: 'world' })
      */
-    read(query, callback){
+    read(query, callback) {
         const queryType = typeof query;
 
-        if (queryType === 'function') {
+        if (queryType === "function") {
             callback = query;
             this.storage.findAll(callback);
-        } else if (queryType === 'string' || queryType === 'number') {
+        } else if (queryType === "string" || queryType === "number") {
             query = parseInt(query, 10);
-            this.storage.find({id: query}, callback);
+            this.storage.find({ id: query }, callback);
         } else {
             this.storage.find(query, callback);
         }
@@ -65,7 +65,7 @@ class Model {
      * @param {object} data The properties to update and their new value
      * @param {function} callback The callback to fire when the update is complete.
      */
-    update(id, data, callback){
+    update(id, data, callback) {
         this.storage.save(data, callback, id);
     }
 
@@ -75,7 +75,7 @@ class Model {
      * @param {number} id The ID of the model to remove
      * @param {function} callback The callback to fire when the removal is complete.
      */
-    remove(id, callback){
+    remove(id, callback) {
         this.storage.remove(id, callback);
     }
 
@@ -84,21 +84,21 @@ class Model {
      *
      * @param {function} callback The callback to fire when the storage is wiped.
      */
-    removeAll(callback){
+    removeAll(callback) {
         this.storage.drop(callback);
     }
 
     /**
      * Returns a count of all todos
      */
-    getCount(callback){
+    getCount(callback) {
         let todos = {
             active: 0,
             completed: 0,
-            total: 0
+            total: 0,
         };
 
-        this.storage.findAll(data => {
+        this.storage.findAll((data) => {
             for (let todo of data) {
                 if (todo.completed) {
                     todos.completed++;

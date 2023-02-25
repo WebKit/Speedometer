@@ -1,20 +1,20 @@
-'use strict';
-
+/* eslint no-unused-vars: 0 */
+"use strict";
 
 const htmlEscapes = {
-    '&': '&amp',
-    '<': '&lt',
-    '>': '&gt',
-    '"': '&quot',
-    '\'': '&#x27',
-    '`': '&#x60'
+    "&": "&amp",
+    "<": "&lt",
+    ">": "&gt",
+    '"': "&quot",
+    "'": "&#x27",
+    "`": "&#x60",
 };
 
 const reUnescapedHtml = /[&<>"'`]/g;
 const reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);
 
-let escape = str => (str && reHasUnescapedHtml.test(str)) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str;
-let escapeHtmlChar = chr => htmlEscapes[chr];
+let escape = (str) => str && reHasUnescapedHtml.test(str) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str;
+let escapeHtmlChar = (chr) => htmlEscapes[chr];
 
 class Template {
     constructor() {
@@ -41,30 +41,30 @@ class Template {
      *
      * @example
      * view.show({
-         *  id: 1,
-         *  title: "Hello World",
-         *  completed: 0,
-         * })
+     *  id: 1,
+     *  title: "Hello World",
+     *  completed: 0,
+     * })
      */
-    show(data){
+    show(data) {
         let i = 0;
-        let view = '';
+        let view = "";
         const len = data.length;
 
         for (i; i < len; i++) {
-            let completed = '';
-            let checked = '';
+            let completed = "";
+            let checked = "";
             let template = this.defaultTemplate;
 
             if (data[i].completed) {
-                completed = 'completed';
-                checked = 'checked';
+                completed = "completed";
+                checked = "checked";
             }
 
-            template = template.replace('{{id}}', data[i].id);
-            template = template.replace('{{title}}', escape(data[i].title));
-            template = template.replace('{{completed}}', completed);
-            template = template.replace('{{checked}}', checked);
+            template = template.replace("{{id}}", data[i].id);
+            template = template.replace("{{title}}", escape(data[i].title));
+            template = template.replace("{{completed}}", completed);
+            template = template.replace("{{checked}}", checked);
 
             view += template;
         }
@@ -78,8 +78,8 @@ class Template {
      * @param {number} activeTodos The number of active todos.
      * @returns {string} String containing the count
      */
-    itemCounter(activeTodos){
-        let plural = activeTodos === 1 ? '' : 's';
+    itemCounter(activeTodos) {
+        let plural = activeTodos === 1 ? "" : "s";
         return `<strong>${activeTodos}</strong> item${plural} left`;
     }
 
@@ -89,7 +89,7 @@ class Template {
      * @param  {[type]} completedTodos The number of completed todos.
      * @returns {string} String containing the count
      */
-    clearCompletedButton(completedTodos){
-        return (completedTodos > 0) ? 'Clear completed' : '';
+    clearCompletedButton(completedTodos) {
+        return completedTodos > 0 ? "Clear completed" : "";
     }
 }

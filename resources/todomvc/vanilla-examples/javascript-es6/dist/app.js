@@ -1,4 +1,5 @@
-'use strict';
+/* eslint no-undef: 0 */
+"use strict";
 
 let todo;
 const setView = () => todo.controller.setView(document.location.hash);
@@ -19,9 +20,9 @@ class Todo {
     }
 }
 
-$on(window, 'load', () => {
-    todo = new Todo('todos-vanillajs');
+$on(window, "load", () => {
+    todo = new Todo("todos-vanillajs");
     setView();
 });
 
-$on(window, 'hashchange', setView);
+$on(window, "hashchange", setView);

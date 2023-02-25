@@ -1,5 +1,5 @@
-/*jshint eqeqeq:false */
-'use strict';
+/* eslint no-unused-vars: 0 */
+"use strict";
 
 let uniqueID = 1;
 
@@ -18,7 +18,7 @@ class Store {
 
         if (!this.memoryStorage[name]) {
             let data = {
-                todos: []
+                todos: [],
             };
 
             this.memoryStorage[name] = JSON.stringify(data);
@@ -38,25 +38,28 @@ class Store {
      *
      * @example
      * db.find({foo: 'bar', hello: 'world'}, function (data) {
-         *   // data will return any items that have foo: bar and
-         *   // hello: world in their properties
-         * })
+     *   // data will return any items that have foo: bar and
+     *   // hello: world in their properties
+     * })
      */
-    find(query, callback){
+    find(query, callback) {
         if (!callback) {
             return;
         }
 
         let todos = JSON.parse(this.memoryStorage[this._dbName]).todos;
 
-        callback.call(this, todos.filter(todo => {
-            for (let q in query) {
-                if (query[q] !== todo[q]) {
-                    return false;
+        callback.call(
+            this,
+            todos.filter((todo) => {
+                for (let q in query) {
+                    if (query[q] !== todo[q]) {
+                        return false;
+                    }
                 }
-            }
-            return true;
-        }));
+                return true;
+            })
+        );
     }
 
     /**
@@ -64,7 +67,7 @@ class Store {
      *
      * @param {function} callback The callback to fire upon retrieving data
      */
-    findAll(callback){
+    findAll(callback) {
         if (callback) {
             callback.call(this, JSON.parse(this.memoryStorage[this._dbName]).todos);
         }
@@ -78,7 +81,7 @@ class Store {
      * @param {function} callback The callback to fire after saving
      * @param {number} id An optional param to enter an ID of an item to update
      */
-    save(updateData, callback, id){
+    save(updateData, callback, id) {
         const data = JSON.parse(this.memoryStorage[this._dbName]);
         let todos = data.todos;
         const len = todos.length;
@@ -118,13 +121,12 @@ class Store {
      * @param {number} id The ID of the item you want to remove
      * @param {function} callback The callback to fire after saving
      */
-    remove(id, callback){
+    remove(id, callback) {
         const data = JSON.parse(this.memoryStorage[this._dbName]);
         let todos = data.todos;
-        const len = todos.length;
 
         for (let i = 0; i < todos.length; i++) {
-            if (todos[i].id == id) {
+            if (todos[i].id === id) {
                 todos.splice(i, 1);
                 break;
             }
@@ -142,8 +144,8 @@ class Store {
      *
      * @param {function} callback The callback to fire after dropping the data
      */
-    drop(callback){
-        this.memoryStorage[this._dbName] = JSON.stringify({todos: []});
+    drop(callback) {
+        this.memoryStorage[this._dbName] = JSON.stringify({ todos: [] });
 
         if (callback) {
             callback.call(this, JSON.parse(this.memoryStorage[this._dbName]).todos);
