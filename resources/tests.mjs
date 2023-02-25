@@ -18,7 +18,7 @@ Suites.enable = function (names) {
 };
 
 Suites.push({
-    name: "VanillaJS-TodoMVC",
+    name: "TodoMVC-JavaScript-ES5",
     url: "todomvc/vanilla-examples/javascript-es5/dist/index.html",
     async prepare(page) {
         (await page.waitForElement(".new-todo")).focus();
