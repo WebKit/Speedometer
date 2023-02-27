@@ -8,13 +8,15 @@ JavaScript (JS) is a lightweight, interpreted, or just-in-time compiled programm
 
 [JavaScript - developer.mozilla.org](http://developer.mozilla.org/en-US/docs/JavaScript)
 
+In addition, this application also relies on [Webpack](https://webpack.js.org/) to generate a build. At its core, webpack is a static module bundler for modern JavaScript applications. When webpack processes your application, it internally builds a dependency graph from one or more entry points and then combines every module your project needs into one or more bundles, which are static assets to serve your content from.
+
 ## Implementation details
 
 This implementation uses an explicit MVC pattern, with a clear file structure to reflect the architecture. The storage solution uses an in-memory data object that implements a simple array to hold the todos.
 
 ## Built steps
 
-To build the static files, this application utilizes webpack. It minifies and optimizes output files and copies all necessary files to a `dist` folder. 
+To build the static files, this application utilizes webpack. It minifies and optimizes output files and copies all necessary files to a `dist` folder.
 
 ```
 npm run build

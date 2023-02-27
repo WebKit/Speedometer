@@ -1,36 +1,36 @@
-export default Template
+export default Template;
 
 var htmlEscapes = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  '\'': '&#x27;',
-  '`': '&#x60;'
-}
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#x27;",
+    "`": "&#x60;",
+};
 
-var escapeHtmlChar = function(chr) {
-  return htmlEscapes[chr]
-}
+var escapeHtmlChar = function (chr) {
+    return htmlEscapes[chr];
+};
 
-var reUnescapedHtml = /[&<>"'`]/g
-var reHasUnescapedHtml = new RegExp(reUnescapedHtml.source)
+var reUnescapedHtml = /[&<>"'`]/g;
+var reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);
 
-var escape = function(string) {
-  if (string && reHasUnescapedHtml.test(string)) {
-    return string.replace(reUnescapedHtml, escapeHtmlChar)
-  } else {
-    return string
-  }
-}
+var escape = function (string) {
+    if (string && reHasUnescapedHtml.test(string)) {
+        return string.replace(reUnescapedHtml, escapeHtmlChar);
+    } else {
+        return string;
+    }
+};
 
 /**
-* Sets up defaults for all the Template methods such as a default template
-*
-* @constructor
-*/
+ * Sets up defaults for all the Template methods such as a default template
+ *
+ * @constructor
+ */
 function Template() {
-  this.defaultTemplate = `
+    this.defaultTemplate = `
     <li data-id="{{id}}" class="{{completed}}">
       <div class="view">
         <input class="toggle" type="checkbox" {{checked}} />
@@ -38,7 +38,7 @@ function Template() {
         <button class="destroy"></button>
       </div>
     </li>
-  `
+  `;
 }
 
 /**
@@ -58,30 +58,30 @@ function Template() {
  *  completed: 0,
  * });
  */
-Template.prototype.show = function(data) {
-  var i, l
-  var view = ''
+Template.prototype.show = function (data) {
+    var i, l;
+    var view = "";
 
-  for (i = 0, l = data.length; i < l; i++) {
-    var template = this.defaultTemplate
-    var completed = ''
-    var checked = ''
+    for (i = 0, l = data.length; i < l; i++) {
+        var template = this.defaultTemplate;
+        var completed = "";
+        var checked = "";
 
-    if (data[i].completed) {
-      completed = 'completed'
-      checked = 'checked'
+        if (data[i].completed) {
+            completed = "completed";
+            checked = "checked";
+        }
+
+        template = template.replace("{{id}}", data[i].id);
+        template = template.replace("{{title}}", escape(data[i].title));
+        template = template.replace("{{completed}}", completed);
+        template = template.replace("{{checked}}", checked);
+
+        view = view + template;
     }
 
-    template = template.replace('{{id}}', data[i].id)
-    template = template.replace('{{title}}', escape(data[i].title))
-    template = template.replace('{{completed}}', completed)
-    template = template.replace('{{checked}}', checked)
-
-    view = view + template
-  }
-
-  return view
-}
+    return view;
+};
 
 /**
  * Displays a counter of how many to dos are left to complete
@@ -89,11 +89,11 @@ Template.prototype.show = function(data) {
  * @param {number} activeTodos The number of active todos.
  * @returns {string} String containing the count
  */
-Template.prototype.itemCounter = function(activeTodos) {
-  var plural = activeTodos === 1 ? '' : 's'
+Template.prototype.itemCounter = function (activeTodos) {
+    var plural = activeTodos === 1 ? "" : "s";
 
-  return '<strong>' + activeTodos + '</strong> item' + plural + ' left'
-}
+    return `<strong>${activeTodos}</strong> item${plural} left`;
+};
 
 /**
  * Updates the text within the "Clear completed" button
@@ -101,10 +101,10 @@ Template.prototype.itemCounter = function(activeTodos) {
  * @param  {[type]} completedTodos The number of completed todos.
  * @returns {string} String containing the count
  */
-Template.prototype.clearCompletedButton = function(completedTodos) {
-  if (completedTodos > 0) {
-    return 'Clear completed'
-  } else {
-    return ''
-  }
-}
+Template.prototype.clearCompletedButton = function (completedTodos) {
+    if (completedTodos > 0) {
+        return "Clear completed";
+    } else {
+        return "";
+    }
+};

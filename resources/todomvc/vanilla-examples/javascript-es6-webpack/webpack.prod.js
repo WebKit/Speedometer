@@ -11,7 +11,7 @@ module.exports = merge(common, {
     plugins: [
         new HtmlWebpackPlugin({
             title: "Production",
-            template: "/src/index.html"
+            template: "/src/index.html",
         }),
         new MiniCssExtractPlugin({
             filename: "[name].css",
@@ -27,8 +27,6 @@ module.exports = merge(common, {
         ],
     },
     optimization: {
-        minimizer: [
-            new CssMinimizerPlugin(),
-        ],
+        minimizer: [new CssMinimizerPlugin()],
     },
 });
