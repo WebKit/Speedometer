@@ -1,3 +1,4 @@
+/* eslint no-import-assign: 0 */
 import { remove } from "./helpers";
 import * as localStorageMemory from "./memory";
 export default Store;
