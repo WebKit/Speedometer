@@ -230,17 +230,25 @@ export class BenchmarkRunner {
     // This function ought be as simple as possible. Don't even use Promise.
     _runTest(suite, test, page, callback) {
         performance.mark(`${suite.name}.${test.name}-start`);
+        const syncStartTime = performance.now();
         test.run(page);
-        const syncTime = performance.measure(`${suite.name}.${test.name}-sync`, `${suite.name}.${test.name}-start`).duration;
+        const syncEndTime = performance.now();
+        performance.mark(`${suite.name}.${test.name}-sync-end`);
+
+        const syncTime = syncEndTime - syncStartTime;
 
         performance.mark(`${suite.name}.${test.name}-async-start`);
+        const asyncStartTime = performance.now();
         setTimeout(() => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
             const height = this._frame.contentDocument.body.getBoundingClientRect().height;
-            const asyncTime = performance.measure(`${suite.name}.${test.name}-async`, `${suite.name}.${test.name}-async-start`).duration;
-
+            const asyncEndTime = performance.now();
+            const asyncTime = asyncEndTime - asyncStartTime;
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
+            performance.mark(`${suite.name}.${test.name}-async-end`);
+            performance.measure(`${suite.name}.${test.name}-sync`, `${suite.name}.${test.name}-start`, `${suite.name}.${test.name}-sync-end`);
+            performance.measure(`${suite.name}.${test.name}-async`, `${suite.name}.${test.name}-async-start`, `${suite.name}.${test.name}-async-end`);
             window.requestAnimationFrame(() => {
                 callback(syncTime, asyncTime, height);
             });
