@@ -237,6 +237,7 @@ export class BenchmarkRunner {
 
         const syncTime = syncEndTime - syncStartTime;
 
+        performance.mark(`${suite.name}.${test.name}-async-start`);
         const asyncStartTime = performance.now();
         setTimeout(() => {
             // Some browsers don't immediately update the layout for paint.
@@ -246,6 +247,8 @@ export class BenchmarkRunner {
             const asyncTime = asyncEndTime - asyncStartTime;
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
             performance.mark(`${suite.name}.${test.name}-async-end`);
+            performance.measure(`${suite.name}.${test.name}-sync`, `${suite.name}.${test.name}-start`, `${suite.name}.${test.name}-sync-end`);
+            performance.measure(`${suite.name}.${test.name}-async`, `${suite.name}.${test.name}-async-start`, `${suite.name}.${test.name}-async-end`);
             window.requestAnimationFrame(() => {
                 callback(syncTime, asyncTime, height);
             });
