@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-framework="javascript">
+<html lang="en" data-framework="javascript" data-version="es6" data-features="webpack">
     <head>
-        <meta charset="utf-8" />
-        <title>ES2015 + Babel + Webpack TodoMVC example</title>
-        <%=htmlWebpackPlugin.files.webpackManifest%>
+        <meta charset="UTF-8" />
+        <meta name="description" content="A TodoMVC workload app for Speedometer!" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>TodoMVC: JavaScript Es6 Webpack</title>
     </head>
     <body>
         <section class="todoapp">
@@ -33,12 +35,10 @@
             </footer>
         </section>
         <footer class="info">
+            <p>Click on input field to write your todo.</p>
+            <p>At least two characters are needed to be a valid entry.</p>
+            <p>Press 'enter' to add the todo.</p>
             <p>Double-click to edit a todo</p>
-            <p>Speedometer version by <a href="http://twitter.com/addyosmani">Addy Osmani</a></p>
-            <p>Created by <a href="http://twitter.com/oscargodson">Oscar Godson</a></p>
-            <p>Refactored by <a href="https://github.com/cburgmer">Christoph Burgmer</a></p>
-            <p>Ported to ES6 by <a href="https://twitter.com/kentcdodds">Kent C. Dodds</a></p>
-            <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
         </footer>
     </body>
 </html>
