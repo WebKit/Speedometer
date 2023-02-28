@@ -173,7 +173,7 @@ function $parent(element, tagName) {
 // const x = [1,2,3]
 // remove(x, 2)
 // x ~== [1,3]
-function helpers_remove(array, thing) {
+function remove(array, thing) {
     const index = array.indexOf(thing);
     if (index === -1) {
         return array;
@@ -813,7 +813,7 @@ function Store(name, callback) {
 
 Store.prototype.subscribe = function (subscriber) {
     this.subscribers.push(subscriber);
-    return () => helpers_remove(this.subscribers, subscriber);
+    return () => remove(this.subscribers, subscriber);
 };
 
 Store.prototype._notify = function () {
@@ -1030,7 +1030,7 @@ Template.prototype.show = function (data) {
 Template.prototype.itemCounter = function (activeTodos) {
     var plural = activeTodos === 1 ? "" : "s";
 
-    return `<strong>${activeTodos}</strong> item${plural} left`;
+    return `<strong>${activeTodos}</strong> item${plural} left!!!!!!!`;
 };
 
 /**
@@ -1047,7 +1047,7 @@ Template.prototype.clearCompletedButton = function (completedTodos) {
     }
 };
 
-;// CONCATENATED MODULE: ./src/todo.js
+;// CONCATENATED MODULE: ./src/app.js
 
 
 
@@ -1058,13 +1058,15 @@ Template.prototype.clearCompletedButton = function (completedTodos) {
 
 
 let todo;
-const subscribers = [];
+const onChange = () => {
+    todo.controller.setView(document.location.hash);
+};
 
-/**
- * Sets up a brand new Todo list.
- *
- * @param {string} name The name of your new to do list.
- */
+const onLoad = () => {
+    todo = new Todo("javascript-es6-webpack");
+    onChange();
+};
+
 function Todo(name) {
     this.storage = new store(name);
     this.model = new model(this.storage);
@@ -1073,33 +1075,10 @@ function Todo(name) {
     this.controller = new controller(this.model, this.view);
 }
 
-function updateTodo() {
-    todo = new Todo("todos-vanillajs");
-    todo.controller.setView(document.location.hash);
-    subscribers.forEach((s) => s());
-}
-
-function getTodo() {
-    return todo;
-}
-
-function subscribe(cb) {
-    subscribers.push(cb);
-    return function unsubscribe() {
-        remove(subscribers, cb);
-    };
-}
-
-;// CONCATENATED MODULE: ./src/app.js
-
-
-
-
-
 if (false) {}
 
-window.addEventListener("load", updateTodo);
-window.addEventListener("hashchange", updateTodo);
+window.addEventListener("load", onLoad);
+window.addEventListener("hashchange", onChange);
 
 })();
 
