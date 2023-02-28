@@ -1,126 +1,6 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ 898:
-/***/ (function(module) {
-
-(function (root) {
-    var localStorageMemory = {};
-    var cache = {};
-
-    /**
-     * number of stored items.
-     */
-    localStorageMemory.length = 0;
-
-    /**
-     * returns item for passed key, or null
-     *
-     * @para {String} key
-     *       name of item to be returned
-     * @returns {String|null}
-     */
-    localStorageMemory.getItem = function (key) {
-        return cache[key] || null;
-    };
-
-    /**
-     * sets item for key to passed value, as String
-     *
-     * @para {String} key
-     *       name of item to be set
-     * @para {String} value
-     *       value, will always be turned into a String
-     * @returns {undefined}
-     */
-    localStorageMemory.setItem = function (key, value) {
-        if (typeof value === "undefined") {
-            localStorageMemory.removeItem(key);
-        } else {
-            // eslint-disable-next-line no-prototype-builtins
-            if (!cache.hasOwnProperty(key)) {
-                localStorageMemory.length++;
-            }
-
-            cache[key] = `${value}`;
-        }
-    };
-
-    /**
-     * removes item for passed key
-     *
-     * @para {String} key
-     *       name of item to be removed
-     * @returns {undefined}
-     */
-    localStorageMemory.removeItem = function (key) {
-        // eslint-disable-next-line no-prototype-builtins
-        if (cache.hasOwnProperty(key)) {
-            delete cache[key];
-            localStorageMemory.length--;
-        }
-    };
-
-    /**
-     * returns name of key at passed index
-     *
-     * @para {Number} index
-     *       Position for key to be returned (starts at 0)
-     * @returns {String|null}
-     */
-    localStorageMemory.key = function (index) {
-        return Object.keys(cache)[index] || null;
-    };
-
-    /**
-     * removes all stored items and sets length to 0
-     *
-     * @returns {undefined}
-     */
-    localStorageMemory.clear = function () {
-        cache = {};
-        localStorageMemory.length = 0;
-    };
-
-    if (true) {
-        module.exports = localStorageMemory;
-    } else {}
-})(this);
-
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/************************************************************************/
+/******/ 	"use strict";
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
 
 ;// CONCATENATED MODULE: ./src/helpers.js
 
@@ -776,15 +656,13 @@ Model.prototype.getCount = function (callback) {
     });
 };
 
-// EXTERNAL MODULE: ./src/memory.js
-var memory = __webpack_require__(898);
 ;// CONCATENATED MODULE: ./src/store.js
-/* eslint no-import-assign: 0 */
-
-
-/* harmony default export */ const store = (Store);
-
-var uniqueID = 1;
+let uniqueID = 1;
+/* HOT MODULE SPECIFIC
+ * Since hot reload blows away class instances, storage object is
+ * moved outside of the class.
+ */
+let memoryStorage = {};
 
 /**
  * Creates a new client side storage object and will create an empty
@@ -794,146 +672,149 @@ var uniqueID = 1;
  * @param {function} callback Our fake DB uses callbacks because in
  * real life you probably would be making AJAX calls
  */
-function Store(name, callback) {
-    callback = callback || function () {};
+class Store {
+    constructor(name, callback) {
+        this._dbName = name;
 
-    this._dbName = name;
+        if (!memoryStorage[name]) {
+            let data = {
+                todos: [],
+            };
 
-    if (!memory[name]) {
-        var data = {
-            todos: [],
-        };
+            memoryStorage[name] = JSON.stringify(data);
+        }
 
-        memory[name] = JSON.stringify(data);
+        if (callback) {
+            callback.call(this, JSON.parse(memoryStorage[name]));
+        }
     }
 
-    callback.call(this, JSON.parse(memory[name]));
-    this.subscribers = [];
-}
+    /**
+     * Finds items based on a query given as a JS object
+     *
+     * @param {object} query The query to match against (i.e. {foo: 'bar'})
+     * @param {function} callback   The callback to fire when the query has
+     * completed running
+     *
+     * @example
+     * db.find({foo: 'bar', hello: 'world'}, function (data) {
+     *   // data will return any items that have foo: bar and
+     *   // hello: world in their properties
+     * })
+     */
+    find(query, callback) {
+        if (!callback) {
+            return;
+        }
 
-Store.prototype.subscribe = function (subscriber) {
-    this.subscribers.push(subscriber);
-    return () => remove(this.subscribers, subscriber);
-};
+        const { todos } = JSON.parse(memoryStorage[this._dbName]);
 
-Store.prototype._notify = function () {
-    this.subscribers.forEach((s) => s());
-};
-
-/**
- * Finds items based on a query given as a JS object
- *
- * @param {object} query The query to match against (i.e. {foo: 'bar'})
- * @param {function} callback   The callback to fire when the query has
- * completed running
- *
- * @example
- * db.find({foo: 'bar', hello: 'world'}, function (data) {
- *   // data will return any items that have foo: bar and
- *   // hello: world in their properties
- * });
- */
-Store.prototype.find = function (query, callback) {
-    if (!callback) {
-        return;
+        callback.call(
+            this,
+            todos.filter((todo) => {
+                for (let q in query) {
+                    if (query[q] !== todo[q]) {
+                        return false;
+                    }
+                }
+                return true;
+            })
+        );
     }
 
-    var todos = JSON.parse(memory[this._dbName]).todos;
+    /**
+     * Will retrieve all data from the collection
+     *
+     * @param {function} callback The callback to fire upon retrieving data
+     */
+    findAll(callback) {
+        if (!callback) {
+            return;
+        }
 
-    callback.call(
-        this,
-        todos.filter(function (todo) {
-            for (var q in query) {
-                if (query[q] !== todo[q]) {
-                    return false;
+        callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
+    }
+
+    /**
+     * Will save the given data to the DB. If no item exists it will create a new
+     * item, otherwise it'll simply update an existing item's properties
+     *
+     * @param {object} updateData The data to save back into the DB
+     * @param {function} callback The callback to fire after saving
+     * @param {number} id An optional param to enter an ID of an item to update
+     */
+    save(updateData, callback, id) {
+        const data = JSON.parse(memoryStorage[this._dbName]);
+        const { todos } = data;
+
+        // If an ID was actually given, find the item and update each property
+        if (id) {
+            for (let i = 0; i < todos.length; i++) {
+                if (todos[i].id === id) {
+                    for (let key in updateData) {
+                        todos[i][key] = updateData[key];
+                    }
+                    break;
                 }
             }
-            return true;
-        })
-    );
-};
 
-/**
- * Will retrieve all data from the collection
- *
- * @param {function} callback The callback to fire upon retrieving data
- */
-Store.prototype.findAll = function (callback) {
-    callback = callback || function () {};
-    callback.call(this, JSON.parse(memory[this._dbName]).todos);
-};
+            memoryStorage[this._dbName] = JSON.stringify(data);
 
-/**
- * Will save the given data to the DB. If no item exists it will create a new
- * item, otherwise it'll simply update an existing item's properties
- *
- * @param {object} updateData The data to save back into the DB
- * @param {function} callback The callback to fire after saving
- * @param {number} id An optional param to enter an ID of an item to update
- */
-Store.prototype.save = function (updateData, callback, id) {
-    var data = JSON.parse(memory[this._dbName]);
-    var todos = data.todos;
+            if (callback) {
+                callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
+            }
+        } else {
+            // Generate an ID
+            updateData.id = uniqueID++;
 
-    callback = callback || function () {};
+            todos.push(updateData);
+            memoryStorage[this._dbName] = JSON.stringify(data);
 
-    // If an ID was actually given, find the item and update each property
-    if (id) {
-        for (var i = 0; i < todos.length; i++) {
+            if (callback) {
+                callback.call(this, [updateData]);
+            }
+        }
+    }
+
+    /**
+     * Will remove an item from the Store based on its ID
+     *
+     * @param {number} id The ID of the item you want to remove
+     * @param {function} callback The callback to fire after saving
+     */
+    remove(id, callback) {
+        const data = JSON.parse(memoryStorage[this._dbName]);
+        const { todos } = data;
+
+        for (let i = 0; i < todos.length; i++) {
             if (todos[i].id === id) {
-                for (var key in updateData) {
-                    // eslint-disable-line guard-for-in
-                    todos[i][key] = updateData[key];
-                }
+                todos.splice(i, 1);
                 break;
             }
         }
 
-        memory[this._dbName] = JSON.stringify(data);
-        callback.call(this, JSON.parse(memory[this._dbName]).todos);
-    } else {
-        // Generate an ID
-        updateData.id = uniqueID++;
+        memoryStorage[this._dbName] = JSON.stringify(data);
 
-        todos.push(updateData);
-        memory[this._dbName] = JSON.stringify(data);
-        callback.call(this, [updateData]);
-    }
-    this._notify();
-};
-
-/**
- * Will remove an item from the Store based on its ID
- *
- * @param {number} id The ID of the item you want to remove
- * @param {function} callback The callback to fire after saving
- */
-Store.prototype.remove = function (id, callback) {
-    var data = JSON.parse(memory[this._dbName]);
-    var todos = data.todos;
-
-    for (var i = 0; i < todos.length; i++) {
-        if (todos[i].id === id) {
-            todos.splice(i, 1);
-            break;
+        if (callback) {
+            callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
         }
     }
 
-    memory[this._dbName] = JSON.stringify(data);
-    callback.call(this, JSON.parse(memory[this._dbName]).todos);
-    this._notify();
-};
+    /**
+     * Will drop all storage and start fresh
+     *
+     * @param {function} callback The callback to fire after dropping the data
+     */
+    drop(callback) {
+        memoryStorage[this._dbName] = JSON.stringify({ todos: [] });
 
-/**
- * Will drop all storage and start fresh
- *
- * @param {function} callback The callback to fire after dropping the data
- */
-Store.prototype.drop = function (callback) {
-    memory[this._dbName] = JSON.stringify({ todos: [] });
-    callback.call(this, JSON.parse(memory[this._dbName]).todos);
-    this._notify();
-};
+        if (callback) {
+            callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
+        }
+    }
+}
+
+/* harmony default export */ const store = (Store);
 
 ;// CONCATENATED MODULE: ./src/template.js
 /* harmony default export */ const template = (Template);
@@ -1075,12 +956,11 @@ function Todo(name) {
     this.controller = new controller(this.model, this.view);
 }
 
+/* HOT MODULE SPECIFIC */
 if (false) {}
 
 window.addEventListener("load", onLoad);
 window.addEventListener("hashchange", onChange);
-
-})();
 
 /******/ })()
 ;
