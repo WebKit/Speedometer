@@ -541,120 +541,122 @@ Controller.prototype._updateFilterState = function (currentPage) {
 };
 
 ;// CONCATENATED MODULE: ./src/model.js
-/* harmony default export */ const model = (Model);
-
 /**
  * Creates a new Model instance and hooks up the storage.
- *
  * @constructor
  * @param {object} storage A reference to the client side storage class
  */
-function Model(storage) {
-    this.storage = storage;
-}
-
-/**
- * Creates a new todo model
- *
- * @param {string} [title] The title of the task
- * @param {function} [callback] The callback to fire after the model is created
- */
-Model.prototype.create = function (title, callback) {
-    title = title || "";
-    callback = callback || function () {};
-
-    var newItem = {
-        title: title.trim(),
-        completed: false,
-    };
-
-    this.storage.save(newItem, callback);
-};
-
-/**
- * Finds and returns a model in storage. If no query is given it'll simply
- * return everything. If you pass in a string or number it'll look that up as
- * the ID of the model to find. Lastly, you can pass it an object to match against.
- *
- * @param {string|number|object} [query] A query to match models against
- * @param {function} [callback] The callback to fire after the model is found
- *
- * @example
- * model.read(1, func); // Will find the model with an ID of 1
- * model.read('1'); // Same as above
- * //Below will find a model with foo equalling bar and hello equalling world.
- * model.read({ foo: 'bar', hello: 'world' });
- */
-Model.prototype.read = function (query, callback) {
-    var queryType = typeof query;
-    callback = callback || function () {};
-
-    if (queryType === "function") {
-        callback = query;
-        return this.storage.findAll(callback);
-    } else if (queryType === "string" || queryType === "number") {
-        query = parseInt(query, 10);
-        this.storage.find({ id: query }, callback);
-    } else {
-        this.storage.find(query, callback);
+class Model {
+    constructor(storage) {
+        this.storage = storage;
     }
-    return undefined;
-};
 
-/**
- * Updates a model by giving it an ID, data to update, and a callback to fire when
- * the update is complete.
- *
- * @param {number} id The id of the model to update
- * @param {object} data The properties to update and their new value
- * @param {function} callback The callback to fire when the update is complete.
- */
-Model.prototype.update = function (id, data, callback) {
-    this.storage.save(data, callback, id);
-};
+    /**
+     * Creates a new todo model
+     *
+     * @param {string} [title] The title of the task
+     * @param {function} [callback] The callback to fire after the model is created
+     */
+    create(title, callback) {
+        title = title || "";
 
-/**
- * Removes a model from storage
- *
- * @param {number} id The ID of the model to remove
- * @param {function} callback The callback to fire when the removal is complete.
- */
-Model.prototype.remove = function (id, callback) {
-    this.storage.remove(id, callback);
-};
+        let newItem = {
+            title: title.trim(),
+            completed: false,
+        };
 
-/**
- * WARNING: Will remove ALL data from storage.
- *
- * @param {function} callback The callback to fire when the storage is wiped.
- */
-Model.prototype.removeAll = function (callback) {
-    this.storage.drop(callback);
-};
+        this.storage.save(newItem, callback);
+    }
 
-/**
- * Returns a count of all todos
- */
-Model.prototype.getCount = function (callback) {
-    var todos = {
-        active: 0,
-        completed: 0,
-        total: 0,
-    };
+    /**
+     * Finds and returns a model in storage. If no query is given it'll simply
+     * return everything. If you pass in a string or number it'll look that up as
+     * the ID of the model to find. Lastly, you can pass it an object to match
+     * against.
+     *
+     * @param {string|number|object} [query] A query to match models against
+     * @param {function} [callback] The callback to fire after the model is found
+     *
+     * @example
+     * model.read(1, func) // Will find the model with an ID of 1
+     * model.read('1') // Same as above
+     * //Below will find a model with foo equalling bar and hello equalling world.
+     * model.read({ foo: 'bar', hello: 'world' })
+     */
+    read(query, callback) {
+        const queryType = typeof query;
 
-    this.storage.findAll(function (data) {
-        data.forEach(function (todo) {
-            if (todo.completed) {
-                todos.completed++;
-            } else {
-                todos.active++;
+        if (queryType === "function") {
+            callback = query;
+            this.storage.findAll(callback);
+        } else if (queryType === "string" || queryType === "number") {
+            query = parseInt(query, 10);
+            this.storage.find({ id: query }, callback);
+        } else {
+            this.storage.find(query, callback);
+        }
+    }
+
+    /**
+     * Updates a model by giving it an ID, data to update, and a callback to fire when
+     * the update is complete.
+     *
+     * @param {number} id The id of the model to update
+     * @param {object} data The properties to update and their new value
+     * @param {function} callback The callback to fire when the update is complete.
+     */
+    update(id, data, callback) {
+        this.storage.save(data, callback, id);
+    }
+
+    /**
+     * Removes a model from storage
+     *
+     * @param {number} id The ID of the model to remove
+     * @param {function} callback The callback to fire when the removal is complete.
+     */
+    remove(id, callback) {
+        this.storage.remove(id, callback);
+    }
+
+    /**
+     * WARNING: Will remove ALL data from storage.
+     *
+     * @param {function} callback The callback to fire when the storage is wiped.
+     */
+    removeAll(callback) {
+        this.storage.drop(callback);
+    }
+
+    /**
+     * Returns a count of all todos
+     */
+    getCount(callback) {
+        const todos = {
+            active: 0,
+            completed: 0,
+            total: 0,
+        };
+
+        this.storage.findAll((data) => {
+            for (let todo of data) {
+                if (todo.completed) {
+                    todos.completed++;
+                } else {
+                    todos.active++;
+                }
+
+                todos.total++;
             }
 
-            todos.total++;
+            if (callback) {
+                callback(todos);
+            }
         });
-        callback(todos);
-    });
-};
+    }
+}
+
+/* harmony default export */ const model = (Model);
 
 ;// CONCATENATED MODULE: ./src/store.js
 let uniqueID = 1;
@@ -817,116 +819,101 @@ class Store {
 /* harmony default export */ const store = (Store);
 
 ;// CONCATENATED MODULE: ./src/template.js
-/* harmony default export */ const template = (Template);
 
-var htmlEscapes = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#x27;",
-    "`": "&#x60;",
+
+const htmlEscapes = {
+    "&": "&amp",
+    "<": "&lt",
+    ">": "&gt",
+    '"': "&quot",
+    "'": "&#x27",
+    "`": "&#x60",
 };
 
-var escapeHtmlChar = function (chr) {
-    return htmlEscapes[chr];
-};
+const reUnescapedHtml = /[&<>"'`]/g;
+const reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);
 
-var reUnescapedHtml = /[&<>"'`]/g;
-var reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);
+const template_escape = (str) => str && reHasUnescapedHtml.test(str) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str;
+const escapeHtmlChar = (chr) => htmlEscapes[chr];
 
-var template_escape = function (string) {
-    if (string && reHasUnescapedHtml.test(string)) {
-        return string.replace(reUnescapedHtml, escapeHtmlChar);
-    } else {
-        return string;
+class Template {
+    constructor() {
+        this.defaultTemplate = `
+            <li data-id="{{id}}" class="{{completed}}">
+                <div class="view">
+                    <input class="toggle" type="checkbox" {{checked}}>
+                    <label>{{title}}</label>
+                    <button class="destroy"></button>
+                </div>
+            </li>
+        `;
     }
-};
 
-/**
- * Sets up defaults for all the Template methods such as a default template
- *
- * @constructor
- */
-function Template() {
-    this.defaultTemplate = `
-    <li data-id="{{id}}" class="{{completed}}">
-      <div class="view">
-        <input class="toggle" type="checkbox" {{checked}} />
-        <label>{{title}}</label>
-        <button class="destroy"></button>
-      </div>
-    </li>
-  `;
-}
+    /**
+     * Creates an <li> HTML string and returns it for placement in your app.
+     *
+     * NOTE: In real life you should be using a templating engine such as Mustache
+     * or Handlebars, however, this is a vanilla JS example.
+     *
+     * @param {object} data The object containing keys you want to find in the
+     *                      template to replace.
+     * @returns {string} HTML String of an <li> element
+     *
+     * @example
+     * view.show({
+     *  id: 1,
+     *  title: "Hello World",
+     *  completed: 0,
+     * })
+     */
+    show(data) {
+        let view = "";
+        const len = data.length;
 
-/**
- * Creates an <li> HTML string and returns it for placement in your app.
- *
- * NOTE: In real life you should be using a templating engine such as Mustache
- * or Handlebars, however, this is a vanilla JS example.
- *
- * @param {object} data The object containing keys you want to find in the
- *                      template to replace.
- * @returns {string} HTML String of an <li> element
- *
- * @example
- * view.show({
- *  id: 1,
- *  title: "Hello World",
- *  completed: 0,
- * });
- */
-Template.prototype.show = function (data) {
-    var i, l;
-    var view = "";
+        for (let i = 0; i < len; i++) {
+            let completed = "";
+            let checked = "";
+            let template = this.defaultTemplate;
 
-    for (i = 0, l = data.length; i < l; i++) {
-        var template = this.defaultTemplate;
-        var completed = "";
-        var checked = "";
+            if (data[i].completed) {
+                completed = "completed";
+                checked = "checked";
+            }
 
-        if (data[i].completed) {
-            completed = "completed";
-            checked = "checked";
+            template = template.replace("{{id}}", data[i].id);
+            template = template.replace("{{title}}", template_escape(data[i].title));
+            template = template.replace("{{completed}}", completed);
+            template = template.replace("{{checked}}", checked);
+
+            view += template;
         }
 
-        template = template.replace("{{id}}", data[i].id);
-        template = template.replace("{{title}}", template_escape(data[i].title));
-        template = template.replace("{{completed}}", completed);
-        template = template.replace("{{checked}}", checked);
-
-        view = view + template;
+        return view;
     }
 
-    return view;
-};
-
-/**
- * Displays a counter of how many to dos are left to complete
- *
- * @param {number} activeTodos The number of active todos.
- * @returns {string} String containing the count
- */
-Template.prototype.itemCounter = function (activeTodos) {
-    var plural = activeTodos === 1 ? "" : "s";
-
-    return `<strong>${activeTodos}</strong> item${plural} left!!!!!!!`;
-};
-
-/**
- * Updates the text within the "Clear completed" button
- *
- * @param  {[type]} completedTodos The number of completed todos.
- * @returns {string} String containing the count
- */
-Template.prototype.clearCompletedButton = function (completedTodos) {
-    if (completedTodos > 0) {
-        return "Clear completed";
-    } else {
-        return "";
+    /**
+     * Displays a counter of how many to dos are left to complete
+     *
+     * @param {number} activeTodos The number of active todos.
+     * @returns {string} String containing the count
+     */
+    itemCounter(activeTodos) {
+        const plural = activeTodos === 1 ? "" : "s";
+        return `<strong>${activeTodos}</strong> item${plural} left`;
     }
-};
+
+    /**
+     * Updates the text within the "Clear completed" button
+     *
+     * @param  {[type]} completedTodos The number of completed todos.
+     * @returns {string} String containing the count
+     */
+    clearCompletedButton(completedTodos) {
+        return completedTodos > 0 ? "Clear completed" : "";
+    }
+}
+
+/* harmony default export */ const template = (Template);
 
 ;// CONCATENATED MODULE: ./src/app.js
 
