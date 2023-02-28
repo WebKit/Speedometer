@@ -40,13 +40,13 @@ const _editItem = (id, title) => {
 };
 
 const _editItemDone = (id, title) => {
-    let listItem = qs(`[data-id="${id}"]`);
+    const listItem = qs(`[data-id="${id}"]`);
 
     if (!listItem) {
         return;
     }
 
-    let input = qs("input.edit", listItem);
+    const input = qs("input.edit", listItem);
     listItem.removeChild(input);
 
     listItem.className = listItem.className.replace(" editing", "");
@@ -57,7 +57,7 @@ const _editItemDone = (id, title) => {
 };
 
 const _itemId = (element) => {
-    var li = $parent(element, "li");
+    const li = $parent(element, "li");
     return parseInt(li.dataset.id, 10);
 };
 

@@ -17,7 +17,7 @@ class Model {
     create(title, callback) {
         title = title || "";
 
-        let newItem = {
+        const newItem = {
             title: title.trim(),
             completed: false,
         };

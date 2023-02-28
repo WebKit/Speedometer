@@ -18,7 +18,7 @@ export class Store {
         this._dbName = name;
 
         if (!memoryStorage[name]) {
-            let data = {
+            const data = {
                 todos: [],
             };
 
