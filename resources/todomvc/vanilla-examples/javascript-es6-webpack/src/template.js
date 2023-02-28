@@ -92,7 +92,7 @@ Template.prototype.show = function (data) {
 Template.prototype.itemCounter = function (activeTodos) {
     var plural = activeTodos === 1 ? "" : "s";
 
-    return `<strong>${activeTodos}</strong> item${plural} left`;
+    return `<strong>${activeTodos}</strong> item${plural} left!!!!!!!`;
 };
 
 /**
