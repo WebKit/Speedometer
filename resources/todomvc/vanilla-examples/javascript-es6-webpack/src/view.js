@@ -91,7 +91,7 @@ export default class View {
         this.$newTodo = qs(".new-todo");
 
         this.render = this.render.bind(this);
-        this.bindCallbacks = this.bindCallbacks.bind(this);
+        this.bindCallback = this.bindCallback.bind(this);
     }
 
     _clearCompletedButton(completedCount, visible) {
@@ -138,7 +138,7 @@ export default class View {
         }
     }
 
-    bindCallbacks(event, handler) {
+    bindCallback(event, handler) {
         switch (event) {
             case "newTodo":
                 $on(this.$newTodo, "change", () => handler(this.$newTodo.value));
