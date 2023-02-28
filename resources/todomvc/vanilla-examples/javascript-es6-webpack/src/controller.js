@@ -12,35 +12,35 @@ function Controller(model, view) {
     that.model = model;
     that.view = view;
 
-    that.view.bind("newTodo", function (title) {
+    that.view.bindCallbacks("newTodo", function (title) {
         that.addItem(title);
     });
 
-    that.view.bind("itemEdit", function (item) {
+    that.view.bindCallbacks("itemEdit", function (item) {
         that.editItem(item.id);
     });
 
-    that.view.bind("itemEditDone", function (item) {
+    that.view.bindCallbacks("itemEditDone", function (item) {
         that.editItemSave(item.id, item.title);
     });
 
-    that.view.bind("itemEditCancel", function (item) {
+    that.view.bindCallbacks("itemEditCancel", function (item) {
         that.editItemCancel(item.id);
     });
 
-    that.view.bind("itemRemove", function (item) {
+    that.view.bindCallbacks("itemRemove", function (item) {
         that.removeItem(item.id);
     });
 
-    that.view.bind("itemToggle", function (item) {
+    that.view.bindCallbacks("itemToggle", function (item) {
         that.toggleComplete(item.id, item.completed);
     });
 
-    that.view.bind("removeCompleted", function () {
+    that.view.bindCallbacks("removeCompleted", function () {
         that.removeCompletedItems();
     });
 
-    that.view.bind("toggleAll", function (status) {
+    that.view.bindCallbacks("toggleAll", function (status) {
         that.toggleAll(status.completed);
     });
 }

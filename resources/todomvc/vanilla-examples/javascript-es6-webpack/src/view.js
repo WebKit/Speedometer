@@ -1,6 +1,74 @@
 /* eslint no-invalid-this: 0, complexity:[2, 9] */
 import { qs, qsa, $on, $parent, $delegate } from "./helpers";
 
+const ENTER_KEY = 13;
+const ESCAPE_KEY = 27;
+
+const _setFilter = (currentPage) => {
+    qs(".filters .selected").className = "";
+    qs(`.filters [href="#/${currentPage}"]`).className = "selected";
+};
+
+const _elementComplete = (id, completed) => {
+    const listItem = qs(`[data-id="${id}"]`);
+
+    if (!listItem) {
+        return;
+    }
+
+    listItem.className = completed ? "completed" : "";
+
+    // In case it was toggled from an event and not by clicking the checkbox
+    qs("input", listItem).checked = completed;
+};
+
+const _editItem = (id, title) => {
+    const listItem = qs(`[data-id="${id}"]`);
+
+    if (!listItem) {
+        return;
+    }
+
+    listItem.className = `${listItem.className} editing`;
+
+    const input = document.createElement("input");
+    input.className = "edit";
+
+    listItem.appendChild(input);
+    input.focus();
+    input.value = title;
+};
+
+const _editItemDone = (id, title) => {
+    let listItem = qs(`[data-id="${id}"]`);
+
+    if (!listItem) {
+        return;
+    }
+
+    let input = qs("input.edit", listItem);
+    listItem.removeChild(input);
+
+    listItem.className = listItem.className.replace(" editing", "");
+
+    qsa("label", listItem).forEach((label) => {
+        label.textContent = title;
+    });
+};
+
+const _itemId = (element) => {
+    var li = $parent(element, "li");
+    return parseInt(li.dataset.id, 10);
+};
+
+const _removeItem = (id, list) => {
+    const elem = qs(`[data-id="${id}"]`);
+
+    if (elem) {
+        list.removeChild(elem);
+    }
+};
+
 /**
  * View that abstracts away the browser's DOM completely.
  * It has two simple entry points:
@@ -14,9 +82,6 @@ export default class View {
     constructor(template) {
         this.template = template;
 
-        this.ENTER_KEY = 13;
-        this.ESCAPE_KEY = 27;
-
         this.$todoList = qs(".todo-list");
         this.$todoItemCounter = qs(".todo-count");
         this.$clearCompleted = qs(".clear-completed");
@@ -24,14 +89,9 @@ export default class View {
         this.$footer = qs(".footer");
         this.$toggleAll = qs(".toggle-all");
         this.$newTodo = qs(".new-todo");
-    }
 
-    _removeItem(id) {
-        var elem = qs(`[data-id="${id}"]`);
-
-        if (elem) {
-            this.$todoList.removeChild(elem);
-        }
+        this.render = this.render.bind(this);
+        this.bindCallbacks = this.bindCallbacks.bind(this);
     }
 
     _clearCompletedButton(completedCount, visible) {
@@ -39,169 +99,89 @@ export default class View {
         this.$clearCompleted.style.display = visible ? "block" : "none";
     }
 
-    _editItemDone(id, title) {
-        var listItem = qs(`[data-id="${id}"]`);
-
-        if (!listItem) {
-            return;
-        }
-
-        var input = qs("input.edit", listItem);
-        listItem.removeChild(input);
-
-        listItem.className = listItem.className.replace("editing", "");
-
-        qsa("label", listItem).forEach(function (label) {
-            label.textContent = title;
-        });
-    }
-
+    // eslint-disable-next-line complexity
     render(viewCmd, parameter) {
-        var that = this;
-        var viewCommands = {
-            showEntries: function () {
-                that.$todoList.innerHTML = that.template.show(parameter);
-            },
-            removeItem: function () {
-                that._removeItem(parameter);
-            },
-            updateElementCount: function () {
-                that.$todoItemCounter.innerHTML = that.template.itemCounter(parameter);
-            },
-            clearCompletedButton: function () {
-                that._clearCompletedButton(parameter.completed, parameter.visible);
-            },
-            contentBlockVisibility: function () {
-                that.$main.style.display = that.$footer.style.display = parameter.visible ? "block" : "none";
-            },
-            toggleAll: function () {
-                that.$toggleAll.checked = parameter.checked;
-            },
-            setFilter: function () {
+        switch (viewCmd) {
+            case "showEntries":
+                this.$todoList.innerHTML = this.template.show(parameter);
+                break;
+            case "updateElementCount":
+                this.$todoItemCounter.innerHTML = this.template.itemCounter(parameter);
+                break;
+            case "contentBlockVisibility":
+                this.$main.style.display = this.$footer.style.display = parameter.visible ? "block" : "none";
+                break;
+            case "toggleAll":
+                this.$toggleAll.checked = parameter.checked;
+                break;
+            case "clearNewTodo":
+                this.$newTodo.value = "";
+                break;
+            case "removeItem":
+                _removeItem(parameter, this.$todoList);
+                break;
+            case "setFilter":
                 _setFilter(parameter);
-            },
-            clearNewTodo: function () {
-                that.$newTodo.value = "";
-            },
-            elementComplete: function () {
+                break;
+            case "elementComplete":
                 _elementComplete(parameter.id, parameter.completed);
-            },
-            editItem: function () {
+                break;
+            case "editItem":
                 _editItem(parameter.id, parameter.title);
-            },
-            editItemDone: function () {
-                that._editItemDone(parameter.id, parameter.title);
-            },
-        };
-
-        viewCommands[viewCmd]();
-    }
-
-    _bindItemEditDone(handler) {
-        var that = this;
-        $delegate(that.$todoList, "li .edit", "blur", function () {
-            if (!this.dataset.iscanceled) {
-                handler({
-                    id: _itemId(this),
-                    title: this.value,
-                });
-            }
-        });
-
-        $delegate(that.$todoList, "li .edit", "keypress", function (event) {
-            if (event.keyCode === that.ENTER_KEY) {
-                // Remove the cursor from the input when you hit enter just like if it
-                // were a real form
-                this.blur();
-            }
-        });
-    }
-
-    _bindItemEditCancel(handler) {
-        var that = this;
-        $delegate(that.$todoList, "li .edit", "keyup", function (event) {
-            if (event.keyCode === that.ESCAPE_KEY) {
-                this.dataset.iscanceled = true;
-                this.blur();
-
-                handler({ id: _itemId(this) });
-            }
-        });
-    }
-
-    bind(event, handler) {
-        var that = this;
-        if (event === "newTodo") {
-            $on(that.$newTodo, "change", function () {
-                handler(that.$newTodo.value);
-            });
-        } else if (event === "removeCompleted") {
-            $on(that.$clearCompleted, "click", function () {
-                handler();
-            });
-        } else if (event === "toggleAll") {
-            $on(that.$toggleAll, "click", function () {
-                handler({ completed: this.checked });
-            });
-        } else if (event === "itemEdit") {
-            $delegate(that.$todoList, "li label", "dblclick", function () {
-                handler({ id: _itemId(this) });
-            });
-        } else if (event === "itemRemove") {
-            $delegate(that.$todoList, ".destroy", "click", function () {
-                handler({ id: _itemId(this) });
-            });
-        } else if (event === "itemToggle") {
-            $delegate(that.$todoList, ".toggle", "click", function () {
-                handler({
-                    id: _itemId(this),
-                    completed: this.checked,
-                });
-            });
-        } else if (event === "itemEditDone") {
-            that._bindItemEditDone(handler);
-        } else if (event === "itemEditCancel") {
-            that._bindItemEditCancel(handler);
+                break;
+            case "editItemDone":
+                _editItemDone(parameter.id, parameter.title);
+                break;
+            case "clearCompletedButton":
+                this._clearCompletedButton(parameter.completed, parameter.visible, this.clearCompletedButton);
+                break;
         }
     }
-}
 
-function _setFilter(currentPage) {
-    qs(".filters .selected").className = "";
-    qs(`.filters [href="#/${currentPage}"]`).className = "selected";
-}
-
-function _elementComplete(id, completed) {
-    var listItem = qs(`[data-id="${id}"]`);
-
-    if (!listItem) {
-        return;
+    bindCallbacks(event, handler) {
+        switch (event) {
+            case "newTodo":
+                $on(this.$newTodo, "change", () => handler(this.$newTodo.value));
+                break;
+            case "removeCompleted":
+                $on(this.$clearCompleted, "click", handler);
+                break;
+            case "toggleAll":
+                $on(this.$toggleAll, "click", (e) => handler({ completed: e.target.checked }));
+                break;
+            case "itemEdit":
+                $delegate(this.$todoList, "li label", "dblclick", (e) => handler({ id: _itemId(e.target) }));
+                break;
+            case "itemRemove":
+                $delegate(this.$todoList, ".destroy", "click", (e) => handler({ id: _itemId(e.target) }));
+                break;
+            case "itemToggle":
+                $delegate(this.$todoList, ".toggle", "click", (e) => handler({ id: _itemId(e.target), completed: e.target.checked }));
+                break;
+            case "itemEditDone":
+                $delegate(this.$todoList, "li .edit", "blur", function (e) {
+                    if (!e.target.dataset.iscanceled) {
+                        handler({
+                            id: _itemId(e.target),
+                            title: e.target.value,
+                        });
+                    }
+                });
+                $delegate(this.$todoList, "li .edit", "keypress", function (e) {
+                    if (e.keyCode === ENTER_KEY) {
+                        e.target.blur();
+                    }
+                });
+                break;
+            case "itemEditCancel":
+                $delegate(this.$todoList, "li .edit", "keyup", (e) => {
+                    if (e.keyCode === ESCAPE_KEY) {
+                        e.target.dataset.iscanceled = true;
+                        e.target.blur();
+                        handler({ id: _itemId(e.target) });
+                    }
+                });
+                break;
+        }
     }
-
-    listItem.className = completed ? "completed" : "";
-
-    // In case it was toggled from an event and not by clicking the checkbox
-    qs("input", listItem).checked = completed;
-}
-
-function _editItem(id, title) {
-    var listItem = qs(`[data-id="${id}"]`);
-
-    if (!listItem) {
-        return;
-    }
-
-    listItem.className = `${listItem.className} editing`;
-
-    var input = document.createElement("input");
-    input.className = "edit";
-
-    listItem.appendChild(input);
-    input.focus();
-    input.value = title;
-}
-
-function _itemId(element) {
-    var li = $parent(element, "li");
-    return parseInt(li.dataset.id, 10);
 }
