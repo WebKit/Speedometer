@@ -156,7 +156,8 @@ class View {
         this.$clearCompleted = qs(".clear-completed");
         this.$main = qs(".main");
         this.$footer = qs(".footer");
-        this.$toggleAll = qs(".toggle-all");
+        this.$toggleAllInput = qs(".toggle-all");
+        this.$toggleAll = qs(".toggle-all-label");
         this.$newTodo = qs(".new-todo");
 
         this.render = this.render.bind(this);
@@ -181,7 +182,7 @@ class View {
                 this.$main.style.display = this.$footer.style.display = parameter.visible ? "block" : "none";
                 break;
             case "toggleAll":
-                this.$toggleAll.checked = parameter.checked;
+                this.$toggleAllInput.checked = parameter.checked;
                 break;
             case "clearNewTodo":
                 this.$newTodo.value = "";
@@ -216,7 +217,10 @@ class View {
                 $on(this.$clearCompleted, "click", handler);
                 break;
             case "toggleAll":
-                $on(this.$toggleAll, "click", (e) => handler({ completed: e.target.checked }));
+                $on(this.$toggleAll, "click", () => {
+                    this.$toggleAllInput.click();
+                    handler({ completed: this.$toggleAllInput.checked });
+                });
                 break;
             case "itemEdit":
                 $delegate(this.$todoList, "li label", "dblclick", (e) => handler({ id: _itemId(e.target) }));
