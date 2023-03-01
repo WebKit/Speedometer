@@ -166,7 +166,6 @@ class Controller {
 
             this.view.render("updateElementCount", todos.active);
             this.view.render("clearCompletedButton", { completed, visible });
-
             this.view.render("toggleAll", { checked });
             this.view.render("contentBlockVisibility", { visible: todos.total > 0 });
         });
