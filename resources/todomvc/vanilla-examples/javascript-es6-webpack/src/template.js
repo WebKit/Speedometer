@@ -15,19 +15,17 @@ const reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);
 const escape = (str) => str && reHasUnescapedHtml.test(str) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str;
 const escapeHtmlChar = (chr) => htmlEscapes[chr];
 
-class Template {
-    constructor() {
-        this.defaultTemplate = `
-            <li data-id="{{id}}" class="{{completed}}">
-                <div class="view">
-                    <input class="toggle" type="checkbox" {{checked}}>
-                    <label>{{title}}</label>
-                    <button class="destroy"></button>
-                </div>
-            </li>
-        `;
-    }
+const createTodoItem = ({ id, title, completed, checked }) => `
+<li data-id="${id}" class="${completed}">
+    <div class="view">
+        <input class="toggle" type="checkbox" ${checked}>
+        <label>${title}</label>
+        <button class="destroy"></button>
+    </div>
+</li>
+`;
 
+class Template {
     /**
      * Creates an <li> HTML string and returns it for placement in your app.
      *
@@ -47,25 +45,15 @@ class Template {
      */
     show(data) {
         let view = "";
-        const len = data.length;
 
-        for (let i = 0; i < len; i++) {
-            let completed = "";
-            let checked = "";
-            let template = this.defaultTemplate;
-
-            if (data[i].completed) {
-                completed = "completed";
-                checked = "checked";
-            }
-
-            template = template.replace("{{id}}", data[i].id);
-            template = template.replace("{{title}}", escape(data[i].title));
-            template = template.replace("{{completed}}", completed);
-            template = template.replace("{{checked}}", checked);
-
-            view += template;
-        }
+        data.reverse().forEach((item) => {
+            view += createTodoItem({
+                id: item.id,
+                title: escape(item.title),
+                completed: item.completed ? "completed" : "",
+                checked: item.completed ? "checked" : "",
+            });
+        });
 
         return view;
     }

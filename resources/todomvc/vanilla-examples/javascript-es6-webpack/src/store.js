@@ -26,7 +26,7 @@ export class Store {
         }
 
         if (callback) {
-            callback.call(this, JSON.parse(memoryStorage[name]));
+            callback(JSON.parse(memoryStorage[name]));
         }
     }
 
@@ -50,8 +50,7 @@ export class Store {
 
         const { todos } = JSON.parse(memoryStorage[this._dbName]);
 
-        callback.call(
-            this,
+        callback(
             todos.filter((todo) => {
                 for (let q in query) {
                     if (query[q] !== todo[q]) {
@@ -73,7 +72,7 @@ export class Store {
             return;
         }
 
-        callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
+        callback(JSON.parse(memoryStorage[this._dbName]).todos);
     }
 
     /**
@@ -102,7 +101,7 @@ export class Store {
             memoryStorage[this._dbName] = JSON.stringify(data);
 
             if (callback) {
-                callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
+                callback(JSON.parse(memoryStorage[this._dbName]).todos);
             }
         } else {
             // Generate an ID
@@ -112,7 +111,7 @@ export class Store {
             memoryStorage[this._dbName] = JSON.stringify(data);
 
             if (callback) {
-                callback.call(this, [updateData]);
+                callback([updateData]);
             }
         }
     }
@@ -137,7 +136,7 @@ export class Store {
         memoryStorage[this._dbName] = JSON.stringify(data);
 
         if (callback) {
-            callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
+            callback(JSON.parse(memoryStorage[this._dbName]).todos);
         }
     }
 
@@ -150,7 +149,7 @@ export class Store {
         memoryStorage[this._dbName] = JSON.stringify({ todos: [] });
 
         if (callback) {
-            callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
+            callback(JSON.parse(memoryStorage[this._dbName]).todos);
         }
     }
 }

@@ -8,13 +8,13 @@ import "todomvc-app-css/index.css";
 import "./app.css";
 
 let todo;
-const onChange = () => {
+const onHashChange = () => {
     todo.controller.setView(document.location.hash);
 };
 
 const onLoad = () => {
     todo = new Todo("javascript-es6-webpack");
-    onChange();
+    onHashChange();
 };
 
 function Todo(name) {
@@ -34,4 +34,4 @@ if (module.hot) {
 }
 
 window.addEventListener("load", onLoad);
-window.addEventListener("hashchange", onChange);
+window.addEventListener("hashchange", onHashChange);

@@ -38,9 +38,11 @@ const $parent = (element, tagName) => {
     if (!element.parentNode) {
         return undefined;
     }
+
     if (element.parentNode.tagName.toLowerCase() === tagName.toLowerCase()) {
         return element.parentNode;
     }
+
     return $parent(element.parentNode, tagName);
 };
 

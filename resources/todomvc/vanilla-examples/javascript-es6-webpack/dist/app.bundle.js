@@ -43,9 +43,11 @@ const $parent = (element, tagName) => {
     if (!element.parentNode) {
         return undefined;
     }
+
     if (element.parentNode.tagName.toLowerCase() === tagName.toLowerCase()) {
         return element.parentNode;
     }
+
     return $parent(element.parentNode, tagName);
 };
 
@@ -567,7 +569,11 @@ class Model {
      * Returns a count of all todos
      */
     getCount(callback) {
-        const todos = {
+        if (!callback) {
+            return;
+        }
+
+        const stats = {
             active: 0,
             completed: 0,
             total: 0,
@@ -576,17 +582,15 @@ class Model {
         this.storage.findAll((data) => {
             for (let todo of data) {
                 if (todo.completed) {
-                    todos.completed++;
+                    stats.completed++;
                 } else {
-                    todos.active++;
+                    stats.active++;
                 }
 
-                todos.total++;
+                stats.total++;
             }
 
-            if (callback) {
-                callback(todos);
-            }
+            callback(stats);
         });
     }
 }
@@ -622,7 +626,7 @@ class Store {
         }
 
         if (callback) {
-            callback.call(this, JSON.parse(memoryStorage[name]));
+            callback(JSON.parse(memoryStorage[name]));
         }
     }
 
@@ -646,8 +650,7 @@ class Store {
 
         const { todos } = JSON.parse(memoryStorage[this._dbName]);
 
-        callback.call(
-            this,
+        callback(
             todos.filter((todo) => {
                 for (let q in query) {
                     if (query[q] !== todo[q]) {
@@ -669,7 +672,7 @@ class Store {
             return;
         }
 
-        callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
+        callback(JSON.parse(memoryStorage[this._dbName]).todos);
     }
 
     /**
@@ -698,7 +701,7 @@ class Store {
             memoryStorage[this._dbName] = JSON.stringify(data);
 
             if (callback) {
-                callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
+                callback(JSON.parse(memoryStorage[this._dbName]).todos);
             }
         } else {
             // Generate an ID
@@ -708,7 +711,7 @@ class Store {
             memoryStorage[this._dbName] = JSON.stringify(data);
 
             if (callback) {
-                callback.call(this, [updateData]);
+                callback([updateData]);
             }
         }
     }
@@ -733,7 +736,7 @@ class Store {
         memoryStorage[this._dbName] = JSON.stringify(data);
 
         if (callback) {
-            callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
+            callback(JSON.parse(memoryStorage[this._dbName]).todos);
         }
     }
 
@@ -746,7 +749,7 @@ class Store {
         memoryStorage[this._dbName] = JSON.stringify({ todos: [] });
 
         if (callback) {
-            callback.call(this, JSON.parse(memoryStorage[this._dbName]).todos);
+            callback(JSON.parse(memoryStorage[this._dbName]).todos);
         }
     }
 }
@@ -771,19 +774,17 @@ const reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);
 const template_escape = (str) => str && reHasUnescapedHtml.test(str) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str;
 const escapeHtmlChar = (chr) => htmlEscapes[chr];
 
-class Template {
-    constructor() {
-        this.defaultTemplate = `
-            <li data-id="{{id}}" class="{{completed}}">
-                <div class="view">
-                    <input class="toggle" type="checkbox" {{checked}}>
-                    <label>{{title}}</label>
-                    <button class="destroy"></button>
-                </div>
-            </li>
-        `;
-    }
+const createTodoItem = ({ id, title, completed, checked }) => `
+<li data-id="${id}" class="${completed}">
+    <div class="view">
+        <input class="toggle" type="checkbox" ${checked}>
+        <label>${title}</label>
+        <button class="destroy"></button>
+    </div>
+</li>
+`;
 
+class Template {
     /**
      * Creates an <li> HTML string and returns it for placement in your app.
      *
@@ -803,25 +804,15 @@ class Template {
      */
     show(data) {
         let view = "";
-        const len = data.length;
 
-        for (let i = 0; i < len; i++) {
-            let completed = "";
-            let checked = "";
-            let template = this.defaultTemplate;
-
-            if (data[i].completed) {
-                completed = "completed";
-                checked = "checked";
-            }
-
-            template = template.replace("{{id}}", data[i].id);
-            template = template.replace("{{title}}", template_escape(data[i].title));
-            template = template.replace("{{completed}}", completed);
-            template = template.replace("{{checked}}", checked);
-
-            view += template;
-        }
+        data.reverse().forEach((item) => {
+            view += createTodoItem({
+                id: item.id,
+                title: template_escape(item.title),
+                completed: item.completed ? "completed" : "",
+                checked: item.completed ? "checked" : "",
+            });
+        });
 
         return view;
     }
@@ -861,13 +852,13 @@ class Template {
 
 
 let todo;
-const onChange = () => {
+const onHashChange = () => {
     todo.controller.setView(document.location.hash);
 };
 
 const onLoad = () => {
     todo = new Todo("javascript-es6-webpack");
-    onChange();
+    onHashChange();
 };
 
 function Todo(name) {
@@ -882,7 +873,7 @@ function Todo(name) {
 if (false) {}
 
 window.addEventListener("load", onLoad);
-window.addEventListener("hashchange", onChange);
+window.addEventListener("hashchange", onHashChange);
 
 /******/ })()
 ;
