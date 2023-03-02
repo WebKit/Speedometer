@@ -2,4 +2,6 @@
 *.pyc
 .DS_Store
 .directory
-*node_modules
+/node_modules
+
+/resources/todomvc/vanilla-examples/javascript-es5/node_modules/
