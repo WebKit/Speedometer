@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: 0 */
+/* eslint no-undef: 0 */
 const Model = (function ($) {
     function Model(store) {
         function create(title) {
@@ -21,7 +23,9 @@ const Model = (function ($) {
             },
             updateItem: function (id, title) {
                 let todo = store.getValue(id);
-                if (!todo) return;
+                if (!todo) {
+                    return undefined;
+                }
 
                 todo = update(todo, { title });
                 store.setValue(todo.id, todo);
@@ -33,7 +37,9 @@ const Model = (function ($) {
             },
             toggleItem: function (id) {
                 let todo = store.getValue(id);
-                if (!todo) return;
+                if (!todo) {
+                    return undefined;
+                }
 
                 todo = update(todo, { completed: !todo.completed });
                 store.setValue(todo.id, todo);
@@ -44,7 +50,9 @@ const Model = (function ($) {
             },
             removeCompletedItems: function () {
                 this.getItems().forEach(function (todo) {
-                    if (todo.completed) store.deleteValue(todo.id);
+                    if (todo.completed) {
+                        store.deleteValue(todo.id);
+                    }
                 });
             },
             getItems: function () {

@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: 0 */
+/* eslint no-undef: 0 */
 const View = (function ($) {
     function View(template) {
         const callbacks = {};
@@ -8,6 +10,7 @@ const View = (function ($) {
         function getStats(todos) {
             const stats = { all: todos.length, active: 0, completed: 0 };
             todos.forEach(function (todo) {
+                // eslint-disable-next-line no-unused-expressions
                 todo.completed ? stats.completed++ : stats.active++;
             });
             return stats;
@@ -57,10 +60,7 @@ const View = (function ($) {
         }
 
         function handleTodoEditStart(e) {
-            const $input = $(e.target)
-                .closest("li")
-                .addClass("editing")
-                .find(".edit");
+            const $input = $(e.target).closest("li").addClass("editing").find(".edit");
             const temp = $input.val();
             $input.trigger("focus").val("").val(temp);
         }
@@ -105,12 +105,7 @@ const View = (function ($) {
                 $("#new-todo").on("keyup", handleTodoInput);
                 $("#toggle-all").on("change", handleToggleAll);
                 $("#footer").on("click", ".clear-completed", handleClearButton);
-                $("#todo-list")
-                    .on("change", ".toggle", handleTodoToggle)
-                    .on("click", ".destroy", handleTodoButton)
-                    .on("dblclick", "label", handleTodoEditStart)
-                    .on("keyup", ".edit", handleTodoEditStop)
-                    .on("focusout", ".edit", handleTodoUpdate);
+                $("#todo-list").on("change", ".toggle", handleTodoToggle).on("click", ".destroy", handleTodoButton).on("dblclick", "label", handleTodoEditStart).on("keyup", ".edit", handleTodoEditStop).on("focusout", ".edit", handleTodoUpdate);
             },
             render: function (todos) {
                 const stats = getStats(todos);
@@ -119,10 +114,7 @@ const View = (function ($) {
                 template.renderList("#todo-list", currentTodos);
                 template.renderFooter("#footer", stats, route);
 
-                $("#toggle-all").prop(
-                    "checked",
-                    currentTodos.length > 0 && stats.active === 0
-                );
+                $("#toggle-all").prop("checked", currentTodos.length > 0 && stats.active === 0);
                 $("#toggle-all").prop("disabled", currentTodos.length === 0);
 
                 $("#new-todo").trigger("focus");

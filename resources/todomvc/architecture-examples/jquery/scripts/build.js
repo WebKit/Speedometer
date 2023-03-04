@@ -6,12 +6,7 @@ const targetDirectory = "./dist";
 
 const htmlFile = "index.html";
 
-const filesToMove = [
-    "node_modules/todomvc-common/base.css", 
-    "node_modules/todomvc-app-css/index.css",
-    "node_modules/jquery/dist/jquery.min.js",
-    "node_modules/handlebars/dist/handlebars.min.js",
-];
+const filesToMove = ["node_modules/todomvc-common/base.css", "node_modules/todomvc-app-css/index.css", "node_modules/jquery/dist/jquery.min.js", "node_modules/handlebars/dist/handlebars.min.js"];
 
 const copy = async (src, dest) => {
     await fs.copyFile(src, dest);

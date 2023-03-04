@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: 0 */
+/* eslint no-undef: 0 */
 const Controller = (function ($) {
     function Controller(model, view) {
         function addItem(title) {

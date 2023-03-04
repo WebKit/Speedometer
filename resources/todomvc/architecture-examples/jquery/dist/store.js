@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: 0 */
+/* eslint no-undef: 0 */
 const Store = (function ($) {
     const cache = {};
 
@@ -14,7 +16,9 @@ const Store = (function ($) {
         const deleteValue = (key) => {
             const value = cache[namespace][key];
 
-            if (value === undefined) return undefined;
+            if (value === undefined) {
+                return undefined;
+            }
 
             delete cache[namespace][key];
 
@@ -32,9 +36,7 @@ const Store = (function ($) {
         };
 
         const removeAllValues = () => {
-            Object.keys(cache[namespace]).forEach(
-                (key) => delete cache[namespace][key]
-            );
+            Object.keys(cache[namespace]).forEach((key) => delete cache[namespace][key]);
         };
 
         const toString = () => {

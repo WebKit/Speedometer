@@ -277,8 +277,8 @@ Suites.push({
 });
 
 Suites.push({
-    name: "jQuery-TodoMVC",
-    url: "todomvc/architecture-examples/jquery/index.html",
+    name: "TodoMVC-jQuery",
+    url: "todomvc/architecture-examples/jquery/dist/index.html",
     async prepare(page) {
         await page.waitForElement("#appIsReady");
         const newTodo = page.getElementById("new-todo");

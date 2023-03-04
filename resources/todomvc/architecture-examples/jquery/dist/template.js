@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: 0 */
+/* eslint no-undef: 0 */
 const Template = (function ($) {
     Handlebars.registerHelper("eq", function (a, b, options) {
         return a === b ? options.fn(this) : options.inverse(this);
