@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import TodoItem from './TodoItem'
 import Footer from './Footer'
 import { SHOW_ALL, SHOW_COMPLETED, SHOW_ACTIVE } from '../constants/TodoFilters'
@@ -31,6 +32,7 @@ export default class MainSection extends Component {
       return (
         <input className="toggle-all"
                type="checkbox"
+               data-testid="toggle-all"
                checked={completedCount === todos.length}
                onChange={actions.completeAll} />
       )
@@ -64,9 +66,9 @@ export default class MainSection extends Component {
     )
 
     return (
-      <section className="main">
+      <section className="main" data-testid="main">
         {this.renderToggleAll(completedCount)}
-        <ul className="todo-list">
+        <ul className="todo-list" data-testid="todo-list">
           {filteredTodos.map(todo =>
             <TodoItem key={todo.id} todo={todo} {...actions} />
           )}
