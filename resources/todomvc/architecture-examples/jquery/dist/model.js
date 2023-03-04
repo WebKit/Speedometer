@@ -1,0 +1,56 @@
+const Model = (function ($) {
+    function Model(store) {
+        function create(title) {
+            const todo = {
+                id: uuid(),
+                title: title,
+                completed: false,
+            };
+            return todo;
+        }
+
+        function update(item, props) {
+            return Object.assign({}, item, props);
+        }
+
+        return {
+            addItem: function (title) {
+                const todo = create(title);
+                store.setValue(todo.id, todo);
+                return todo;
+            },
+            updateItem: function (id, title) {
+                let todo = store.getValue(id);
+                if (!todo) return;
+
+                todo = update(todo, { title });
+                store.setValue(todo.id, todo);
+                return todo;
+            },
+            removeItem: function (id) {
+                const todo = store.deleteValue(id);
+                return todo;
+            },
+            toggleItem: function (id) {
+                let todo = store.getValue(id);
+                if (!todo) return;
+
+                todo = update(todo, { completed: !todo.completed });
+                store.setValue(todo.id, todo);
+                return todo;
+            },
+            removeAllItems: function () {
+                store.removeAllValues();
+            },
+            removeCompletedItems: function () {
+                this.getItems().forEach(function (todo) {
+                    if (todo.completed) store.deleteValue(todo.id);
+                });
+            },
+            getItems: function () {
+                return store.getAllValues().slice();
+            },
+        };
+    }
+    return Model;
+})(jQuery);

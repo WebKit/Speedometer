@@ -1,10 +1,22 @@
 {
-  "private": true,
-  "dependencies": {
-    "director": "~1.2.2",
-    "handlebars": "^4.0.6",
-    "jquery": "^3.1.1",
-    "todomvc-app-css": "^2.1.0",
-    "todomvc-common": "^1.0.4"
-  }
+    "name": "library-jquery",
+    "version": "1.0.0",
+    "description": "TodoMVC app written with jQuery.",
+    "engines": {
+        "node": ">=18.13.0",
+        "npm": ">=8.19.3"
+    },
+    "private": true,
+    "scripts": {
+        "dev": "http-server ./ -p 7001 -c-1 --cors",
+        "build": "node scripts/build.js",
+        "serve": "http-server ./dist -p 7002 -c-1 --cors"
+    },
+    "dependencies": {
+        "handlebars": "^4.7.7",
+        "http-server": "^14.1.1",
+        "jquery": "^3.6.3",
+        "todomvc-app-css": "^2.1.0",
+        "todomvc-common": "^1.0.4"
+    }
 }
