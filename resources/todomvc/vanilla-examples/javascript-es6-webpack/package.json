@@ -10,23 +10,18 @@
     "scripts": {
         "dev": "webpack serve --open --config webpack.dev.js",
         "build": "webpack --config webpack.prod.js",
-        "lint:check": "eslint src/**/*.js",
-        "lint:fix": "eslint src/**/*.js --fix",
-        "pretty:check": "prettier --check ./",
-        "pretty:fix": "prettier --write ./",
-        "format": "npm run pretty:fix ; npm run lint:fix"
+        "serve": "http-server ./dist -p 7002 -c-1 --cors"
     },
     "dependencies": {
-        "todomvc-common": "^1.0.4",
-        "todomvc-app-css": "^2.1.0"
+        "todomvc-app-css": "^2.1.0",
+        "todomvc-common": "^1.0.4"
     },
     "devDependencies": {
         "css-loader": "^6.7.3",
         "css-minimizer-webpack-plugin": "^4.2.2",
-        "eslint": "^8.33.0",
         "html-webpack-plugin": "^5.5.0",
+        "http-server": "^14.1.1",
         "mini-css-extract-plugin": "^2.7.2",
-        "prettier": "^2.8.3",
         "style-loader": "^3.3.1",
         "webpack": "^5.75.0",
         "webpack-cli": "^5.0.1",
