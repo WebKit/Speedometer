@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = merge(common, {
     mode: "production",
@@ -27,6 +28,7 @@ module.exports = merge(common, {
         ],
     },
     optimization: {
-        minimizer: [new CssMinimizerPlugin()],
+        minimize: true,
+        minimizer: [new CssMinimizerPlugin(), new TerserPlugin()],
     },
 });
