@@ -21,7 +21,7 @@ class Todo {
 }
 
 $on(window, "load", () => {
-    todo = new Todo("todos-vanillajs");
+    todo = new Todo("javascript-es6");
     setView();
 });
 
