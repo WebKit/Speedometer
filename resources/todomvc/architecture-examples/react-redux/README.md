@@ -1,16 +1,28 @@
-# Speedometer 2.1: React Redux TodoMVC example
+# Speedometer 3.0: TodoMVC: React-Redux
 
-## Test locally
+## Description
 
-1. `npm install`
-2. `npm start` runs the app in development mode
-3. Open <http://localhost:3000/> to view it in the browser.
+## Implementation details
 
-The page reloads whenever you make edits. Lint errors are printed to the console.
+## Built steps
 
-## Build
+To build the static files, this application utilizes webpack. It minifies and optimizes output files and copies all necessary files to a `dist` folder.
 
-1. `npm run build`
+## Requirements
 
-This builds the app for production to the `dist` folder. It correctly bundles
-React in production mode and optimizes the build for the best performance.
+The only requirement is an installation of Node, to be able to install dependencies and run scripts to serve a local server.
+
+```
+* Node (min version: 18.13.0)
+* NPM (min version: 8.19.3)
+```
+
+## Local preview
+
+```
+terminal:
+1. npm install
+2. npm run dev
+browser:
+1. http://localhost:7001/
+```
