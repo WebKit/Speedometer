@@ -1,4 +1,7 @@
 {
+    "name": "library-react-redux",
+    "version": "1.0.0",
+    "description": "TodoMVC app written with React-Redux.",
     "private": true,
     "engines": {
         "node": ">=18.13.0",
