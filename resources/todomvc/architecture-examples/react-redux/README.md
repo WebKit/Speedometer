@@ -13,17 +13,17 @@ This application uses React in combination with Redux to implement a todo applic
 This implementation uses Redux to manage state and data flow of the application.
 The Redux pattern is similar to a mvc patter, with the main difference that Redux is unidirectional.
 Redux uses actions to dispatch a change, which is captured by reducers that update a central store. 
-Once the state in the store changes, a rerender is triggered to update the ui view of the application. 
+Once the state in the store updates, the view receives the new state and can reflect those changes to the user. 
 
 Redux:\
-M: Redux store\
-V: React ui components\
-c: React connected components + Redux reducers
+Model: Redux store\
+View: React ui components\
+controller: React connected components + Redux reducers
 
 MVC:\
-M: model maintains the data and behavior of an application\
-V: view displays the model in the ui\
-C: controller serves as an interface between view & model components
+Model: maintains the data and behavior of an application\
+View: displays the model in the ui\
+Container: serves as an interface between view & model components
 
 The storage solution uses an in-memory data object that implements a simple array to hold the todos.
 
