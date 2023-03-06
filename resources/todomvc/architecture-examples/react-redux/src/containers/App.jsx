@@ -6,10 +6,10 @@ import MainSection from '../components/MainSection'
 import * as TodoActions from '../actions'
 
 const App = ({todos, actions}) => (
-  <div>
+  <>
     <Header addTodo={actions.addTodo} />
     <MainSection todos={todos} actions={actions} />
-  </div>
+  </>
 )
 
 App.propTypes = {
