@@ -7,7 +7,7 @@ class Params {
     };
     startAutomatically = false;
     iterationCount = 10;
-    unit = "ms";
+    unit = "score";
     suites = [];
 
     constructor(searchParams = undefined) {

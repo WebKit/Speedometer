@@ -8,7 +8,6 @@ import { Metric } from "./metric.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
-    displayUnit = "score";
     iterationCount = 10;
     stepCount = null;
     suitesCount = null;
@@ -22,7 +21,6 @@ class MainBenchmarkClient {
     }
 
     startBenchmark() {
-        this.displayUnit = params.unit;
         this.iterationCount = params.iterationCount;
         if (params.suites.length > 0) {
             if (!Suites.enable(params.suites)) {
@@ -80,7 +78,7 @@ class MainBenchmarkClient {
     didFinishLastIteration(metrics) {
         console.assert(this._isRunning);
         this._isRunning = false;
-        const results = this._computeResults(this._measuredValuesList, this.displayUnit);
+        const results = this._computeResults(this._measuredValuesList, params.unit);
 
         this._updateGaugeNeedle(results.mean);
         document.getElementById("result-number").textContent = results.formattedMean;
@@ -89,10 +87,7 @@ class MainBenchmarkClient {
 
         this._populateDetailedResults(metrics);
 
-        if (this.displayUnit === "ms") {
-            this.showResultsDetails();
-        } else
-            this.showResultsSummary();
+        this.showResultsSummary();
     }
 
     _computeResults(measuredValuesList, displayUnit) {
