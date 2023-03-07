@@ -51,7 +51,7 @@ function renderSubMetrics(params) {
             <label class="details-toggle">
                 <input type="checkbox" 
                         onclick="this.parentNode.nextElementSibling.classList.toggle('visible')" />
-            Table${metrics.length > 1 ? "s" : ""}
+                Table
             </label>
             <div class="submetrics">
                 ${renderMetricsTable(metrics)}
