@@ -1,20 +1,19 @@
 export const COLORS = Object.freeze(["blue", "blue-light", "green-light", "green", "yellow", "orange", "red", "magenta", "violet", "purple", "blue-dark", "green-dark", "ochre", "rust"]);
 
 export function renderMetricView(params) {
-    let { metric, width = 500, trackHeight = 20, subMetricMargin = 35, title = "", colors = COLORS, renderChildren = true } = params;
+    let { metrics, width = 500, trackHeight = 20, subMetricMargin = 35, title = "", colors = COLORS} = params;
     // Make sure subMetricMargin is set for use in renderSubMetrics.
     params.subMetricMargin = subMetricMargin;
-    const children = metric.children;
     const scatterPlotParams = { width, trackHeight, colors };
-    scatterPlotParams.values = prepareScatterPlotValues(metric, true);
+    scatterPlotParams.values = prepareScatterPlotValues(metrics, true);
     scatterPlotParams.unit = "%";
     scatterPlotParams.xAxisLabel = "Spread Normalized";
     const normalizedScatterPlot = renderScatterPlot(scatterPlotParams);
-    scatterPlotParams.values = prepareScatterPlotValues(metric, false);
-    scatterPlotParams.unit = metric.unit;
-    scatterPlotParams.xAxisLabel = metric.unit;
+    scatterPlotParams.values = prepareScatterPlotValues(metrics, false);
+    scatterPlotParams.unit = metrics[0].unit;
+    scatterPlotParams.xAxisLabel = metrics[0].unit;
     const absoluteScatterPlot = renderScatterPlot(scatterPlotParams);
-    const legend = children
+    const legend = metrics
         .map(
             (metric, i) => `
                 <tr >
@@ -27,7 +26,6 @@ export function renderMetricView(params) {
                 </tr>`
         )
         .join("");
-    const subMetrics = renderChildren ? renderSubMetrics(params) : "";
     return `
         <dl class="metric">
             <dt><h3>${title}<h3></dt>
@@ -41,36 +39,46 @@ export function renderMetricView(params) {
                     </div>
                     <table class="chart chart-legend">${legend}</table>
                 </div>
-                ${subMetrics}
+                ${renderSubMetrics(params)}
             </dd>
         </dl>
     `;
 }
 
 function renderSubMetrics(params) {
-    let { metric, width, subMetricMargin, colors = COLORS } = params;
-    const children = metric.children;
-    const hasChildMetric = children.length > 0 && children[0].children.length > 0;
-    if (!hasChildMetric)
-        return "";
+    let { metrics, width, subMetricMargin, colors = COLORS, renderChildren = true} = params;
+    let valuesTable = `
+            <label class="details-toggle">
+                <input type="checkbox" 
+                        onclick="this.parentNode.nextElementSibling.classList.toggle('visible')" />
+            Table${metrics.length > 1 ? "s" : ""}
+            </label>
+            <div class="submetrics">
+                ${renderMetricsTable(metrics)}
+            </div>`;
+    const hasChildMetric = metrics.length > 0 && metrics[0].children.length > 0;
+    if (!hasChildMetric || !renderChildren) {
+        return valuesTable;
+    }
     const subMetricWidth = width - subMetricMargin;
     let childColors = [...colors];
-    const subMetrics = metric.children
+ 
+    const subMetrics = metrics
         .map((metric) => {
             // Rotate colors to get different colors for sub-plots.
             for (let i = 0; i < metric.children.length; i++) {
                 const color = childColors.pop();
                 childColors.unshift(color);
             }
-            const subMetricParams = { ...params, metric, title: metric.name, width: subMetricWidth, colors: childColors };
+            const subMetricParams = { ...params, parentMetric: metric, metrics: metric.children, title: metric.name, width: subMetricWidth, colors: childColors };
             return renderMetricView(subMetricParams);
         })
         .join("");
-    return `
+    return `${valuesTable}
         <label class="details-toggle">
             <input type="checkbox" 
                     onclick="this.parentNode.nextElementSibling.classList.toggle('visible')" />
-            Details
+            Submetrics 
         </label>
         <div class="submetrics">
             ${subMetrics}
@@ -78,9 +86,65 @@ function renderSubMetrics(params) {
     `;
 }
 
-function prepareScatterPlotValues(metric, normalize = true) {
+function renderMetricsTable(metrics, min, max) {
+    let numRows = 0;
+    let columnHeaders = "";
+    let commonPrefixes = metrics[0].name.split("-");
+    for (const metric of metrics) {
+        const prefixes = metric.name.split("-");
+        for (let i = commonPrefixes.length - 1; i >= 0; i--) {
+            if (commonPrefixes[i] !== prefixes[i])
+                commonPrefixes.pop();
+        }
+    }
+    const commonPrefix = commonPrefixes.join("-");
+    let commonPrefixHeader = "";
+    if (commonPrefix) {
+        commonPrefixHeader = `
+            <tr>
+                <td></td>
+                <td colspan="${metrics.length}">${commonPrefix}</td>
+            </tr>`;
+    }
+    for (const metric of metrics) {
+        const name = metric.name.substring(commonPrefix.length);
+        columnHeaders += `<td>${name} [${metric.unit}]</td>`;
+        numRows = Math.max(metric.values.length, numRows);
+    }
+
+    let body = "";
+    for (let row = 0; row < numRows; row++) {
+        let columns = "";
+        for (const metric of metrics) {
+            const value = metric.values[row];
+            if (value === undefined)
+                continue;
+            const delta = metric.max - metric.min;
+            const percent = Math.max(Math.min((value - metric.min) / delta, 1), 0) * 100;
+            const percentGradient = `background: linear-gradient(90deg, var(--foreground-alpha) ${percent}%, rgba(0,0,0,0) ${percent}%);`;
+            columns += `<td style="${percentGradient}">${value.toFixed(2)}</td>`;
+        }
+        body += `<tr>
+            <td>${row}</td>
+            ${columns}
+        </tr>`;
+    }
+    return `<table>
+        <thead>
+            ${commonPrefixHeader}
+            <tr>
+                <td>Iteration</td>
+                ${columnHeaders}
+            </tr>
+        </thead>
+        <tbody>
+        ${body}
+        <tbody>
+    </table>`;
+}
+
+function prepareScatterPlotValues(metrics, normalize = true) {
     let points = [];
-    const metrics = metric.children;
     // Arrange child-metrics values in a single coordinate system:
     // - metric 1: x values are in range [0, 1]
     // - metric 2: y values are in range [1, 2]
@@ -90,23 +154,27 @@ function prepareScatterPlotValues(metric, normalize = true) {
     // All x values are normalized by the mean of each metric and centered on 0.
     // Example: [90ms, 100ms, 110ms] =>  [-10%, 0%, +10%]
     const toPercent = 100;
+    let unit;
     for (let metricIndex = 0; metricIndex < metrics.length; metricIndex++) {
-        const subMetric = metrics[metricIndex];
+        const metric = metrics[metricIndex];
         // If the mean is 0 we can't normalize values properly.
-        const mean = subMetric.mean || 1;
-        const unit = subMetric.unit;
-        let width = subMetric.delta;
+        const mean = metric.mean || 1;
+        if (!unit)
+            unit = metric.unit;
+        else if (unit !== metric.unit)
+            throw new Error("All metrics must have the same unit.");
+        let width = metric.delta;
         let center = mean;
         if (normalize) {
-            width = (subMetric.delta / mean) * toPercent;
+            width = (metric.delta / mean) * toPercent;
             center = 0;
         }
         let left = center - width / 2;
         const y = metricIndex;
-        const label = `Mean: ${subMetric.valueString}\n` + `Min: ${subMetric.min.toFixed(2)}${unit}\n` + `Max: ${subMetric.max.toFixed(2)}${unit}`;
+        const label = `Mean: ${metric.valueString}\n` + `Min: ${metric.min.toFixed(2)}${unit}\n` + `Max: ${metric.max.toFixed(2)}${unit}`;
         const rect = [left, y, label, width];
         // Add data for individual points:
-        const values = subMetric.values;
+        const values = metric.values;
         points.push(rect);
         for (let i = 0; i < values.length; i++) {
             const value = values[i];
@@ -118,7 +186,7 @@ function prepareScatterPlotValues(metric, normalize = true) {
             // Each value is mapped to a y-coordinate in the range of [metricIndex, metricIndex + 1]
             const valueOffsetY = i / values.length;
             const y = metricIndex + valueOffsetY;
-            let label = `Iteration ${i}: ${value.toFixed(2)}${unit}\n` + `Normalized: ${subMetric.mean}${sign}${normalized.toFixed(2)}%`;
+            let label = `Iteration ${i}: ${value.toFixed(2)}${unit}\n` + `Normalized: ${metric.mean}${sign}${normalized.toFixed(2)}%`;
             const point = [x, y, label];
             points.push(point);
         }

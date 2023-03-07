@@ -161,35 +161,30 @@ class MainBenchmarkClient {
         const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
-        const toplevelMetrics = Object.values(metrics).filter((each) => !each.parent && each.children.length > 0);
-        const totalMetric = metrics["Total"];
-        // Create temporary "Root" metric for rendering
-        const rootMetric = new Metric("Root");
-        rootMetric.addChild(totalMetric);
         document.getElementById("total-chart").innerHTML = renderMetricView({
-            metric: rootMetric,
-            width: plotWidth,
-            trackHeight,
-            mode: "absolute",
-            colors: ["white"],
-        });
-        // Create temporary "Overview" metric for rendering
-        const overviewMetric = new Metric("Overview");
-        for (const metric of toplevelMetrics) {
-            overviewMetric.addChild(metric);
-        }
-        document.getElementById("tests-chart").innerHTML = renderMetricView({
-            metric: overviewMetric,
+            metrics: [metrics["Total"]],
             width: plotWidth,
             trackHeight,
             renderChildren: false,
-            mode: "absolute",
+            colors: ["white"],
+        });
+
+        const toplevelMetrics = Object.values(metrics).filter((each) => !each.parent && each.children.length > 0);
+        document.getElementById("tests-chart").innerHTML = renderMetricView({
+            metrics: toplevelMetrics,
+            width: plotWidth,
+            trackHeight,
+            renderChildren: false,
         });
 
         let html = "";
         for (const metric of toplevelMetrics) {
-            html += renderMetricView({ metric, width: plotWidth, trackHeight, title: metric.name, 
-                mode: "absolute" });
+            html += renderMetricView({
+                metrics: metric.children,
+                width: plotWidth,
+                trackHeight,
+                title: metric.name,
+            });
         }
         document.getElementById("metrics-results").innerHTML = html;
 

@@ -2,6 +2,7 @@
     --viewport-width: 800px;
     --viewport-height: 600px;
     --foreground: rgb(235, 235, 235);
+    --foreground-alpha: rgba(235, 235, 235, 0.2);
     --inactive-color: rgb(128, 128, 128);
     --background: rgb(46, 51, 55);
     --highlight: rgb(232, 79, 79);
