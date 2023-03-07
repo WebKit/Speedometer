@@ -320,7 +320,8 @@ th {
     position: relative;
     width: 738px;
     height: 78px;
-    background-image: image-set(url(gauge@2x.png) 2x, url(gauge.png) 1x);
+    background-image: -webkit-image-set(url("gauge@2x.png") 2x, url("gauge.png") 1x);
+    background-image: image-set(url("gauge@2x.png") 2x, url("gauge.png") 1x);
     background-size: 100% 100%;
     background-repeat: no-repeat;
     margin: 0 auto;
