@@ -4,7 +4,6 @@ import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { params } from "./params.mjs";
-import { Metric } from "./metric.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
