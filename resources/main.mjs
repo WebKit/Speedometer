@@ -81,14 +81,11 @@ class MainBenchmarkClient {
         if (scoreResults.formattedDelta)
             document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
 
-        const results = this._computeResults(this._measuredValuesList, params.unit);
+        const results = this._computeResults(this._measuredValuesList, "ms");
         this._populateDetailedResults(results.formattedValues);
         document.getElementById("results-with-statistics").textContent = results.formattedMeanAndDelta;
 
-        if (params.unit === "ms") {
-            this.showResultsDetails();
-        } else
-            this.showResultsSummary();
+        this.showResultsSummary();
     }
 
     _computeResults(measuredValuesList, displayUnit) {
