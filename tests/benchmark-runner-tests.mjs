@@ -195,13 +195,13 @@ describe("BenchmarkRunner", () => {
         });
 
         describe("_runTest", () => {
-            let _writeMarkSpy, _testFnSpy, page;
+            let peformanceMarkSpy, _testFnSpy, page;
             const callback = stub();
             const suite = SUITES_FIXTURE[0];
 
             before(async () => {
                 page = { _frame: await runner._appendFrame() };
-                _writeMarkSpy = spy(runner, "_writeMark");
+                peformanceMarkSpy = spy(window.performance, "mark");
                 _testFnSpy = suite.tests[0].run.callsFake(() => null);
 
                 stubPerformanceNowCalls(8000, 10000, 12000, 13000);
@@ -209,10 +209,11 @@ describe("BenchmarkRunner", () => {
             });
 
             it("should write performance marks at the start and end of the test with the correct test name", () => {
-                assert.calledWith(_writeMarkSpy, "Suite 1.Test 1-start");
-                assert.calledWith(_writeMarkSpy, "Suite 1.Test 1-sync-end");
-                assert.calledWith(_writeMarkSpy, "Suite 1.Test 1-async-end");
-                assert.calledThrice(_writeMarkSpy);
+                assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-start");
+                assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-sync-end");
+                assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-async-start");
+                assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-async-end");
+                expect(peformanceMarkSpy.callCount).to.equal(4);
             });
 
             it("should run the test", () => {

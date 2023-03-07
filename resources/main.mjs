@@ -7,7 +7,10 @@ import { params } from "./params.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
+<<<<<<< HEAD
     iterationCount = 10;
+=======
+>>>>>>> webkit/main
     stepCount = null;
     suitesCount = null;
     _measuredValuesList = [];
@@ -20,7 +23,10 @@ class MainBenchmarkClient {
     }
 
     startBenchmark() {
+<<<<<<< HEAD
         this.iterationCount = params.iterationCount;
+=======
+>>>>>>> webkit/main
         if (params.suites.length > 0) {
             if (!Suites.enable(params.suites)) {
                 const message = `Suite "${params.suites}" does not exist. No tests to run.`;
@@ -39,10 +45,10 @@ class MainBenchmarkClient {
         const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => {
             return testsCount + suite.tests.length;
         }, 0);
-        this.stepCount = this.iterationCount * totalSubtestsCount;
+        this.stepCount = params.iterationCount * totalSubtestsCount;
         this.suitesCount = enabledSuites.length;
         const runner = new BenchmarkRunner(Suites, this);
-        runner.runMultipleIterations(this.iterationCount);
+        runner.runMultipleIterations(params.iterationCount);
         return true;
     }
 
@@ -77,12 +83,12 @@ class MainBenchmarkClient {
     didFinishLastIteration(metrics) {
         console.assert(this._isRunning);
         this._isRunning = false;
-        const results = this._computeResults(this._measuredValuesList, params.unit);
 
-        this._updateGaugeNeedle(results.mean);
-        document.getElementById("result-number").textContent = results.formattedMean;
-        if (results.formattedDelta)
-            document.getElementById("confidence-number").textContent = `\u00b1 ${results.formattedDelta}`;
+        const scoreResults = this._computeResults(this._measuredValuesList, "score");
+        this._updateGaugeNeedle(scoreResults.mean);
+        document.getElementById("result-number").textContent = scoreResults.formattedMean;
+        if (scoreResults.formattedDelta)
+            document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
 
         this._populateDetailedResults(metrics);
 

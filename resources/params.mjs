@@ -1,5 +1,3 @@
-const UNITS = ["ms", "score"];
-
 class Params {
     viewport = {
         width: 800,
@@ -7,7 +5,6 @@ class Params {
     };
     startAutomatically = false;
     iterationCount = 10;
-    unit = "score";
     suites = [];
 
     constructor(searchParams = undefined) {
@@ -34,13 +31,6 @@ class Params {
             if (this.iterationCount <= 1)
                 throw new Error(`Invalid iterationCount param: ${this.iterationCount}`);
             searchParams.delete("iterationCount");
-        }
-
-        if (searchParams.has("unit")) {
-            this.unit = searchParams.get("unit").toLowerCase();
-            if (!UNITS.includes(this.unit))
-                throw new Error(`Invalid unit=${this.unit}. Valid values are ${UNITS}`);
-            searchParams.delete("unit");
         }
         if (searchParams.has("suite") || searchParams.has("suites")) {
             if (searchParams.has("suite") && searchParams.has("suites"))
