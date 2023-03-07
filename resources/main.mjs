@@ -7,10 +7,6 @@ import { params } from "./params.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
-<<<<<<< HEAD
-    iterationCount = 10;
-=======
->>>>>>> webkit/main
     stepCount = null;
     suitesCount = null;
     _measuredValuesList = [];
@@ -23,10 +19,6 @@ class MainBenchmarkClient {
     }
 
     startBenchmark() {
-<<<<<<< HEAD
-        this.iterationCount = params.iterationCount;
-=======
->>>>>>> webkit/main
         if (params.suites.length > 0) {
             if (!Suites.enable(params.suites)) {
                 const message = `Suite "${params.suites}" does not exist. No tests to run.`;
