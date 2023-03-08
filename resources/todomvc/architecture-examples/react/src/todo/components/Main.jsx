@@ -1,5 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Item } from "./Item";
+import PropTypes from "prop-types";
 
 export const Main = ({ todos }) => {
     const visibleTodos = [...todos]; // temp for now
@@ -27,4 +28,14 @@ export const Main = ({ todos }) => {
             </ul>
         </main>
     );
+};
+
+Main.propTypes = {
+    todos: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            completed: PropTypes.bool.isRequired,
+        })
+    ),
 };

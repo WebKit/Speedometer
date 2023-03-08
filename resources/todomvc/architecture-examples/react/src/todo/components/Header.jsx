@@ -1,3 +1,6 @@
+import React from "react";
+import PropTypes from "prop-types";
+
 export const Header = ({ todos }) => {
     const handleSubmit = (e) => {
         console.log(e.target.elements["new-todo-input"].value.trim());
@@ -9,7 +12,20 @@ export const Header = ({ todos }) => {
             <h1>todos</h1>
             <form onSubmit={handleSubmit}>
                 <input className="new-todo" id="new-todo-input" type="text" data-testid="text-input" autoFocus />
+                <label className="visually-hidden" htmlFor="new-todo-input">
+                    New Todo Input
+                </label>
             </form>
         </header>
     );
+};
+
+Header.propTypes = {
+    todos: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            completed: PropTypes.bool.isRequired,
+        })
+    ),
 };

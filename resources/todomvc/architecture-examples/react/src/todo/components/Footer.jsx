@@ -1,3 +1,6 @@
+import React from "react";
+import PropTypes from "prop-types";
+
 export const Footer = ({ todos }) => {
     const activeTodos = todos.filter((todo) => !todo.completed);
 
@@ -24,4 +27,14 @@ export const Footer = ({ todos }) => {
             </button>
         </footer>
     );
+};
+
+Footer.propTypes = {
+    todos: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            completed: PropTypes.bool.isRequired,
+        })
+    ),
 };

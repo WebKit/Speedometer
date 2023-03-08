@@ -1,5 +1,8 @@
+import React from "react";
+import PropTypes from "prop-types";
+
 export const Item = ({ todo }) => {
-    const { id, title, completed } = todo;
+    const { title, completed } = todo;
 
     const handleChange = (e) => {
         console.log(e.target.checked);
@@ -24,4 +27,12 @@ export const Item = ({ todo }) => {
             </div>
         </li>
     );
+};
+
+Item.propTypes = {
+    todo: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        completed: PropTypes.bool.isRequired,
+    }),
 };

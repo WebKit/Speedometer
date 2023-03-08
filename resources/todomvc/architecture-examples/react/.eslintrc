@@ -1,0 +1,9 @@
+{
+    "env": {
+        "jest": true
+    },
+    "extends": ["plugin:react/recommended"],
+    "rules": {
+        "no-extra-parens": 0
+    }
+}
