@@ -2,13 +2,13 @@
 
 ## Description
 
-This application uses React to implement a todo application.
+This application uses React 17.0.2 to implement a todo application.
 
--   [React](https://reactjs.org/) is a JavaScript library for creating user interfaces.\
+-   [React](https://reactjs.org/) is a JavaScript library for creating user interfaces.
 
 ## Implementation details
 
-The storage solution uses an in-memory data object that implements a simple array to hold the todos.
+The App component functions as the controller to proxy requests between the model (useModel) and the views (Header, Main, Footer). The useModel hook uses an array data structure in combination with React.useState to manage application state. 
 
 ## Built steps
 
