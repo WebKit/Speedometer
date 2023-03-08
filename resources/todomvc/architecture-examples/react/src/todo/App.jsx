@@ -13,45 +13,43 @@ export const App = () => {
     const storage = useStorage("react-todos");
     const { getTodos, addItem, updateItem, removeItem, toggleItem, toggleAll, removeCompletedItems } = useApi(storage);
 
-    // Triggering re-render by setting a state change
-    // eslint-disable-next-line no-unused-vars
-    const [lastUpdateTime, setLastUpdateTime] = useState(Date.now());
+    const [currentTodos, setCurrentTodos] = useState(getTodos());
 
     const handleAddItem = (title) => {
         addItem(title);
-        setLastUpdateTime(Date.now());
+        setCurrentTodos(getTodos());
     };
 
     const handleToggleItem = (id) => {
         toggleItem(id);
-        setLastUpdateTime(Date.now());
+        setCurrentTodos(getTodos());
     };
 
     const handleUpdateItem = (id, title) => {
         updateItem(id, title);
-        setLastUpdateTime(Date.now());
+        setCurrentTodos(getTodos());
     };
 
     const handleDeleteItem = (id) => {
         removeItem(id);
-        setLastUpdateTime(Date.now());
+        setCurrentTodos(getTodos());
     };
 
     const handleRemoveCompletedItems = () => {
         removeCompletedItems();
-        setLastUpdateTime(Date.now());
+        setCurrentTodos(getTodos());
     };
 
     const handleToggleAll = (completed) => {
         toggleAll(completed);
-        setLastUpdateTime(Date.now());
+        setCurrentTodos(getTodos());
     };
 
     return (
         <>
             <Header onSubmit={handleAddItem} />
-            <Main todos={getTodos()} onToggle={handleToggleItem} onDelete={handleDeleteItem} onUpdate={handleUpdateItem} onToggleAll={handleToggleAll} />
-            <Footer todos={getTodos()} onClear={handleRemoveCompletedItems} />
+            <Main todos={currentTodos} onToggle={handleToggleItem} onDelete={handleDeleteItem} onUpdate={handleUpdateItem} onToggleAll={handleToggleAll} />
+            <Footer todos={currentTodos} onClear={handleRemoveCompletedItems} />
         </>
     );
 };
