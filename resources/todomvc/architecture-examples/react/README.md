@@ -28,7 +28,5 @@ The only requirement is an installation of Node, to be able to install dependenc
 ```
 terminal:
 1. npm install
-2. npm run dev
-browser:
-1. http://localhost:7001/
+2. npm run start
 ```
