@@ -348,10 +348,6 @@ Suites.push({
             page.querySelector("#highlight").click();
             page.querySelector("#layout").click();
         }),
-        new BenchmarkTestStep("Scroll down", (page) => {
-            page.querySelector("#scroll").click();
-            page.querySelector("#layout").click();
-        }),
     ],
 });
 
@@ -369,10 +365,6 @@ Suites.push({
         }),
         new BenchmarkTestStep("Highlight", (page) => {
             page.querySelector("#highlight").click();
-            page.querySelector("#layout").click();
-        }),
-        new BenchmarkTestStep("Scroll down", (page) => {
-            page.querySelector("#scroll").click();
             page.querySelector("#layout").click();
         }),
     ],
