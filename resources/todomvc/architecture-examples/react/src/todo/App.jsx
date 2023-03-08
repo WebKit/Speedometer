@@ -38,8 +38,8 @@ export const App = () => {
     return (
         <>
             <Header onSubmit={handleAddItem} />
-            <Main todos={Object.values(todos)} onToggle={handleToggleItem} onDelete={handleDeleteItem} onUpdate={handleUpdateItem} onToggleAll={handleToggleAll} />
-            <Footer todos={Object.values(todos)} onClear={handleRemoveCompletedItems} />
+            <Main todos={todos} onToggle={handleToggleItem} onDelete={handleDeleteItem} onUpdate={handleUpdateItem} onToggleAll={handleToggleAll} />
+            <Footer todos={todos} onClear={handleRemoveCompletedItems} />
         </>
     );
 };

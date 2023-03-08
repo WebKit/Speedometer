@@ -3,7 +3,7 @@ import { useState } from "react";
 const uuid = () => crypto.randomUUID();
 
 export const useModel = () => {
-    const [todos, setTodos] = useState({});
+    const [todos, setTodos] = useState([]);
 
     const addItem = (title) => {
         const todo = {
@@ -12,59 +12,32 @@ export const useModel = () => {
             completed: false,
         };
 
-        setTodos({ ...todos, [todo.id]: todo });
+        setTodos([todo, ...todos]);
         return todo;
     };
 
     const updateItem = (id, title) => {
-        let todo = todos[id];
-        if (!todo) {
-            return undefined;
-        }
-
-        setTodos({ ...todos, [todo.id]: { ...todo, title } });
-        return todo;
+        setTodos(todos.map((todo) => (todo.id === id ? { ...todo, title } : todo)));
     };
 
     const removeItem = (id) => {
-        const { [id]: todo, ...rest } = todos;
-        setTodos({ ...rest });
-        return todo;
+        setTodos(todos.filter((todo) => todo.id !== id));
     };
 
     const toggleItem = (id) => {
-        let todo = todos[id];
-        if (!todo) {
-            return undefined;
-        }
-
-        setTodos({ ...todos, [todo.id]: { ...todo, completed: !todo.completed } });
-        return todo;
+        setTodos(todos.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)));
     };
 
     const removeAllItems = () => {
-        setTodos({});
+        setTodos([]);
     };
 
     const toggleAll = (value) => {
-        const updatedTodos = {};
-        Object.values(todos).forEach((todo) => {
-            updatedTodos[todo.id] = { ...todo, completed: value };
-        });
-
-        setTodos({ ...todos });
+        setTodos(todos.map((todo) => (todo.completed !== value ? { ...todo, completed: value } : todo)));
     };
 
-
     const removeCompletedItems = () => {
-        const updatedTodos = {};
-        Object.values(todos).forEach((todo) => {
-            if (!todo.completed) {
-                updatedTodos[todo.id] = todo;
-            }
-        });
-
-        setTodos({ ...todos });
+        setTodos(todos.filter((todo) => !todo.completed));
     };
 
     return {
@@ -75,6 +48,6 @@ export const useModel = () => {
         toggleItem,
         removeAllItems,
         toggleAll,
-        removeCompletedItems
+        removeCompletedItems,
     };
 };
