@@ -1,6 +1,6 @@
 import { useApi } from "./use-api.js";
 import { useStorage } from "./use-storage.js";
-import { mixedTodos } from "../test/data.js";
+import { mixedTodos } from "../../test/data.js";
 
 describe("useApi", () => {
     let storage;
@@ -33,9 +33,9 @@ describe("useApi", () => {
     it("should update an item", () => {
         const { addItem, updateItem } = useApi(storage);
         let item = addItem("Clean Car");
-        expect(item).toMatchObject({ task: "Clean Car" });
+        expect(item).toMatchObject({ title: "Clean Car" });
         item = updateItem(item.id, "Clean Bus");
-        expect(item).toMatchObject({ task: "Clean Bus" });
+        expect(item).toMatchObject({ title: "Clean Bus" });
     });
 
     it("should return undefined if todo not found", () => {
@@ -47,9 +47,9 @@ describe("useApi", () => {
     it("should remove an item", () => {
         const { addItem, removeItem } = useApi(storage);
         let item = addItem("Clean Car");
-        expect(item).toMatchObject({ task: "Clean Car" });
+        expect(item).toMatchObject({ title: "Clean Car" });
         item = removeItem(item.id);
-        expect(item).toMatchObject({ task: "Clean Car" });
+        expect(item).toMatchObject({ title: "Clean Car" });
     });
 
     it("should toggle an item", () => {

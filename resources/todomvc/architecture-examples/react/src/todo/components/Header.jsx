@@ -1,10 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export const Header = ({ todos }) => {
+import { useSanitizer } from "../hooks/use-sanitizer";
+import { useValidators } from "../hooks/use-validators";
+
+export const Header = ({ onSubmit }) => {
+    const { sanitize } = useSanitizer();
+    const { hasValidMin } = useValidators();
+
     const handleSubmit = (e) => {
-        console.log(e.target.elements["new-todo-input"].value.trim());
+        // trim whitespaces
+        const value = e.target.elements["new-todo-input"].value.trim();
         e.preventDefault();
+
+        // enforce 2 chars min
+        if (!hasValidMin(value, 2)) {
+            return;
+        }
+
+        // sanitize input and submit
+        onSubmit(sanitize(value));
+
+        e.target.reset();
     };
 
     return (
@@ -21,11 +38,5 @@ export const Header = ({ todos }) => {
 };
 
 Header.propTypes = {
-    todos: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            title: PropTypes.string.isRequired,
-            completed: PropTypes.bool.isRequired,
-        })
-    ),
+    onSubmit: PropTypes.func.isRequired,
 };

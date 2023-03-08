@@ -1,33 +1,33 @@
 const uuid = () => crypto.randomUUID();
 
-const create = (task) => ({
+const create = (title) => ({
     id: uuid(),
-    task,
+    title,
     completed: false,
 });
 
-const update = (item, { task, completed }) => ({
+const update = (item, { title, completed }) => ({
     ...item,
-    task: task === undefined ? item.task : task,
+    title: title === undefined ? item.title : title,
     completed: completed === undefined ? item.completed : completed,
 });
 
 export const useApi = (storage, initialTodos = []) => {
     initialTodos.forEach((todo) => storage.setValue(todo.id, todo));
 
-    const addItem = (task) => {
-        const todo = create(task);
+    const addItem = (title) => {
+        const todo = create(title);
         storage.setValue(todo.id, todo);
         return todo;
     };
 
-    const updateItem = (id, task) => {
+    const updateItem = (id, title) => {
         let todo = storage.getValue(id);
         if (!todo) {
             return undefined;
         }
 
-        todo = update(todo, { task });
+        todo = update(todo, { title });
         storage.setValue(todo.id, todo);
         return todo;
     };

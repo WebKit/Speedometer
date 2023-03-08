@@ -1,12 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useLocation } from "react-router-dom";
 
-export const Footer = ({ todos }) => {
+export const Footer = ({ todos, onClear }) => {
+    const location = useLocation();
+    console.log("location", location.pathname);
+
     const activeTodos = todos.filter((todo) => !todo.completed);
 
-    const handleClick = () => {
-        console.log("click");
+    const handleOnClear = () => {
+        onClear();
     };
+
+    if (todos.length === 0) {
+        return null;
+    }
 
     return (
         <footer className="footer" data-testid="footer">
@@ -22,7 +30,7 @@ export const Footer = ({ todos }) => {
                     <a href="#/completed">Completed</a>
                 </li>
             </ul>
-            <button className="clear-completed" disabled={activeTodos.length === todos.length} onClick={handleClick}>
+            <button className="clear-completed" disabled={activeTodos.length === todos.length} onClick={handleOnClear}>
                 Clear completed
             </button>
         </footer>
@@ -37,4 +45,5 @@ Footer.propTypes = {
             completed: PropTypes.bool.isRequired,
         })
     ),
+    onClear: PropTypes.func.isRequired,
 };

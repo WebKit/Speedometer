@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export const Item = ({ todo }) => {
-    const { title, completed } = todo;
+export const Item = ({ todo, onToggle, onDelete, onUpdate }) => {
+    const { title, completed, id } = todo;
 
     const handleChange = (e) => {
-        console.log(e.target.checked);
+        onToggle(id);
     };
 
     const handleDoubleClick = () => {
@@ -13,7 +13,7 @@ export const Item = ({ todo }) => {
     };
 
     const handleClick = () => {
-        console.log("click");
+        onDelete(id);
     };
 
     return (
@@ -35,4 +35,7 @@ Item.propTypes = {
         title: PropTypes.string.isRequired,
         completed: PropTypes.bool.isRequired,
     }),
+    onToggle: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired,
 };
