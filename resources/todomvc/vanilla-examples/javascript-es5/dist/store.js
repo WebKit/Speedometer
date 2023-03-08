@@ -1,6 +1,6 @@
-/*jshint eqeqeq:false */
+/* jshint eqeqeq:false */
 (function (window) {
-    'use strict';
+    "use strict";
 
     var MemoryStorage = {};
     var ID = 1;
@@ -20,7 +20,7 @@
 
         if (!MemoryStorage[name]) {
             var data = {
-                todos: []
+                todos: [],
             };
 
             MemoryStorage[name] = JSON.stringify(data);
@@ -49,14 +49,17 @@
 
         var todos = JSON.parse(MemoryStorage[this._dbName]).todos;
 
-        callback.call(this, todos.filter(function (todo) {
-            for (var q in query) {
-                if (query[q] !== todo[q]) {
-                    return false;
+        callback.call(
+            this,
+            todos.filter(function (todo) {
+                for (var q in query) {
+                    if (query[q] !== todo[q]) {
+                        return false;
+                    }
                 }
-            }
-            return true;
-        }));
+                return true;
+            })
+        );
     };
 
     /**
@@ -117,7 +120,7 @@
         var todos = data.todos;
 
         for (var i = 0; i < todos.length; i++) {
-            if (todos[i].id == id) {
+            if (todos[i].id === id) {
                 todos.splice(i, 1);
                 break;
             }
@@ -133,7 +136,7 @@
      * @param {function} callback The callback to fire after dropping the data
      */
     Store.prototype.drop = function (callback) {
-        var data = {todos: []};
+        var data = { todos: [] };
         MemoryStorage[this._dbName] = JSON.stringify(data);
         callback.call(this, data.todos);
     };

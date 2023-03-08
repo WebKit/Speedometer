@@ -211,8 +211,9 @@ describe("BenchmarkRunner", () => {
             it("should write performance marks at the start and end of the test with the correct test name", () => {
                 assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-start");
                 assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-sync-end");
+                assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-async-start");
                 assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-async-end");
-                assert.calledThrice(peformanceMarkSpy);
+                expect(peformanceMarkSpy.callCount).to.equal(4);
             });
 
             it("should run the test", () => {

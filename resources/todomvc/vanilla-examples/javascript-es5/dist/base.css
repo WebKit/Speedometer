@@ -69,18 +69,18 @@ hr {
 }
 
 .quote p:before {
-    content: '“';
+    content: "“";
     font-size: 50px;
-    opacity: .15;
+    opacity: 0.15;
     position: absolute;
     top: -20px;
     left: 3px;
 }
 
 .quote p:after {
-    content: '”';
+    content: "”";
     font-size: 50px;
-    opacity: .15;
+    opacity: 0.15;
     position: absolute;
     bottom: -42px;
     right: 3px;
@@ -104,17 +104,17 @@ hr {
 .speech-bubble {
     position: relative;
     padding: 10px;
-    background: rgba(0, 0, 0, .04);
+    background: rgba(0, 0, 0, 0.04);
     border-radius: 5px;
 }
 
 .speech-bubble:after {
-    content: '';
+    content: "";
     position: absolute;
     top: 100%;
     right: 30px;
     border: 13px solid transparent;
-    border-top-color: rgba(0, 0, 0, .04);
+    border-top-color: rgba(0, 0, 0, 0.04);
 }
 
 .learn-bar > .learn {
@@ -124,7 +124,7 @@ hr {
     left: -300px;
     padding: 10px;
     border-radius: 5px;
-    background-color: rgba(255, 255, 255, .6);
+    background-color: rgba(255, 255, 255, 0.6);
     transition-property: left;
     transition-duration: 500ms;
 }
