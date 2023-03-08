@@ -6,14 +6,7 @@ export const useModel = () => {
     const [todos, setTodos] = useState([]);
 
     const addItem = (title) => {
-        const todo = {
-            id: uuid(),
-            title,
-            completed: false,
-        };
-
-        setTodos([todo, ...todos]);
-        return todo;
+        setTodos([{ id: uuid(), title, completed: false }, ...todos]);
     };
 
     const updateItem = (id, title) => {
