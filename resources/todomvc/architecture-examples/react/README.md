@@ -2,7 +2,7 @@
 
 ## Description
 
-This application uses React in combination with Redux to implement a todo application.
+This application uses React to implement a todo application.
 
 -   [React](https://reactjs.org/) is a JavaScript library for creating user interfaces.\
 
