@@ -2,9 +2,9 @@
     "env": {
         "jest": true
     },
-    "extends": ["plugin:react/recommended"],
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
     "rules": {
         "no-extra-parens": 0,
-        "react/jsx-first-prop-new-line": "multiline"
+        // "react/jsx-max-props-per-line": [1, { "maximum": 2 }]
     }
 }
