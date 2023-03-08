@@ -52,6 +52,13 @@ export const useApi = (storage, initialTodos = []) => {
         storage.removeAllValues();
     };
 
+    const toggleAll = (value) => {
+        getTodos().forEach((todo) => {
+            todo = update(todo, { completed: value });
+            storage.setValue(todo.id, todo);
+        });
+    };
+
     const removeCompletedItems = () => {
         getTodos().forEach((todo) => {
             if (todo.completed) {
@@ -64,5 +71,5 @@ export const useApi = (storage, initialTodos = []) => {
         return [...storage.getAllValues()];
     };
 
-    return { addItem, updateItem, removeItem, toggleItem, removeAllItems, removeCompletedItems, getTodos };
+    return { addItem, updateItem, removeItem, toggleItem, removeAllItems, toggleAll, removeCompletedItems, getTodos };
 };

@@ -1,11 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useLocation } from "react-router-dom";
 
 export const Footer = ({ todos, onClear }) => {
-    const location = useLocation();
-    console.log("location", location.pathname);
-
     const activeTodos = todos.filter((todo) => !todo.completed);
 
     const handleOnClear = () => {
