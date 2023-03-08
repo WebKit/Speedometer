@@ -1,20 +1,30 @@
-import React from "react";
-import PropTypes from "prop-types";
+import { useCallback } from "react";
 
-import { useSanitizer } from "../hooks/use-sanitizer";
-import { useValidators } from "../hooks/use-validators";
+const sanitize = (string) => {
+    const map = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#x27;",
+        "/": "&#x2F;",
+    };
+    const reg = /[&<>"'/]/gi;
+    return string.replace(reg, (match) => map[match]);
+};
 
-export const Input = ({ onSubmit, placeholder, label, defaultValue, onBlur }) => {
-    const { sanitize } = useSanitizer();
-    const { hasValidMin } = useValidators();
+const hasValidMin = (value, min) => {
+    return value.length >= min;
+};
 
-    const handleBlur = (e) => {
+export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
+    const handleBlur = useCallback(() => {
         if (onBlur) {
             onBlur();
         }
-    };
+    });
 
-    const handleKeyDown = (e) => {
+    const handleKeyDown = useCallback((e) => {
         if (e.keyCode === 13) {
             const value = e.target.value.trim();
             if (!hasValidMin(value, 2)) {
@@ -23,7 +33,7 @@ export const Input = ({ onSubmit, placeholder, label, defaultValue, onBlur }) =>
             onSubmit(sanitize(value));
             e.target.value = "";
         }
-    };
+    });
 
     return (
         <div className="input-container">
@@ -33,12 +43,4 @@ export const Input = ({ onSubmit, placeholder, label, defaultValue, onBlur }) =>
             </label>
         </div>
     );
-};
-
-Input.propTypes = {
-    placeholder: PropTypes.string,
-    defaultValue: PropTypes.string,
-    label: PropTypes.string.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    onBlur: PropTypes.func,
-};
+}

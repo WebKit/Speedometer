@@ -4,7 +4,9 @@
     },
     "extends": ["eslint:recommended", "plugin:react/recommended"],
     "rules": {
-        "no-extra-parens": 0
+        "no-extra-parens": 0,
+        "react/prop-types": 0,
+        "react/react-in-jsx-scope": 0
         // "react/jsx-max-props-per-line": [1, { "maximum": 2 }]
     }
 }

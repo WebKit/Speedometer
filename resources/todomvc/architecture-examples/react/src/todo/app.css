@@ -12,3 +12,13 @@ but useful for people who use screen readers */
     position: absolute;
     white-space: nowrap;
 }
+
+.toggle-all {
+    width: 40px !important;
+    height: 60px !important;
+    right: auto !important;
+}
+
+.toggle-all-label {
+    pointer-events: none;
+}

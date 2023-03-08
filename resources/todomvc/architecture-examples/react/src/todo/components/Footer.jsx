@@ -1,12 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
+import { useCallback } from "react";
 
-export const Footer = ({ todos, onClear }) => {
+export function Footer({ todos, onClear }) {
     const activeTodos = todos.filter((todo) => !todo.completed);
 
-    const handleOnClear = () => {
+    const handleOnClear = useCallback(() => {
         onClear();
-    };
+    });
 
     if (todos.length === 0) {
         return null;
@@ -31,15 +30,4 @@ export const Footer = ({ todos, onClear }) => {
             </button>
         </footer>
     );
-};
-
-Footer.propTypes = {
-    todos: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            title: PropTypes.string.isRequired,
-            completed: PropTypes.bool.isRequired,
-        })
-    ),
-    onClear: PropTypes.func.isRequired,
-};
+}

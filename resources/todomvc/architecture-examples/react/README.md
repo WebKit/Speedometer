@@ -8,7 +8,7 @@ This application uses React 17.0.2 to implement a todo application.
 
 ## Implementation details
 
-The App component functions as the controller to proxy requests between the model (useModel) and the views (Header, Main, Footer). The useModel hook uses an array data structure in combination with React.useState to manage application state. 
+The App component functions as the controller to proxy requests between the model (useModel) and the views (Header, Main, Footer). The useModel hook uses an array data structure in combination with React.useState to manage application state.
 
 ## Built steps
 
