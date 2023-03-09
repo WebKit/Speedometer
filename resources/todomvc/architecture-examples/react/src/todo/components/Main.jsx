@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 
-import { Item } from "./Item";
+import { Item } from "./item";
 
 export function Main({ todos, dispatch }) {
     const { pathname: route } = useLocation();

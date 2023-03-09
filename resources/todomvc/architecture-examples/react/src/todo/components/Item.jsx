@@ -1,6 +1,6 @@
 import { memo, useState, useCallback } from "react";
 
-import { Input } from "./Input";
+import { Input } from "./input";
 
 export const Item = memo(function Item({ todo, dispatch }) {
     const [isWritable, setIsWritable] = useState(false);

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { Input } from "./Input";
+import { Input } from "./input";
 
 export function Header({ dispatch }) {
     const addItem = useCallback((title) => dispatch({ type: "ADD_ITEM", payload: { title } }), [dispatch]);
