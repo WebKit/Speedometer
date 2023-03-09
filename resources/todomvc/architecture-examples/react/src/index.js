@@ -8,9 +8,7 @@ import "todomvc-app-css/index.css";
 render(
     <HashRouter>
         <Routes>
-            <Route path="/" element={<App />} />
-            <Route path="/active" element={<App />} />
-            <Route path="/completed" element={<App />} />
+            <Route path="*" element={<App />} />
         </Routes>
     </HashRouter>,
     document.getElementById("root")

@@ -4,8 +4,7 @@ import { useLocation } from "react-router-dom";
 import { Item } from "./Item";
 
 export function Main({ todos, onToggle, onDelete, onUpdate, onToggleAll }) {
-    const location = useLocation();
-    const route = location.pathname;
+    const { pathname: route } = useLocation();
 
     const visibleTodos = useMemo(
         () =>
