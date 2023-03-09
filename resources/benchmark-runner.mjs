@@ -217,7 +217,7 @@ export class BenchmarkRunner {
     }
 
     // This function ought be as simple as possible. Don't even use Promise.
-    _runTest(suite, test, page, test_done_callback) {
+    _runTest(suite, test, page, testDoneCallback) {
         // Prepare all mark labels outside the measuring loop.
         const startLabel = `${suite.name}.${test.name}-start`;
         const syncEndLabel = `${suite.name}.${test.name}-sync-end`;
@@ -245,12 +245,12 @@ export class BenchmarkRunner {
             performance.measure(`${suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
             performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
             window.requestAnimationFrame(() => {
-                this._recordTestResults(suite, test, syncTime, asyncTime, height, test_done_callback);
+                this._recordTestResults(suite, test, syncTime, asyncTime, height, testDoneCallback);
             });
         }, 0);
     }
 
-    async _recordTestResults(suite, test, syncTime, asyncTime, unused_height, test_done_callback) {
+    async _recordTestResults(suite, test, syncTime, asyncTime, unused_height, testDoneCallback) {
         const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
         const total = syncTime + asyncTime;
         this._measuredValues.tests[suite.name] = suiteResults;
@@ -260,7 +260,7 @@ export class BenchmarkRunner {
         if (this._client?.didRunTest)
             await this._client.didRunTest(suite, test);
 
-        test_done_callback();
+        testDoneCallback();
     }
 
     async _finalize() {
