@@ -373,6 +373,23 @@ Suites.push({
 });
 
 Suites.push({
+    name: "Charts-observable-plot",
+    url: "tentative/charts/dist/observable-plot.html",
+    async prepare(page) {
+        page.querySelector("#preload").click();
+        await page.waitForElement("#ready");
+    },
+    tests: [
+        new BenchmarkTestStep("Prepare", (page) => {
+            page.querySelector("#prepare").click();
+        }),
+        new BenchmarkTestStep("Create", (page) => {
+            page.querySelector("#add-stacked-chart-button").click();
+        }),
+    ],
+});
+
+Suites.push({
     name: "React-Stockcharts",
     url: "tentative/react-stockcharts/build/index.html?type=hybrid",
     async prepare(page) {

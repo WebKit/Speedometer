@@ -2,7 +2,8 @@
 **/dist
 package-lock.json
 
-/resources/tentative
+/resources/tentative/*
+!/resources/tentative/charts
 
 /resources/todomvc/architecture-examples/*
 !/resources/todomvc/architecture-examples/backbone
