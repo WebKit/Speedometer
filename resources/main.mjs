@@ -6,6 +6,7 @@ import { params } from "./params.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
+    developerMode = false;
     stepCount = null;
     suitesCount = null;
     _measuredValuesList = [];
@@ -31,6 +32,7 @@ class MainBenchmarkClient {
                 return false;
             }
         }
+        this.developerMode = params.developerMode;
 
         const enabledSuites = Suites.filter((suite) => !suite.disabled);
         const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => {
@@ -85,7 +87,10 @@ class MainBenchmarkClient {
         this._populateDetailedResults(results.formattedValues);
         document.getElementById("results-with-statistics").textContent = results.formattedMeanAndDelta;
 
-        this.showResultsSummary();
+        if (this.developerMode)
+            this.showResultsDetails();
+        else
+            this.showResultsSummary();
     }
 
     _computeResults(measuredValuesList, displayUnit) {

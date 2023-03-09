@@ -3,6 +3,7 @@ class Params {
         width: 800,
         height: 600,
     };
+    developerMode = false;
     startAutomatically = false;
     iterationCount = 10;
     suites = [];
@@ -42,6 +43,8 @@ class Params {
             searchParams.delete("suite");
             searchParams.delete("suites");
         }
+        this.developerMode = searchParams.has("developerMode");
+        searchParams.delete("developerMode");
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
             console.error("Got unused search params", unused);
