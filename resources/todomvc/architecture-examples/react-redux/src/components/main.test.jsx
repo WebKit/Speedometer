@@ -1,8 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import MainSection from './main-section'
-import TodoItem from './todo-item'
-import Footer from './footer'
-import { SHOW_ALL, SHOW_COMPLETED } from '../constants/todo-filters'
+import Main from './main'
 
 const setup = propOverrides => {
   const props = Object.assign({
@@ -26,7 +23,7 @@ const setup = propOverrides => {
     }
   }, propOverrides)
 
-  const {rerender} = render(<MainSection {...props} />)
+  const {rerender} = render(<Main {...props} />)
 
   return {
     props,
@@ -35,7 +32,7 @@ const setup = propOverrides => {
 }
 
 describe('components', () => {
-  describe('MainSection', () => {
+  describe('Main', () => {
     it('should render container', async () => {
       setup();
       const main = await screen.queryByTestId("main");
@@ -98,7 +95,7 @@ describe('components', () => {
         expect(activeLink).toBeInTheDocument();
         fireEvent.click(activeLink);
 
-        rerender(<MainSection {...props} />)
+        rerender(<Main {...props} />)
 
         const after = await screen.queryByText(/Run the tests/i);
         expect(after).not.toBeInTheDocument();

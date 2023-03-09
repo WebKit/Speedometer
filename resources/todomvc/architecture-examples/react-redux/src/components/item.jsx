@@ -1,9 +1,9 @@
 import { Component } from "react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
-import TodoTextInput from "./todo-text-input";
+import TextInput from "./text-input";
 
-export default class TodoItem extends Component {
+export default class Item extends Component {
     static propTypes = {
         todo: PropTypes.object.isRequired,
         editTodo: PropTypes.func.isRequired,
@@ -37,7 +37,7 @@ export default class TodoItem extends Component {
 
         let element;
         if (this.state.editing) {
-            element = <TodoTextInput text={todo.text} editing={this.state.editing} onSave={(text) => this.handleSave(todo.id, text)} />;
+            element = <TextInput text={todo.text} editing={this.state.editing} onSave={(text) => this.handleSave(todo.id, text)} />;
         } else {
             element = (
                 <div className="view">

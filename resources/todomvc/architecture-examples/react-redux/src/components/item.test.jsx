@@ -1,9 +1,8 @@
 import React from 'react'
 import { render, screen, fireEvent } from "@testing-library/react";
-import TodoItem from './todo-item'
-import TodoTextInput from './todo-text-input'
+import Item from './item'
 
-const setup = ( editing = false ) => {
+const setup = () => {
   const props = {
     todo: {
       id: 0,
@@ -15,7 +14,7 @@ const setup = ( editing = false ) => {
     toggleTodo: jest.fn()
   }
 
-  const {rerender} = render(<TodoItem {...props} />)
+  const {rerender} = render(<Item {...props} />)
 
   return {
     props,

@@ -2,7 +2,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Header from "../components/header";
-import MainSection from "../components/main-section";
+import Main from "../components/main";
 import * as TodoActions from "../actions";
 
 import "./app.css";
@@ -10,7 +10,7 @@ import "./app.css";
 const App = ({ todos, actions }) => (
     <>
         <Header addTodo={actions.addTodo} />
-        <MainSection todos={todos} actions={actions} />
+        <Main todos={todos} actions={actions} />
     </>
 );
 
