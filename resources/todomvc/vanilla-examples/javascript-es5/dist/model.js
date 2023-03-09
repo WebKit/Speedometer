@@ -1,5 +1,5 @@
 (function (window) {
-    'use strict';
+    "use strict";
 
     /**
      * Creates a new Model instance and hooks up the storage.
@@ -18,12 +18,12 @@
      * @param {function} [callback] The callback to fire after the model is created
      */
     Model.prototype.create = function (title, callback) {
-        title = title || '';
+        title = title || "";
         callback = callback || function () {};
 
         var newItem = {
             title: title.trim(),
-            completed: false
+            completed: false,
         };
 
         this.storage.save(newItem, callback);
@@ -32,7 +32,7 @@
     /**
      * Finds and returns a model in storage. If no query is given it'll simply
      * return everything. If you pass in a string or number it'll look that up as
-     * the ID of the model to find. Lastly, you can pass it an object to match
+     * the ID of the model to find. Lastly, you can pass it an object to match
      * against.
      *
      * @param {string|number|object} [query] A query to match models against
@@ -48,14 +48,14 @@
         var queryType = typeof query;
         callback = callback || function () {};
 
-        if (queryType === 'function') {
+        if (queryType === "function") {
             callback = query;
             return this.storage.findAll(callback);
-        } else if (queryType === 'string' || queryType === 'number') {
+        } else if (queryType === "string" || queryType === "number") {
             query = parseInt(query, 10);
-            this.storage.find({ id: query }, callback);
+            return this.storage.find({ id: query }, callback);
         } else {
-            this.storage.find(query, callback);
+            return this.storage.find(query, callback);
         }
     };
 
@@ -97,7 +97,7 @@
         var todos = {
             active: 0,
             completed: 0,
-            total: 0
+            total: 0,
         };
 
         this.storage.findAll(function (data) {

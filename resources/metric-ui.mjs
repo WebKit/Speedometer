@@ -1,9 +1,9 @@
 export const COLORS = Object.freeze(["blue", "blue-light", "green-light", "green", "yellow", "orange", "red", "magenta", "violet", "purple", "blue-dark", "green-dark", "ochre", "rust"]);
 
-export function renderMetricView(params) {
-    let { metrics, width = 500, trackHeight = 20, subMetricMargin = 35, title = "", colors = COLORS} = params;
+export function renderMetricView(viewParams) {
+    let { metrics, width = 500, trackHeight = 20, subMetricMargin = 35, title = "", colors = COLORS} = viewParams;
     // Make sure subMetricMargin is set for use in renderSubMetrics.
-    params.subMetricMargin = subMetricMargin;
+    viewParams.subMetricMargin = subMetricMargin;
     const scatterPlotParams = { width, trackHeight, colors };
     scatterPlotParams.values = prepareScatterPlotValues(metrics, true);
     scatterPlotParams.unit = "%";
@@ -17,7 +17,7 @@ export function renderMetricView(params) {
         .map(
             (metric, i) => `
                 <tr >
-                    <td class=${colors[i % colors.length]} >●</td>
+                    <td class="${colors[i % colors.length]}" >●</td>
                     <td class="label">${metric.shortName}</td>
                     <td class="number">${metric.mean.toFixed(2)}</td>
                     <td>±</td>
@@ -39,15 +39,15 @@ export function renderMetricView(params) {
                     </div>
                     <table class="chart chart-legend">${legend}</table>
                 </div>
-                ${renderSubMetrics(params)}
+                ${renderSubMetrics(viewParams)}
             </dd>
         </dl>
     `;
 }
 
-function renderSubMetrics(params) {
-    let { metrics, width, subMetricMargin, colors = COLORS, renderChildren = true} = params;
-    let valuesTable = `
+function renderSubMetrics(viewParams) {
+    const { metrics, width, subMetricMargin, colors = COLORS, renderChildren = true } = viewParams;
+    const valuesTable = `
             <label class="details-toggle">
                 <input type="checkbox" 
                         onclick="this.parentNode.nextElementSibling.classList.toggle('visible')" />
@@ -61,7 +61,7 @@ function renderSubMetrics(params) {
         return valuesTable;
     }
     const subMetricWidth = width - subMetricMargin;
-    let childColors = [...colors];
+    const childColors = [...colors];
  
     const subMetrics = metrics
         .map((metric) => {
@@ -70,7 +70,14 @@ function renderSubMetrics(params) {
                 const color = childColors.pop();
                 childColors.unshift(color);
             }
-            const subMetricParams = { ...params, parentMetric: metric, metrics: metric.children, title: metric.name, width: subMetricWidth, colors: childColors };
+            const subMetricParams = {
+                 ...viewParams,
+                 parentMetric: metric,
+                  metrics: metric.children, 
+                  title: metric.name, 
+                  width: subMetricWidth,
+                   colors: childColors
+                };
             return renderMetricView(subMetricParams);
         })
         .join("");
@@ -169,7 +176,7 @@ function prepareScatterPlotValues(metrics, normalize = true) {
             width = (metric.delta / mean) * toPercent;
             center = 0;
         }
-        let left = center - width / 2;
+        const left = center - width / 2;
         const y = metricIndex;
         const label = `Mean: ${metric.valueString}\n` + `Min: ${metric.min.toFixed(2)}${unit}\n` + `Max: ${metric.max.toFixed(2)}${unit}`;
         const rect = [left, y, label, width];

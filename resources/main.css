@@ -191,7 +191,7 @@ section > p {
     margin: 10px 20px;
 }
 
-section.selected {
+section:target {
     display: block;
 }
 
@@ -264,64 +264,65 @@ button.show-about {
     text-align: right;
 }
 
-section#detailed-results > .results-table {
+section#details > .results-table {
     float: left;
     width: 50%;
 }
 
-section#summarized-results > #result-number,
-section#summarized-results > #confidence-number {
+section#summary > #result-number,
+section#summary > #confidence-number {
     font-family: "Futura-CondensedMedium", Futura, "Helvetica Neue", Helvetica, Verdana, sans-serif;
 }
 
-section#summarized-results > #result-number {
+section#summary > #result-number {
     text-align: center;
     font-size: 145px;
     line-height: 145px;
 }
 
-section#summarized-results > #confidence-number {
+section#summary > #confidence-number {
     text-align: center;
     font-size: 36px;
     line-height: 36px;
     color: var(--inactive-color);
 }
 
-section#detailed-results button,
-section#detailed-results .button {
+section#details button,
+section#details .button {
     min-width: 300px;
 }
 
-section#detailed-results.selected {
+section#details.selected {
     display: flex;
     flex-direction: column;
 }
 
-section#detailed-results button,
-section#detailed-results .button {
+section#details.button {
     min-width: 300px;
 }
 
-section#detailed-results .all-metric-results {
+section#details.all-metric-results {
     flex: auto;
     overflow-y: auto;
     padding: 0px 10px;
 }
 
-section#detailed-results .arithmetic-mean {
+section#details.arithmetic-mean {
     clear: both;
+    padding-top: 32px;
+    text-align: center;
 }
 
-section#detailed-results .arithmetic-mean > label {
+section#details .arithmetic-mean > label {
     font-weight: bold;
     margin-right: 10px;
 }
 
-section#detailed-results button.show-about {
+section#details button.show-about {
     margin-top: 30px;
 }
 
-section#detailed-results h1 {
+section#details h1 {
     margin-bottom: 10px;
 }
 
@@ -334,12 +335,12 @@ section#about p {
     padding-left: calc((var(--viewport-width) - var(--text-width)) / 2);
 }
 
-section#detailed-results .metric {
+section#details.metric {
     margin: 0px 0 10px 0;
     display: inline-block;
     width: 100%;
 }
-section#detailed-results .metric dd {
+section#details.metric dd {
     margin-left: 0;
 }
 
@@ -367,7 +368,7 @@ table .number {
     text-overflow: ellipsis;
 }
 
-section#detailed-results h1 {
+section#detailsh1 {
     margin-bottom: 10px;
 }
 
