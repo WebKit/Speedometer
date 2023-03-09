@@ -1,4 +1,4 @@
-import * as types from "../constants/ActionTypes";
+import * as types from "../constants/action-types";
 import * as actions from "./index";
 
 describe("todo actions", () => {
@@ -24,16 +24,16 @@ describe("todo actions", () => {
         });
     });
 
-    it("completeTodo should create COMPLETE_TODO action", () => {
-        expect(actions.completeTodo(1)).toEqual({
-            type: types.COMPLETE_TODO,
+    it("toggleTodo should create TOGGLE_TODO action", () => {
+        expect(actions.toggleTodo(1)).toEqual({
+            type: types.TOGGLE_TODO,
             id: 1,
         });
     });
 
-    it("completeAll should create COMPLETE_ALL action", () => {
-        expect(actions.completeAll()).toEqual({
-            type: types.COMPLETE_ALL,
+    it("toggleAll should create TOGGLE_ALL action", () => {
+        expect(actions.toggleAll()).toEqual({
+            type: types.TOGGLE_ALL,
         });
     });
 

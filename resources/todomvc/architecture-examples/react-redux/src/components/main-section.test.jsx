@@ -1,9 +1,8 @@
-import React from 'react'
 import { render, screen, fireEvent } from "@testing-library/react";
-import MainSection from './MainSection'
-import TodoItem from './TodoItem'
-import Footer from './Footer'
-import { SHOW_ALL, SHOW_COMPLETED } from '../constants/TodoFilters'
+import MainSection from './main-section'
+import TodoItem from './todo-item'
+import Footer from './footer'
+import { SHOW_ALL, SHOW_COMPLETED } from '../constants/todo-filters'
 
 const setup = propOverrides => {
   const props = Object.assign({
@@ -21,8 +20,8 @@ const setup = propOverrides => {
     actions: {
       editTodo: jest.fn(),
       deleteTodo: jest.fn(),
-      completeTodo: jest.fn(),
-      completeAll: jest.fn(),
+      toggleTodo: jest.fn(),
+      toggleAll: jest.fn(),
       clearCompleted: jest.fn()
     }
   }, propOverrides)
@@ -65,11 +64,11 @@ describe('components', () => {
         expect(toggle.checked).toBeTruthy();
       })
 
-      it('should call completeAll on change', async () => {
+      it('should call toggleAll on change', async () => {
         const { props } = setup()
         const toggle = await screen.queryByTestId("toggle-all");
         fireEvent.click(toggle);
-        expect(props.actions.completeAll).toBeCalled()
+        expect(props.actions.toggleAll).toBeCalled()
       })
     })
 

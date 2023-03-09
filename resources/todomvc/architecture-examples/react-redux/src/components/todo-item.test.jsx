@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from "@testing-library/react";
-import TodoItem from './TodoItem'
-import TodoTextInput from './TodoTextInput'
+import TodoItem from './todo-item'
+import TodoTextInput from './todo-text-input'
 
 const setup = ( editing = false ) => {
   const props = {
@@ -12,7 +12,7 @@ const setup = ( editing = false ) => {
     },
     editTodo: jest.fn(),
     deleteTodo: jest.fn(),
-    completeTodo: jest.fn()
+    toggleTodo: jest.fn()
   }
 
   const {rerender} = render(<TodoItem {...props} />)
@@ -35,13 +35,13 @@ describe('components', () => {
       expect(text).toBeInTheDocument();
     })
 
-    it('input onChange should call completeTodo', async () => {
+    it('input onChange should call toggleTodo', async () => {
       const { props } = setup()
 
       const toggle = await screen.getByTestId("todo-item-toggle");
       expect(toggle).toBeInTheDocument();
       fireEvent.click(toggle);
-      expect(props.completeTodo).toBeCalled();
+      expect(props.toggleTodo).toBeCalled();
     })
 
     it('button onClick should call deleteTodo', async () => {

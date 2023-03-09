@@ -1,5 +1,5 @@
 import todos from "./todos";
-import * as types from "../constants/ActionTypes";
+import * as types from "../constants/action-types";
 
 describe("todos reducer", () => {
     it("should handle initial state", () => {
@@ -12,9 +12,8 @@ describe("todos reducer", () => {
                 type: types.ADD_TODO,
                 text: "Run the tests",
             })
-        ).toEqual([
+        ).toMatchObject([
             {
-                id: 0,
                 completed: false,
                 text: "Run the tests",
             },
@@ -34,16 +33,15 @@ describe("todos reducer", () => {
                     text: "Run the tests",
                 }
             )
-        ).toEqual([
+        ).toMatchObject([
+
             {
-                id: 0,
-                completed: false,
-                text: "Use Redux",
-            },
-            {
-                id: 1,
                 completed: false,
                 text: "Run the tests",
+            },
+            {
+                completed: false,
+                text: "Use Redux",
             }
         ]);
 
@@ -66,22 +64,19 @@ describe("todos reducer", () => {
                     text: "Fix the tests",
                 }
             )
-        ).toEqual([
+        ).toMatchObject([
+            {
+                text: "Fix the tests",
+                completed: false,
+            },
             {
                 text: "Use Redux",
                 completed: false,
-                id: 0,
             },
             {
                 text: "Run the tests",
                 completed: false,
-                id: 1,
-            },
-            {
-                text: "Fix the tests",
-                completed: false,
-                id: 2,
-            },
+            }
         ]);
     });
 
@@ -149,7 +144,7 @@ describe("todos reducer", () => {
         ]);
     });
 
-    it("should handle COMPLETE_TODO", () => {
+    it("should handle TOGGLE_TODO", () => {
         expect(
             todos(
                 [
@@ -165,7 +160,7 @@ describe("todos reducer", () => {
                     },
                 ],
                 {
-                    type: types.COMPLETE_TODO,
+                    type: types.TOGGLE_TODO,
                     id: 1,
                 }
             )
@@ -183,7 +178,7 @@ describe("todos reducer", () => {
         ]);
     });
 
-    it("should handle COMPLETE_ALL", () => {
+    it("should handle TOGGLE_ALL", () => {
         expect(
             todos(
                 [
@@ -199,10 +194,10 @@ describe("todos reducer", () => {
                     },
                 ],
                 {
-                    type: types.COMPLETE_ALL,
+                    type: types.TOGGLE_ALL,
                 }
             )
-        ).toEqual([
+        ).toMatchObject([
             {
                 text: "Run the tests",
                 completed: true,
@@ -231,7 +226,7 @@ describe("todos reducer", () => {
                     },
                 ],
                 {
-                    type: types.COMPLETE_ALL,
+                    type: types.TOGGLE_ALL,
                 }
             )
         ).toEqual([
@@ -280,7 +275,7 @@ describe("todos reducer", () => {
         expect(
             [
                 {
-                    type: types.COMPLETE_TODO,
+                    type: types.TOGGLE_TODO,
                     id: 0,
                 },
                 {
@@ -302,16 +297,14 @@ describe("todos reducer", () => {
                     text: "Write tests",
                 },
             ])
-        ).toEqual([
-            {
-                text: "Write tests",
-                completed: false,
-                id: 1,
-            },
+        ).toMatchObject([
             {
                 text: "Write more tests",
                 completed: false,
-                id: 2,
+            },
+            {
+                text: "Write tests",
+                completed: false,
             },
         ]);
     });

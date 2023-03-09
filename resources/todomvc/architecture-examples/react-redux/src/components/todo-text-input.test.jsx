@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen, fireEvent } from "@testing-library/react";
-import TodoTextInput from './TodoTextInput'
+import TodoTextInput from './todo-text-input'
 
 const setup = propOverrides => {
   const props = Object.assign({

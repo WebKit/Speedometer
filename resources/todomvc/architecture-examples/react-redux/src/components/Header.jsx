@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
-import TodoTextInput from './TodoTextInput'
+import TodoTextInput from './todo-text-input'
 
 export default class Header extends Component {
   static propTypes = {

@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
-import { SHOW_ALL, SHOW_COMPLETED, SHOW_ACTIVE } from '../constants/TodoFilters'
+import { SHOW_ALL, SHOW_COMPLETED, SHOW_ACTIVE } from '../constants/todo-filters'
 
 const FILTER_TITLES = {
   [SHOW_ALL]: 'All',
