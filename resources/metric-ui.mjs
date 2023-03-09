@@ -136,8 +136,8 @@ function renderMetricsTable(metrics, min, max) {
             ${columns}
         </tr>`;
     }
-    return `<table class="metrics-table">
-        <thead>
+    return `<table class="metrics-table" >
+        <thead  onclick="this.classList.toggle('nowrap')" >
             ${commonPrefixHeader}
             <tr>
                 <th>Iteration</th>

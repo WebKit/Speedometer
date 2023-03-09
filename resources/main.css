@@ -352,6 +352,10 @@ section#details .metric dd {
     padding: 0 4px 3px 4px;
 }
 
+.nowrap {
+    white-space: nowrap;
+}
+
 table .number {
     text-align: right;
 }
