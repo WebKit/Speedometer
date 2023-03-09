@@ -23,11 +23,11 @@ export function Item({ todo, onToggle, onDelete, onUpdate }) {
     });
 
     const handleUpdate = useCallback(
-        (text) => {
-            if (text.length === 0) {
+        (title) => {
+            if (title.length === 0) {
                 onDelete(id);
             } else {
-                onUpdate(id, text);
+                onUpdate(id, title);
             }
 
             setIsWritable(false);
