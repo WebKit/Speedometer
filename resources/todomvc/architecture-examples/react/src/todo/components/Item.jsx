@@ -1,8 +1,8 @@
-import { useState, useCallback } from "react";
+import { memo, useState, useCallback } from "react";
 
 import { Input } from "./Input";
 
-export function Item({ todo, onToggle, onDelete, onUpdate }) {
+export const Item = memo(function Item({ todo, onToggle, onDelete, onUpdate }) {
     const [isWritable, setIsWritable] = useState(false);
     const { title, completed, id } = todo;
 
@@ -52,4 +52,4 @@ export function Item({ todo, onToggle, onDelete, onUpdate }) {
             </div>
         </li>
     );
-}
+});
