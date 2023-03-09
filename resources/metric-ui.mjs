@@ -110,12 +110,12 @@ function renderMetricsTable(metrics, min, max) {
         commonPrefixHeader = `
             <tr>
                 <td></td>
-                <td colspan="${metrics.length}">${commonPrefix}</td>
+                <td colspan="${metrics.length}" class="prefix">${commonPrefix}</td>
             </tr>`;
     }
     for (const metric of metrics) {
         const name = metric.name.substring(commonPrefix.length);
-        columnHeaders += `<td>${name} [${metric.unit}]</td>`;
+        columnHeaders += `<th>${name} [${metric.unit}]</th>`;
         numRows = Math.max(metric.values.length, numRows);
     }
 
@@ -136,11 +136,11 @@ function renderMetricsTable(metrics, min, max) {
             ${columns}
         </tr>`;
     }
-    return `<table>
+    return `<table class="metrics-table">
         <thead>
             ${commonPrefixHeader}
             <tr>
-                <td>Iteration</td>
+                <th>Iteration</th>
                 ${columnHeaders}
             </tr>
         </thead>

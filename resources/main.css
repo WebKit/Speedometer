@@ -42,6 +42,10 @@ body {
     background-color: var(--foreground);
 }
 
+thead {
+    vertical-align: bottom;
+}
+
 h1,
 button,
 .button {
@@ -120,11 +124,6 @@ p {
 
 a {
     color: inherit;
-}
-
-th {
-    text-align: right;
-    color: var(--inactive-color);
 }
 
 .buttons {
@@ -269,11 +268,6 @@ button.show-about {
     text-align: right;
 }
 
-section#details > .results-table {
-    float: left;
-    width: 50%;
-}
-
 section#summary > #result-number,
 section#summary > #confidence-number {
     font-family: "Futura-CondensedMedium", Futura, "Helvetica Neue", Helvetica, Verdana, sans-serif;
@@ -292,27 +286,32 @@ section#summary > #confidence-number {
     color: var(--inactive-color);
 }
 
+section#about {
+    overflow-y: auto;
+}
+
+section#about p {
+    width: var(--text-width);
+    padding-left: calc((var(--viewport-width) - var(--text-width)) / 2);
+}
+
 section#details button,
 section#details .button {
     min-width: 300px;
 }
 
-section#details.selected {
+section#details:target {
     display: flex;
     flex-direction: column;
 }
 
-section#details.button {
-    min-width: 300px;
-}
-
-section#details.all-metric-results {
+section#details .all-metric-results {
     flex: auto;
     overflow-y: auto;
     padding: 0px 10px;
 }
 
-section#details.arithmetic-mean {
+section#details .arithmetic-mean {
     clear: both;
     padding-top: 32px;
     text-align: center;
@@ -323,34 +322,34 @@ section#details .arithmetic-mean > label {
     margin-right: 10px;
 }
 
-section#details button.show-about {
-    margin-top: 30px;
-}
-
 section#details h1 {
     margin-bottom: 10px;
 }
 
-section#about {
-    overflow-y: auto;
-}
-
-section#about p {
-    width: var(--text-width);
-    padding-left: calc((var(--viewport-width) - var(--text-width)) / 2);
-}
-
-section#details.metric {
+section#details .metric {
     margin: 0px 0 10px 0;
     display: inline-block;
     width: 100%;
 }
-section#details.metric dd {
+section#details .metric dd {
     margin-left: 0;
 }
 
 .submetrics h3 {
     font-size: medium;
+}
+.metrics-table thead .prefix {
+    text-align: center;
+}
+
+.metrics-table thead th {
+    font-weight: normal;
+    text-align: left;
+    border-bottom: 1px var(--foreground) solid;
+    padding: 0 4px 3px 0px;
+}
+.metrics-table thead th  + th {
+    padding: 0 4px 3px 4px;
 }
 
 table .number {
