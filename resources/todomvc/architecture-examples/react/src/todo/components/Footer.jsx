@@ -1,11 +1,11 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import classnames from "classnames";
 
 export function Footer({ todos, dispatch }) {
     const { pathname: route } = useLocation();
 
-    const activeTodos = todos.filter((todo) => !todo.completed);
+    const activeTodos = useMemo(() => todos.filter((todo) => !todo.completed), [todos]);
 
     const removeCompleted = useCallback(() => dispatch({ type: "REMOVE_COMPLETED_ITEMS" }), [dispatch]);
 
