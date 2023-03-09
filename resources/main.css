@@ -235,50 +235,50 @@ button.show-about {
     text-align: right;
 }
 
-section#detailed-results > .results-table {
+section#details > .results-table {
     float: left;
     width: 50%;
 }
 
-section#summarized-results > #result-number,
-section#summarized-results > #confidence-number {
+section#summary > #result-number,
+section#summary > #confidence-number {
     font-family: "Futura-CondensedMedium", Futura, "Helvetica Neue", Helvetica, Verdana, sans-serif;
 }
 
-section#summarized-results > #result-number {
+section#summary > #result-number {
     text-align: center;
     font-size: 145px;
     line-height: 145px;
 }
 
-section#summarized-results > #confidence-number {
+section#summary > #confidence-number {
     text-align: center;
     font-size: 36px;
     line-height: 36px;
     color: rgb(128, 128, 128);
 }
 
-section#detailed-results button,
-section#detailed-results .button {
+section#details button,
+section#details .button {
     min-width: 300px;
 }
 
-section#detailed-results > .arithmetic-mean {
+section#details > .arithmetic-mean {
     clear: both;
     padding-top: 32px;
     text-align: center;
 }
 
-section#detailed-results > .arithmetic-mean > label {
+section#details > .arithmetic-mean > label {
     font-weight: bold;
     margin-right: 10px;
 }
 
-section#detailed-results button.show-about {
+section#details button.show-about {
     margin-top: 30px;
 }
 
-section#detailed-results h1 {
+section#details h1 {
     margin-bottom: 10px;
 }
 

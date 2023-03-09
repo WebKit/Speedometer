@@ -25,7 +25,7 @@
                         <button class="start-tests-button">Start Test</button>
                     </div>
                     <div class="button-row">
-                        <a href="#about" >About Speedometer</button>
+                        <a href="#about" >About Speedometer</a>
                     </div>
                 </div>
             </section>
@@ -41,7 +41,7 @@
                 </div>
             </section>
 
-            <section id="summarized-results">
+            <section id="summary">
                 <h1>Score</h1>
                 <div class="gauge">
                     <div class="window"><div class="needle"></div></div>
@@ -52,7 +52,24 @@
                 <div class="buttons">
                     <div class="button-row">
                         <button class="start-tests-button" title="Discard the current results and re-run all tests.">Test Again</button>
-                        <a href="#detailed-results" id="show-details" title="Show detailed results data.">Details</a>
+                        <a class="button" href="#details" id="show-details" title="Show detailed results data.">Details</a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="details">
+                <h1>Detailed Results</h1>
+                <table class="results-table"></table>
+                <table class="results-table"></table>
+                <div class="arithmetic-mean"><label>Arithmetic Mean:</label><span id="results-with-statistics"></span></div>
+                <div class="buttons">
+                    <div class="button-row">
+                        <a class="button" id="download-json" download="speedometer.json" title="Download all result metrics as json string.">Download JSON</a>
+                        <button id="copy-json" title="Copy all result metrics as json string.">Copy JSON</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="start-tests-button" title="Discard the current results and re-run all tests.">Test Again</button>
+                        <a class="button" href="#summary" title="Go back to the simplified summary view.">Summary</a>
                     </div>
                 </div>
             </section>
@@ -90,24 +107,6 @@
                 </div>
             </section>
         </main>
-        
-        <!-- Keep Detailed results outside main -->
-        <section id="detailed-results">
-            <h1>Detailed Results</h1>
-            <table class="results-table"></table>
-            <table class="results-table"></table>
-            <div class="arithmetic-mean"><label>Arithmetic Mean:</label><span id="results-with-statistics"></span></div>
-            <div class="buttons">
-                <div class="button-row">
-                    <a class="button" id="download-json" download="speedometer.json" title="Download all result metrics as json string.">Download JSON</a>
-                    <button id="copy-json" title="Copy all result metrics as json string.">Copy JSON</button>
-                </div>
-                <div class="button-row">
-                    <button class="start-tests-button" title="Discard the current results and re-run all tests.">Test Again</button>
-                    <button id="show-summary" title="Go back to the simplified summary view.">Summary</button>
-                </div>
-            </div>
-        </section>
-
+   
     </body>
 </html>
