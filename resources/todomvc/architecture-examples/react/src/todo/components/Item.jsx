@@ -8,7 +8,7 @@ export function Item({ todo, onToggle, onDelete, onUpdate }) {
 
     const handleChange = useCallback(() => {
         onToggle(id);
-    });
+    }, [id, onToggle]);
 
     const handleDoubleClick = useCallback(() => {
         setIsWritable(true);
@@ -16,21 +16,24 @@ export function Item({ todo, onToggle, onDelete, onUpdate }) {
 
     const handleClick = useCallback(() => {
         onDelete(id);
-    });
+    }, [id, onDelete]);
 
     const handleBlur = useCallback(() => {
         setIsWritable(false);
     });
 
-    const handleUpdate = useCallback((text) => {
-        if (text.length === 0) {
-            onDelete(id);
-        } else {
-            onUpdate(id, text);
-        }
+    const handleUpdate = useCallback(
+        (text) => {
+            if (text.length === 0) {
+                onDelete(id);
+            } else {
+                onUpdate(id, text);
+            }
 
-        setIsWritable(false);
-    });
+            setIsWritable(false);
+        },
+        [id, onDelete, onUpdate]
+    );
 
     return (
         <li data-testid="todo-item">

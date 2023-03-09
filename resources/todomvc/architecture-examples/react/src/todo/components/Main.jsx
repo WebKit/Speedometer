@@ -22,9 +22,12 @@ export function Main({ todos, onToggle, onDelete, onUpdate, onToggleAll }) {
         [todos, route]
     );
 
-    const handleChange = useCallback((e) => {
-        onToggleAll(e.target.checked);
-    });
+    const handleChange = useCallback(
+        (e) => {
+            onToggleAll(e.target.checked);
+        },
+        [onToggleAll]
+    );
 
     return (
         <main className="main" data-testid="main">

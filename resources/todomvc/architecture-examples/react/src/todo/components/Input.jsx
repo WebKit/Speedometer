@@ -22,18 +22,21 @@ export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
         if (onBlur) {
             onBlur();
         }
-    });
+    }, [onBlur]);
 
-    const handleKeyDown = useCallback((e) => {
-        if (e.keyCode === 13) {
-            const value = e.target.value.trim();
-            if (!hasValidMin(value, 2)) {
-                return;
+    const handleKeyDown = useCallback(
+        (e) => {
+            if (e.keyCode === 13) {
+                const value = e.target.value.trim();
+                if (!hasValidMin(value, 2)) {
+                    return;
+                }
+                onSubmit(sanitize(value));
+                e.target.value = "";
             }
-            onSubmit(sanitize(value));
-            e.target.value = "";
-        }
-    });
+        },
+        [onSubmit]
+    );
 
     return (
         <div className="input-container">

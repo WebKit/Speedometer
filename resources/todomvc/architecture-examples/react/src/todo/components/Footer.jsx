@@ -5,7 +5,7 @@ export function Footer({ todos, onClear }) {
 
     const handleOnClear = useCallback(() => {
         onClear();
-    });
+    }, [onClear]);
 
     if (todos.length === 0) {
         return null;
