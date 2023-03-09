@@ -21,6 +21,8 @@ class MainBenchmarkClient {
     }
 
     startBenchmark() {
+        if (this._isRunning)
+            return false;
         if (params.suites.length > 0) {
             if (!Suites.enable(params.suites)) {
                 const message = `Suite "${params.suites}" does not exist. No tests to run.`;
@@ -34,8 +36,6 @@ class MainBenchmarkClient {
                 return false;
             }
         }
-        if (this._isRunning)
-            return false;
         this._isRunning = true;
         this.developerMode = params.developerMode;
 
