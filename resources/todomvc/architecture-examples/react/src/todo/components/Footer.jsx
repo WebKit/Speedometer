@@ -2,14 +2,12 @@ import { useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import classnames from "classnames";
 
-export function Footer({ todos, onClear }) {
+export function Footer({ todos, dispatch }) {
     const { pathname: route } = useLocation();
 
     const activeTodos = todos.filter((todo) => !todo.completed);
 
-    const handleOnClear = useCallback(() => {
-        onClear();
-    }, [onClear]);
+    const removeCompleted = useCallback(() => dispatch({ type: "REMOVE_COMPLETED_ITEMS" }), [dispatch]);
 
     if (todos.length === 0) {
         return null;
@@ -35,7 +33,7 @@ export function Footer({ todos, onClear }) {
                     </a>
                 </li>
             </ul>
-            <button className="clear-completed" disabled={activeTodos.length === todos.length} onClick={handleOnClear}>
+            <button className="clear-completed" disabled={activeTodos.length === todos.length} onClick={removeCompleted}>
                 Clear completed
             </button>
         </footer>

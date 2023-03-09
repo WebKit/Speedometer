@@ -2,21 +2,17 @@ import { memo, useState, useCallback } from "react";
 
 import { Input } from "./Input";
 
-export const Item = memo(function Item({ todo, onToggle, onDelete, onUpdate }) {
+export const Item = memo(function Item({ todo, dispatch }) {
     const [isWritable, setIsWritable] = useState(false);
     const { title, completed, id } = todo;
 
-    const handleChange = useCallback(() => {
-        onToggle(id);
-    }, [id, onToggle]);
+    const toggleItem = useCallback(() => dispatch({ type: "TOGGLE_ITEM", payload: { id } }), [dispatch]);
+    const removeItem = useCallback(() => dispatch({ type: "REMOVE_ITEM", payload: { id } }), [dispatch]);
+    const updateItem = useCallback((id, title) => dispatch({ type: "UPDATE_ITEM", payload: { id, title } }), [dispatch]);
 
     const handleDoubleClick = useCallback(() => {
         setIsWritable(true);
     });
-
-    const handleClick = useCallback(() => {
-        onDelete(id);
-    }, [id, onDelete]);
 
     const handleBlur = useCallback(() => {
         setIsWritable(false);
@@ -25,14 +21,14 @@ export const Item = memo(function Item({ todo, onToggle, onDelete, onUpdate }) {
     const handleUpdate = useCallback(
         (title) => {
             if (title.length === 0) {
-                onDelete(id);
+                removeItem(id);
             } else {
-                onUpdate(id, title);
+                updateItem(id, title);
             }
 
             setIsWritable(false);
         },
-        [id, onDelete, onUpdate]
+        [id, removeItem, updateItem]
     );
 
     return (
@@ -42,11 +38,11 @@ export const Item = memo(function Item({ todo, onToggle, onDelete, onUpdate }) {
                     <Input onSubmit={handleUpdate} label="Edit Todo Input" defaultValue={title} onBlur={handleBlur} />
                 ) : (
                     <>
-                        <input className="toggle" type="checkbox" data-testid="todo-item-toggle" checked={completed} onChange={handleChange} />
+                        <input className="toggle" type="checkbox" data-testid="todo-item-toggle" checked={completed} onChange={toggleItem} />
                         <label data-testid="todo-item-label" onDoubleClick={handleDoubleClick}>
                             {title}
                         </label>
-                        <button className="destroy" data-testid="todo-item-button" onClick={handleClick} />
+                        <button className="destroy" data-testid="todo-item-button" onClick={removeItem} />
                     </>
                 )}
             </div>
