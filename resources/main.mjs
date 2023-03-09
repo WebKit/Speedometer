@@ -51,7 +51,7 @@ class MainBenchmarkClient {
     }
 
     willAddTestFrame(frame) {
-        const main = document.querySelector("main");
+        const main = document.querySelector("#running");
         const style = getComputedStyle(main);
         frame.style.left = `${main.offsetLeft + parseInt(style.borderLeftWidth) + parseInt(style.paddingLeft)}px`;
         frame.style.top = `${main.offsetTop + parseInt(style.borderTopWidth) + parseInt(style.paddingTop)}px`;
@@ -188,7 +188,9 @@ class MainBenchmarkClient {
         window.addEventListener("resize", this._resizeScreeHandler.bind(this));
         this._resizeScreeHandler();
 
-        document.getElementById("logo").onclick = this._logoClickHandler.bind(this);
+        document.querySelectorAll("logo").forEach((button) => { 
+            button.onclick = this._logoClickHandler.bind(this);
+        });
         document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
