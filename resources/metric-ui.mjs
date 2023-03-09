@@ -1,7 +1,7 @@
 export const COLORS = Object.freeze(["blue", "blue-light", "green-light", "green", "yellow", "orange", "red", "magenta", "violet", "purple", "blue-dark", "green-dark", "ochre", "rust"]);
 
 export function renderMetricView(viewParams) {
-    let { metrics, width = 500, trackHeight = 20, subMetricMargin = 35, title = "", colors = COLORS} = viewParams;
+    let { metrics, width = 500, trackHeight = 20, subMetricMargin = 35, title = "", colors = COLORS } = viewParams;
     // Make sure subMetricMargin is set for use in renderSubMetrics.
     viewParams.subMetricMargin = subMetricMargin;
     const scatterPlotParams = { width, trackHeight, colors };
@@ -62,7 +62,7 @@ function renderSubMetrics(viewParams) {
     }
     const subMetricWidth = width - subMetricMargin;
     const childColors = [...colors];
- 
+
     const subMetrics = metrics
         .map((metric) => {
             // Rotate colors to get different colors for sub-plots.
@@ -71,13 +71,13 @@ function renderSubMetrics(viewParams) {
                 childColors.unshift(color);
             }
             const subMetricParams = {
-                 ...viewParams,
-                 parentMetric: metric,
-                  metrics: metric.children, 
-                  title: metric.name, 
-                  width: subMetricWidth,
-                   colors: childColors
-                };
+                ...viewParams,
+                parentMetric: metric,
+                metrics: metric.children,
+                title: metric.name,
+                width: subMetricWidth,
+                colors: childColors,
+            };
             return renderMetricView(subMetricParams);
         })
         .join("");
