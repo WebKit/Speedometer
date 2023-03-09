@@ -162,7 +162,7 @@ section > p {
     margin: 10px 20px;
 }
 
-section.selected {
+section:target {
     display: block;
 }
 

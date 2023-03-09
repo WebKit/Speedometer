@@ -199,17 +199,17 @@ class MainBenchmarkClient {
     }
 
     _popStateHandler(event) {
-        if (event.state) {
-            const sectionToShow = event.state.section;
-            if (sectionToShow) {
-                const sections = document.querySelectorAll("main > section");
-                for (let i = 0; i < sections.length; i++) {
-                    if (sections[i].id === sectionToShow)
-                        return this._showSection(sectionToShow, false);
-                }
-            }
-        }
-        return this._showSection("home", false);
+        // if (event.state) {
+        //     const sectionToShow = event.state.section;
+        //     if (sectionToShow) {
+        //         const sections = document.querySelectorAll("main > section");
+        //         for (let i = 0; i < sections.length; i++) {
+        //             if (sections[i].id === sectionToShow)
+        //                 return this._showSection(sectionToShow, false);
+        //         }
+        //     }
+        // }
+        // return this._showSection("home", false);
     }
 
     _resizeScreeHandler() {
@@ -261,17 +261,18 @@ class MainBenchmarkClient {
     }
 
     _showSection(sectionIdentifier, pushState) {
-        const currentSectionElement = document.querySelector("section.selected");
-        console.assert(currentSectionElement);
+        window.location.hash = `#${sectionIdentifier}`;
+        // const currentSectionElement = document.querySelector("section.selected");
+        // console.assert(currentSectionElement);
 
-        const newSectionElement = document.getElementById(sectionIdentifier);
-        console.assert(newSectionElement);
+        // const newSectionElement = document.getElementById(sectionIdentifier);
+        // console.assert(newSectionElement);
 
-        currentSectionElement.classList.remove("selected");
-        newSectionElement.classList.add("selected");
+        // currentSectionElement.classList.remove("selected");
+        // newSectionElement.classList.add("selected");
 
-        if (pushState)
-            history.pushState({ section: sectionIdentifier }, document.title);
+        // if (pushState)
+        //     history.pushState({ section: sectionIdentifier }, document.title);
     }
 }
 
