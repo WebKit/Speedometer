@@ -87,11 +87,10 @@ class MainBenchmarkClient {
         this._populateDetailedResults(results.formattedValues);
         document.getElementById("results-with-statistics").textContent = results.formattedMeanAndDelta;
 
-        if (this.developerMode) {
+        if (this.developerMode)
             this.showResultsDetails();
-        } else {
+        else
             this.showResultsSummary();
-        }
     }
 
     _computeResults(measuredValuesList, displayUnit) {
