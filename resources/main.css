@@ -41,7 +41,6 @@ img {
 }
 
 main {
-
 }
 
 .logo {
@@ -252,13 +251,12 @@ section#summary > #confidence-number {
 }
 
 section#details {
-/* 
+    /* 
     FIXME: Enable custom details size
     --padding: 40px;
     margin-top: 0px;
     top: var(--padding);
-    height: calc(100% - 3 * var(--padding));
-*/
+    height: calc(100% - 3 * var(--padding)); */
 }
 
 section#details .results-table {

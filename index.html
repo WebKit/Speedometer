@@ -26,7 +26,7 @@
                         <button class="start-tests-button">Start Test</button>
                     </div>
                     <div class="button-row">
-                        <a href="#about" >About Speedometer</a>
+                        <a href="#about">About Speedometer</a>
                     </div>
                 </div>
             </section>
@@ -73,9 +73,7 @@
                     <div class="section-content">
                         <table class="results-table"></table>
                         <table class="results-table"></table>
-                        <div class="arithmetic-mean">
-                            <label>Arithmetic Mean:</label><span id="results-with-statistics"></span>
-                        </div>
+                        <div class="arithmetic-mean"><label>Arithmetic Mean:</label><span id="results-with-statistics"></span></div>
                     </div>
                     <div class="buttons section-footer">
                         <div class="button-row">
@@ -94,27 +92,28 @@
                 <a href="#home" class="logo">
                     <img srcset="resources/logo@2x.png 2x" src="resources/logo.png" alt="Speedometer" />
                 </a>
-                <div  class="section-grid">
+                <div class="section-grid">
                     <h1 class="section-header">About Speedometer 2.1</h1>
                     <div class="section-content">
                         <p>Speedometer tests a browser's Web app responsiveness by timing simulated user interactions.</p>
 
                         <p>
-                            This benchmark simulates user actions for adding, completing, and removing to-do items using multiple examples in TodoMVC. Each example in TodoMVC implements the same todo application using DOM APIs in different ways. Some call
-                            DOM APIs directly from ECMAScript 5 (ES5), ECMASCript 2015 (ES6), ES6 transpiled to ES5, and Elm transpiled to ES5. Others use one of eleven popular JavaScript frameworks: React, React with Redux, Ember.js, Backbone.js, AngularJS,
-                            (new) Angular, Vue.js, jQuery, Preact, Inferno, and Flight. Many of these frameworks are used on the most popular websites in the world, such as Facebook and Twitter. The performance of these types of operations depends on the
-                            speed of the DOM APIs, the JavaScript engine, CSS style resolution, layout, and other technologies.
+                            This benchmark simulates user actions for adding, completing, and removing to-do items using multiple examples in TodoMVC. Each example in TodoMVC implements the same todo application using DOM APIs in different ways. Some
+                            call DOM APIs directly from ECMAScript 5 (ES5), ECMASCript 2015 (ES6), ES6 transpiled to ES5, and Elm transpiled to ES5. Others use one of eleven popular JavaScript frameworks: React, React with Redux, Ember.js,
+                            Backbone.js, AngularJS, (new) Angular, Vue.js, jQuery, Preact, Inferno, and Flight. Many of these frameworks are used on the most popular websites in the world, such as Facebook and Twitter. The performance of these types
+                            of operations depends on the speed of the DOM APIs, the JavaScript engine, CSS style resolution, layout, and other technologies.
                         </p>
 
                         <p>
-                            Although user-driven actions like mouse movements and keyboard input cannot be accurately emulated in JavaScript, Speedometer does its best to faithfully replay a typical workload within the demo applications. To make the run time
-                            long enough to measure with the limited precision, we synchronously execute a large number of the operations, such as adding one hundred to-do items.
+                            Although user-driven actions like mouse movements and keyboard input cannot be accurately emulated in JavaScript, Speedometer does its best to faithfully replay a typical workload within the demo applications. To make the
+                            run time long enough to measure with the limited precision, we synchronously execute a large number of the operations, such as adding one hundred to-do items.
                         </p>
 
                         <p>
-                            Modern browser engines execute some work asynchronously as an optimization strategy to reduce the run time of synchronous operations. While returning control back to JavaScript execution as soon as possible is worth pursuing, the
-                            run time cost of such an asynchronous work should still be taken into a holistic measurement of web application performance. In addition, some modern JavaScript frameworks such as Vue.js and Preact call into DOM APIs
-                            asynchronously as an optimization technique. Speedometer approximates the run time of this asynchronous work in the UI thread with a zero-second timer that is scheduled immediately after each execution of synchronous operations.
+                            Modern browser engines execute some work asynchronously as an optimization strategy to reduce the run time of synchronous operations. While returning control back to JavaScript execution as soon as possible is worth
+                            pursuing, the run time cost of such an asynchronous work should still be taken into a holistic measurement of web application performance. In addition, some modern JavaScript frameworks such as Vue.js and Preact call into
+                            DOM APIs asynchronously as an optimization technique. Speedometer approximates the run time of this asynchronous work in the UI thread with a zero-second timer that is scheduled immediately after each execution of
+                            synchronous operations.
                         </p>
 
                         <p>Speedometer does not attempt to measure concurrent asynchronous work that does not directly impact the UI thread, which tends not to affect app responsiveness.</p>
@@ -129,6 +128,5 @@
                 </div>
             </section>
         </main>
-   
     </body>
 </html>

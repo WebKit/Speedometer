@@ -188,7 +188,7 @@ class MainBenchmarkClient {
         window.addEventListener("resize", this._resizeScreeHandler.bind(this));
         this._resizeScreeHandler();
 
-        document.querySelectorAll("logo").forEach((button) => { 
+        document.querySelectorAll("logo").forEach((button) => {
             button.onclick = this._logoClickHandler.bind(this);
         });
         document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
