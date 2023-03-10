@@ -32,7 +32,7 @@ describe("components", () => {
 
         it("should display active count when 0", async () => {
             setup({ activeCount: 0 });
-            const text = await screen.queryByText(/No items left/i);
+            const text = await screen.queryByText(/0 items left/i);
             expect(text).toBeInTheDocument();
         });
 

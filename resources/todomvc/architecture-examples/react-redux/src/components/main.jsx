@@ -18,40 +18,9 @@ export default class Main extends Component {
 
     state = { filter: SHOW_ALL };
 
-    handleClearCompleted = () => {
-        this.props.actions.clearCompleted();
-    };
-
     handleShow = (filter) => {
         this.setState({ filter });
     };
-
-    renderToggleAll(completedCount) {
-        const { todos, actions } = this.props;
-
-        if (todos.length === 0) {
-            return null;
-        }
-
-        return (
-            <div className="toggle-all-container">
-                <input className="toggle-all" type="checkbox" data-testid="toggle-all" checked={completedCount === todos.length} onChange={actions.toggleAll} />
-                <label className="toggle-all-label" htmlFor="toggle-all">
-                    Toggle All Input
-                </label>
-            </div>
-        );
-    }
-
-    renderFooter(completedCount) {
-        const { todos } = this.props;
-        const { filter } = this.state;
-        const activeCount = todos.length - completedCount;
-
-        if (todos.length) {
-            return <Footer completedCount={completedCount} activeCount={activeCount} filter={filter} onClearCompleted={this.handleClearCompleted.bind(this)} onShow={this.handleShow.bind(this)} />;
-        }
-    }
 
     render() {
         const { todos, actions } = this.props;
@@ -59,16 +28,32 @@ export default class Main extends Component {
 
         const filteredTodos = todos.filter(TODO_FILTERS[filter]);
         const completedCount = todos.reduce((count, todo) => (todo.completed ? count + 1 : count), 0);
+        const activeCount = todos.length - completedCount;
+
+        if (todos.length === 0) {
+            return null;
+        }
 
         return (
             <section className="main" data-testid="main">
-                {this.renderToggleAll(completedCount)}
+                <div className="toggle-all-container">
+                    <input className="toggle-all" type="checkbox" data-testid="toggle-all" checked={completedCount === todos.length} onChange={actions.toggleAll} />
+                    <label className="toggle-all-label" htmlFor="toggle-all">
+                        Toggle All Input
+                    </label>
+                </div>
                 <ul className="todo-list" data-testid="todo-list">
                     {filteredTodos.map((todo) => (
                         <Item key={todo.id} todo={todo} {...actions} />
                     ))}
                 </ul>
-                {this.renderFooter(completedCount)}
+                <Footer
+                    completedCount={completedCount}
+                    activeCount={activeCount}
+                    filter={filter}
+                    onClearCompleted={actions.clearCompleted}
+                    onShow={this.handleShow}
+                />;
             </section>
         );
     }
