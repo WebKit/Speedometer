@@ -305,7 +305,7 @@ Suites.push({
 });
 
 Suites.push({
-    name: "Preact-TodoMVC",
+    name: "TodoMVC-Preact",
     url: "todomvc/architecture-examples/preact/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
