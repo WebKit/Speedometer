@@ -1,11 +1,10 @@
 import { useMemo, useCallback } from "preact/hooks";
-// import { useLocation } from "react-router-dom";
+import { getCurrentUrl } from "preact-router";
 
 import { Item } from "./item";
 
 export function Main({ todos, dispatch }) {
-    // const { pathname: route } = useLocation();
-    const route = "";
+    const route = getCurrentUrl();
 
     const visibleTodos = useMemo(
         () =>

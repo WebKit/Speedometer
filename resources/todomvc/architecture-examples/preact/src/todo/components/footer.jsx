@@ -1,10 +1,8 @@
 import { useCallback, useMemo } from "preact/hooks";
-// import { useLocation } from "react-router-dom";
-import classs from "classs";
+import { getCurrentUrl } from "preact-router";
 
 export function Footer({ todos, dispatch }) {
-    // const { pathname: route } = useLocation();
-    const route = "";
+    const route = getCurrentUrl();
 
     const activeTodos = useMemo(() => todos.filter((todo) => !todo.completed), [todos]);
 
@@ -18,17 +16,17 @@ export function Footer({ todos, dispatch }) {
             <span class="todo-count">{`${activeTodos.length} ${activeTodos.length === 1 ? "item" : "items"} left!`}</span>
             <ul class="filters" data-testid="footer-navigation">
                 <li>
-                    <a class={classs({ selected: route === "/" })} href="#/">
+                    <a class={ route === "/" ? "selected" : "" } href="#/">
                         All
                     </a>
                 </li>
                 <li>
-                    <a class={classs({ selected: route === "/active" })} href="#/active">
+                    <a class={ route === "/active" ? "selected" : "" } href="#/active">
                         Active
                     </a>
                 </li>
                 <li>
-                    <a class={classs({ selected: route === "/completed" })} href="#/completed">
+                    <a class={ route === "/completed" ? "selected" : "" } href="#/completed">
                         Completed
                     </a>
                 </li>
