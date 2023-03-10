@@ -3,55 +3,53 @@
 const Controller = (function ($) {
     function Controller(model, view) {
         function addItem(title) {
-            model.addItem(title);
-            render();
+            const todo = model.addItem(title);
+            view.update({ action: "addItem", payload: todo, todos: model.getItems() });
         }
 
         function toggleItem(id) {
-            model.toggleItem(id);
-            render();
+            const todo = model.toggleItem(id);
+            view.update({ action: "toggleItem", payload: todo, todos: model.getItems() });
         }
 
         function removeItem(id) {
-            model.removeItem(id);
-            render();
+            const todo = model.removeItem(id);
+            view.update({ action: "removeItem", payload: todo, todos: model.getItems() });
+        }
+
+        function updateItem(id, title) {
+            const todo = model.updateItem(id, title);
+            view.update({ action: "updateItem", payload: todo, todos: model.getItems() });
         }
 
         function toggleItems(checked) {
             model.getItems().forEach(function (item) {
                 if (item.completed !== checked) {
-                    model.toggleItem(item.id);
+                    toggleItem(item.id);
                 }
             });
-            render();
         }
 
         function removeCompletedItems() {
-            model.removeCompletedItems();
-            render();
-        }
-
-        function updateItem(id, title) {
-            model.updateItem(id, title);
-            render();
-        }
-
-        function render() {
-            view.render(model.getItems());
+            model.getItems().forEach(function (item) {
+                if (item.completed === checked) {
+                    removeItem(item.id);
+                }
+            });
         }
 
         return {
             setView: function (hash) {
                 view.setView(hash);
-                render();
+                view.update({ action: "updateList", todos: model.getItems() });
             },
             init: function () {
                 view.bindCallback("newTodo", addItem);
-                view.bindCallback("toggleAll", toggleItems);
                 view.bindCallback("toggleTodo", toggleItem);
                 view.bindCallback("removeTodo", removeItem);
-                view.bindCallback("removeCompleted", removeCompletedItems);
                 view.bindCallback("updateTodo", updateItem);
+                view.bindCallback("toggleAll", toggleItems);
+                view.bindCallback("removeCompleted", removeCompletedItems);
                 view.init();
             },
         };

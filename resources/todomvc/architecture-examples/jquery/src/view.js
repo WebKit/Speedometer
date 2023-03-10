@@ -107,16 +107,29 @@ const View = (function ($) {
                 $("#footer").on("click", ".clear-completed", handleClearButton);
                 $("#todo-list").on("change", ".toggle", handleTodoToggle).on("click", ".destroy", handleTodoButton).on("dblclick", "label", handleTodoEditStart).on("keyup", ".edit", handleTodoEditStop).on("focusout", ".edit", handleTodoUpdate);
             },
-            render: function (todos) {
+            update: function ({ action, payload, todos }) {
                 const stats = getStats(todos);
                 const currentTodos = getCurrentTodos(todos, route);
 
-                template.renderList("#todo-list", currentTodos);
-                template.renderFooter("#footer", stats, route);
+                switch (action) {
+                    case "addItem":
+                        template.renderItem("#todo-list", payload);
+                        break;
+                    case "toggleItem":
+                    case "updateItem":
+                        template.updateItem(payload);
+                        break;
+                    case "removeItem":
+                        $(`[data-id="${payload.id}"]`).remove();
+                        break;
+                    case "updateList":
+                        template.renderList("#todo-list", currentTodos);
+                        break;
+                }
 
+                template.renderFooter("#footer", stats, route);
                 $("#toggle-all").prop("checked", currentTodos.length > 0 && stats.active === 0);
                 $("#toggle-all").prop("disabled", currentTodos.length === 0);
-
                 $("#new-todo").trigger("focus");
             },
         };

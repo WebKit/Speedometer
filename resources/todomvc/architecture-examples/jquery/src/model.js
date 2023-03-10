@@ -48,13 +48,6 @@ const Model = (function ($) {
             removeAllItems: function () {
                 store.removeAllValues();
             },
-            removeCompletedItems: function () {
-                this.getItems().forEach(function (todo) {
-                    if (todo.completed) {
-                        store.deleteValue(todo.id);
-                    }
-                });
-            },
             getItems: function () {
                 return store.getAllValues().slice();
             },
