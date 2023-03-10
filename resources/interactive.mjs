@@ -69,9 +69,8 @@ class InteractiveBenchmarkRunner extends BenchmarkRunner {
             let suiteResults = measuredValues.tests[suiteName];
             for (const testName in suiteResults.tests) {
                 let testResults = suiteResults.tests[testName];
-                for (const subtestName in testResults.tests) {
+                for (const subtestName in testResults.tests)
                     results += `${suiteName} : ${testName} : ${subtestName}: ${testResults.tests[subtestName]} ms\n`;
-                }
             }
             results += `${suiteName} : ${suiteResults.total} ms\n`;
         }
@@ -211,9 +210,8 @@ function startTest() {
     }
 
     const interactiveRunner = new window.BenchmarkRunner(Suites, params.iterationCount);
-    if (!(interactiveRunner instanceof InteractiveBenchmarkRunner)) {
+    if (!(interactiveRunner instanceof InteractiveBenchmarkRunner))
         throw Error("window.BenchmarkRunner must be a subclass of InteractiveBenchmarkRunner");
-    }
 
     // Don't call step while step is already executing.
     document.body.appendChild(createUIForSuites(Suites, interactiveRunner.runStep.bind(interactiveRunner), interactiveRunner.runSuites.bind(interactiveRunner)));
