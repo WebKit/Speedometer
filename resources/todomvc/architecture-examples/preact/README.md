@@ -1,16 +1,32 @@
-# Speedometer 2.1: Preact TodoMVC example
+# Speedometer 3.0: TodoMVC: Preact
 
-## Test locally
+## Description
 
-1. `npm install`
-2. `npm start`
+This application uses Preact 10.11.3 to implement a todo application.
 
-## Build
+-   [Preact](https://preactjs.com/) Fast 3kB alternative to React with the same modern API.
 
-1. `npm run build`
+## Implementation details
 
-## Notes
+The App component functions as the controller to proxy requests between the model (useModel) and the views (Header, Main, Footer). The useModel hook uses an array data structure in combination with React.useState to manage application state.
 
-The compiled version of the application can be found in the `build` directory.
-This is what the benchmark runner uses when running the Preact TodoMVC as part
-of a benchmark run.
+## Built steps
+
+To build the static files, this application utilizes webpack. It minifies and optimizes output files and copies all necessary files to a `dist` folder.
+
+## Requirements
+
+The only requirement is an installation of Node, to be able to install dependencies and run scripts to serve a local server.
+
+```
+* Node (min version: 18.13.0)
+* NPM (min version: 8.19.3)
+```
+
+## Local preview
+
+```
+terminal:
+1. npm install
+2. npm run start
+```
