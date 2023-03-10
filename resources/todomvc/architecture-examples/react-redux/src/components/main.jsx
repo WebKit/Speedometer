@@ -1,5 +1,6 @@
 import { Component } from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import Item from "./item";
 import Footer from "./footer";
 import { SHOW_ALL, SHOW_COMPLETED, SHOW_ACTIVE } from "../constants/todo-filters";
@@ -10,23 +11,17 @@ const TODO_FILTERS = {
     [SHOW_COMPLETED]: (todo) => todo.completed,
 };
 
-export default class Main extends Component {
+export class Main extends Component {
     static propTypes = {
         todos: PropTypes.array.isRequired,
         actions: PropTypes.object.isRequired,
-    };
-
-    state = { filter: SHOW_ALL };
-
-    handleShow = (filter) => {
-        this.setState({ filter });
+        location: PropTypes.object.isRequired,
     };
 
     render() {
-        const { todos, actions } = this.props;
-        const { filter } = this.state;
+        const { todos, actions, location } = this.props;
 
-        const filteredTodos = todos.filter(TODO_FILTERS[filter]);
+        const filteredTodos = todos.filter(TODO_FILTERS[location.pathname]);
         const completedCount = todos.reduce((count, todo) => (todo.completed ? count + 1 : count), 0);
         const activeCount = todos.length - completedCount;
 
@@ -50,11 +45,12 @@ export default class Main extends Component {
                 <Footer
                     completedCount={completedCount}
                     activeCount={activeCount}
-                    filter={filter}
+                    filter={location.pathname}
                     onClearCompleted={actions.clearCompleted}
-                    onShow={this.handleShow}
                 />;
             </section>
         );
     }
 }
+
+export default withRouter(Main);

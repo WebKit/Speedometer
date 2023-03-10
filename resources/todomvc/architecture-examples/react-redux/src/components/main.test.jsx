@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import { HashRouter } from "react-router-dom";
 import Main from './main'
 
 const setup = propOverrides => {
@@ -23,7 +24,7 @@ const setup = propOverrides => {
     }
   }, propOverrides)
 
-  const {rerender} = render(<Main {...props} />)
+  const {rerender} = render(<HashRouter><Main {...props} /></HashRouter>)
 
   return {
     props,
@@ -82,25 +83,6 @@ describe('components', () => {
         expect(clearButton).toBeInTheDocument();
       })
 
-      it('onShow should set the filter', async () => {
-        const { rerender, props } = setup();
-
-        const todoOne = await screen.queryByText(/Use Redux/i);
-        expect(todoOne).toBeInTheDocument();
-
-        const todoTwo = await screen.queryByText(/Run the tests/i);
-        expect(todoTwo).toBeInTheDocument();
-
-        const activeLink = await screen.queryByText(/Active/i);
-        expect(activeLink).toBeInTheDocument();
-        fireEvent.click(activeLink);
-
-        rerender(<Main {...props} />)
-
-        const after = await screen.queryByText(/Run the tests/i);
-        expect(after).not.toBeInTheDocument();
-      })
-
       it('onClearCompleted should call clearCompleted', async () => {
         const { props } = setup()
         const clearButton = await screen.queryByText(/Clear completed/i);
@@ -117,17 +99,6 @@ describe('components', () => {
         expect(list).toBeInTheDocument();
         const items = await screen.getAllByTestId("todo-item");
         expect(items.length).toEqual(2);
-      })
-
-      it('should filter items', async () => {
-        setup()
-        const before = await screen.getAllByTestId("todo-item");
-        expect(before.length).toEqual(2);
-        const completedLink = await screen.queryByText("Completed");
-        expect(completedLink).toBeInTheDocument();
-        fireEvent.click(completedLink);
-        const after = await screen.getAllByTestId("todo-item");
-        expect(after.length).toEqual(1);
       })
     })
   })

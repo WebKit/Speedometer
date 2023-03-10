@@ -9,7 +9,6 @@ const setup = (propOverrides) => {
             activeCount: 0,
             filter: SHOW_ALL,
             onClearCompleted: jest.fn(),
-            onShow: jest.fn(),
         },
         propOverrides
     );
@@ -52,13 +51,6 @@ describe("components", () => {
             expect(activeLink).toBeInTheDocument();
             const completedLink = await screen.queryByText(/Completed/i);
             expect(completedLink).toBeInTheDocument();
-        });
-
-        it("should call onShow when a filter is clicked", async () => {
-            const { props } = setup();
-            const allLink = await screen.queryByText(/Active/i);
-            fireEvent.click(allLink);
-            expect(props.onShow).toBeCalledWith(SHOW_ACTIVE);
         });
 
         it("shouldnt show clear button when no completed todos", async () => {
