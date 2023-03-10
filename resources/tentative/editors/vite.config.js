@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
     base: "./", // Since this will be loaded from the project root
     build: {
+        minify: false,
         rollupOptions: {
             input: {
                 codemirror: resolve(__dirname, "codemirror.html"),
