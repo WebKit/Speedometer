@@ -7,12 +7,14 @@ import * as TodoActions from "../actions";
 
 import "./app.css";
 
-const App = ({ todos, actions }) => (
-    <>
-        <Header addTodo={actions.addTodo} />
-        <Main todos={todos} actions={actions} />
-    </>
-);
+function App({ todos, actions }) {
+    return (
+        <>
+            <Header addTodo={actions.addTodo} />
+            <Main todos={todos} actions={actions} />
+        </>
+    )
+}
 
 App.propTypes = {
     todos: PropTypes.array.isRequired,
