@@ -43,7 +43,7 @@ h1 {
 #editor {
     flex: 1;
     overflow: auto;
-    padding: 2px;
+    padding: 2px 5px;
 }
 
 #controls {
