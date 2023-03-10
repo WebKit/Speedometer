@@ -178,9 +178,11 @@ export class BenchmarkRunner {
         await this._appendFrame();
         this._page = new Page(this._frame);
 
-        for (const suite of this._suites)
+        for (const suite of this._suites) {
             if (!suite.disabled)
                 await this._runSuite(suite);
+        }
+
 
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
