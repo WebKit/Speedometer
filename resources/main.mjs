@@ -6,18 +6,23 @@ import { params } from "./params.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
+    developerMode = false;
     stepCount = null;
     suitesCount = null;
     _measuredValuesList = [];
     _finishedTestCount = 0;
     _progressCompleted = null;
     _isRunning = false;
+    _hasResults = false;
 
     constructor() {
         window.addEventListener("DOMContentLoaded", () => this.prepareUI());
+        this._showSection(window.location.hash);
     }
 
     startBenchmark() {
+        if (this._isRunning)
+            return false;
         if (params.suites.length > 0) {
             if (!Suites.enable(params.suites)) {
                 const message = `Suite "${params.suites}" does not exist. No tests to run.`;
@@ -31,6 +36,8 @@ class MainBenchmarkClient {
                 return false;
             }
         }
+        this._isRunning = true;
+        this.developerMode = params.developerMode;
 
         const enabledSuites = Suites.filter((suite) => !suite.disabled);
         const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => {
@@ -65,7 +72,6 @@ class MainBenchmarkClient {
     }
 
     willStartFirstIteration() {
-        this._isRunning = true;
         this._measuredValuesList = [];
         this._finishedTestCount = 0;
         this._progressCompleted = document.getElementById("progress-completed");
@@ -74,6 +80,7 @@ class MainBenchmarkClient {
     didFinishLastIteration() {
         console.assert(this._isRunning);
         this._isRunning = false;
+        this._hasResults = true;
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         this._updateGaugeNeedle(scoreResults.mean);
@@ -85,7 +92,10 @@ class MainBenchmarkClient {
         this._populateDetailedResults(results.formattedValues);
         document.getElementById("results-with-statistics").textContent = results.formattedMeanAndDelta;
 
-        this.showResultsSummary();
+        if (this.developerMode)
+            this.showResultsDetails();
+        else
+            this.showResultsSummary();
     }
 
     _computeResults(measuredValuesList, displayUnit) {
@@ -148,7 +158,7 @@ class MainBenchmarkClient {
         const needleAngle = Math.max(0, Math.min(score, 140)) - 70;
         const needleRotationValue = `rotate(${needleAngle}deg)`;
 
-        const gaugeNeedleElement = document.querySelector("#summarized-results > .gauge .needle");
+        const gaugeNeedleElement = document.querySelector("#summary > .gauge .needle");
         gaugeNeedleElement.style.setProperty("-webkit-transform", needleRotationValue);
         gaugeNeedleElement.style.setProperty("-moz-transform", needleRotationValue);
         gaugeNeedleElement.style.setProperty("-ms-transform", needleRotationValue);
@@ -174,17 +184,12 @@ class MainBenchmarkClient {
     }
 
     prepareUI() {
-        window.addEventListener("popstate", this._popStateHandler.bind(this), false);
+        window.addEventListener("hashchange", this._hashChangeHandler.bind(this));
         window.addEventListener("resize", this._resizeScreeHandler.bind(this));
         this._resizeScreeHandler();
 
         document.getElementById("logo").onclick = this._logoClickHandler.bind(this);
-        document.getElementById("show-summary").onclick = this.showResultsSummary.bind(this);
-        document.getElementById("show-details").onclick = this.showResultsDetails.bind(this);
         document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
-        document.querySelectorAll(".show-about").forEach((each) => {
-            each.onclick = this.showAbout.bind(this);
-        });
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
@@ -193,18 +198,8 @@ class MainBenchmarkClient {
             this._startBenchmarkHandler();
     }
 
-    _popStateHandler(event) {
-        if (event.state) {
-            const sectionToShow = event.state.section;
-            if (sectionToShow) {
-                const sections = document.querySelectorAll("main > section");
-                for (let i = 0; i < sections.length; i++) {
-                    if (sections[i].id === sectionToShow)
-                        return this._showSection(sectionToShow, false);
-                }
-            }
-        }
-        return this._showSection("home", false);
+    _hashChangeHandler() {
+        this._showSection(window.location.hash);
     }
 
     _resizeScreeHandler() {
@@ -219,27 +214,23 @@ class MainBenchmarkClient {
 
     _startBenchmarkHandler() {
         if (this.startBenchmark())
-            this._showSection("running");
+            this._showSection("#running");
     }
 
     _logoClickHandler(event) {
         // Prevent any accidental UI changes during benchmark runs.
         if (!this._isRunning)
-            this._showSection("home", true);
+            this._showSection("#home");
         event.preventDefault();
         return false;
     }
 
     showResultsSummary() {
-        this._showSection("summarized-results", true);
+        this._showSection("#summary");
     }
 
     showResultsDetails() {
-        this._showSection("detailed-results", true);
-    }
-
-    showAbout() {
-        this._showSection("about", true);
+        this._showSection("#details");
     }
 
     _getFormattedJSONResult() {
@@ -255,18 +246,22 @@ class MainBenchmarkClient {
         navigator.clipboard.writeText(this._getFormattedJSONResult());
     }
 
-    _showSection(sectionIdentifier, pushState) {
-        const currentSectionElement = document.querySelector("section.selected");
-        console.assert(currentSectionElement);
-
-        const newSectionElement = document.getElementById(sectionIdentifier);
-        console.assert(newSectionElement);
-
-        currentSectionElement.classList.remove("selected");
-        newSectionElement.classList.add("selected");
-
-        if (pushState)
-            history.pushState({ section: sectionIdentifier }, document.title);
+    _showSection(hash) {
+        if (this._isRunning) {
+            window.location.hash = "#running";
+            return;
+        } else if (this._hasResults) {
+            if (hash !== "#summary" && hash !== "#details") {
+                window.location.hash = "#summary";
+                return;
+            }
+        } else {
+            if (hash !== "#home" && hash !== "#about") {
+                window.location.hash = "#home";
+                return;
+            }
+        }
+        window.location.hash = hash || "#home";
     }
 }
 

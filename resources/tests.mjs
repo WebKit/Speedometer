@@ -46,8 +46,8 @@ Suites.push({
 });
 
 Suites.push({
-    name: "Vanilla-ES2015-TodoMVC",
-    url: "todomvc/vanilla-examples/es2015/index.html",
+    name: "TodoMVC-JavaScript-ES6",
+    url: "todomvc/vanilla-examples/javascript-es6/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -75,8 +75,8 @@ Suites.push({
 });
 
 Suites.push({
-    name: "Vanilla-ES2015-Babel-Webpack-TodoMVC",
-    url: "todomvc/vanilla-examples/es2015-babel-webpack/dist/index.html",
+    name: "TodoMVC-JavaScript-ES6-Webpack",
+    url: "todomvc/vanilla-examples/javascript-es6-webpack/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
