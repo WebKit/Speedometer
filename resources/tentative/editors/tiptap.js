@@ -27,17 +27,17 @@ export default async function (element, value) {
             element.scrollTop = value;
         },
         setValue(value) {
-            editor.commands.setContent(value);
+            // Recommendation is to call focus before most commands
+            // https://tiptap.dev/api/commands#chain-commands
+            editor.chain().focus().setContent(value).setTextSelection(0).run();
             element.scrollTop = 0;
         },
         format(on) {
-            editor.commands.selectAll();
             if (on) {
-                editor.chain().focus().setBold().run();
+                editor.chain().focus().selectAll().setBold().setTextSelection(0).run();
             } else {
-                editor.chain().focus().unsetBold().run();
+                editor.chain().focus().selectAll().unsetBold().setTextSelection(0).run();
             }
-            editor.commands.setTextSelection(0);
         },
     };
 }
