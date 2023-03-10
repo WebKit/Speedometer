@@ -3,7 +3,8 @@
     "env": {
         "jest": true
     },
-    "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "extends": ["eslint:recommended", "preact"],
+    "plugins": ["@babel"],
     "rules": {
         "no-extra-parens": 0,
         "react/prop-types": 0,
