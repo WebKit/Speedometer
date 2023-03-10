@@ -1,6 +1,5 @@
 // import { code as smallCode, text as smallText } from "./smalltext.js";
-export const code = `
-/*
+export const code = `/*
  * Copyright (C) 2012, 2013 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
