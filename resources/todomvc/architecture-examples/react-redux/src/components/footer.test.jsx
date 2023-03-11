@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import Footer from "./footer";
-import { SHOW_ALL, SHOW_ACTIVE } from "../constants/todo-filters";
+import { SHOW_ALL } from "../constants/todo-filters";
 
 const setup = (propOverrides) => {
     const props = Object.assign(

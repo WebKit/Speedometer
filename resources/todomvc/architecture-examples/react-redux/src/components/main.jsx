@@ -25,9 +25,8 @@ export class Main extends Component {
         const completedCount = todos.reduce((count, todo) => (todo.completed ? count + 1 : count), 0);
         const activeCount = todos.length - completedCount;
 
-        if (todos.length === 0) {
+        if (todos.length === 0)
             return null;
-        }
 
         return (
             <section className="main" data-testid="main">
