@@ -1,9 +1,9 @@
-import { Component } from "react";
+import { PureComponent } from "react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 import TextInput from "./text-input";
 
-export default class Item extends Component {
+export default class Item extends PureComponent {
     static propTypes = {
         todo: PropTypes.object.isRequired,
         editTodo: PropTypes.func.isRequired,
@@ -27,10 +27,6 @@ export default class Item extends Component {
         }
         this.setState({ editing: false });
     };
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.todo !== this.props.todo || nextState.editing !== this.state.editing;
-    }
 
     render() {
         const { todo, toggleTodo, deleteTodo } = this.props;
