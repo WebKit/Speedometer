@@ -32,7 +32,7 @@ export const Item = memo(function Item({ todo, dispatch }) {
     );
 
     return (
-        <li data-testid="todo-item">
+        <li class={todo.completed ? "completed" : "" } data-testid="todo-item">
             <div class="view">
                 {isWritable ? (
                     <Input onSubmit={handleUpdate} label="Edit Todo Input" defaultValue={title} onBlur={handleBlur} />

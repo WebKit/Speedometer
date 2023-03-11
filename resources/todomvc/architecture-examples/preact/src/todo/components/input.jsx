@@ -1,4 +1,4 @@
-import { useCallback } from "preact/hooks";
+import { useCallback, useRef, useEffect } from "preact/hooks";
 
 const sanitize = (string) => {
     const map = {
@@ -18,6 +18,16 @@ const hasValidMin = (value, min) => {
 };
 
 export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        if (inputRef.current) {
+            const end = inputRef.current.value.length;
+            inputRef.current.setSelectionRange(end, end);
+            inputRef.current.focus();
+        }
+    }, [inputRef.current])
+
     const handleBlur = useCallback(() => {
         if (onBlur)
             onBlur();
@@ -39,7 +49,7 @@ export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
 
     return (
         <div class="input-container">
-            <input class="new-todo" id="todo-input" type="text" data-testid="text-input" autoFocus placeholder={placeholder} defaultValue={defaultValue} onBlur={handleBlur} onKeyDown={handleKeyDown} />
+            <input class="new-todo" id="todo-input" type="text" data-testid="text-input" ref={inputRef} placeholder={placeholder} defaultValue={defaultValue} onBlur={handleBlur} onKeyDown={handleKeyDown} />
             <label class="visually-hidden" htmlFor="todo-input">
                 {label}
             </label>
