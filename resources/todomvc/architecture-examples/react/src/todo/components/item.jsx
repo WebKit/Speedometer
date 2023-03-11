@@ -1,4 +1,5 @@
 import { memo, useState, useCallback } from "react";
+import classnames from "classnames";
 
 import { Input } from "./input";
 
@@ -32,7 +33,7 @@ export const Item = memo(function Item({ todo, dispatch }) {
     );
 
     return (
-        <li data-testid="todo-item">
+        <li className={classnames({ completed: todo.completed })} data-testid="todo-item">
             <div className="view">
                 {isWritable ? (
                     <Input onSubmit={handleUpdate} label="Edit Todo Input" defaultValue={title} onBlur={handleBlur} />
