@@ -2,7 +2,7 @@ import { render } from "preact";
 import Router from 'preact-router';
 import { createHashHistory  } from 'history';
 
-import "preact/debug";
+// import "preact/debug";
 
 import { App } from "./todo/app";
 
