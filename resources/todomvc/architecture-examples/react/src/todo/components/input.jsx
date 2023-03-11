@@ -19,18 +19,18 @@ const hasValidMin = (value, min) => {
 
 export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
     const handleBlur = useCallback(() => {
-        if (onBlur) {
+        if (onBlur)
             onBlur();
-        }
+
     }, [onBlur]);
 
     const handleKeyDown = useCallback(
         (e) => {
             if (e.keyCode === 13) {
                 const value = e.target.value.trim();
-                if (!hasValidMin(value, 2)) {
+                if (!hasValidMin(value, 2))
                     return;
-                }
+
                 onSubmit(sanitize(value));
                 e.target.value = "";
             }

@@ -9,9 +9,8 @@ export function Footer({ todos, dispatch }) {
 
     const removeCompleted = useCallback(() => dispatch({ type: "REMOVE_COMPLETED_ITEMS" }), [dispatch]);
 
-    if (todos.length === 0) {
+    if (todos.length === 0)
         return null;
-    }
 
     return (
         <footer className="footer" data-testid="footer">
