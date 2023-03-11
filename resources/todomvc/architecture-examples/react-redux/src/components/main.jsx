@@ -42,12 +42,7 @@ export class Main extends Component {
                         <Item key={todo.id} todo={todo} {...actions} />
                     ))}
                 </ul>
-                <Footer
-                    completedCount={completedCount}
-                    activeCount={activeCount}
-                    filter={location.pathname}
-                    onClearCompleted={actions.clearCompleted}
-                />;
+                <Footer completedCount={completedCount} activeCount={activeCount} filter={location.pathname} onClearCompleted={actions.clearCompleted} />;
             </section>
         );
     }

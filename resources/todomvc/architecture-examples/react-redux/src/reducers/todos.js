@@ -10,13 +10,13 @@ export default function todos(state = initialState, action) {
         case DELETE_TODO:
             return state.filter((todo) => todo.id !== action.id);
         case EDIT_TODO:
-            return state.map((todo) => todo.id === action.id ? { ...todo, text: action.text } : todo);
+            return state.map((todo) => (todo.id === action.id ? { ...todo, text: action.text } : todo));
         case TOGGLE_TODO:
-            return state.map((todo) => todo.id === action.id ? { ...todo, completed: !todo.completed } : todo);
+            return state.map((todo) => (todo.id === action.id ? { ...todo, completed: !todo.completed } : todo));
         case TOGGLE_ALL:
             // eslint-disable-next-line no-case-declarations
             const areAllMarked = state.every((todo) => todo.completed);
-            return state.map((todo) => todo.completed === areAllMarked ? { ...todo, completed: !areAllMarked } : todo);
+            return state.map((todo) => (todo.completed === areAllMarked ? { ...todo, completed: !areAllMarked } : todo));
         case CLEAR_COMPLETED:
             return state.filter((todo) => !todo.completed);
         default:

@@ -4,16 +4,16 @@
 
 This application uses React in combination with Redux to implement a todo application.
 
-- [React](https://reactjs.org/) is a JavaScript library for creating user interfaces.
-- [Redux](https://redux.js.org/) centralizes your application's state.
-- [React-Redux](https://react-redux.js.org/) is designed to work with React's component model. 
+-   [React](https://reactjs.org/) is a JavaScript library for creating user interfaces.
+-   [Redux](https://redux.js.org/) centralizes your application's state.
+-   [React-Redux](https://react-redux.js.org/) is designed to work with React's component model.
 
 ## Implementation details
 
 This implementation uses Redux to manage state and data flow of the application.
 The Redux pattern is similar to a mvc patter, with the main difference that Redux is unidirectional.
-Redux uses actions to dispatch a change, which is captured by reducers that update a central store. 
-Once the state in the store updates, the view receives the new state and can reflect those changes to the user. 
+Redux uses actions to dispatch a change, which is captured by reducers that update a central store.
+Once the state in the store updates, the view receives the new state and can reflect those changes to the user.
 
 Redux:\
 Model: Redux store\

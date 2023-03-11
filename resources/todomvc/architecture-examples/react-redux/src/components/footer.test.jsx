@@ -13,11 +13,11 @@ const setup = (propOverrides) => {
         propOverrides
     );
 
-    const {rerender} = render(<Footer {...props} />);
+    const { rerender } = render(<Footer {...props} />);
 
     return {
         props,
-        rerender
+        rerender,
     };
 };
 

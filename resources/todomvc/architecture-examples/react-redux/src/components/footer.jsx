@@ -18,22 +18,22 @@ export default class Footer extends Component {
             <footer className="footer" data-testid="footer">
                 <span className="todo-count">{`${activeCount} ${activeCount === 1 ? "item" : "items"} left!`}</span>
                 <ul className="filters" data-testid="footer-navigation">
-                <li>
-                    <a className={classnames({ selected: filter === SHOW_ALL })} href={`#${SHOW_ALL}`}>
-                        All
-                    </a>
-                </li>
-                <li>
-                    <a className={classnames({ selected: filter === SHOW_ACTIVE })} href={`#${SHOW_ACTIVE}`}>
-                        Active
-                    </a>
-                </li>
-                <li>
-                    <a className={classnames({ selected: filter === SHOW_COMPLETED })} href={`#${SHOW_COMPLETED}`}>
-                        Completed
-                    </a>
-                </li>
-            </ul>
+                    <li>
+                        <a className={classnames({ selected: filter === SHOW_ALL })} href={`#${SHOW_ALL}`}>
+                            All
+                        </a>
+                    </li>
+                    <li>
+                        <a className={classnames({ selected: filter === SHOW_ACTIVE })} href={`#${SHOW_ACTIVE}`}>
+                            Active
+                        </a>
+                    </li>
+                    <li>
+                        <a className={classnames({ selected: filter === SHOW_COMPLETED })} href={`#${SHOW_COMPLETED}`}>
+                            Completed
+                        </a>
+                    </li>
+                </ul>
                 {completedCount > 0 ? (
                     <button className="clear-completed" onClick={onClearCompleted}>
                         Clear completed

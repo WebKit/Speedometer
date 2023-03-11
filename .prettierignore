@@ -2,13 +2,12 @@
 **/dist
 package-lock.json
 
-**/dist
 /resources/tentative/*
 !/resources/tentative/editors
 
 /resources/todomvc/architecture-examples/*
 !/resources/todomvc/architecture-examples/backbone
-!/resources/todomvc/architecture-examples/preact
+!/resources/todomvc/architecture-examples/react-redux
 
 /resources/todomvc/vanilla-examples/*
 !/resources/todomvc/vanilla-examples/javascript-es5

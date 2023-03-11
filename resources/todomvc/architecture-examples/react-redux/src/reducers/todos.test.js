@@ -34,7 +34,6 @@ describe("todos reducer", () => {
                 }
             )
         ).toMatchObject([
-
             {
                 completed: false,
                 text: "Run the tests",
@@ -42,7 +41,7 @@ describe("todos reducer", () => {
             {
                 completed: false,
                 text: "Use Redux",
-            }
+            },
         ]);
 
         expect(
@@ -76,7 +75,7 @@ describe("todos reducer", () => {
             {
                 text: "Run the tests",
                 completed: false,
-            }
+            },
         ]);
     });
 

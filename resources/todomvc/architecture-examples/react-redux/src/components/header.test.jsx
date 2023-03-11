@@ -7,11 +7,11 @@ const setup = () => {
         addTodo: jest.fn(),
     };
 
-    const {rerender} = render(<Header {...props} />);
+    const { rerender } = render(<Header {...props} />);
 
     return {
         props,
-        rerender
+        rerender,
     };
 };
 

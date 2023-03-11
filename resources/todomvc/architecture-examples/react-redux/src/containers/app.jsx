@@ -13,7 +13,7 @@ function App({ todos, actions }) {
             <Header addTodo={actions.addTodo} />
             <Main todos={todos} actions={actions} />
         </>
-    )
+    );
 }
 
 App.propTypes = {
