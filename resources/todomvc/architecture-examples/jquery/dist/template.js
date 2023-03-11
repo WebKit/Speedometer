@@ -13,10 +13,10 @@ const Template = (function ($) {
             renderList: function (id, currentTodos) {
                 $(id).html(todoTemplate(currentTodos));
             },
-            renderItem: function(id, todo) {
+            renderItem: function (id, todo) {
                 $(id).append(todoTemplate(todo));
             },
-            updateItem: function(todo) {
+            updateItem: function (todo) {
                 $(`[data-id="${todo.id}"]`).replaceWith(todoTemplate(todo));
             },
             renderFooter: function (id, stats, route) {

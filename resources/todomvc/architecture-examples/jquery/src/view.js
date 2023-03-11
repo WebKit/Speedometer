@@ -17,9 +17,9 @@ const View = (function ($) {
         }
 
         function getCurrentTodos(todos, route) {
-            if (route === "all") {
+            // prettier-ignore
+            if (route === "all")
                 return todos;
-            }
 
             const currentTodos = todos.filter(function (todo) {
                 return route === "active" ? !todo.completed : todo.completed;
@@ -29,9 +29,9 @@ const View = (function ($) {
         }
 
         function handleTodoInput(e) {
-            if (e.keyCode !== ENTER_KEY) {
+            // prettier-ignore
+            if (e.keyCode !== ENTER_KEY)
                 return;
-            }
 
             const $input = $(e.target);
             const text = $input.val().trim();

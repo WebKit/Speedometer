@@ -4,9 +4,9 @@ const Store = (function ($) {
     const cache = {};
 
     function Store(namespace) {
-        if (!cache[namespace]) {
+        // prettier-ignore
+        if (!cache[namespace])
             cache[namespace] = {};
-        }
 
         const setValue = (key, value) => {
             cache[namespace][key] = value;
@@ -16,9 +16,9 @@ const Store = (function ($) {
         const deleteValue = (key) => {
             const value = cache[namespace][key];
 
-            if (value === undefined) {
+            // prettier-ignore
+            if (value === undefined)
                 return undefined;
-            }
 
             delete cache[namespace][key];
 

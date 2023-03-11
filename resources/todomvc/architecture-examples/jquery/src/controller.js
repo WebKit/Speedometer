@@ -24,17 +24,17 @@ const Controller = (function ($) {
 
         function toggleItems(checked) {
             model.getItems().forEach(function (item) {
-                if (item.completed !== checked) {
+                // prettier-ignore
+                if (item.completed !== checked)
                     toggleItem(item.id);
-                }
             });
         }
 
         function removeCompletedItems() {
             model.getItems().forEach(function (item) {
-                if (item.completed === checked) {
+                // prettier-ignore
+                if (item.completed === checked)
                     removeItem(item.id);
-                }
             });
         }
 
