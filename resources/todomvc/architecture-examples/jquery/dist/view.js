@@ -130,7 +130,6 @@ const View = (function ($) {
                 template.renderFooter("#footer", stats, route);
                 $("#toggle-all").prop("checked", currentTodos.length > 0 && stats.active === 0);
                 $("#toggle-all").prop("disabled", currentTodos.length === 0);
-                $("#new-todo").trigger("focus");
             },
         };
     }
