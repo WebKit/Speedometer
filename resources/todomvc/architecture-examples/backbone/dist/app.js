@@ -1,16 +1,16 @@
-/*global $ */
-/*jshint unused:false */
+/* eslint no-unused-vars: 0 */
+/* eslint no-undef: 0 */
 var app = app || {};
 var ENTER_KEY = 13;
 var ESC_KEY = 27;
 
 $(function () {
-    'use strict';
+    "use strict";
 
     // kick things off by creating the `App`
     window.appView = new app.AppView();
 
-    var dummyNodeToNotifyAppIsReady = document.createElement('div');
-    dummyNodeToNotifyAppIsReady.id = 'appIsReady';
+    var dummyNodeToNotifyAppIsReady = document.createElement("div");
+    dummyNodeToNotifyAppIsReady.id = "appIsReady";
     document.body.appendChild(dummyNodeToNotifyAppIsReady);
 });

@@ -1,8 +1,9 @@
-/*global Backbone */
+/* eslint no-unused-vars: 0 */
+/* eslint no-undef: 0 */
 var app = app || {};
 
 (function () {
-    'use strict';
+    "use strict";
 
     // Todo Model
     // ----------
@@ -12,15 +13,15 @@ var app = app || {};
         // Default attributes for the todo
         // and ensure that each todo created has `title` and `completed` keys.
         defaults: {
-            title: '',
-            completed: false
+            title: "",
+            completed: false,
         },
 
         // Toggle the `completed` state of this todo item.
         toggle: function () {
             this.save({
-                completed: !this.get('completed')
+                completed: !this.get("completed"),
             });
-        }
+        },
     });
 })();
