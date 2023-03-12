@@ -8,7 +8,7 @@ var app = app || {};
     // Todo Collection
     // ---------------
 
-    var Todos = Backbone.Collection.extend({
+    const Todos = Backbone.Collection.extend({
         // Reference to this collection's model.
         model: app.Todo,
 

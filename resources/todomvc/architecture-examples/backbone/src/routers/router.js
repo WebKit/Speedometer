@@ -7,7 +7,8 @@ var app = app || {};
 
     // Todo Router
     // ----------
-    var TodoRouter = Backbone.Router.extend({
+
+    const TodoRouter = Backbone.Router.extend({
         routes: {
             "*filter": "setFilter",
         },

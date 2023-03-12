@@ -3,12 +3,12 @@
 Backbone.sync = (function (method, model, options) {
     // we need to make sure we initialize a store, in this case
     // we will just use a JS object.
-    var cache = {};
+    const cache = {};
 
     // The size will be primarily used to assign ids to newly
     // created models. Each time a new model is created, the size
     // will be incremented.
-    var size = 0;
+    let size = 0;
 
     // since we need to create a store for the models/collections
     // we are actually going to invoke the outer function which will
@@ -19,7 +19,7 @@ Backbone.sync = (function (method, model, options) {
         // request, which internally returns a deferred. It's important to
         // do this so that people can chain on fetch using the standard .then/.fail
         // syntax, rather than just the success/error callbacks.
-        var deferred = $.Deferred();
+        const deferred = $.Deferred();
 
         // when creating a new model...
         if (method === "create") {

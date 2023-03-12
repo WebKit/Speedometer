@@ -10,7 +10,12 @@ $(function () {
     // kick things off by creating the `App`
     window.appView = new app.AppView();
 
-    var dummyNodeToNotifyAppIsReady = document.createElement("div");
+    /**
+         * Speedometer specific:
+         * Adding a dom node after todo app is done initializing.
+         * Speedometer waits for this dom note to be present in the dom.
+         */
+    const dummyNodeToNotifyAppIsReady = document.createElement("div");
     dummyNodeToNotifyAppIsReady.id = "appIsReady";
     document.body.appendChild(dummyNodeToNotifyAppIsReady);
 });
