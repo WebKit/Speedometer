@@ -10,7 +10,19 @@ Backbone.js gives structure to web applications by providing models with key-val
 
 ## Implementation details
 
-This implementation uses an explicit MVC pattern in combination with a module pattern to create the todo application. The storage solution uses an in-memory data object that implements a simple array to hold the todos.
+Backbone.js uses a MV(*) pattern, which is loosely based on the MVC or MVP patterns.
+
+Backbone.js:\
+Model: model files\
+View: html file in conjunction with underscore's templating solution\
+Controller: view and router files
+
+MVC:\
+Model: maintains the data and behavior of an application\
+View: displays the model in the ui\
+Controller: serves as an interface between view & model components
+
+The storage solution uses an in-memory data object (contained in the sync file).
 
 ## Built steps
 
