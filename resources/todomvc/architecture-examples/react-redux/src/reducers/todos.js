@@ -6,7 +6,7 @@ const uuid = () => crypto.randomUUID();
 export default function todos(state = initialState, action) {
     switch (action.type) {
         case ADD_TODO:
-            return [{ id: uuid(), text: action.text, completed: false }, ...state];
+            return state.concat({ id: uuid(), text: action.text, completed: false });
         case DELETE_TODO:
             return state.filter((todo) => todo.id !== action.id);
         case EDIT_TODO:
@@ -20,6 +20,6 @@ export default function todos(state = initialState, action) {
         case CLEAR_COMPLETED:
             return state.filter((todo) => !todo.completed);
         default:
-            return [...state];
+            return state.slice();
     }
 }

@@ -36,11 +36,11 @@ describe("todos reducer", () => {
         ).toMatchObject([
             {
                 completed: false,
-                text: "Run the tests",
+                text: "Use Redux",
             },
             {
                 completed: false,
-                text: "Use Redux",
+                text: "Run the tests",
             },
         ]);
 
@@ -65,15 +65,15 @@ describe("todos reducer", () => {
             )
         ).toMatchObject([
             {
-                text: "Fix the tests",
-                completed: false,
-            },
-            {
                 text: "Use Redux",
                 completed: false,
             },
             {
                 text: "Run the tests",
+                completed: false,
+            },
+            {
+                text: "Fix the tests",
                 completed: false,
             },
         ]);
@@ -298,11 +298,11 @@ describe("todos reducer", () => {
             ])
         ).toMatchObject([
             {
-                text: "Write more tests",
+                text: "Write tests",
                 completed: false,
             },
             {
-                text: "Write tests",
+                text: "Write more tests",
                 completed: false,
             },
         ]);
