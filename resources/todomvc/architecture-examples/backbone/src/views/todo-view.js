@@ -71,6 +71,8 @@ var app = app || {};
         // Switch this view into `"editing"` mode, displaying the input field.
         edit: function () {
             this.$el.addClass("editing");
+            const temp = this.$input.val();
+            this.$input.trigger("focus").val("").val(temp);
             this.$input.focus();
         },
 
