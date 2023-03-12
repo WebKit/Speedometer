@@ -3,7 +3,7 @@ const uuid = () => crypto.randomUUID();
 export const todoReducer = (state, action) => {
     switch (action.type) {
         case "ADD_ITEM":
-            return [{ id: uuid(), title: action.payload.title, completed: false }, ...state];
+            return state.concat({ id: uuid(), title: action.payload.title, completed: false });
         case "UPDATE_ITEM":
             return state.map((todo) => (todo.id === action.payload.id ? { ...todo, title: action.payload.title } : todo));
         case "REMOVE_ITEM":
@@ -17,6 +17,6 @@ export const todoReducer = (state, action) => {
         case "REMOVE_COMPLETED_ITEMS":
             return state.filter((todo) => !todo.completed);
         default:
-            return [...state];
+            return state.slice();
     }
 };
