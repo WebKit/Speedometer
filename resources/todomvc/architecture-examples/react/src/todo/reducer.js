@@ -16,7 +16,7 @@ export const todoReducer = (state, action) => {
             return state.map((todo) => (todo.completed !== action.payload.completed ? { ...todo, completed: action.payload.completed } : todo));
         case "REMOVE_COMPLETED_ITEMS":
             return state.filter((todo) => !todo.completed);
-        default:
-            return state.slice();
     }
+
+    throw Error(`Unknown action: ${action.type}`);
 };
