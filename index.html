@@ -70,10 +70,16 @@
                 </a>
                 <div class="section-grid">
                     <h1 class="section-header">Detailed Results</h1>
-                    <div class="section-content">
-                        <table class="results-table"></table>
-                        <table class="results-table"></table>
-                        <div class="arithmetic-mean"><label>Arithmetic Mean:</label><span id="results-with-statistics"></span></div>
+                    <div class="section-content all-metric-results">
+                        <div class="aggregated-metric-result">
+                            <h2>Total</h2>
+                            <div id="total-chart"></div>
+                            <h2>Tests</h2>
+                            <div id="tests-chart"></div>
+                        </div>
+                        <br />
+                        <h2>Detailed Metrics</h2>
+                        <div id="metrics-results"></div>
                     </div>
                     <div class="buttons section-footer">
                         <div class="button-row">

@@ -2,6 +2,7 @@ import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import "./benchmark-report.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
+import { renderMetricView } from "./metric-ui.mjs";
 import { params } from "./params.mjs";
 
 // FIXME(camillobruni): Add base class
@@ -77,7 +78,7 @@ class MainBenchmarkClient {
         this._progressCompleted = document.getElementById("progress-completed");
     }
 
-    didFinishLastIteration() {
+    didFinishLastIteration(metrics) {
         console.assert(this._isRunning);
         this._isRunning = false;
         this._hasResults = true;
@@ -88,9 +89,7 @@ class MainBenchmarkClient {
         if (scoreResults.formattedDelta)
             document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
 
-        const results = this._computeResults(this._measuredValuesList, "ms");
-        this._populateDetailedResults(results.formattedValues);
-        document.getElementById("results-with-statistics").textContent = results.formattedMeanAndDelta;
+        this._populateDetailedResults(metrics);
 
         if (this.developerMode)
             this.showResultsDetails();
@@ -165,15 +164,36 @@ class MainBenchmarkClient {
         gaugeNeedleElement.style.setProperty("transform", needleRotationValue);
     }
 
-    _populateDetailedResults(formattedValues) {
-        const resultsTables = document.querySelectorAll(".results-table");
-        let i = 0;
-        resultsTables[0].innerHTML = "";
-        for (; i < Math.ceil(formattedValues.length / 2); i++)
-            this._addDetailedResultsRow(resultsTables[0], i, formattedValues[i]);
-        resultsTables[1].innerHTML = "";
-        for (; i < formattedValues.length; i++)
-            this._addDetailedResultsRow(resultsTables[1], i, formattedValues[i]);
+    _populateDetailedResults(metrics) {
+        const trackHeight = 24;
+        document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
+        const plotWidth = (params.viewport.width - 120) / 2;
+        document.getElementById("total-chart").innerHTML = renderMetricView({
+            metrics: [metrics["Total"]],
+            width: plotWidth,
+            trackHeight,
+            renderChildren: false,
+            colors: ["white"],
+        });
+
+        const toplevelMetrics = Object.values(metrics).filter((each) => !each.parent && each.children.length > 0);
+        document.getElementById("tests-chart").innerHTML = renderMetricView({
+            metrics: toplevelMetrics,
+            width: plotWidth,
+            trackHeight,
+            renderChildren: false,
+        });
+
+        let html = "";
+        for (const metric of toplevelMetrics) {
+            html += renderMetricView({
+                metrics: metric.children,
+                width: plotWidth,
+                trackHeight,
+                title: metric.name,
+            });
+        }
+        document.getElementById("metrics-results").innerHTML = html;
 
         const jsonData = JSON.stringify(this._measuredValuesList);
         const blob = new Blob([jsonData], { type: "application/json" });
