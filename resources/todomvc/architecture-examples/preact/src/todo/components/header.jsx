@@ -1,8 +1,7 @@
-import { useCallback } from "preact/hooks";
 import { Input } from "./input";
 
 export function Header({ dispatch }) {
-    const addItem = useCallback((title) => dispatch({ type: "ADD_ITEM", payload: { title } }), [dispatch]);
+    const addItem = (title) => dispatch({ type: "ADD_ITEM", payload: { title } });
 
     return (
         <header class="header" data-testid="header">

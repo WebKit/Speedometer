@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from "preact/hooks";
+import { useRef, useEffect } from "preact/hooks";
 
 const sanitize = (string) => {
     const map = {
@@ -20,32 +20,31 @@ const hasValidMin = (value, min) => {
 export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
     const inputRef = useRef(null);
 
+    /**
+     * UseEffect will set focus on the current input element in the dom.
+     * setSelectionRange ensures that the cursor appears after the last character.
+     */
     useEffect(() => {
         if (inputRef.current) {
             const end = inputRef.current.value.length;
             inputRef.current.setSelectionRange(end, end);
             inputRef.current.focus();
         }
-    }, [inputRef.current])
+    }, [inputRef.current]);
 
-    const handleBlur = useCallback(() => {
-        if (onBlur)
-            onBlur();
-    }, [onBlur]);
+    const handleBlur = () => {
+        if (onBlur) onBlur();
+    };
 
-    const handleKeyDown = useCallback(
-        (e) => {
-            if (e.keyCode === 13) {
-                const value = e.target.value.trim();
-                if (!hasValidMin(value, 2))
-                    return;
+    const handleKeyDown = (e) => {
+        if (e.key.match(/Enter/i)) {
+            const value = e.target.value.trim();
+            if (!hasValidMin(value, 2)) return;
 
-                onSubmit(sanitize(value));
-                e.target.value = "";
-            }
-        },
-        [onSubmit]
-    );
+            onSubmit(sanitize(value));
+            e.target.value = "";
+        }
+    };
 
     return (
         <div class="input-container">

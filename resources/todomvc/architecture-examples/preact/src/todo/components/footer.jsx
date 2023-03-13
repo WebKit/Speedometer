@@ -1,12 +1,11 @@
-import { useCallback, useMemo } from "preact/hooks";
 import { getCurrentUrl } from "preact-router";
 
 export function Footer({ todos, dispatch }) {
     const route = getCurrentUrl();
 
-    const activeTodos = useMemo(() => todos.filter((todo) => !todo.completed), [todos]);
+    const activeTodos = todos.filter((todo) => !todo.completed);
 
-    const removeCompleted = useCallback(() => dispatch({ type: "REMOVE_COMPLETED_ITEMS" }), [dispatch]);
+    const removeCompleted = () => dispatch({ type: "REMOVE_COMPLETED_ITEMS" });
 
     if (todos.length === 0)
         return null;

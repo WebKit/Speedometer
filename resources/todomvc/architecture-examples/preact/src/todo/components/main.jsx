@@ -1,4 +1,3 @@
-import { useMemo, useCallback } from "preact/hooks";
 import { getCurrentUrl } from "preact-router";
 
 import { Item } from "./item";
@@ -6,21 +5,13 @@ import { Item } from "./item";
 export function Main({ todos, dispatch }) {
     const route = getCurrentUrl();
 
-    const visibleTodos = useMemo(
-        () =>
-            todos.filter((todo) => {
-                if (route === "/active")
-                    return !todo.completed;
+    const visibleTodos = todos.filter((todo) => {
+            if (route === "/active") return !todo.completed;
+            if (route === "/completed") return todo.completed;
+            return todo;
+        });
 
-                if (route === "/completed")
-                    return todo.completed;
-
-                return todo;
-            }),
-        [todos, route]
-    );
-
-    const toggleAll = useCallback((e) => dispatch({ type: "TOGGLE_ALL", payload: { completed: e.target.checked } }), [dispatch]);
+    const toggleAll =(e) => dispatch({ type: "TOGGLE_ALL", payload: { completed: e.target.checked } });
 
     return (
         <main class="main" data-testid="main">
