@@ -26,7 +26,7 @@ export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
 
     const handleKeyDown = useCallback(
         (e) => {
-            if (e.keyCode === 13) {
+            if (e.key.match(/Enter/i)) {
                 const value = e.target.value.trim();
                 if (!hasValidMin(value, 2))
                     return;

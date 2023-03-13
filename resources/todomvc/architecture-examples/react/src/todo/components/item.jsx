@@ -13,11 +13,11 @@ export const Item = memo(function Item({ todo, dispatch }) {
 
     const handleDoubleClick = useCallback(() => {
         setIsWritable(true);
-    });
+    }, []);
 
     const handleBlur = useCallback(() => {
         setIsWritable(false);
-    });
+    }, []);
 
     const handleUpdate = useCallback(
         (title) => {
