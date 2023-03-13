@@ -335,7 +335,7 @@ Suites.push({
 Suites.push({
     name: "Editor-CodeMirror",
     url: "tentative/editors/dist/codemirror.html",
-    async prepare(page) { },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Create", (page) => {
             page.querySelector("#create").click();
@@ -355,7 +355,7 @@ Suites.push({
 Suites.push({
     name: "Editor-TipTap",
     url: "tentative/editors/dist/tiptap.html",
-    async prepare(page) { },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Create", (page) => {
             page.querySelector("#create").click();

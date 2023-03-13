@@ -57,9 +57,9 @@ function renderSubMetrics(viewParams) {
                 ${renderMetricsTable(metrics)}
             </div>`;
     const hasChildMetric = metrics.length > 0 && metrics[0].children.length > 0;
-    if (!hasChildMetric || !renderChildren) {
+    if (!hasChildMetric || !renderChildren)
         return valuesTable;
-    }
+
     const subMetricWidth = width - subMetricMargin;
     const childColors = [...colors];
 
@@ -103,6 +103,7 @@ function renderMetricsTable(metrics, min, max) {
             if (commonPrefixes[i] !== prefixes[i])
                 commonPrefixes.pop();
         }
+
     }
     const commonPrefix = commonPrefixes.join("-");
     let commonPrefixHeader = "";
@@ -224,11 +225,11 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabe
     const markerSize = 5;
     const trackMargin = 2;
     // Recalculate height:
-    if (height) {
+    if (height)
         trackHeight = (height - axisHeight - axisMarginY) / trackCount;
-    } else {
+    else
         height = trackCount * trackHeight + axisHeight + axisMarginY;
-    }
+
     // Horizontal axis position:
     const axisY = height - axisHeight + axisMarginY;
     const unitToPosX = width / spreadX;
