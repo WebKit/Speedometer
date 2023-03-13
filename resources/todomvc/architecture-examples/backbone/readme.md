@@ -4,13 +4,13 @@
 
 This application uses Backbone to implement a todo application.
 
-Backbone.js gives structure to web applications by providing models with key-value binding and custom events, collections with a rich API of enumerable functions, views with declarative event handling, and connects it all to your existing API over a RESTful JSON interface. 
+Backbone.js gives structure to web applications by providing models with key-value binding and custom events, collections with a rich API of enumerable functions, views with declarative event handling, and connects it all to your existing API over a RESTful JSON interface.
 
 [backbonejs.org](https://backbonejs.org/)
 
 ## Implementation details
 
-Backbone.js uses a MV(*) pattern, which is loosely based on the MVC or MVP patterns.
+Backbone.js uses a MV(\*) pattern, which is loosely based on the MVC or MVP patterns.
 
 Backbone.js:\
 Model: model files\
