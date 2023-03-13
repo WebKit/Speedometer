@@ -8,7 +8,15 @@ This application uses React 17.0.2 to implement a todo application.
 
 ## Implementation details
 
-The App component functions as the controller to proxy requests between the model (useModel) and the views (Header, Main, Footer). The useModel hook uses an array data structure in combination with React.useState to manage application state.
+React:\
+Model: todoReducer (reducer.js)\
+View: React ui components\
+controller: App component + useReducer hook
+
+MVC:\
+Model: maintains the data and behavior of an application\
+View: displays the model in the ui\
+Container: serves as an interface between view & model components
 
 ## Built steps
 
