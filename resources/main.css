@@ -419,10 +419,7 @@ section#about h1 {
 }
 
 section#about .note {
-<<<<<<< HEAD
     color: var(--inactive-color);
-=======
-    color: rgb(128, 128, 128);
 }
 
 .section-grid {
@@ -445,22 +442,6 @@ section#about .note {
 }
 .section-footer {
     grid-area: footer;
-}
-
-table {
-    border-spacing: 0;
-    border-collapse: collapse;
-}
-
-th,
-td {
-    padding: 5px;
-}
-
-th {
-    text-align: right;
-    color: rgb(128, 128, 128);
->>>>>>> webkit/main
 }
 
 .gauge {
