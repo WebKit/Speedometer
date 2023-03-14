@@ -1,11 +1,53 @@
-# Speedometer 2.1: Backbone.js TodoMVC example
+# Speedometer 3.0: TodoMVC: Backbone
 
-## Test locally
+## Description
 
-1. Run `npm install` to install the dependencies.
-2. Run a local server from this directory. (You could use [`npm i -g http-server`](https://github.com/indexzero/http-server).)
-3. Open the URL pointing to the local server in your web browser of choice.
+This application uses Backbone to implement a todo application.
 
-## Build
+Backbone.js gives structure to web applications by providing models with key-value binding and custom events, collections with a rich API of enumerable functions, views with declarative event handling, and connects it all to your existing API over a RESTful JSON interface.
 
-There is no build step for this example.
+[backbonejs.org](https://backbonejs.org/)
+
+## Implementation details
+
+Backbone.js uses a MV(\*) pattern, which is loosely based on the MVC or MVP patterns.
+
+Backbone.js:\
+Model: model files\
+View: html file in conjunction with underscore's templating solution\
+Controller: view and router files
+
+MVC:\
+Model: maintains the data and behavior of an application\
+View: displays the model in the ui\
+Controller: serves as an interface between view & model components
+
+The storage solution uses an in-memory data object (contained in the sync file).
+
+## Built steps
+
+A simple build script copies all necessary files to a `dist` folder.
+It does not rely on compilers or transpilers and serves raw html, css and js files to the user.
+
+```
+npm run build
+```
+
+## Requirements
+
+The only requirement is an installation of Node, to be able to install dependencies and run scripts to serve a local server.
+
+```
+* Node (min version: 18.13.0)
+* NPM (min version: 8.19.3)
+```
+
+## Local preview
+
+```
+terminal:
+1. npm install
+2. npm run dev
+browser:
+1. http://localhost:7001/
+```

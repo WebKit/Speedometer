@@ -6,8 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>TodoMVC: Backbone</title>
-        <link rel="stylesheet" href="node_modules/todomvc-common/base.css" />
-        <link rel="stylesheet" href="node_modules/todomvc-app-css/index.css" />
+        <link rel="stylesheet" href="base.css" />
+        <link rel="stylesheet" href="index.css" />
     </head>
     <body>
         <section class="todoapp">
@@ -53,16 +53,16 @@
             <button class="clear-completed">Clear completed</button>
             <% } %>
         </script>
-        <script src="node_modules/jquery/dist/jquery.min.js"></script>
-        <script src="node_modules/underscore/underscore-min.js"></script>
-        <script src="node_modules/backbone/backbone-min.js"></script>
-        <script src="src/sync/backbone.sync.js"></script>
-        <script src="src/models/todo.js"></script>
-        <script src="src/collections/todos.js"></script>
-        <script src="src/views/todo-view.js"></script>
-        <script src="src/views/app-view.js"></script>
-        <script src="src/routers/router.js"></script>
-        <script src="src/app.js"></script>
+        <script src="jquery.min.js"></script>
+        <script src="underscore-min.js"></script>
+        <script src="backbone-min.js"></script>
+        <script src="sync/backbone.sync.js"></script>
+        <script src="models/todo.js"></script>
+        <script src="collections/todos.js"></script>
+        <script src="views/todo-view.js"></script>
+        <script src="views/app-view.js"></script>
+        <script src="routers/router.js"></script>
+        <script src="app.js"></script>
         <script>
             window.Backbone.sync = () => {};
         </script>

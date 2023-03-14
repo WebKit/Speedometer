@@ -189,8 +189,8 @@ Suites.push({
 });
 
 Suites.push({
-    name: "BackboneJS-TodoMVC",
-    url: "todomvc/architecture-examples/backbone/index.html",
+    name: "TodoMVC-Backbone",
+    url: "todomvc/architecture-examples/backbone/dist/index.html",
     async prepare(page) {
         await page.waitForElement("#appIsReady");
         const newTodo = page.querySelector(".new-todo");
