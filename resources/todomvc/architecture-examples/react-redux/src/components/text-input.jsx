@@ -30,8 +30,7 @@ export default class TextInput extends Component {
     };
 
     handleBlur = (e) => {
-        if (!this.props.newTodo)
-            this.props.onSave(e.target.value);
+        if (!this.props.newTodo) this.props.onSave(e.target.value);
     };
 
     render() {
