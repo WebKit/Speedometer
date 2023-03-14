@@ -23,6 +23,9 @@ export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
     /**
      * UseEffect will set focus on the current input element in the dom.
      * setSelectionRange ensures that the cursor appears after the last character.
+     * 
+     * Attempting to set the autofocus attribute on the native input element doesn't
+     * seem to work when setting focus programmatically.
      */
     useEffect(() => {
         if (inputRef.current) {
