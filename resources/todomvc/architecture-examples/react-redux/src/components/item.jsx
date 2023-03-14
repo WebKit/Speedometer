@@ -20,8 +20,11 @@ export default class Item extends PureComponent {
     };
 
     handleSave = (id, text) => {
-        if (text.length === 0) this.props.deleteTodo(id);
-        else this.props.editTodo(id, text);
+        // prettier-ignore
+        if (text.length === 0)
+            this.props.deleteTodo(id);
+        else
+            this.props.editTodo(id, text);
 
         this.setState({ editing: false });
     };

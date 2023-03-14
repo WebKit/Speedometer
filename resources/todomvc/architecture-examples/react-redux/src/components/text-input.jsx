@@ -7,8 +7,8 @@ export default class TextInput extends Component {
         onSave: PropTypes.func.isRequired,
         text: PropTypes.string,
         placeholder: PropTypes.string,
-        editing: PropTypes.bool,
-        newTodo: PropTypes.bool,
+        editing: PropTypes.bool, // input is used in Item to edit the todo.
+        newTodo: PropTypes.bool, // input is used in Header to create a todo.
     };
 
     state = {
@@ -30,7 +30,11 @@ export default class TextInput extends Component {
     };
 
     handleBlur = (e) => {
-        if (!this.props.newTodo) this.props.onSave(e.target.value);
+        // If this input is used in the Header, call onSave to create a new todo.
+
+        // prettier-ignore
+        if (!this.props.newTodo)
+            this.props.onSave(e.target.value);
     };
 
     render() {
