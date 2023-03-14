@@ -21,8 +21,11 @@ export const Item = memo(function Item({ todo, dispatch }) {
 
     const handleUpdate = useCallback(
         (title) => {
-            if (title.length === 0) removeItem(id);
-            else updateItem(id, title);
+            // prettier-ignore
+            if (title.length === 0) 
+                removeItem(id);
+            else
+                updateItem(id, title);
 
             setIsWritable(false);
         },

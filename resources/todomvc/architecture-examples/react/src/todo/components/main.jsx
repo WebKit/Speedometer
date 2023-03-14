@@ -9,9 +9,13 @@ export function Main({ todos, dispatch }) {
     const visibleTodos = useMemo(
         () =>
             todos.filter((todo) => {
-                if (route === "/active") return !todo.completed;
+                // prettier-ignore
+                if (route === "/active")
+                    return !todo.completed;
 
-                if (route === "/completed") return todo.completed;
+                // prettier-ignore
+                if (route === "/completed")
+                    return todo.completed;
 
                 return todo;
             }),
