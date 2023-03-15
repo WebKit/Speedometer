@@ -7,13 +7,13 @@ const ENTER_KEY = 13;
 
 export default class TodoItem extends Component {
     handleSubmit = () => {
-        let { onSave, onDestroy, todo } = this.props,
+        let { onSave, onRemove, todo } = this.props,
             val = this.state.editText.trim();
         if (val) {
             onSave(todo, val);
             this.setState({ editText: val });
         } else {
-            onDestroy(todo);
+            onRemove(todo);
         }
     };
 
@@ -40,7 +40,7 @@ export default class TodoItem extends Component {
     };
 
     handleDestroy = () => {
-        this.props.onDestroy(this.props.todo);
+        this.props.onRemove(this.props.todo);
     };
 
     // shouldComponentUpdate({ todo, editing, editText }) {

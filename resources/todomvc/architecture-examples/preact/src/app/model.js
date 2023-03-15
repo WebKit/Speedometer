@@ -18,7 +18,7 @@ export default function TodoModel(sub) {
         onChanges.forEach((cb) => cb());
     }
 
-    function addTodo(title) {
+    function addItem(title) {
         todos = todos.concat({
             id: uuid(),
             title,
@@ -27,23 +27,23 @@ export default function TodoModel(sub) {
         inform();
     }
 
-    function toggleAll(completed) {
-        todos = todos.map((todo) => ({ ...todo, completed }));
-        inform();
-    }
-
-    function toggle(todoToToggle) {
+    function toggleItem(todoToToggle) {
         todos = todos.map((todo) => (todo !== todoToToggle ? todo : { ...todo, completed: !todo.completed }));
         inform();
     }
 
-    function destroy(todo) {
+    function removeItem(todo) {
         todos = todos.filter((t) => t !== todo);
         inform();
     }
 
-    function save(todoToSave, title) {
+    function updateItem(todoToSave, title) {
         todos = todos.map((todo) => (todo !== todoToSave ? todo : { ...todo, title }));
+        inform();
+    }
+
+    function toggleAll(completed) {
+        todos = todos.map((todo) => ({ ...todo, completed }));
         inform();
     }
 
@@ -57,11 +57,11 @@ export default function TodoModel(sub) {
     }
 
     return {
-        addTodo,
+        addItem,
         toggleAll,
-        toggle,
-        destroy,
-        save,
+        toggleItem,
+        removeItem,
+        updateItem,
         clearCompleted,
         getTodos
     };

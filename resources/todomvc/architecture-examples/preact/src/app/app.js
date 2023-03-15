@@ -42,7 +42,7 @@ export default class App extends Component {
         let val = e.target.value.trim();
 
         if (val) {
-            this.model.addTodo(val);
+            this.model.addItem(val);
             this.setState({ newTodo: "" });
         }
     };
@@ -52,29 +52,29 @@ export default class App extends Component {
         this.model.toggleAll(checked);
     };
 
-    toggle = (todo) => {
-        this.model.toggle(todo);
+    clearCompleted = () => {
+        this.model.clearCompleted();
     };
 
-    destroy = (todo) => {
-        this.model.destroy(todo);
+    toggleItem = (todo) => {
+        this.model.toggleItem(todo);
     };
 
-    edit = (todo) => {
+    removeItem = (todo) => {
+        this.model.removeItem(todo);
+    };
+
+    updateItem = (todoToSave, text) => {
+        this.model.updateItem(todoToSave, text);
+        this.stopEdit();
+    };
+
+    startEdit = (todo) => {
         this.setState({ editing: todo.id });
     };
 
-    save = (todoToSave, text) => {
-        this.model.save(todoToSave, text);
+    stopEdit = () => {
         this.setState({ editing: null });
-    };
-
-    cancel = () => {
-        this.setState({ editing: null });
-    };
-
-    clearCompleted = () => {
-        this.model.clearCompleted();
     };
 
     // eslint-disable-next-line no-empty-pattern
@@ -96,7 +96,7 @@ export default class App extends Component {
                         <input class="toggle-all" type="checkbox" onChange={this.toggleAll} checked={activeTodoCount === 0} />
                         <ul class="todo-list">
                             {shownTodos.map((todo) => (
-                                <TodoItem key={todo.id} todo={todo} onToggle={this.toggle} onDestroy={this.destroy} onEdit={this.edit} editing={editing === todo.id} onSave={this.save} onCancel={this.cancel} />
+                                <TodoItem key={todo.id} todo={todo} onToggle={this.toggleItem} onRemove={this.removeItem} onEdit={this.startEdit} editing={editing === todo.id} onSave={this.updateItem} onCancel={this.stopEdit} />
                             ))}
                         </ul>
                     </section>
