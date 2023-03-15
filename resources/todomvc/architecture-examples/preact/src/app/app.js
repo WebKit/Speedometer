@@ -6,8 +6,6 @@ import TodoModel from "./model";
 import TodoFooter from "./footer";
 import TodoItem from "./item";
 
-const ENTER_KEY = 13;
-
 const FILTERS = {
     all: (todo) => true,
     active: (todo) => !todo.completed,
@@ -36,7 +34,7 @@ export default class App extends Component {
 
     handleNewTodoKeyDown = (e) => {
         // prettier-ignore
-        if (e.keyCode !== ENTER_KEY)
+        if (e.key !== "Enter" && e.key !== "ENTER")
             return;
 
         e.preventDefault();
