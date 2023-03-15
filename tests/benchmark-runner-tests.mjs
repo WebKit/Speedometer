@@ -148,7 +148,7 @@ describe("BenchmarkRunner", () => {
         });
 
         describe("_runSuite", () => {
-            let _prepareSuiteStub, _runTestAndRecordResultsStub;
+            let _prepareSuiteStub, _runTestAndRecordResultsStub, peformanceMarkSpy;
 
             const suite = SUITES_FIXTURE[0];
 
@@ -157,6 +157,7 @@ describe("BenchmarkRunner", () => {
 
                 _runTestAndRecordResultsStub = stub(runner, "_runTestAndRecordResults").callsFake(() => null);
 
+                peformanceMarkSpy = spy(window.performance, "mark");
                 runner._runSuite(suite);
             });
 
@@ -166,6 +167,9 @@ describe("BenchmarkRunner", () => {
 
             it("should run and record results for every test in suite", async () => {
                 assert.calledThrice(_runTestAndRecordResultsStub);
+                assert.calledWith(peformanceMarkSpy, "start-suite-Suite 1");
+                assert.calledWith(peformanceMarkSpy, "end-suite-Suite 1");
+                expect(peformanceMarkSpy.callCount).to.equal(2);
             });
         });
     });
