@@ -1,8 +1,10 @@
 import cx from "classnames";
 // eslint-disable-next-line no-unused-vars
 import { h, Component } from "preact";
-import { pluralize } from "./util";
 
+function pluralize(count, word) {
+    return count === 1 ? word : `${word}s`;
+}
 export default class TodoFooter extends Component {
     render({ nowShowing, count, completedCount, onClearCompleted }) {
         return (
