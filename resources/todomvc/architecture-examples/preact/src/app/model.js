@@ -10,48 +10,59 @@ function uuid() {
     }
     return uuid;
 }
-export default class TodoModel {
-    constructor(key, sub) {
-        this.key = key;
-        this.todos = [];
-        this.onChanges = [sub];
+export default function TodoModel(sub) {
+    let todos = [];
+    const onChanges = [sub];
+
+    function inform() {
+        onChanges.forEach((cb) => cb());
     }
 
-    inform() {
-        this.onChanges.forEach((cb) => cb());
-    }
-
-    addTodo(title) {
-        this.todos = this.todos.concat({
+    function addTodo(title) {
+        todos = todos.concat({
             id: uuid(),
             title,
             completed: false,
         });
-        this.inform();
+        inform();
     }
 
-    toggleAll(completed) {
-        this.todos = this.todos.map((todo) => ({ ...todo, completed }));
-        this.inform();
+    function toggleAll(completed) {
+        todos = todos.map((todo) => ({ ...todo, completed }));
+        inform();
     }
 
-    toggle(todoToToggle) {
-        this.todos = this.todos.map((todo) => (todo !== todoToToggle ? todo : { ...todo, completed: !todo.completed }));
-        this.inform();
+    function toggle(todoToToggle) {
+        todos = todos.map((todo) => (todo !== todoToToggle ? todo : { ...todo, completed: !todo.completed }));
+        inform();
     }
 
-    destroy(todo) {
-        this.todos = this.todos.filter((t) => t !== todo);
-        this.inform();
+    function destroy(todo) {
+        todos = todos.filter((t) => t !== todo);
+        inform();
     }
 
-    save(todoToSave, title) {
-        this.todos = this.todos.map((todo) => (todo !== todoToSave ? todo : { ...todo, title }));
-        this.inform();
+    function save(todoToSave, title) {
+        todos = todos.map((todo) => (todo !== todoToSave ? todo : { ...todo, title }));
+        inform();
     }
 
-    clearCompleted() {
-        this.todos = this.todos.filter((todo) => !todo.completed);
-        this.inform();
+    function clearCompleted() {
+        todos = todos.filter((todo) => !todo.completed);
+        inform();
     }
+
+    function getTodos() {
+        return [...todos];
+    }
+
+    return {
+        addTodo,
+        toggleAll,
+        toggle,
+        destroy,
+        save,
+        clearCompleted,
+        getTodos
+    };
 }

@@ -17,7 +17,7 @@ const FILTERS = {
 export default class App extends Component {
     constructor() {
         super();
-        this.model = new TodoModel("preact-todos", () => this.setState({}));
+        this.model = TodoModel(() => this.setState({}));
         addEventListener("hashchange", this.handleRoute.bind(this));
         this.handleRoute();
     }
@@ -81,7 +81,7 @@ export default class App extends Component {
 
     // eslint-disable-next-line no-empty-pattern
     render({}, { nowShowing, newTodo, editing }) {
-        let { todos } = this.model,
+        let todos = this.model.getTodos(),
             shownTodos = todos.filter(FILTERS[nowShowing]),
             activeTodoCount = todos.reduce((a, todo) => a + (todo.completed ? 0 : 1), 0),
             completedCount = todos.length - activeTodoCount;
