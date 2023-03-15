@@ -8,9 +8,7 @@ export default function TodoFooter({ todos, route, onClearCompleted }) {
 
     return (
         <footer class="footer">
-            <span class="todo-count">
-                {`${activeTodoCount} ${activeTodoCount === 1 ? "item" : "items"} left!`}
-            </span>
+            <span class="todo-count">{`${activeTodoCount} ${activeTodoCount === 1 ? "item" : "items"} left!`}</span>
             <ul class="filters">
                 <li>
                     <a href="#/" class={cx({ selected: route === "all" })}>

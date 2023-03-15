@@ -16,10 +16,8 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
     }
 
     function handleKeyDown(e) {
-        if (e.key === "Escape" || e.key === "ESCAPE")
-            setEditing(false);
-        else if (e.key === "Enter" || e.key === "ENTER")
-            handleSubmit(e);
+        if (e.key === "Escape" || e.key === "ESCAPE") setEditing(false);
+        else if (e.key === "Enter" || e.key === "ENTER") handleSubmit(e);
     }
 
     function handleDoubleClick() {
