@@ -2,15 +2,14 @@ import cx from "classnames";
 // eslint-disable-next-line no-unused-vars
 import { h } from "preact";
 
-function pluralize(count, word) {
-    return count === 1 ? word : `${word}s`;
-}
+export default function TodoFooter({ todos, route, onClearCompleted }) {
+    const activeTodoCount = todos.filter((todo) => !todo.completed).length;
+    const completedTodoCount = todos.length - activeTodoCount;
 
-export default function TodoFooter({ route, activeTodoCount, completedTodoCount, onClearCompleted }) {
     return (
         <footer class="footer">
             <span class="todo-count">
-                <strong>{activeTodoCount}</strong> {pluralize(activeTodoCount, "item")} left
+                {`${activeTodoCount} ${activeTodoCount === 1 ? "item" : "items"} left!`}
             </span>
             <ul class="filters">
                 <li>

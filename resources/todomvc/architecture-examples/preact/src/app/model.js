@@ -10,8 +10,9 @@ function uuid() {
     }
     return uuid;
 }
+let todos = [];
+
 export default function TodoModel(sub) {
-    let todos = [];
     const onChanges = [sub];
 
     function inform() {
@@ -63,6 +64,6 @@ export default function TodoModel(sub) {
         removeItem,
         updateItem,
         clearCompleted,
-        getTodos
+        getTodos,
     };
 }
