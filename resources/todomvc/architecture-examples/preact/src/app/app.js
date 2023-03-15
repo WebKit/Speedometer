@@ -12,6 +12,18 @@ const FILTERS = {
     completed: (todo) => todo.completed,
 };
 
+const getRoute = () => {
+    let route = String(location.hash || "")
+        .split("/")
+        .pop();
+
+    // prettier-ignore
+    if (!FILTERS[route])
+        route = "all";
+
+    return route;
+};
+
 export default class App extends Component {
     constructor() {
         super();
@@ -21,15 +33,7 @@ export default class App extends Component {
     }
 
     handleRoute() {
-        let route = String(location.hash || "")
-            .split("/")
-            .pop();
-
-        // prettier-ignore
-        if (!FILTERS[route])
-            route = "all";
-
-        this.setState({ route });
+        this.setState({ route: getRoute() });
     }
 
     handleKeyDown = (e) => {
@@ -41,7 +45,7 @@ export default class App extends Component {
 
         let val = e.target.value.trim();
 
-        if (val){
+        if (val) {
             this.model.addItem(val);
             e.target.value = "";
         }
