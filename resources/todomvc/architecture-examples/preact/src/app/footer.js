@@ -5,30 +5,31 @@ import { h } from "preact";
 function pluralize(count, word) {
     return count === 1 ? word : `${word}s`;
 }
-export default function TodoFooter({ nowShowing, count, completedCount, onClearCompleted }) {
+
+export default function TodoFooter({ route, activeTodoCount, completedTodoCount, onClearCompleted }) {
     return (
         <footer class="footer">
             <span class="todo-count">
-                <strong>{count}</strong> {pluralize(count, "item")} left
+                <strong>{activeTodoCount}</strong> {pluralize(activeTodoCount, "item")} left
             </span>
             <ul class="filters">
                 <li>
-                    <a href="#/" class={cx({ selected: nowShowing === "all" })}>
+                    <a href="#/" class={cx({ selected: route === "all" })}>
                         All
                     </a>
                 </li>{" "}
                 <li>
-                    <a href="#/active" class={cx({ selected: nowShowing === "active" })}>
+                    <a href="#/active" class={cx({ selected: route === "active" })}>
                         Active
                     </a>
                 </li>{" "}
                 <li>
-                    <a href="#/completed" class={cx({ selected: nowShowing === "completed" })}>
+                    <a href="#/completed" class={cx({ selected: route === "completed" })}>
                         Completed
                     </a>
                 </li>
             </ul>
-            {completedCount > 0 && (
+            {completedTodoCount > 0 && (
                 <button class="clear-completed" onClick={onClearCompleted}>
                     Clear completed
                 </button>

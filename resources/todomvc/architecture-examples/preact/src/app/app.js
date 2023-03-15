@@ -77,7 +77,7 @@ export default class App extends Component {
         const todos = this.model.getTodos();
         const visibleTodos = todos.filter(FILTERS[route]);
         const activeTodoCount = todos.filter(FILTERS["active"]).length;
-        const completedCount = todos.length - activeTodoCount;
+        const completedTodoCount = todos.length - activeTodoCount;
 
         return (
             <div>
@@ -94,7 +94,7 @@ export default class App extends Component {
                     </section>
                 ) : null}
 
-                {todos.length > 0 ? <TodoFooter count={activeTodoCount} completedCount={completedCount} nowShowing={route} onClearCompleted={this.clearCompleted} /> : null}
+                {todos.length > 0 ? <TodoFooter activeTodoCount={activeTodoCount} completedTodoCount={completedTodoCount} route={route} onClearCompleted={this.clearCompleted} /> : null}
             </div>
         );
     }
