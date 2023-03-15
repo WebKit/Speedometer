@@ -3,7 +3,7 @@ import cx from "classnames";
 import { h, Component } from "preact";
 export default class TodoItem extends Component {
     handleSubmit = () => {
-        let { onSave, onRemove, todo } = this.props,
+        const { onSave, onRemove, todo } = this.props,
             val = this.state.editText.trim();
         if (val) {
             onSave(todo, val);
@@ -14,13 +14,13 @@ export default class TodoItem extends Component {
     };
 
     handleEdit = () => {
-        let { onEdit, todo } = this.props;
+        const { onEdit, todo } = this.props;
         onEdit(todo);
         this.setState({ editText: todo.title });
     };
 
     handleToggle = (e) => {
-        let { onToggle, todo } = this.props;
+        const { onToggle, todo } = this.props;
         onToggle(todo);
         e.preventDefault();
     };
