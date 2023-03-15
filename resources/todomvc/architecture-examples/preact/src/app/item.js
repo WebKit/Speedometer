@@ -15,6 +15,13 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
         }
     }
 
+    function handleKeyDown(e) {
+        if (e.key === "Escape" || e.key === "ESCAPE")
+            setEditing(false);
+        else if (e.key === "Enter" || e.key === "ENTER")
+            handleSubmit(e);
+    }
+
     function handleDoubleClick() {
         setEditing(true);
     }
@@ -24,14 +31,7 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
         e.preventDefault();
     }
 
-    function handleKeyDown(e) {
-        if (e.key === "Escape" || e.key === "ESCAPE")
-            setEditing(false);
-        else if (e.key === "Enter" || e.key === "ENTER")
-            handleSubmit(e);
-    }
-
-    function handleDestroy() {
+    function handleRemove() {
         onRemove(todo);
     }
 
@@ -40,7 +40,7 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
             <div class="view">
                 <input class="toggle" type="checkbox" checked={todo.completed} onChange={handleToggle} />
                 <label onDblClick={handleDoubleClick}>{todo.title}</label>
-                <button class="destroy" onClick={handleDestroy} />
+                <button class="destroy" onClick={handleRemove} />
             </div>
             {editing && <input class="edit" onBlur={handleSubmit} onKeyDown={handleKeyDown} autoFocus defaultValue={todo.title} />}
         </li>
