@@ -8,7 +8,6 @@ import copy from "rollup-plugin-copy";
 // `npm run build` -> `production` is true
 // `npm run dev` -> `production` is false
 const production = !process.env.ROLLUP_WATCH;
-console.log(production, process.env.ROLLUP_WATCH);
 
 export default {
     input: "src/index.js",
