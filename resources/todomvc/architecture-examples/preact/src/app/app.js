@@ -74,10 +74,10 @@ export default class App extends Component {
 
     // eslint-disable-next-line no-empty-pattern
     render({}, { route }) {
-        const todos = this.model.getTodos(),
-            shownTodos = todos.filter(FILTERS[route]),
-            activeTodoCount = todos.reduce((a, todo) => a + (todo.completed ? 0 : 1), 0),
-            completedCount = todos.length - activeTodoCount;
+        const todos = this.model.getTodos();
+        const visibleTodos = todos.filter(FILTERS[route]);
+        const activeTodoCount = todos.filter(FILTERS["active"]).length;
+        const completedCount = todos.length - activeTodoCount;
 
         return (
             <div>
@@ -87,14 +87,14 @@ export default class App extends Component {
                     <section class="main">
                         <input class="toggle-all" type="checkbox" onChange={this.toggleAll} checked={activeTodoCount === 0} />
                         <ul class="todo-list">
-                            {shownTodos.map((todo) => (
+                            {visibleTodos.map((todo) => (
                                 <TodoItem key={todo.id} todo={todo} onToggle={this.toggleItem} onRemove={this.removeItem} onSave={this.updateItem} />
                             ))}
                         </ul>
                     </section>
                 ) : null}
 
-                {activeTodoCount || completedCount ? <TodoFooter count={activeTodoCount} completedCount={completedCount} nowShowing={route} onClearCompleted={this.clearCompleted} /> : null}
+                {todos.length > 0 ? <TodoFooter count={activeTodoCount} completedCount={completedCount} nowShowing={route} onClearCompleted={this.clearCompleted} /> : null}
             </div>
         );
     }
