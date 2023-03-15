@@ -69,19 +69,10 @@ export default class App extends Component {
 
     updateItem = (todoToSave, text) => {
         this.model.updateItem(todoToSave, text);
-        this.stopEdit();
-    };
-
-    startEdit = (todo) => {
-        this.setState({ editing: todo.id });
-    };
-
-    stopEdit = () => {
-        this.setState({ editing: null });
     };
 
     // eslint-disable-next-line no-empty-pattern
-    render({}, { nowShowing, newTodo, editing }) {
+    render({}, { nowShowing, newTodo }) {
         const todos = this.model.getTodos(),
             shownTodos = todos.filter(FILTERS[nowShowing]),
             activeTodoCount = todos.reduce((a, todo) => a + (todo.completed ? 0 : 1), 0),
@@ -99,7 +90,7 @@ export default class App extends Component {
                         <input class="toggle-all" type="checkbox" onChange={this.toggleAll} checked={activeTodoCount === 0} />
                         <ul class="todo-list">
                             {shownTodos.map((todo) => (
-                                <TodoItem key={todo.id} todo={todo} onToggle={this.toggleItem} onRemove={this.removeItem} onEdit={this.startEdit} editing={editing === todo.id} onSave={this.updateItem} onCancel={this.stopEdit} />
+                                <TodoItem key={todo.id} todo={todo} onToggle={this.toggleItem} onRemove={this.removeItem} onSave={this.updateItem} />
                             ))}
                         </ul>
                     </section>

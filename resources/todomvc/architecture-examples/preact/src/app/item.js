@@ -2,21 +2,19 @@ import cx from "classnames";
 // eslint-disable-next-line no-unused-vars
 import { h, Component } from "preact";
 export default class TodoItem extends Component {
-    handleSubmit = () => {
+    handleSubmit = (e) => {
         const { onSave, onRemove, todo } = this.props,
-            val = this.state.editText.trim();
+            val = e.target.value.trim();
         if (val) {
             onSave(todo, val);
-            this.setState({ editText: val });
+            this.setState({ editing: false });
         } else {
             onRemove(todo);
         }
     };
 
-    handleEdit = () => {
-        const { onEdit, todo } = this.props;
-        onEdit(todo);
-        this.setState({ editText: todo.title });
+    handleDoubleClick = () => {
+        this.setState({ editing: true });
     };
 
     handleToggle = (e) => {
@@ -28,30 +26,26 @@ export default class TodoItem extends Component {
     handleKeyDown = (e) => {
         if (e.key === "Escape" || e.key === "ESCAPE"){
             const { todo } = this.props;
-            this.setState({ editText: todo.title });
+            this.setState({ editing: false });
             this.props.onCancel(todo);
         } else if (e.key === "Enter" || e.key === "ENTER") {
-            this.handleSubmit();
+            this.handleSubmit(e);
         }
-    };
-
-    handleInput = (e) => {
-        this.setState({ editText: e.target.value });
     };
 
     handleDestroy = () => {
         this.props.onRemove(this.props.todo);
     };
 
-    render({ todo: { title, completed }, editing }, { editText }) {
+    render({ todo: { title, completed } }, { editing }) {
         return (
             <li class={cx({ completed, editing })}>
                 <div class="view">
                     <input class="toggle" type="checkbox" checked={completed} onChange={this.handleToggle} />
-                    <label onDblClick={this.handleEdit}>{title}</label>
+                    <label onDblClick={this.handleDoubleClick}>{title}</label>
                     <button class="destroy" onClick={this.handleDestroy} />
                 </div>
-                {editing && <input class="edit" value={editText} onBlur={this.handleSubmit} onInput={this.handleInput} onKeyDown={this.handleKeyDown} autoFocus />}
+                {editing && <input class="edit" onBlur={this.handleSubmit} onKeyDown={this.handleKeyDown} autoFocus />}
             </li>
         );
     }
