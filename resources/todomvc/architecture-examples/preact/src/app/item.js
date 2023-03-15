@@ -1,10 +1,6 @@
 import cx from "classnames";
 // eslint-disable-next-line no-unused-vars
 import { h, Component } from "preact";
-
-const ESCAPE_KEY = 27;
-const ENTER_KEY = 13;
-
 export default class TodoItem extends Component {
     handleSubmit = () => {
         let { onSave, onRemove, todo } = this.props,
@@ -30,11 +26,11 @@ export default class TodoItem extends Component {
     };
 
     handleKeyDown = (e) => {
-        if (e.which === ESCAPE_KEY) {
-            let { todo } = this.props;
+        if (e.key === "Escape" || e.key === "ESCAPE"){
+            const { todo } = this.props;
             this.setState({ editText: todo.title });
             this.props.onCancel(todo);
-        } else if (e.which === ENTER_KEY) {
+        } else if (e.key === "Enter" || e.key === "ENTER") {
             this.handleSubmit();
         }
     };
