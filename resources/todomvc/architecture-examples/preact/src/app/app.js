@@ -2,6 +2,7 @@
 import { h, Component } from "preact";
 
 import TodoModel from "./model";
+import TodoHeader from "./header";
 import TodoFooter from "./footer";
 import TodoItem from "./item";
 
@@ -76,10 +77,7 @@ export default class App extends Component {
 
         return (
             <div>
-                <header class="header">
-                    <h1>todos</h1>
-                    <input class="new-todo" placeholder="What needs to be done?" onKeyDown={this.handleKeyDown} autoFocus />
-                </header>
+                <TodoHeader onKeyDown={this.handleKeyDown} />
 
                 {todos.length ? (
                     <section class="main">
