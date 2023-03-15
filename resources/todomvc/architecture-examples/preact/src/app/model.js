@@ -1,14 +1,13 @@
-import { uuid, store } from "./util";
+import { uuid } from "./util";
 
 export default class TodoModel {
     constructor(key, sub) {
         this.key = key;
-        this.todos = store(key) || [];
+        this.todos = [];
         this.onChanges = [sub];
     }
 
     inform() {
-        store(this.key, this.todos);
         this.onChanges.forEach((cb) => cb());
     }
 

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { h, Component } from "preact";
 import linkState from "linkstate";
 
@@ -25,20 +26,20 @@ export default class App extends Component {
         let nowShowing = String(location.hash || "")
             .split("/")
             .pop();
-        if (!FILTERS[nowShowing]) {
+
+        // prettier-ignore
+        if (!FILTERS[nowShowing])
             nowShowing = "all";
-        }
+
         this.setState({ nowShowing });
     }
 
     handleNewTodoKeyDown = (e) => {
-        if (e.keyCode !== ENTER_KEY) return;
-        e.preventDefault();
+        // prettier-ignore
+        if (e.keyCode !== ENTER_KEY)
+            return;
 
-        // let val = '';
-        // if (this.state.newTodo === undefined) {
-        //  val = e.target.value.trim();
-        // }
+        e.preventDefault();
 
         let val = e.target.value.trim();
 
@@ -78,7 +79,8 @@ export default class App extends Component {
         this.model.clearCompleted();
     };
 
-    render({}, { nowShowing = ALL_TODOS, newTodo, editing }) {
+    // eslint-disable-next-line no-empty-pattern
+    render({}, { nowShowing, newTodo, editing }) {
         let { todos } = this.model,
             shownTodos = todos.filter(FILTERS[nowShowing]),
             activeTodoCount = todos.reduce((a, todo) => a + (todo.completed ? 0 : 1), 0),
@@ -96,7 +98,7 @@ export default class App extends Component {
                         <input class="toggle-all" type="checkbox" onChange={this.toggleAll} checked={activeTodoCount === 0} />
                         <ul class="todo-list">
                             {shownTodos.map((todo) => (
-                                <TodoItem todo={todo} onToggle={this.toggle} onDestroy={this.destroy} onEdit={this.edit} editing={editing === todo.id} onSave={this.save} onCancel={this.cancel} />
+                                <TodoItem key={todo.id} todo={todo} onToggle={this.toggle} onDestroy={this.destroy} onEdit={this.edit} editing={editing === todo.id} onSave={this.save} onCancel={this.cancel} />
                             ))}
                         </ul>
                     </section>

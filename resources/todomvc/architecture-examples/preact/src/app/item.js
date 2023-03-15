@@ -1,4 +1,5 @@
 import cx from "classnames";
+// eslint-disable-next-line no-unused-vars
 import { h, Component } from "preact";
 
 const ESCAPE_KEY = 27;
@@ -52,10 +53,13 @@ export default class TodoItem extends Component {
 
     componentDidUpdate() {
         let node = this.base && this.base.querySelector(".edit");
-        if (node) node.focus();
+
+        // prettier-ignore
+        if (node)
+            node.focus();
     }
 
-    render({ todo: { title, completed }, onToggle, onDestroy, editing }, { editText }) {
+    render({ todo: { title, completed }, editing }, { editText }) {
         return (
             <li class={cx({ completed, editing })}>
                 <div class="view">
