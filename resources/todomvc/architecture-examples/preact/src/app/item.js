@@ -45,7 +45,7 @@ export default class TodoItem extends Component {
                     <label onDblClick={this.handleDoubleClick}>{title}</label>
                     <button class="destroy" onClick={this.handleDestroy} />
                 </div>
-                {editing && <input class="edit" onBlur={this.handleSubmit} onKeyDown={this.handleKeyDown} autoFocus />}
+                {editing && <input class="edit" onBlur={this.handleSubmit} onKeyDown={this.handleKeyDown} autoFocus defaultValue={title} />}
             </li>
         );
     }

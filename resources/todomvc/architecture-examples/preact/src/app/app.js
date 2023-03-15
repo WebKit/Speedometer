@@ -20,15 +20,15 @@ export default class App extends Component {
     }
 
     handleRoute() {
-        let nowShowing = String(location.hash || "")
+        let route = String(location.hash || "")
             .split("/")
             .pop();
 
         // prettier-ignore
-        if (!FILTERS[nowShowing])
-            nowShowing = "all";
+        if (!FILTERS[route])
+            route = "all";
 
-        this.setState({ nowShowing });
+        this.setState({ route });
     }
 
     handleKeyDown = (e) => {
@@ -40,14 +40,10 @@ export default class App extends Component {
 
         let val = e.target.value.trim();
 
-        if (val) {
+        if (val){
             this.model.addItem(val);
-            this.setState({ newTodo: "" });
+            e.target.value = "";
         }
-    };
-
-    handleInput = (e) => {
-        this.setState({ newTodo: e.target.value });
     };
 
     toggleAll = (event) => {
@@ -72,9 +68,9 @@ export default class App extends Component {
     };
 
     // eslint-disable-next-line no-empty-pattern
-    render({}, { nowShowing, newTodo }) {
+    render({}, { route }) {
         const todos = this.model.getTodos(),
-            shownTodos = todos.filter(FILTERS[nowShowing]),
+            shownTodos = todos.filter(FILTERS[route]),
             activeTodoCount = todos.reduce((a, todo) => a + (todo.completed ? 0 : 1), 0),
             completedCount = todos.length - activeTodoCount;
 
@@ -82,7 +78,7 @@ export default class App extends Component {
             <div>
                 <header class="header">
                     <h1>todos</h1>
-                    <input class="new-todo" placeholder="What needs to be done?" onKeyDown={this.handleKeyDown} value={newTodo} onInput={this.handleInput} autoFocus />
+                    <input class="new-todo" placeholder="What needs to be done?" onKeyDown={this.handleKeyDown} autoFocus />
                 </header>
 
                 {todos.length ? (
@@ -96,7 +92,7 @@ export default class App extends Component {
                     </section>
                 ) : null}
 
-                {activeTodoCount || completedCount ? <TodoFooter count={activeTodoCount} completedCount={completedCount} nowShowing={nowShowing} onClearCompleted={this.clearCompleted} /> : null}
+                {activeTodoCount || completedCount ? <TodoFooter count={activeTodoCount} completedCount={completedCount} nowShowing={route} onClearCompleted={this.clearCompleted} /> : null}
             </div>
         );
     }
