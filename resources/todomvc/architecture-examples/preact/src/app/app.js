@@ -41,17 +41,13 @@ export default function App() {
     }, []);
 
     function handleKeyDown(e) {
-        // prettier-ignore
-        if (e.key !== "Enter" && e.key !== "ENTER")
-            return;
+        if (e.key === "Enter" || e.key === "ENTER") {
+            const value = e.target.value.trim();
 
-        e.preventDefault();
-
-        let val = e.target.value.trim();
-
-        if (val) {
-            model.addItem(val);
-            e.target.value = "";
+            if (value) {
+                model.addItem(value);
+                e.target.value = "";
+            }
         }
     }
 
@@ -62,8 +58,12 @@ export default function App() {
     return (
         <div>
             <TodoHeader onKeyDown={handleKeyDown} />
-            {model.getTodos().length > 0 ? <TodoMain todos={model.getTodos()} route={route} onChange={toggleAll} onToggle={model.toggleItem} onRemove={model.removeItem} onSave={model.updateItem} /> : null}
-            {model.getTodos().length > 0 ? <TodoFooter todos={model.getTodos()} route={route} onClearCompleted={model.clearCompleted} /> : null}
+            {model.getTodos().length > 0 ? (
+                <div>
+                    <TodoMain todos={model.getTodos()} route={route} onChange={toggleAll} onToggle={model.toggleItem} onRemove={model.removeItem} onSave={model.updateItem} />
+                    <TodoFooter todos={model.getTodos()} route={route} onClearCompleted={model.clearCompleted} />
+                </div>
+            ) : null}
         </div>
     );
 }
