@@ -23,7 +23,7 @@ export default class TodoItem extends Component {
         this.setState({ editText: todo.title });
     };
 
-    toggle = (e) => {
+    handleToggle = (e) => {
         let { onToggle, todo } = this.props;
         onToggle(todo);
         e.preventDefault();
@@ -39,35 +39,23 @@ export default class TodoItem extends Component {
         }
     };
 
+    handleInput = (e) => {
+        this.setState({ editText: e.target.value });
+    };
+
     handleDestroy = () => {
         this.props.onRemove(this.props.todo);
     };
-
-    // shouldComponentUpdate({ todo, editing, editText }) {
-    //  return (
-    //      todo !== this.props.todo ||
-    //      editing !== this.props.editing ||
-    //      editText !== this.state.editText
-    //  );
-    // }
-
-    componentDidUpdate() {
-        let node = this.base && this.base.querySelector(".edit");
-
-        // prettier-ignore
-        if (node)
-            node.focus();
-    }
 
     render({ todo: { title, completed }, editing }, { editText }) {
         return (
             <li class={cx({ completed, editing })}>
                 <div class="view">
-                    <input class="toggle" type="checkbox" checked={completed} onChange={this.toggle} />
+                    <input class="toggle" type="checkbox" checked={completed} onChange={this.handleToggle} />
                     <label onDblClick={this.handleEdit}>{title}</label>
                     <button class="destroy" onClick={this.handleDestroy} />
                 </div>
-                {editing && <input class="edit" value={editText} onBlur={this.handleSubmit} onInput={this.linkState("editText")} onKeyDown={this.handleKeyDown} />}
+                {editing && <input class="edit" value={editText} onBlur={this.handleSubmit} onInput={this.handleInput} onKeyDown={this.handleKeyDown} autoFocus />}
             </li>
         );
     }

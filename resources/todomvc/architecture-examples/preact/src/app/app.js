@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-unused-vars
 import { h, Component } from "preact";
-import linkState from "linkstate";
 
 import TodoModel from "./model";
 import TodoFooter from "./footer";
@@ -32,7 +31,7 @@ export default class App extends Component {
         this.setState({ nowShowing });
     }
 
-    handleNewTodoKeyDown = (e) => {
+    handleKeyDown = (e) => {
         // prettier-ignore
         if (e.key !== "Enter" && e.key !== "ENTER")
             return;
@@ -45,6 +44,10 @@ export default class App extends Component {
             this.model.addItem(val);
             this.setState({ newTodo: "" });
         }
+    };
+
+    handleInput = (e) => {
+        this.setState({ newTodo: e.target.value });
     };
 
     toggleAll = (event) => {
@@ -88,7 +91,7 @@ export default class App extends Component {
             <div>
                 <header class="header">
                     <h1>todos</h1>
-                    <input class="new-todo" placeholder="What needs to be done?" value={newTodo} onKeyDown={this.handleNewTodoKeyDown} onInput={linkState(this, "newTodo")} autoFocus={true} />
+                    <input class="new-todo" placeholder="What needs to be done?" onKeyDown={this.handleKeyDown} value={newTodo} onInput={this.handleInput} autoFocus />
                 </header>
 
                 {todos.length ? (
