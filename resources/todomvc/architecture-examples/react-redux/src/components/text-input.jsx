@@ -17,7 +17,7 @@ export default class TextInput extends Component {
 
     handleSubmit = (e) => {
         const text = e.target.value.trim();
-        if (e.key.match(/Enter/i)) {
+        if (e.key === "Enter") {
             this.props.onSave(text);
             if (this.props.newTodo) {
                 this.setState({ text: "" });
