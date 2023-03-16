@@ -15,7 +15,7 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
             inputRef.current.focus();
             inputRef.current.setSelectionRange(inputRef.current.value.length, inputRef.current.value.length);
         }
-    }, [editing])
+    }, [editing]);
 
     function handleSubmit(e) {
         const val = e.target.value.trim();
@@ -57,8 +57,10 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
             </div>
             {editing ? (
                 <div class="input-container">
-                    <input class="edit" id='edit-todo-input' ref={inputRef} onBlur={handleSubmit} onKeyDown={handleKeyDown} defaultValue={todo.title} />
-                    <label class="visually-hidden" htmlFor="edit-todo-input">Edit Todo Input </label>
+                    <input class="edit" id="edit-todo-input" ref={inputRef} onBlur={handleSubmit} onKeyDown={handleKeyDown} defaultValue={todo.title} />
+                    <label class="visually-hidden" htmlFor="edit-todo-input">
+                        Edit Todo Input{" "}
+                    </label>
                 </div>
             ) : null}
         </li>

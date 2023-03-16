@@ -27,7 +27,7 @@ export default function App() {
     /**
      * The udpate function gets called from the model after changes are made.
      * This sets state in the app component, which forces a re-render.
-     * 
+     *
      */
     function update() {
         setUpdatedAt(Date.now());
