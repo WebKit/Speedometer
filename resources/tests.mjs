@@ -133,7 +133,7 @@ Suites.push({
 });
 
 Suites.push({
-    name: "React-Redux-TodoMVC",
+    name: "TodoMVC-React-Redux",
     url: "todomvc/architecture-examples/react-redux/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
