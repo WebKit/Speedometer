@@ -107,7 +107,7 @@ class PageElement {
             cancelable: true,
             keyCode: ENTER_KEY_CODE,
             which: ENTER_KEY_CODE,
-            key: "ENTER",
+            key: "Enter",
         };
         if (options !== undefined)
             eventOptions = Object.assign(eventOptions, options);
