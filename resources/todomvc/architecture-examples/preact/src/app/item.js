@@ -1,19 +1,21 @@
 import cx from "classnames";
 // eslint-disable-next-line no-unused-vars
 import { h } from "preact";
-import { useState, useEffect } from "preact/hooks";
+import { useState, useEffect, useRef } from "preact/hooks";
 export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
     const [editing, setEditing] = useState(false);
 
+    const inputRef = useRef(null);
 
     /**
      * useEffect keeps track of the 'editing' state change.
      * If the input field is present, we set focus programmatically.
      */
     useEffect(() => {
-        const input = document.querySelector(".editing");
-        input.focus();
-        input.setSelectionRange(input.value.length, input.value.length);
+        if (inputRef.current) {
+            inputRef.current.focus();
+            inputRef.current.setSelectionRange(inputRef.current.value.length, inputRef.current.value.length);
+        }
     }, [editing])
 
     function handleSubmit(e) {
@@ -54,7 +56,7 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
                 <label onDblClick={handleDoubleClick}>{todo.title}</label>
                 <button class="destroy" onClick={handleRemove} />
             </div>
-            {editing && <input class="edit" onBlur={handleSubmit} onKeyDown={handleKeyDown} defaultValue={todo.title} />}
+            {editing && <input class="edit" ref={inputRef} onBlur={handleSubmit} onKeyDown={handleKeyDown} defaultValue={todo.title} />}
         </li>
     );
 }
