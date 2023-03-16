@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import Header from "./containers/header-container";
 import Main from "./containers/main-container";
 
