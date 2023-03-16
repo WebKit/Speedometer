@@ -21,19 +21,27 @@ const getRoute = () => {
 };
 
 export default function App() {
-    const [, setUdpatedAt] = useState(Date.now());
+    const [, setUpdatedAt] = useState(Date.now());
     const [route, setRoute] = useState("all");
 
+    /**
+     * The udpate function gets called from the model after changes are made.
+     * This sets state in the app component, which forces a re-render.
+     * 
+     */
     function update() {
-        setUdpatedAt(Date.now());
+        setUpdatedAt(Date.now());
     }
 
     const model = TodoModel(update);
 
+    /**
+     * useEffect with an empty dependency array runs on the initial mount of the component.
+     * Since it doesn't depend on state or prop changes, it will only run once.
+     */
     useEffect(() => {
         function handleHashChange() {
             setRoute(getRoute());
-            update();
         }
 
         addEventListener("hashchange", handleHashChange);
