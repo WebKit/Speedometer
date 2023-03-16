@@ -1,9 +1,8 @@
 import { Component } from "react";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
 import Item from "./item";
 import Footer from "./footer";
-export class Main extends Component {
+export default class Main extends Component {
     static propTypes = {
         todos: PropTypes.array.isRequired,
         actions: PropTypes.object.isRequired,
@@ -38,5 +37,3 @@ export class Main extends Component {
         );
     }
 }
-
-export default withRouter(Main);

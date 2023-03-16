@@ -1,7 +1,10 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { HashRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import Main from "./main";
 import { getCompletedTodos } from "../selectors/filters";
+
+const WrappedComponent = withRouter(Main);
 
 const setup = (propOverrides) => {
     const todos = (propOverrides && propOverrides.todos) || [
@@ -40,7 +43,7 @@ const setup = (propOverrides) => {
 
     const { rerender } = render(
         <HashRouter>
-            <Main {...props} />
+            <WrappedComponent {...props} />
         </HashRouter>
     );
 
