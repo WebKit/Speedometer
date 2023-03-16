@@ -40,7 +40,7 @@ const Controller = (function ($) {
 
         return {
             setView: function (hash) {
-                view.setView(hash);
+                view.setRoute(hash);
                 view.update({ action: "updateList", todos: model.getItems() });
             },
             init: function () {

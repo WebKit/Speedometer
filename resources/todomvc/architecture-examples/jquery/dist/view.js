@@ -98,7 +98,7 @@ const View = (function ($) {
             bindCallback: function (id, callback) {
                 callbacks[id] = callback;
             },
-            setView: function (hash) {
+            setRoute: function (hash) {
                 route = hash ? hash.split("/")[1] : "all";
             },
             init: function () {
@@ -113,7 +113,8 @@ const View = (function ($) {
 
                 switch (action) {
                     case "addItem":
-                        template.renderItem("#todo-list", payload);
+                        if (route !== "completed")
+                            template.renderItem("#todo-list", payload);
                         break;
                     case "toggleItem":
                     case "updateItem":
