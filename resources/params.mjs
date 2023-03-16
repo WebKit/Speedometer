@@ -29,7 +29,7 @@ class Params {
         searchParams.delete("startAutomatically");
         if (searchParams.has("iterationCount")) {
             this.iterationCount = parseInt(searchParams.get("iterationCount")) || this.iterationCount;
-            if (this.iterationCount <= 1)
+            if (this.iterationCount < 1)
                 throw new Error(`Invalid iterationCount param: ${this.iterationCount}`);
             searchParams.delete("iterationCount");
         }
