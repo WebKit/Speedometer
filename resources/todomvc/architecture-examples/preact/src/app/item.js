@@ -4,7 +4,6 @@ import { h } from "preact";
 import { useState, useEffect, useRef } from "preact/hooks";
 export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
     const [editing, setEditing] = useState(false);
-
     const inputRef = useRef(null);
 
     /**
@@ -56,7 +55,12 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
                 <label onDblClick={handleDoubleClick}>{todo.title}</label>
                 <button class="destroy" onClick={handleRemove} />
             </div>
-            {editing && <input class="edit" ref={inputRef} onBlur={handleSubmit} onKeyDown={handleKeyDown} defaultValue={todo.title} />}
+            {editing ? (
+                <div class="input-container">
+                    <input class="edit" id='edit-todo-input' ref={inputRef} onBlur={handleSubmit} onKeyDown={handleKeyDown} defaultValue={todo.title} />
+                    <label class="visually-hidden" htmlFor="edit-todo-input">Edit Todo Input </label>
+                </div>
+            ) : null}
         </li>
     );
 }
