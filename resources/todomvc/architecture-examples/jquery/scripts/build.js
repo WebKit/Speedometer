@@ -21,9 +21,9 @@ const build = async () => {
 
     // copy src folder
     await fs.cp(sourceDirectory, targetDirectory, { recursive: true }, (err) => {
-        if (err) {
+        // prettier-ignore
+        if (err)
             console.error(err);
-        }
     });
 
     // copy html file
@@ -40,8 +40,8 @@ const build = async () => {
 
     // remove base paths from files to move
     for (let i = 0; i < filesToMove.length; i++) {
-        const basePath = `${filesToMove[i].split("/").slice(0, -1).join("/")}/`;
-        html = html.replace(basePath, "");
+        const fileName = filesToMove[i].split("/").pop();
+        html = html.replace(filesToMove[i], fileName);
     }
 
     // remove basePath from source directory
