@@ -49,7 +49,7 @@ export default function App() {
     }, []);
 
     function handleKeyDown(e) {
-        if (e.key === "Enter" || e.key === "ENTER") {
+        if (e.key === "Enter") {
             const value = e.target.value.trim();
 
             if (value) {
