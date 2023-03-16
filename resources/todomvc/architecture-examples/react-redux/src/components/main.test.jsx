@@ -1,22 +1,29 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { HashRouter } from "react-router-dom";
 import Main from "./main";
+import { getCompletedTodos } from "../selectors/filters";
 
 const setup = (propOverrides) => {
+    const todos =  propOverrides && propOverrides.todos || [
+        {
+            text: "Use Redux",
+            completed: false,
+            id: 0,
+        },
+        {
+            text: "Run the tests",
+            completed: true,
+            id: 1,
+        },
+    ];
+
+    const visibleTodos = [...todos];
+    const completedCount = getCompletedTodos(todos).length;
+    const activeCount = todos.length - completedCount;
+
     const props = Object.assign(
         {
-            todos: [
-                {
-                    text: "Use Redux",
-                    completed: false,
-                    id: 0,
-                },
-                {
-                    text: "Run the tests",
-                    completed: true,
-                    id: 1,
-                },
-            ],
+            todos: [...todos],
             actions: {
                 editTodo: jest.fn(),
                 deleteTodo: jest.fn(),
@@ -24,8 +31,11 @@ const setup = (propOverrides) => {
                 toggleAll: jest.fn(),
                 clearCompleted: jest.fn(),
             },
+            completedCount,
+            activeCount,
+            visibleTodos,
         },
-        propOverrides
+        propOverrides,
     );
 
     const { rerender } = render(
