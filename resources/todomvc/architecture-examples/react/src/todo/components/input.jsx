@@ -26,7 +26,7 @@ export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
 
     const handleKeyDown = useCallback(
         (e) => {
-            if (e.key.match(/Enter/i)) {
+            if (e.key === "Enter") {
                 const value = e.target.value.trim();
 
                 // prettier-ignore
