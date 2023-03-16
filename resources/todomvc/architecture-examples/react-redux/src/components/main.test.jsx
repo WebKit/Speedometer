@@ -27,13 +27,11 @@ const setup = (propOverrides) => {
     const props = Object.assign(
         {
             todos: [...todos],
-            actions: {
-                editTodo: jest.fn(),
-                deleteTodo: jest.fn(),
-                toggleTodo: jest.fn(),
-                toggleAll: jest.fn(),
-                clearCompleted: jest.fn(),
-            },
+            editTodo: jest.fn(),
+            deleteTodo: jest.fn(),
+            toggleTodo: jest.fn(),
+            toggleAll: jest.fn(),
+            clearCompleted: jest.fn(),
             completedCount,
             activeCount,
             visibleTodos,
@@ -88,7 +86,7 @@ describe("components", () => {
                 const { props } = setup();
                 const toggle = await screen.queryByTestId("toggle-all");
                 fireEvent.click(toggle);
-                expect(props.actions.toggleAll).toBeCalled();
+                expect(props.toggleAll).toBeCalled();
             });
         });
 
@@ -110,7 +108,7 @@ describe("components", () => {
                 const clearButton = await screen.queryByText(/Clear completed/i);
                 expect(clearButton).toBeInTheDocument();
                 fireEvent.click(clearButton);
-                expect(props.actions.clearCompleted).toBeCalled();
+                expect(props.clearCompleted).toBeCalled();
             });
         });
 

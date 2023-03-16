@@ -1,7 +1,6 @@
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import Main from "../components/main";
-import * as TodoActions from "../actions";
+import { editTodo, toggleTodo, deleteTodo, toggleAll, clearCompleted} from "../actions";
 import { withRouter } from "react-router-dom";
 import { getCompletedTodos, getVisibleTodos } from "../selectors/filters";
 
@@ -16,8 +15,12 @@ const mapStateToProps = (state, ownProps) => {
     return { todos, completedCount, activeCount, visibleTodos };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-    actions: bindActionCreators(TodoActions, dispatch),
-});
+const mapDispatchToProps = {
+    editTodo,
+    toggleTodo,
+    deleteTodo,
+    toggleAll,
+    clearCompleted
+}
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
