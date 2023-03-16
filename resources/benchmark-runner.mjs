@@ -191,8 +191,10 @@ export class BenchmarkRunner {
 
     async _runSuite(suite) {
         await this._prepareSuite(suite);
+        performance.mark(`start-suite-${suite.name}`);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
+        performance.mark(`end-suite-${suite.name}`);
     }
 
     async _prepareSuite(suite) {
