@@ -171,7 +171,7 @@ function prepareScatterPlotValues(metrics, normalize = true) {
             unit = metric.unit;
         else if (unit !== metric.unit)
             throw new Error("All metrics must have the same unit.");
-        let width = metric.delta;
+        let width = metric.delta || 1;
         let center = mean;
         if (normalize) {
             width = (metric.delta / mean) * toPercent;
@@ -182,9 +182,10 @@ function prepareScatterPlotValues(metrics, normalize = true) {
         const label = `Mean: ${metric.valueString}\n` + `Min: ${metric.min.toFixed(2)}${unit}\n` + `Max: ${metric.max.toFixed(2)}${unit}`;
         const rect = [left, y, label, width];
         // Add data for individual points:
-        const values = metric.values;
         points.push(rect);
-        for (let i = 0; i < values.length; i++) {
+        const values = metric.values;
+        const length = values.length;
+        for (let i = 0; i < length; i++) {
             const value = values[i];
             let x = value;
             const normalized = (value / mean - 1) * toPercent;
@@ -192,7 +193,7 @@ function prepareScatterPlotValues(metrics, normalize = true) {
             if (normalize)
                 x = normalized;
             // Each value is mapped to a y-coordinate in the range of [metricIndex, metricIndex + 1]
-            const valueOffsetY = i / values.length;
+            const valueOffsetY = length === 1 ? 0.5 : i / length;
             const y = metricIndex + valueOffsetY;
             let label = `Iteration ${i}: ${value.toFixed(2)}${unit}\n` + `Normalized: ${metric.mean}${sign}${normalized.toFixed(2)}%`;
             const point = [x, y, label];
