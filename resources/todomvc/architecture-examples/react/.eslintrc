@@ -1,0 +1,8 @@
+{
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "rules": {
+        "no-extra-parens": 0,
+        "react/prop-types": 0,
+        "react/react-in-jsx-scope": 0
+    }
+}

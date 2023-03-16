@@ -104,8 +104,8 @@ Suites.push({
 });
 
 Suites.push({
-    name: "React-TodoMVC",
-    url: "todomvc/architecture-examples/react/index.html",
+    name: "TodoMVC-React",
+    url: "todomvc/architecture-examples/react/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
