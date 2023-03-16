@@ -3,8 +3,6 @@
 const View = (function ($) {
     function View(template) {
         const callbacks = {};
-        const ENTER_KEY = 13;
-        const ESCAPE_KEY = 27;
         let route = "";
 
         function getStats(todos) {
@@ -30,7 +28,7 @@ const View = (function ($) {
 
         function handleTodoInput(e) {
             // prettier-ignore
-            if (e.keyCode !== ENTER_KEY)
+            if (e.key !== "Enter")
                 return;
 
             const $input = $(e.target);
@@ -61,16 +59,16 @@ const View = (function ($) {
 
         function handleTodoEditStart(e) {
             const $input = $(e.target).closest("li").addClass("editing").find(".edit");
-            const temp = $input.val();
-            $input.trigger("focus").val("").val(temp);
+            const title = $(e.target).text();
+            $input.trigger("focus").val("").val(title);
         }
 
         function handleTodoEditStop(e) {
-            switch (e.keyCode) {
-                case ENTER_KEY:
+            switch (e.key) {
+                case "Enter":
                     $(e.target).trigger("blur");
                     break;
-                case ESCAPE_KEY:
+                case "Escape":
                     $(e.target).data("abort", true).trigger("blur");
                     break;
             }
@@ -87,6 +85,7 @@ const View = (function ($) {
 
             if ($input.data("abort")) {
                 $input.data("abort", false);
+                $input.val("").closest("li").removeClass("editing");
                 return;
             }
 
