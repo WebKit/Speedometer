@@ -1,54 +1,69 @@
-import { uuid, store } from './util';
+function uuid() {
+    let uuid = "";
+    for (let i = 0; i < 32; i++) {
+        let random = (Math.random() * 16) | 0;
+        // prettier-ignore
+        if (i === 8 || i === 12 || i === 16 || i === 20)
+            uuid += "-";
 
-export default class TodoModel {
-    constructor(key, sub) {
-        this.key = key;
-        this.todos = store(key) || [];
-        this.onChanges = [sub];
+        uuid += (i === 12 ? 4 : i === 16 ? (random & 3) | 8 : random).toString(16);
+    }
+    return uuid;
+}
+let todos = [];
+
+export default function TodoModel(sub) {
+    const onChanges = [sub];
+
+    function inform() {
+        onChanges.forEach((cb) => cb());
     }
 
-    inform() {
-        store(this.key, this.todos);
-        this.onChanges.forEach( cb => cb() );
-    }
-
-    addTodo(title) {
-        this.todos = this.todos.concat({
+    function addItem(title) {
+        todos = todos.concat({
             id: uuid(),
             title,
-            completed: false
+            completed: false,
         });
-        this.inform();
+        inform();
     }
 
-    toggleAll(completed) {
-        this.todos = this.todos.map(
-            todo => ({ ...todo, completed })
-        );
-        this.inform();
+    function toggleItem(todoToToggle) {
+        todos = todos.map((todo) => (todo !== todoToToggle ? todo : { ...todo, completed: !todo.completed }));
+        inform();
     }
 
-    toggle(todoToToggle) {
-        this.todos = this.todos.map( todo => (
-            todo !== todoToToggle ? todo : ({ ...todo, completed: !todo.completed })
-        ) );
-        this.inform();
+    function removeItem(todo) {
+        todos = todos.filter((t) => t !== todo);
+        inform();
     }
 
-    destroy(todo) {
-        this.todos = this.todos.filter( t => t !== todo );
-        this.inform();
+    function updateItem(todoToSave, title) {
+        todos = todos.map((todo) => (todo !== todoToSave ? todo : { ...todo, title }));
+        inform();
     }
 
-    save(todoToSave, title) {
-        this.todos = this.todos.map( todo => (
-            todo !== todoToSave ? todo : ({ ...todo, title })
-        ));
-        this.inform();
+    function toggleAll(completed) {
+        todos = todos.map((todo) => ({ ...todo, completed }));
+        inform();
     }
 
-    clearCompleted() {
-        this.todos = this.todos.filter( todo => !todo.completed );
-        this.inform();
+    function clearCompleted() {
+        todos = todos.filter((todo) => !todo.completed);
+        inform();
     }
+
+    function getTodos() {
+        return [...todos];
+    }
+
+    return {
+        addItem,
+        toggleAll,
+        toggleItem,
+        removeItem,
+        updateItem,
+        clearCompleted,
+        getTodos,
+    };
 }
