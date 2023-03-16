@@ -14,9 +14,9 @@ function getFilteredTodos(todos, filter) {
 }
 
 export function getVisibleTodos(todos, route) {
-    return getFilteredTodos(todos, route)
+    return getFilteredTodos(todos, route);
 }
 
 export function getCompletedTodos(todos) {
-    return getFilteredTodos(todos, SHOW_COMPLETED)
+    return getFilteredTodos(todos, SHOW_COMPLETED);
 }

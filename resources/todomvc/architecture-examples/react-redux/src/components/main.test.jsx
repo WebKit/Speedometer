@@ -4,7 +4,7 @@ import Main from "./main";
 import { getCompletedTodos } from "../selectors/filters";
 
 const setup = (propOverrides) => {
-    const todos =  propOverrides && propOverrides.todos || [
+    const todos = (propOverrides && propOverrides.todos) || [
         {
             text: "Use Redux",
             completed: false,
@@ -35,7 +35,7 @@ const setup = (propOverrides) => {
             activeCount,
             visibleTodos,
         },
-        propOverrides,
+        propOverrides
     );
 
     const { rerender } = render(
