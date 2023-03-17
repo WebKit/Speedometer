@@ -31,6 +31,8 @@ Backbone.sync = (function (method, model, options) {
             size += 1;
 
             // if a success callback was provided, execute it.
+
+            // prettier-ignore
             if (options.success)
                 options.success(model, model.toJSON(), options);
 
@@ -45,6 +47,8 @@ Backbone.sync = (function (method, model, options) {
                 cache[model.id] = model;
 
                 // if a success callback was provided, execute it.
+
+                // prettier-ignore
                 if (options.success)
                     options.success(model, model.toJSON(), options);
 
@@ -52,6 +56,7 @@ Backbone.sync = (function (method, model, options) {
 
                 // if this model doesn't exist yet, we can't update it
             } else {
+                // prettier-ignore
                 if (options.error)
                     options.error(model, "Model not found");
                 deferred.reject(model);
@@ -62,12 +67,15 @@ Backbone.sync = (function (method, model, options) {
             // as long as it exists
             if (cache[model.id]) {
                 // if a success callback was provided, execute it.
+
+                // prettier-ignore
                 if (options.success)
                     options.success(model, cache[model.id].toJSON(), options);
 
                 // resolve
                 deferred.resolve(model);
             } else {
+                // prettier-ignore
                 if (options.error)
                     options.error(model, "Model not found");
                 deferred.reject(model);
@@ -83,6 +91,8 @@ Backbone.sync = (function (method, model, options) {
                 // and trigger the success callback. Note we're passing an
                 // empty object as the second argument, because a deletion
                 // would result in an empty return from the server.
+
+                // prettier-ignore
                 if (options.success)
                     options.success(model, {}, options);
 
@@ -91,6 +101,7 @@ Backbone.sync = (function (method, model, options) {
 
                 // otherwise, error that the model doesn't exist.
             } else {
+                // prettier-ignore
                 if (options.error)
                     options.error(model, "Model not found");
                 deferred.reject(model);
