@@ -103,7 +103,6 @@ var app = app || {};
 
         // If you hit `enter`, we're through editing the item.
         updateOnEnter: function (e) {
-
             // prettier-ignore
             if (e.which === ENTER_KEY)
                 this.close();
