@@ -30,10 +30,9 @@
                 <strong>{{ remaining }}</strong> {{ pluralizedWord }} left
             </span>
             <ul class="filters">
-                <li><a href="#/all" :class="{ selected: filter == 'all' }" @click="filter = 'all'">All</a></li>
-                <li><a href="#/active" :class="{ selected: filter == 'active' }" @click="filter = 'active'">Active</a></li>
-                <li><a href="#/completed" :class="{ selected: filter == 'completed' }"
-                        @click="filter = 'completed'">Completed</a></li>
+                <li><router-link to="/" :class="{ selected: route == 'all' }">All</router-link></li>
+                <li><router-link to="/active" :class="{ selected: route == 'active' }">Active</router-link></li>
+                <li><router-link to="/completed" :class="{ selected: route == 'completed' }">Completed</router-link></li>
             </ul>
             <button class="clear-completed" v-show="completed" @click.prevent="deleteCompleted">Clear Completed</button>
         </footer>
@@ -48,7 +47,6 @@ export default {
         return {
             todos: [],
             newTodo: '',
-            filter: 'all',
             editing: null
         }
     },
@@ -93,13 +91,15 @@ export default {
             return this.todos.filter(todo => todo.completed).length
         },
         filteredTodos() {
-            if (this.filter === 'active') {
+            if (this.$route.name === 'active') {
                 return this.todos.filter(todo => !todo.completed)
-            } else if (this.filter === 'completed') {
+            } else if (this.$route.name === 'completed') {
                 return this.todos.filter(todo => todo.completed)
             }
-
             return this.todos
+        },
+        route() {
+            return this.$route.name;
         },
         allDone: {
             get() {
