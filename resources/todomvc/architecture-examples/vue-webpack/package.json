@@ -1,7 +1,12 @@
 {
   "name": "vue-webpack",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "TodoMVC app written with Vue.",
   "private": true,
+  "engines": {
+      "node": ">=18.13.0",
+      "npm": ">=8.19.3"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
