@@ -248,7 +248,7 @@ Suites.push({
 });
 
 Suites.push({
-    name: "TodoMVC-Vue-Webpack",
+    name: "TodoMVC-Vue",
     url: "todomvc/architecture-examples/vue-webpack/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
