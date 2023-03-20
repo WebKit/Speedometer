@@ -249,7 +249,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Vue",
-    url: "todomvc/architecture-examples/vue-webpack/dist/index.html",
+    url: "todomvc/architecture-examples/vue/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
