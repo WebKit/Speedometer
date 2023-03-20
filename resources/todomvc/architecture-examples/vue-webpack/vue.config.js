@@ -3,7 +3,6 @@ module.exports = defineConfig({
   transpileDependencies: true,
   publicPath: "",
   terser: {
-    // minify: 'uglifyJs',
     minify: "terser",
     terserOptions: {
         compress: true
