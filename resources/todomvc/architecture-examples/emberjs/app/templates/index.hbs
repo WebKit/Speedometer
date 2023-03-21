@@ -1,3 +1,2 @@
-{{#if model.length}}
-  {{todo-list todos=model}}
-{{/if}}
+{{page-title "Index"}}
+<TodoList @todos={{ @model.allItems }}/>

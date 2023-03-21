@@ -161,7 +161,7 @@ Suites.push({
 });
 
 Suites.push({
-    name: "EmberJS-TodoMVC",
+    name: "TodoMVC-Ember",
     url: "todomvc/architecture-examples/emberjs/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
