@@ -7,6 +7,7 @@ class Params {
     startAutomatically = false;
     iterationCount = 10;
     suites = [];
+    testInitiator = "timeout"; // or "raf"
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -48,6 +49,13 @@ class Params {
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
             console.error("Got unused search params", unused);
+        if (searchParams.has("testInitiator")) {
+            const testInitiatorParam = searchParams.get("testInitiator");
+            const choices = ["timeout", "raf"];
+            if (!choices.includes(testInitiatorParam))
+                throw new Error(`Invalid testInitiator param: ${testInitiatorParam}, choices are ${choices} `);
+            this.testInitiator = testInitiatorParam;
+        }
     }
 
     toSearchParams() {

@@ -213,10 +213,12 @@ export class BenchmarkRunner {
         return new Promise(async (resolve) => {
             if (this._client?.willRunTest)
                 await this._client.willRunTest(suite, test);
+            const runTest = this._runTest.bind(this, suite, test, this._page, resolve);
+            if (params.testInitiator === "raf")
+                window.requestAnimationFrame(runTest);
+            else
+                setTimeout(runTest, 0);
 
-            setTimeout(() => {
-                this._runTest(suite, test, this._page, resolve);
-            }, 0);
         });
     }
 
@@ -238,7 +240,7 @@ export class BenchmarkRunner {
 
         performance.mark(asyncStartLabel);
         const asyncStartTime = performance.now();
-        setTimeout(() => {
+        const asyncMeasurement = () => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
             const height = this._frame.contentDocument.body.getBoundingClientRect().height;
@@ -248,10 +250,10 @@ export class BenchmarkRunner {
             performance.mark(asyncEndLabel);
             performance.measure(`${suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
             performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
-            window.requestAnimationFrame(() => {
-                this._recordTestResults(suite, test, syncTime, asyncTime, height, testDoneCallback);
-            });
-        }, 0);
+            const recordTestResults = this._recordTestResults.bind(this, suite, test, syncTime, asyncTime, height, testDoneCallback);
+            window.requestAnimationFrame(recordTestResults);
+        };
+        setTimeout(asyncMeasurement, 0);
     }
 
     async _recordTestResults(suite, test, syncTime, asyncTime, unused_height, testDoneCallback) {
