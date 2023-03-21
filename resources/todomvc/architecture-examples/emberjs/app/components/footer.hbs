@@ -1,3 +1,4 @@
+{{#if this.todos.allItems}}
 <footer class="footer">
   <span class="todo-count"> <strong>{{this.todos.incompleteItems.length}}</strong> {{pluralize 'item' this.todos.incompleteItems.length}} left</span>
 
@@ -11,3 +12,4 @@
 
   <button type="button" class="clear-completed" {{on 'click' this.todos.clearCompleted}}>Clear Completed</button>
 </footer>
+{{/if}}

@@ -29,6 +29,16 @@ export default class TodoDataService extends Service {
   }
 
   @action
+  removeItem(todo) {
+    this.todos.removeObject(todo);
+  }
+
+  @action
+  updateItem(todo, title) {
+    todo.title = title;
+  }
+
+  @action
   clearCompleted() {
     this.todos = this.incompleteItems;
   }
