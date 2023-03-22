@@ -162,7 +162,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Ember",
-    url: "todomvc/architecture-examples/emberjs/dist/index.html",
+    url: "todomvc/architecture-examples/ember/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
