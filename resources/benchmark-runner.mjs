@@ -116,6 +116,71 @@ class PageElement {
     }
 }
 
+class MeasureTask {
+    constructor(runner, suite, test, page, frame) {
+        this._runner = runner;
+        this.suite = suite;
+        this.test = test;
+        this._page = page;
+        this._frame = frame;
+
+        this._wasRun = false;
+        this._doneCallback = () => {};
+        this._donePromise = new Promise(resolve => {
+            this._doneCallback = resolve;
+        });
+
+        this.syncTime = 0;
+        this.asyncTime = 0;
+
+        this._asyncStartTime = 0;
+
+        this._startLabel = `${suite.name}.${test.name}-start`;
+        this._syncEndLabel = `${suite.name}.${test.name}-sync-end`;
+        this._asyncStartLabel = `${suite.name}.${test.name}-async-start`;
+        this._asyncEndLabel = `${suite.name}.${test.name}-async-end`;
+    }
+
+    async run() {
+        if (this._wasRun)
+            throw Error("MeasureTask can only run once.");
+        if (params.testInitiator === "raf")
+            window.requestAnimationFrame(() => this._measureSync());
+        else
+            setTimeout(() => this._measureSync(), 0);
+        await this._donePromise;
+        this._wasRun = true;
+    }
+
+    _measureSync() {
+        // This function ought be as simple as possible. Don't even use Promise.
+        performance.mark(this._startLabel);
+        const syncStartTime = performance.now();
+        this.test.run(this._page);
+        const syncEndTime = performance.now();
+        performance.mark(this._syncEndLabel);
+
+        this.syncTime = syncEndTime - syncStartTime;
+
+        performance.mark(this._asyncStartLabel);
+        this._asyncStartTime = performance.now();
+        setTimeout(this._measureAsync.bind(this), 0);
+    }
+
+    _measureAsync() {
+        // Some browsers don't immediately update the layout for paint.
+        // Force the layout here to ensure we're measuring the layout time.
+        const height = this._frame.contentDocument.body.getBoundingClientRect().height;
+        const asyncEndTime = performance.now();
+        this.asyncTime = asyncEndTime - this._asyncStartTime;
+        this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
+        performance.mark(this._asyncEndLabel);
+        performance.measure(`${this.suite.name}.${this.test.name}-sync`, this._startLabel, this._syncEndLabel);
+        performance.measure(`${this.suite.name}.${this.test.name}-async`, this._asyncStartLabel, this._asyncEndLabel);
+        window.requestAnimationFrame(this._doneCallback);
+    }
+}
+
 export class BenchmarkRunner {
     constructor(suites, client) {
         this._suites = suites;
@@ -183,7 +248,6 @@ export class BenchmarkRunner {
                 await this._runSuite(suite);
         }
 
-
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
         await this._finalize();
@@ -209,64 +273,24 @@ export class BenchmarkRunner {
     }
 
     async _runTestAndRecordResults(suite, test) {
-        /* eslint-disable-next-line no-async-promise-executor */
-        return new Promise(async (resolve) => {
-            if (this._client?.willRunTest)
-                await this._client.willRunTest(suite, test);
-            const runTest = this._runTest.bind(this, suite, test, this._page, resolve);
-            if (params.testInitiator === "raf")
-                window.requestAnimationFrame(runTest);
-            else
-                setTimeout(runTest, 0);
-
-        });
+        if (this._client?.willRunTest)
+            await this._client.willRunTest(suite, test);
+        const task = new MeasureTask(this, suite, test, this._page, this._frame);
+        await task.run();
+        await this._recordTestResults(task);
     }
 
-    // This function ought be as simple as possible. Don't even use Promise.
-    _runTest(suite, test, page, testDoneCallback) {
-        // Prepare all mark labels outside the measuring loop.
-        const startLabel = `${suite.name}.${test.name}-start`;
-        const syncEndLabel = `${suite.name}.${test.name}-sync-end`;
-        const asyncStartLabel = `${suite.name}.${test.name}-async-start`;
-        const asyncEndLabel = `${suite.name}.${test.name}-async-end`;
-
-        performance.mark(startLabel);
-        const syncStartTime = performance.now();
-        test.run(page);
-        const syncEndTime = performance.now();
-        performance.mark(syncEndLabel);
-
-        const syncTime = syncEndTime - syncStartTime;
-
-        performance.mark(asyncStartLabel);
-        const asyncStartTime = performance.now();
-        const asyncMeasurement = () => {
-            // Some browsers don't immediately update the layout for paint.
-            // Force the layout here to ensure we're measuring the layout time.
-            const height = this._frame.contentDocument.body.getBoundingClientRect().height;
-            const asyncEndTime = performance.now();
-            const asyncTime = asyncEndTime - asyncStartTime;
-            this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
-            performance.mark(asyncEndLabel);
-            performance.measure(`${suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
-            performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
-            const recordTestResults = this._recordTestResults.bind(this, suite, test, syncTime, asyncTime, height, testDoneCallback);
-            window.requestAnimationFrame(recordTestResults);
-        };
-        setTimeout(asyncMeasurement, 0);
-    }
-
-    async _recordTestResults(suite, test, syncTime, asyncTime, unused_height, testDoneCallback) {
+    async _recordTestResults(task) {
+        const suite = task.suite;
+        const test = task.test;
         const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
-        const total = syncTime + asyncTime;
+        const total = task.syncTime + task.asyncTime;
         this._measuredValues.tests[suite.name] = suiteResults;
-        suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
+        suiteResults.tests[test.name] = { tests: { Sync: task.syncTime, Async: task.asyncTime }, total: total };
         suiteResults.total += total;
 
         if (this._client?.didRunTest)
             await this._client.didRunTest(suite, test);
-
-        testDoneCallback();
     }
 
     async _finalize() {
