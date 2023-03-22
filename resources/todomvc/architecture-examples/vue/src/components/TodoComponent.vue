@@ -13,7 +13,7 @@
                 </label>
             </div>
             <ul class="todo-list">
-                <li class="todo" v-bind:key="todo.id" v-for="todo in filteredTodos"
+                <li class="todo" :key="todo.id" v-for="todo in filteredTodos"
                     :class="{ completed: todo.completed, editing: todo === editing }">
                     <div class="view">
                         <input type="checkbox" v-model="todo.completed" class="toggle">
