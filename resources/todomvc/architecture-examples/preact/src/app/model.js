@@ -28,7 +28,7 @@ export default function TodoModel(sub) {
     }
 
     function toggleItem(todoToToggle) {
-        todos = todos.map((todo) => (todo !== todoToToggle ? todo : { ...todo, completed: !todo.completed }));
+        todos = todos.map((todo) => todo !== todoToToggle ? todo : { ...todo, completed: !todo.completed });
         inform();
     }
 
@@ -38,7 +38,7 @@ export default function TodoModel(sub) {
     }
 
     function updateItem(todoToSave, title) {
-        todos = todos.map((todo) => (todo !== todoToSave ? todo : { ...todo, title }));
+        todos = todos.map((todo) => todo !== todoToSave ? todo : { ...todo, title });
         inform();
     }
 
