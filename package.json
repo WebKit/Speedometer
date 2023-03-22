@@ -17,7 +17,7 @@
     "scripts": {
         "dev": "http-server ./ -p 7000 -c-1 --cors",
         "lint:check": "eslint **/*.mjs",
-        "lint:fix": "eslint **/*.mjs --fix",
+        "lint:fix": "eslint \"**/*.{js,mjs,jsx}\" --fix",
         "pretty:check": "prettier --check ./",
         "pretty:fix": "prettier --write ./",
         "format": "npm run pretty:fix ; npm run lint:fix",

@@ -25,9 +25,8 @@ export class Store {
             memoryStorage[name] = JSON.stringify(data);
         }
 
-        if (callback) {
+        if (callback)
             callback(JSON.parse(memoryStorage[name]));
-        }
     }
 
     /**
@@ -44,19 +43,18 @@ export class Store {
      * })
      */
     find(query, callback) {
-        if (!callback) {
+        if (!callback)
             return;
-        }
 
         const { todos } = JSON.parse(memoryStorage[this._dbName]);
 
         callback(
             todos.filter((todo) => {
                 for (let q in query) {
-                    if (query[q] !== todo[q]) {
+                    if (query[q] !== todo[q])
                         return false;
-                    }
                 }
+
                 return true;
             })
         );
@@ -68,9 +66,8 @@ export class Store {
      * @param {function} callback The callback to fire upon retrieving data
      */
     findAll(callback) {
-        if (!callback) {
+        if (!callback)
             return;
-        }
 
         callback(JSON.parse(memoryStorage[this._dbName]).todos);
     }
@@ -91,18 +88,17 @@ export class Store {
         if (id) {
             for (let i = 0; i < todos.length; i++) {
                 if (todos[i].id === id) {
-                    for (let key in updateData) {
+                    for (let key in updateData)
                         todos[i][key] = updateData[key];
-                    }
+
                     break;
                 }
             }
 
             memoryStorage[this._dbName] = JSON.stringify(data);
 
-            if (callback) {
+            if (callback)
                 callback(JSON.parse(memoryStorage[this._dbName]).todos);
-            }
         } else {
             // Generate an ID
             updateData.id = uniqueID++;
@@ -110,9 +106,8 @@ export class Store {
             todos.push(updateData);
             memoryStorage[this._dbName] = JSON.stringify(data);
 
-            if (callback) {
+            if (callback)
                 callback([updateData]);
-            }
         }
     }
 
@@ -135,9 +130,8 @@ export class Store {
 
         memoryStorage[this._dbName] = JSON.stringify(data);
 
-        if (callback) {
+        if (callback)
             callback(JSON.parse(memoryStorage[this._dbName]).todos);
-        }
     }
 
     /**
@@ -148,9 +142,8 @@ export class Store {
     drop(callback) {
         memoryStorage[this._dbName] = JSON.stringify({ todos: [] });
 
-        if (callback) {
+        if (callback)
             callback(JSON.parse(memoryStorage[this._dbName]).todos);
-        }
     }
 }
 

@@ -12,9 +12,8 @@ let _setFilter = (currentPage) => {
 let _elementComplete = (id, completed) => {
     let listItem = qs(`[data-id="${id}"]`);
 
-    if (!listItem) {
+    if (!listItem)
         return;
-    }
 
     listItem.className = completed ? "completed" : "";
 
@@ -25,9 +24,8 @@ let _elementComplete = (id, completed) => {
 let _editItem = (id, title) => {
     let listItem = qs(`[data-id="${id}"]`);
 
-    if (!listItem) {
+    if (!listItem)
         return;
-    }
 
     listItem.className += " editing";
 
@@ -68,14 +66,14 @@ class View {
         this.$newTodo = qs(".new-todo");
 
         this.viewCommands = {
-            showEntries: (parameter) => (this.$todoList.innerHTML = this.template.show(parameter)),
+            showEntries: (parameter) => this.$todoList.innerHTML = this.template.show(parameter),
             removeItem: (parameter) => this._removeItem(parameter),
-            updateElementCount: (parameter) => (this.$todoItemCounter.innerHTML = this.template.itemCounter(parameter)),
+            updateElementCount: (parameter) => this.$todoItemCounter.innerHTML = this.template.itemCounter(parameter),
             clearCompletedButton: (parameter) => this._clearCompletedButton(parameter.completed, parameter.visible),
-            contentBlockVisibility: (parameter) => (this.$main.style.display = this.$footer.style.display = parameter.visible ? "block" : "none"),
-            toggleAll: (parameter) => (this.$toggleAll.checked = parameter.checked),
+            contentBlockVisibility: (parameter) => this.$main.style.display = this.$footer.style.display = parameter.visible ? "block" : "none",
+            toggleAll: (parameter) => this.$toggleAll.checked = parameter.checked,
             setFilter: (parameter) => _setFilter(parameter),
-            clearNewTodo: (parameter) => (this.$newTodo.value = ""),
+            clearNewTodo: (parameter) => this.$newTodo.value = "",
             elementComplete: (parameter) => _elementComplete(parameter.id, parameter.completed),
             editItem: (parameter) => _editItem(parameter.id, parameter.title),
             editItemDone: (parameter) => this._editItemDone(parameter.id, parameter.title),
@@ -85,9 +83,8 @@ class View {
     _removeItem(id) {
         let elem = qs(`[data-id="${id}"]`);
 
-        if (elem) {
+        if (elem)
             this.$todoList.removeChild(elem);
-        }
     }
 
     _clearCompletedButton(completedCount, visible) {
@@ -98,16 +95,15 @@ class View {
     _editItemDone(id, title) {
         let listItem = qs(`[data-id="${id}"]`);
 
-        if (!listItem) {
+        if (!listItem)
             return;
-        }
 
         let input = qs("input.edit", listItem);
         listItem.removeChild(input);
 
         listItem.className = listItem.className.replace(" editing", "");
 
-        qsa("label", listItem).forEach((label) => (label.textContent = title));
+        qsa("label", listItem).forEach((label) => label.textContent = title);
     }
 
     render(viewCmd, parameter) {
@@ -128,9 +124,8 @@ class View {
 
         // Remove the cursor from the input when you hit enter just like if it were a real form
         $delegate(self.$todoList, "li .edit", "keypress", function (event) {
-            if (event.keyCode === self.ENTER_KEY) {
+            if (event.keyCode === self.ENTER_KEY)
                 this.blur();
-            }
         });
     }
 

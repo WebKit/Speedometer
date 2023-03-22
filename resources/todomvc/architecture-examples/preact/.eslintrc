@@ -1,5 +1,10 @@
 {
     "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "settings": {
+        "react": {
+            "version": "16"
+        }
+    },
     "rules": {
         "no-extra-parens": 0,
         "react/react-in-jsx-scope": 0,
