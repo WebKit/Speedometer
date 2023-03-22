@@ -127,22 +127,39 @@ class MeasureTask {
         this._unusedHeight = undefined;
 
         this._wasRun = false;
-        this._doneCallback = () => {};
-        this._donePromise = new Promise((resolve) => {
-            this._doneCallback = resolve;
-        });
+        this._asyncMeasurePromises = [
+            new Promise((resolve) => {
+                this._asyncMicrotaskDone = resolve;
+            }),
+            new Promise((resolve) => {
+                this._asyncTimeoutDone = resolve;
+            }),
+            new Promise((resolve) => {
+                this._asyncRafDone = resolve;
+            }),
+        ];
+
         this._measureSyncCallback = this._measureSync.bind(this);
-        this._measureAsyncCallback = this._measureAsync.bind(this);
+        this._measureAsyncMicrotaskCallback = this._measureAsyncMicrotask.bind(this);
+        this._measureAsyncTimeoutCallback = this._measureAsyncTimeout.bind(this);
+        this._measureAsyncRafCallback = this._measureAsyncRaf.bind(this);
 
         this.syncTime = 0;
-        this.asyncTime = 0;
+        this.asyncMicrotaskTime = 0;
+        this.asyncTimeoutTime = 0;
+        this.asyncRafTime = 0;
+        this.layoutTime = 0;
 
         this._asyncStartTime = 0;
 
-        this._startLabel = `${suite.name}.${test.name}-start`;
-        this._syncEndLabel = `${suite.name}.${test.name}-sync-end`;
-        this._asyncStartLabel = `${suite.name}.${test.name}-async-start`;
-        this._asyncEndLabel = `${suite.name}.${test.name}-async-end`;
+        const label = `${suite.name}.${test.name}`;
+        this._startLabel = `${label}-start`;
+        this._syncEndLabel = `${label}-sync-end`;
+        this._asyncStartLabel = `${label}-async-start`;
+        this._asyncEndLabel = `${label}-async-end`;
+        this._asyncMicrotaskEndLabel = `${label}-async-microtask-end`;
+        this._asyncTimeoutEndLabel = `${label}-async-Timeout-end`;
+        this._asyncRafEndLabel = `${label}-async-raf-end`;
     }
 
     async run() {
@@ -152,7 +169,7 @@ class MeasureTask {
             requestAnimationFrame(this._measureSyncCallback);
         else
             setTimeout(this._measureSyncCallback, 0);
-        await this._donePromise;
+        await this._done();
         this._wasRun = true;
     }
 
@@ -168,26 +185,50 @@ class MeasureTask {
 
         performance.mark(this._asyncStartLabel);
         this._asyncStartTime = performance.now();
-        if (params.asyncInitiator === "raf")
-            requestAnimationFrame(this._measureAsyncCallback, 0);
-        else
-            setTimeout(this._measureAsyncCallback, 0);
+        queueMicrotask(this._measureAsyncMicrotaskCallback);
+        setTimeout(this._measureAsyncTimeoutCallback, 0);
+        requestAnimationFrame(this._measureAsyncRafCallback);
     }
 
-    _measureAsync() {
-        // Some browsers don't immediately update the layout for paint.
-        // Force the layout here to ensure we're measuring the layout time.
-        if (params.asyncInitiator === "raf")
-            this._unusedHeight = this._frame.contentDocument.body.getBoundingClientRect().height;
-        const asyncEndTime = performance.now();
-        this.asyncTime = asyncEndTime - this._asyncStartTime;
-        if (params.asyncInitiator === "raf")
-            // Prevent dead code elimination.
-            this._frame.contentWindow._unusedHeightValue = this._unusedHeight;
-        performance.mark(this._asyncEndLabel);
-        performance.measure(`${this.suite.name}.${this.test.name}-sync`, this._startLabel, this._syncEndLabel);
-        performance.measure(`${this.suite.name}.${this.test.name}-async`, this._asyncStartLabel, this._asyncEndLabel);
-        requestAnimationFrame(this._doneCallback);
+    _measureLayout() {
+        const startTime = performance.now();
+        this._unusedHeight = this._frame.contentDocument.body.getBoundingClientRect().height;
+        const endTime = performance.now();
+        this.layoutTime = Math.max(this.layoutTime, endTime - startTime);
+        // Prevent dead code elimination.
+        this._frame.contentWindow._unusedHeightValue = this._unusedHeight;
+    }
+
+    _measureAsyncMicrotask() {
+        const endTime = performance.now();
+        performance.mark(this._asyncMicrotaskEndLabel);
+        this.asyncMicrotaskTime = endTime - this._asyncStartTime;
+        this._asyncMicrotaskDone();
+    }
+
+    _measureAsyncTimeout() {
+        const endTime = performance.now();
+        this.asyncTimeoutTime = endTime - this._asyncStartTime;
+        performance.mark(this._asyncTimeoutEndLabel);
+        this._measureLayout();
+        this._asyncTimeoutDone();
+    }
+
+    _measureAsyncRaf() {
+        const endTime = performance.now();
+        this.asyncRafTime = endTime - this._asyncStartTime;
+        performance.mark(this._asyncRafEndLabel);
+        this._asyncRafDone();
+    }
+
+    async _done() {
+        await Promise.all(this._asyncMeasurePromises);
+        const label = `${this.suite.name}.${this.test.name}`;
+        performance.measure(`${label}-sync`, this._startLabel, this._syncEndLabel);
+        performance.measure(`${label}-async-microtask`, this._asyncStartLabel, this._asyncMicrotaskEndLabel);
+        performance.measure(`${label}-async-Timeout`, this._asyncStartLabel, this._asyncTimeoutEndLabel);
+        performance.measure(`${label}-async-raf`, this._asyncStartLabel, this._asyncRafEndLabel);
+        await new Promise(requestAnimationFrame);
     }
 }
 
@@ -297,9 +338,17 @@ export class BenchmarkRunner {
         const suite = task.suite;
         const test = task.test;
         const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
-        const total = task.syncTime + task.asyncTime;
+        const total = task.syncTime + task.asyncTimeoutTime;
         this._measuredValues.tests[suite.name] = suiteResults;
-        suiteResults.tests[test.name] = { tests: { Sync: task.syncTime, Async: task.asyncTime }, total: total };
+        suiteResults.tests[test.name] = {
+            tests: {
+                Sync: task.syncTime,
+                Layout: task.layoutTime,
+                AsyncMicrotask: task.asyncMicrotaskTime,
+                AsyncTimeout: task.asyncTimeoutTime,
+                AsyncRaf: task.asyncRafTime,
+            },
+            total: total };
         suiteResults.total += total;
 
         if (this._client?.didRunTest)
