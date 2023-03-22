@@ -63,7 +63,7 @@ class Params {
                 searchParams.delete(name);
                 return testInitiatorParam;
             }
-            throw new Error(`Invalid ${name} param: ${testInitiatorParam}, choices are ${choices} `);
+            throw new Error(`Invalid ${name} param: ${testInitiatorParam}, choices are ${initiatorChoices}`);
         }
         if (!initiatorChoices.includes(defaultValue))
             throw Error(`Invalid default value: ${defaultValue}`);

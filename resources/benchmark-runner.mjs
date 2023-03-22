@@ -348,7 +348,8 @@ export class BenchmarkRunner {
                 AsyncTimeout: task.asyncTimeoutTime,
                 AsyncRaf: task.asyncRafTime,
             },
-            total: total };
+            total: total,
+        };
         suiteResults.total += total;
 
         if (this._client?.didRunTest)
