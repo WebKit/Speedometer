@@ -65,7 +65,7 @@ class Params {
             }
             throw new Error(`Invalid ${name} param: ${testInitiatorParam}, choices are ${choices} `);
         }
-        if (!initiatorChoices.includes(defaultValue)) 
+        if (!initiatorChoices.includes(defaultValue))
             throw Error(`Invalid default value: ${defaultValue}`);
         return defaultValue;
     }

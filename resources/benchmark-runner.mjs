@@ -124,11 +124,15 @@ class MeasureTask {
         this._page = page;
         this._frame = frame;
 
+        this._unusedHeight = undefined;
+
         this._wasRun = false;
         this._doneCallback = () => {};
-        this._donePromise = new Promise(resolve => {
+        this._donePromise = new Promise((resolve) => {
             this._doneCallback = resolve;
         });
+        this._measureSyncCallback = this._measureSync.bind(this);
+        this._measureAsyncCallback = this._measureAsync.bind(this);
 
         this.syncTime = 0;
         this.asyncTime = 0;
@@ -145,9 +149,9 @@ class MeasureTask {
         if (this._wasRun)
             throw Error("MeasureTask can only run once.");
         if (params.testInitiator === "raf")
-            window.requestAnimationFrame(() => this._measureSync());
+            requestAnimationFrame(this._measureSyncCallback);
         else
-            setTimeout(() => this._measureSync(), 0);
+            setTimeout(this._measureSyncCallback, 0);
         await this._donePromise;
         this._wasRun = true;
     }
@@ -164,20 +168,26 @@ class MeasureTask {
 
         performance.mark(this._asyncStartLabel);
         this._asyncStartTime = performance.now();
-        setTimeout(this._measureAsync.bind(this), 0);
+        if (params.asyncInitiator === "raf")
+            requestAnimationFrame(this._measureAsyncCallback, 0);
+        else
+            setTimeout(this._measureAsyncCallback, 0);
     }
 
     _measureAsync() {
         // Some browsers don't immediately update the layout for paint.
         // Force the layout here to ensure we're measuring the layout time.
-        const height = this._frame.contentDocument.body.getBoundingClientRect().height;
+        if (params.asyncInitiator === "raf")
+            this._unusedHeight = this._frame.contentDocument.body.getBoundingClientRect().height;
         const asyncEndTime = performance.now();
         this.asyncTime = asyncEndTime - this._asyncStartTime;
-        this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
+        if (params.asyncInitiator === "raf")
+            // Prevent dead code elimination.
+            this._frame.contentWindow._unusedHeightValue = this._unusedHeight;
         performance.mark(this._asyncEndLabel);
         performance.measure(`${this.suite.name}.${this.test.name}-sync`, this._startLabel, this._syncEndLabel);
         performance.measure(`${this.suite.name}.${this.test.name}-async`, this._asyncStartLabel, this._asyncEndLabel);
-        window.requestAnimationFrame(this._doneCallback);
+        requestAnimationFrame(this._doneCallback);
     }
 }
 
@@ -248,13 +258,16 @@ export class BenchmarkRunner {
                 await this._runSuite(suite);
         }
 
+
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
         await this._finalize();
     }
 
     async _runSuite(suite) {
+        performance.mark(`start-suite-prepare-${suite.name}`);
         await this._prepareSuite(suite);
+        performance.mark(`start-suite-prepare-${suite.name}`);
         performance.mark(`start-suite-${suite.name}`);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
