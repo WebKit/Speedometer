@@ -45,7 +45,6 @@ var app = app || {};
             // `id` change.  It's known Backbone LocalStorage bug, therefore
             // we've to create a workaround.
             // https://github.com/tastejs/todomvc/issues/469
-
             if (this.model.changed.id !== undefined)
                 return null;
 
@@ -86,7 +85,6 @@ var app = app || {};
             // longer being edited. Relying on the CSS class here has the
             // benefit of us not having to maintain state in the DOM and the
             // JavaScript logic.
-
             if (!this.$el.hasClass("editing"))
                 return;
 
