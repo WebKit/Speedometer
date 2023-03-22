@@ -1,5 +1,5 @@
 {
-    "name": "library-preact",
+    "name": "preact",
     "version": "1.0.0",
     "description": "TodoMVC app written with Preact.",
     "private": true,

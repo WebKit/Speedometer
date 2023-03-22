@@ -1,5 +1,5 @@
 {
-    "name": "library-react-redux",
+    "name": "react-redux",
     "version": "1.0.0",
     "description": "TodoMVC app written with React-Redux.",
     "private": true,
