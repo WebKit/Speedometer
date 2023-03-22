@@ -31,7 +31,6 @@ export default class TextInput extends Component {
     handleBlur = (e) => {
         // If this input is used in the Header, call onSave to create a new todo.
 
-        // prettier-ignore
         if (!this.props.newTodo)
             this.props.onSave(e.target.value);
     };

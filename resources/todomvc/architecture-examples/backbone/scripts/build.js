@@ -21,7 +21,6 @@ const build = async () => {
 
     // copy src folder
     await fs.cp(sourceDirectory, targetDirectory, { recursive: true }, (err) => {
-        // prettier-ignore
         if (err)
             console.error(err);
     });

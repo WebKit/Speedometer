@@ -13,7 +13,6 @@ const getRoute = () => {
         .split("/")
         .pop();
 
-    // prettier-ignore
     if (!FILTERS[route])
         route = "all";
 

@@ -28,7 +28,6 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
     }
 
     function handleKeyDown(e) {
-        // prettier-ignore
         if (e.key === "Escape")
             setEditing(false);
         else if (e.key === "Enter")

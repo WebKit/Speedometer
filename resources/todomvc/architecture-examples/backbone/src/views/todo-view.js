@@ -46,7 +46,6 @@ var app = app || {};
             // we've to create a workaround.
             // https://github.com/tastejs/todomvc/issues/469
 
-            // prettier-ignore
             if (this.model.changed.id !== undefined)
                 return null;
 
@@ -88,11 +87,9 @@ var app = app || {};
             // benefit of us not having to maintain state in the DOM and the
             // JavaScript logic.
 
-            // prettier-ignore
             if (!this.$el.hasClass("editing"))
                 return;
 
-            // prettier-ignore
             if (trimmedValue)
                 this.model.save({ title: trimmedValue });
             else
@@ -103,7 +100,6 @@ var app = app || {};
 
         // If you hit `enter`, we're through editing the item.
         updateOnEnter: function (e) {
-            // prettier-ignore
             if (e.which === ENTER_KEY)
                 this.close();
         },
