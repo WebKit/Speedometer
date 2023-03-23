@@ -7,8 +7,7 @@ class Params {
     startAutomatically = false;
     iterationCount = 10;
     suites = [];
-    testInitiator = "timeout"; // or "raf"
-    asyncInitiator = "timeout"; // or "raf"
+    asyncMetric = "timeout"; // or "raf"
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -47,27 +46,19 @@ class Params {
         }
         this.developerMode = searchParams.has("developerMode");
         searchParams.delete("developerMode");
-        this.testInitiator = this._parseInitiator(searchParams, "testInitiator");
-        this.asyncInitiator = this._parseInitiator(searchParams, "asyncInitiator");
+
+        const asyncMetricChoice = ["timeout", "raf"];
+        if (searchParams.has("asyncMetric")) {
+            const asyncMetric = searchParams.get("asyncMetric");
+            if (!asyncMetricChoice.includes(asyncMetric))
+                throw new Error(`Invalid asyncMetric param: ${asyncMetric}, choices are ${asyncMetricChoice}`);
+            searchParams.delete("asyncMetric");
+            this.asyncMetric = asyncMetric;
+        }
+
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
             console.error("Got unused search params", unused);
-    }
-
-    _parseInitiator(searchParams, name, defaultValue = "timeout") {
-        const initiatorChoices = ["timeout", "raf"];
-        if (searchParams.has(name)) {
-            const testInitiatorParam = searchParams.get(name);
-            console.log(testInitiatorParam);
-            if (initiatorChoices.includes(testInitiatorParam)) {
-                searchParams.delete(name);
-                return testInitiatorParam;
-            }
-            throw new Error(`Invalid ${name} param: ${testInitiatorParam}, choices are ${initiatorChoices}`);
-        }
-        if (!initiatorChoices.includes(defaultValue))
-            throw Error(`Invalid default value: ${defaultValue}`);
-        return defaultValue;
     }
 
     toSearchParams() {
