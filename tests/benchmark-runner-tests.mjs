@@ -158,7 +158,7 @@ describe("BenchmarkRunner", () => {
                 _runTestAndRecordResultsStub = stub(runner, "_runTestAndRecordResults").callsFake(() => null);
 
                 peformanceMarkSpy = spy(window.performance, "mark");
-                runner._runSuite(suite);
+                await runner._runSuite(suite);
             });
 
             it("should prepare the suite first", async () => {
@@ -169,64 +169,25 @@ describe("BenchmarkRunner", () => {
                 assert.calledThrice(_runTestAndRecordResultsStub);
                 assert.calledWith(peformanceMarkSpy, "start-suite-Suite 1");
                 assert.calledWith(peformanceMarkSpy, "end-suite-Suite 1");
-                expect(peformanceMarkSpy.callCount).to.equal(2);
+                expect(peformanceMarkSpy.callCount).to.equal(4);
             });
         });
     });
 
     describe("Test", () => {
         describe("_runTestAndRecordResults", () => {
-            let _runTestSpy;
-
             const suite = SUITES_FIXTURE[0];
 
             before(async () => {
                 await runner._appendFrame();
 
-                _runTestSpy = spy(runner, "_runTest");
-
                 await runner._runTestAndRecordResults(suite, suite.tests[0]);
             });
 
-            it("should run the test with the correct arguments", () => {
-                assert.calledWith(_runTestSpy, suite, suite.tests[0], runner._page);
-            });
 
             it("should run client pre and post hooks if present", () => {
                 assert.calledWith(runner._client.willRunTest, suite, suite.tests[0]);
                 assert.calledWith(runner._client.didRunTest, suite, suite.tests[0]);
-            });
-        });
-
-        describe("_runTest", () => {
-            let peformanceMarkSpy, _testFnSpy, page;
-            const callback = stub();
-            const suite = SUITES_FIXTURE[0];
-
-            before(async () => {
-                page = { _frame: await runner._appendFrame() };
-                peformanceMarkSpy = spy(window.performance, "mark");
-                _testFnSpy = suite.tests[0].run.callsFake(() => null);
-
-                stubPerformanceNowCalls(8000, 10000, 12000, 13000);
-                runner._runTest(suite, suite.tests[0], page, callback);
-            });
-
-            it("should write performance marks at the start and end of the test with the correct test name", () => {
-                assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-start");
-                assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-sync-end");
-                assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-async-start");
-                assert.calledWith(peformanceMarkSpy, "Suite 1.Test 1-async-end");
-                expect(peformanceMarkSpy.callCount).to.equal(4);
-            });
-
-            it("should run the test", () => {
-                assert.calledWith(_testFnSpy, page);
-            });
-
-            it("should fire the callback with correct arguments for sync time, async time, and frame height", async () => {
-                await new Promise((resolve) => requestAnimationFrame(resolve));
-                assert.calledOnce(callback);
             });
         });
 
