@@ -8,7 +8,15 @@ This application uses Ember 3.28.11 to implement a todo application.
 
 ## Implementation details
 
-[TBD]
+Ember:\
+Model: todo-data.js service\
+View: Ember templates\
+controller: Ember routes and components
+
+MVC:\
+Model: maintains the data and behavior of an application\
+View: displays the model in the ui\
+Container: serves as an interface between view & model components
 
 ## Built steps
 
