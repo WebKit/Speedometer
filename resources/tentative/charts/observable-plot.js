@@ -161,15 +161,59 @@ function addStackedBars() {
     document.querySelector("#chart").append(Plot.plot(options));
 }
 
+function addGroupedBars() {
+    if (!isReady())
+        throw new Error("Please preload the data first.");
+
+    const options = {
+        width: 2000,
+        height: 1000,
+        x: {
+            axis: null,
+            domain: Array.from({ length: 7 }, (_, i) => i),
+        },
+        y: {
+            grid: true,
+            tickFormat: "~s",
+        },
+        color: { type: "categorical" },
+        fx: {
+            domain: preparedData.statesWithMostFlights,
+            label: null,
+            tickSize: 6,
+        },
+        facet: {
+            data: preparedData.plotData,
+            x: "state",
+        },
+        marks: [
+            // bars
+            Plot.barY(preparedData.plotData, {
+                x: "index",
+                y: "total",
+                fill: "index",
+                title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}\n${d3Format(",")(d.total)} flights`,
+            }),
+            // labels
+            Plot.text(preparedData.plotData, { x: "index", y: "total", text: (d) => d3Format(".2~s")(d.total), dy: -10 }),
+            // horizontal bottom line
+            Plot.ruleY([0]),
+        ],
+    };
+    document.querySelector("#chart").append(Plot.plot(options));
+}
+
 async function runAllTheThings() {
     await preload();
     prepare();
     addStackedBars();
+    addGroupedBars();
 }
 
 document.getElementById("preload").addEventListener("click", preload);
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
+document.getElementById("add-grouped-chart-button").addEventListener("click", addGroupedBars);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
 
 if (import.meta.env.DEV)
