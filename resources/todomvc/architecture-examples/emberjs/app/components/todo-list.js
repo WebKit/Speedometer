@@ -1,28 +1,17 @@
-import Ember from 'ember';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
 
-export default Ember.Component.extend({
-    repo: Ember.inject.service(),
-    tagName: 'section',
-    elementId: 'main',
-    classNames: ['main'],
-    canToggle: true,
-    allCompleted: Ember.computed('todos.@each.completed', function () {
-        return this.get('todos').isEvery('completed');
-    }),
+export default class TodoListComponent extends Component {
+  get allItemsCompleted() {
+    const { todos } = this.args;
 
-    actions: {
-        enableToggle() {
-            this.set('canToggle', true);
-        },
+    return todos.every((todo) => {
+      return todo.completed;
+    });
+  }
 
-        disableToggle() {
-            this.set('canToggle', false);
-        },
-
-        toggleAll() {
-            let allCompleted = this.get('allCompleted');
-            this.get('todos').forEach(todo => Ember.set(todo, 'completed', !allCompleted));
-            this.get('repo').persist();
-        }
-    }
-});
+  @action toggleAll(e) {
+    const { todos } = this.args;
+    todos.forEach((todo) => (todo.completed = e.target.checked));
+  }
+}

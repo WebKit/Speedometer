@@ -1,49 +1,62 @@
-import Ember from 'ember';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { scheduleOnce } from '@ember/runloop';
 
-export default Ember.Component.extend({
-    repo: Ember.inject.service(),
-    tagName: 'li',
-    editing: false,
-    classNameBindings: ['todo.completed', 'editing'],
+export default class TodoItemComponent extends Component {
+  @service('todo-data') todos;
 
-    actions: {
-        startEditing() {
-            this.get('onStartEdit')();
-            this.set('editing', true);
-            Ember.run.scheduleOnce('afterRender', this, 'focusInput');
-        },
+  @tracked isEditing = false;
 
-        doneEditing(todoTitle) {
-            if (!this.get('editing')) { return; }
-            if (Ember.isBlank(todoTitle)) {
-                this.send('removeTodo');
-            } else {
-                this.set('todo.title', todoTitle.trim());
-                this.set('editing', false);
-                this.get('onEndEdit')();
-            }
-        },
+  @action startEdit() {
+    this.originalTitle = this.args.todo.title;
+    this.isEditing = true;
+    scheduleOnce('afterRender', this, 'focus');
+  }
 
-        handleKeydown(e) {
-            if (e.keyCode === 13) {
-                e.target.blur();
-            } else if (e.keyCode === 27) {
-                this.set('editing', false);
-            }
-        },
+  @action finishEdit(e) {
+    if (!this.isEditing) return;
 
-        toggleCompleted(e) {
-            let todo = this.get('todo');
-            Ember.set(todo, 'completed', e.target.checked);
-            this.get('repo').persist();
-        },
+    const { todo } = this.args;
+    const pendingTitle = e.target.value;
 
-        removeTodo() {
-            this.get('repo').delete(this.get('todo'));
-        }
-    },
-
-    focusInput() {
-        this.element.querySelector('input.edit').focus();
+    if (!pendingTitle) {
+      this.todos.removeItem(todo);
+      return;
     }
-});
+
+    this.todos.updateItem(todo, pendingTitle);
+
+    this.isEditing = false;
+  }
+
+  @action toggleItem() {
+    const { todo } = this.args;
+    this.todos.toggleItem(todo);
+  }
+
+  @action removeItem() {
+    const { todo } = this.args;
+    this.todos.removeItem(todo);
+  }
+
+  @action onKeyDown(e) {
+    if (e.key === 'Enter') {
+      event.target.blur();
+    } else if (e.key === 'Escape') {
+      this.isEditing = false;
+    }
+  }
+
+  @action createRef(inputElement) {
+    this.inputElement = inputElement;
+  }
+
+  focus() {
+    if (!this.inputElement) return;
+    this.inputElement.focus();
+  }
+}
+
+//editing
