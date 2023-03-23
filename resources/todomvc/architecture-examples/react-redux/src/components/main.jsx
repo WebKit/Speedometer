@@ -19,7 +19,6 @@ export default class Main extends Component {
     render() {
         const { todos, editTodo, deleteTodo, toggleTodo, toggleAll, clearCompleted, location, visibleTodos, completedCount, activeCount } = this.props;
 
-        // prettier-ignore
         if (todos.length === 0)
             return null;
 

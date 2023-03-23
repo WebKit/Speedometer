@@ -21,7 +21,6 @@ export const Item = memo(function Item({ todo, dispatch }) {
 
     const handleUpdate = useCallback(
         (title) => {
-            // prettier-ignore
             if (title.length === 0)
                 removeItem(id);
             else

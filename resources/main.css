@@ -379,7 +379,7 @@ section#details .metric dd {
     border-bottom: 1px var(--foreground) solid;
     padding: 0 4px 3px 0px;
 }
-.metrics-table thead th  + th {
+.metrics-table thead th + th {
     padding: 0 4px 3px 4px;
 }
 

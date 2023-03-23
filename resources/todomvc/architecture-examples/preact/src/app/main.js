@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { h } from "preact";
 
 import TodoItem from "./item";
@@ -17,9 +16,9 @@ export default function TodoMain({ onChange, onToggle, onRemove, onSave, todos, 
                 </label>
             </div>
             <ul class="todo-list">
-                {visibleTodos.map((todo) => (
+                {visibleTodos.map((todo) =>
                     <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onRemove={onRemove} onSave={onSave} />
-                ))}
+                )}
             </ul>
         </section>
     );
