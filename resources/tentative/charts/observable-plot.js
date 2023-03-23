@@ -87,6 +87,8 @@ function prepare() {
         return enrichedMostUsedAirports;
     });
 
+    const flatFlightsByAirport = [...flightsByAirport].map(([iata, data]) => ({ iata, ...data }));
+
     preparedData = {
         airports,
         flights,
@@ -96,6 +98,7 @@ function prepare() {
         stateInformationSortedArray,
         statesWithMostFlights,
         plotData,
+        flatFlightsByAirport,
     };
 }
 
@@ -203,17 +206,66 @@ function addGroupedBars() {
     document.querySelector("#chart").append(Plot.plot(options));
 }
 
+function addDottedBars() {
+    if (!isReady())
+        throw new Error("Please preload the data first.");
+
+    const data = preparedData.flatFlightsByAirport
+        .flatMap(({ iata, origin, destination }) => {
+            const airportInformation = preparedData.byAirport.get(iata);
+            return [
+                { ...airportInformation, value: -origin },
+                { ...airportInformation, value: destination },
+            ];
+        })
+        .filter((d) => d.value);
+
+    const options = {
+        width: 2000,
+        height: 1000,
+        color: { type: "threshold", domain: [0] },
+        x: {
+            domain: preparedData.stateInformationSortedArray.map(({ state }) => state),
+        },
+        y: {
+            grid: true,
+            label: "← outward          Number of flights          inward →",
+            labelAnchor: "center",
+            tickFormat: (v) => d3Format("~s")(Math.abs(v)),
+            type: "pow",
+            exponent: 0.2,
+        },
+        marks: [
+            // stacked bars
+            Plot.dot(data, {
+                x: "state",
+                y: "value",
+                r: 4,
+                stroke: "value",
+                strokeWidth: 3,
+                title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}\n${d3Format(",")(Math.abs(d.value))} ${d.value > 0 ? "inward" : "outward"} flights`,
+            }),
+            // horizontal bottom line
+            Plot.ruleY([0]),
+        ],
+    };
+
+    document.querySelector("#chart").append(Plot.plot(options));
+}
+
 async function runAllTheThings() {
     await preload();
     prepare();
     addStackedBars();
     addGroupedBars();
+    addDottedBars();
 }
 
 document.getElementById("preload").addEventListener("click", preload);
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
 document.getElementById("add-grouped-chart-button").addEventListener("click", addGroupedBars);
+document.getElementById("add-dotted-chart-button").addEventListener("click", addDottedBars);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
 
 if (import.meta.env.DEV)

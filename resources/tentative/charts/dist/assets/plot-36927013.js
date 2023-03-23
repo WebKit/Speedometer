@@ -321,7 +321,7 @@ function nest(values2, map2, reduce, keys) {
 function permute(source, keys) {
   return Array.from(keys, (key) => source[key]);
 }
-function sort(values2, ...F) {
+function sort$1(values2, ...F) {
   if (typeof values2[Symbol.iterator] !== "function")
     throw new TypeError("values is not iterable");
   values2 = Array.from(values2);
@@ -361,7 +361,7 @@ function ascendingDefined$1(a2, b) {
   return (a2 == null || !(a2 >= a2)) - (b == null || !(b >= b)) || (a2 < b ? -1 : a2 > b ? 1 : 0);
 }
 function groupSort(values2, reduce, key) {
-  return (reduce.length !== 2 ? sort(rollup(values2, reduce, key), ([ak, av], [bk, bv]) => ascending$1(av, bv) || ascending$1(ak, bk)) : sort(group(values2, key), ([ak, av], [bk, bv]) => reduce(av, bv) || ascending$1(ak, bk))).map(([key2]) => key2);
+  return (reduce.length !== 2 ? sort$1(rollup(values2, reduce, key), ([ak, av], [bk, bv]) => ascending$1(av, bv) || ascending$1(ak, bk)) : sort$1(group(values2, key), ([ak, av], [bk, bv]) => reduce(av, bv) || ascending$1(ak, bk))).map(([key2]) => key2);
 }
 const e10 = Math.sqrt(50), e5 = Math.sqrt(10), e2 = Math.sqrt(2);
 function tickSpec(start2, stop, count) {
@@ -8001,6 +8001,16 @@ function maybeSymbol(symbol2) {
     return value;
   throw new Error(`invalid symbol: ${symbol2}`);
 }
+function maybeSymbolChannel(symbol2) {
+  if (symbol2 == null || isSymbolObject(symbol2))
+    return [void 0, symbol2];
+  if (typeof symbol2 === "string") {
+    const value = symbols.get(`${symbol2}`.toLowerCase());
+    if (value)
+      return [void 0, value];
+  }
+  return [symbol2, void 0];
+}
 function defined(x) {
   return x != null && !Number.isNaN(x);
 }
@@ -8078,6 +8088,9 @@ function composeInitializer(i1, i2) {
     return { data: d2, facets: f2, channels: { ...c1, ...c2 } };
   };
 }
+function apply(options, t) {
+  return (options.initializer != null ? initializer : basic)(options, t);
+}
 function filterTransform(value) {
   return (data, facets) => {
     const V = valueof(data, value);
@@ -8086,6 +8099,12 @@ function filterTransform(value) {
 }
 function reverseTransform(data, facets) {
   return { data, facets: facets.map((I) => I.slice().reverse()) };
+}
+function sort(order, options) {
+  return {
+    ...(isOptions(order) && order.channel !== void 0 ? initializer : apply)(options, sortTransform(order)),
+    sort: null
+  };
 }
 function sortTransform(value) {
   return (typeof value === "function" && value.length !== 1 ? sortData : sortValue)(value);
@@ -8345,7 +8364,7 @@ function channelDomain(channels, facetChannels, data, options) {
       const reducer2 = maybeReduce(reduce === true ? "max" : reduce, YV);
       X.domain = () => {
         let domain = rollup(range(XV), (I) => reducer2.reduce(I, YV), (i) => XV[i]);
-        domain = sort(domain, reverse2 ? descendingGroup : ascendingGroup);
+        domain = sort$1(domain, reverse2 ? descendingGroup : ascendingGroup);
         if (lo !== 0 || hi !== Infinity)
           domain = domain.slice(lo, hi);
         return domain.map(first);
@@ -8942,7 +8961,7 @@ function inferDomain(channels, interval2, key) {
   if (values2.size > 1e4 && registry.get(key) === position) {
     throw new Error(`implicit ordinal domain of ${key} scale has more than 10,000 values`);
   }
-  return sort(values2, ascendingDefined);
+  return sort$1(values2, ascendingDefined);
 }
 function inferHint(channels, key) {
   let value;
@@ -10452,7 +10471,7 @@ function maybeIntervalMidX(options = {}) {
 function maybeIntervalMidY(options = {}) {
   return maybeIntervalMidK("y", maybeInsetY, options);
 }
-const defaults$4 = {
+const defaults$5 = {
   ariaLabel: "rule",
   fill: null,
   stroke: "currentColor"
@@ -10464,7 +10483,7 @@ class RuleX extends Mark {
       x: { value: x, scale: "x", optional: true },
       y1: { value: y12, scale: "y", optional: true },
       y2: { value: y2, scale: "y", optional: true }
-    }, options, defaults$4);
+    }, options, defaults$5);
     this.insetTop = number(insetTop);
     this.insetBottom = number(insetBottom);
   }
@@ -10483,7 +10502,7 @@ class RuleY extends Mark {
       y: { value: y, scale: "y", optional: true },
       x1: { value: x12, scale: "x", optional: true },
       x2: { value: x2, scale: "x", optional: true }
-    }, options, defaults$4);
+    }, options, defaults$5);
     this.insetRight = number(insetRight);
     this.insetLeft = number(insetLeft);
   }
@@ -10542,7 +10561,7 @@ function template(strings, ...parts) {
     return s2;
   };
 }
-const defaults$3 = {
+const defaults$4 = {
   ariaLabel: "text",
   strokeLinejoin: "round",
   strokeWidth: 3,
@@ -10560,7 +10579,7 @@ class Text extends Mark {
       fontSize: { value: vfontSize, optional: true },
       rotate: { value: numberChannel(vrotate), optional: true },
       text: { value: text2, filter: nonempty, optional: true }
-    }, options, defaults$3);
+    }, options, defaults$4);
     this.rotate = crotate;
     this.textAnchor = impliedString(textAnchor, "middle");
     this.lineAnchor = keyword(lineAnchor, "lineAnchor", ["top", "middle", "bottom"]);
@@ -10925,7 +10944,7 @@ function isCombiner(text2, i) {
 function isPictographic(text2, i) {
   return isAscii(text2, i) ? false : (rePictographic.lastIndex = i, rePictographic.test(text2));
 }
-const defaults$2 = {
+const defaults$3 = {
   ariaLabel: "vector",
   fill: "none",
   stroke: "currentColor",
@@ -10977,7 +10996,7 @@ class Vector extends Mark {
       y: { value: y, scale: "y", optional: true },
       length: { value: vl, scale: "length", optional: true },
       rotate: { value: vr, optional: true }
-    }, options, defaults$2);
+    }, options, defaults$3);
     this.r = +r;
     this.length = cl;
     this.rotate = cr;
@@ -11372,7 +11391,7 @@ function inferAxisLabel(key, scale, labelAnchor) {
   const order = inferScaleOrder(scale);
   return order ? key === "x" || labelAnchor === "center" ? key === "x" === order < 0 ? `← ${label}` : `${label} →` : `${order < 0 ? "↑ " : "↓ "}${label}` : label;
 }
-const defaults$1 = {
+const defaults$2 = {
   ariaLabel: "frame",
   fill: "none",
   stroke: "currentColor"
@@ -11386,7 +11405,7 @@ const lineDefaults = {
 class Frame extends Mark {
   constructor(options = {}) {
     const { anchor = null, inset = 0, insetTop = inset, insetRight = inset, insetBottom = inset, insetLeft = inset, rx, ry } = options;
-    super(void 0, void 0, options, anchor == null ? defaults$1 : lineDefaults);
+    super(void 0, void 0, options, anchor == null ? defaults$2 : lineDefaults);
     this.anchor = maybeKeyword(anchor, "anchor", ["top", "right", "bottom", "left"]);
     this.insetTop = number(insetTop);
     this.insetRight = number(insetRight);
@@ -12109,6 +12128,80 @@ function applyOrder(stacks, O) {
     stack2.sort((i, j) => ascendingDefined(O[i], O[j]));
   }
 }
+const defaults$1 = {
+  ariaLabel: "dot",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.5
+};
+function withDefaultSort(options) {
+  return options.sort === void 0 && options.reverse === void 0 ? sort({ channel: "r", order: "descending" }, options) : options;
+}
+class Dot extends Mark {
+  constructor(data, options = {}) {
+    const { x, y, r, rotate, symbol: symbol2 = symbolCircle, frameAnchor } = options;
+    const [vrotate, crotate] = maybeNumberChannel(rotate, 0);
+    const [vsymbol, csymbol] = maybeSymbolChannel(symbol2);
+    const [vr, cr] = maybeNumberChannel(r, vsymbol == null ? 3 : 4.5);
+    super(data, {
+      x: { value: x, scale: "x", optional: true },
+      y: { value: y, scale: "y", optional: true },
+      r: { value: vr, scale: "r", filter: positive, optional: true },
+      rotate: { value: vrotate, optional: true },
+      symbol: { value: vsymbol, scale: "auto", optional: true }
+    }, withDefaultSort(options), defaults$1);
+    this.r = cr;
+    this.rotate = crotate;
+    this.symbol = csymbol;
+    this.frameAnchor = maybeFrameAnchor(frameAnchor);
+    const { channels } = this;
+    const { symbol: symbolChannel } = channels;
+    if (symbolChannel) {
+      const { fill: fillChannel, stroke: strokeChannel } = channels;
+      symbolChannel.hint = {
+        fill: fillChannel ? fillChannel.value === symbolChannel.value ? "color" : "currentColor" : this.fill,
+        stroke: strokeChannel ? strokeChannel.value === symbolChannel.value ? "color" : "currentColor" : this.stroke
+      };
+    }
+  }
+  render(index2, scales, channels, dimensions, context) {
+    const { x, y } = scales;
+    const { x: X, y: Y, r: R, rotate: A5, symbol: S } = channels;
+    const { r, rotate, symbol: symbol2 } = this;
+    const [cx, cy] = applyFrameAnchor(this, dimensions);
+    const circle = this.symbol === symbolCircle;
+    const size = R ? void 0 : r * r * Math.PI;
+    if (negative(r))
+      index2 = [];
+    return create("svg:g", context).call(applyIndirectStyles, this, dimensions, context).call(applyTransform, this, { x: X && x, y: Y && y }).call((g) => g.selectAll().data(index2).enter().append(circle ? "circle" : "path").call(applyDirectStyles, this).call(circle ? (selection2) => {
+      selection2.attr("cx", X ? (i) => X[i] : cx).attr("cy", Y ? (i) => Y[i] : cy).attr("r", R ? (i) => R[i] : r);
+    } : (selection2) => {
+      selection2.attr("transform", template`translate(${X ? (i) => X[i] : cx},${Y ? (i) => Y[i] : cy})${A5 ? (i) => ` rotate(${A5[i]})` : rotate ? ` rotate(${rotate})` : ``}`).attr("d", R && S ? (i) => {
+        const p = pathRound();
+        S[i].draw(p, R[i] * R[i] * Math.PI);
+        return p;
+      } : R ? (i) => {
+        const p = pathRound();
+        symbol2.draw(p, R[i] * R[i] * Math.PI);
+        return p;
+      } : S ? (i) => {
+        const p = pathRound();
+        S[i].draw(p, size);
+        return p;
+      } : (() => {
+        const p = pathRound();
+        symbol2.draw(p, size);
+        return p;
+      })());
+    }).call(applyChannelStyles, this, channels)).node();
+  }
+}
+function dot(data, options = {}) {
+  let { x, y, ...remainingOptions } = options;
+  if (options.frameAnchor === void 0)
+    [x, y] = maybeTuple(x, y);
+  return new Dot(data, { ...remainingOptions, x, y });
+}
 class AbstractBar extends Mark {
   constructor(data, channels, options = {}, defaults2) {
     super(data, channels, options, defaults2);
@@ -12202,7 +12295,7 @@ function prepare() {
       var _a;
       return (_a = flightsByAirport.get(iata)) == null ? void 0 : _a.total;
     });
-    const sorted = sort(airportsInState, ({ iata }) => {
+    const sorted = sort$1(airportsInState, ({ iata }) => {
       var _a;
       return -((_a = flightsByAirport.get(iata)) == null ? void 0 : _a.total);
     });
@@ -12234,6 +12327,7 @@ function prepare() {
     });
     return enrichedMostUsedAirports;
   });
+  const flatFlightsByAirport = [...flightsByAirport].map(([iata, data]) => ({ iata, ...data }));
   preparedData = {
     airports,
     flights,
@@ -12242,7 +12336,8 @@ function prepare() {
     airportsGroupedByStateArray,
     stateInformationSortedArray,
     statesWithMostFlights,
-    plotData
+    plotData,
+    flatFlightsByAirport
   };
 }
 function parseAirportsInformation() {
@@ -12342,14 +12437,48 @@ ${format$1(",")(d.total)} flights`
   };
   document.querySelector("#app").append(plot(options));
 }
+function addDottedBars() {
+  if (!isReady())
+    throw new Error("Please preload the data first.");
+  const data = preparedData.flatFlightsByAirport.flatMap(({ iata, origin, destination }) => [
+    { iata, value: origin, state: preparedData.byAirport.get(iata).state },
+    { iata, value: -destination, state: preparedData.byAirport.get(iata).state }
+  ]);
+  const options = {
+    width: 2e3,
+    height: 1e3,
+    color: { type: "threshold", domain: [0] },
+    x: {
+      domain: preparedData.stateInformationSortedArray.map(({ state }) => state)
+    },
+    y: { grid: true, tickFormat: "~s" },
+    marks: [
+      // stacked bars
+      dot(data, {
+        x: "state",
+        y: "value",
+        fill: "value",
+        title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}
+${format$1(",")(d.total)} flights`
+      }),
+      // labels
+      text(preparedData.stateInformationSortedArray, { x: "state", y: "total", text: (d) => format$1(".2~s")(d.total), dy: -10 }),
+      // horizontal bottom line
+      ruleY([0])
+    ]
+  };
+  document.querySelector("#app").append(plot(options));
+}
 async function runAllTheThings() {
   await preload();
   prepare();
   addStackedBars();
   addGroupedBars();
+  addDottedBars();
 }
 document.getElementById("preload").addEventListener("click", preload);
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
 document.getElementById("add-grouped-chart-button").addEventListener("click", addGroupedBars);
+document.getElementById("add-dotted-chart-button").addEventListener("click", addDottedBars);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
