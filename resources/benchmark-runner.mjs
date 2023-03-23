@@ -127,23 +127,10 @@ class MeasureTask {
         this._unusedHeight = undefined;
 
         this._wasRun = false;
-        this._asyncMeasurePromises = [];
-        if (params.asyncMetric === "raf") {
-            this._asyncMeasurePromises.push(
-                new Promise((resolve) => {
-                    this._asyncRafDone = resolve;
-                })
-            );
-        } else if (params.asyncMetric === "timeout") {
-            this._asyncMeasurePromises.push(
-                new Promise((resolve) => {
-                    this._asyncTimeoutDone = resolve;
-                })
-            );
-        } else {
-            throw new Error("Unknown asyncMetric param");
-        }
 
+        this._asyncMeasurePromise = new Promise((resolve) => {
+            this._asyncDoneCallback = resolve;
+        });
         this._measureSyncCallback = this._measureSync.bind(this);
         this._measureAsyncTimeoutCallback = this._measureAsyncTimeout.bind(this);
         this._measureAsyncRafCallback = this._measureAsyncRaf.bind(this);
@@ -208,7 +195,7 @@ class MeasureTask {
         const endTime = performance.now();
         this.asyncTime = endTime - this._asyncStartTime;
         performance.mark(this._asyncEndLabel);
-        this._asyncTimeoutDone();
+        this._asyncDoneCallback();
     }
 
     _measureAsyncRaf() {
@@ -216,11 +203,11 @@ class MeasureTask {
         const endTime = performance.now();
         this.asyncTime = endTime - this._asyncStartTime;
         performance.mark(this._asyncEndLabel);
-        this._asyncRafDone();
+        this._asyncDoneCallback();
     }
 
     async _done() {
-        await Promise.all(this._asyncMeasurePromises);
+        await this._asyncMeasurePromise;
         const label = `${this.suite.name}.${this.test.name}`;
         performance.measure(`${label}-sync`, this._startLabel, this._syncEndLabel);
         performance.measure(`${label}-async`, this._asyncStartLabel, this._asyncEndLabel);
