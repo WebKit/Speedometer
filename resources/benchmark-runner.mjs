@@ -165,9 +165,10 @@ class MeasureTask {
     async run() {
         if (this._wasRun)
             throw Error("MeasureTask can only run once.");
-        if (params.testInitiator === "raf")
+        if (params.testInitiator === "raf") {
             requestAnimationFrame(this._measureSyncCallback);
-        else
+            requestAnimationFrame(this._measureAsyncRafCallback);
+        } else
             setTimeout(this._measureSyncCallback, 0);
         await this._done();
         this._wasRun = true;
@@ -187,7 +188,6 @@ class MeasureTask {
         this._asyncStartTime = performance.now();
         queueMicrotask(this._measureAsyncMicrotaskCallback);
         setTimeout(this._measureAsyncTimeoutCallback, 0);
-        requestAnimationFrame(this._measureAsyncRafCallback);
     }
 
     _measureLayout() {
