@@ -12,7 +12,7 @@ const htmlEscapes = {
 const reUnescapedHtml = /[&<>"'`]/g;
 const reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);
 
-const escape = (str) => (str && reHasUnescapedHtml.test(str) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str);
+const escape = (str) => str && reHasUnescapedHtml.test(str) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str;
 const escapeHtmlChar = (chr) => htmlEscapes[chr];
 
 const createTodoItem = ({ id, title, completed, checked }) => `

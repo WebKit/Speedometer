@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { h } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
@@ -13,7 +12,6 @@ const getRoute = () => {
         .split("/")
         .pop();
 
-    // prettier-ignore
     if (!FILTERS[route])
         route = "all";
 
@@ -66,12 +64,12 @@ export default function App() {
     return (
         <div>
             <TodoHeader onKeyDown={handleKeyDown} />
-            {model.getTodos().length > 0 ? (
-                <div>
+            {model.getTodos().length > 0
+                ? <div>
                     <TodoMain todos={model.getTodos()} route={route} onChange={toggleAll} onToggle={model.toggleItem} onRemove={model.removeItem} onSave={model.updateItem} />
                     <TodoFooter todos={model.getTodos()} route={route} onClearCompleted={model.clearCompleted} />
                 </div>
-            ) : null}
+                : null}
         </div>
     );
 }

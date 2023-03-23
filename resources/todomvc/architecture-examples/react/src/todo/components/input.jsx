@@ -19,7 +19,6 @@ const hasValidMin = (value, min) => {
 
 export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
     const handleBlur = useCallback(() => {
-        // prettier-ignore
         if (onBlur)
             onBlur();
     }, [onBlur]);
@@ -29,7 +28,6 @@ export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
             if (e.key === "Enter") {
                 const value = e.target.value.trim();
 
-                // prettier-ignore
                 if (!hasValidMin(value, 2))
                     return;
 

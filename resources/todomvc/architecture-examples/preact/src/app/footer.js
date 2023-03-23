@@ -1,5 +1,4 @@
 import cx from "classnames";
-// eslint-disable-next-line no-unused-vars
 import { h } from "preact";
 
 export default function TodoFooter({ todos, route, onClearCompleted }) {
@@ -26,11 +25,11 @@ export default function TodoFooter({ todos, route, onClearCompleted }) {
                     </a>
                 </li>
             </ul>
-            {completedTodoCount > 0 && (
-                <button class="clear-completed" onClick={onClearCompleted}>
+            {completedTodoCount > 0
+                && <button class="clear-completed" onClick={onClearCompleted}>
                     Clear completed
                 </button>
-            )}
+            }
         </footer>
     );
 }
