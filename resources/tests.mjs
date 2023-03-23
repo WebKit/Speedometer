@@ -161,7 +161,7 @@ Suites.push({
 });
 
 Suites.push({
-    name: "EmberJS-TodoMVC",
+    name: "TodoMVC-Ember",
     url: "todomvc/architecture-examples/emberjs/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
@@ -219,7 +219,7 @@ Suites.push({
 });
 
 Suites.push({
-    name: "Angular2-TypeScript-TodoMVC",
+    name: "TodoMVC-Angular",
     url: "todomvc/architecture-examples/angular/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
@@ -277,7 +277,7 @@ Suites.push({
 });
 
 Suites.push({
-    name: "jQuery-TodoMVC",
+    name: "TodoMVC-jQuery",
     url: "todomvc/architecture-examples/jquery/index.html",
     async prepare(page) {
         await page.waitForElement("#appIsReady");
