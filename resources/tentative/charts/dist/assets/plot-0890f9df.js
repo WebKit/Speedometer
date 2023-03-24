@@ -5054,16 +5054,16 @@ function projectionMutator(projectAt) {
     return cache && cacheStream === stream ? cache : cache = transformRadians(transformRotate(rotate)(preclip(projectResample(postclip(cacheStream = stream)))));
   };
   projection2.preclip = function(_) {
-    return arguments.length ? (preclip = _, theta = void 0, reset()) : preclip;
+    return arguments.length ? (preclip = _, theta = void 0, reset2()) : preclip;
   };
   projection2.postclip = function(_) {
-    return arguments.length ? (postclip = _, x02 = y02 = x12 = y12 = null, reset()) : postclip;
+    return arguments.length ? (postclip = _, x02 = y02 = x12 = y12 = null, reset2()) : postclip;
   };
   projection2.clipAngle = function(_) {
-    return arguments.length ? (preclip = +_ ? clipCircle(theta = _ * radians$1) : (theta = null, clipAntimeridian), reset()) : theta * degrees;
+    return arguments.length ? (preclip = +_ ? clipCircle(theta = _ * radians$1) : (theta = null, clipAntimeridian), reset2()) : theta * degrees;
   };
   projection2.clipExtent = function(_) {
-    return arguments.length ? (postclip = _ == null ? (x02 = y02 = x12 = y12 = null, identity$4) : clipRectangle(x02 = +_[0][0], y02 = +_[0][1], x12 = +_[1][0], y12 = +_[1][1]), reset()) : x02 == null ? null : [[x02, y02], [x12, y12]];
+    return arguments.length ? (postclip = _ == null ? (x02 = y02 = x12 = y12 = null, identity$4) : clipRectangle(x02 = +_[0][0], y02 = +_[0][1], x12 = +_[1][0], y12 = +_[1][1]), reset2()) : x02 == null ? null : [[x02, y02], [x12, y12]];
   };
   projection2.scale = function(_) {
     return arguments.length ? (k2 = +_, recenter()) : k2;
@@ -5087,7 +5087,7 @@ function projectionMutator(projectAt) {
     return arguments.length ? (sy = _ ? -1 : 1, recenter()) : sy < 0;
   };
   projection2.precision = function(_) {
-    return arguments.length ? (projectResample = resample(projectTransform, delta2 = _ * _), reset()) : sqrt$1(delta2);
+    return arguments.length ? (projectResample = resample(projectTransform, delta2 = _ * _), reset2()) : sqrt$1(delta2);
   };
   projection2.fitExtent = function(extent2, object2) {
     return fitExtent(projection2, extent2, object2);
@@ -5107,9 +5107,9 @@ function projectionMutator(projectAt) {
     projectTransform = compose(project2, transform);
     projectRotateTransform = compose(rotate, projectTransform);
     projectResample = resample(projectTransform, delta2);
-    return reset();
+    return reset2();
   }
-  function reset() {
+  function reset2() {
     cache = cacheStream = null;
     return projection2;
   }
@@ -5213,7 +5213,7 @@ function geoAlbersUsa() {
     if (!arguments.length)
       return lower48.precision();
     lower48.precision(_), alaska.precision(_), hawaii.precision(_);
-    return reset();
+    return reset2();
   };
   albersUsa.scale = function(_) {
     if (!arguments.length)
@@ -5228,7 +5228,7 @@ function geoAlbersUsa() {
     lower48Point = lower48.translate(_).clipExtent([[x - 0.455 * k2, y - 0.238 * k2], [x + 0.455 * k2, y + 0.238 * k2]]).stream(pointStream);
     alaskaPoint = alaska.translate([x - 0.307 * k2, y + 0.201 * k2]).clipExtent([[x - 0.425 * k2 + epsilon, y + 0.12 * k2 + epsilon], [x - 0.214 * k2 - epsilon, y + 0.234 * k2 - epsilon]]).stream(pointStream);
     hawaiiPoint = hawaii.translate([x - 0.205 * k2, y + 0.212 * k2]).clipExtent([[x - 0.214 * k2 + epsilon, y + 0.166 * k2 + epsilon], [x - 0.115 * k2 - epsilon, y + 0.234 * k2 - epsilon]]).stream(pointStream);
-    return reset();
+    return reset2();
   };
   albersUsa.fitExtent = function(extent2, object2) {
     return fitExtent(albersUsa, extent2, object2);
@@ -5242,7 +5242,7 @@ function geoAlbersUsa() {
   albersUsa.fitHeight = function(height, object2) {
     return fitHeight(albersUsa, height, object2);
   };
-  function reset() {
+  function reset2() {
     cache = cacheStream = null;
     return albersUsa;
   }
@@ -12394,7 +12394,7 @@ ${format$1(",")(d.total)} flights`
       ruleY([0])
     ]
   };
-  document.querySelector("#app").append(plot(options));
+  document.querySelector("#chart").append(plot(options));
 }
 function addGroupedBars() {
   if (!isReady())
@@ -12435,15 +12435,18 @@ ${format$1(",")(d.total)} flights`
       ruleY([0])
     ]
   };
-  document.querySelector("#app").append(plot(options));
+  document.querySelector("#chart").append(plot(options));
 }
 function addDottedBars() {
   if (!isReady())
     throw new Error("Please preload the data first.");
-  const data = preparedData.flatFlightsByAirport.flatMap(({ iata, origin, destination }) => [
-    { iata, value: origin, state: preparedData.byAirport.get(iata).state },
-    { iata, value: -destination, state: preparedData.byAirport.get(iata).state }
-  ]);
+  const data = preparedData.flatFlightsByAirport.flatMap(({ iata, origin, destination }) => {
+    const airportInformation = preparedData.byAirport.get(iata);
+    return [
+      { ...airportInformation, value: -origin },
+      { ...airportInformation, value: destination }
+    ];
+  }).filter((d) => d.value);
   const options = {
     width: 2e3,
     height: 1e3,
@@ -12451,34 +12454,49 @@ function addDottedBars() {
     x: {
       domain: preparedData.stateInformationSortedArray.map(({ state }) => state)
     },
-    y: { grid: true, tickFormat: "~s" },
+    y: {
+      grid: true,
+      label: "← outward          Number of flights          inward →",
+      labelAnchor: "center",
+      tickFormat: (v) => format$1("~s")(Math.abs(v)),
+      type: "pow",
+      exponent: 0.2
+    },
     marks: [
       // stacked bars
       dot(data, {
         x: "state",
         y: "value",
-        fill: "value",
+        r: 4,
+        stroke: "value",
+        strokeWidth: 3,
         title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}
-${format$1(",")(d.total)} flights`
+${format$1(",")(Math.abs(d.value))} ${d.value > 0 ? "inward" : "outward"} flights`
       }),
-      // labels
-      text(preparedData.stateInformationSortedArray, { x: "state", y: "total", text: (d) => format$1(".2~s")(d.total), dy: -10 }),
       // horizontal bottom line
       ruleY([0])
     ]
   };
-  document.querySelector("#app").append(plot(options));
+  document.querySelector("#chart").append(plot(options));
+}
+function reset() {
+  document.querySelector("#chart").textContent = "";
 }
 async function runAllTheThings() {
+  reset();
   await preload();
-  prepare();
-  addStackedBars();
-  addGroupedBars();
-  addDottedBars();
+  [
+    // Force prettier to use a multiline formatting
+    "prepare",
+    "add-stacked-chart-button",
+    "add-grouped-chart-button",
+    "add-dotted-chart-button"
+  ].forEach((id2) => document.getElementById(id2).click());
 }
 document.getElementById("preload").addEventListener("click", preload);
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
 document.getElementById("add-grouped-chart-button").addEventListener("click", addGroupedBars);
 document.getElementById("add-dotted-chart-button").addEventListener("click", addDottedBars);
+document.getElementById("reset").addEventListener("click", reset);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
