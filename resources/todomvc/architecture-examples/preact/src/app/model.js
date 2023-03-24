@@ -2,7 +2,6 @@ function uuid() {
     let uuid = "";
     for (let i = 0; i < 32; i++) {
         let random = (Math.random() * 16) | 0;
-        // prettier-ignore
         if (i === 8 || i === 12 || i === 16 || i === 20)
             uuid += "-";
 
@@ -29,7 +28,7 @@ export default function TodoModel(sub) {
     }
 
     function toggleItem(todoToToggle) {
-        todos = todos.map((todo) => (todo !== todoToToggle ? todo : { ...todo, completed: !todo.completed }));
+        todos = todos.map((todo) => todo !== todoToToggle ? todo : { ...todo, completed: !todo.completed });
         inform();
     }
 
@@ -39,7 +38,7 @@ export default function TodoModel(sub) {
     }
 
     function updateItem(todoToSave, title) {
-        todos = todos.map((todo) => (todo !== todoToSave ? todo : { ...todo, title }));
+        todos = todos.map((todo) => todo !== todoToSave ? todo : { ...todo, title });
         inform();
     }
 

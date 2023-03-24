@@ -17,7 +17,7 @@
     "scripts": {
         "dev": "http-server ./ -p 7000 -c-1 --cors",
         "lint:check": "eslint **/*.mjs",
-        "lint:fix": "eslint **/*.mjs --fix",
+        "lint:fix": "eslint \"**/*.{js,mjs,jsx}\" --fix",
         "pretty:check": "prettier --check ./",
         "pretty:fix": "prettier --write ./",
         "format": "npm run pretty:fix ; npm run lint:fix",
@@ -29,6 +29,7 @@
         "command-line-args": "^5.2.1",
         "command-line-usage": "^6.1.3",
         "eslint": "^8.33.0",
+        "eslint-plugin-react": "^7.32.2",
         "expect.js": "^0.3.1",
         "http-server": "^14.1.1",
         "mocha": "^10.2.0",

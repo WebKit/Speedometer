@@ -54,9 +54,8 @@ class Controller {
      * object and it'll handle the DOM insertion and saving of the new item.
      */
     addItem(title) {
-        if (title.trim() === "") {
+        if (title.trim() === "")
             return;
-        }
 
         this.model.create(title, () => {
             this.view.render("clearNewTodo");
@@ -113,9 +112,8 @@ class Controller {
      */
     removeCompletedItems() {
         this.model.read({ completed: true }, (data) => {
-            for (let item of data) {
+            for (let item of data)
                 this.removeItem(item.id);
-            }
         });
 
         this._filter();
@@ -135,9 +133,8 @@ class Controller {
             this.view.render("elementComplete", { id, completed });
         });
 
-        if (!silent) {
+        if (!silent)
             this._filter();
-        }
     }
 
     /**
@@ -146,9 +143,8 @@ class Controller {
      */
     toggleAll(completed) {
         this.model.read({ completed: !completed }, (data) => {
-            for (let item of data) {
+            for (let item of data)
                 this.toggleComplete(item.id, completed, true);
-            }
         });
 
         this._filter();
@@ -185,9 +181,8 @@ class Controller {
         // If the last active route isn't "All", or we're switching routes, we
         // re-create the todo item elements, calling:
         //   this.show[All|Active|Completed]()
-        if (force || this._lastActiveRoute !== "All" || this._lastActiveRoute !== activeRoute) {
+        if (force || this._lastActiveRoute !== "All" || this._lastActiveRoute !== activeRoute)
             this[`show${activeRoute}`]();
-        }
 
         this._lastActiveRoute = activeRoute;
     }
@@ -200,9 +195,8 @@ class Controller {
         // items as they are marked complete or incomplete.
         this._activeRoute = currentPage;
 
-        if (currentPage === "") {
+        if (currentPage === "")
             this._activeRoute = "All";
-        }
 
         this._filter();
 
