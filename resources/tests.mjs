@@ -384,12 +384,15 @@ Suites.push({
             page.querySelector("#prepare").click();
         }),
         new BenchmarkTestStep("Stacked", (page) => {
+            page.querySelector("#reset").click();
             page.querySelector("#add-stacked-chart-button").click();
         }),
         new BenchmarkTestStep("Grouped", (page) => {
+            page.querySelector("#reset").click();
             page.querySelector("#add-grouped-chart-button").click();
         }),
         new BenchmarkTestStep("Dotted", (page) => {
+            page.querySelector("#reset").click();
             page.querySelector("#add-dotted-chart-button").click();
         }),
     ],

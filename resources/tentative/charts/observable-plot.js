@@ -253,12 +253,20 @@ function addDottedBars() {
     document.querySelector("#chart").append(Plot.plot(options));
 }
 
+function reset() {
+    document.querySelector("#chart").textContent = "";
+}
+
 async function runAllTheThings() {
+    reset();
     await preload();
-    prepare();
-    addStackedBars();
-    addGroupedBars();
-    addDottedBars();
+    [
+        // Force prettier to use a multiline formatting
+        "prepare",
+        "add-stacked-chart-button",
+        "add-grouped-chart-button",
+        "add-dotted-chart-button",
+    ].forEach((id) => document.getElementById(id).click());
 }
 
 document.getElementById("preload").addEventListener("click", preload);
@@ -266,6 +274,7 @@ document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
 document.getElementById("add-grouped-chart-button").addEventListener("click", addGroupedBars);
 document.getElementById("add-dotted-chart-button").addEventListener("click", addDottedBars);
+document.getElementById("reset").addEventListener("click", reset);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
 
 if (import.meta.env.DEV)
