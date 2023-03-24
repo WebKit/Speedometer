@@ -23,7 +23,6 @@ const Model = (function ($) {
             },
             updateItem: function (id, title) {
                 let todo = store.getValue(id);
-                // prettier-ignore
                 if (!todo)
                     return undefined;
 
@@ -37,7 +36,6 @@ const Model = (function ($) {
             },
             toggleItem: function (id) {
                 let todo = store.getValue(id);
-                // prettier-ignore
                 if (!todo)
                     return undefined;
 

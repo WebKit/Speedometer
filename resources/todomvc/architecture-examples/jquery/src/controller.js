@@ -24,7 +24,6 @@ const Controller = (function ($) {
 
         function toggleItems(checked) {
             model.getItems().forEach(function (item) {
-                // prettier-ignore
                 if (item.completed !== checked)
                     toggleItem(item.id);
             });
@@ -32,7 +31,6 @@ const Controller = (function ($) {
 
         function removeCompletedItems() {
             model.getItems().forEach(function (item) {
-                // prettier-ignore
                 if (item.completed === checked)
                     removeItem(item.id);
             });

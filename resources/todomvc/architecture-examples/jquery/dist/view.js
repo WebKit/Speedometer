@@ -15,7 +15,6 @@ const View = (function ($) {
         }
 
         function getCurrentTodos(todos, route) {
-            // prettier-ignore
             if (route === "all")
                 return todos;
 
@@ -27,7 +26,6 @@ const View = (function ($) {
         }
 
         function handleTodoInput(e) {
-            // prettier-ignore
             if (e.key !== "Enter")
                 return;
 
