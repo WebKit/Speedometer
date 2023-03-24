@@ -64,8 +64,9 @@ function prepare() {
         })
         .sort((stateA, stateB) => stateB.total - stateA.total);
 
+    const stateSortedArray = stateInformationSortedArray.map(({ state }) => state);
     /* Array<state: string> */
-    const statesWithMostFlights = stateInformationSortedArray.map((info) => info.state).slice(0, 6);
+    const statesWithMostFlights = stateSortedArray.slice(0, 6);
 
     // Flatten the information in preparedData.statesWithMostFlights, so that we
     // have one item == one airport information.
@@ -96,6 +97,7 @@ function prepare() {
         byAirport,
         airportsGroupedByStateArray,
         stateInformationSortedArray,
+        stateSortedArray,
         statesWithMostFlights,
         plotData,
         flatFlightsByAirport,
@@ -144,7 +146,7 @@ function addStackedBars() {
         height: 1000,
         color: { type: "categorical" },
         x: {
-            domain: preparedData.stateInformationSortedArray.map(({ state }) => state),
+            domain: preparedData.stateSortedArray,
         },
         y: { grid: true, tickFormat: "~s" },
         marks: [
@@ -225,7 +227,7 @@ function addDottedBars() {
         height: 1000,
         color: { type: "threshold", domain: [0] },
         x: {
-            domain: preparedData.stateInformationSortedArray.map(({ state }) => state),
+            domain: preparedData.stateSortedArray,
         },
         y: {
             grid: true,

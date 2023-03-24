@@ -12306,7 +12306,8 @@ function prepare() {
       mostUsedAirports: mostUsedAirportsInState
     };
   }).sort((stateA, stateB) => stateB.total - stateA.total);
-  const statesWithMostFlights = stateInformationSortedArray.map((info) => info.state).slice(0, 6);
+  const stateSortedArray = stateInformationSortedArray.map(({ state }) => state);
+  const statesWithMostFlights = stateSortedArray.slice(0, 6);
   const plotData = stateInformationSortedArray.flatMap(({ mostUsedAirports, total, state }) => {
     const enrichedMostUsedAirports = mostUsedAirports.map(({ iata, name, city }, index2) => ({
       state,
@@ -12335,6 +12336,7 @@ function prepare() {
     byAirport,
     airportsGroupedByStateArray,
     stateInformationSortedArray,
+    stateSortedArray,
     statesWithMostFlights,
     plotData,
     flatFlightsByAirport
@@ -12376,7 +12378,7 @@ function addStackedBars() {
     height: 1e3,
     color: { type: "categorical" },
     x: {
-      domain: preparedData.stateInformationSortedArray.map(({ state }) => state)
+      domain: preparedData.stateSortedArray
     },
     y: { grid: true, tickFormat: "~s" },
     marks: [
@@ -12452,7 +12454,7 @@ function addDottedBars() {
     height: 1e3,
     color: { type: "threshold", domain: [0] },
     x: {
-      domain: preparedData.stateInformationSortedArray.map(({ state }) => state)
+      domain: preparedData.stateSortedArray
     },
     y: {
       grid: true,
