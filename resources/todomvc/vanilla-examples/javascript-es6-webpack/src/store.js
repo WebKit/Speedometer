@@ -55,7 +55,6 @@ export class Store {
                         return false;
                 }
 
-
                 return true;
             })
         );
