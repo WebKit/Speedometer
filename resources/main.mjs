@@ -22,8 +22,7 @@ class MainBenchmarkClient {
     }
 
     startBenchmark() {
-        if (this._isRunning)
-            return false;
+        if (this._isRunning) return false;
         if (params.suites.length > 0) {
             if (!Suites.enable(params.suites)) {
                 const message = `Suite "${params.suites}" does not exist. No tests to run.`;
@@ -86,21 +85,17 @@ class MainBenchmarkClient {
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         this._updateGaugeNeedle(scoreResults.mean);
         document.getElementById("result-number").textContent = scoreResults.formattedMean;
-        if (scoreResults.formattedDelta)
-            document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
+        if (scoreResults.formattedDelta) document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
 
         this._populateDetailedResults(metrics);
 
-        if (this.developerMode)
-            this.showResultsDetails();
-        else
-            this.showResultsSummary();
+        if (this.developerMode) this.showResultsDetails();
+        else this.showResultsSummary();
     }
 
     _computeResults(measuredValuesList, displayUnit) {
         function valueForUnit(measuredValues) {
-            if (displayUnit === "ms")
-                return measuredValues.geomean;
+            if (displayUnit === "ms") return measuredValues.geomean;
             return measuredValues.score;
         }
 
@@ -212,12 +207,12 @@ class MainBenchmarkClient {
             button.onclick = this._logoClickHandler.bind(this);
         });
         document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
+        document.getElementById("copy-csv").onclick = this.copyCSVResults.bind(this);
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
 
-        if (params.startAutomatically)
-            this._startBenchmarkHandler();
+        if (params.startAutomatically) this._startBenchmarkHandler();
     }
 
     _hashChangeHandler() {
@@ -235,14 +230,12 @@ class MainBenchmarkClient {
     }
 
     _startBenchmarkHandler() {
-        if (this.startBenchmark())
-            this._showSection("#running");
+        if (this.startBenchmark()) this._showSection("#running");
     }
 
     _logoClickHandler(event) {
         // Prevent any accidental UI changes during benchmark runs.
-        if (!this._isRunning)
-            this._showSection("#home");
+        if (!this._isRunning) this._showSection("#home");
         event.preventDefault();
         return false;
     }
@@ -260,8 +253,48 @@ class MainBenchmarkClient {
         return JSON.stringify(this._measuredValuesList, undefined, indent);
     }
 
+    _getFormattedCSVResult() {
+        let tests = [];
+        // First object in the array is roughly "is total"
+        for (let i in this._measuredValuesList[0].tests) {
+            tests.push([1, i]);
+            for (let j in this._measuredValuesList[0].tests[i].tests) {
+                tests.push([0, j]);
+                for (let k in this._measuredValuesList[0].tests[i].tests[j].tests) {
+                    tests.push([0, `${j}-${k}`]);
+                }
+            }
+        }
+
+        // Now push each iteration onto the end of the array
+        for (let measuredValue of this._measuredValuesList) {
+            let index = 0;
+            for (let i in measuredValue.tests) {
+                tests[index++].push(measuredValue.tests[i].total);
+                for (let j in measuredValue.tests[i].tests) {
+                    tests[index++].push(measuredValue.tests[i].tests[j].total);
+                    for (let k in measuredValue.tests[i].tests[j].tests) {
+                        console.log(index, k, tests.length);
+                        tests[index++].push(measuredValue.tests[i].tests[j].tests[k]);
+                    }
+                }
+            }
+        }
+
+        let csv = [["Is Total,Name"].concat(this._measuredValuesList.map((_, i) => `Iteration ${i+1}`)).join(",")];
+        for (let test of tests) {
+            csv.push(test.join(","));
+        }
+        csv = csv.join("\n");
+        return csv;
+    }
+
     copyJsonResults() {
         navigator.clipboard.writeText(this._getFormattedJSONResult());
+    }
+
+    copyCSVResults() {
+        navigator.clipboard.writeText(this._getFormattedCSVResult());
     }
 
     downloadJsonResults() {

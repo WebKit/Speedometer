@@ -299,7 +299,7 @@ section#details .results-table {
 
 section#details button,
 section#details .button {
-    min-width: 300px;
+    min-width: 220px;
 }
 
 section#details .arithmetic-mean {
@@ -328,7 +328,7 @@ section#about p {
 
 section#details button,
 section#details .button {
-    min-width: 300px;
+    min-width: 220px;
 }
 
 section#details:target {
