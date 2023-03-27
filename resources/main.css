@@ -284,12 +284,8 @@ section#summary > #confidence-number {
 }
 
 section#details {
-    /* 
-    FIXME: Enable custom details size
-    --padding: 40px;
-    margin-top: 0px;
-    top: var(--padding);
-    height: calc(100% - 3 * var(--padding)); */
+    --viewport-height: max(600px, 90vh);
+    --viewport-width: max(800px, 80vw);
 }
 
 section#details .results-table {

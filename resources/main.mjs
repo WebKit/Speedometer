@@ -257,11 +257,11 @@ class MainBenchmarkClient {
         let tests = [];
         // First object in the array is roughly "is total"
         for (let i in this._measuredValuesList[0].tests) {
-            tests.push([1, i]);
+            tests.push([`${i}-Total`]);
             for (let j in this._measuredValuesList[0].tests[i].tests) {
-                tests.push([0, j]);
+                tests.push([`${i}-${j}`]);
                 for (let k in this._measuredValuesList[0].tests[i].tests[j].tests) {
-                    tests.push([0, `${j}-${k}`]);
+                    tests.push([`${i}-${j}-${k}`]);
                 }
             }
         }
@@ -281,7 +281,7 @@ class MainBenchmarkClient {
             }
         }
 
-        let csv = [["Is Total,Name"].concat(this._measuredValuesList.map((_, i) => `Iteration ${i+1}`)).join(",")];
+        let csv = [["Name"].concat(this._measuredValuesList.map((_, i) => `#${i+1}`)).join(",")];
         for (let test of tests) {
             csv.push(test.join(","));
         }
