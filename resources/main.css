@@ -322,11 +322,6 @@ section#about p {
     padding-left: calc((var(--viewport-width) - var(--text-width)) / 2);
 }
 
-section#details button,
-section#details .button {
-    min-width: 220px;
-}
-
 section#details:target {
     display: flex;
     flex-direction: column;
