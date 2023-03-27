@@ -195,12 +195,16 @@ class MainBenchmarkClient {
         }
         document.getElementById("metrics-results").innerHTML = html;
 
-        const jsonData = JSON.stringify(this._measuredValuesList);
-        const blob = new Blob([jsonData], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const link = document.getElementById("download-json");
-        link.href = url;
-        link.setAttribute("download", `speedometer_3-${new Date().toISOString()}.json`);
+        const filePrefix = `speedometer_3-${new Date().toISOString()}`;
+        const jsonData = this._getFormattedJSONResult();
+        const jsonLink = document.getElementById("download-json");
+        jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
+        jsonLink.setAttribute("download", `${filePrefix}.json`);
+
+        const csvData = this._getFormattedCSVResult();
+        const csvLink = document.getElementById("download-csv");
+        csvLink.href = URL.createObjectURL(new Blob([csvData], { type: "text/csv" }));
+        csvLink.setAttribute("download", `${filePrefix}.csv`);
     }
 
     prepareUI() {
@@ -263,14 +267,26 @@ class MainBenchmarkClient {
 
     _getFormattedCSVResult() {
         let tests = [];
-        // First object in the array is roughly "is total"
+        // The CSV format is similar to the details view table. Each measurement is a row with
+        // the name and N columns with the measurement for each iteration:
+        // ```
+        // Measurement,#1,...,#N
+        // TodoMVC-JavaScript-ES5-Total,num,...,num
+        // TodoMVC-JavaScript-ES5-Adding100Items,num,...,num
+        // TodoMVC-JavaScript-ES5-Adding100Items-Sync,num,...,num
+        // TodoMVC-JavaScript-ES5-Adding100Items-Async,num,...,num
+        // ...
+        // TodoMVC-JavaScript-ES6-Total,num,...,num
+        // TodoMVC-JavaScript-ES6-Adding100Items,num,...,num
+        // TodoMVC-JavaScript-ES6-Adding100Items-Sync,num,...,num
+        // TodoMVC-JavaScript-ES6-Adding100Items-Async,num,...,num
+        // ```
         for (let i in this._measuredValuesList[0].tests) {
             tests.push([`${i}-Total`]);
             for (let j in this._measuredValuesList[0].tests[i].tests) {
                 tests.push([`${i}-${j}`]);
                 for (let k in this._measuredValuesList[0].tests[i].tests[j].tests)
                     tests.push([`${i}-${j}-${k}`]);
-
             }
         }
 
@@ -303,10 +319,6 @@ class MainBenchmarkClient {
 
     copyCSVResults() {
         navigator.clipboard.writeText(this._getFormattedCSVResult());
-    }
-
-    downloadJsonResults() {
-        navigator.clipboard.writeText(this._getFormattedJSONResult());
     }
 
     _showSection(hash) {
