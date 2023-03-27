@@ -12328,18 +12328,15 @@ function prepare() {
     });
     return enrichedMostUsedAirports;
   });
-  const flatFlightsByAirport = [...flightsByAirport].map(([iata, data]) => ({ iata, ...data }));
   preparedData = {
     airports,
     flights,
     flightsByAirport,
     byAirport,
-    airportsGroupedByStateArray,
     stateInformationSortedArray,
     stateSortedArray,
     statesWithMostFlights,
-    plotData,
-    flatFlightsByAirport
+    plotData
   };
 }
 function parseAirportsInformation() {
@@ -12442,7 +12439,7 @@ ${format$1(",")(d.total)} flights`
 function addDottedBars() {
   if (!isReady())
     throw new Error("Please preload the data first.");
-  const data = preparedData.flatFlightsByAirport.flatMap(({ iata, origin, destination }) => {
+  const data = [...preparedData.flightsByAirport].flatMap(([iata, { origin, destination }]) => {
     const airportInformation = preparedData.byAirport.get(iata);
     return [
       { ...airportInformation, value: -origin },
