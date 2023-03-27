@@ -22,7 +22,8 @@ class MainBenchmarkClient {
     }
 
     startBenchmark() {
-        if (this._isRunning) return false;
+        if (this._isRunning)
+            return false;
         if (params.suites.length > 0) {
             if (!Suites.enable(params.suites)) {
                 const message = `Suite "${params.suites}" does not exist. No tests to run.`;
@@ -85,17 +86,21 @@ class MainBenchmarkClient {
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         this._updateGaugeNeedle(scoreResults.mean);
         document.getElementById("result-number").textContent = scoreResults.formattedMean;
-        if (scoreResults.formattedDelta) document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
+        if (scoreResults.formattedDelta)
+            document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
 
         this._populateDetailedResults(metrics);
 
-        if (this.developerMode) this.showResultsDetails();
-        else this.showResultsSummary();
+        if (this.developerMode)
+            this.showResultsDetails();
+        else
+            this.showResultsSummary();
     }
 
     _computeResults(measuredValuesList, displayUnit) {
         function valueForUnit(measuredValues) {
-            if (displayUnit === "ms") return measuredValues.geomean;
+            if (displayUnit === "ms")
+                return measuredValues.geomean;
             return measuredValues.score;
         }
 
@@ -212,7 +217,8 @@ class MainBenchmarkClient {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
 
-        if (params.startAutomatically) this._startBenchmarkHandler();
+        if (params.startAutomatically)
+            this._startBenchmarkHandler();
     }
 
     _hashChangeHandler() {
@@ -230,12 +236,14 @@ class MainBenchmarkClient {
     }
 
     _startBenchmarkHandler() {
-        if (this.startBenchmark()) this._showSection("#running");
+        if (this.startBenchmark())
+            this._showSection("#running");
     }
 
     _logoClickHandler(event) {
         // Prevent any accidental UI changes during benchmark runs.
-        if (!this._isRunning) this._showSection("#home");
+        if (!this._isRunning)
+            this._showSection("#home");
         event.preventDefault();
         return false;
     }
@@ -260,9 +268,9 @@ class MainBenchmarkClient {
             tests.push([`${i}-Total`]);
             for (let j in this._measuredValuesList[0].tests[i].tests) {
                 tests.push([`${i}-${j}`]);
-                for (let k in this._measuredValuesList[0].tests[i].tests[j].tests) {
+                for (let k in this._measuredValuesList[0].tests[i].tests[j].tests)
                     tests.push([`${i}-${j}-${k}`]);
-                }
+
             }
         }
 
@@ -281,10 +289,10 @@ class MainBenchmarkClient {
             }
         }
 
-        let csv = [["Name"].concat(this._measuredValuesList.map((_, i) => `#${i+1}`)).join(",")];
-        for (let test of tests) {
+        let csv = [["Name"].concat(this._measuredValuesList.map((_, i) => `#${i + 1}`)).join(",")];
+        for (let test of tests)
             csv.push(test.join(","));
-        }
+
         csv = csv.join("\n");
         return csv;
     }
