@@ -64,19 +64,21 @@ function prepare() {
         })
         .sort((stateA, stateB) => stateB.total - stateA.total);
 
+    /* Array<state: string> */
     const stateSortedArray = stateInformationSortedArray.map(({ state }) => state);
     /* Array<state: string> */
     const statesWithMostFlights = stateSortedArray.slice(0, 6);
 
-    // Flatten the information in preparedData.statesWithMostFlights, so that we
+    // Flatten the information in preparedData.stateInformationSortedArray, so that we
     // have one item == one airport information.
+    /* Array<{state, iata, name, city, index, origin, destination, total}> */
     const plotData = stateInformationSortedArray.flatMap(({ mostUsedAirports, total, state }) => {
         const enrichedMostUsedAirports = mostUsedAirports.map(({ iata, name, city }, index) => ({
             state,
             iata,
             name,
             city,
-            index,
+            index, // This will be used to have consistent colors.
             ...flightsByAirport.get(iata),
         }));
         enrichedMostUsedAirports.push({
@@ -234,7 +236,6 @@ function addDottedBars() {
             exponent: 0.2,
         },
         marks: [
-            // stacked bars
             Plot.dot(data, {
                 x: "state",
                 y: "value",

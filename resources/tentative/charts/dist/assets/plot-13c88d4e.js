@@ -12315,6 +12315,7 @@ function prepare() {
       name,
       city,
       index: index2,
+      // This will be used to have consistent colors.
       ...flightsByAirport.get(iata)
     }));
     enrichedMostUsedAirports.push({
@@ -12462,7 +12463,6 @@ function addDottedBars() {
       exponent: 0.2
     },
     marks: [
-      // stacked bars
       dot(data, {
         x: "state",
         y: "value",
