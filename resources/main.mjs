@@ -281,32 +281,32 @@ class MainBenchmarkClient {
         // TodoMVC-JavaScript-ES6/Adding100Items/Sync,num,...,num
         // TodoMVC-JavaScript-ES6/Adding100Items/Async,num,...,num
         // ```
-        let firstIterationTests = this._measuredValuesList[0].tests;
-        for (let suiteName in firstIterationTests) {
+        const firstIterationTests = this._measuredValuesList[0].tests;
+        for (const suiteName in firstIterationTests) {
             tests.push([`${suiteName}/Total`]);
-            for (let testName in firstIterationTests[suiteName].tests) {
+            for (const testName in firstIterationTests[suiteName].tests) {
                 tests.push([`${suiteName}/${testName}`]);
-                for (let subtestName in firstIterationTests[suiteName].tests[testName].tests)
+                for (const subtestName in firstIterationTests[suiteName].tests[testName].tests)
                     tests.push([`${suiteName}/${testName}/${subtestName}`]);
             }
         }
 
         // Now push each iteration onto the end of the array
-        for (let measuredValue of this._measuredValuesList) {
+        for (const measuredValue of this._measuredValuesList) {
             let index = 0;
-            for (let suiteName in measuredValue.tests) {
-                let suiteResults = measuredValue.tests[suiteName];
+            for (const suiteName in measuredValue.tests) {
+                const suiteResults = measuredValue.tests[suiteName];
                 tests[index++].push(suiteResults.total);
-                for (let testName in suiteResults.tests) {
+                for (const testName in suiteResults.tests) {
                     tests[index++].push(suiteResults.tests[testName].total);
-                    for (let subtestName in suiteResults.tests[testName].tests)
+                    for (const subtestName in suiteResults.tests[testName].tests)
                         tests[index++].push(suiteResults.tests[testName].tests[subtestName]);
                 }
             }
         }
 
-        let csv = [["Name"].concat(this._measuredValuesList.map((_, i) => `#${i + 1}`)).join(",")];
-        for (let test of tests)
+        const csv = [["Name"].concat(this._measuredValuesList.map((_, i) => `#${i + 1}`)).join(",")];
+        for (const test of tests)
             csv.push(test.join(","));
 
         return csv.join("\n");
