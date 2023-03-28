@@ -271,35 +271,36 @@ class MainBenchmarkClient {
         // the name and N columns with the measurement for each iteration:
         // ```
         // Measurement,#1,...,#N
-        // TodoMVC-JavaScript-ES5-Total,num,...,num
-        // TodoMVC-JavaScript-ES5-Adding100Items,num,...,num
-        // TodoMVC-JavaScript-ES5-Adding100Items-Sync,num,...,num
-        // TodoMVC-JavaScript-ES5-Adding100Items-Async,num,...,num
+        // TodoMVC-JavaScript-ES5/Total,num,...,num
+        // TodoMVC-JavaScript-ES5/Adding100Items,num,...,num
+        // TodoMVC-JavaScript-ES5/Adding100Items/Sync,num,...,num
+        // TodoMVC-JavaScript-ES5/Adding100Items/Async,num,...,num
         // ...
-        // TodoMVC-JavaScript-ES6-Total,num,...,num
-        // TodoMVC-JavaScript-ES6-Adding100Items,num,...,num
-        // TodoMVC-JavaScript-ES6-Adding100Items-Sync,num,...,num
-        // TodoMVC-JavaScript-ES6-Adding100Items-Async,num,...,num
+        // TodoMVC-JavaScript-ES6/Total,num,...,num
+        // TodoMVC-JavaScript-ES6/Adding100Items,num,...,num
+        // TodoMVC-JavaScript-ES6/Adding100Items/Sync,num,...,num
+        // TodoMVC-JavaScript-ES6/Adding100Items/Async,num,...,num
         // ```
-        for (let i in this._measuredValuesList[0].tests) {
-            tests.push([`${i}-Total`]);
-            for (let j in this._measuredValuesList[0].tests[i].tests) {
-                tests.push([`${i}-${j}`]);
-                for (let k in this._measuredValuesList[0].tests[i].tests[j].tests)
-                    tests.push([`${i}-${j}-${k}`]);
+        let firstIterationTests = this._measuredValuesList[0].tests;
+        for (let suiteName in firstIterationTests) {
+            tests.push([`${suiteName}/Total`]);
+            for (let testName in firstIterationTests[suiteName].tests) {
+                tests.push([`${suiteName}/${testName}`]);
+                for (let subtestName in firstIterationTests[suiteName].tests[testName].tests)
+                    tests.push([`${suiteName}/${testName}/${subtestName}`]);
             }
         }
 
         // Now push each iteration onto the end of the array
         for (let measuredValue of this._measuredValuesList) {
             let index = 0;
-            for (let i in measuredValue.tests) {
-                tests[index++].push(measuredValue.tests[i].total);
-                for (let j in measuredValue.tests[i].tests) {
-                    tests[index++].push(measuredValue.tests[i].tests[j].total);
-                    for (let k in measuredValue.tests[i].tests[j].tests) {
-                        tests[index++].push(measuredValue.tests[i].tests[j].tests[k]);
-                    }
+            for (let suiteName in measuredValue.tests) {
+                let suiteResults = measuredValue.tests[suiteName];
+                tests[index++].push(suiteResults.total);
+                for (let testName in suiteResults.tests) {
+                    tests[index++].push(suiteResults.tests[testName].total);
+                    for (let subtestName in suiteResults.tests[testName].tests)
+                        tests[index++].push(suiteResults.tests[testName].tests[subtestName]);
                 }
             }
         }
@@ -308,8 +309,7 @@ class MainBenchmarkClient {
         for (let test of tests)
             csv.push(test.join(","));
 
-        csv = csv.join("\n");
-        return csv;
+        return csv.join("\n");
     }
 
     copyJsonResults() {
