@@ -298,7 +298,6 @@ class MainBenchmarkClient {
                 for (let j in measuredValue.tests[i].tests) {
                     tests[index++].push(measuredValue.tests[i].tests[j].total);
                     for (let k in measuredValue.tests[i].tests[j].tests) {
-                        console.log(index, k, tests.length);
                         tests[index++].push(measuredValue.tests[i].tests[j].tests[k]);
                     }
                 }
