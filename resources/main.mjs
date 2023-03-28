@@ -195,7 +195,7 @@ class MainBenchmarkClient {
         }
         document.getElementById("metrics-results").innerHTML = html;
 
-        const filePrefix = `speedometer_3-${new Date().toISOString()}`;
+        const filePrefix = `speedometer-3-${new Date().toISOString()}`;
         const jsonData = this._getFormattedJSONResult();
         const jsonLink = document.getElementById("download-json");
         jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
