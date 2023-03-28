@@ -167,7 +167,7 @@ function prepareScatterPlotValues(metrics, normalize = true) {
     // This way each metric data point is on a separate track in the scatter
     // plot.
     // If normalize == true:
-    //   All x values are normalized by the mean of each metric and 
+    //   All x values are normalized by the mean of each metric and
     //   centered on 0.
     //   Example: [90ms, 100ms, 110ms] =>  [-10%, 0%, +10%]
     const toPercent = 100;
@@ -248,7 +248,7 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisPosi
     const unitToPosX = width / spreadX;
     const unitToPosY = trackHeight - trackMargin - markerSize / 2;
     const points = values.map(renderValue).join("");
-    let xAxisZeroLine = ""
+    let xAxisZeroLine = "";
     if (xAxisShowZero) {
         const xZeroPos = (0 - xMin) * unitToPosX;
         xAxisZeroLine = `<line x1="${xZeroPos}" x2="${xZeroPos}" y1="${0}" y2="${axisY}" class="axis"/>`;
