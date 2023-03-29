@@ -116,8 +116,61 @@ class PageElement {
     }
 }
 
+// The WarmupSuite is used to make sure all runner helper functions and
+// classes are compiled, to avoid unnecessary pauses due to delayed
+// compilation of runner methods in de middle of the measuring cycle.
+const WarmupSuite = {
+    name: "Warmup",
+    url: "warmup/index.html",
+    async prepare(page) {
+        await page.waitForElement("#testItem");
+    },
+    tests: [
+        // Make sure to run ever page.method once at least
+        new BenchmarkTestStep(`WarmingUpPageMethods`, (page) => {
+            let results = [];
+            results.push(page.querySelector(".testItem"));
+            results.push(page.querySelectorAll(".item"));
+            results.push(page.getElementById("testItem"));
+        }),
+        new BenchmarkTestStep("WarmingUpPageElementMethods", (page) => {
+            const item = page.getElementById("testItem");
+            console.log("WarmingUpPageElementMethods");
+            item.setValue("value");
+            item.click();
+            item.focus();
+            item.dispatchEvent("change");
+            item.enter("keypress");
+            item.dispatchEvent("input");
+            item.enter("keyup");
+        }),
+        new BenchmarkTestStep("WarmingUpPageElementMouseMethods", (page) => {
+            const item = page.getElementById("testItem");
+            const mouseEventOptions = { clientX: 100, clientY: 100, bubbles: true, cancelable: true };
+            const wheelEventOptions = {
+                clientX: 200,
+                clientY: 200,
+                deltaMode: 0,
+                delta: -10,
+                deltaY: -10,
+                bubbles: true,
+                cancelable: true,
+            };
+            console.log("WarmingUpPageElementMouseMethods");
+            item.dispatchEvent("mousedown", mouseEventOptions, MouseEvent);
+            item.dispatchEvent("mousemove", mouseEventOptions, MouseEvent);
+            item.dispatchEvent("mouseup", mouseEventOptions, MouseEvent);
+            item.dispatchEvent("wheel", wheelEventOptions, WheelEvent);
+        }),
+    ],
+}
+
 export class BenchmarkRunner {
     constructor(suites, client) {
+        this._reset(suites, client);
+    }
+
+    _reset(suites, client) {
         this._suites = suites;
         this._client = client;
         this._page = null;
@@ -163,6 +216,8 @@ export class BenchmarkRunner {
     }
 
     async runMultipleIterations(iterationCount) {
+        await this._runWarmupSuite();
+
         if (this._client?.willStartFirstIteration)
             await this._client.willStartFirstIteration(iterationCount);
         for (let i = 0; i < iterationCount; i++)
@@ -171,18 +226,32 @@ export class BenchmarkRunner {
             await this._client.didFinishLastIteration(this._metrics);
     }
 
+    async _runWarmupSuite() {
+        performance.mark("start-warmup");
+
+        const savedClient = this._client;
+        const savedSuites = this._suites;
+        this._client = undefined;
+        this._suites = [WarmupSuite];
+
+        await this._runAllSuites();
+
+        this._reset(savedSuites, savedClient);
+        performance.mark("end-warmup");
+        performance.measure("warmup", "start-warmup", "end-warmup");
+    }
+
     async _runAllSuites() {
         this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
 
         this._removeFrame();
         await this._appendFrame();
         this._page = new Page(this._frame);
-
+        
         for (const suite of this._suites) {
             if (!suite.disabled)
                 await this._runSuite(suite);
         }
-
 
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
