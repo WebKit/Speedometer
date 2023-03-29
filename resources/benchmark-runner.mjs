@@ -167,11 +167,7 @@ const WarmupSuite = {
 
 export class BenchmarkRunner {
     constructor(suites, client) {
-        this._reset(suites, client);
-    }
-
-    _reset(suites, client) {
-        this._suites = suites;
+        this._suites = [WarmupSuite, ...suites];
         this._client = client;
         this._page = null;
         this._metrics = {
@@ -216,7 +212,6 @@ export class BenchmarkRunner {
     }
 
     async runMultipleIterations(iterationCount) {
-        await this._runWarmupSuite();
 
         if (this._client?.willStartFirstIteration)
             await this._client.willStartFirstIteration(iterationCount);
@@ -226,28 +221,13 @@ export class BenchmarkRunner {
             await this._client.didFinishLastIteration(this._metrics);
     }
 
-    async _runWarmupSuite() {
-        performance.mark("start-warmup");
-
-        const savedClient = this._client;
-        const savedSuites = this._suites;
-        this._client = undefined;
-        this._suites = [WarmupSuite];
-
-        await this._runAllSuites();
-
-        this._reset(savedSuites, savedClient);
-        performance.mark("end-warmup");
-        performance.measure("warmup", "start-warmup", "end-warmup");
-    }
-
     async _runAllSuites() {
         this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
 
         this._removeFrame();
         await this._appendFrame();
         this._page = new Page(this._frame);
-        
+
         for (const suite of this._suites) {
             if (!suite.disabled)
                 await this._runSuite(suite);
@@ -259,11 +239,19 @@ export class BenchmarkRunner {
     }
 
     async _runSuite(suite) {
+        const suitePrepareLabel = `suite-${suite.name}-prepare`;
+        const suiteStartLabel = `suite-${suite.name}-start`;
+        const suiteEndLabel = `suite-${suite.name}-end`;
+
+        performance.mark(suitePrepareLabel);
         await this._prepareSuite(suite);
-        performance.mark(`start-suite-${suite.name}`);
+
+        performance.mark(suiteStartLabel);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
-        performance.mark(`end-suite-${suite.name}`);
+        performance.mark(suiteEndLabel);
+
+        performance.measure(`suite-${suite.name}`, suitePrepareLabel, suiteEndLabel);
     }
 
     async _prepareSuite(suite) {
@@ -324,14 +312,17 @@ export class BenchmarkRunner {
     }
 
     async _recordTestResults(suite, test, syncTime, asyncTime, unused_height, testDoneCallback) {
-        const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
-        const total = syncTime + asyncTime;
-        this._measuredValues.tests[suite.name] = suiteResults;
-        suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
-        suiteResults.total += total;
+        // Skip reporting updates for the warmup suite.
+        if (suite !== WarmupSuite) {
+            const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
+            const total = syncTime + asyncTime;
+            this._measuredValues.tests[suite.name] = suiteResults;
+            suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
+            suiteResults.total += total;
 
-        if (this._client?.didRunTest)
-            await this._client.didRunTest(suite, test);
+            if (this._client?.didRunTest)
+                await this._client.didRunTest(suite, test);
+        }
 
         testDoneCallback();
     }
