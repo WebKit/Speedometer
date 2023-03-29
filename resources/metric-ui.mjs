@@ -5,14 +5,21 @@ export function renderMetricView(viewParams) {
     // Make sure subMetricMargin is set for use in renderSubMetrics.
     viewParams.subMetricMargin = subMetricMargin;
     const scatterPlotParams = { width, trackHeight, colors };
+
+    scatterPlotParams.xAxisPositiveOnly = false;
+    scatterPlotParams.xAxisShowZero = true;
     scatterPlotParams.values = prepareScatterPlotValues(metrics, true);
     scatterPlotParams.unit = "%";
     scatterPlotParams.xAxisLabel = "Spread Normalized";
     const normalizedScatterPlot = renderScatterPlot(scatterPlotParams);
+
+    scatterPlotParams.xAxisPositiveOnly = true;
+    scatterPlotParams.xAxisShowZero = false;
     scatterPlotParams.values = prepareScatterPlotValues(metrics, false);
     scatterPlotParams.unit = metrics[0].unit;
     scatterPlotParams.xAxisLabel = metrics[0].unit;
     const absoluteScatterPlot = renderScatterPlot(scatterPlotParams);
+
     const legend = metrics
         .map(
             (metric, i) => `
@@ -159,8 +166,10 @@ function prepareScatterPlotValues(metrics, normalize = true) {
     // - ...
     // This way each metric data point is on a separate track in the scatter
     // plot.
-    // All x values are normalized by the mean of each metric and centered on 0.
-    // Example: [90ms, 100ms, 110ms] =>  [-10%, 0%, +10%]
+    // If normalize == true:
+    //   All x values are normalized by the mean of each metric and
+    //   centered on 0.
+    //   Example: [90ms, 100ms, 110ms] =>  [-10%, 0%, +10%]
     const toPercent = 100;
     let unit;
     for (let metricIndex = 0; metricIndex < metrics.length; metricIndex++) {
@@ -188,14 +197,15 @@ function prepareScatterPlotValues(metrics, normalize = true) {
         for (let i = 0; i < length; i++) {
             const value = values[i];
             let x = value;
-            const normalized = (value / mean - 1) * toPercent;
-            const sign = normalized < 0 ? "" : "+";
+            let normalized = (value / mean - 1) * toPercent;
             if (normalize)
                 x = normalized;
+            const sign = normalized < 0 ? "-" : "+";
+            normalized = Math.abs(normalized);
             // Each value is mapped to a y-coordinate in the range of [metricIndex, metricIndex + 1]
             const valueOffsetY = length === 1 ? 0.5 : i / length;
             const y = metricIndex + valueOffsetY;
-            let label = `Iteration ${i}: ${value.toFixed(2)}${unit}\n` + `Normalized: ${metric.mean}${sign}${normalized.toFixed(2)}%`;
+            let label = `Iteration ${i}: ${value.toFixed(3)}${unit}\n` + `Normalized: ${metric.mean.toFixed(3)}${unit} ${sign} ${normalized.toFixed(2)}%`;
             const point = [x, y, label];
             points.push(point);
         }
@@ -203,23 +213,25 @@ function prepareScatterPlotValues(metrics, normalize = true) {
     return points;
 }
 
-function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabel, unit = "", colors = COLORS }) {
+function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisPositiveOnly = false, xAxisShowZero = false, xAxisLabel, unit = "", colors = COLORS }) {
     if (!height && !trackHeight)
         throw new Error("Either height or trackHeight must be specified");
-    let xmin = Infinity;
-    let xmax = 0;
-    let ymin = Infinity;
-    let ymax = 0;
+    let xMin = Infinity;
+    let xMax = 0;
+    let yMin = Infinity;
+    let yMax = 0;
     for (let value of values) {
         let [x, y] = value;
-        xmin = Math.min(xmin, x);
-        xmax = Math.max(xmax, x);
-        ymin = Math.min(ymin, y);
-        ymax = Math.max(ymax, y);
+        xMin = Math.min(xMin, x);
+        xMax = Math.max(xMax, x);
+        yMin = Math.min(yMin, y);
+        yMax = Math.max(yMax, y);
     }
+    if (xAxisPositiveOnly)
+        xMin = Math.max(xMin, 0);
     // Max delta of values across each axis:
-    const trackCount = Math.ceil(ymax - ymin) || 1;
-    const spreadX = xmax - xmin;
+    const trackCount = Math.ceil(yMax - yMin) || 1;
+    const spreadX = xMax - xMin;
     // Axis + labels height:
     const axisHeight = 18;
     const axisMarginY = 4;
@@ -236,6 +248,11 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabe
     const unitToPosX = width / spreadX;
     const unitToPosY = trackHeight - trackMargin - markerSize / 2;
     const points = values.map(renderValue).join("");
+    let xAxisZeroLine = "";
+    if (xAxisShowZero) {
+        const xZeroPos = (0 - xMin) * unitToPosX;
+        xAxisZeroLine = `<line x1="${xZeroPos}" x2="${xZeroPos}" y1="${0}" y2="${axisY}" class="axis"/>`;
+    }
     return `
         <svg class="scatter-plot chart"
             width="${width}" height="${height}"
@@ -245,9 +262,9 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabe
                     x1="${0}" x2="${width}"
                     y1="${axisY - axisMarginY}" y2="${axisY - axisMarginY}"
                     class="axis" />
-                <text y="${axisY}" x="0" text-anchor="start">${xmin.toFixed(2)}${unit}</text>
+                <text y="${axisY}" x="0" text-anchor="start">${xMin.toFixed(2)}${unit}</text>
                 <text y="${axisY}" x="${width / 2}" text-anchor="middle">${xAxisLabel}</text>
-                <text y="${axisY}" x="${width}" text-anchor="end">${xmax.toFixed(2)}${unit}</text>
+                <text y="${axisY}" x="${width}" text-anchor="end">${xMax.toFixed(2)}${unit}</text>
             </g>
             <defs>
                 <g id="marker">
@@ -255,6 +272,7 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabe
                 </g>
             </defs>
             <g class="values">
+                ${xAxisZeroLine}
                 ${points}
             </g>
         </svg>
@@ -263,12 +281,12 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabe
     function renderValue(value) {
         const [rawX, rawY, label, rawWidth = 0] = value;
         const trackIndex = rawY | 0;
-        const y = (rawY - ymin) * unitToPosY + markerSize * trackIndex;
+        const y = (rawY - yMin) * unitToPosY + markerSize * trackIndex;
         const cssClass = colors[trackIndex % colors.length];
 
         if (value.length <= 3) {
             // Render a simple marker:
-            const x = (rawX - xmin) * unitToPosX;
+            const x = (rawX - xMin) * unitToPosX;
             const adjustedY = y + markerSize / 2;
             return `
                 <use href="#marker" x="${x}" y="${adjustedY}" class="marker ${cssClass}">
@@ -277,7 +295,7 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisLabe
             `;
         } else {
             // Render a rect with 4 input values:
-            const x = (rawX - xmin) * unitToPosX + rawWidth / 2;
+            const x = (rawX - xMin) * unitToPosX + rawWidth / 2;
             const w = rawWidth * unitToPosX;
             const centerX = x + w / 2;
             const top = y;
