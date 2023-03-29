@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { render } from 'react-dom';
+import {  act } from 'react-dom/test-utils';
 import Chart from './chart';
 import { getData } from "./utils"
 
@@ -38,3 +39,5 @@ render(
 	<ChartComponent />,
 	document.getElementById("root")
 );
+
+window.ReactAct = act;
