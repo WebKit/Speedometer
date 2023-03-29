@@ -127,7 +127,7 @@ const WarmupSuite = {
     },
     tests: [
         // Make sure to run ever page.method once at least
-        new BenchmarkTestStep(`WarmingUpPageMethods`, (page) => {
+        new BenchmarkTestStep("WarmingUpPageMethods", (page) => {
             let results = [];
             results.push(page.querySelector(".testItem"));
             results.push(page.querySelectorAll(".item"));
@@ -163,7 +163,7 @@ const WarmupSuite = {
             item.dispatchEvent("wheel", wheelEventOptions, WheelEvent);
         }),
     ],
-}
+};
 
 export class BenchmarkRunner {
     constructor(suites, client) {
@@ -212,7 +212,6 @@ export class BenchmarkRunner {
     }
 
     async runMultipleIterations(iterationCount) {
-
         if (this._client?.willStartFirstIteration)
             await this._client.willStartFirstIteration(iterationCount);
         for (let i = 0; i < iterationCount; i++)
@@ -232,6 +231,7 @@ export class BenchmarkRunner {
             if (!suite.disabled)
                 await this._runSuite(suite);
         }
+
 
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
