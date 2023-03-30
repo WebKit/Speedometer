@@ -108,6 +108,9 @@ const View = (function ($) {
                 const stats = getStats(todos);
                 const currentTodos = getCurrentTodos(todos, route);
 
+                $("#main").toggle(stats.all > 0);
+                $("#footer").toggle(stats.all > 0);
+
                 switch (action) {
                     case "addItem":
                         if (route !== "completed")

@@ -31,7 +31,7 @@ const Controller = (function ($) {
 
         function removeCompletedItems() {
             model.getItems().forEach(function (item) {
-                if (item.completed === checked)
+                if (item.completed)
                     removeItem(item.id);
             });
         }

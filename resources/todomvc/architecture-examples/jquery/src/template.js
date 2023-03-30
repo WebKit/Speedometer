@@ -27,9 +27,7 @@ const Template = (function ($) {
                     filter: route,
                 });
 
-                $(id)
-                    .toggle(stats.all > 0)
-                    .html(template);
+                $(id).html(template);
             },
         };
     }
