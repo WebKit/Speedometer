@@ -15,6 +15,10 @@ class Page {
         this._frame = frame;
     }
 
+    setWithReactAct(withReactAct) {
+        this._withReactAct = withReactAct;
+    }
+
     async waitForElement(selector) {
         return new Promise((resolve) => {
             const resolveIfReady = () => {
@@ -52,13 +56,18 @@ class Page {
         return this._wrapElement(element);
     }
 
-    call(function_name) {
-        this._frame.contentWindow[function_name]();
-        return null;
+    call(function_name, ...args) {
+        return this._frame.contentWindow[function_name](...args);
     }
 
     _wrapElement(element) {
-        return new PageElement(element);
+        // If the withReactAct flag is present in the suite definition,
+        // automatically wrap all user actions with `act`. This is commonly used
+        // by other React-based testing libraries such as react-testing-library.
+        // For this to work, we need the cooperation of the tested application:
+        // the act function needs to be exposed by the page as ReactAct.
+        const wrapUserAction = this._withReactAct ? (callback) => this.call("ReactAct", callback) : (callback) => callback();
+        return new PageElement(element, wrapUserAction);
     }
 }
 
@@ -69,9 +78,11 @@ const NATIVE_OPTIONS = {
 
 class PageElement {
     #node;
+    #wrapUserAction;
 
-    constructor(node) {
+    constructor(node, wrapUserAction) {
         this.#node = node;
+        this.#wrapUserAction = wrapUserAction;
     }
 
     setValue(value) {
@@ -79,19 +90,25 @@ class PageElement {
     }
 
     click() {
-        this.#node.click();
+        this.#wrapUserAction(() => {
+            this.#node.click();
+        });
     }
 
     focus() {
-        this.#node.focus();
+        this.#wrapUserAction(() => {
+            this.#node.focus();
+        });
     }
 
     dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
-        if (eventName === "submit")
-            // FIXME FireFox doesn't like `new Event('submit')
-            this._dispatchSubmitEvent();
-        else
-            this.#node.dispatchEvent(new eventType(eventName, options));
+        this.#wrapUserAction(() => {
+            if (eventName === "submit")
+                // FIXME FireFox doesn't like `new Event('submit')
+                this._dispatchSubmitEvent();
+            else
+                this.#node.dispatchEvent(new eventType(eventName, options));
+        });
     }
 
     _dispatchSubmitEvent() {
@@ -204,6 +221,7 @@ export class BenchmarkRunner {
                 resolve();
             };
             frame.src = `resources/${suite.url}`;
+            this._page.setWithReactAct(suite.withReactAct);
         });
     }
 

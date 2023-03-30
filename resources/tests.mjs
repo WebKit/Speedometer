@@ -350,6 +350,7 @@ Suites.push({
     async prepare(page) {
         await page.waitForElement("#render");
     },
+    withReactAct: true,
     tests: [
         new BenchmarkTestStep("Render", (page) => {
             page.getElementById("render").click();
@@ -413,6 +414,7 @@ Suites.push({
     async prepare(page) {
         await page.waitForElement("#render");
     },
+    withReactAct: true,
     tests: [
         new BenchmarkTestStep("Render", (page) => {
             page.getElementById("render").click();
