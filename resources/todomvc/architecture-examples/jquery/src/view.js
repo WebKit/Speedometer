@@ -108,8 +108,8 @@ const View = (function ($) {
                 const stats = getStats(todos);
                 const currentTodos = getCurrentTodos(todos, route);
 
-                $("#main").toggle(stats.all > 0);
-                $("#footer").toggle(stats.all > 0);
+                if ($("#main").length === 0 && stats.all > 0)
+                    template.renderBody("#todoapp");
 
                 switch (action) {
                     case "addItem":

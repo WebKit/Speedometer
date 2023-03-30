@@ -8,7 +8,6 @@
         <title>TodoMVC: jQuery</title>
         <link rel="stylesheet" href="node_modules/todomvc-common/base.css" />
         <link rel="stylesheet" href="node_modules/todomvc-app-css/index.css" />
-        <link rel="stylesheet" href="src/app.css" />
     </head>
     <body>
         <section id="todoapp" class="todoapp">
@@ -16,12 +15,6 @@
                 <h1>todos</h1>
                 <input id="new-todo" class="new-todo" placeholder="What needs to be done?" autofocus />
             </header>
-            <section id="main" class="main">
-                <input id="toggle-all" class="toggle-all" type="checkbox" />
-                <label class="toggle-all-label" for="toggle-all">Mark all as complete</label>
-                <ul id="todo-list" class="todo-list"></ul>
-            </section>
-            <footer id="footer" class="footer"></footer>
         </section>
         <footer class="info">
             <p>Click on input field to write your todo.</p>
@@ -55,6 +48,14 @@
                 </li>
             </ul>
             {{#if completedTodos}}<button class="clear-completed">Clear completed</button>{{/if}}
+        </script>
+        <script id="body-template" type="text/x-handlebars-template">
+            <section id="main" class="main">
+                <input id="toggle-all" class="toggle-all" type="checkbox" />
+                <label class="toggle-all-label" for="toggle-all">Mark all as complete</label>
+                <ul id="todo-list" class="todo-list"></ul>
+            </section>
+            <footer id="footer" class="footer"></footer>
         </script>
         <script src="node_modules/jquery/dist/jquery.min.js"></script>
         <script src="node_modules/handlebars/dist/handlebars.min.js"></script>

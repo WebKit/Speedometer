@@ -8,6 +8,7 @@ const Template = (function ($) {
     function Template() {
         const todoTemplate = Handlebars.compile($("#todo-template").html());
         const footerTemplate = Handlebars.compile($("#footer-template").html());
+        const bodyTemplate = Handlebars.compile($("#body-template").html());
 
         return {
             renderList: function (id, currentTodos) {
@@ -29,6 +30,9 @@ const Template = (function ($) {
 
                 $(id).html(template);
             },
+            renderBody: function(id) {
+                $(id).append(bodyTemplate);
+            }
         };
     }
     return Template;
