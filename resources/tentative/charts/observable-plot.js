@@ -2,36 +2,15 @@ import * as Plot from "@observablehq/plot";
 import { csvParse } from "d3-dsv";
 import * as d3Array from "d3-array";
 import { format as d3Format } from "d3-format";
-import airportsUrl from "./datasets/airports.csv?url";
-import flightsUrl from "./datasets/flights-airports.csv?url";
+import airportsString from "./datasets/airports.csv?raw";
+import flightsString from "./datasets/flights-airports.csv?raw";
 
-async function loadFile(url) {
-    const response = await fetch(url);
-    if (!response.ok)
-        throw new Error(`Error while fetching url ${url}: (${response.status}) ${response.statusText}`);
-
-    return response.text();
-}
-
-let preloaded = false;
-let airportsString;
-let flightsString;
-
-async function preload() {
-    if (preloaded)
-        return;
-
-    airportsString = await loadFile(airportsUrl);
-    flightsString = await loadFile(flightsUrl);
-    preloaded = true;
-    document.getElementById("app").insertAdjacentHTML("beforeend", '<span id="ready">Data has been preloaded.</span>');
+function notifyReady() {
+    document.getElementById("app").insertAdjacentHTML("beforeend", '<span id="ready">Ready.</span>');
 }
 
 let preparedData;
 function prepare() {
-    if (!preloaded)
-        throw new Error("Please preload the data first.");
-
     /**
      * AirportInformation: { state, iata, name, city, country, latitude, longitude }
      * airports: Array<AirportInformation>
@@ -132,12 +111,12 @@ function groupFlightsByAirports(flights) {
 }
 
 function isReady() {
-    return preloaded && preparedData;
+    return preparedData;
 }
 
 function addStackedBars() {
     if (!isReady())
-        throw new Error("Please preload and prepare the data first.");
+        throw new Error("Please prepare the data first.");
 
     const options = {
         width: 2000,
@@ -166,7 +145,7 @@ function addStackedBars() {
 
 function addGroupedBars() {
     if (!isReady())
-        throw new Error("Please preload the data first.");
+        throw new Error("Please prepare the data first.");
 
     const options = {
         width: 2000,
@@ -208,7 +187,7 @@ function addGroupedBars() {
 
 function addDottedBars() {
     if (!isReady())
-        throw new Error("Please preload the data first.");
+        throw new Error("Please prepare the data first.");
 
     const data = [...preparedData.flightsByAirport]
         .flatMap(([iata, { origin, destination }]) => {
@@ -258,7 +237,7 @@ function reset() {
 
 async function runAllTheThings() {
     reset();
-    await preload();
+    notifyReady();
     [
         // Force prettier to use a multiline formatting
         "prepare",
@@ -268,7 +247,7 @@ async function runAllTheThings() {
     ].forEach((id) => document.getElementById(id).click());
 }
 
-document.getElementById("preload").addEventListener("click", preload);
+document.getElementById("preload").addEventListener("click", notifyReady);
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
 document.getElementById("add-grouped-chart-button").addEventListener("click", addGroupedBars);
