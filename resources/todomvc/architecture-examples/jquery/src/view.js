@@ -100,16 +100,17 @@ const View = (function ($) {
             },
             init: function () {
                 $("#new-todo").on("keyup", handleTodoInput);
-                $("#toggle-all").on("change", handleToggleAll);
-                $("#footer").on("click", ".clear-completed", handleClearButton);
-                $("#todo-list").on("change", ".toggle", handleTodoToggle).on("click", ".destroy", handleTodoButton).on("dblclick", "label", handleTodoEditStart).on("keyup", ".edit", handleTodoEditStop).on("focusout", ".edit", handleTodoUpdate);
             },
             update: function ({ action, payload, todos }) {
                 const stats = getStats(todos);
                 const currentTodos = getCurrentTodos(todos, route);
 
-                if ($("#main").length === 0 && stats.all > 0)
+                if ($("#main").length === 0 && stats.all > 0){
                     template.renderBody("#todoapp");
+                    $("#toggle-all").on("change", handleToggleAll);
+                    $("#footer").on("click", ".clear-completed", handleClearButton);
+                    $("#todo-list").on("change", ".toggle", handleTodoToggle).on("click", ".destroy", handleTodoButton).on("dblclick", "label", handleTodoEditStart).on("keyup", ".edit", handleTodoEditStop).on("focusout", ".edit", handleTodoUpdate);
+                }
 
                 switch (action) {
                     case "addItem":
