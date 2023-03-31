@@ -1,5 +1,8 @@
 {
   "private": true,
+  "scripts": {
+    "build": "node scripts/build.js"
+  },
   "dependencies": {
     "director": "^1.2.8",
     "handlebars": "^4.7.7",
