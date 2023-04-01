@@ -1,7 +1,7 @@
 const fs = require("fs").promises;
 
 const rootDirectory = "./";
-const sourceDirectory = "./js";
+const sourceDirectory = "./src";
 const targetDirectory = "./dist";
 
 const htmlFile = "index.html";
