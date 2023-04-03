@@ -9,9 +9,9 @@
     },
     "scripts": {
         "build": "rollup -c --bundleConfigAsCjs",
-        "watch": "ROLLUP_WATCH=true rollup -c -w --bundleConfigAsCjs",
+        "dev": "npm-run-all --parallel serve watch",
         "serve": "http-server ./dist -p 7002 -c-1 --cors -o",
-        "start": "npm-run-all --parallel serve watch"
+        "watch": "ROLLUP_WATCH=true rollup -c -w --bundleConfigAsCjs"
     },
     "devDependencies": {
         "@babel/plugin-transform-react-jsx": "^7.21.0",
