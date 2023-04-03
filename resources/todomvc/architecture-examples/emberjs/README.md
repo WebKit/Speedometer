@@ -4,7 +4,7 @@
 
 This application uses Ember 3.28.11 to implement a todo application.
 
-- [Ember.js](https://emberjs.com/) is a productive, battle-tested JavaScript framework for building modern web applications. It includes everything you need to build rich UIs that work on any device.
+-   [Ember.js](https://emberjs.com/) is a productive, battle-tested JavaScript framework for building modern web applications. It includes everything you need to build rich UIs that work on any device.
 
 ## Implementation details
 

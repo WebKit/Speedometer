@@ -1,54 +1,54 @@
-import Service from '@ember/service';
-import { action } from '@ember/object';
-import { tracked } from '@glimmer/tracking';
+import Service from "@ember/service";
+import { action } from "@ember/object";
+import { tracked } from "@glimmer/tracking";
 
 export default class TodoDataService extends Service {
-  @tracked todos = [];
+    @tracked todos = [];
 
-  get allItems() {
-    return this.todos;
-  }
+    get allItems() {
+        return this.todos;
+    }
 
-  get completedItems() {
-    return this.todos.filterBy('completed', true);
-  }
+    get completedItems() {
+        return this.todos.filterBy("completed", true);
+    }
 
-  get incompleteItems() {
-    return this.todos.filterBy('completed', false);
-  }
+    get incompleteItems() {
+        return this.todos.filterBy("completed", false);
+    }
 
-  @action
-  addItem(title) {
-    const item = new Item(title);
-    this.todos.pushObject(item);
-  }
+    @action
+    addItem(title) {
+        const item = new Item(title);
+        this.todos.pushObject(item);
+    }
 
-  @action
-  toggleItem(todo) {
-    todo.completed = !todo.completed;
-  }
+    @action
+    toggleItem(todo) {
+        todo.completed = !todo.completed;
+    }
 
-  @action
-  removeItem(todo) {
-    this.todos.removeObject(todo);
-  }
+    @action
+    removeItem(todo) {
+        this.todos.removeObject(todo);
+    }
 
-  @action
-  updateItem(todo, title) {
-    todo.title = title;
-  }
+    @action
+    updateItem(todo, title) {
+        todo.title = title;
+    }
 
-  @action
-  clearCompleted() {
-    this.todos = this.incompleteItems;
-  }
+    @action
+    clearCompleted() {
+        this.todos = this.incompleteItems;
+    }
 }
 
 class Item {
-  @tracked title = '';
-  @tracked completed = false;
+    @tracked title = "";
+    @tracked completed = false;
 
-  constructor(title) {
-    this.title = title;
-  }
+    constructor(title) {
+        this.title = title;
+    }
 }
