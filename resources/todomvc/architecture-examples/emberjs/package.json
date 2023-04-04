@@ -12,9 +12,10 @@
     },
     "scripts": {
         "build": "NODE_OPTIONS=--openssl-legacy-provider ember build --environment=production",
+        "dev": "NODE_OPTIONS=--openssl-legacy-provider ember serve",
+        "serve": "NODE_OPTIONS=--openssl-legacy-provider ember serve",
         "lint:hbs": "ember-template-lint .",
         "lint:hbs:fix": "ember-template-lint . --fix",
-        "start": "NODE_OPTIONS=--openssl-legacy-provider ember serve",
         "test": "npm-run-all lint test:*",
         "test:ember": "ember test"
     },
