@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { Todo } from '../todo';
 import { TodosService } from '../todos.service';
 
@@ -8,10 +9,14 @@ import { TodosService } from '../todos.service';
   styleUrls: ['./todo-list.component.css']
 })
 export class TodoListComponent {
-  constructor(private todosService: TodosService) {}
+  constructor(
+    private todosService: TodosService,
+    private location: Location
+  ) {}
 
   get todos(): Todo[] {
-    return this.todosService.getItems();
+    const filter = this.location.path().split('/')[1] || "all";
+    return this.todosService.getItems(filter);
   }
 
   get activeTodos(): Todo[] {

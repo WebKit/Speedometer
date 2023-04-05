@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component} from '@angular/core';
+import { Location } from '@angular/common';
 import { Todo } from '../todo';
 import { TodosService } from '../todos.service';
 
@@ -6,10 +7,12 @@ import { TodosService } from '../todos.service';
   selector: 'app-todo-footer',
   templateUrl: './todo-footer.component.html',
   styleUrls: ['./todo-footer.component.css'],
-  changeDetection: ChangeDetectionStrategy.Default
 })
 export class TodoFooterComponent {
-  constructor(private todosService: TodosService) {}
+  constructor(
+    private todosService: TodosService,
+    private location: Location
+  ) {}
 
   get todos(): Todo[] {
     return this.todosService.getItems();
@@ -21,6 +24,10 @@ export class TodoFooterComponent {
 
   get completedTodos(): Todo[] {
     return this.todosService.getItems("completed");
+  }
+
+  get filter(): string {
+    return this.location.path().split('/')[1] || "all";
   }
 
   clearCompleted() {
