@@ -4,10 +4,10 @@ MIT
 @angular/core
 MIT
 
-@angular/platform-browser
+@angular/forms
 MIT
 
-@angular/router
+@angular/platform-browser
 MIT
 
 rxjs
