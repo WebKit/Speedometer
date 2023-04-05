@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "build": "ng build",
+    "build": "ng build --base-href /resources/todomvc/architecture-examples/angular/dist/",
     "dev": "ng serve",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
