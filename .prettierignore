@@ -7,7 +7,6 @@ package-lock.json
 
 /resources/todomvc/architecture-examples/*
 !/resources/todomvc/architecture-examples/backbone
-!/resources/todomvc/architecture-examples/emberjs
 !/resources/todomvc/architecture-examples/preact
 !/resources/todomvc/architecture-examples/react
 !/resources/todomvc/architecture-examples/react-redux
