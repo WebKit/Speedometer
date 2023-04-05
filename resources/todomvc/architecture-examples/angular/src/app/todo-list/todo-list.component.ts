@@ -39,4 +39,8 @@ export class TodoListComponent {
     const input = e.target as HTMLInputElement;
     this.todosService.toggleAll(input.checked);
   }
+
+  trackByItem(index: number, todo: Todo) {
+    return todo.id;
+  }
 }

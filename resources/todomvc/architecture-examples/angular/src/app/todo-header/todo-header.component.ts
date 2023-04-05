@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TodosService } from '../todos.service';
 
 @Component({
   selector: 'app-todo-header',
   templateUrl: './todo-header.component.html',
-  styleUrls: ['./todo-header.component.css']
+  styleUrls: ['./todo-header.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoHeaderComponent {
   constructor(private todosService: TodosService) {}

@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { Todo } from '../todo';
 import { TodosService } from '../todos.service';

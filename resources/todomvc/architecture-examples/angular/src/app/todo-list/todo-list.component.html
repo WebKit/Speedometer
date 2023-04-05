@@ -6,6 +6,6 @@
         </label>
     </div>
     <ul class="todo-list">
-        <app-todo-item *ngFor="let todo of todos" [todo]="todo" (toggleEvent)="toggleTodo($event)" (deleteEvent)="removeTodo($event)" (updateEvent)="updateTodo($event)"></app-todo-item>
+        <app-todo-item *ngFor="let todo of todos; trackBy: trackByItem" [todo]="todo" (toggleEvent)="toggleTodo($event)" (deleteEvent)="removeTodo($event)" (updateEvent)="updateTodo($event)"></app-todo-item>
     </ul>
 </section>
