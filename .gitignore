@@ -5,7 +5,6 @@
 /node_modules
 
 /resources/todomvc/architecture-examples/backbone/node_modules/
-/resources/todomvc/architecture-examples/emberjs/node_modules/
 /resources/todomvc/architecture-examples/preact/node_modules/
 /resources/todomvc/architecture-examples/react/node_modules/
 /resources/todomvc/architecture-examples/react-redux/node_modules/
