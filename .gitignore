@@ -4,6 +4,9 @@
 .directory
 /node_modules
 
+.vscode/*
+.angular
+
 /resources/todomvc/architecture-examples/angular/node_modules/
 /resources/todomvc/architecture-examples/backbone/node_modules/
 /resources/todomvc/architecture-examples/emberjs/node_modules/
