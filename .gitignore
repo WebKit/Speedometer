@@ -4,7 +4,7 @@
 .directory
 /node_modules
 
-.vscode/*
+.vscode
 .angular
 
 /resources/todomvc/architecture-examples/angular/node_modules/
