@@ -34,6 +34,7 @@
         "eslint": "^8.33.0",
         "eslint-plugin-ember": "^11.4.8",
         "eslint-plugin-react": "^7.32.2",
+        "eslint-plugin-vue": "^9.10.0",
         "expect.js": "^0.3.1",
         "http-server": "^14.1.1",
         "mocha": "^10.2.0",
