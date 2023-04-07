@@ -1,41 +1,45 @@
-<!doctype html>
-<html lang="en" data-framework="jquery">
+<!DOCTYPE html>
+<html lang="en" data-framework="jquery" data-version="3.6.3" data-features="">
     <head>
-        <meta charset="utf-8">
-        <title>jQuery • TodoMVC</title>
-        <link rel="stylesheet" href="base.css">
-        <link rel="stylesheet" href="index.css">
-        <link rel="stylesheet" href="app.css">
+        <meta charset="UTF-8" />
+        <meta name="description" content="A TodoMVC workload app for Speedometer!" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>TodoMVC: jQuery</title>
+        <link rel="stylesheet" href="base.css" />
+        <link rel="stylesheet" href="index.css" />
+        <link rel="stylesheet" href="app.css" />
     </head>
     <body>
         <section id="todoapp" class="todoapp">
             <header id="header" class="header">
                 <h1>todos</h1>
-                <input id="new-todo" class="new-todo" placeholder="What needs to be done?" autofocus>
+                <input id="new-todo" class="new-todo" placeholder="What needs to be done?" autofocus />
             </header>
             <section id="main" class="main">
-                <input id="toggle-all" class="toggle-all" type="checkbox">
+                <input id="toggle-all" class="toggle-all" type="checkbox" />
                 <label for="toggle-all">Mark all as complete</label>
                 <ul id="todo-list" class="todo-list"></ul>
             </section>
             <footer id="footer" class="footer"></footer>
         </section>
-        <footer id="info" class="info">
+        <footer class="info">
+            <p>Click on input field to write your todo.</p>
+            <p>At least two characters are needed to be a valid entry.</p>
+            <p>Press 'enter' to add the todo.</p>
             <p>Double-click to edit a todo</p>
-            <p>Created by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
-            <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
         </footer>
         <script id="todo-template" type="text/x-handlebars-template">
-            {{#this}}
-            <li {{#if completed}}class="completed"{{/if}} data-id="{{id}}">
-                <div class="view">
-                    <input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
-                    <label>{{title}}</label>
-                    <button class="destroy"></button>
-                </div>
-                <input class="edit" value="{{title}}">
-            </li>
-        {{/this}}
+                {{#this}}
+                <li {{#if completed}}class="completed"{{/if}} data-id="{{id}}">
+                    <div class="view">
+                        <input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
+                        <label>{{title}}</label>
+                        <button class="destroy"></button>
+                    </div>
+                    <input class="edit" value="{{title}}">
+                </li>
+            {{/this}}
         </script>
         <script id="footer-template" type="text/x-handlebars-template">
             <span id="todo-count" class="todo-count"><strong>{{activeTodoCount}}</strong> {{activeTodoWord}} left</span>
