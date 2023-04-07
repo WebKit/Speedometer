@@ -284,12 +284,8 @@ section#summary > #confidence-number {
 }
 
 section#details {
-    /* 
-    FIXME: Enable custom details size
-    --padding: 40px;
-    margin-top: 0px;
-    top: var(--padding);
-    height: calc(100% - 3 * var(--padding)); */
+    --viewport-height: max(600px, 90vh);
+    --viewport-width: max(800px, 80vw);
 }
 
 section#details .results-table {
@@ -297,9 +293,16 @@ section#details .results-table {
     width: 50%;
 }
 
-section#details button,
-section#details .button {
-    min-width: 300px;
+section#details .export-buttons {
+    justify-content: center;
+    margin-bottom: 0;
+}
+section#details .export-buttons button,
+section#details .export-buttons .button {
+    padding: 5px 10px;
+    min-width: auto;
+    font-size: 14px;
+    margin: 0 3px;
 }
 
 section#details .arithmetic-mean {
@@ -324,11 +327,6 @@ section#details h1 {
 section#about p {
     width: var(--text-width);
     padding-left: calc((var(--viewport-width) - var(--text-width)) / 2);
-}
-
-section#details button,
-section#details .button {
-    min-width: 300px;
 }
 
 section#details:target {

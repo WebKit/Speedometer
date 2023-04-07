@@ -183,7 +183,6 @@ export class BenchmarkRunner {
                 await this._runSuite(suite);
         }
 
-
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
         await this._finalize();

@@ -195,12 +195,16 @@ class MainBenchmarkClient {
         }
         document.getElementById("metrics-results").innerHTML = html;
 
-        const jsonData = JSON.stringify(this._measuredValuesList);
-        const blob = new Blob([jsonData], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const link = document.getElementById("download-json");
-        link.href = url;
-        link.setAttribute("download", `speedometer_3-${new Date().toISOString()}.json`);
+        const filePrefix = `speedometer-3-${new Date().toISOString()}`;
+        const jsonData = this._getFormattedJSONResult();
+        const jsonLink = document.getElementById("download-json");
+        jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
+        jsonLink.setAttribute("download", `${filePrefix}.json`);
+
+        const csvData = this._getFormattedCSVResult();
+        const csvLink = document.getElementById("download-csv");
+        csvLink.href = URL.createObjectURL(new Blob([csvData], { type: "text/csv" }));
+        csvLink.setAttribute("download", `${filePrefix}.csv`);
     }
 
     prepareUI() {
@@ -212,6 +216,7 @@ class MainBenchmarkClient {
             button.onclick = this._logoClickHandler.bind(this);
         });
         document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
+        document.getElementById("copy-csv").onclick = this.copyCSVResults.bind(this);
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
@@ -260,12 +265,59 @@ class MainBenchmarkClient {
         return JSON.stringify(this._measuredValuesList, undefined, indent);
     }
 
+    _getFormattedCSVResult() {
+        let tests = [];
+        // The CSV format is similar to the details view table. Each measurement is a row with
+        // the name and N columns with the measurement for each iteration:
+        // ```
+        // Measurement,#1,...,#N
+        // TodoMVC-JavaScript-ES5/Total,num,...,num
+        // TodoMVC-JavaScript-ES5/Adding100Items,num,...,num
+        // TodoMVC-JavaScript-ES5/Adding100Items/Sync,num,...,num
+        // TodoMVC-JavaScript-ES5/Adding100Items/Async,num,...,num
+        // ...
+        // TodoMVC-JavaScript-ES6/Total,num,...,num
+        // TodoMVC-JavaScript-ES6/Adding100Items,num,...,num
+        // TodoMVC-JavaScript-ES6/Adding100Items/Sync,num,...,num
+        // TodoMVC-JavaScript-ES6/Adding100Items/Async,num,...,num
+        // ```
+        const firstIterationTests = this._measuredValuesList[0].tests;
+        for (const suiteName in firstIterationTests) {
+            tests.push([`${suiteName}/Total`]);
+            for (const testName in firstIterationTests[suiteName].tests) {
+                tests.push([`${suiteName}/${testName}`]);
+                for (const subtestName in firstIterationTests[suiteName].tests[testName].tests)
+                    tests.push([`${suiteName}/${testName}/${subtestName}`]);
+            }
+        }
+
+        // Now push each iteration onto the end of the array
+        for (const measuredValue of this._measuredValuesList) {
+            let index = 0;
+            for (const suiteName in measuredValue.tests) {
+                const suiteResults = measuredValue.tests[suiteName];
+                tests[index++].push(suiteResults.total);
+                for (const testName in suiteResults.tests) {
+                    tests[index++].push(suiteResults.tests[testName].total);
+                    for (const subtestName in suiteResults.tests[testName].tests)
+                        tests[index++].push(suiteResults.tests[testName].tests[subtestName]);
+                }
+            }
+        }
+
+        const csv = [["Name"].concat(this._measuredValuesList.map((_, i) => `#${i + 1}`)).join(",")];
+        for (const test of tests)
+            csv.push(test.join(","));
+
+        return csv.join("\n");
+    }
+
     copyJsonResults() {
         navigator.clipboard.writeText(this._getFormattedJSONResult());
     }
 
-    downloadJsonResults() {
-        navigator.clipboard.writeText(this._getFormattedJSONResult());
+    copyCSVResults() {
+        navigator.clipboard.writeText(this._getFormattedCSVResult());
     }
 
     _showSection(hash) {
