@@ -10,7 +10,7 @@ jQuery is a fast, small, and feature-rich JavaScript library. It makes things li
 
 ## Implementation details
 
-[TBD]
+This implementation uses an explicit MVC pattern in combination with a module pattern to create the todo application. The storage solution uses an in-memory data object that implements a simple array to hold the todos.
 
 ## Built steps
 
