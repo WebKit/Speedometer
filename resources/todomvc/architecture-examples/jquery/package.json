@@ -13,7 +13,6 @@
         "serve": "http-server ./dist -p 7002 -c-1 --cors"
     },
     "dependencies": {
-        "director": "~1.2.2",
         "handlebars": "^4.0.6",
         "http-server": "^14.1.1",
         "jquery": "^3.6.3",
