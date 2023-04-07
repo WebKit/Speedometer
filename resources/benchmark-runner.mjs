@@ -57,6 +57,10 @@ class Page {
         return null;
     }
 
+    forceReflowAndGetHeight() {
+        return this._frame.contentDocument.body.getBoundingClientRect().height;
+    }
+
     _wrapElement(element) {
         return new PageElement(element);
     }
@@ -240,10 +244,9 @@ export class BenchmarkRunner {
         setTimeout(() => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
-            const height = this._frame.contentDocument.body.getBoundingClientRect().height;
+            const height = page.forceReflowAndGetHeight();
             const asyncEndTime = performance.now();
             const asyncTime = asyncEndTime - asyncStartTime;
-            this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
             performance.mark(asyncEndLabel);
             performance.measure(`${suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
             performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
