@@ -18,7 +18,7 @@
             </header>
             <section id="main" class="main">
                 <input id="toggle-all" class="toggle-all" type="checkbox" />
-                <label for="toggle-all">Mark all as complete</label>
+                <label for="toggle-all" class="toggle-all-label">Mark all as complete</label>
                 <ul id="todo-list" class="todo-list"></ul>
             </section>
             <footer id="footer" class="footer"></footer>
@@ -37,7 +37,12 @@
                         <label>{{title}}</label>
                         <button class="destroy"></button>
                     </div>
-                    <input class="edit" value="{{title}}">
+                    <div class="input-container">
+                        <input id="edit-todo-input" class="edit" value="{{title}}">
+                        <label class="visually-hidden" htmlFor="edit-todo-input">
+                            Edit Todo Input
+                        </label>
+                    </div>
                 </li>
             {{/this}}
         </script>
