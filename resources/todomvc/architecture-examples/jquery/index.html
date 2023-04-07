@@ -1,20 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-framework="jquery">
     <head>
-        <meta charset="utf-8">
+        <meta charset="utf-8" />
         <title>jQuery • TodoMVC</title>
-        <link rel="stylesheet" href="node_modules/todomvc-common/base.css">
-        <link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
-        <link rel="stylesheet" href="src/app.css">
+        <link rel="stylesheet" href="node_modules/todomvc-common/base.css" />
+        <link rel="stylesheet" href="node_modules/todomvc-app-css/index.css" />
+        <link rel="stylesheet" href="src/app.css" />
     </head>
     <body>
         <section id="todoapp" class="todoapp">
             <header id="header" class="header">
                 <h1>todos</h1>
-                <input id="new-todo" class="new-todo" placeholder="What needs to be done?" autofocus>
+                <input id="new-todo" class="new-todo" placeholder="What needs to be done?" autofocus />
             </header>
             <section id="main" class="main">
-                <input id="toggle-all" class="toggle-all" type="checkbox">
+                <input id="toggle-all" class="toggle-all" type="checkbox" />
                 <label for="toggle-all">Mark all as complete</label>
                 <ul id="todo-list" class="todo-list"></ul>
             </section>
@@ -26,16 +26,16 @@
             <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
         </footer>
         <script id="todo-template" type="text/x-handlebars-template">
-            {{#this}}
-            <li {{#if completed}}class="completed"{{/if}} data-id="{{id}}">
-                <div class="view">
-                    <input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
-                    <label>{{title}}</label>
-                    <button class="destroy"></button>
-                </div>
-                <input class="edit" value="{{title}}">
-            </li>
-        {{/this}}
+                {{#this}}
+                <li {{#if completed}}class="completed"{{/if}} data-id="{{id}}">
+                    <div class="view">
+                        <input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
+                        <label>{{title}}</label>
+                        <button class="destroy"></button>
+                    </div>
+                    <input class="edit" value="{{title}}">
+                </li>
+            {{/this}}
         </script>
         <script id="footer-template" type="text/x-handlebars-template">
             <span id="todo-count" class="todo-count"><strong>{{activeTodoCount}}</strong> {{activeTodoWord}} left</span>
