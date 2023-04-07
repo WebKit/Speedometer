@@ -54,12 +54,18 @@
                     <a {{#eq filter 'completed'}}class="selected"{{/eq}}href="#/completed">Completed</a>
                 </li>
             </ul>
-            {{#if completedTodos}}<button id="clear-completed">Clear completed</button>{{/if}}
+            {{#if completedTodos}}<button class="clear-completed">Clear completed</button>{{/if}}
         </script>
         <!-- <script src="node_modules/todomvc-common/base.js"></script> -->
         <script src="node_modules/jquery/dist/jquery.min.js"></script>
         <script src="node_modules/handlebars/dist/handlebars.min.js"></script>
         <script src="node_modules/director/build/director.min.js"></script>
+        <script src="src/utils.js"></script>
+        <script src="src/store.js"></script>
+        <script src="src/model.js"></script>
+        <script src="src/template.js"></script>
+        <script src="src/view.js"></script>
+        <script src="src/controller.js"></script>
         <script src="src/app.js"></script>
     </body>
 </html>
