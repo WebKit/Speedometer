@@ -29,7 +29,7 @@ import { nextTick } from 'vue';
 import TodoHeader from './TodoHeader.vue';
 import TodoFooter from './TodoFooter.vue';
 
-let id = 1;
+const uuid = () => crypto.randomUUID();
 
 const filters = {
   all: (todos) => todos,
@@ -63,7 +63,7 @@ export default {
             this.todos.push({
                 completed: false,
                 title: value,
-                id: id++
+                id: uuid()
             });
         },
         deleteTodo(todo) {
