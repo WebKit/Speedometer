@@ -1,13 +1,9 @@
 <template>
     <section class="todoapp">
-        <header class="header">
-            <h1>Todos</h1>
-            <input type="text" class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?"
-                v-model="newTodo" @keyup.enter="addTodo" />
-        </header>
+        <TodoHeader @add-todo="addTodo"/>
         <section class="main" v-show="todos.length" v-cloak>
             <div class="toggle-all-container">
-                <input type="checkbox" id="toggle-all-input" class="toggle-all" v-model="allDone" />
+                <input type="checkbox" id="toggle-all-input" class="toggle-all" v-model="toggleAllModel" />
                 <label class="toggle-all-label" htmlFor="toggle-all-input">
                     Toggle All Input
                 </label>
@@ -25,28 +21,31 @@
                 </li>
             </ul>
         </section>
-        <footer class="footer" v-show="todos.length > 0">
-            <span class="todo-count">
-                <strong>{{ remaining }}</strong> {{ pluralizedWord }} left
-            </span>
-            <ul class="filters">
-                <li><router-link to="/" :class="{ selected: route == 'all' }">All</router-link></li>
-                <li><router-link to="/active" :class="{ selected: route == 'active' }">Active</router-link></li>
-                <li><router-link to="/completed" :class="{ selected: route == 'completed' }">Completed</router-link></li>
-            </ul>
-            <button class="clear-completed" v-show="completed" @click.prevent="deleteCompleted">Clear Completed</button>
-        </footer>
+        <TodoFooter :todos="todos" v-memo="[activeTodos.length, completedTodos.length, route]" @delete-completed="deleteCompleted" :remaining="activeTodos.length" :completed="completedTodos.length" :route="route"/>
     </section>
 </template>
 
 <script>
 import { nextTick } from 'vue';
+import TodoHeader from './TodoHeader.vue';
+import TodoFooter from './TodoFooter.vue';
+
+let id = 1;
+
+const filters = {
+  all: (todos) => todos,
+  active: (todos) => todos.filter((todo) => !todo.completed),
+  completed: (todos) => todos.filter((todo) => todo.completed)
+}
 
 export default {
+    components: {
+        TodoHeader,
+        TodoFooter,
+    },
     data() {
         return {
             todos: [],
-            newTodo: '',
             editing: null
         }
     },
@@ -61,18 +60,18 @@ export default {
         }
     },
     methods: {
-        addTodo() {
+        addTodo(value) {
             this.todos.push({
                 completed: false,
-                title: this.newTodo
-            })
-            this.newTodo = ''
+                title: value,
+                id: id++
+            });
         },
         deleteTodo(todo) {
             this.todos = this.todos.filter(t => t !== todo)
         },
         deleteCompleted() {
-            this.todos = this.todos.filter(todo => !todo.completed)
+            this.todos = this.activeTodos;
         },
         editTodo(todo) {
             this.editing = todo
@@ -82,29 +81,27 @@ export default {
         }
     },
     computed: {
-        remaining() {
-            return this.todos.filter(todo => !todo.completed).length
+        activeTodos() {
+            return filters['active'](this.todos);
         },
-        pluralizedWord() {
-            return this.remaining === 1 ? 'item' : 'items'
-        },
-        completed() {
-            return this.todos.filter(todo => todo.completed).length
+        completedTodos() {
+            return filters["completed"](this.todos);
         },
         filteredTodos() {
-            if (this.$route.name === 'active') {
-                return this.todos.filter(todo => !todo.completed)
-            } else if (this.$route.name === 'completed') {
-                return this.todos.filter(todo => todo.completed)
+            switch(this.$route.name) {
+                case "active":
+                    return this.activeTodos;
+                case "completed":
+                    return this.completedTodos;
             }
-            return this.todos
+            return this.todos;
         },
         route() {
             return this.$route.name;
         },
-        allDone: {
+        toggleAllModel: {
             get() {
-                return this.remaining === 0
+                return this.activeTodos.length === 0
             },
             set(value) {
                 this.todos.forEach(todo => {
@@ -116,6 +113,6 @@ export default {
 }
 </script>
 
-<style src="./todo-component.css"></style>
+<style src="./todos-component.css"></style>
 <style src="../../node_modules/todomvc-common/base.css"></style>
 <style src="../../node_modules/todomvc-app-css/index.css"></style>
