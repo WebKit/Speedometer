@@ -13,15 +13,14 @@
                     :class="{ completed: todo.completed, editing: todo === editing }">
                     <div class="view">
                         <input type="checkbox" v-model="todo.completed" class="toggle">
-                        <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
+                        <label @dblclick="startEdit(todo)">{{ todo.title }}</label>
                         <button class="destroy" @click.prevent="deleteTodo(todo)"></button>
                     </div>
-                    <input type="text" class="edit" v-model="todo.title" @keyup.enter="doneEdit" @blur="doneEdit"
-                        v-todoFocus="todo === editing" />
+                    <input type="text" class="edit" v-model="todo.title" @keyup.enter="finishEdit" @blur="finishEdit" v-todoFocus="todo === editing" />
                 </li>
             </ul>
         </section>
-        <TodoFooter :todos="todos" v-memo="[activeTodos.length, completedTodos.length, route]" @delete-completed="deleteCompleted" :remaining="activeTodos.length" :completed="completedTodos.length" :route="route"/>
+        <TodoFooter :todos="todos" @delete-completed="deleteCompleted" :remaining="activeTodos.length" :completed="completedTodos.length" :route="route"/>
     </section>
 </template>
 
@@ -73,10 +72,10 @@ export default {
         deleteCompleted() {
             this.todos = this.activeTodos;
         },
-        editTodo(todo) {
+        startEdit(todo) {
             this.editing = todo
         },
-        doneEdit() {
+        finishEdit() {
             this.editing = null
         }
     },
