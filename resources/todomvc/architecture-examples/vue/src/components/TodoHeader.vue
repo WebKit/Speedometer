@@ -9,11 +9,6 @@
 <script>
 export default {
     name: 'TodoHeader',
-    data() {
-        return {
-            addText: '',
-        }
-    },
     emits: ['add-todo']
 }
 </script>
