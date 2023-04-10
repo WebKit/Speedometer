@@ -1,4 +1,6 @@
 <script>
+	import { tick } from 'svelte';
+
     import "./app.css";
     import "todomvc-app-css/index.css";
     import "todomvc-common/base/css";
@@ -61,6 +63,11 @@
         });
     }
 
+	async function focusInput(element) {
+		await tick();
+		element.focus();
+	}
+
     window.addEventListener("hashchange", updateView);
     updateView();
 
@@ -92,7 +99,7 @@
 
                     {#if editing === index}
                         <!-- svelte-ignore a11y-autofocus -->
-                        <input value={item.description} id="edit" class="edit" on:keydown={handleEdit} on:blur={submit} autofocus />
+                        <input value={item.description} id="edit" class="edit" on:keydown={handleEdit} on:blur={submit} use:focusInput />
                     {/if}
                 </li>
             {/each}
