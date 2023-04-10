@@ -2,7 +2,7 @@
 
 ## Description
 
-This application uses React 3.2.47 to implement a todo application.
+This application uses Vue.js 3.2.47 to implement a todo application.
 
 -   [Vue.js](https://vuejs.org/) provides efficient MVVM data bindings with a simple and flexible API. It uses plain JavaScript object models, DOM-based templating and extendable directives and filters..
 
