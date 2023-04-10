@@ -32,5 +32,5 @@ The only requirement is an installation of Node, to be able to install dependenc
 ```
 terminal:
 1. npm install
-2. npm run start
+2. npm run dev
 ```
