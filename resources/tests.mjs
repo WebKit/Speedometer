@@ -161,34 +161,6 @@ Suites.push({
 });
 
 Suites.push({
-    name: "EmberJS-TodoMVC",
-    url: "todomvc/architecture-examples/emberjs/dist/index.html",
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
-    tests: [
-        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
-            const newTodo = page.querySelector(".new-todo");
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
-                newTodo.enter("keydown");
-            }
-        }),
-        new BenchmarkTestStep("CompletingAllItems", (page) => {
-            const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                checkboxes[i].click();
-        }),
-        new BenchmarkTestStep("DeletingAllItems", (page) => {
-            const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                deleteButtons[i].click();
-        }),
-    ],
-});
-
-Suites.push({
     name: "TodoMVC-Backbone",
     url: "todomvc/architecture-examples/backbone/dist/index.html",
     async prepare(page) {
@@ -219,7 +191,7 @@ Suites.push({
 });
 
 Suites.push({
-    name: "Angular2-TypeScript-TodoMVC",
+    name: "TodoMVC-Angular",
     url: "todomvc/architecture-examples/angular/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
@@ -248,8 +220,8 @@ Suites.push({
 });
 
 Suites.push({
-    name: "VueJS-TodoMVC",
-    url: "todomvc/architecture-examples/vuejs-cli/dist/index.html",
+    name: "TodoMVC-Vue",
+    url: "todomvc/architecture-examples/vue/dist/index.html",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -277,8 +249,8 @@ Suites.push({
 });
 
 Suites.push({
-    name: "jQuery-TodoMVC",
-    url: "todomvc/architecture-examples/jquery/index.html",
+    name: "TodoMVC-jQuery",
+    url: "todomvc/architecture-examples/jquery/dist/index.html",
     async prepare(page) {
         await page.waitForElement("#appIsReady");
         const newTodo = page.getElementById("new-todo");

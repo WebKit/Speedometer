@@ -1,5 +1,5 @@
 {
-    "name": "library-react",
+    "name": "react",
     "version": "1.0.0",
     "description": "TodoMVC app written with React.",
     "private": true,
@@ -8,8 +8,8 @@
         "npm": ">=8.19.3"
     },
     "scripts": {
-        "start": "webpack serve --open --config webpack.dev.js",
         "build": "webpack --config webpack.prod.js",
+        "dev": "webpack serve --open --config webpack.dev.js",
         "serve": "http-server ./dist -p 7002 -c-1 --cors",
         "test": "jest"
     },
@@ -35,6 +35,7 @@
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-router-dom": "^6.8.2",
-        "todomvc-app-css": "^2.0.6"
+        "todomvc-app-css": "^2.4.2",
+        "todomvc-common": "^1.0.5"
     }
 }

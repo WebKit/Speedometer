@@ -21,9 +21,8 @@ const build = async () => {
 
     // copy src folder
     await fs.cp(sourceDirectory, targetDirectory, { recursive: true }, (err) => {
-        if (err) {
+        if (err)
             console.error(err);
-        }
     });
 
     // copy html file

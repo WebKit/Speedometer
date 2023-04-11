@@ -1,5 +1,4 @@
 import cx from "classnames";
-// eslint-disable-next-line no-unused-vars
 import { h } from "preact";
 import { useState, useEffect, useRef } from "preact/hooks";
 export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
@@ -28,7 +27,6 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
     }
 
     function handleKeyDown(e) {
-        // prettier-ignore
         if (e.key === "Escape")
             setEditing(false);
         else if (e.key === "Enter")
@@ -55,14 +53,14 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
                 <label onDblClick={handleDoubleClick}>{todo.title}</label>
                 <button class="destroy" onClick={handleRemove} />
             </div>
-            {editing ? (
-                <div class="input-container">
+            {editing
+                ? <div class="input-container">
                     <input class="edit" id="edit-todo-input" ref={inputRef} onBlur={handleSubmit} onKeyDown={handleKeyDown} defaultValue={todo.title} />
                     <label class="visually-hidden" htmlFor="edit-todo-input">
                         Edit Todo Input{" "}
                     </label>
                 </div>
-            ) : null}
+                : null}
         </li>
     );
 }
