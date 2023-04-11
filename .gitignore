@@ -13,6 +13,7 @@
 /resources/todomvc/architecture-examples/preact/node_modules/
 /resources/todomvc/architecture-examples/react/node_modules/
 /resources/todomvc/architecture-examples/react-redux/node_modules/
+/resources/todomvc/architecture-examples/svelte/node_modules/
 /resources/todomvc/architecture-examples/vue/node_modules/
 
 /resources/todomvc/vanilla-examples/javascript-es5/node_modules/
