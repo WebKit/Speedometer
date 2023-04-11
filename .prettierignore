@@ -10,6 +10,7 @@ package-lock.json
 !/resources/todomvc/architecture-examples/preact
 !/resources/todomvc/architecture-examples/react
 !/resources/todomvc/architecture-examples/react-redux
+!/resources/todomvc/architecture-examples/vue
 
 /resources/todomvc/vanilla-examples/*
 !/resources/todomvc/vanilla-examples/javascript-es5
