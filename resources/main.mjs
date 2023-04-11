@@ -15,6 +15,7 @@ class MainBenchmarkClient {
     _progressCompleted = null;
     _isRunning = false;
     _hasResults = false;
+    _metrics = {};
 
     constructor() {
         window.addEventListener("DOMContentLoaded", () => this.prepareUI());
@@ -37,6 +38,7 @@ class MainBenchmarkClient {
                 return false;
             }
         }
+        this._metrics = {};
         this._isRunning = true;
         this.developerMode = params.developerMode;
 
@@ -82,6 +84,7 @@ class MainBenchmarkClient {
         console.assert(this._isRunning);
         this._isRunning = false;
         this._hasResults = true;
+        this._metrics = metrics;
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         this._updateGaugeNeedle(scoreResults.mean);
@@ -266,48 +269,19 @@ class MainBenchmarkClient {
     }
 
     _getFormattedCSVResult() {
-        let tests = [];
         // The CSV format is similar to the details view table. Each measurement is a row with
         // the name and N columns with the measurement for each iteration:
         // ```
         // Measurement,#1,...,#N
         // TodoMVC-JavaScript-ES5/Total,num,...,num
         // TodoMVC-JavaScript-ES5/Adding100Items,num,...,num
-        // TodoMVC-JavaScript-ES5/Adding100Items/Sync,num,...,num
-        // TodoMVC-JavaScript-ES5/Adding100Items/Async,num,...,num
         // ...
-        // TodoMVC-JavaScript-ES6/Total,num,...,num
-        // TodoMVC-JavaScript-ES6/Adding100Items,num,...,num
-        // TodoMVC-JavaScript-ES6/Adding100Items/Sync,num,...,num
-        // TodoMVC-JavaScript-ES6/Adding100Items/Async,num,...,num
-        // ```
-        const firstIterationTests = this._measuredValuesList[0].tests;
-        for (const suiteName in firstIterationTests) {
-            tests.push([`${suiteName}/Total`]);
-            for (const testName in firstIterationTests[suiteName].tests) {
-                tests.push([`${suiteName}/${testName}`]);
-                for (const subtestName in firstIterationTests[suiteName].tests[testName].tests)
-                    tests.push([`${suiteName}/${testName}/${subtestName}`]);
-            }
-        }
-
-        // Now push each iteration onto the end of the array
-        for (const measuredValue of this._measuredValuesList) {
-            let index = 0;
-            for (const suiteName in measuredValue.tests) {
-                const suiteResults = measuredValue.tests[suiteName];
-                tests[index++].push(suiteResults.total);
-                for (const testName in suiteResults.tests) {
-                    tests[index++].push(suiteResults.tests[testName].total);
-                    for (const subtestName in suiteResults.tests[testName].tests)
-                        tests[index++].push(suiteResults.tests[testName].tests[subtestName]);
-                }
-            }
-        }
-
-        const csv = [["Name"].concat(this._measuredValuesList.map((_, i) => `#${i + 1}`)).join(",")];
-        for (const test of tests)
-            csv.push(test.join(","));
+        const labels = ["Name"];
+        for (let i = 0; i < params.iterationCount; i++)
+            labels.push(`#${i + 1}`);
+        const metrics = Array.from(Object.values(this._metrics)).filter((metric) => !metric.name.startsWith("Iteration-"));
+        const rows = metrics.map((metric) => [metric.name, ...metric.values].join(","));
+        const csv = [labels.join(","), ...rows];
 
         return csv.join("\n");
     }
