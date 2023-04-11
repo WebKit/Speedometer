@@ -167,7 +167,9 @@ const WarmupSuite = {
 
 export class BenchmarkRunner {
     constructor(suites, client) {
-        this._suites = [WarmupSuite, ...suites];
+        this._suites = suites;
+        if (params.useWarmupSuite)
+            this._suites = [WarmupSuite, ...suites];
         this._client = client;
         this._page = null;
         this._metrics = {
