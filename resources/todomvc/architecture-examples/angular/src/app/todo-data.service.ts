@@ -31,10 +31,10 @@ export class TodoDataService {
   }
 
   // Simulate PUT /todos/:id
-  updateTodoById(id: number, values: Object = {}): Todo {
+  updateTodoById(id: number, values: Object = {}): Todo | undefined {
     let todo = this.getTodoById(id);
     if (!todo) {
-      return null;
+      return undefined;
     }
     Object.assign(todo, values);
     return todo;
@@ -46,7 +46,7 @@ export class TodoDataService {
   }
 
   // Simulate GET /todos/:id
-  getTodoById(id: number): Todo {
+  getTodoById(id: number): Todo | undefined {
     return this.todos
       .filter(todo => todo.id === id)
       .pop();
