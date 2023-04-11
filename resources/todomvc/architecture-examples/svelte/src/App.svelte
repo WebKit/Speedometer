@@ -42,9 +42,8 @@
 
     function toggleAllItems(event) {
         items = items.map((item) => ({
-            id: item.id,
-            description: item.description,
-            completed: event.target.checked,
+        ...item,
+        completed: event.target.checked,
         }));
     }
 

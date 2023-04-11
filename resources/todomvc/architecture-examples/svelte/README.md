@@ -9,6 +9,8 @@ This application uses Svelte 3.58.0 to implement a todo application.
 
 ## Implementation details
 
+This app has been inspired by the [official Svelte Todomvc app](https://github.com/sveltejs/svelte-todomvc).
+
 [TBD]
 
 ## Built steps
