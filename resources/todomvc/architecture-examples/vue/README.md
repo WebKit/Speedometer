@@ -19,6 +19,10 @@ Container: serves as an interface between view & model components
 
 To build the static files, this application utilizes webpack. It minifies and optimizes output files and copies all necessary files to a `dist` folder.
 
+```
+npm run build
+```
+
 ## Requirements
 
 The only requirement is an installation of Node, to be able to install dependencies and run scripts to serve a local server.

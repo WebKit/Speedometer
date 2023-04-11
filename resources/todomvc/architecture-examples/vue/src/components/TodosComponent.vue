@@ -29,7 +29,17 @@ import { nextTick } from 'vue';
 import TodoHeader from './TodoHeader.vue';
 import TodoFooter from './TodoFooter.vue';
 
-const uuid = () => crypto.randomUUID();
+function uuid() {
+    let uuid = "";
+    for (let i = 0; i < 32; i++) {
+        let random = (Math.random() * 16) | 0;
+        if (i === 8 || i === 12 || i === 16 || i === 20)
+            uuid += "-";
+
+        uuid += (i === 12 ? 4 : i === 16 ? (random & 3) | 8 : random).toString(16);
+    }
+    return uuid;
+}
 
 const filters = {
   all: (todos) => todos,
@@ -81,10 +91,10 @@ export default {
     },
     computed: {
         activeTodos() {
-            return filters['active'](this.todos);
+            return filters.active(this.todos);
         },
         completedTodos() {
-            return filters["completed"](this.todos);
+            return filters.completed(this.todos);
         },
         filteredTodos() {
             switch(this.$route.name) {
