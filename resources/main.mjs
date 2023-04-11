@@ -280,8 +280,8 @@ class MainBenchmarkClient {
         for (let i = 0; i < params.iterationCount; i++)
             labels.push(`#${i + 1}`);
         const metrics = Array.from(Object.values(this._metrics)).filter((metric) => !metric.name.startsWith("Iteration-"));
-        const rows = metrics.map((metric) => [metric.name, ...metric.values].join(","));
-        const csv = [labels.join(","), ...rows];
+        const metricsValues = metrics.map((metric) => [metric.name, ...metric.values].join(","));
+        const csv = [labels.join(","), ...metricsValues];
 
         return csv.join("\n");
     }
