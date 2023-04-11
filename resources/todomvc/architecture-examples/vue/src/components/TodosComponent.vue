@@ -62,7 +62,9 @@ export default {
             this.todos = this.todos.filter((t) => t !== todo);
         },
         editTodo(todo, value) {
-            if (todo) todo.title = value;
+            // prettier-ignore
+            if (todo)
+                todo.title = value;
         },
         deleteCompleted() {
             this.todos = this.activeTodos;

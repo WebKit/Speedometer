@@ -38,11 +38,11 @@ export default {
         },
         finishEdit() {
             this.editing = false;
-            if (this.editText.trim().length === 0) {
+            // prettier-ignore
+            if (this.editText.trim().length === 0)
                 this.deleteTodo();
-            } else {
+            else
                 this.updateTodo();
-            }
         },
         cancelEdit() {
             this.editing = false;
