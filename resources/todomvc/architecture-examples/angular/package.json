@@ -1,6 +1,12 @@
 {
   "name": "angular",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "TodoMVC app written with Angular.",
+  "private": true,
+  "engines": {
+      "node": ">=18.13.0",
+      "npm": ">=8.19.3"
+  },
   "scripts": {
     "ng": "ng",
     "dev": "ng serve",
@@ -8,7 +14,6 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^14.2.0",
     "@angular/common": "^14.2.0",
