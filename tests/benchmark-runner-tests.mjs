@@ -184,7 +184,6 @@ describe("BenchmarkRunner", () => {
                 await runner._runTestAndRecordResults(suite, suite.tests[0]);
             });
 
-
             it("should run client pre and post hooks if present", () => {
                 assert.calledWith(runner._client.willRunTest, suite, suite.tests[0]);
                 assert.calledWith(runner._client.didRunTest, suite, suite.tests[0]);

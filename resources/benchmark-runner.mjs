@@ -116,7 +116,7 @@ class PageElement {
     }
 }
 
-class MeasureTask {
+class MeasureStep {
     constructor(runner, suite, test, page, frame) {
         this._runner = runner;
         this.suite = suite;
@@ -152,7 +152,7 @@ class MeasureTask {
 
     async run() {
         if (this._wasRun)
-            throw Error("MeasureTask can only run once.");
+            throw Error("MeasureStep can only run once.");
         if (params.asyncMetric === "raf") {
             requestAnimationFrame(this._measureSyncCallback);
             requestAnimationFrame(this._measureAsyncRafCallback);
@@ -312,7 +312,7 @@ export class BenchmarkRunner {
     async _runTestAndRecordResults(suite, test) {
         if (this._client?.willRunTest)
             await this._client.willRunTest(suite, test);
-        const task = new MeasureTask(this, suite, test, this._page, this._frame);
+        const task = new MeasureStep(this, suite, test, this._page, this._frame);
         await task.run();
         await this._recordTestResults(task);
     }
