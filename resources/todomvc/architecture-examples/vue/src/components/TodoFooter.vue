@@ -1,5 +1,5 @@
 <template>
-     <footer class="footer" v-show="todos.length > 0">
+    <footer class="footer" v-show="todos.length > 0">
         <span class="todo-count">
             <strong>{{ remaining }}</strong> {{ pluralizedWord }} left
         </span>
@@ -14,18 +14,18 @@
 
 <script>
 export default {
-    name: 'TodoFooter',
+    name: "TodoFooter",
     props: {
         todos: Array,
         remaining: Number,
         route: String,
-        completed: Number
+        completed: Number,
     },
     computed: {
         pluralizedWord() {
-            return this.remaining === 1 ? 'item' : 'items'
+            return this.remaining === 1 ? "item" : "items";
         },
     },
-    emits: ['delete-completed']
-}
+    emits: ["delete-completed"],
+};
 </script>

@@ -18,7 +18,7 @@ const router = createRouter({
             path: "/completed",
             name: "completed",
             component: TodoView,
-        }
+        },
     ],
 });
 
