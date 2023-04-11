@@ -7,7 +7,7 @@
                 <label class="toggle-all-label" htmlFor="toggle-all-input"> Toggle All Input </label>
             </div>
             <ul class="todo-list">
-                <TodoItem v-for="todo in filteredTodos" :key="todo.id" v-memo="[todo.completed, todo.title]" :todo="todo" @delete-todo="deleteTodo" @edit-todo="editTodo" @toggle-todo="toggleTodo"/>
+                <TodoItem v-for="todo in filteredTodos" :key="todo.id" v-memo="[todo.completed, todo.title]" :todo="todo" @delete-todo="deleteTodo" @edit-todo="editTodo" @toggle-todo="toggleTodo" />
             </ul>
         </section>
         <TodoFooter :todos="todos" @delete-completed="deleteCompleted" :remaining="activeTodos.length" :completed="completedTodos.length" :route="route" />
@@ -40,7 +40,7 @@ export default {
     components: {
         TodoHeader,
         TodoFooter,
-        TodoItem
+        TodoItem,
     },
     data() {
         return {
@@ -59,14 +59,14 @@ export default {
             todo.completed = value;
         },
         deleteTodo(todo) {
-            this.todos = this.todos.filter(t => t !== todo)
+            this.todos = this.todos.filter((t) => t !== todo);
         },
         editTodo(todo, value) {
             if (todo) todo.title = value;
         },
         deleteCompleted() {
             this.todos = this.activeTodos;
-        }
+        },
     },
     computed: {
         activeTodos() {

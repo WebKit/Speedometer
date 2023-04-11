@@ -1,19 +1,18 @@
 <template>
     <li :class="{ completed: todo.completed, editing: editing }">
         <div class="view">
-            <input type="checkbox" class="toggle" v-model="toggleModel">
+            <input type="checkbox" class="toggle" v-model="toggleModel" />
             <label @dblclick="startEdit">{{ todo.title }}</label>
             <button class="destroy" @click.prevent="deleteTodo"></button>
         </div>
-        <input ref="editInputRef" type="text" class="edit" v-model="editModel" @keyup.enter="finishEdit"
-            @blur="cancelEdit" />
+        <input ref="editInputRef" type="text" class="edit" v-model="editModel" @keyup.enter="finishEdit" @blur="cancelEdit" />
     </li>
 </template>
 
 <script>
-import { nextTick } from 'vue';
+import { nextTick } from "vue";
 export default {
-    name: 'TodoItem',
+    name: "TodoItem",
     props: {
         todo: {
             title: String,
@@ -23,9 +22,9 @@ export default {
     },
     data() {
         return {
-            editText: '',
+            editText: "",
             editing: false,
-        }
+        };
     },
     methods: {
         startEdit() {
@@ -49,25 +48,31 @@ export default {
             this.$refs.editInputRef.focus();
         },
         deleteTodo() {
-            this.$emit('delete-todo', this.todo)
+            this.$emit("delete-todo", this.todo);
         },
         updateTodo() {
-            this.$emit('edit-todo', this.todo, this.editText);
+            this.$emit("edit-todo", this.todo, this.editText);
             this.editText = "";
-        }
+        },
     },
     computed: {
         toggleModel: {
-            get() { return this.todo.completed },
-            set(value) { this.$emit('toggle-todo', this.todo, value) },
+            get() {
+                return this.todo.completed;
+            },
+            set(value) {
+                this.$emit("toggle-todo", this.todo, value);
+            },
         },
         editModel: {
-            get() { return this.todo.title },
+            get() {
+                return this.todo.title;
+            },
             set(value) {
                 this.editText = value;
             },
-        }
+        },
     },
-    emits: ['edit-todo', 'delete-todo', 'toggle-todo']
-}
+    emits: ["edit-todo", "delete-todo", "toggle-todo"],
+};
 </script>
