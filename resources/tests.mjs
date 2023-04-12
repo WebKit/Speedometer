@@ -375,10 +375,7 @@ Suites.push({
 Suites.push({
     name: "Charts-observable-plot",
     url: "tentative/charts/dist/observable-plot.html",
-    async prepare(page) {
-        page.querySelector("#preload").click();
-        await page.waitForElement("#ready");
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Prepare", (page) => {
             page.querySelector("#prepare").click();

@@ -5,10 +5,6 @@ import { format as d3Format } from "d3-format";
 import airportsString from "./datasets/airports.csv?raw";
 import flightsString from "./datasets/flights-airports.csv?raw";
 
-function notifyReady() {
-    document.getElementById("app").insertAdjacentHTML("beforeend", '<span id="ready">Ready.</span>');
-}
-
 let preparedData;
 function prepare() {
     /**
@@ -237,7 +233,6 @@ function reset() {
 
 async function runAllTheThings() {
     reset();
-    notifyReady();
     [
         // Force prettier to use a multiline formatting
         "prepare",
@@ -247,7 +242,6 @@ async function runAllTheThings() {
     ].forEach((id) => document.getElementById(id).click());
 }
 
-document.getElementById("preload").addEventListener("click", notifyReady);
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
 document.getElementById("add-grouped-chart-button").addEventListener("click", addGroupedBars);
