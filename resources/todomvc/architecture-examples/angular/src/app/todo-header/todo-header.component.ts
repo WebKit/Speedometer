@@ -4,7 +4,6 @@ import { TodosService } from '../todos.service';
 @Component({
   selector: 'app-todo-header',
   templateUrl: './todo-header.component.html',
-  styleUrls: ['./todo-header.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoHeaderComponent {
