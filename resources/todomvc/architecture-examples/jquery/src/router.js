@@ -22,6 +22,7 @@ function router(onChange) {
 
     function init() {
         window.addEventListener("hashchange", handleChange);
+        handleChange();
     }
 
     return {
