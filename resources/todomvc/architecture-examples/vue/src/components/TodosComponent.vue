@@ -7,14 +7,7 @@
                 <label class="toggle-all-label" htmlFor="toggle-all-input"> Toggle All Input </label>
             </div>
             <ul class="todo-list">
-                <li class="todo" :key="todo.id" v-for="todo in filteredTodos" :class="{ completed: todo.completed, editing: todo === editing }">
-                    <div class="view">
-                        <input type="checkbox" v-model="todo.completed" class="toggle" />
-                        <label @dblclick="startEdit(todo)">{{ todo.title }}</label>
-                        <button class="destroy" @click.prevent="deleteTodo(todo)"></button>
-                    </div>
-                    <input type="text" class="edit" v-model="todo.title" @keyup.enter="finishEdit" @blur="finishEdit" v-todoFocus="todo === editing" />
-                </li>
+                <TodoItem v-for="todo in filteredTodos" :key="todo.id" :todo="todo" @delete-todo="deleteTodo" @edit-todo="editTodo" @toggle-todo="toggleTodo" />
             </ul>
         </section>
         <TodoFooter :todos="todos" @delete-completed="deleteCompleted" :remaining="activeTodos.length" :completed="completedTodos.length" :route="route" />
@@ -22,9 +15,9 @@
 </template>
 
 <script>
-import { nextTick } from "vue";
 import TodoHeader from "./TodoHeader.vue";
 import TodoFooter from "./TodoFooter.vue";
+import TodoItem from "./TodoItem.vue";
 
 function uuid() {
     let uuid = "";
@@ -47,22 +40,12 @@ export default {
     components: {
         TodoHeader,
         TodoFooter,
+        TodoItem,
     },
     data() {
         return {
             todos: [],
-            editing: null,
         };
-    },
-    directives: {
-        todoFocus(el, value) {
-            if (value) {
-                // eslint-disable-next-line no-unused-vars
-                nextTick((_) => {
-                    el.focus();
-                });
-            }
-        },
     },
     methods: {
         addTodo(value) {
@@ -72,17 +55,19 @@ export default {
                 id: uuid(),
             });
         },
+        toggleTodo(todo, value) {
+            todo.completed = value;
+        },
         deleteTodo(todo) {
             this.todos = this.todos.filter((t) => t !== todo);
         },
+        editTodo(todo, value) {
+            // prettier-ignore
+            if (todo)
+                todo.title = value;
+        },
         deleteCompleted() {
             this.todos = this.activeTodos;
-        },
-        startEdit(todo) {
-            this.editing = todo;
-        },
-        finishEdit() {
-            this.editing = null;
         },
     },
     computed: {
