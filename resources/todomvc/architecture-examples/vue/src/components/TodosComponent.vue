@@ -7,7 +7,7 @@
                 <label class="toggle-all-label" htmlFor="toggle-all-input"> Toggle All Input </label>
             </div>
             <ul class="todo-list">
-                <TodoItem v-for="todo in filteredTodos" :key="todo.id" v-memo="[todo.completed, todo.title]" :todo="todo" @delete-todo="deleteTodo" @edit-todo="editTodo" @toggle-todo="toggleTodo" />
+                <TodoItem v-for="todo in filteredTodos" :key="todo.id" :todo="todo" @delete-todo="deleteTodo" @edit-todo="editTodo" @toggle-todo="toggleTodo" />
             </ul>
         </section>
         <TodoFooter :todos="todos" @delete-completed="deleteCompleted" :remaining="activeTodos.length" :completed="completedTodos.length" :route="route" />
