@@ -137,11 +137,11 @@ jQuery(function ($) {
             switch (action) {
                 case "addItem":
                     if (this.filter !== "completed")
-                        this.renderItem("#todo-list", payload);
+                        this.renderNewItem("#todo-list", payload);
                     break;
                 case "toggleItem":
                 case "updateItem":
-                    this.updateItem(payload);
+                    this.renderUpdatedItem(payload);
                     break;
                 case "removeItem":
                     $(`[data-id="${payload.id}"]`).remove();
@@ -159,14 +159,14 @@ jQuery(function ($) {
 
             $("#new-todo").trigger("focus");
         },
-        renderList: function (id, currentTodos) {
-            $(id).html(this.todoTemplate(currentTodos));
-        },
-        renderItem: function (id, todo) {
+        renderNewItem: function (id, todo) {
             $(id).append(this.todoTemplate(todo));
         },
-        updateItem: function (todo) {
+        renderUpdatedItem: function (todo) {
             $(`[data-id="${todo.id}"]`).replaceWith(this.todoTemplate(todo));
+        },
+        renderList: function (id, currentTodos) {
+            $(id).html(this.todoTemplate(currentTodos));
         },
         renderFooter: function (id, stats) {
             const template = this.footerTemplate({
