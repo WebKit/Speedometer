@@ -37,31 +37,26 @@ jQuery(function ($) {
                 .on("click", ".destroy", this.handleTodoButton.bind(this));
         },
         render: function () {
-            $("#main").toggle(this.todos.length > 0);
-            $("#footer").toggle(this.todos.length > 0);
-
             const currentTodos = this.getFilteredTodos();
+            const activeTodoCount = this.getActiveTodos().length;
+            const todoCount = this.todos.length;
+            const completedTodoCount = todoCount - activeTodoCount;
 
-            if (this.todos.length > 0) {
+            $("#main").toggle(todoCount > 0);
+            $("#footer").toggle(todoCount > 0);
+
+            if (todoCount > 0) {
                 $("#todo-list").html(this.todoTemplate(currentTodos));
-                $("#toggle-all").prop("checked", this.getActiveTodos().length === 0);
-
-                this.renderFooter();
+                $("#toggle-all").prop("checked", activeTodoCount === 0);
+                $("#footer").html(this.footerTemplate({
+                    activeTodoCount: activeTodoCount,
+                    activeTodoWord: pluralize(activeTodoCount, "item"),
+                    completedTodos: completedTodoCount,
+                    filter: this.filter,
+                }));
             }
 
             $("#new-todo").trigger("focus");
-        },
-        renderFooter: function () {
-            var todoCount = this.todos.length;
-            var activeTodoCount = this.getActiveTodos().length;
-            var template = this.footerTemplate({
-                activeTodoCount: activeTodoCount,
-                activeTodoWord: pluralize(activeTodoCount, "item"),
-                completedTodos: todoCount - activeTodoCount,
-                filter: this.filter,
-            });
-
-            $("#footer").html(template);
         },
         getActiveTodos: function () {
             return this.todos.filter(function (todo) {
