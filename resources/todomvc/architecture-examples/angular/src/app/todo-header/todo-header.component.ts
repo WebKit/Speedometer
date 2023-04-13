@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Todo } from '../todo';
 import { TodosService } from '../todos.service';
 
 @Component({
@@ -9,11 +10,14 @@ import { TodosService } from '../todos.service';
 export class TodoHeaderComponent {
   constructor(private todosService: TodosService) {}
 
-  addTodo(title: string) {
-    const todoTitle = title.trim();
+  newTodo: Todo = new Todo("", "", false);
+
+  addTodo() {
+    const todoTitle = this.newTodo.title.trim();
     if (todoTitle.length <= 0)
       return;
 
     this.todosService.addItem(todoTitle);
+    this.newTodo = new Todo("", "", false);
   }
 }
