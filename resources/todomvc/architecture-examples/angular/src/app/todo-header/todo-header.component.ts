@@ -18,6 +18,6 @@ export class TodoHeaderComponent {
       return;
 
     this.todosService.addItem(todoTitle);
-    this.newTodo = new Todo("", "", false);
+    this.newTodo.title = "";
   }
 }
