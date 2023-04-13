@@ -114,6 +114,21 @@ class PageElement {
         const event = new KeyboardEvent(type, eventOptions);
         this.#node.dispatchEvent(event);
     }
+
+    querySelector(selector) {
+        const element = this.#node.querySelector(selector);
+        if (element === null)
+            return null;
+        return new PageElement(element);
+    }
+
+    querySelectorAll(selector) {
+        const elements = Array.from(this.#node.querySelectorAll(selector));
+        for (let i = 0; i < elements.length; i++)
+            elements[i] = new PageElement(elements[i]);
+        return elements;
+    }
+
 }
 
 export class BenchmarkRunner {
