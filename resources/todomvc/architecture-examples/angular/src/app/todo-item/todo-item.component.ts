@@ -45,7 +45,7 @@ export class TodoItemComponent implements AfterViewChecked{
 
   ngAfterViewChecked(): void {
     if (this.isEditing) {
-      if (this.inputRef) this.inputRef.nativeElement.focus();
+      this.inputRef?.nativeElement.focus();
     }
   }
 }
