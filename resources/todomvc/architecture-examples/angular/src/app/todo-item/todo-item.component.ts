@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked, ChangeDetectionStrategy } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Todo } from '../todo';
 
 @Component({
@@ -15,14 +16,16 @@ export class TodoItemComponent implements AfterViewChecked{
 
   @ViewChild('todoInputRef') inputRef: ElementRef | undefined; 
 
+  titleFormControl = new FormControl("");
+
   isEditing:boolean = false;
 
-  toggleTodo(todo:Todo):void {
-    this.toggleEvent.emit(todo);
+  toggleTodo():void {
+    this.toggleEvent.emit(this.todo);
   }
 
-  removeTodo(todo:Todo):void {
-    this.deleteEvent.emit(todo);
+  removeTodo():void {
+    this.deleteEvent.emit(this.todo);
   }
 
   startEdit() {
@@ -33,12 +36,17 @@ export class TodoItemComponent implements AfterViewChecked{
     this.isEditing = false;
   }
 
-  updateTodo(todo: Todo, title: string) {
-    const todoTitle = title.trim();
-    if (todoTitle.length <= 0)
-      this.deleteEvent.emit(todo);
+  handleFocus(e:Event) {
+    this.titleFormControl.setValue(this.todo.title);
+  }
+
+  updateTodo() {
+    const title = this.titleFormControl.getRawValue()?.trimEnd();
+    console.log("title", title);
+    if (!title)
+      this.deleteEvent.emit(this.todo);
     else 
-      this.updateEvent.emit({todo, title});
+      this.updateEvent.emit({todo: this.todo, title});
 
     this.isEditing = false;
   }

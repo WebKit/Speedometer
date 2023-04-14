@@ -13,7 +13,7 @@ export class TodoHeaderComponent {
   titleFormControl = new FormControl('');
 
   addTodo() {
-    const title = this.titleFormControl.getRawValue();
+    const title = this.titleFormControl.getRawValue()?.trim();
 
     if (!title)
       return;
