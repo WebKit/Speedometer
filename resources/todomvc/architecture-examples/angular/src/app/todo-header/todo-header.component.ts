@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { TodosService } from '../todos.service';
-import { Todo } from '../todo';
 
 @Component({
   selector: 'app-todo-header',
@@ -10,14 +10,15 @@ import { Todo } from '../todo';
 export class TodoHeaderComponent {
   constructor(private todosService: TodosService) {}
 
-  newTodo: Todo = new Todo("", "", false);
+  titleFormControl = new FormControl('');
 
   addTodo() {
-    const todoTitle = this.newTodo.title.trim();
-    if (todoTitle.length <= 0)
+    const title = this.titleFormControl.getRawValue();
+
+    if (!title)
       return;
 
-    this.todosService.addItem(todoTitle);
-    this.newTodo.title = "";
+    this.todosService.addItem(title);
+    this.titleFormControl.setValue("");
   }
 }
