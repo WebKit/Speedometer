@@ -42,7 +42,6 @@ export class TodoItemComponent implements AfterViewChecked{
 
   updateTodo() {
     const title = this.titleFormControl.getRawValue()?.trimEnd();
-    console.log("title", title);
     if (!title)
       this.deleteEvent.emit(this.todo);
     else 
