@@ -1,10 +1,10 @@
 <script>
-	import { tick } from 'svelte';
     import { router } from './router.js';
     import { uuid } from './utils.js';
 
     import Header from './Header.svelte';
     import Footer from './Footer.svelte';
+    import Item from './Item.svelte';
 
     import "./app.css";
     import "todomvc-app-css/index.css";
@@ -22,20 +22,27 @@
         });
     }
 
-    function removeItem(index) {
+    function removeItem(e) {
+        const index = e.detail.index;
         items = items.slice(0, index).concat(items.slice(index + 1));
     }
 
     function updateItem(event) {
-        const text = event.target.value.trim();
-
-        if (text.length === 0) {
-            removeItem(event.target.getAttribute('data-index'));
-        } else {
-            items[editing].description = text;
-        }
-
+        items[editing].description = event.detail.text;
         editing = null;
+    }
+
+    function startEdit(event) {
+        editing = event.detail.index;
+    }
+
+    function cancelEdit() {
+        editing = null;
+    }
+
+    function toggleItem(event) {
+        const { index, checked } = event.detail;
+        items[index].completed = checked;
     }
 
     function toggleAllItems(event) {
@@ -49,16 +56,6 @@
     function removeCompletedItems() {
         items = items.filter((item) => !item.completed);
     }
-
-    function handleEdit(event) {
-        if (event.key === "Enter") event.target.blur();
-        else if (event.key === "Escape") editing = null;
-    }
-
-	async function focusInput(element) {
-		await tick();
-		element.focus();
-	}
     
     router(route => currentFilter = route).init();
 
@@ -76,25 +73,10 @@
 
         <ul class="todo-list">
             {#each filtered as item, index (item.id)}
-                <li class="{item.completed ? 'completed' : ''} {editing === index ? 'editing' : ''}">
-                    <div class="view">
-                        <input class="toggle" type="checkbox" bind:checked={item.completed} />
-                        <!-- svelte-ignore a11y-label-has-associated-control -->
-                        <label on:dblclick={() => (editing = index)}>{item.description}</label>
-                        <button on:click={() => removeItem(index)} class="destroy" />
-                    </div>
-
-                    {#if editing === index}
-                        <div class="input-container">
-                            <!-- svelte-ignore a11y-autofocus -->
-                            <input value={item.description} data-index={index} id="edit-todo-input" class="edit" on:keydown={handleEdit} on:blur={updateItem} use:focusInput />
-                            <label class="visually-hidden" for="edit-todo-input">Edit Todo Input</label>
-                        </div>
-                    {/if}
-                </li>
+                <Item item={item} editing={editing} index={index} on:removeItem={removeItem} on:updateItem={updateItem} on:startEdit={startEdit} on:cancelEdit={cancelEdit} on:toggleItem={toggleItem} />
             {/each}
         </ul>
 
-        <Footer numActive={numActive} currentFilter={currentFilter}, numCompleted={numCompleted} on:removeCompletedItems={removeCompletedItems} />
+        <Footer numActive={numActive} currentFilter={currentFilter} numCompleted={numCompleted} on:removeCompletedItems={removeCompletedItems} />
     </section>
 {/if}
