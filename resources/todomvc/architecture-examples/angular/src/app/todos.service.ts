@@ -29,16 +29,9 @@ export class TodosService {
         this.todos = this.todos.concat(todo);
     }
 
-    toggleItem(todoToToggle: Todo): void {
-        this.todos = this.todos.map((todo) => todo !== todoToToggle ? todo : { ...todo, completed: !todo.completed });
-    }
-
     removeItem(todo: Todo): void {
-        this.todos = this.todos.filter((t) => t !== todo);
-    }
-
-    updateItem(todoToSave: Todo, title: string) {
-        this.todos = this.todos.map((todo) => todo !== todoToSave ? todo : { ...todo, title });
+        const index = this.todos.findIndex((t) => t.id === todo.id);
+        this.todos.splice(index, 1);
     }
 
     clearCompleted(): void {

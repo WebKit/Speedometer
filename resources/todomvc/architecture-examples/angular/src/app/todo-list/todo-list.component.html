@@ -4,6 +4,6 @@
         <label class="toggle-all-label" htmlFor="toggle-all"> Toggle All Input </label>
     </div>
     <ul class="todo-list">
-        <app-todo-item *ngFor="let todo of todos; trackBy: trackByItem" [todo]="todo" (toggleEvent)="toggleTodo($event)" (deleteEvent)="removeTodo($event)" (updateEvent)="updateTodo($event)"></app-todo-item>
+        <app-todo-item *ngFor="let todo of todos; trackBy: trackByItem" [todo]="todo" (deleteEvent)="removeTodo($event)"></app-todo-item>
     </ul>
 </section>

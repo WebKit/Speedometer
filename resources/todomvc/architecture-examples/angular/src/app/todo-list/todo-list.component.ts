@@ -19,16 +19,8 @@ export class TodoListComponent {
         return this.todosService.getItems("active");
     }
 
-    toggleTodo(todo: Todo): void {
-        this.todosService.toggleItem(todo);
-    }
-
     removeTodo(todo: Todo): void {
         this.todosService.removeItem(todo);
-    }
-
-    updateTodo({ todo, title }: { todo: Todo; title: string }): void {
-        this.todosService.updateItem(todo, title);
     }
 
     toggleAll(e: Event) {

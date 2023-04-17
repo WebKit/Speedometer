@@ -11,9 +11,7 @@ import { Todo } from "../todo";
 export class TodoItemComponent implements AfterViewChecked {
     @Input() todo: Todo = new Todo("", "", false);
 
-    @Output() toggleEvent = new EventEmitter<Todo>();
     @Output() deleteEvent = new EventEmitter<Todo>();
-    @Output() updateEvent = new EventEmitter<{ todo: Todo; title: string }>();
 
     @ViewChild("todoInputRef") inputRef: ElementRef | undefined;
 
@@ -22,7 +20,7 @@ export class TodoItemComponent implements AfterViewChecked {
     isEditing = false;
 
     toggleTodo(): void {
-        this.toggleEvent.emit(this.todo);
+        this.todo.completed = !this.todo.completed;
     }
 
     removeTodo(): void {
@@ -46,7 +44,7 @@ export class TodoItemComponent implements AfterViewChecked {
         if (!title)
             this.deleteEvent.emit(this.todo);
         else
-            this.updateEvent.emit({ todo: this.todo, title });
+            this.todo.title = title;
 
         this.isEditing = false;
     }
