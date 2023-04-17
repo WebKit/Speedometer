@@ -28,6 +28,8 @@
     }
 
     function updateItem(event) {
+        if (editing === null) return;
+
         const text = event.detail.text.trim();
 
         if (text.length === 0) {
@@ -43,8 +45,11 @@
         editing = event.detail.index;
     }
 
-    function cancelEdit() {
-        editing = null;
+    function handleEdit(event) {
+        if (event.detail.key === "Enter")
+            event.detail.target.blur();
+        else if (event.detail.key === "Escape") 
+            editing = null;
     }
 
     function toggleItem(event) {
@@ -80,7 +85,7 @@
 
         <ul class="todo-list">
             {#each filtered as item, index (item.id)}
-                <Item item={item} editing={editing} index={index} on:removeItem={removeItem} on:updateItem={updateItem} on:startEdit={startEdit} on:cancelEdit={cancelEdit} on:toggleItem={toggleItem} />
+                <Item item={item} editing={editing} index={index} on:removeItem={removeItem} on:updateItem={updateItem} on:startEdit={startEdit} on:handleEdit={handleEdit} on:toggleItem={toggleItem} />
             {/each}
         </ul>
 

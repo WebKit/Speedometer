@@ -12,14 +12,10 @@
     }
 
     function handleEdit(event) {
-        if (event.key === "Enter")
-            return event.target.blur();
-        else if (event.key === "Escape") 
-            return dispatch('cancelEdit');
+        dispatch('handleEdit', { key: event.key, target: event.target})
     }
 
     function updateItem(event) {
-        if (editing === null) return;
         dispatch('updateItem', { text: event.target.value, index });
     }
 
@@ -41,8 +37,8 @@
     <div class="view">
         <input class="toggle" type="checkbox" on:change={toggleItem} checked={item.completed} />
         <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label on:dblclick={() => startEdit()}>{item.description}</label>
-        <button on:click={() => removeItem(index)} class="destroy" />
+        <label on:dblclick={startEdit}>{item.description}</label>
+        <button on:click={removeItem} class="destroy" />
     </div>
 
     {#if editing === index}
