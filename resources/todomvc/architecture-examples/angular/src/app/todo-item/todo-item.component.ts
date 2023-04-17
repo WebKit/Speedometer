@@ -9,7 +9,11 @@ import { Todo } from "../todo";
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodoItemComponent implements AfterViewChecked {
-    @Input() todo: Todo = new Todo("", "", false);
+    @Input() todo: Todo = {
+        id: "",
+        title: "",
+        completed: false,
+    };
 
     @Output() deleteEvent = new EventEmitter<Todo>();
 
