@@ -5,7 +5,7 @@
 This application uses Angular version 14.2.11. to implement a todo application.
 
 -   [Angular](https://angular.io/) is a development platform for building mobile and desktop web applications
-using TypeScript/JavaScript and other languages..
+    using TypeScript/JavaScript and other languages..
 
 ## Implementation details
 
@@ -17,7 +17,7 @@ ViewModel: angular component's ts
 MVC:\
 Model: maintains the data and behavior of an application\
 View: displays the model in the ui\
-Container: serves as an interface between view & model components
+Controller: serves as an interface between view & model components
 
 ## Built steps
 
