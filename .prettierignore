@@ -1,11 +1,13 @@
 /node_modules
 **/dist
 package-lock.json
+**/.angular
 
 /resources/tentative/*
 !/resources/tentative/editors
 
 /resources/todomvc/architecture-examples/*
+!/resources/todomvc/architecture-examples/angular
 !/resources/todomvc/architecture-examples/backbone
 !/resources/todomvc/architecture-examples/preact
 !/resources/todomvc/architecture-examples/react
