@@ -4,6 +4,7 @@
     import { uuid } from './utils.js';
 
     import Header from './Header.svelte';
+    import Footer from './Footer.svelte';
 
     import "./app.css";
     import "todomvc-app-css/index.css";
@@ -94,21 +95,6 @@
             {/each}
         </ul>
 
-        <footer class="footer">
-            <span class="todo-count">
-                <strong>{numActive}</strong>
-                {numActive === 1 ? "item" : "items"} left
-            </span>
-
-            <ul class="filters">
-                <li><a class={currentFilter === "all" ? "selected" : ""} href="#/">All</a></li>
-                <li><a class={currentFilter === "active" ? "selected" : ""} href="#/active">Active</a></li>
-                <li><a class={currentFilter === "completed" ? "selected" : ""} href="#/completed">Completed</a></li>
-            </ul>
-
-            {#if numCompleted}
-                <button class="clear-completed" on:click={removeCompletedItems}> Clear completed </button>
-            {/if}
-        </footer>
+        <Footer numActive={numActive} currentFilter={currentFilter}, numCompleted={numCompleted} on:removeCompletedItems={removeCompletedItems} />
     </section>
 {/if}
