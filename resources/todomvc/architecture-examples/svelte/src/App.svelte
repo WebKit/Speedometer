@@ -3,6 +3,8 @@
     import { router } from './router.js';
     import { uuid } from './utils.js';
 
+    import Header from './Header.svelte';
+
     import "./app.css";
     import "todomvc-app-css/index.css";
     import "todomvc-common/base/css";
@@ -12,16 +14,11 @@
     let editing = null;
 
     function addItem(event) {
-        const text = event.target.value.trim();
-
-        if (event.key === "Enter") {
-            items = items.concat({
-                id: uuid(),
-                description: text,
-                completed: false,
-            });
-            event.target.value = "";
-        }
+        items = items.concat({
+            id: uuid(),
+            description: event.detail.text,
+            completed: false,
+        });
     }
 
     function removeItem(index) {
@@ -41,9 +38,10 @@
     }
 
     function toggleAllItems(event) {
+        const checked = event.target.checked;
         items = items.map((item) => ({
         ...item,
-        completed: event.target.checked,
+        completed: checked,
         }));
     }
 
@@ -68,11 +66,7 @@
     $: numCompleted = items.filter((item) => item.completed).length;
 </script>
 
-<header class="header">
-    <h1>todos</h1>
-    <!-- svelte-ignore a11y-autofocus -->
-    <input class="new-todo" on:keydown={addItem} placeholder="What needs to be done?" autofocus />
-</header>
+<Header on:addItem={addItem} />
 
 {#if items.length > 0}
     <section class="main">
