@@ -28,7 +28,14 @@
     }
 
     function updateItem(event) {
-        items[editing].description = event.detail.text;
+        const text = event.detail.text.trim();
+
+        if (text.length === 0) {
+            removeItem(event);
+        } else {
+            items[editing].description = text;
+        }
+
         editing = null;
     }
 

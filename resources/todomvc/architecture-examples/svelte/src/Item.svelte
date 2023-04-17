@@ -8,7 +8,7 @@
     }
 
     function startEdit() {
-        dispatch('startEdit', { index })
+        dispatch('startEdit', { index });
     }
 
     function handleEdit(event) {
@@ -20,14 +20,7 @@
 
     function updateItem(event) {
         if (editing === null) return;
-
-        const text = event.target.value.trim();
-
-        if (text.length === 0) {
-            removeItem();
-        } else {
-            dispatch('updateItem', { text: event.target.value })
-        }
+        dispatch('updateItem', { text: event.target.value, index });
     }
 
     function toggleItem(event) {
@@ -55,7 +48,7 @@
     {#if editing === index}
         <div class="input-container">
             <!-- svelte-ignore a11y-autofocus -->
-            <input value={item.description} data-index={index} id="edit-todo-input" class="edit" on:keydown={handleEdit} on:blur={updateItem} use:focusInput />
+            <input value={item.description} id="edit-todo-input" class="edit" on:keydown={handleEdit} on:blur={updateItem} use:focusInput />
             <label class="visually-hidden" for="edit-todo-input">Edit Todo Input</label>
         </div>
     {/if}
