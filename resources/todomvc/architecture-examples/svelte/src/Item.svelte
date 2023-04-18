@@ -1,26 +1,33 @@
 <script>
     import { createEventDispatcher, tick } from 'svelte';
 
+    let editing = false;
+
     const dispatch = createEventDispatcher();
 
     function removeItem() {
-        dispatch('removeItem', { index });
+        dispatch('removeItem');
     }
 
     function startEdit() {
-        dispatch('startEdit', { index });
+       editing = true;
     }
 
     function handleEdit(event) {
-        dispatch('handleEdit', { key: event.key, target: event.target})
+        if (event.key === "Enter")
+            event.target.blur();
+        else if (event.key === "Escape") 
+            editing = false;
     }
 
     function updateItem(event) {
-        dispatch('updateItem', { text: event.target.value, index });
+        if (!editing) return;
+        dispatch('updateItem', { text: event.target.value });
+        editing = false;
     }
 
     function toggleItem(event) {
-        dispatch('toggleItem', { index, checked: event.target.checked });
+        dispatch('toggleItem', { checked: event.target.checked });
     }
 
     async function focusInput(element) {
@@ -29,11 +36,9 @@
 	}
 
     export let item;
-    export let editing;
-    export let index;
 </script>
 
-<li class="{item.completed ? 'completed' : ''} {editing === index ? 'editing' : ''}">
+<li class="{item.completed ? 'completed' : ''} {editing ? 'editing' : ''}">
     <div class="view">
         <input class="toggle" type="checkbox" on:change={toggleItem} checked={item.completed} />
         <!-- svelte-ignore a11y-label-has-associated-control -->
@@ -41,7 +46,7 @@
         <button on:click={removeItem} class="destroy" />
     </div>
 
-    {#if editing === index}
+    {#if editing}
         <div class="input-container">
             <input value={item.description} id="edit-todo-input" class="edit" on:keydown={handleEdit} on:blur={updateItem} use:focusInput />
             <label class="visually-hidden" for="edit-todo-input">Edit Todo Input</label>

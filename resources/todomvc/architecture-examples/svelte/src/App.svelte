@@ -20,42 +20,23 @@
             description: event.detail.text,
             completed: false,
         });
-
         items = items;
     }
 
-    function removeItem(e) {
-        const index = e.detail.index;
-        items = items.splice(index, 1);
+    function removeItem(index) {
+        items.splice(index, 1);
+        items = items;
     }
 
-    function updateItem(event) {
-        if (editing === null) return;
-
-        const text = event.detail.text.trim();
-
+    function updateItem(index, text) {
         if (text.length === 0) {
             removeItem(event);
         } else {
-            items[editing].description = text;
+            items[index].description = text;
         }
-
-        editing = null;
     }
 
-    function startEdit(event) {
-        editing = event.detail.index;
-    }
-
-    function handleEdit(event) {
-        if (event.detail.key === "Enter")
-            event.detail.target.blur();
-        else if (event.detail.key === "Escape") 
-            editing = null;
-    }
-
-    function toggleItem(event) {
-        const { index, checked } = event.detail;
+    function toggleItem(index, checked) {
         items[index].completed = checked;
     }
 
@@ -87,7 +68,7 @@
 
         <ul class="todo-list">
             {#each filtered as item, index (item.id)}
-                <Item item={item} editing={editing} index={index} on:removeItem={removeItem} on:updateItem={updateItem} on:startEdit={startEdit} on:handleEdit={handleEdit} on:toggleItem={toggleItem} />
+                <Item item={item} editing={editing} on:removeItem={() => removeItem(index)} on:updateItem={(e) => updateItem(index, e.detail.text)} on:toggleItem={(e) => toggleItem(index, e.detail.checked)} />
             {/each}
         </ul>
 
