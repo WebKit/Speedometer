@@ -15,16 +15,18 @@
     let editing = null;
 
     function addItem(event) {
-        items = items.concat({
+        items.push({
             id: uuid(),
             description: event.detail.text,
             completed: false,
         });
+
+        items = items;
     }
 
     function removeItem(e) {
         const index = e.detail.index;
-        items = items.slice(0, index).concat(items.slice(index + 1));
+        items = items.splice(index, 1);
     }
 
     function updateItem(event) {

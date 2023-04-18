@@ -43,7 +43,6 @@
 
     {#if editing === index}
         <div class="input-container">
-            <!-- svelte-ignore a11y-autofocus -->
             <input value={item.description} id="edit-todo-input" class="edit" on:keydown={handleEdit} on:blur={updateItem} use:focusInput />
             <label class="visually-hidden" for="edit-todo-input">Edit Todo Input</label>
         </div>
