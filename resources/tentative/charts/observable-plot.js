@@ -2,8 +2,20 @@ import * as Plot from "@observablehq/plot";
 import { csvParse } from "d3-dsv";
 import * as d3Array from "d3-array";
 import { format as d3Format } from "d3-format";
+
+// These 2 imports use some vite machinery to directly import these files as
+// strings. Then they are constants and this reduces the load on the GC.
 import airportsString from "./datasets/airports.csv?raw";
 import flightsString from "./datasets/flights-airports.csv?raw";
+
+const ROOT = document.getElementById("chart");
+const DEFAULT_OPTIONS = {
+    // This width is really a max-width: the plot adjusts using the available
+    // width as well.
+    width: 2000,
+    // The height is especially used for the ratio.
+    height: 1000,
+};
 
 let preparedData;
 function prepare() {
@@ -107,7 +119,7 @@ function groupFlightsByAirports(flights) {
 }
 
 function isReady() {
-    return preparedData;
+    return !!preparedData;
 }
 
 function addStackedBars() {
@@ -115,8 +127,7 @@ function addStackedBars() {
         throw new Error("Please prepare the data first.");
 
     const options = {
-        width: 2000,
-        height: 1000,
+        ...DEFAULT_OPTIONS,
         color: { type: "categorical" },
         x: {
             domain: preparedData.stateSortedArray,
@@ -136,16 +147,18 @@ function addStackedBars() {
             Plot.ruleY([0]),
         ],
     };
-    document.querySelector("#chart").append(Plot.plot(options));
+    ROOT.append(Plot.plot(options));
 }
 
+// Note that this function is currently commented out in the benchmark. We may
+// want to remove it in the future but it's also good to keep it in case we need
+// something like this in the future.
 function addGroupedBars() {
     if (!isReady())
         throw new Error("Please prepare the data first.");
 
     const options = {
-        width: 2000,
-        height: 1000,
+        ...DEFAULT_OPTIONS,
         x: {
             axis: null,
             domain: Array.from({ length: 7 }, (_, i) => i),
@@ -178,7 +191,7 @@ function addGroupedBars() {
             Plot.ruleY([0]),
         ],
     };
-    document.querySelector("#chart").append(Plot.plot(options));
+    ROOT.append(Plot.plot(options));
 }
 
 function addDottedBars() {
@@ -196,8 +209,7 @@ function addDottedBars() {
         .filter((d) => d.value);
 
     const options = {
-        width: 2000,
-        height: 1000,
+        ...DEFAULT_OPTIONS,
         color: { type: "threshold", domain: [0] },
         x: {
             domain: preparedData.stateSortedArray,
@@ -224,11 +236,11 @@ function addDottedBars() {
         ],
     };
 
-    document.querySelector("#chart").append(Plot.plot(options));
+    ROOT.append(Plot.plot(options));
 }
 
 function reset() {
-    document.querySelector("#chart").textContent = "";
+    ROOT.textContent = "";
 }
 
 async function runAllTheThings() {
