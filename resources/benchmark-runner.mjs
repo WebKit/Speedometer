@@ -125,16 +125,6 @@ export class BenchmarkRunner {
         this._iterationCount = params.iterationCount;
     }
 
-    async runMultipleIterations(iterationCount) {
-        this._iterationCount = iterationCount;
-        if (this._client?.willStartFirstIteration)
-            await this._client.willStartFirstIteration(iterationCount);
-        for (let i = 0; i < iterationCount; i++)
-            await this._runAllSuites();
-        if (this._client?.didFinishLastIteration)
-            await this._client.didFinishLastIteration(this._metrics);
-    }
-
     _removeFrame() {
         if (this._frame) {
             this._frame.parentNode.removeChild(this._frame);
@@ -167,6 +157,16 @@ export class BenchmarkRunner {
         document.body.insertBefore(frame, document.body.firstChild);
         this._frame = frame;
         return frame;
+    }
+
+    async runMultipleIterations(iterationCount) {
+        this._iterationCount = iterationCount;
+        if (this._client?.willStartFirstIteration)
+            await this._client.willStartFirstIteration(iterationCount);
+        for (let i = 0; i < iterationCount; i++)
+            await this._runAllSuites();
+        if (this._client?.didFinishLastIteration)
+            await this._client.didFinishLastIteration(this._metrics);
     }
 
     async _runAllSuites() {

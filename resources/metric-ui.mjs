@@ -1,5 +1,3 @@
-import { Metric } from "./metric.mjs";
-
 export const COLORS = Object.freeze(["blue", "blue-light", "green-light", "green", "yellow", "orange", "red", "magenta", "violet", "purple", "blue-dark", "green-dark", "ochre", "rust"]);
 
 export function renderMetricView(viewParams) {
@@ -105,16 +103,16 @@ function renderSubMetrics(viewParams) {
 function renderMetricsTable(metrics, min, max) {
     let numRows = 0;
     let columnHeaders = "";
-    let commonPrefixes = metrics[0].name.split(Metric.separator);
+    let commonPrefixes = metrics[0].name.split("-");
     for (const metric of metrics) {
-        const prefixes = metric.name.split(Metric.separator);
+        const prefixes = metric.name.split("-");
         for (let i = commonPrefixes.length - 1; i >= 0; i--) {
             if (commonPrefixes[i] !== prefixes[i])
                 commonPrefixes.pop();
         }
 
     }
-    const commonPrefix = commonPrefixes.join(Metric.separator);
+    const commonPrefix = commonPrefixes.join("-");
     let commonPrefixHeader = "";
     if (commonPrefix) {
         commonPrefixHeader = `
