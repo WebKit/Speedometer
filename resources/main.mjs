@@ -318,6 +318,8 @@ class MainBenchmarkClient {
         const csv = [["Name"].concat(this._measuredValuesList.map((_, i) => `#${i + 1}`)).join(",")];
         for (const test of tests)
             csv.push(test.join(","));
+
+        return csv.join("\n");
     }
 
     copyJsonResults() {
