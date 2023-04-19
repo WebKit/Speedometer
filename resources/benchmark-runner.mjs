@@ -300,7 +300,7 @@ export class BenchmarkRunner {
                 if (metric.parent !== parent)
                     parent.addChild(metric);
                 if (results.tests)
-                    collectSubMetrics(`${metric.name}-`, results.tests, metric);
+                    collectSubMetrics(`${metric.name}${Metric.separator}`, results.tests, metric);
             }
         };
 
