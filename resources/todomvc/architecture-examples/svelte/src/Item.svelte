@@ -22,7 +22,12 @@
 
     function updateItem(event) {
         if (!editing) return;
-        dispatch('updateItem', { text: event.target.value });
+        const { value } = event.target;
+        if (value.length) {
+            item.description = value;
+        } else {
+          removeItem();
+        }
         editing = false;
     }
 

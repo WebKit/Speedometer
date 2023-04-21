@@ -28,14 +28,6 @@
         items = items;
     }
 
-    function updateItem(index, text) {
-        if (text.length === 0) {
-            removeItem(event);
-        } else {
-            items[index].description = text;
-        }
-    }
-
     function toggleItem(index, checked) {
         items[index].completed = checked;
     }
@@ -68,7 +60,7 @@
 
         <ul class="todo-list">
             {#each filtered as item, index (item.id)}
-                <Item item={item} editing={editing} on:removeItem={() => removeItem(index)} on:updateItem={(e) => updateItem(index, e.detail.text)} on:toggleItem={(e) => toggleItem(index, e.detail.checked)} />
+                <Item item={item} editing={editing} on:removeItem={() => removeItem(index)} on:toggleItem={(e) => toggleItem(index, e.detail.checked)} />
             {/each}
         </ul>
 
