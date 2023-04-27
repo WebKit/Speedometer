@@ -74,6 +74,10 @@ class PageElement {
         this.#node = node;
     }
 
+    domNode() {
+        return this.#node;
+    }
+
     setValue(value) {
         this.#node.value = value;
     }
@@ -200,7 +204,7 @@ export class BenchmarkRunner {
         return new Promise((resolve) => {
             const frame = this._page._frame;
             frame.onload = async () => {
-                await suite.prepare(this._page);
+                this._prepareValue = await suite.prepare(this._page, frame.contentWindow, frame.contentDocument);
                 resolve();
             };
             frame.src = `resources/${suite.url}`;
@@ -229,7 +233,7 @@ export class BenchmarkRunner {
 
         performance.mark(startLabel);
         const syncStartTime = performance.now();
-        test.run(page);
+        test.run(this._prepareValue, page._frame.contentWindow, page._frame.contentDocument);
         const syncEndTime = performance.now();
         performance.mark(syncEndLabel);
 
