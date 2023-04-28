@@ -1,6 +1,8 @@
 <script>
     import { createEventDispatcher, tick } from 'svelte';
 
+    export let item;
+
     let editing = false;
 
     const dispatch = createEventDispatcher();
@@ -39,8 +41,6 @@
 		await tick();
 		element.focus();
 	}
-
-    export let item;
 </script>
 
 <li class="{item.completed ? 'completed' : ''} {editing ? 'editing' : ''}">

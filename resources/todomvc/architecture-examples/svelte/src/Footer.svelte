@@ -1,15 +1,15 @@
 <script>
     import { createEventDispatcher } from 'svelte';
 
+    export let numActive;
+    export let currentFilter;
+    export let numCompleted;
+
     const dispatch = createEventDispatcher();
 
     function removeCompletedItems(e) {
         dispatch('removeCompletedItems');
     }
-
-    export let numActive;
-    export let currentFilter;
-    export let numCompleted;
 </script>
 
 <footer class="footer">
