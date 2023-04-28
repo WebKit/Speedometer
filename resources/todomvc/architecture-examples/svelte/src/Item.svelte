@@ -33,10 +33,6 @@
         editing = false;
     }
 
-    function toggleItem(event) {
-        dispatch('toggleItem', { checked: event.target.checked });
-    }
-
     async function focusInput(element) {
 		await tick();
 		element.focus();
@@ -45,7 +41,7 @@
 
 <li class="{item.completed ? 'completed' : ''} {editing ? 'editing' : ''}">
     <div class="view">
-        <input class="toggle" type="checkbox" on:change={toggleItem} checked={item.completed} />
+        <input class="toggle" type="checkbox" on:change={(event) => item.completed = event.target.checked} checked={item.completed} />
         <!-- svelte-ignore a11y-label-has-associated-control -->
         <label on:dblclick={startEdit}>{item.description}</label>
         <button on:click={removeItem} class="destroy" />

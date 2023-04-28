@@ -28,10 +28,6 @@
         items = items;
     }
 
-    function toggleItem(index, checked) {
-        items[index].completed = checked;
-    }
-
     function toggleAllItems(event) {
         const checked = event.target.checked;
         items = items.map((item) => ({
@@ -60,7 +56,7 @@
 
         <ul class="todo-list">
             {#each filtered as item, index (item.id)}
-                <Item item={item} editing={editing} on:removeItem={() => removeItem(index)} on:toggleItem={(e) => toggleItem(index, e.detail.checked)} />
+                <Item bind:item editing={editing} on:removeItem={() => removeItem(index)} />
             {/each}
         </ul>
 
