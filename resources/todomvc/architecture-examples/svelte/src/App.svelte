@@ -8,7 +8,7 @@
 
     import "./app.css";
     import "todomvc-app-css/index.css";
-    import "todomvc-common/base/css";
+    import "todomvc-common/base.css";
 
     let currentFilter = "all";
     let items = [];
