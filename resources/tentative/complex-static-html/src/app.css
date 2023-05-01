@@ -2,6 +2,7 @@
 @import "@spectrum-css/vars/dist/spectrum-medium.css";
 @import "@spectrum-css/vars/dist/spectrum-light.css";
 @import "@spectrum-css/tokens/dist/index.css";
+@import "@spectrum-css/actionbutton/dist/index-vars.css";
 @import "@spectrum-css/clearbutton/dist/index-vars.css";
 @import "@spectrum-css/page/dist/index-vars.css";
 @import "@spectrum-css/textfield/dist/index-vars.css";
@@ -18,10 +19,6 @@
   display: inline-flex;
 } */
 
-.show_more {
-  background-color: whitesmoke;
-}
-
 .main-ui {
   display: grid;
   grid-template-columns: 3% 97%;
@@ -29,13 +26,13 @@
   height: 100vh;
 }
 
-.mail-ui>.top-bar {
-  grid-column-start: 1;
+.main-ui>.top-bar {
+  grid-column-start: 2;
   grid-column-end: 3;
   grid-row-start: 1;
   grid-row-end: 2;
-  display: flex;
-  justify-content: space-between;
+  display: inline-flex;
+  justify-content: space-around;
   align-items: center;
 }
 
@@ -81,3 +78,14 @@
   grid-row-start: 2;
   grid-row-end: 3;
 }
+
+/* .top-bar > :first-child{
+  padding-left: 10%;
+} */
+
+
+.show-more {
+  justify-self: start;
+  align-self: center;
+}
+

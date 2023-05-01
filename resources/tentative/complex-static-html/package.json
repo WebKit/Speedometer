@@ -16,6 +16,8 @@
     "@babel/core": "^7.21.0",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
+    "@spectrum-css/actiongroup": "^3.0.36",
+    "@spectrum-css/actionmenu": "^4.0.23",
     "@spectrum-css/button": "10.0.3",
     "@spectrum-css/icon": "3.0.41",
     "@spectrum-css/page": "5.0.25",
