@@ -1,6 +1,7 @@
 import { TreeArea } from "./tree-area";
 import { SearchArea } from './search-area';
 import { ActionGroup } from './action-group';
+import { Ribbon } from './Ribbon';
 
 import MoreIcon from './../assets/Smock_MoreCircle_18_N.svg';
 
@@ -15,22 +16,6 @@ const TopBar = () => {
       <div className={`top-bar-right`}>
         <ActionGroup/>
       </div>
-    </div>
-  );
-}
-
-const Divider = () => {
-  return (
-    <div className={`divider`}/>
-  );
-}
-
-const Ribbon = () => {
-  const numChildren = 4;
-  const children = [<div/>, <Divider/>, <div/>, <Divider/>, <div/>, <Divider/>, <div/>];
-  return (
-    <div className={`ribbon`}>
-      {children}
     </div>
   );
 }

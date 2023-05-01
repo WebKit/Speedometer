@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 18 18" width="18">
+  <defs>
+    <style>
+      .fill {
+        fill: #464646;
+      }
+    </style>
+  </defs>
+  <title>S Archive 18 N</title>
+  <rect id="Canvas" fill="#ff13dc" opacity="0" width="18" height="18" /><rect class="fill" height="3" rx="0.5" width="18" y="2" />
+  <path class="fill" d="M1,6v9.5a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V6Zm10.5,6h-5a.5.5,0,0,1-.5-.5v-2A.5.5,0,0,1,6.5,9h5a.5.5,0,0,1,.5.5v2A.5.5,0,0,1,11.5,12Z" />
+</svg>

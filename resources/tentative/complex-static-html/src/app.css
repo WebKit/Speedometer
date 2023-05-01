@@ -8,6 +8,13 @@
 @import "@spectrum-css/textfield/dist/index-vars.css";
 @import "@spectrum-css/search/dist/index-vars.css";
 @import "@spectrum-css/treeview/dist/index-vars.css";
+@import "@spectrum-css/button/dist/index-vars.css";
+@import "@spectrum-css/actiongroup/dist/index-vars.css";
+@import "@spectrum-css/actionbutton/dist/index-vars.css";
+@import "@spectrum-css/menu/dist/index-vars.css";
+@import "@spectrum-css/popover/dist/index-vars.css";
+@import "@spectrum-css/divider/dist/index-vars.css";
+
 /* 
 .folder {
   display: block;
@@ -61,6 +68,19 @@
   grid-column-end: 3;
   grid-row-start: 1;
   grid-row-end: 2;
+  display: grid;
+  grid-auto-flow: column;
+  justify-items: center; 
+  align-items:center;
+  gap:5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.main-area>.ribbon>.divider {
+  height: 85%;
+  align-self: center;
 }
 
 .main-area>.tree-area {
