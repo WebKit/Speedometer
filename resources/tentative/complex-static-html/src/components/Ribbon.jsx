@@ -114,13 +114,13 @@ const RibbonGroupFour = () => {
 export const Ribbon = () => {
     const numChildren = 4;
     const children = [
-    <RibbonGroupOne key={1} />,
-    <Divider key={2}/>,
-    <RibbonGroupTwo key={3}/>, 
-    <Divider key={4}/>, 
-    <RibbonGroupThree key={5}/>, 
-    <Divider key={6}/>, 
-    <RibbonGroupFour key={7}/>
+    <RibbonGroupOne key={0} />,
+    <Divider key={1}/>,
+    <RibbonGroupTwo key={2}/>, 
+    <Divider key={3}/>, 
+    <RibbonGroupThree key={4}/>, 
+    <Divider key={5}/>, 
+    <RibbonGroupFour key={6}/>
   ];
     return (
       <div className={`ribbon`}>
