@@ -1,0 +1,82 @@
+@import "@spectrum-css/vars/dist/spectrum-global.css";
+@import "@spectrum-css/vars/dist/spectrum-medium.css";
+@import "@spectrum-css/vars/dist/spectrum-light.css";
+@import "@spectrum-css/search/dist/vars.css";
+@import "@spectrum-css/search/dist/index-vars.css";
+@import "@spectrum-css/treeview/dist/vars.css";
+@import "@spectrum-css/treeview/dist/index-vars.css";
+
+/* 
+.folder {
+  display: block;
+  padding-left: 2%;
+} */
+/* .folder > .row_wrapper {
+  background-color: white;
+  padding-block: 2px;
+  display: inline-flex;
+} */
+
+.show_more {
+  background-color: whitesmoke;
+}
+
+.main-ui {
+  display: grid;
+  grid-template-columns: 3% 97%;
+  grid-template-rows: 6% 94%;
+  height: 100vh;
+}
+
+.mail-ui>.top-bar {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* .mail-ui>.top-bar>p {
+  vertical-align: middle;
+}
+
+.mail-ui>.top-bar>.top-bar-title {
+  font-size: 42px;
+  font-weight: bold;
+  padding-left: 5px;
+} */
+
+.main-ui>.main-area {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  display: grid;
+  grid-template-rows: 10% 90%;
+  grid-template-columns: 30% 70%;
+}
+
+.main-area>.ribbon {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+.main-area>.tree-area {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  background-color: white;
+  overflow-y: scroll;
+}
+
+.main-area>.todo-area {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
