@@ -19,6 +19,7 @@
     "@spectrum-css/icon": "3.0.41",
     "@spectrum-css/search": "5.0.10",
     "@spectrum-css/treeview": "6.0.38",
+    "@spectrum-css/textfield": "^4.1.15",
     "@spectrum-css/vars": "9.0.5",
     "@svgr/webpack": "7.0.0",
     "babel-loader": "^9.1.2",
@@ -33,6 +34,7 @@
     "postcss-dropunusedvars": "^1.2.1",
     "postcss-import": "15.1.0",
     "postcss-varfallback": "^1.1.0",
+    "xmlhttprequest": "^1.8.0",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"
   },
