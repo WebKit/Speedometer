@@ -13,6 +13,7 @@
 @import "@spectrum-css/actionbutton/dist/index-vars.css";
 @import "@spectrum-css/menu/dist/index-vars.css";
 @import "@spectrum-css/popover/dist/index-vars.css";
+@import "@spectrum-css/divider/dist/index-vars.css";
 
 /* 
 .folder {
@@ -74,10 +75,12 @@
   gap:5px;
   margin-bottom: 5px;
   border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 
 .main-area>.ribbon>.divider {
-  height: auto;
+  height: 85%;
+  align-self: center;
 }
 
 .main-area>.tree-area {
