@@ -4,11 +4,12 @@ import { ActionGroup } from './action-group';
 import { Ribbon } from './Ribbon';
 
 import MoreIcon from './../assets/Smock_MoreCircle_18_N.svg';
+import SpeedometerLogo from '../assets/speedometer_logo.png';
 
 const TopBar = () => {
   return (
     <div className="ui top-bar">
-      <h1 className="ui spectrum-Heading spectrum-Heading--sizeXXXL">Company</h1>
+      <img className="ui spectrum-Heading spectrum-Heading--sizeXXXL" src={SpeedometerLogo} alt="Speedometer Logo" />
       <h2 className="ui spectrum-Heading spectrum-Heading--sizeXXL">TODO App</h2>
       <div className="ui search-area">
         <SearchArea/>
