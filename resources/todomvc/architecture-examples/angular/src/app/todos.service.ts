@@ -30,7 +30,7 @@ export class TodosService {
     }
 
     removeItem(todo: Todo): void {
-        const index = this.todos.findIndex((t) => t.id === todo.id);
+        const index = this.todos.indexOf(todo);
         this.todos.splice(index, 1);
     }
 
