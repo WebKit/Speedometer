@@ -1,5 +1,4 @@
 import ChevronDown from "../assets/Smock_ChevronDown_18_N.svg";
-import ArchiveIcon from "../assets/Smock_Archive_18_N.svg";
 import DeleteIcon from "../assets/Smock_Delete_18_N.svg";
 import CutIcon from "../assets/Smock_Cut_18_N.svg";
 import AddIcon from "../assets/Smock_Add_18_N.svg";
@@ -33,28 +32,25 @@ const RibbonGroupOne = () => {
 };
 
 const RibbonGroupTwo = () => {
-return (<>
-    <div className="ui spectrum-ActionGroup spectrum-ActionGroup--sizeM">
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
-            <CutIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="ui spectrum-ActionButton-label">Cut</span>
-        </button>
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
-            <ArchiveIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="ui spectrum-ActionButton-label">Archive</span>
-        </button>
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
-            <DeleteIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="ui spectrum-ActionButton-label">Delete</span>
-        </button>
-    </div>
-    </>
+    return (
+        <>
+            <div className="ui spectrum-ActionGroup spectrum-ActionGroup--sizeM">
+                <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
+                    <CutIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+                    <span className="ui spectrum-ActionButton-label">Cut</span>
+                </button>
+                <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
+                    <DeleteIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+                    <span className="ui spectrum-ActionButton-label">Delete</span>
+                </button>
+            </div>
+        </>
     );
 };
 
 const RibbonGroupThree = () => {
     return (
-        <div className="ui spectrum-ActionGroup spectrum-ActionGroup--compact spectrum-ActionGroup--quiet spectrum-ActionGroup--sizeS">
+        <div className="ui ribbon-group-flex-end ui spectrum-ActionGroup spectrum-ActionGroup--compact spectrum-ActionGroup--quiet spectrum-ActionGroup--sizeS">
             <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
                 <CalendarIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
                 <span className="ui spectrum-ActionButton-label">Calendar</span>
@@ -63,6 +59,9 @@ const RibbonGroupThree = () => {
                 <GraphGanttIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
                 <span className="ui spectrum-ActionButton-label">Timeline</span>
             </button>
+            <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
+                <FilterIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            </button>
         </div>
     );
 };
@@ -70,9 +69,6 @@ const RibbonGroupThree = () => {
 const RibbonGroupFour = () => {
     return (
         <div className="ui spectrum-ActionGroup spectrum-ActionGroup--quiet spectrum-ActionGroup--sizeS">
-            <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
-                <FilterIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            </button>
             <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeL spectrum-ActionGroup-item">
                 <AddIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
                 <span className="ui spectrum-ActionButton-label">New Sprint</span>
@@ -82,6 +78,6 @@ const RibbonGroupFour = () => {
 };
 
 export const Ribbon = () => {
-    const children = [<RibbonGroupOne key={0} />, <Divider key={1} />, <RibbonGroupTwo key={2} />, <Divider key={3} />, <RibbonGroupThree key={4} />, <Divider key={5} />, <RibbonGroupFour key={6} />];
+    const children = [<RibbonGroupOne key={0} />, <Divider key={1} />, <RibbonGroupTwo key={2} />, <RibbonGroupThree key={3} />, <RibbonGroupFour key={4} />];
     return <div className="ui ribbon">{children}</div>;
 };

@@ -67,18 +67,23 @@
   grid-row-end: 3;
   display: grid;
   grid-auto-flow: column;
-  justify-items: center; 
-  align-items:center;
+  grid-template-columns: auto auto auto 1fr;
+  align-items: center;
   gap:5px;
-  margin-bottom: 5px;
+  margin: 5px 0px;
+  padding: 5px;
   border-radius: 5px;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   overflow: hidden;
 }
 
 .ribbon>.divider {
-  height: 85%;
+  height: 75%;
   align-self: center;
+}
+
+.main-area>.ribbon>.ribbon-group-flex-end {
+  justify-self: flex-end;
 }
 
 .tree-area {
