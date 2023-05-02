@@ -1,12 +1,7 @@
 import { LCG } from 'random-seedable';
 import { useRef } from 'react';
+import { SEED, MAX_DEPTH, MAX_BREADTH, CHILD_PROB, TARGET_SIZE } from './../params';
 import ChevronRight from './../assets/Smock_ChevronRight_18_N.svg';
-
-const SEED = 4212021;
-const MAX_DEPTH = 40;
-const MAX_BREADTH = 16;
-const CHILD_PROB = 0.7;
-const TARGET_SIZE = 3000;
 
 const FolderWrapper = (props) => {
   const {nodeCount, rando, maxDepth, maxBreadth, childProb, currentDepth} = props;

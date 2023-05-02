@@ -1,3 +1,6 @@
+/*
+Importing the CSS from the Spectrum CSS library.
+*/
 @import "@spectrum-css/vars/dist/spectrum-global.css";
 @import "@spectrum-css/vars/dist/spectrum-medium.css";
 @import "@spectrum-css/vars/dist/spectrum-light.css";
@@ -14,6 +17,10 @@
 @import "@spectrum-css/menu/dist/index-vars.css";
 @import "@spectrum-css/popover/dist/index-vars.css";
 @import "@spectrum-css/divider/dist/index-vars.css";
+
+/*
+Layout CSS for the UI.
+*/
 
 .main-ui {
   display: grid;

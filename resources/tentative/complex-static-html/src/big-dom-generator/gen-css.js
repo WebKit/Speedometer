@@ -1,8 +1,7 @@
 import { LCG } from 'random-seedable';
+import { SEED, MAX_SELECTOR_LEN } from './params.js';
 
-const SEED = 4212021;
 const rando = new LCG(SEED);
-const MAX_SELECTOR_LEN = 7;
 
 const getClassname = (depth, index) => {
   switch (depth) {
