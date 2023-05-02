@@ -1,4 +1,3 @@
-import ChevronDown from "../assets/Smock_ChevronDown_18_N.svg";
 import DeleteIcon from "../assets/Smock_Delete_18_N.svg";
 import CutIcon from "../assets/Smock_Cut_18_N.svg";
 import AddIcon from "../assets/Smock_Add_18_N.svg";
@@ -7,6 +6,7 @@ import ViewListIcon from "../assets/Smock_ViewList_18_N.svg";
 import GraphTrendIcon from "../assets/Smock_GraphTrend_18_N.svg";
 import CalendarIcon from "../assets/Smock_Calendar_18_N.svg";
 import GraphGanttIcon from "../assets/Smock_GraphGantt_18_N.svg";
+import ClockIcon from "../assets/Smock_Clock_18_N.svg";
 
 const Divider = () => {
     return <div className="ui divider spectrum-Divider spectrum-Divider--sizeS spectrum-Divider--vertical" />;
@@ -16,8 +16,8 @@ const RibbonGroupOne = () => {
     return (
         <div className="ui spectrum-ActionGroup spectrum-ActionGroup--sizeS">
             <button className="spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
-                <ChevronDown className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-                <span className="spectrum-ActionButton-label">Remind Me</span>
+                <ClockIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+                <span className="spectrum-ActionButton-label">Send Reminder</span>
             </button>
             <button className="spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
                 <ViewListIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
