@@ -26,7 +26,7 @@ export class TodosService {
             completed: false,
         };
 
-        this.todos = this.todos.concat(todo);
+        this.todos.push(todo);
     }
 
     removeItem(todo: Todo): void {
@@ -50,6 +50,6 @@ export class TodosService {
                 return this.todos.filter((todo) => todo.completed);
         }
 
-        return [...this.todos];
+        return this.todos;
     }
 }
