@@ -28,14 +28,14 @@
 
 .main-ui {
   display: grid;
-  grid-template-columns: 3% 97%;
-  grid-template-rows: 6% 94%;
+  grid-template-columns: 3% 22% 75%;
+  grid-template-rows: 5% 10% 85%;
   height: 100vh;
 }
 
-.main-ui>.top-bar {
+.top-bar {
   grid-column-start: 2;
-  grid-column-end: 3;
+  grid-column-end: 4;
   grid-row-start: 1;
   grid-row-end: 2;
   display: inline-flex;
@@ -53,21 +53,18 @@
   padding-left: 5px;
 } */
 
-.main-ui>.main-area {
-  grid-column-start: 1;
-  grid-column-end: 3;
-  grid-row-start: 2;
-  grid-row-end: 3;
-  display: grid;
-  grid-template-rows: 10% 90%;
-  grid-template-columns: 30% 70%;
+.todo-area {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 3;
+  grid-row-end: 4;
 }
 
-.main-area>.ribbon {
+.ribbon {
   grid-column-start: 1;
-  grid-column-end: 3;
-  grid-row-start: 1;
-  grid-row-end: 2;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
   display: grid;
   grid-auto-flow: column;
   justify-items: center; 
@@ -76,27 +73,21 @@
   margin-bottom: 5px;
   border-radius: 5px;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  overflow: hidden;
 }
 
-.main-area>.ribbon>.divider {
+.ribbon>.divider {
   height: 85%;
   align-self: center;
 }
 
-.main-area>.tree-area {
+.tree-area {
   grid-column-start: 1;
-  grid-column-end: 2;
-  grid-row-start: 2;
-  grid-row-end: 3;
+  grid-column-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;
   background-color: white;
   overflow-y: scroll;
-}
-
-.main-area>.todo-area {
-  grid-column-start: 2;
-  grid-column-end: 3;
-  grid-row-start: 2;
-  grid-row-end: 3;
 }
 
 /* .top-bar > :first-child{
@@ -105,6 +96,10 @@
 
 
 .show-more {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 2;
   justify-self: start;
   align-self: center;
 }

@@ -22,9 +22,11 @@ const TopBar = () => {
 
 const ShowMore = () => {
   return (
-    <button className="show-more spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
-      <MoreIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true"/>
-    </button>
+    <div className="show-more">
+      <button className="show-more spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
+        <MoreIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true"/>
+      </button>
+    </div>
   );
 }
 
@@ -35,22 +37,14 @@ const TodoArea = () => {
   );
 }
 
-const MainArea = () => {
-  return (
-    <div className={`main-area`}>
-      <Ribbon/>
-      <TreeArea/>
-      <TodoArea/>
-    </div>
-  );
-}
-
 export const App = () => {
   return (
     <div className={`main-ui`} dir="ltr">
       <ShowMore/>
+      <Ribbon/>
       <TopBar/>
-      <MainArea/>
+      <TreeArea/>
+      <TodoArea/>
     </div>
   );
 }
