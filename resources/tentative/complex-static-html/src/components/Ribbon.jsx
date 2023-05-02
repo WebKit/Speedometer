@@ -1,112 +1,87 @@
-import EmailIcon from "../assets/Smock_Email_18_N.svg";
-import ChevronDown from '../assets/Smock_ChevronDown_18_N.svg';
-import SpamIcon from '../assets/Smock_Spam_18_N.svg';
-import ArchiveIcon from '../assets/Smock_Archive_18_N.svg';
-import DeleteIcon from '../assets/Smock_Delete_18_N.svg';
-import ReplyIcon from '../assets/Smock_Reply_18_N.svg';
-import ReplyAllIcon from '../assets/Smock_ReplyAll_18_N.svg';
-import ForwardIcon from '../assets/Smock_Forward_18_N.svg';
-import FlagIcon from '../assets/Smock_Flag_18_N.svg';
-import PrintIcon from '../assets/Smock_Print_18_N.svg';
-import SaveToIcon from '../assets/Smock_SaveTo_18_N.svg';
+import ChevronDown from "../assets/Smock_ChevronDown_18_N.svg";
+import ArchiveIcon from "../assets/Smock_Archive_18_N.svg";
+import DeleteIcon from "../assets/Smock_Delete_18_N.svg";
+import CutIcon from "../assets/Smock_Cut_18_N.svg";
+import AddIcon from "../assets/Smock_Add_18_N.svg";
+import FilterIcon from "../assets/Smock_Filter_18_N.svg";
+import ViewListIcon from "../assets/Smock_ViewList_18_N.svg";
+import GraphTrendIcon from "../assets/Smock_GraphTrend_18_N.svg";
+import CalendarIcon from "../assets/Smock_Calendar_18_N.svg";
+import GraphGanttIcon from "../assets/Smock_GraphGantt_18_N.svg";
 
 const Divider = () => {
-    return (
-      <div className="ui divider spectrum-Divider spectrum-Divider--sizeS spectrum-Divider--vertical"/>
-    );
-}
+    return <div className="ui divider spectrum-Divider spectrum-Divider--sizeS spectrum-Divider--vertical" />;
+};
 
 const RibbonGroupOne = () => {
-return (
-    <div className="ui spectrum-ActionGroup spectrum-ActionGroup--vertical spectrum-ActionGroup--sizeS">
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <EmailIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-        </button>
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet">
-            <ChevronDown className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-        <span className="ui spectrum-ActionButton-label">New Mail</span>
-        </button>
-    </div>
-);
-}
+    return (
+        <div className="ui spectrum-ActionGroup spectrum-ActionGroup--sizeS">
+            <button className="spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
+                <ChevronDown className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+                <span className="spectrum-ActionButton-label">Remind Me</span>
+            </button>
+            <button className="spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
+                <ViewListIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+                <span className="spectrum-ActionButton-label">Backlog</span>
+            </button>
+            <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
+                <GraphTrendIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+                <span className="ui spectrum-ActionButton-label">Analytics</span>
+            </button>
+        </div>
+    );
+};
 
 const RibbonGroupTwo = () => {
 return (<>
-    <div className="ui spectrum-ActionGroup spectrum-ActionGroup--sizeS">
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet">
-            <SpamIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="ui spectrum-ActionButton-label">Spam</span>
+    <div className="ui spectrum-ActionGroup spectrum-ActionGroup--sizeM">
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
+            <CutIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            <span className="ui spectrum-ActionButton-label">Cut</span>
         </button>
-    </div>
-    <div className="ui spectrum-ActionGroup spectrum-ActionGroup--vertical spectrum-ActionGroup--compact spectrum-ActionGroup--quiet spectrum-ActionGroup--sizeS">
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
             <ArchiveIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
             <span className="ui spectrum-ActionButton-label">Archive</span>
         </button>
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
             <DeleteIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
             <span className="ui spectrum-ActionButton-label">Delete</span>
         </button>
     </div>
     </>
     );
-}
+};
 
 const RibbonGroupThree = () => {
     return (
-        <div className="ui spectrum-ActionGroup spectrum-ActionGroup--vertical spectrum-ActionGroup--compact spectrum-ActionGroup--quiet spectrum-ActionGroup--sizeS">
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <ReplyIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="ui spectrum-ActionButton-label">reply</span>
-        </button>
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <ReplyAllIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="ui spectrum-ActionButton-label">Reply All</span>
-        </button>
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <ForwardIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="ui spectrum-ActionButton-label">Forward</span>
-        </button>
-    </div>
+        <div className="ui spectrum-ActionGroup spectrum-ActionGroup--compact spectrum-ActionGroup--quiet spectrum-ActionGroup--sizeS">
+            <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
+                <CalendarIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+                <span className="ui spectrum-ActionButton-label">Calendar</span>
+            </button>
+            <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
+                <GraphGanttIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+                <span className="ui spectrum-ActionButton-label">Timeline</span>
+            </button>
+        </div>
     );
-}
+};
 
 const RibbonGroupFour = () => {
-    return (<>
-        <div className="ui spectrum-ActionGroup spectrum-ActionGroup--sizeS">
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet">
-            <FlagIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="ui spectrum-ActionButton-label">Flag</span>
-        </button>
-    </div>
-    <div className="ui spectrum-ActionGroup spectrum-ActionGroup--quiet spectrum-ActionGroup--vertical spectrum-ActionGroup--compact spectrum-ActionGroup--sizeS">
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <PrintIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="ui spectrum-ActionButton-label">Print</span>
-        </button>
-        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <SaveToIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="ui spectrum-ActionButton-label">Save</span>
-        </button>
-    </div>
-    </>
+    return (
+        <div className="ui spectrum-ActionGroup spectrum-ActionGroup--quiet spectrum-ActionGroup--sizeS">
+            <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
+                <FilterIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            </button>
+            <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeL spectrum-ActionGroup-item">
+                <AddIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+                <span className="ui spectrum-ActionButton-label">New Sprint</span>
+            </button>
+        </div>
     );
-}
+};
 
 export const Ribbon = () => {
-    const numChildren = 4;
-    const children = [
-    <RibbonGroupOne key={0} />,
-    <Divider key={1}/>,
-    <RibbonGroupTwo key={2}/>, 
-    <Divider key={3}/>, 
-    <RibbonGroupThree key={4}/>, 
-    <Divider key={5}/>, 
-    <RibbonGroupFour key={6}/>
-  ];
-    return (
-      <div className="ui ribbon">
-        {children}
-      </div>
-    );
-  }
+    const children = [<RibbonGroupOne key={0} />, <Divider key={1} />, <RibbonGroupTwo key={2} />, <Divider key={3} />, <RibbonGroupThree key={4} />, <Divider key={5} />, <RibbonGroupFour key={6} />];
+    return <div className="ui ribbon">{children}</div>;
+};
