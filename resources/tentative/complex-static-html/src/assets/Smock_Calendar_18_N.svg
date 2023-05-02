@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 18 18" width="18">
+  <defs>
+    <style>
+      .fill {
+        fill: #464646;
+      }
+    </style>
+  </defs>
+  <title>S Calendar 18 N</title>
+  <rect id="Canvas" fill="#ff13dc" opacity="0" width="18" height="18" /><path class="fill" d="M16.5,3H14V1.5a.5.5,0,0,0-.5-.5h-1a.5.5,0,0,0-.5.5V3H5V1.5A.5.5,0,0,0,4.5,1h-1a.5.5,0,0,0-.5.5V3H.5a.5.5,0,0,0-.5.5v13a.5.5,0,0,0,.5.5h16a.5.5,0,0,0,.5-.5V3.5A.5.5,0,0,0,16.5,3ZM16,16H1V4H3v.5a.5.5,0,0,0,.5.5h1A.5.5,0,0,0,5,4.5V4h7v.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2Z" />
+  <rect class="fill" height="2" width="2" x="3" y="6" />
+  <rect class="fill" height="2" width="2" x="6" y="6" />
+  <rect class="fill" height="2" width="2" x="9" y="6" />
+  <rect class="fill" height="2" width="2" x="12" y="6" />
+  <rect class="fill" height="2" width="2" x="3" y="9" />
+  <rect class="fill" height="2" width="2" x="6" y="9" />
+  <rect class="fill" height="2" width="2" x="9" y="9" />
+  <rect class="fill" height="2" width="2" x="12" y="9" />
+  <rect class="fill" height="2" width="2" x="3" y="12" />
+  <rect class="fill" height="2" width="2" x="6" y="12" />
+  <rect class="fill" height="2" width="2" x="9" y="12" />
+  <rect class="fill" height="2" width="2" x="12" y="12" />
+</svg>

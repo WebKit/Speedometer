@@ -44,6 +44,10 @@ module.exports = {
                 issuer: /\.[jt]sx?$/,
                 use: ['@svgr/webpack'],
             },
+            {
+                test: /\.png$/,
+                type: "asset/resource",
+            }
         ],
     },
     target: "node",
