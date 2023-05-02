@@ -15,15 +15,15 @@ const Divider = () => {
 const RibbonGroupOne = () => {
     return (
         <div className="ui spectrum-ActionGroup spectrum-ActionGroup--sizeS">
-            <button className="spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
+            <button className="spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet spectrum-ActionGroup-item">
                 <ClockIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
                 <span className="spectrum-ActionButton-label">Send Reminder</span>
             </button>
-            <button className="spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
+            <button className="spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet spectrum-ActionGroup-item">
                 <ViewListIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
                 <span className="spectrum-ActionButton-label">Backlog</span>
             </button>
-            <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
+            <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet spectrum-ActionGroup-item">
                 <GraphTrendIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
                 <span className="ui spectrum-ActionButton-label">Analytics</span>
             </button>
@@ -35,7 +35,7 @@ const RibbonGroupTwo = () => {
     return (
         <>
             <div className="ui spectrum-ActionGroup spectrum-ActionGroup--sizeM">
-                <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
+                <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM  spectrum-ActionGroup-item">
                     <CutIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
                     <span className="ui spectrum-ActionButton-label">Cut</span>
                 </button>
