@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import ChevronRight from './../assets/Smock_ChevronRight_18_N.svg';
 
 const SEED = 4212021;
-const MAX_DEPTH = 80;
+const MAX_DEPTH = 40;
 const MAX_BREADTH = 16;
 const CHILD_PROB = 0.7;
 const TARGET_SIZE = 3000;
