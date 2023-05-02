@@ -7,13 +7,13 @@ import MoreIcon from './../assets/Smock_MoreCircle_18_N.svg';
 
 const TopBar = () => {
   return (
-    <div className="top-bar">
-      <h1 className="spectrum-Heading spectrum-Heading--sizeXXXL">Company</h1>
-      <h2 className="spectrum-Heading spectrum-Heading--sizeXXL">TODO App</h2>
-      <div className={`search-area`}>
+    <div className="ui top-bar">
+      <h1 className="ui spectrum-Heading spectrum-Heading--sizeXXXL">Company</h1>
+      <h2 className="ui spectrum-Heading spectrum-Heading--sizeXXL">TODO App</h2>
+      <div className="ui search-area">
         <SearchArea/>
       </div>
-      <div className={`top-bar-right`}>
+      <div className="ui top-bar-right">
         <ActionGroup/>
       </div>
     </div>
@@ -22,9 +22,9 @@ const TopBar = () => {
 
 const ShowMore = () => {
   return (
-    <div className="show-more">
-      <button className="show-more spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
-        <MoreIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true"/>
+    <div className="ui show-more">
+      <button className="ui show-more spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet">
+        <MoreIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true"/>
       </button>
     </div>
   );
@@ -32,14 +32,14 @@ const ShowMore = () => {
 
 const TodoArea = () => {
   return (
-    <div className={`todo-area`}>
+    <div className="ui todo-area">
     </div>
   );
 }
 
 export const App = () => {
   return (
-    <div className={`main-ui`} dir="ltr">
+    <div className="ui main-ui" dir="ltr">
       <ShowMore/>
       <Ribbon/>
       <TopBar/>

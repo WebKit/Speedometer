@@ -12,19 +12,19 @@ import SaveToIcon from '../assets/Smock_SaveTo_18_N.svg';
 
 const Divider = () => {
     return (
-      <div className="divider spectrum-Divider spectrum-Divider--sizeS spectrum-Divider--vertical"/>
+      <div className="ui divider spectrum-Divider spectrum-Divider--sizeS spectrum-Divider--vertical"/>
     );
 }
 
 const RibbonGroupOne = () => {
 return (
-    <div className="spectrum-ActionGroup spectrum-ActionGroup--vertical spectrum-ActionGroup--sizeS">
-        <button className="spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <EmailIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+    <div className="ui spectrum-ActionGroup spectrum-ActionGroup--vertical spectrum-ActionGroup--sizeS">
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
+            <EmailIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
         </button>
-        <button className="spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet">
-            <ChevronDown className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-        <span className="spectrum-ActionButton-label">New Mail</span>
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet">
+            <ChevronDown className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+        <span className="ui spectrum-ActionButton-label">New Mail</span>
         </button>
     </div>
 );
@@ -32,20 +32,20 @@ return (
 
 const RibbonGroupTwo = () => {
 return (<>
-    <div className="spectrum-ActionGroup spectrum-ActionGroup--sizeS">
-        <button className="spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet">
-            <SpamIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="spectrum-ActionButton-label">Spam</span>
+    <div className="ui spectrum-ActionGroup spectrum-ActionGroup--sizeS">
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet">
+            <SpamIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            <span className="ui spectrum-ActionButton-label">Spam</span>
         </button>
     </div>
-    <div className="spectrum-ActionGroup spectrum-ActionGroup--vertical spectrum-ActionGroup--compact spectrum-ActionGroup--quiet spectrum-ActionGroup--sizeS">
-        <button className="spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <ArchiveIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="spectrum-ActionButton-label">Archive</span>
+    <div className="ui spectrum-ActionGroup spectrum-ActionGroup--vertical spectrum-ActionGroup--compact spectrum-ActionGroup--quiet spectrum-ActionGroup--sizeS">
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
+            <ArchiveIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            <span className="ui spectrum-ActionButton-label">Archive</span>
         </button>
-        <button className="spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <DeleteIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="spectrum-ActionButton-label">Delete</span>
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
+            <DeleteIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            <span className="ui spectrum-ActionButton-label">Delete</span>
         </button>
     </div>
     </>
@@ -54,18 +54,18 @@ return (<>
 
 const RibbonGroupThree = () => {
     return (
-        <div className="spectrum-ActionGroup spectrum-ActionGroup--vertical spectrum-ActionGroup--compact spectrum-ActionGroup--quiet spectrum-ActionGroup--sizeS">
-        <button className="spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <ReplyIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="spectrum-ActionButton-label">reply</span>
+        <div className="ui spectrum-ActionGroup spectrum-ActionGroup--vertical spectrum-ActionGroup--compact spectrum-ActionGroup--quiet spectrum-ActionGroup--sizeS">
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
+            <ReplyIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            <span className="ui spectrum-ActionButton-label">reply</span>
         </button>
-        <button className="spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <ReplyAllIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="spectrum-ActionButton-label">Reply All</span>
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
+            <ReplyAllIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            <span className="ui spectrum-ActionButton-label">Reply All</span>
         </button>
-        <button className="spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <ForwardIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="spectrum-ActionButton-label">Forward</span>
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
+            <ForwardIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            <span className="ui spectrum-ActionButton-label">Forward</span>
         </button>
     </div>
     );
@@ -73,20 +73,20 @@ const RibbonGroupThree = () => {
 
 const RibbonGroupFour = () => {
     return (<>
-        <div className="spectrum-ActionGroup spectrum-ActionGroup--sizeS">
-        <button className="spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet">
-            <FlagIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="spectrum-ActionButton-label">Flag</span>
+        <div className="ui spectrum-ActionGroup spectrum-ActionGroup--sizeS">
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet">
+            <FlagIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            <span className="ui spectrum-ActionButton-label">Flag</span>
         </button>
     </div>
-    <div className="spectrum-ActionGroup spectrum-ActionGroup--quiet spectrum-ActionGroup--vertical spectrum-ActionGroup--compact spectrum-ActionGroup--sizeS">
-        <button className="spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <PrintIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="spectrum-ActionButton-label">Print</span>
+    <div className="ui spectrum-ActionGroup spectrum-ActionGroup--quiet spectrum-ActionGroup--vertical spectrum-ActionGroup--compact spectrum-ActionGroup--sizeS">
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
+            <PrintIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            <span className="ui spectrum-ActionButton-label">Print</span>
         </button>
-        <button className="spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
-            <SaveToIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
-            <span className="spectrum-ActionButton-label">Save</span>
+        <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeS spectrum-ActionGroup-item">
+            <SaveToIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+            <span className="ui spectrum-ActionButton-label">Save</span>
         </button>
     </div>
     </>
@@ -105,7 +105,7 @@ export const Ribbon = () => {
     <RibbonGroupFour key={6}/>
   ];
     return (
-      <div className={`ribbon`}>
+      <div className="ui ribbon">
         {children}
       </div>
     );

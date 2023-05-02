@@ -138,14 +138,14 @@ const buildMatchingSelector = (depth, index, oldCombinator, selLen, maxLen) => {
 
 const buildNonMatchingSelector = (depth, index, oldCombinator, selLen, badSelector) => {
   if (depth === 0) {
-    return '.fake-classname' + oldCombinator;
+    return '.just-span' + oldCombinator;
   }
   const lastSel = selLen === badSelector;
   let maybeDepth = lastSel ? depth+1 : depth;
   const getSelector = randomWeighted([getClassname, getType, ()=>'*'], [0.6,0.3,0.1]);
   const selector = getSelector(maybeDepth, index);
   if (lastSel) {
-    return `${selector}.fake-classname${oldCombinator}`;
+    return `${selector}.just-span${oldCombinator}`;
   }
   const combinator = chooseCombinator(maybeDepth, index);
   const nextDepth = getNextDepth(combinator, maybeDepth);
@@ -157,8 +157,8 @@ export const genCss = () => {
   const matchingSelectors = [];
   const nonMatchingSelectors = [];
   for (let index = 0; index<100; index++){
-    matchingSelectors.push(buildMatchingSelector(6, index, '', 0, rando.randRange(3,MAX_SELECTOR_LEN)));
-    matchingSelectors.push(buildMatchingSelector(7, index, '', 0, rando.randRange(3,MAX_SELECTOR_LEN)));
+    matchingSelectors.push(buildMatchingSelector(6, index, '', 0, rando.randRange(3,MAX_SELECTOR_LEN))+':not(.ui)');
+    matchingSelectors.push(buildMatchingSelector(7, index, '', 0, rando.randRange(3,MAX_SELECTOR_LEN))+':not(.ui)');
     nonMatchingSelectors.push(buildNonMatchingSelector(6, index, '', 0, rando.randRange(3,MAX_SELECTOR_LEN)));
     nonMatchingSelectors.push(buildNonMatchingSelector(7, index, '', 0, rando.randRange(3,MAX_SELECTOR_LEN)));
   }

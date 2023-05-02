@@ -13,13 +13,12 @@ fs.writeFileSync('dist/nonMatchingCss.css', randomCss.nonMatchingCss);
 
 const html = 
 `<!DOCTYPE html>
-<html lang="en" class="spectrum spectrum--medium spectrum--light">
+<html lang="en" class="ui spectrum spectrum--medium spectrum--light">
   <head>
     <title>Big Todo App</title>
-    <link rel="stylesheet" href="nonMatchingCss.css">
     <link rel="stylesheet" href="app.css">
   </head>
-  <body>
+  <body class="ui">
     ${renderToStaticMarkup(<App />)}
   </body>
 </html>`;

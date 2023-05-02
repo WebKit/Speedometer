@@ -27,7 +27,7 @@ const FolderWrapper = (props) => {
   }
   nodeCount.current = nodeCount.current + 1;
   return (
-    <ul className={`spectrum-TreeView spectrum-TreeView--sizeM`}>
+    <ul className="ui spectrum-TreeView spectrum-TreeView--sizeM">
       {children}
     </ul>
   );
@@ -43,10 +43,10 @@ const TreeItem = (props) => {
                                                           childProb={childProb}
                                                           currentDepth={currentDepth + 1}/> : null;
   return (
-    <li className={`spectrum-TreeView-item ${children ? 'is-open' : ''}`}>
-      <a className="spectrum-TreeView-itemLink">
-        <ChevronRight className="spectrum-Icon spectrum-UIIcon-ChevronRight100 spectrum-TreeView-itemIndicator"/>
-        <span>Task</span>
+    <li className={`ui spectrum-TreeView-item ${children ? 'is-open' : ''}`}>
+      <a className="ui spectrum-TreeView-itemLink">
+        <ChevronRight className="ui spectrum-Icon spectrum-UIIcon-ChevronRight100 spectrum-TreeView-itemIndicator"/>
+        <span className="ui just-span">Task</span>
       </a>
       {children}
     </li>
@@ -60,7 +60,7 @@ export const TreeArea = (props) => {
   const maxDepth = MAX_DEPTH;
   const childProb = CHILD_PROB;
   return (
-    <div className={`tree-area`}>
+    <div className="ui tree-area">
       <FolderWrapper nodeCount={nodeCount}
                      rando = {rando}
                      maxBreadth={maxBreadth}
