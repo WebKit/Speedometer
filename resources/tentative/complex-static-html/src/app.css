@@ -39,7 +39,7 @@
   grid-row-start: 1;
   grid-row-end: 2;
   display: inline-flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 }
 
