@@ -4,7 +4,6 @@
     export let item;
 
     let editing = false;
-
     const dispatch = createEventDispatcher();
 
     function removeItem() {
