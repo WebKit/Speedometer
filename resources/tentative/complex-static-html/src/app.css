@@ -79,10 +79,9 @@
 
 .ribbon>.divider {
   height: 75%;
-  align-self: center;
 }
 
-.main-area>.ribbon>.ribbon-group-flex-end {
+.ribbon>.ribbon-group-flex-end {
   justify-self: flex-end;
 }
 
