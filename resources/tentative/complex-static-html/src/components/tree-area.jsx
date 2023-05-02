@@ -46,7 +46,7 @@ const TreeItem = (props) => {
     <li className={`ui spectrum-TreeView-item ${children ? 'is-open' : ''}`}>
       <a className="ui spectrum-TreeView-itemLink">
         <ChevronRight className="ui spectrum-Icon spectrum-UIIcon-ChevronRight100 spectrum-TreeView-itemIndicator"/>
-        <span className="ui just-span">`${children ? 'Sprint' : 'Todo List'}`</span>
+        <span className="ui just-span">{children ? 'Sprint' : 'Todo List'}</span>
       </a>
       {children}
     </li>
