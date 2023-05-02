@@ -29,7 +29,7 @@
 .main-ui {
   display: grid;
   grid-template-columns: 3% 22% 75%;
-  grid-template-rows: 5% 10% 85%;
+  grid-template-rows: 5% 8% 87%;
   height: 100vh;
 }
 
