@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@observablehq/plot": "^0.6.4",
+        "chart.js": "^4.2.1",
         "d3-dsv": "^3.0.1"
     }
 }

@@ -468,6 +468,26 @@ Suites.push({
 });
 
 Suites.push({
+    name: "Charts-chartjs",
+    url: "tentative/charts/dist/chartjs.html",
+    async prepare(page) {},
+    tests: [
+        new BenchmarkTestStep("Prepare", (page) => {
+            page.querySelector("#prepare").click();
+        }),
+        new BenchmarkTestStep("Draw scatter", (page) => {
+            page.querySelector("#add-scatter-chart-button").click();
+        }),
+        // Note: this step needs the asynchronous runner to show up in results properly,
+        // because most of the work happens in a rAF, and the synchronous runner's
+        // setTimeout happens too fast.
+        new BenchmarkTestStep("Show tooltip", (page) => {
+            page.querySelector("#open-tooltip").click();
+        }),
+    ],
+});
+
+Suites.push({
     name: "React-Stockcharts-SVG",
     url: "tentative/react-stockcharts/build/index.html?type=svg",
     async prepare(page) {
