@@ -15,21 +15,10 @@
 @import "@spectrum-css/popover/dist/index-vars.css";
 @import "@spectrum-css/divider/dist/index-vars.css";
 
-/* 
-.folder {
-  display: block;
-  padding-left: 2%;
-} */
-/* .folder > .row_wrapper {
-  background-color: white;
-  padding-block: 2px;
-  display: inline-flex;
-} */
-
 .main-ui {
   display: grid;
   grid-template-columns: 3% 22% 75%;
-  grid-template-rows: 5% 8% 87%;
+  grid-template-rows: 5% 10% 85%;
   height: 100vh;
 }
 
@@ -44,16 +33,6 @@
   padding: 5px;
   margin-bottom: 5px;
 }
-
-/* .mail-ui>.top-bar>p {
-  vertical-align: middle;
-}
-
-.mail-ui>.top-bar>.top-bar-title {
-  font-size: 42px;
-  font-weight: bold;
-  padding-left: 5px;
-} */
 
 .todo-area {
   grid-column-start: 3;
@@ -76,6 +55,7 @@
   padding: 5px;
   border-radius: 5px;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  overflow: hidden;
 }
 
 .ribbon>.divider {
@@ -94,11 +74,6 @@
   background-color: white;
   overflow-y: scroll;
 }
-
-/* .top-bar > :first-child{
-  padding-left: 10%;
-} */
-
 
 .show-more {
   grid-column-start: 1;
