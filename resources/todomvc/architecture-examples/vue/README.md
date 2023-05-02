@@ -13,7 +13,7 @@ Vue.js is focused on the ViewModel layer of the MVVM pattern. It connects the Vi
 MVC:\
 Model: maintains the data and behavior of an application\
 View: displays the model in the ui\
-Container: serves as an interface between view & model components
+Controller: serves as an interface between view & model components
 
 ## Built steps
 
