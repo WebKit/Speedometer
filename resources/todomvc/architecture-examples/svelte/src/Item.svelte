@@ -33,9 +33,9 @@
     }
 
     async function focusInput(element) {
-		await tick();
-		element.focus();
-	}
+        await tick();
+        element.focus();
+    }
 </script>
 
 <li class="{item.completed ? 'completed' : ''} {editing ? 'editing' : ''}">
