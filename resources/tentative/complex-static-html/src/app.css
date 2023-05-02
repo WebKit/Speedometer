@@ -41,6 +41,8 @@
   display: inline-flex;
   justify-content: space-between;
   align-items: center;
+  padding: 5px;
+  margin-bottom: 5px;
 }
 
 /* .mail-ui>.top-bar>p {
@@ -74,7 +76,6 @@
   padding: 5px;
   border-radius: 5px;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  overflow: hidden;
 }
 
 .ribbon>.divider {

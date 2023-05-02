@@ -9,9 +9,9 @@ import SpeedometerLogo from '../assets/speedometer_logo.png';
 const TopBar = () => {
   return (
     <div className="ui top-bar">
-      <img className="ui spectrum-Heading spectrum-Heading--sizeXXXL" src={SpeedometerLogo} alt="Speedometer Logo" />
+      <img className="ui" src={SpeedometerLogo} alt="Speedometer Logo" height={40} />
       <h2 className="ui spectrum-Heading spectrum-Heading--sizeXXL">TODO App</h2>
-      <div className="ui search-area">
+      <div className={`ui search-area`}>
         <SearchArea/>
       </div>
       <div className="ui top-bar-right">
