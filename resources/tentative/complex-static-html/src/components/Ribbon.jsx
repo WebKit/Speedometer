@@ -60,7 +60,7 @@ const RibbonGroupThree = () => {
                 <span className="ui spectrum-ActionButton-label">Timeline</span>
             </button>
             <button className="ui spectrum-ActionButton spectrum-ActionButton--quiet spectrum-ActionButton--sizeM spectrum-ActionGroup-item">
-                <FilterIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
+                <FilterIcon className="ui spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />
             </button>
         </div>
     );
