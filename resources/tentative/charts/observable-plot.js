@@ -17,6 +17,11 @@ const DEFAULT_OPTIONS = {
     height: 1000,
 };
 
+// This is the number of airports we keep for each state in the stacked bar
+// graph. One additional group will be added, that will sum all airports that
+// haven't been kept.
+const AIRPORT_COUNT_PER_STATE = 6;
+
 let preparedData;
 function prepare() {
     /**
@@ -24,7 +29,7 @@ function prepare() {
      * airports: Array<AirportInformation>
      * flights: Array<{ origin, destination, count }>
      */
-    const { airports, flights } = parseAirportsInformation(airportsString);
+    const { airports, flights } = parseAirportsInformation();
     /**
      * flightsByAirport: Map<iata: string, { origin: number, destination: number, total: number}>
      */
@@ -42,7 +47,7 @@ function prepare() {
         .map(([state, airportsInState]) => {
             const totalFlightsInState = d3Array.sum(airportsInState, ({ iata }) => flightsByAirport.get(iata)?.total);
             const sorted = d3Array.sort(airportsInState, ({ iata }) => -flightsByAirport.get(iata)?.total);
-            const mostUsedAirportsInState = sorted.slice(0, 6);
+            const mostUsedAirportsInState = sorted.slice(0, AIRPORT_COUNT_PER_STATE);
             return {
                 state,
                 total: totalFlightsInState,
@@ -134,16 +139,13 @@ function addStackedBars() {
         },
         y: { grid: true, tickFormat: "~s" },
         marks: [
-            // stacked bars
             Plot.barY(preparedData.plotData, {
                 x: "state",
                 y: "total",
                 fill: "index",
                 title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}\n${d3Format(",")(d.total)} flights`,
             }),
-            // labels
             Plot.text(preparedData.stateInformationSortedArray, { x: "state", y: "total", text: (d) => d3Format(".2~s")(d.total), dy: -10 }),
-            // horizontal bottom line
             Plot.ruleY([0]),
         ],
     };
@@ -231,7 +233,6 @@ function addDottedBars() {
                 strokeWidth: 3,
                 title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}\n${d3Format(",")(Math.abs(d.value))} ${d.value > 0 ? "inward" : "outward"} flights`,
             }),
-            // horizontal bottom line
             Plot.ruleY([0]),
         ],
     };

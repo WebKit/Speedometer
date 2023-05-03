@@ -15650,6 +15650,7 @@ const DEFAULT_OPTIONS = {
   // The height is especially used for the ratio.
   height: 1e3
 };
+const AIRPORT_COUNT_PER_STATE = 6;
 let preparedData;
 function prepare() {
   const { airports, flights } = parseAirportsInformation();
@@ -15665,7 +15666,7 @@ function prepare() {
       var _a;
       return -((_a = flightsByAirport.get(iata)) == null ? void 0 : _a.total);
     });
-    const mostUsedAirportsInState = sorted.slice(0, 6);
+    const mostUsedAirportsInState = sorted.slice(0, AIRPORT_COUNT_PER_STATE);
     return {
       state,
       total: totalFlightsInState,
@@ -15745,7 +15746,8 @@ function addStackedBars() {
     },
     y: { grid: true, tickFormat: "~s" },
     marks: [
-      // stacked bars
+      // This draws stacked bars: by using "state" as the x, all entries with
+      // the same state will be drawn at the same location, and will be stacked.
       barY(preparedData.plotData, {
         x: "state",
         y: "total",
@@ -15753,9 +15755,9 @@ function addStackedBars() {
         title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}
 ${format$1(",")(d.total)} flights`
       }),
-      // labels
+      // These are the labels that go below the bottom line (look at the `dy` property).
       text(preparedData.stateInformationSortedArray, { x: "state", y: "total", text: (d) => format$1(".2~s")(d.total), dy: -10 }),
-      // horizontal bottom line
+      // This is the horizontal bottom line, drawn at y == 0.
       ruleY([0])
     ]
   };
