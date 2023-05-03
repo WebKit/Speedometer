@@ -15674,7 +15674,6 @@ function prepare() {
     };
   }).sort((stateA, stateB) => stateB.total - stateA.total);
   const stateSortedArray = stateInformationSortedArray.map(({ state }) => state);
-  const statesWithMostFlights = stateSortedArray.slice(0, 6);
   const plotData = stateInformationSortedArray.flatMap(({ mostUsedAirports, total, state }) => {
     const enrichedMostUsedAirports = mostUsedAirports.map(({ iata, name, city }, index2) => ({
       state,
@@ -15703,7 +15702,6 @@ function prepare() {
     byAirport,
     stateInformationSortedArray,
     stateSortedArray,
-    statesWithMostFlights,
     plotData
   };
 }
@@ -15763,46 +15761,6 @@ ${format$1(",")(d.total)} flights`
   };
   ROOT.append(plot(options));
 }
-function addGroupedBars() {
-  if (!isReady())
-    throw new Error("Please prepare the data first.");
-  const options = {
-    ...DEFAULT_OPTIONS,
-    x: {
-      axis: null,
-      domain: Array.from({ length: 7 }, (_, i) => i)
-    },
-    y: {
-      grid: true,
-      tickFormat: "~s"
-    },
-    color: { type: "categorical" },
-    fx: {
-      domain: preparedData.statesWithMostFlights,
-      label: null,
-      tickSize: 6
-    },
-    facet: {
-      data: preparedData.plotData,
-      x: "state"
-    },
-    marks: [
-      // bars
-      barY(preparedData.plotData, {
-        x: "index",
-        y: "total",
-        fill: "index",
-        title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}
-${format$1(",")(d.total)} flights`
-      }),
-      // labels
-      text(preparedData.plotData, { x: "index", y: "total", text: (d) => format$1(".2~s")(d.total), dy: -10 }),
-      // horizontal bottom line
-      ruleY([0])
-    ]
-  };
-  ROOT.append(plot(options));
-}
 function addDottedBars() {
   if (!isReady())
     throw new Error("Please prepare the data first.");
@@ -15852,13 +15810,11 @@ async function runAllTheThings() {
     // Force prettier to use a multiline formatting
     "prepare",
     "add-stacked-chart-button",
-    "add-grouped-chart-button",
     "add-dotted-chart-button"
   ].forEach((id2) => document.getElementById(id2).click());
 }
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
-document.getElementById("add-grouped-chart-button").addEventListener("click", addGroupedBars);
 document.getElementById("add-dotted-chart-button").addEventListener("click", addDottedBars);
 document.getElementById("reset").addEventListener("click", reset);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);

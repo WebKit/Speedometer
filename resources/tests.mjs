@@ -384,12 +384,6 @@ Suites.push({
             page.querySelector("#reset").click();
             page.querySelector("#add-stacked-chart-button").click();
         }),
-        /* Skip the Grouped Chart because it doesn't bring a lot of value compared to Stacked
-        new BenchmarkTestStep("Grouped", (page) => {
-            page.querySelector("#reset").click();
-            page.querySelector("#add-grouped-chart-button").click();
-        }),
-        */
         new BenchmarkTestStep("Dotted", (page) => {
             page.querySelector("#reset").click();
             page.querySelector("#add-dotted-chart-button").click();

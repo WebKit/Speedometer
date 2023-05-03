@@ -58,8 +58,6 @@ function prepare() {
 
     /* Array<state: string> */
     const stateSortedArray = stateInformationSortedArray.map(({ state }) => state);
-    /* Array<state: string> */
-    const statesWithMostFlights = stateSortedArray.slice(0, 6);
 
     // Flatten the information in preparedData.stateInformationSortedArray, so that we
     // have one item == one airport information.
@@ -89,7 +87,6 @@ function prepare() {
         byAirport,
         stateInformationSortedArray,
         stateSortedArray,
-        statesWithMostFlights,
         plotData,
     };
 }
@@ -152,50 +149,6 @@ function addStackedBars() {
     ROOT.append(Plot.plot(options));
 }
 
-// Note that this function is currently commented out in the benchmark. We may
-// want to remove it in the future but it's also good to keep it in case we need
-// something like this in the future.
-function addGroupedBars() {
-    if (!isReady())
-        throw new Error("Please prepare the data first.");
-
-    const options = {
-        ...DEFAULT_OPTIONS,
-        x: {
-            axis: null,
-            domain: Array.from({ length: 7 }, (_, i) => i),
-        },
-        y: {
-            grid: true,
-            tickFormat: "~s",
-        },
-        color: { type: "categorical" },
-        fx: {
-            domain: preparedData.statesWithMostFlights,
-            label: null,
-            tickSize: 6,
-        },
-        facet: {
-            data: preparedData.plotData,
-            x: "state",
-        },
-        marks: [
-            // bars
-            Plot.barY(preparedData.plotData, {
-                x: "index",
-                y: "total",
-                fill: "index",
-                title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}\n${d3Format(",")(d.total)} flights`,
-            }),
-            // labels
-            Plot.text(preparedData.plotData, { x: "index", y: "total", text: (d) => d3Format(".2~s")(d.total), dy: -10 }),
-            // horizontal bottom line
-            Plot.ruleY([0]),
-        ],
-    };
-    ROOT.append(Plot.plot(options));
-}
-
 function addDottedBars() {
     if (!isReady())
         throw new Error("Please prepare the data first.");
@@ -250,14 +203,12 @@ async function runAllTheThings() {
         // Force prettier to use a multiline formatting
         "prepare",
         "add-stacked-chart-button",
-        "add-grouped-chart-button",
         "add-dotted-chart-button",
     ].forEach((id) => document.getElementById(id).click());
 }
 
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
-document.getElementById("add-grouped-chart-button").addEventListener("click", addGroupedBars);
 document.getElementById("add-dotted-chart-button").addEventListener("click", addDottedBars);
 document.getElementById("reset").addEventListener("click", reset);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
