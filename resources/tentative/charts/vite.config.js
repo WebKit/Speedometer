@@ -8,6 +8,7 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 index: resolve(__dirname, "index.html"),
+                developer: resolve(__dirname, "developer.html"),
                 plot: resolve(__dirname, "observable-plot.html"),
             },
         },
