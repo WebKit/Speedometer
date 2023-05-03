@@ -18,7 +18,7 @@ Each benchmark was ran 50 times on each browser. The following boxplots show the
 
 There seems to be little to no difference between the *TodoMVC-React-Mail* and *TodoMVC-React-Big*. This is further confirmed by the statistically significat heatmaps below.
 
-> How to interpret the heatmaps: The heatmap shows the p-value of the mannWhitney test between the two benchmarks. A lighter color represents there is more evidence that the benchmark in {row} is faster than the benchmark in {column}.
+> How to interpret the heatmaps: The heatmap shows the p-value of the mannWhitney test between the two benchmarks. A lighter color represents there is statistically signigicant evidence that the benchmark in {row} is faster than the benchmark in {column}.
 
 ### Chrome
 <p align = "center" background-color="white">
