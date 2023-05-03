@@ -1,5 +1,7 @@
 const path = require("path");
+const glob = require("glob");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { PurgeCSSPlugin } = require("purgecss-webpack-plugin");
 
 module.exports = {
     mode: "development",
@@ -15,6 +17,9 @@ module.exports = {
         extensions: [".js", ".jsx"],
     },
     plugins: [
+        new PurgeCSSPlugin({
+            paths: glob.sync(`${path.resolve(__dirname, "dist")}/index.html`, { nodir: true }),
+        }),
         new MiniCssExtractPlugin({
             filename: "[name].css",
             chunkFilename: "[id].css",
@@ -36,18 +41,29 @@ module.exports = {
                 },
             },
             {
-                test: /\.css$/,
-                use: [MiniCssExtractPlugin.loader, "css-loader"],
+                test: /\.css$/i,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            postcssOptions: {
+                                plugins: [require("postcss-import"), require("postcss-varfallback"), require("postcss-dropunusedvars"), require("cssnano")],
+                            },
+                        },
+                    },
+                ],
             },
             {
                 test: /\.svg$/i,
                 issuer: /\.[jt]sx?$/,
-                use: ['@svgr/webpack'],
+                use: ["@svgr/webpack"],
             },
             {
                 test: /\.png$/,
                 type: "asset/resource",
-            }
+            },
         ],
     },
     target: "node",
