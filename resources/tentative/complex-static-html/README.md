@@ -6,7 +6,7 @@ This is a proposal to embed the TodoMVC benchmark on a complex static DOM.
 
 This workloads embeds the todoMVC benchmark is an html page with the following characteristics.
 
-* The page is a big static DOM with around 4000 elements. Every element not belonginf to the todoMVC benchmark is marked with a class `ui`.
+* The page is a big static DOM with around 4000 elements. Every element not belonging to the todoMVC benchmark is marked with a class `ui`.
 * The page is styled using the @spectrum-css adobe library, which relies on css variables for uniform styling.
 * The @spectrum-css rules of the page is post processed using postcss and purgecss.
 * The page includes other 400 complex color css rules using different kinds of css selectors and combinators.
