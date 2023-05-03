@@ -42,7 +42,7 @@ The generator is a nodejs script that uses `renderToStaticMarkup` to generate th
 
 * Uses a random seedable library with a default seed for all its random operations.
 * Takes `MAX_DEPTH`, `TARGET_SIZE` and to randomly generate the big folder-like structure embedded in the sidebar.
-* To generate the sidebar, each node decides if it will have children based on the `CHILD_PROB` value. They randomly choose a number of children between 1 and `MAX_BREADTH`.
+* To generate the sidebar, each node decides if it will have children based on the `CHILD_PROB` value. Then randomly chooses a number of children between 1 and `MAX_BREADTH`.
 
 ### CSS Generator
 
