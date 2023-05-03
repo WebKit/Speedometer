@@ -17,12 +17,12 @@ module.exports = {
         extensions: [".js", ".jsx"],
     },
     plugins: [
+        new PurgeCSSPlugin({
+            paths: glob.sync(`${path.resolve(__dirname, "dist")}/index.html`, { nodir: true }),
+        }),
         new MiniCssExtractPlugin({
             filename: "[name].css",
             chunkFilename: "[id].css",
-        }),
-        new PurgeCSSPlugin({
-            paths: glob.sync(`${path.resolve(__dirname, "dist")}/index.html`, { nodir: true }),
         }),
     ],
     module: {
