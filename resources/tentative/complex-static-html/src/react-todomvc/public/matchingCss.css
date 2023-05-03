@@ -1,0 +1,200 @@
+.top-bar ~ .todo-area .li-0-0:not(.ui) { background-color: rgba(140,140,140,0) }
+.main-ui div ~ .todo-area > div *:not(.ui) { background-color: rgba(140,140,140,0.001) }
+* .toggle-all-container ~ .todo-list > .li-1-0:not(.ui) { background-color: rgba(140,140,140,0.002) }
+.todo-area > .absolutely-positioned-element .view-1:not(.ui) { background-color: rgba(140,140,140,0.003) }
+.todo-area li + .li-2-0:not(.ui) { background-color: rgba(140,140,140,0.004) }
+.li-0-0 ~ li .view-2:not(.ui) { background-color: rgba(140,140,140,0.005) }
+.main-ui > div > .absolutely-positioned-element > * .li-3-0:not(.ui) { background-color: rgba(140,140,140,0.006) }
+.main-ui > .todo-area > .absolutely-positioned-element > .todoapp div:not(.ui) { background-color: rgba(140,140,140,0.007) }
+.absolutely-positioned-element > section .li-2-0 ~ .li-4-0:not(.ui) { background-color: rgba(140,140,140,0.008) }
+* > .todo-area > .absolutely-positioned-element > .todoapp div:not(.ui) { background-color: rgba(140,140,140,0.009) }
+.main-ui > .todo-area *:not(.ui) { background-color: rgba(140,140,140,0.01) }
+.main-ui > * .view-5:not(.ui) { background-color: rgba(140,140,140,0.011) }
+.main > * .li-2-0 ~ li:not(.ui) { background-color: rgba(140,140,140,0.012) }
+.toggle-all-container ~ ul > .li-6-0 > .view-6:not(.ui) { background-color: rgba(140,140,140,0.013) }
+.main > .todo-list .li-0-0 ~ .li-7-0:not(.ui) { background-color: rgba(140,140,140,0.014) }
+.toggle-all-container ~ ul > * > div:not(.ui) { background-color: rgba(140,140,140,0.015) }
+main > .todo-list li ~ *:not(.ui) { background-color: rgba(140,140,140,0.016) }
+.toggle-all-container ~ * > .li-8-0 > *:not(.ui) { background-color: rgba(140,140,140,0.017) }
+.todo-area li + .li-9-0:not(.ui) { background-color: rgba(140,140,140,0.018) }
+* ~ .main .view-9:not(.ui) { background-color: rgba(140,140,140,0.019) }
+.main-ui > * > div > .todoapp .li-10-0:not(.ui) { background-color: rgba(140,140,140,0.02) }
+.main-ui .view-10:not(.ui) { background-color: rgba(140,140,140,0.021) }
+* > div li ~ .li-11-0:not(.ui) { background-color: rgba(140,140,140,0.022) }
+* .top-bar ~ div > .absolutely-positioned-element .view-11:not(.ui) { background-color: rgba(140,140,140,0.023) }
+.main-ui > .todo-area > div > .todoapp li:not(.ui) { background-color: rgba(140,140,140,0.024) }
+* > .todo-area > .absolutely-positioned-element > section .view-12:not(.ui) { background-color: rgba(140,140,140,0.025) }
+main > .todo-list .li-1-0 ~ li:not(.ui) { background-color: rgba(140,140,140,0.026) }
+div ~ .todo-list > .li-13-0 > .view-13:not(.ui) { background-color: rgba(140,140,140,0.027) }
+section li + .li-14-0:not(.ui) { background-color: rgba(140,140,140,0.028) }
+.header ~ .main div:not(.ui) { background-color: rgba(140,140,140,0.029) }
+.main > .todo-list .li-9-0 ~ li:not(.ui) { background-color: rgba(140,140,140,0.03) }
+.toggle-all-container ~ .todo-list > * > .view-15:not(.ui) { background-color: rgba(140,140,140,0.031) }
+.todo-list .li-15-0 + *:not(.ui) { background-color: rgba(140,140,140,0.032) }
+.li-14-0 ~ .li-16-0 .view-16:not(.ui) { background-color: rgba(140,140,140,0.033) }
+* > ul li ~ .li-17-0:not(.ui) { background-color: rgba(140,140,140,0.034) }
+.toggle-all-container ~ .todo-list > .li-17-0 > div:not(.ui) { background-color: rgba(140,140,140,0.035) }
+.absolutely-positioned-element > .todoapp .li-4-0 ~ .li-18-0:not(.ui) { background-color: rgba(140,140,140,0.036) }
+.main-ui div:not(.ui) { background-color: rgba(140,140,140,0.037) }
+main > ul .li-7-0 ~ .li-19-0:not(.ui) { background-color: rgba(140,140,140,0.038) }
+div ~ .todo-list > .li-19-0 > .view-19:not(.ui) { background-color: rgba(140,140,140,0.039) }
+div * + .li-20-0:not(.ui) { background-color: rgba(140,140,140,0.04) }
+* > * div:not(.ui) { background-color: rgba(140,140,140,0.041) }
+section * ~ .main > ul li:not(.ui) { background-color: rgba(140,140,140,0.042) }
+.top-bar ~ .todo-area div:not(.ui) { background-color: rgba(140,140,140,0.043) }
+.todo-list .li-21-0 + .li-22-0:not(.ui) { background-color: rgba(140,140,140,0.044) }
+div ~ .todo-area .view-22:not(.ui) { background-color: rgba(140,140,140,0.045) }
+.todoapp .header ~ .main > .todo-list .li-23-0:not(.ui) { background-color: rgba(140,140,140,0.046) }
+.header ~ main .view-23:not(.ui) { background-color: rgba(140,140,140,0.047) }
+.main-ui > .todo-area div ~ ul > .li-24-0:not(.ui) { background-color: rgba(140,140,140,0.048) }
+.main-ui > div .view-24:not(.ui) { background-color: rgba(140,140,140,0.049) }
+main > .todo-list .li-24-0 ~ li:not(.ui) { background-color: rgba(140,140,140,0.05) }
+.toggle-all-container ~ .todo-list > li > *:not(.ui) { background-color: rgba(140,140,140,0.051) }
+.todo-list * + .li-26-0:not(.ui) { background-color: rgba(140,140,140,0.052) }
+div > .todoapp div:not(.ui) { background-color: rgba(140,140,140,0.053) }
+ul .li-26-0 + li:not(.ui) { background-color: rgba(140,140,140,0.054) }
+div ~ .todo-list .view-27:not(.ui) { background-color: rgba(140,140,140,0.055) }
+.todo-area .li-27-0 + .li-28-0:not(.ui) { background-color: rgba(140,140,140,0.056) }
+.main-ui .view-28:not(.ui) { background-color: rgba(140,140,140,0.057) }
+.main > .todo-list .li-15-0 ~ .li-29-0:not(.ui) { background-color: rgba(140,140,140,0.058) }
+* ~ .todo-list > .li-29-0 > .view-29:not(.ui) { background-color: rgba(140,140,140,0.059) }
+* .li-29-0 + li:not(.ui) { background-color: rgba(140,140,140,0.06) }
+.todo-area > .absolutely-positioned-element *:not(.ui) { background-color: rgba(140,140,140,0.061) }
+.todo-area .li-30-0 + .li-31-0:not(.ui) { background-color: rgba(140,140,140,0.062) }
+header ~ .main .view-31:not(.ui) { background-color: rgba(140,140,140,0.063) }
+.absolutely-positioned-element > .todoapp .li-10-0 ~ *:not(.ui) { background-color: rgba(140,140,140,0.064) }
+.main-ui > div div:not(.ui) { background-color: rgba(140,140,140,0.065) }
+.todoapp .li-32-0 + *:not(.ui) { background-color: rgba(140,140,140,0.066) }
+.header ~ main .view-33:not(.ui) { background-color: rgba(140,140,140,0.067) }
+.todo-area li + *:not(.ui) { background-color: rgba(140,140,140,0.068) }
+.li-22-0 ~ li .view-34:not(.ui) { background-color: rgba(140,140,140,0.069) }
+.absolutely-positioned-element > .todoapp * ~ *:not(.ui) { background-color: rgba(140,140,140,0.07) }
+.main-ui div:not(.ui) { background-color: rgba(140,140,140,0.071) }
+.todoapp li + .li-36-0:not(.ui) { background-color: rgba(140,140,140,0.072) }
+div > section .view-36:not(.ui) { background-color: rgba(140,140,140,0.073) }
+section .li-36-0 + li:not(.ui) { background-color: rgba(140,140,140,0.074) }
+.absolutely-positioned-element > section *:not(.ui) { background-color: rgba(140,140,140,0.075) }
+section header ~ main > .todo-list .li-38-0:not(.ui) { background-color: rgba(140,140,140,0.076) }
+div ~ * .view-38:not(.ui) { background-color: rgba(140,140,140,0.077) }
+.todoapp .li-38-0 + li:not(.ui) { background-color: rgba(140,140,140,0.078) }
+.toggle-all-container ~ .todo-list .view-39:not(.ui) { background-color: rgba(140,140,140,0.079) }
+.main > ul .li-10-0 ~ .li-40-0:not(.ui) { background-color: rgba(140,140,140,0.08) }
+.toggle-all-container ~ .todo-list > li > .view-40:not(.ui) { background-color: rgba(140,140,140,0.081) }
+* .li-40-0 + li:not(.ui) { background-color: rgba(140,140,140,0.082) }
+.main-ui .view-41:not(.ui) { background-color: rgba(140,140,140,0.083) }
+.todo-area li + .li-42-0:not(.ui) { background-color: rgba(140,140,140,0.084) }
+div > section .view-42:not(.ui) { background-color: rgba(140,140,140,0.085) }
+.main > ul li ~ .li-43-0:not(.ui) { background-color: rgba(140,140,140,0.086) }
+.toggle-all-container ~ .todo-list > .li-43-0 > .view-43:not(.ui) { background-color: rgba(140,140,140,0.087) }
+.main-ui > div .li-2-0 ~ *:not(.ui) { background-color: rgba(140,140,140,0.088) }
+.main-ui > * div:not(.ui) { background-color: rgba(140,140,140,0.089) }
+section li + *:not(.ui) { background-color: rgba(140,140,140,0.09) }
+div > div .view-45:not(.ui) { background-color: rgba(140,140,140,0.091) }
+main > .todo-list * ~ .li-46-0:not(.ui) { background-color: rgba(140,140,140,0.092) }
+.toggle-all-container ~ ul > .li-46-0 > div:not(.ui) { background-color: rgba(140,140,140,0.093) }
+ul .li-46-0 + li:not(.ui) { background-color: rgba(140,140,140,0.094) }
+* ~ .main *:not(.ui) { background-color: rgba(140,140,140,0.095) }
+.main-ui > .todo-area > * > .todoapp .li-48-0:not(.ui) { background-color: rgba(140,140,140,0.096) }
+* > div > * > .todoapp .view-48:not(.ui) { background-color: rgba(140,140,140,0.097) }
+main > * .li-35-0 ~ .li-49-0:not(.ui) { background-color: rgba(140,140,140,0.098) }
+div ~ ul > .li-49-0 > .view-49:not(.ui) { background-color: rgba(140,140,140,0.099) }
+div .li-49-0 + .li-50-0:not(.ui) { background-color: rgba(140,140,140,0.1) }
+.main-ui .view-50:not(.ui) { background-color: rgba(140,140,140,0.101) }
+.main-ui > .todo-area > .absolutely-positioned-element > .todoapp .li-51-0:not(.ui) { background-color: rgba(140,140,140,0.102) }
+.main-ui div:not(.ui) { background-color: rgba(140,140,140,0.103) }
+.todo-list .li-51-0 + li:not(.ui) { background-color: rgba(140,140,140,0.104) }
+div > .absolutely-positioned-element div:not(.ui) { background-color: rgba(140,140,140,0.105) }
+.main-ui > .todo-area li:not(.ui) { background-color: rgba(140,140,140,0.106) }
+.main-ui > * div:not(.ui) { background-color: rgba(140,140,140,0.107) }
+.todoapp .li-53-0 + .li-54-0:not(.ui) { background-color: rgba(140,140,140,0.108) }
+.toggle-all-container ~ .todo-list *:not(.ui) { background-color: rgba(140,140,140,0.109) }
+.main > .todo-list li ~ .li-55-0:not(.ui) { background-color: rgba(140,140,140,0.11) }
+.toggle-all-container ~ .todo-list > * > .view-55:not(.ui) { background-color: rgba(140,140,140,0.111) }
+* .li-55-0 + .li-56-0:not(.ui) { background-color: rgba(140,140,140,0.112) }
+div > section .view-56:not(.ui) { background-color: rgba(140,140,140,0.113) }
+main > .todo-list .li-11-0 ~ li:not(.ui) { background-color: rgba(140,140,140,0.114) }
+div ~ .todo-list > li > .view-57:not(.ui) { background-color: rgba(140,140,140,0.115) }
+* header ~ main > ul li:not(.ui) { background-color: rgba(140,140,140,0.116) }
+.toggle-all-container ~ .todo-list .view-58:not(.ui) { background-color: rgba(140,140,140,0.117) }
+.todoapp header ~ .main > .todo-list *:not(.ui) { background-color: rgba(140,140,140,0.118) }
+* ~ .todo-list .view-59:not(.ui) { background-color: rgba(140,140,140,0.119) }
+.todoapp .li-59-0 + li:not(.ui) { background-color: rgba(140,140,140,0.12) }
+.header ~ main .view-60:not(.ui) { background-color: rgba(140,140,140,0.121) }
+div .li-60-0 + .li-61-0:not(.ui) { background-color: rgba(140,140,140,0.122) }
+.top-bar ~ div div:not(.ui) { background-color: rgba(140,140,140,0.123) }
+div > .todoapp li ~ .li-62-0:not(.ui) { background-color: rgba(140,140,140,0.124) }
+.main-ui div ~ div > .absolutely-positioned-element .view-62:not(.ui) { background-color: rgba(140,140,140,0.125) }
+* .li-62-0 + *:not(.ui) { background-color: rgba(140,140,140,0.126) }
+* ~ * *:not(.ui) { background-color: rgba(140,140,140,0.127) }
+.main-ui > * .li-50-0 ~ li:not(.ui) { background-color: rgba(140,140,140,0.128) }
+main * ~ .todo-list > .li-64-0 .view-64:not(.ui) { background-color: rgba(140,140,140,0.129) }
+* > * li ~ .li-65-0:not(.ui) { background-color: rgba(140,140,140,0.13) }
+.main-ui > .todo-area > .absolutely-positioned-element > * div:not(.ui) { background-color: rgba(140,140,140,0.131) }
+.main-ui .toggle-all-container ~ .todo-list > *:not(.ui) { background-color: rgba(140,140,140,0.132) }
+div > .todoapp div:not(.ui) { background-color: rgba(140,140,140,0.133) }
+.todo-list .li-66-0 + li:not(.ui) { background-color: rgba(140,140,140,0.134) }
+.todo-area > .absolutely-positioned-element div:not(.ui) { background-color: rgba(140,140,140,0.135) }
+section li + .li-68-0:not(.ui) { background-color: rgba(140,140,140,0.136) }
+.absolutely-positioned-element > .todoapp div:not(.ui) { background-color: rgba(140,140,140,0.137) }
+div > div > .todoapp div ~ .todo-list > .li-69-0:not(.ui) { background-color: rgba(140,140,140,0.138) }
+.absolutely-positioned-element > .todoapp .view-69:not(.ui) { background-color: rgba(140,140,140,0.139) }
+.main-ui > .todo-area .li-4-0 ~ li:not(.ui) { background-color: rgba(140,140,140,0.14) }
+section .header ~ main > ul .view-70:not(.ui) { background-color: rgba(140,140,140,0.141) }
+.main-ui > .todo-area li ~ .li-71-0:not(.ui) { background-color: rgba(140,140,140,0.142) }
+.todo-area > * > .todoapp > main div:not(.ui) { background-color: rgba(140,140,140,0.143) }
+div > section .li-2-0 ~ .li-72-0:not(.ui) { background-color: rgba(140,140,140,0.144) }
+.todoapp .header ~ .main > .todo-list div:not(.ui) { background-color: rgba(140,140,140,0.145) }
+main > .todo-list li ~ .li-73-0:not(.ui) { background-color: rgba(140,140,140,0.146) }
+.toggle-all-container ~ .todo-list > .li-73-0 > .view-73:not(.ui) { background-color: rgba(140,140,140,0.147) }
+div ~ .todo-area > .absolutely-positioned-element .toggle-all-container ~ .todo-list > *:not(.ui) { background-color: rgba(140,140,140,0.148) }
+.main-ui .view-74:not(.ui) { background-color: rgba(140,140,140,0.149) }
+.main > .todo-list .li-44-0 ~ li:not(.ui) { background-color: rgba(140,140,140,0.15) }
+.toggle-all-container ~ .todo-list > .li-75-0 > div:not(.ui) { background-color: rgba(140,140,140,0.151) }
+ul .li-75-0 + *:not(.ui) { background-color: rgba(140,140,140,0.152) }
+header ~ .main div:not(.ui) { background-color: rgba(140,140,140,0.153) }
+* * + *:not(.ui) { background-color: rgba(140,140,140,0.154) }
+.li-68-0 ~ .li-77-0 .view-77:not(.ui) { background-color: rgba(140,140,140,0.155) }
+.todoapp li + .li-78-0:not(.ui) { background-color: rgba(140,140,140,0.156) }
+.li-54-0 ~ li .view-78:not(.ui) { background-color: rgba(140,140,140,0.157) }
+main > .todo-list .li-42-0 ~ li:not(.ui) { background-color: rgba(140,140,140,0.158) }
+.toggle-all-container ~ .todo-list > .li-79-0 > .view-79:not(.ui) { background-color: rgba(140,140,140,0.159) }
+.todo-list .li-79-0 + .li-80-0:not(.ui) { background-color: rgba(140,140,140,0.16) }
+.main-ui div:not(.ui) { background-color: rgba(140,140,140,0.161) }
+.main-ui > div li:not(.ui) { background-color: rgba(140,140,140,0.162) }
+.todoapp .header ~ main > .todo-list .view-81:not(.ui) { background-color: rgba(140,140,140,0.163) }
+main > ul li ~ li:not(.ui) { background-color: rgba(140,140,140,0.164) }
+.toggle-all-container ~ .todo-list > * > div:not(.ui) { background-color: rgba(140,140,140,0.165) }
+div > * .li-26-0 ~ *:not(.ui) { background-color: rgba(140,140,140,0.166) }
+.main-ui .top-bar ~ div > div .view-83:not(.ui) { background-color: rgba(140,140,140,0.167) }
+.todo-area li + li:not(.ui) { background-color: rgba(140,140,140,0.168) }
+div ~ div div:not(.ui) { background-color: rgba(140,140,140,0.169) }
+.top-bar ~ .todo-area > .absolutely-positioned-element * ~ ul > .li-85-0:not(.ui) { background-color: rgba(140,140,140,0.17) }
+.main-ui div ~ ul > .li-85-0 .view-85:not(.ui) { background-color: rgba(140,140,140,0.171) }
+div ~ div > div .toggle-all-container ~ .todo-list > .li-86-0:not(.ui) { background-color: rgba(140,140,140,0.172) }
+main .toggle-all-container ~ .todo-list > .li-86-0 div:not(.ui) { background-color: rgba(140,140,140,0.173) }
+.todoapp .li-86-0 + .li-87-0:not(.ui) { background-color: rgba(140,140,140,0.174) }
+.header ~ main .view-87:not(.ui) { background-color: rgba(140,140,140,0.175) }
+.main-ui > * .li-10-0 ~ *:not(.ui) { background-color: rgba(140,140,140,0.176) }
+div > * > section > .main .view-88:not(.ui) { background-color: rgba(140,140,140,0.177) }
+div > .todoapp > .main .toggle-all-container ~ .todo-list > *:not(.ui) { background-color: rgba(140,140,140,0.178) }
+li ~ .li-89-0 div:not(.ui) { background-color: rgba(140,140,140,0.179) }
+.absolutely-positioned-element > .todoapp .li-28-0 ~ .li-90-0:not(.ui) { background-color: rgba(140,140,140,0.18) }
+.main-ui > .todo-area > * > .todoapp .view-90:not(.ui) { background-color: rgba(140,140,140,0.181) }
+.todoapp .li-90-0 + .li-91-0:not(.ui) { background-color: rgba(140,140,140,0.182) }
+.main-ui .view-91:not(.ui) { background-color: rgba(140,140,140,0.183) }
+.absolutely-positioned-element > .todoapp .li-70-0 ~ *:not(.ui) { background-color: rgba(140,140,140,0.184) }
+.main-ui * ~ .todo-area > div div:not(.ui) { background-color: rgba(140,140,140,0.185) }
+.todo-area .li-92-0 + .li-93-0:not(.ui) { background-color: rgba(140,140,140,0.186) }
+.toggle-all-container ~ ul .view-93:not(.ui) { background-color: rgba(140,140,140,0.187) }
+.absolutely-positioned-element > .todoapp .li-64-0 ~ .li-94-0:not(.ui) { background-color: rgba(140,140,140,0.188) }
+.main-ui > div > div > .todoapp .view-94:not(.ui) { background-color: rgba(140,140,140,0.189) }
+div > .todoapp > .main * ~ .todo-list > li:not(.ui) { background-color: rgba(140,140,140,0.19) }
+.li-93-0 ~ * .view-95:not(.ui) { background-color: rgba(140,140,140,0.191) }
+.main-ui > .todo-area * ~ .li-96-0:not(.ui) { background-color: rgba(140,140,140,0.192) }
+.todoapp .header ~ * > .todo-list .view-96:not(.ui) { background-color: rgba(140,140,140,0.193) }
+div .li-96-0 + .li-97-0:not(.ui) { background-color: rgba(140,140,140,0.194) }
+.toggle-all-container ~ .todo-list *:not(.ui) { background-color: rgba(140,140,140,0.195) }
+.main > .todo-list * ~ li:not(.ui) { background-color: rgba(140,140,140,0.196) }
+* ~ ul > .li-98-0 > div:not(.ui) { background-color: rgba(140,140,140,0.197) }
+.main-ui > .todo-area .li-24-0 ~ .li-99-0:not(.ui) { background-color: rgba(140,140,140,0.198) }
+.todoapp .header ~ .main > ul div:not(.ui) { background-color: rgba(140,140,140,0.199) }

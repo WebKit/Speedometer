@@ -1,2 +1,3 @@
 /dist/*
+/generator-dist/*
 /node_modules/*

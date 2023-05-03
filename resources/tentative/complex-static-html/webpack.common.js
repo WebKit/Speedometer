@@ -1,12 +1,8 @@
 const path = require("path");
-const glob = require("glob");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { PurgeCSSPlugin } = require("purgecss-webpack-plugin");
 
 module.exports = {
-    mode: "development",
     entry: {
-        app: "./src/big-dom-generator/index.js",
+        app: "./src/react-todomvc/index.js",
     },
     output: {
         filename: "[name].bundle.js",
@@ -16,15 +12,6 @@ module.exports = {
     resolve: {
         extensions: [".js", ".jsx"],
     },
-    plugins: [
-        new PurgeCSSPlugin({
-            paths: glob.sync(`${path.resolve(__dirname, "dist")}/index.html`, { nodir: true }),
-        }),
-        new MiniCssExtractPlugin({
-            filename: "[name].css",
-            chunkFilename: "[id].css",
-        }),
-    ],
     module: {
         rules: [
             {
@@ -41,30 +28,9 @@ module.exports = {
                 },
             },
             {
-                test: /\.css$/i,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    "css-loader",
-                    {
-                        loader: "postcss-loader",
-                        options: {
-                            postcssOptions: {
-                                plugins: [require("postcss-import"), require("postcss-varfallback"), require("postcss-dropunusedvars"), require("cssnano")],
-                            },
-                        },
-                    },
-                ],
-            },
-            {
-                test: /\.svg$/i,
-                issuer: /\.[jt]sx?$/,
-                use: ["@svgr/webpack"],
-            },
-            {
-                test: /\.png$/,
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: "asset/resource",
             },
         ],
     },
-    target: "node",
 };

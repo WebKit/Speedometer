@@ -8,7 +8,8 @@
     "npm": ">=8.19.3"
   },
   "scripts": {
-    "build": "webpack --config webpack.common.js && node dist/app.bundle.js",
+    "generate-dom": "webpack --config webpack.common.js && node dist/app.bundle.js",
+    "build-todomvc": "webpack --config webpack.prod.js",
     "serve": "http-server ./dist -p 7002 -c-1 --cors"
   },
   "devDependencies": {
@@ -44,11 +45,19 @@
     "postcss-varfallback": "^1.1.0",
     "purgecss-webpack-plugin": "^5.0.0",
     "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "webpack-cli": "^5.0.1",
+
+
+    "html-webpack-plugin": "^5.5.0"
   },
   "dependencies": {
     "random-seedable": "1.0.8",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+
+    "classnames": "^2.2.5",
+    "react-router-dom": "^6.8.2",
+    "todomvc-app-css": "^2.4.2",
+    "todomvc-common": "^1.0.5"
   }
 }

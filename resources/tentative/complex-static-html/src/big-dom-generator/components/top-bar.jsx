@@ -33,9 +33,9 @@ export const TopBar = () => {
       </div>
       <div className="ui top-bar-right">
         <ActionGroup>
-          <ActionButton Icon={BellIcon} label="Bell" quite={false}/>
-          <ActionButton Icon={SettingsIcon} label="Settings" quite={false}/>
-          <ActionButton Icon={ProfileIcon} label="Profile" quite={true}/>
+          <ActionButton Icon={BellIcon} quite={false}/>
+          <ActionButton Icon={SettingsIcon} quite={false}/>
+          <ActionButton Icon={ProfileIcon} quite={false}/>
         </ActionGroup>
       </div>
     </div>

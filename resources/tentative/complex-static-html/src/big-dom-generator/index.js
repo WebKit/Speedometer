@@ -8,8 +8,8 @@ import './app.css';
 const fs = require('fs');
 
 const randomCss = genCss();
-fs.writeFileSync('dist/matchingCss.css', randomCss.matchingCss);
-fs.writeFileSync('dist/nonMatchingCss.css', randomCss.nonMatchingCss);
+fs.writeFileSync('generator-dist/matchingCss.css', randomCss.matchingCss);
+fs.writeFileSync('generator-dist/nonMatchingCss.css', randomCss.nonMatchingCss);
 
 const html = 
 `<!DOCTYPE html>
@@ -22,4 +22,4 @@ const html =
     ${renderToStaticMarkup(<App />)}
   </body>
 </html>`;
-fs.writeFileSync('dist/index.html', html);
+fs.writeFileSync('generator-dist/index.html', html);

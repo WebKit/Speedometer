@@ -1,0 +1,200 @@
+.absolutely-positioned-element.just-span > div > .todoapp li { background-color: rgba(140,140,140,0) }
+.todoapp.just-span > section .header ~ .main > ul > .li-0-0 > .view-0 { background-color: rgba(140,140,140,0.001) }
+*.just-span > .todoapp li + li { background-color: rgba(140,140,140,0.002) }
+.just-span > .todo-area > * > section li ~ .li-1-0 > .view-1 { background-color: rgba(140,140,140,0.003) }
+.just-span > div > .absolutely-positioned-element > .todoapp .li-2-0 { background-color: rgba(140,140,140,0.004) }
+.just-span * ~ .todo-area div { background-color: rgba(140,140,140,0.005) }
+.just-span > div > .absolutely-positioned-element > * .li-3-0 { background-color: rgba(140,140,140,0.006) }
+.header.just-span .header ~ .main .view-3 { background-color: rgba(140,140,140,0.007) }
+.just-span > * > .absolutely-positioned-element > * .li-4-0 { background-color: rgba(140,140,140,0.008) }
+.just-span .top-bar ~ .todo-area .view-4 { background-color: rgba(140,140,140,0.009) }
+.todoapp.just-span > section .header ~ main > .todo-list .li-5-0 { background-color: rgba(140,140,140,0.01) }
+*.just-span .header ~ .main > ul .li-2-0 ~ .li-5-0 > * { background-color: rgba(140,140,140,0.011) }
+.todoapp.just-span > .todoapp header ~ main > .todo-list .li-6-0 { background-color: rgba(140,140,140,0.012) }
+.header.just-span header ~ main > .todo-list .li-0-0 ~ .li-6-0 > .view-6 { background-color: rgba(140,140,140,0.013) }
+.just-span > * > .absolutely-positioned-element > .todoapp .li-7-0 { background-color: rgba(140,140,140,0.014) }
+.header.just-span header ~ main div { background-color: rgba(140,140,140,0.015) }
+.just-span > .todo-area li { background-color: rgba(140,140,140,0.016) }
+.just-span .view-8 { background-color: rgba(140,140,140,0.017) }
+.just-span > div li { background-color: rgba(140,140,140,0.018) }
+.just-span .toggle-all-container ~ .todo-list .view-9 { background-color: rgba(140,140,140,0.019) }
+.todo-list.just-span > .todo-list li + li { background-color: rgba(140,140,140,0.02) }
+.header.just-span .header ~ main > * .li-2-0 ~ .li-10-0 > div { background-color: rgba(140,140,140,0.021) }
+.just-span > .todo-area .li-10-0 + .li-11-0 { background-color: rgba(140,140,140,0.022) }
+.just-span div ~ .todo-area .view-11 { background-color: rgba(140,140,140,0.023) }
+.just-span > .todo-area > .absolutely-positioned-element > .todoapp li { background-color: rgba(140,140,140,0.024) }
+.header.just-span .header ~ .main div { background-color: rgba(140,140,140,0.025) }
+.just-span > .todo-area .li-13-0 { background-color: rgba(140,140,140,0.026) }
+.just-span * { background-color: rgba(140,140,140,0.027) }
+.just-span > div > * > section li { background-color: rgba(140,140,140,0.028) }
+.header.just-span div ~ .todo-list .view-14 { background-color: rgba(140,140,140,0.029) }
+section.just-span > * header ~ * > ul .li-15-0 { background-color: rgba(140,140,140,0.03) }
+.just-span > .todo-area .li-0-0 ~ li > div { background-color: rgba(140,140,140,0.031) }
+.just-span > .todo-area > .absolutely-positioned-element > .todoapp li { background-color: rgba(140,140,140,0.032) }
+header.just-span .header ~ .main div { background-color: rgba(140,140,140,0.033) }
+.just-span > .todo-area li { background-color: rgba(140,140,140,0.034) }
+.header.just-span .header ~ * div { background-color: rgba(140,140,140,0.035) }
+.todoapp.just-span > .todoapp li + .li-18-0 { background-color: rgba(140,140,140,0.036) }
+.header.just-span header ~ .main > * .li-4-0 ~ .li-18-0 > div { background-color: rgba(140,140,140,0.037) }
+.just-span > div > .absolutely-positioned-element > .todoapp .li-19-0 { background-color: rgba(140,140,140,0.038) }
+.just-span > .todo-area > .absolutely-positioned-element div { background-color: rgba(140,140,140,0.039) }
+.just-span > * li + .li-20-0 { background-color: rgba(140,140,140,0.04) }
+.just-span .top-bar ~ .todo-area .view-20 { background-color: rgba(140,140,140,0.041) }
+.just-span > div .li-21-0 { background-color: rgba(140,140,140,0.042) }
+.just-span .view-21 { background-color: rgba(140,140,140,0.043) }
+.just-span > * .li-22-0 { background-color: rgba(140,140,140,0.044) }
+.just-span .top-bar ~ * .view-22 { background-color: rgba(140,140,140,0.045) }
+.just-span > * li { background-color: rgba(140,140,140,0.046) }
+div.just-span > div > * div { background-color: rgba(140,140,140,0.047) }
+*.just-span > section .header ~ main > ul .li-24-0 { background-color: rgba(140,140,140,0.048) }
+.header.just-span header ~ .main > ul li ~ .li-24-0 > .view-24 { background-color: rgba(140,140,140,0.049) }
+.todoapp.just-span > section header ~ .main > ul .li-25-0 { background-color: rgba(140,140,140,0.05) }
+.just-span > .todo-area > div > section .li-21-0 ~ .li-25-0 > div { background-color: rgba(140,140,140,0.051) }
+.todo-list.just-span > ul .li-25-0 + * { background-color: rgba(140,140,140,0.052) }
+.just-span > .todo-area > .absolutely-positioned-element > .todoapp .li-18-0 ~ li > .view-26 { background-color: rgba(140,140,140,0.053) }
+.just-span > .todo-area li { background-color: rgba(140,140,140,0.054) }
+.just-span .view-27 { background-color: rgba(140,140,140,0.055) }
+.just-span > div > .absolutely-positioned-element > .todoapp li { background-color: rgba(140,140,140,0.056) }
+*.just-span .toggle-all-container ~ .todo-list .view-28 { background-color: rgba(140,140,140,0.057) }
+.just-span > .todo-area > .absolutely-positioned-element > section .li-29-0 { background-color: rgba(140,140,140,0.058) }
+.just-span > * > .absolutely-positioned-element div { background-color: rgba(140,140,140,0.059) }
+.todoapp.just-span > section .li-29-0 + .li-30-0 { background-color: rgba(140,140,140,0.06) }
+.just-span > * > .absolutely-positioned-element > .todoapp .li-20-0 ~ .li-30-0 > .view-30 { background-color: rgba(140,140,140,0.061) }
+.just-span > .todo-area .li-31-0 { background-color: rgba(140,140,140,0.062) }
+.header.just-span .header ~ .main .view-31 { background-color: rgba(140,140,140,0.063) }
+section.just-span > .todoapp header ~ .main > ul .li-32-0 { background-color: rgba(140,140,140,0.064) }
+.just-span > * > div > .todoapp .li-30-0 ~ li > .view-32 { background-color: rgba(140,140,140,0.065) }
+section.just-span > section .header ~ .main > .todo-list .li-33-0 { background-color: rgba(140,140,140,0.066) }
+.just-span > .todo-area li ~ .li-33-0 > div { background-color: rgba(140,140,140,0.067) }
+.just-span > .todo-area > .absolutely-positioned-element > .todoapp li { background-color: rgba(140,140,140,0.068) }
+.header.just-span .header ~ main .view-34 { background-color: rgba(140,140,140,0.069) }
+.just-span > div li + li { background-color: rgba(140,140,140,0.07) }
+.just-span div { background-color: rgba(140,140,140,0.071) }
+.todo-list.just-span > .todo-list .li-35-0 + .li-36-0 { background-color: rgba(140,140,140,0.072) }
+.just-span > * .li-18-0 ~ .li-36-0 > * { background-color: rgba(140,140,140,0.073) }
+.just-span > * .li-36-0 + li { background-color: rgba(140,140,140,0.074) }
+.just-span div ~ ul .view-37 { background-color: rgba(140,140,140,0.075) }
+.just-span > .todo-area li { background-color: rgba(140,140,140,0.076) }
+.just-span .view-38 { background-color: rgba(140,140,140,0.077) }
+.just-span > .todo-area > div > .todoapp .li-39-0 { background-color: rgba(140,140,140,0.078) }
+.header.just-span .header ~ * .view-39 { background-color: rgba(140,140,140,0.079) }
+.just-span > div > div > .todoapp * { background-color: rgba(140,140,140,0.08) }
+.just-span div { background-color: rgba(140,140,140,0.081) }
+section.just-span > .todoapp .header ~ .main > .todo-list li { background-color: rgba(140,140,140,0.082) }
+.just-span > div li ~ li > .view-41 { background-color: rgba(140,140,140,0.083) }
+section.just-span > section .li-41-0 + li { background-color: rgba(140,140,140,0.084) }
+header.just-span .header ~ main > .todo-list .li-0-0 ~ .li-42-0 > * { background-color: rgba(140,140,140,0.085) }
+.todoapp.just-span > .todoapp header ~ * > ul li { background-color: rgba(140,140,140,0.086) }
+.header.just-span .header ~ main > ul li ~ li > .view-43 { background-color: rgba(140,140,140,0.087) }
+.todoapp.just-span > .todoapp .header ~ .main > .todo-list li { background-color: rgba(140,140,140,0.088) }
+.just-span > .todo-area > .absolutely-positioned-element > .todoapp .li-26-0 ~ li > .view-44 { background-color: rgba(140,140,140,0.089) }
+.todo-list.just-span > ul .li-44-0 + .li-45-0 { background-color: rgba(140,140,140,0.09) }
+.header.just-span * ~ .main > ul .li-3-0 ~ .li-45-0 > div { background-color: rgba(140,140,140,0.091) }
+.just-span > div .li-46-0 { background-color: rgba(140,140,140,0.092) }
+.just-span .view-46 { background-color: rgba(140,140,140,0.093) }
+.just-span > div .li-47-0 { background-color: rgba(140,140,140,0.094) }
+.just-span .top-bar ~ .todo-area div { background-color: rgba(140,140,140,0.095) }
+.just-span > .todo-area .li-48-0 { background-color: rgba(140,140,140,0.096) }
+header.just-span header ~ .main .view-48 { background-color: rgba(140,140,140,0.097) }
+.todoapp.just-span > .todoapp * ~ main > * .li-49-0 { background-color: rgba(140,140,140,0.098) }
+.just-span > .todo-area > .absolutely-positioned-element > section li ~ li > div { background-color: rgba(140,140,140,0.099) }
+.just-span > .todo-area .li-50-0 { background-color: rgba(140,140,140,0.1) }
+.just-span .top-bar ~ .todo-area .view-50 { background-color: rgba(140,140,140,0.101) }
+section.just-span > section .li-50-0 + .li-51-0 { background-color: rgba(140,140,140,0.102) }
+.just-span > div .li-17-0 ~ .li-51-0 > div { background-color: rgba(140,140,140,0.103) }
+.just-span > .todo-area .li-51-0 + li { background-color: rgba(140,140,140,0.104) }
+.just-span .top-bar ~ div .view-52 { background-color: rgba(140,140,140,0.105) }
+.todoapp.just-span > .todoapp .header ~ * > * * { background-color: rgba(140,140,140,0.106) }
+.just-span > div > div > section .li-27-0 ~ li > .view-53 { background-color: rgba(140,140,140,0.107) }
+.just-span > * .li-54-0 { background-color: rgba(140,140,140,0.108) }
+.todoapp.just-span div ~ .todo-list .view-54 { background-color: rgba(140,140,140,0.109) }
+.todoapp.just-span > .todoapp .header ~ .main > ul .li-55-0 { background-color: rgba(140,140,140,0.11) }
+.just-span > div .li-29-0 ~ .li-55-0 > div { background-color: rgba(140,140,140,0.111) }
+section.just-span > .todoapp .li-55-0 + li { background-color: rgba(140,140,140,0.112) }
+.header.just-span header ~ .main > .todo-list li ~ li > .view-56 { background-color: rgba(140,140,140,0.113) }
+.just-span > .todo-area .li-57-0 { background-color: rgba(140,140,140,0.114) }
+.just-span .top-bar ~ .todo-area div { background-color: rgba(140,140,140,0.115) }
+.just-span > .todo-area .li-58-0 { background-color: rgba(140,140,140,0.116) }
+.just-span .top-bar ~ .todo-area .view-58 { background-color: rgba(140,140,140,0.117) }
+.todoapp.just-span > .todoapp header ~ .main > ul .li-59-0 { background-color: rgba(140,140,140,0.118) }
+.just-span > div li ~ li > div { background-color: rgba(140,140,140,0.119) }
+.just-span > div .li-60-0 { background-color: rgba(140,140,140,0.12) }
+.just-span > div > div .view-60 { background-color: rgba(140,140,140,0.121) }
+.just-span > div li { background-color: rgba(140,140,140,0.122) }
+.absolutely-positioned-element.just-span * ~ .li-61-0 .view-61 { background-color: rgba(140,140,140,0.123) }
+section.just-span > .todoapp li + .li-62-0 { background-color: rgba(140,140,140,0.124) }
+.just-span > .todo-area .li-46-0 ~ .li-62-0 > .view-62 { background-color: rgba(140,140,140,0.125) }
+.just-span > .todo-area > .absolutely-positioned-element > section .li-63-0 { background-color: rgba(140,140,140,0.126) }
+.li-1-0.just-span li ~ li div { background-color: rgba(140,140,140,0.127) }
+section.just-span > .todoapp .li-63-0 + .li-64-0 { background-color: rgba(140,140,140,0.128) }
+*.just-span header ~ .main > .todo-list li ~ .li-64-0 > .view-64 { background-color: rgba(140,140,140,0.129) }
+.just-span > div li { background-color: rgba(140,140,140,0.13) }
+.absolutely-positioned-element.just-span > .absolutely-positioned-element > section .view-65 { background-color: rgba(140,140,140,0.131) }
+ul.just-span > * .li-65-0 + * { background-color: rgba(140,140,140,0.132) }
+.just-span > .todo-area > div > .todoapp .li-18-0 ~ .li-66-0 > .view-66 { background-color: rgba(140,140,140,0.133) }
+.todoapp.just-span > section li + .li-67-0 { background-color: rgba(140,140,140,0.134) }
+.just-span > div .li-42-0 ~ .li-67-0 > .view-67 { background-color: rgba(140,140,140,0.135) }
+.just-span > .todo-area * + li { background-color: rgba(140,140,140,0.136) }
+.absolutely-positioned-element.just-span > .absolutely-positioned-element > section .view-68 { background-color: rgba(140,140,140,0.137) }
+.todo-list.just-span > .todo-list .li-68-0 + .li-69-0 { background-color: rgba(140,140,140,0.138) }
+header.just-span * ~ main > .todo-list .li-35-0 ~ li > .view-69 { background-color: rgba(140,140,140,0.139) }
+.just-span > div .li-69-0 + .li-70-0 { background-color: rgba(140,140,140,0.14) }
+.header.just-span .header ~ .main .view-70 { background-color: rgba(140,140,140,0.141) }
+div.just-span > .absolutely-positioned-element > .todoapp .li-0-0 ~ * { background-color: rgba(140,140,140,0.142) }
+.todo-list.just-span .toggle-all-container ~ ul > * > .view-71 { background-color: rgba(140,140,140,0.143) }
+.just-span > .todo-area * + li { background-color: rgba(140,140,140,0.144) }
+.absolutely-positioned-element.just-span * ~ li .view-72 { background-color: rgba(140,140,140,0.145) }
+.just-span > .todo-area li { background-color: rgba(140,140,140,0.146) }
+.absolutely-positioned-element.just-span > .absolutely-positioned-element > section .view-73 { background-color: rgba(140,140,140,0.147) }
+.todoapp.just-span > section .li-73-0 + .li-74-0 { background-color: rgba(140,140,140,0.148) }
+header.just-span header ~ .main > ul * ~ .li-74-0 > * { background-color: rgba(140,140,140,0.149) }
+.todoapp.just-span > .todoapp .header ~ main > ul li { background-color: rgba(140,140,140,0.15) }
+.just-span > .todo-area > div > .todoapp .li-24-0 ~ .li-75-0 > .view-75 { background-color: rgba(140,140,140,0.151) }
+.just-span > * .li-76-0 { background-color: rgba(140,140,140,0.152) }
+.just-span .view-76 { background-color: rgba(140,140,140,0.153) }
+section.just-span > .todoapp .header ~ .main > .todo-list .li-77-0 { background-color: rgba(140,140,140,0.154) }
+.just-span > .todo-area .li-27-0 ~ li > .view-77 { background-color: rgba(140,140,140,0.155) }
+.todoapp.just-span > .todoapp .header ~ main > ul li { background-color: rgba(140,140,140,0.156) }
+header.just-span .header ~ .main > .todo-list * ~ * > div { background-color: rgba(140,140,140,0.157) }
+.just-span > .todo-area .li-79-0 { background-color: rgba(140,140,140,0.158) }
+.just-span > .todo-area > div div { background-color: rgba(140,140,140,0.159) }
+.just-span > .todo-area > div > .todoapp .li-80-0 { background-color: rgba(140,140,140,0.16) }
+.just-span .top-bar ~ .todo-area div { background-color: rgba(140,140,140,0.161) }
+*.just-span > ul li + .li-81-0 { background-color: rgba(140,140,140,0.162) }
+header.just-span .header ~ .main > .todo-list li ~ * > div { background-color: rgba(140,140,140,0.163) }
+.just-span > .todo-area > .absolutely-positioned-element > .todoapp li { background-color: rgba(140,140,140,0.164) }
+.absolutely-positioned-element.just-span .toggle-all-container ~ .todo-list .view-82 { background-color: rgba(140,140,140,0.165) }
+.just-span > .todo-area .li-82-0 + * { background-color: rgba(140,140,140,0.166) }
+.just-span > div > .absolutely-positioned-element div { background-color: rgba(140,140,140,0.167) }
+.just-span > .todo-area > .absolutely-positioned-element > .todoapp li { background-color: rgba(140,140,140,0.168) }
+div.just-span > .absolutely-positioned-element > section .view-84 { background-color: rgba(140,140,140,0.169) }
+.just-span > .todo-area li + .li-85-0 { background-color: rgba(140,140,140,0.17) }
+*.just-span > .absolutely-positioned-element > .todoapp * { background-color: rgba(140,140,140,0.171) }
+section.just-span > .todoapp .li-85-0 + li { background-color: rgba(140,140,140,0.172) }
+.just-span > .todo-area > .absolutely-positioned-element > .todoapp .li-14-0 ~ .li-86-0 > .view-86 { background-color: rgba(140,140,140,0.173) }
+.just-span > * .li-87-0 { background-color: rgba(140,140,140,0.174) }
+header.just-span * ~ main div { background-color: rgba(140,140,140,0.175) }
+.just-span > .todo-area .li-66-0 ~ li { background-color: rgba(140,140,140,0.176) }
+*.just-span > div > .todoapp div { background-color: rgba(140,140,140,0.177) }
+.todoapp.just-span > .todoapp .header ~ .main > * li { background-color: rgba(140,140,140,0.178) }
+.header.just-span .header ~ .main > .todo-list * ~ li > .view-89 { background-color: rgba(140,140,140,0.179) }
+.todoapp.just-span > section .header ~ main > * .li-90-0 { background-color: rgba(140,140,140,0.18) }
+.just-span > .todo-area .li-62-0 ~ li > .view-90 { background-color: rgba(140,140,140,0.181) }
+.todoapp.just-span > .todoapp header ~ .main > .todo-list * { background-color: rgba(140,140,140,0.182) }
+header.just-span .header ~ main > .todo-list .li-48-0 ~ li > div { background-color: rgba(140,140,140,0.183) }
+.todoapp.just-span > .todoapp .li-91-0 + .li-92-0 { background-color: rgba(140,140,140,0.184) }
+.just-span > .todo-area .li-58-0 ~ .li-92-0 > .view-92 { background-color: rgba(140,140,140,0.185) }
+.just-span > .todo-area > .absolutely-positioned-element > .todoapp li { background-color: rgba(140,140,140,0.186) }
+.header.just-span .header ~ main .view-93 { background-color: rgba(140,140,140,0.187) }
+.just-span > div .li-94-0 { background-color: rgba(140,140,140,0.188) }
+div.just-span > div > * div { background-color: rgba(140,140,140,0.189) }
+.just-span > .todo-area .li-95-0 { background-color: rgba(140,140,140,0.19) }
+.li-1-0.just-span .li-92-0 ~ .li-95-0 .view-95 { background-color: rgba(140,140,140,0.191) }
+section.just-span > .todoapp li + li { background-color: rgba(140,140,140,0.192) }
+.just-span > .todo-area .li-86-0 ~ * > .view-96 { background-color: rgba(140,140,140,0.193) }
+.todoapp.just-span > * header ~ .main > .todo-list li { background-color: rgba(140,140,140,0.194) }
+header.just-span .header ~ * > * .li-74-0 ~ * > .view-97 { background-color: rgba(140,140,140,0.195) }
+section.just-span > .todoapp .header ~ .main > .todo-list .li-98-0 { background-color: rgba(140,140,140,0.196) }
+header.just-span header ~ .main > .todo-list .li-62-0 ~ .li-98-0 > div { background-color: rgba(140,140,140,0.197) }
+.just-span > .todo-area .li-98-0 + .li-99-0 { background-color: rgba(140,140,140,0.198) }
+div.just-span > div > * .view-99 { background-color: rgba(140,140,140,0.199) }

@@ -1,0 +1,18 @@
+body {
+  max-width: 800px;
+}
+
+.todoapp {
+  width: 100%;
+  max-width: 500px;
+}  
+
+.absolutely-positioned-element {
+  justify-content: center;
+}
+
+.todo-area{
+  padding-left: 2%;
+  padding-right: 2%;
+  padding-top: 2%;
+}
