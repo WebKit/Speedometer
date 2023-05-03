@@ -8,6 +8,7 @@ const FolderWrapper = (props) => {
   if (currentDepth >= maxDepth) {
     return (null);
   }
+  // Choose a random number of children.
   const numChildren = rando.randRange(1, maxBreadth);
   const children = [];
   for (let i = 0; i < numChildren && nodeCount.current < TARGET_SIZE; i++) {
@@ -31,6 +32,7 @@ const FolderWrapper = (props) => {
 const TreeItem = (props) => {
   const {nodeCount, rando, numChildren, maxDepth, maxBreadth, childProb, currentDepth} = props;
   nodeCount.current = nodeCount.current + 4;
+  // Choose whether to have children.
   const children = rando.coin(childProb) ? <FolderWrapper nodeCount={nodeCount}
                                                           rando={rando}
                                                           maxBreadth={maxBreadth}
