@@ -14,8 +14,8 @@ This workloads embeds the todoMVC benchmark is an html page with the following c
 * 200 of the above rules will partially match elements added by the todoMVC benchmark (the right most selector will match). E.g. `.header.just-span .header ~ .main .view-31`.
 * We added a new classes `li-{index}` and `view-{index}` to the todoMVC benchmark to make it easier to match the elements.
 
-<p style="text-align: center;">
-<img src="complex-dom-workload.png" alt="workload" width="400"/>
+<p align = "center">
+<img src="complex-dom-workload.png" alt="workload" width="800"/>
 </p>
 
 ## Structure of the folder
