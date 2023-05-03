@@ -8,8 +8,8 @@ import './app.css';
 const fs = require('fs');
 
 const randomCss = genCss();
-fs.writeFileSync('generator-dist/matchingCss.css', randomCss.matchingCss);
-fs.writeFileSync('generator-dist/nonMatchingCss.css', randomCss.nonMatchingCss);
+fs.writeFileSync('src/react-todomvc/public/matchingCss.css', randomCss.matchingCss);
+fs.writeFileSync('src/react-todomvc/public/nonMatchingCss.css', randomCss.nonMatchingCss);
 
 const html = 
 `<!DOCTYPE html>

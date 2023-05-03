@@ -1,7 +1,6 @@
 const path = require("path");
 const glob = require("glob");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { PurgeCSSPlugin } = require("purgecss-webpack-plugin");
 
 module.exports = {
     mode: "development",
@@ -17,9 +16,6 @@ module.exports = {
         extensions: [".js", ".jsx"],
     },
     plugins: [
-      new PurgeCSSPlugin({
-          paths: glob.sync(`${path.resolve(__dirname, "dist")}/index.html`, { nodir: true }),
-      }),
       new MiniCssExtractPlugin({
           filename: "[name].css",
           chunkFilename: "[id].css",
@@ -63,6 +59,9 @@ module.exports = {
             {
                 test: /\.png$/,
                 type: "asset/resource",
+                generator: {
+                  filename: '[name][ext]',
+                },
             }
         ],
     },

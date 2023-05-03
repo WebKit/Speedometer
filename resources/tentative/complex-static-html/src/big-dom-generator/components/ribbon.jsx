@@ -23,8 +23,8 @@ export const Ribbon = () => {
             </ActionGroup>
             <Divider />
             <ActionGroup>
-                <ActionButton Icon={CutIcon} label={"Cut"} quiet />
-                <ActionButton Icon={DeleteIcon} label={"Delete"} quiet />
+                <ActionButton Icon={CutIcon} quiet />
+                <ActionButton Icon={DeleteIcon} quiet />
             </ActionGroup>
             <Divider />
             <ActionGroup>

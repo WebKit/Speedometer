@@ -7,6 +7,8 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 const TerserPlugin = require("terser-webpack-plugin");
 
+const CopyPlugin = require("copy-webpack-plugin");
+
 module.exports = merge(common, {
     mode: "production",
     devtool: "source-map",
@@ -19,6 +21,14 @@ module.exports = merge(common, {
             filename: "[name].css",
             chunkFilename: "[id].css",
         }),
+        new CopyPlugin({
+            patterns: [
+              { 
+                from: "./src/react-todomvc/public/logo.png",
+                to: "logo.png",
+              },
+            ],
+          }),
     ],
     module: {
         rules: [

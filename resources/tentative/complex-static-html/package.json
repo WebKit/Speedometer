@@ -8,8 +8,9 @@
     "npm": ">=8.19.3"
   },
   "scripts": {
-    "generate-dom": "webpack --config webpack.common.js && node dist/app.bundle.js",
+    "generate-dom": "webpack --config generator.config.js && node generator-dist/app.bundle.js && purgecss -css generator-dist/app.css --content generator-dist/index.html --output=generator-dist/app.css && cp generator-dist/index.html src/react-todomvc/public/index.html && cp generator-dist/app.css src/react-todomvc/public/app.css  && cp generator-dist/logo.png src/react-todomvc/public/logo.png",
     "build-todomvc": "webpack --config webpack.prod.js",
+    "build": "npm run generate-dom && npm run build-todomvc",
     "serve": "http-server ./dist -p 7002 -c-1 --cors"
   },
   "devDependencies": {
@@ -31,6 +32,7 @@
     "@spectrum-css/vars": "9.0.5",
     "@svgr/webpack": "7.0.0",
     "babel-loader": "^9.1.2",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
     "css-minimizer-webpack-plugin": "^4.2.2",
     "cssnano": "^6.0.1",
@@ -43,7 +45,7 @@
     "postcss-import": "15.1.0",
     "postcss-loader": "^7.3.0",
     "postcss-varfallback": "^1.1.0",
-    "purgecss-webpack-plugin": "^5.0.0",
+    "purgecss": "^5.0.0",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
 
