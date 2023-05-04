@@ -24,6 +24,12 @@ label {
       <label><input type='checkbox' id='opaque-color'/>Use opaque color for next draw</label>
     </div>
     <canvas id="chart"></canvas>
+    <script>
+      // This hack allows to capture the work normally happening in a rAF. We
+      // may be able to remove it if the runner improves.
+      window.requestAnimationFrame = (cb) => window.setTimeout(cb, 0);
+      window.cancelAnimationFrame = window.clearTimeout;
+    </script>
     
   </body>
 </html>
