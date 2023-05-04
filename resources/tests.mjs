@@ -484,6 +484,10 @@ Suites.push({
         new BenchmarkTestStep("Show tooltip", (page) => {
             page.querySelector("#open-tooltip").click();
         }),
+        new BenchmarkTestStep("Draw opaque scatter", (page) => {
+            page.querySelector("#opaque-color").click();
+            page.querySelector("#add-scatter-chart-button").click();
+        }),
     ],
 });
 

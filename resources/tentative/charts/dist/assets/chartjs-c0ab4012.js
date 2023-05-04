@@ -14142,6 +14142,7 @@ function prepare() {
   preparedData = { flights, airportMap };
 }
 const ROOT = document.getElementById("chart");
+const opaqueCheckBox = document.getElementById("opaque-color");
 let currentChart = null;
 function drawScattered(data) {
   if (!preparedData)
@@ -14153,7 +14154,7 @@ function drawScattered(data) {
       datasets: [
         {
           data: preparedData.flights,
-          backgroundColor: "rgba(0, 125, 255, .20)"
+          backgroundColor: opaqueCheckBox.checked ? "rgb(0, 125, 255)" : "rgba(0, 125, 255, .20)"
         }
       ]
     },

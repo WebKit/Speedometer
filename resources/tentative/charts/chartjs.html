@@ -4,6 +4,13 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Chart.js</title>
+        <style type="text/css" media="all">
+            label {
+                user-select: none;
+                display: inline-flex;
+                align-items: center;
+            }
+        </style>
     </head>
     <body>
         <div id="app">
@@ -12,6 +19,7 @@
             <button id="add-scatter-chart-button" type="button">Draw a scatter chart</button>
             <button id="open-tooltip" type="button">Open tooltips</button>
             <button id="reset" type="button">Reset</button>
+            <label><input type="checkbox" id="opaque-color" />Use opaque color for next draw</label>
         </div>
         <canvas id="chart"></canvas>
         <script type="module" src="/chartjs.js"></script>
