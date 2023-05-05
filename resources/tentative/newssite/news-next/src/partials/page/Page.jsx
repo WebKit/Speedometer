@@ -1,4 +1,4 @@
-import Layout from "@/components/layout/Layout";
+import Layout from "@/partials/layout/Layout";
 import { content } from "@/data/content";
 
 export default function Page({ id }) {
