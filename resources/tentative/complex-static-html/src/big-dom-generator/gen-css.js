@@ -42,11 +42,11 @@ const getClassname = (depth, index) => {
         case 6:
             return `.li-${index}-0`;
         case 5:
-            if (index === 0)
+            if (!index)
                 return ".toggle-all-container";
             return ".todo-list";
         case 4:
-            if (index === 0)
+            if (!index)
                 return ".header";
             return ".main";
         case 3:
@@ -79,11 +79,11 @@ const getType = (depth, index) => {
         case 6:
             return `li`;
         case 5:
-            if (index === 0)
+            if (!index)
                 return "div";
             return "ul";
         case 4:
-            if (index === 0)
+            if (!index)
                 return "header";
             return "main";
         case 3:
@@ -163,7 +163,7 @@ const buildMatchingSelector = (depth, index, oldCombinator, selLen, maxLen) => {
     const combinator = chooseCombinator(depth, index);
 
     // If we're at depth 0, we're done.
-    if (depth === 0)
+    if (!depth)
         return `${selector}${oldCombinator}`;
 
     // Otherwise, recurse.
@@ -177,7 +177,7 @@ const buildMatchingSelector = (depth, index, oldCombinator, selLen, maxLen) => {
 // TODO: Is there a better way to ensure the selector is non-matching?
 const buildNonMatchingSelector = (depth, index, oldCombinator, selLen, badSelector) => {
     // If we are in the top node, we are done.
-    if (depth === 0)
+    if (!depth)
         return ".just-span" + oldCombinator;
 
     // If we've reached the target length, pick a random classname from its children.
