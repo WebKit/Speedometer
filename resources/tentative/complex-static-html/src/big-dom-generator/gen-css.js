@@ -1,7 +1,7 @@
 import { LCG } from "random-seedable";
 import { SEED, MAX_SELECTOR_LEN } from "./params.js";
 
-const rando = new LCG(SEED);
+const random = new LCG(SEED);
 
 // The generator assumes the page has the following structure,
 // and it needs to be updated if the structure changes.
@@ -104,7 +104,7 @@ const getType = (depth, index) => {
 const getNextDepth = (combinator, depth) => {
     switch (combinator) {
         case " ":
-            return rando.randRange(0, depth);
+            return random.randRange(0, depth);
         case " > ":
             return depth - 1;
         case " + ":
@@ -119,7 +119,7 @@ const getNextIndex = (combinator, newDepth, index) => {
         return index - 1;
     }
     if (combinator === " ~ ") {
-        return rando.randRange(0, index);
+        return random.randRange(0, index);
     }
     switch (newDepth) {
         case 6:
@@ -142,12 +142,12 @@ const chooseCombinator = (depth, index) => {
         selectors.push(" + ");
         selectors.push(" ~ ");
     }
-    return rando.choice(selectors);
+    return random.choice(selectors);
 };
 
 // Returns a random element from `options` with probability `probs`.
 const randomWeighted = (options, probs) => {
-    const randNum = rando.float();
+    const randNum = random.float();
     let accumProb = 0;
     for (let i = 0; i < probs.length; i++) {
         accumProb += probs[i];
@@ -194,7 +194,7 @@ const buildNonMatchingSelector = (depth, index, oldCombinator, selLen, badSelect
     const getSelector = randomWeighted([getClassname, getType, () => "*"], [0.6, 0.3, 0.1]);
     const selector = getSelector(depth, index);
     if (selLen === badSelector) {
-        const wrongDepth = rando.randRange(Math.min(depth + 1, 7), 8);
+        const wrongDepth = random.randRange(Math.min(depth + 1, 7), 8);
         const wrongSelector = getClassname(wrongDepth, 0);
         return selector + wrongSelector + oldCombinator;
     }
@@ -212,10 +212,10 @@ export const genCss = () => {
     const nonMatchingSelectors = [];
     for (let index = 0; index < 100; index++) {
         // Add `:not(.ui)` to the matching selectors to avoid matching the UI elements.
-        matchingSelectors.push(buildMatchingSelector(6, index, "", 0, rando.randRange(3, MAX_SELECTOR_LEN)) + ":not(.ui)");
-        matchingSelectors.push(buildMatchingSelector(7, index, "", 0, rando.randRange(3, MAX_SELECTOR_LEN)) + ":not(.ui)");
-        nonMatchingSelectors.push(buildNonMatchingSelector(6, index, "", 0, rando.randRange(3, MAX_SELECTOR_LEN)));
-        nonMatchingSelectors.push(buildNonMatchingSelector(7, index, "", 0, rando.randRange(3, MAX_SELECTOR_LEN)));
+        matchingSelectors.push(buildMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LEN)) + ":not(.ui)");
+        matchingSelectors.push(buildMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LEN)) + ":not(.ui)");
+        nonMatchingSelectors.push(buildNonMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LEN)));
+        nonMatchingSelectors.push(buildNonMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LEN)));
     }
     // Create random color styles. Same color, different opacity.
     // TODO: Choose a better color for the todoMVC theme.
