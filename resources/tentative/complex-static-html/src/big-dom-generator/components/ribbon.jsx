@@ -36,5 +36,6 @@ export const Ribbon = () => {
             <ActionGroup>
                 <ActionButton Icon={AddIcon} label={"New Sprint"} />
             </ActionGroup>
-        </div>);
+        </div>
+    );
 };

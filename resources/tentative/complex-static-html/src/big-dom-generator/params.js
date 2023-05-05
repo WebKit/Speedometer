@@ -9,4 +9,3 @@ export const TARGET_SIZE = 3000;
 
 // Maximum length of a generated CSS selector.
 export const MAX_SELECTOR_LEN = 7;
-
