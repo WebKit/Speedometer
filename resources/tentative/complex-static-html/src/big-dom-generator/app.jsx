@@ -4,7 +4,7 @@ import { TopBar } from "./components/top-bar.jsx";
 import { TreeArea } from "./components/tree-area.jsx";
 
 const TodoArea = () => {
-    return <div className="ui todo-area"></div>;
+    return <div className="ui todo-area" />;
 };
 
 export const App = () => {

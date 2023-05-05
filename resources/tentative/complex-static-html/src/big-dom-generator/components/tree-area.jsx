@@ -5,15 +5,14 @@ import ChevronRight from "./../assets/Smock_ChevronRight_18_N.svg";
 
 const FolderWrapper = (props) => {
     const { nodeCount, random, maxDepth, maxBreadth, childProb, currentDepth } = props;
-    if (currentDepth >= maxDepth) {
+    if (currentDepth >= maxDepth)
         return null;
-    }
     // Choose a random number of children.
     const numChildren = random.randRange(1, maxBreadth);
     const children = [];
-    for (let i = 0; i < numChildren && nodeCount.current < TARGET_SIZE; i++) {
+    for (let i = 0; i < numChildren && nodeCount.current < TARGET_SIZE; i++)
         children.push(<TreeItem key={i} nodeCount={nodeCount} random={random} numChildren={numChildren} maxBreadth={maxBreadth} maxDepth={maxDepth} childProb={childProb} currentDepth={currentDepth + 1} />);
-    }
+    
     nodeCount.current = nodeCount.current + 1;
     return <ul className="ui spectrum-TreeView spectrum-TreeView--sizeM">{children}</ul>;
 };

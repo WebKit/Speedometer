@@ -42,14 +42,12 @@ const getClassname = (depth, index) => {
         case 6:
             return `.li-${index}-0`;
         case 5:
-            if (index === 0) {
+            if (index === 0)
                 return ".toggle-all-container";
-            }
             return ".todo-list";
         case 4:
-            if (index === 0) {
+            if (index === 0)
                 return ".header";
-            }
             return ".main";
         case 3:
             return ".todoapp";
@@ -81,14 +79,12 @@ const getType = (depth, index) => {
         case 6:
             return `li`;
         case 5:
-            if (index === 0) {
+            if (index === 0)
                 return "div";
-            }
             return "ul";
         case 4:
-            if (index === 0) {
+            if (index === 0)
                 return "header";
-            }
             return "main";
         case 3:
             return "section";
@@ -115,12 +111,10 @@ const getNextDepth = (combinator, depth) => {
 
 // Returns the next index depending on the combinator.
 const getNextIndex = (combinator, newDepth, index) => {
-    if (combinator === " + ") {
+    if (combinator === " + ")
         return index - 1;
-    }
-    if (combinator === " ~ ") {
+    if (combinator === " ~ ")
         return random.randRange(0, index);
-    }
     switch (newDepth) {
         case 6:
             return index;
@@ -151,9 +145,8 @@ const randomWeighted = (options, probs) => {
     let accumProb = 0;
     for (let i = 0; i < probs.length; i++) {
         accumProb += probs[i];
-        if (randNum <= accumProb) {
+        if (randNum <= accumProb)
             return options[i];
-        }
     }
     return options[options.length - 1];
 };
@@ -161,9 +154,8 @@ const randomWeighted = (options, probs) => {
 // Returns a matching selector for the element at depth `depth` and in position `index`.
 const buildMatchingSelector = (depth, index, oldCombinator, selLen, maxLen) => {
     // Stop if we've reached the target length.
-    if (selLen >= maxLen) {
+    if (selLen >= maxLen)
         return "";
-    }
 
     // Choose a selector.
     const getSelector = randomWeighted([getClassname, getType, () => "*"], [0.6, 0.3, 0.1]);
@@ -171,9 +163,8 @@ const buildMatchingSelector = (depth, index, oldCombinator, selLen, maxLen) => {
     const combinator = chooseCombinator(depth, index);
 
     // If we're at depth 0, we're done.
-    if (depth === 0) {
+    if (depth === 0)
         return `${selector}${oldCombinator}`;
-    }
 
     // Otherwise, recurse.
     const nextDepth = getNextDepth(combinator, depth);
@@ -186,9 +177,8 @@ const buildMatchingSelector = (depth, index, oldCombinator, selLen, maxLen) => {
 // TODO: Is there a better way to ensure the selector is non-matching?
 const buildNonMatchingSelector = (depth, index, oldCombinator, selLen, badSelector) => {
     // If we are in the top node, we are done.
-    if (depth === 0) {
+    if (depth === 0)
         return ".just-span" + oldCombinator;
-    }
 
     // If we've reached the target length, pick a random classname from its children.
     const getSelector = randomWeighted([getClassname, getType, () => "*"], [0.6, 0.3, 0.1]);
