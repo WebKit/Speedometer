@@ -8,6 +8,8 @@ import "@/styles/nav.css";
 import "@/styles/footer.css";
 import "@/styles/navbar.css";
 import "@/styles/menu.css";
+import "@/styles/article.css";
+import "@/styles/text.css";
 
 import { useEffect, useState } from "react";
 
