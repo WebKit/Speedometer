@@ -10,7 +10,7 @@ export function Footer({ todos, dispatch }) {
     const removeCompleted = useCallback(() => dispatch({ type: "REMOVE_COMPLETED_ITEMS" }), [dispatch]);
 
     // prettier-ignore
-    if (todos.length === 0)
+    if (!todos.length)
         return null;
 
     return (

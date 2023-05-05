@@ -42,10 +42,12 @@ const getClassname = (depth, index) => {
         case 6:
             return `.li-${index}-0`;
         case 5:
+            // prettier-ignore
             if (!index)
                 return ".toggle-all-container";
             return ".todo-list";
         case 4:
+            // prettier-ignore
             if (!index)
                 return ".header";
             return ".main";
@@ -79,10 +81,12 @@ const getType = (depth, index) => {
         case 6:
             return `li`;
         case 5:
+            // prettier-ignore
             if (!index)
                 return "div";
             return "ul";
         case 4:
+            // prettier-ignore
             if (!index)
                 return "header";
             return "main";
@@ -111,8 +115,10 @@ const getNextDepth = (combinator, depth) => {
 
 // Returns the next index depending on the combinator.
 const getNextIndex = (combinator, newDepth, index) => {
+    // prettier-ignore
     if (combinator === " + ")
         return index - 1;
+    // prettier-ignore
     if (combinator === " ~ ")
         return random.randRange(0, index);
     switch (newDepth) {
@@ -145,6 +151,7 @@ const randomWeighted = (options, probs) => {
     let accumProb = 0;
     for (let i = 0; i < probs.length; i++) {
         accumProb += probs[i];
+        // prettier-ignore
         if (randNum <= accumProb)
             return options[i];
     }
@@ -154,6 +161,7 @@ const randomWeighted = (options, probs) => {
 // Returns a matching selector for the element at depth `depth` and in position `index`.
 const buildMatchingSelector = (depth, index, oldCombinator, selLen, maxLen) => {
     // Stop if we've reached the target length.
+    // prettier-ignore
     if (selLen >= maxLen)
         return "";
 
@@ -163,6 +171,7 @@ const buildMatchingSelector = (depth, index, oldCombinator, selLen, maxLen) => {
     const combinator = chooseCombinator(depth, index);
 
     // If we're at depth 0, we're done.
+    // prettier-ignore
     if (!depth)
         return `${selector}${oldCombinator}`;
 
@@ -177,6 +186,7 @@ const buildMatchingSelector = (depth, index, oldCombinator, selLen, maxLen) => {
 // TODO: Is there a better way to ensure the selector is non-matching?
 const buildNonMatchingSelector = (depth, index, oldCombinator, selLen, badSelector) => {
     // If we are in the top node, we are done.
+    // prettier-ignore
     if (!depth)
         return ".just-span" + oldCombinator;
 
