@@ -28,7 +28,7 @@ export default function ArticleContent({ type, content }) {
                             <Image className="article-image" src={item.image.src} width={item.image.width} height={item.image.height} alt={item.image.alt} />
                         </div>
                         <div className="article-content">
-                            <div class="truncate-multiline truncate-multiline-3">{item.text}</div>
+                            <div className="truncate-multiline truncate-multiline-3">{item.text}</div>
                         </div>
                     </li>
                 )}
