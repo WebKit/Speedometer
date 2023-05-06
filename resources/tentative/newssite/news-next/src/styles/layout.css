@@ -69,6 +69,10 @@ body {
   width: 100%;
 }
 
+.columns-1 {
+  width: 100%;
+}
+
 .columns-3-balanced {
   width: calc(33.33% - ((var(--content-spacing-xlarge) * 2) / 3));
 }
@@ -90,7 +94,7 @@ body {
   flex-wrap: wrap;
 }
 
-.grid {
+.grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: var(--content-spacing-xlarge);
