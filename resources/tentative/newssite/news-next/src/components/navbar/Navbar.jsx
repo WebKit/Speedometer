@@ -17,7 +17,7 @@ export default function Navbar({ openMenu, openSitemap }) {
                 <Logo />
             </button>
             <div className="navbar-content">
-                <NavList />
+                <NavList id="navbar-navlist"/>
             </div>
         </div>
     );

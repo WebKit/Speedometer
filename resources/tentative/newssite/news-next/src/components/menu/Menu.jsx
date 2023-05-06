@@ -20,7 +20,7 @@ export default function Menu({ closeMenu }) {
             </header>
             <section className="mobile-menu-body">
                 <nav className="mobile-menu-nav">
-                    <NavList />
+                    <NavList id="menu-navlist"/>
                 </nav>
             </section>
         </div>
