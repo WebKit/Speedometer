@@ -41,7 +41,9 @@ export default function ArticleContent({ type, content }) {
             <div className="grid-container">
                 {content.map((item, index) =>
                     <div key={`article-grid-item-${index}`} className="grid-item">
-                        <Image className="article-image" src={item.image.src} width={item.image.width} height={item.image.height} alt={item.image.alt} />
+                        <div className="article-image-container">
+                            <Image className="article-image" src={item.image.src} width={item.image.width} height={item.image.height} alt={item.image.alt} />
+                        </div>
                     </div>
                 )}
             </div>
@@ -51,7 +53,9 @@ export default function ArticleContent({ type, content }) {
     if (type === "preview") {
         return (
             <>
-                <Image className="article-image" src={content.image.src} width={content.image.width} height={content.image.height} alt={content.image.alt} />
+                <div className="article-image-container">
+                    <Image className="article-image" src={content.image.src} width={content.image.width} height={content.image.height} alt={content.image.alt} />
+                </div>
                 <h3 className="article-title truncate-multiline truncate-multiline-3">{content.title}</h3>
             </>
         );
