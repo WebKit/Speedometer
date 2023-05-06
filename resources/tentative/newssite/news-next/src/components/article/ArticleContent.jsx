@@ -19,6 +19,23 @@ export default function ArticleContent({ type, content }) {
         );
     }
 
+    if (type === "excerpt") {
+        return (
+            <ul className="article-list">
+                {content.map((item, index) =>
+                    <li key={`article-list-item-${index}`} className="article-list-item">
+                        <div className="article-hero">
+                            <Image className="article-image" src={item.image.src} width={item.image.width} height={item.image.height} alt={item.image.alt} />
+                        </div>
+                        <div className="article-content">
+                            <div class="truncate-multiline truncate-multiline-3">{item.text}</div>
+                        </div>
+                    </li>
+                )}
+            </ul>
+        );
+    }
+
     if (type === "grid") {
         return (
             <div className="grid-container">

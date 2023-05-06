@@ -307,12 +307,13 @@ export const content = {
                 ]
             },
             {
-                id: "content-business-latest-media",
-                name: "Latest Media",
+                id: "content-business-economy-today",
+                name: "Economy Today",
                 articles: [
                     {
-                        class: "columns-1",
-                        type: "grid",
+                        class: "columns-wrap",
+                        header: "Global Impact",
+                        type: "excerpt",
                         content: [
                             {
                                 image: {
@@ -321,6 +322,7 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
+                                text: "Bibendum arcu vitae elementum curabitur vitae nunc sed. Ipsum faucibus vitae aliquet nec ullamcorper sit. Blandit libero volutpat sed cras ornare arcu dui. Maecenas sed enim ut sem viverra aliquet.",
                             },
                             {
                                 image: {
@@ -329,6 +331,7 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
+                                text: "Arcu risus quis varius quam quisque id diam vel quam. Sed risus pretium quam vulputate dignissim suspendisse in. Amet aliquam id diam maecenas ultricies mi. Egestas dui id ornare arcu odio.",
                             },
                             {
                                 image: {
@@ -337,17 +340,78 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
-                            },
-                            {
-                                image: {
-                                    src: "placeholder_light.jpg",
-                                    alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720"
-                                },
+                                text: "At risus viverra adipiscing at in tellus. Morbi tempus iaculis urna id volutpat lacus laoreet non. Eu volutpat odio facilisis mauris sit amet. Leo urna molestie at elementum eu facilisis sed.",
                             }
                         ]
-                    }
+                    },
+                    {
+                        class: "columns-wrap",
+                        header: "Outlook",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Ut etiam sit amet nisl purus in mollis nunc sed. Eget mauris pharetra et ultrices neque ornare aenean. Magna sit amet purus gravida quis blandit turpis.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Eu nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper. Viverra aliquet eget sit amet tellus cras. Consequat id porta nibh venenatis. Ac felis donec et odio pellentesque diam volutpat commodo sed.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Montes nascetur ridiculus mus mauris vitae ultricies leo integer. Habitasse platea dictumst vestibulum rhoncus est pellentesque elit.",
+                            }
+                        ]
+                    },
+                    {
+                        class: "columns-wrap",
+                        header: "Financial Freedom",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis mauris sit amet massa vitae tortor condimentum lacinia.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Ipsum nunc aliquet bibendum enim facilisis gravida neque convallis. At in tellus integer feugiat scelerisque varius morbi enim. Nisi vitae suscipit tellus mauris a.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Diam sollicitudin tempor id eu nisl nunc mi ipsum faucibus. In pellentesque massa placerat duis ultricies lacus sed.",
+                            }
+                        ]
+                    },
                 ]
             },
             {
@@ -737,12 +801,13 @@ export const content = {
                 ]
             },
             {
-                id: "content-opinion-latest-media",
-                name: "Latest Media",
+                id: "content-opinon-trending",
+                name: "Trending",
                 articles: [
                     {
-                        class: "columns-1",
-                        type: "grid",
+                        class: "columns-wrap",
+                        header: "Around the world",
+                        type: "excerpt",
                         content: [
                             {
                                 image: {
@@ -751,6 +816,7 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
+                                text: "Egestas congue quisque egestas diam in arcu. Sollicitudin tempor id eu nisl nunc mi.",
                             },
                             {
                                 image: {
@@ -759,6 +825,7 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
+                                text: "A condimentum vitae sapien pellentesque habitant morbi tristique senectus. Neque laoreet suspendisse interdum consectetur.",
                             },
                             {
                                 image: {
@@ -767,17 +834,78 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
-                            },
-                            {
-                                image: {
-                                    src: "placeholder_light.jpg",
-                                    alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720"
-                                },
+                                text: "Dui vivamus arcu felis bibendum. Sit amet purus gravida quis blandit turpis cursus in.",
                             }
                         ]
-                    }
+                    },
+                    {
+                        class: "columns-wrap",
+                        header: "Support",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Malesuada fames ac turpis egestas integer eget. Ante metus dictum at tempor commodo ullamcorper. Ipsum dolor sit amet consectetur.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Dictumst quisque sagittis purus sit amet. Cras fermentum odio eu feugiat pretium. Pretium aenean pharetra magna ac placerat vestibulum lectus.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Et odio pellentesque diam volutpat commodo sed egestas egestas. Sagittis aliquam malesuada bibendum arcu vitae elementum curabitur.",
+                            }
+                        ]
+                    },
+                    {
+                        class: "columns-wrap",
+                        header: "Know More",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Nullam eget felis eget nunc. Fames ac turpis egestas integer eget aliquet nibh praesent tristique.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Massa ultricies mi quis hendrerit dolor magna eget est.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Ut tellus elementum sagittis vitae et leo duis ut. Purus ut faucibus pulvinar elementum integer enim.",
+                            }
+                        ]
+                    },
                 ]
             },
             {
@@ -1176,12 +1304,13 @@ export const content = {
                 ]
             },
             {
-                id: "content-us-latest-media",
-                name: "Latest Media",
+                id: "content-us-roundup",
+                name: "Roundup",
                 articles: [
                     {
-                        class: "columns-1",
-                        type: "grid",
+                        class: "columns-wrap",
+                        header: "Washington",
+                        type: "excerpt",
                         content: [
                             {
                                 image: {
@@ -1190,6 +1319,7 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
+                                text: "Nisl nisi scelerisque eu ultrices vitae. Consectetur adipiscing elit duis tristique sollicitudin. Ornare suspendisse sed nisi lacus. Justo eget magna fermentum iaculis.",
                             },
                             {
                                 image: {
@@ -1198,6 +1328,7 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
+                                text: "Tellus integer feugiat scelerisque varius morbi enim. Ut tristique et egestas quis.",
                             },
                             {
                                 image: {
@@ -1206,17 +1337,78 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
-                            },
-                            {
-                                image: {
-                                    src: "placeholder_light.jpg",
-                                    alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720"
-                                },
+                                text: "Nulla malesuada pellentesque elit eget gravida cum sociis natoque penatibus.",
                             }
                         ]
-                    }
+                    },
+                    {
+                        class: "columns-wrap",
+                        header: "East Coast",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Pharetra et ultrices neque ornare aenean euismod elementum nisi. Ipsum dolor sit amet consectetur adipiscing elit ut.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Quam vulputate dignissim suspendisse in est. Vestibulum mattis ullamcorper velit sed.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Habitant morbi tristique senectus et netus et. Ullamcorper sit amet risus nullam eget felis.",
+                            }
+                        ]
+                    },
+                    {
+                        class: "columns-wrap",
+                        header: "West Coast",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Bibendum enim facilisis gravida neque convallis a cras. Semper feugiat nibh sed pulvinar proin gravida hendrerit.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Vel facilisis volutpat est velit. Odio ut sem nulla pharetra diam sit amet nisl.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                text: "Risus nec feugiat in fermentum posuere urna nec. Massa tincidunt nunc pulvinar sapien.",
+                            }
+                        ]
+                    },
                 ]
             },
             {
