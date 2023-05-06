@@ -1,5 +1,5 @@
 import { content } from "@/data/content";
-import NavItem from "../navitem/NavItem";
+import NavItem from "./NavItem";
 
 export default function NavList() {
     const keys = Object.keys(content);

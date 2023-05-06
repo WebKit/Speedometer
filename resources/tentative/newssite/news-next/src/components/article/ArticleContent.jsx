@@ -31,5 +31,14 @@ export default function ArticleContent({ type, content }) {
         );
     }
 
+    if (type === "preview") {
+        return (
+            <>
+                <Image className="article-image" src={content.image.src} width={content.image.width} height={content.image.height} alt={content.image.alt} />
+                <h3 className="article-title truncate-multiline truncate-multiline-3">{content.title}</h3>
+            </>
+        );
+    }
+
     return null;
 }
