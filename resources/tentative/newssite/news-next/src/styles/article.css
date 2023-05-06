@@ -53,6 +53,7 @@
     flex-direction: column;
     flex-shrink: 0;
     position: relative;
+    background-color: var(--theme-image-placeholder);
   }
   
   .article-image {
