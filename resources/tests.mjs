@@ -333,6 +333,35 @@ Suites.push({
 });
 
 Suites.push({
+    name: "NewsSite - Next",
+    url: "tentative/newssite/news-next/dist/index.html",
+    async prepare(page) {},
+    tests: [
+        new BenchmarkTestStep("NavigateToBusiness", (page) => {
+            page.querySelector("#navbar-navlist-business-link").click();
+        }),
+        new BenchmarkTestStep("NavigateToHealth", (page) => {
+            page.querySelector("#navbar-navlist-health-link").click();
+        }),
+        new BenchmarkTestStep("NavigateToOpinion", (page) => {
+            page.querySelector("#navbar-navlist-opinion-link").click();
+        }),
+        new BenchmarkTestStep("NavigateToPolitics", (page) => {
+            page.querySelector("#navbar-navlist-politics-link").click();
+        }),
+        new BenchmarkTestStep("NavigateToUS", (page) => {
+            page.querySelector("#navbar-navlist-us-link").click();
+        }),
+        new BenchmarkTestStep("NavigateToWorld", (page) => {
+            page.querySelector("#navbar-navlist-world-link").click();
+        }),
+        new BenchmarkTestStep("NavigateToHome", (page) => {
+            page.querySelector("#navbar-navlist-home-link").click();
+        }),
+    ],
+});
+
+Suites.push({
     name: "Editor-CodeMirror",
     url: "tentative/editors/dist/codemirror.html",
     async prepare(page) {},
