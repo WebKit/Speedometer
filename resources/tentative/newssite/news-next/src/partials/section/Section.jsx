@@ -1,4 +1,4 @@
-import TextArticle from "@/components/article/TextArticle";
+import Article from "@/components/article/Article";
 
 export default function Section({ section }) {
     return (
@@ -8,7 +8,7 @@ export default function Section({ section }) {
             </div> : null }
             <section className="row">
                 {section.articles.map((article, index) =>
-                    <TextArticle key={`${section.id}-${index}`} article={article} />
+                    <Article key={`${section.id}-${index}`} article={article} />
                 )}
             </section>
         </>

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 
 import Header from "../header/Header";
 import Navigation from "../navigation/Navigation";
@@ -20,6 +21,7 @@ export default function Layout({ children }) {
 
     return (
         <>
+            <HashLink to={`${pathname}#content`} className="skip-link">Skip to content</HashLink>
             <div className="page" ref={pageRef}>
                 <Header />
                 <Navigation />

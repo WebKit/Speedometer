@@ -3,7 +3,7 @@ import ArticleImage from "./ArticleImage";
 import ArticleTitle from "./ArticleTitle";
 import ArticleContent from "./ArticleContent";
 
-export default function TextArticle({ article }) {
+export default function Article({ article }) {
 
     return (
         <article className={`column ${article.class ?? ""} article`}>
