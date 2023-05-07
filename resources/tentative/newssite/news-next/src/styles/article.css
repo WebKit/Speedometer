@@ -54,6 +54,7 @@
     flex-shrink: 0;
     position: relative;
     background-color: var(--theme-image-placeholder);
+    /* aspect-ratio: 16 / 9; */
   }
   
   .article-image {

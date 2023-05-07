@@ -339,31 +339,24 @@ Suites.push({
     tests: [
         new BenchmarkTestStep("NavigateToBusiness", (page) => {
             page.querySelector("#navbar-navlist-business-link").click();
-            page.querySelector("footer").scrollIntoView();
         }),
         new BenchmarkTestStep("NavigateToHealth", (page) => {
             page.querySelector("#navbar-navlist-health-link").click();
-            page.querySelector("footer").scrollIntoView();
         }),
         new BenchmarkTestStep("NavigateToOpinion", (page) => {
             page.querySelector("#navbar-navlist-opinion-link").click();
-            page.querySelector("footer").scrollIntoView();
         }),
         new BenchmarkTestStep("NavigateToPolitics", (page) => {
             page.querySelector("#navbar-navlist-politics-link").click();
-            page.querySelector("footer").scrollIntoView();
         }),
         new BenchmarkTestStep("NavigateToUS", (page) => {
             page.querySelector("#navbar-navlist-us-link").click();
-            page.querySelector("footer").scrollIntoView();
         }),
         new BenchmarkTestStep("NavigateToWorld", (page) => {
             page.querySelector("#navbar-navlist-world-link").click();
-            page.querySelector("footer").scrollIntoView();
         }),
         new BenchmarkTestStep("NavigateToHome", (page) => {
             page.querySelector("#navbar-navlist-home-link").click();
-            page.querySelector("footer").scrollIntoView();
         }),
     ],
 });
