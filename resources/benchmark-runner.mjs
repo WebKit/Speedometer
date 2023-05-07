@@ -86,10 +86,6 @@ class PageElement {
         this.#node.focus();
     }
 
-    scrollIntoView() {
-        this.#node.scrollIntoView();
-    }
-
     dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
         if (eventName === "submit")
             // FIXME FireFox doesn't like `new Event('submit')
