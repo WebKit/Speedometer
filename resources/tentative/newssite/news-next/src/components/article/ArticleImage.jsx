@@ -6,9 +6,9 @@ export default function ArticleImage({ image, className }) {
         return null;
 
     return (
-        <div className="article-image-container">
+        <div className={className}>
             {/* <Image className={className} src={image.src} width={image.width} height={image.height} alt={image.alt} /> */}
-            <img className={className} src={image.src} width={image.width} height={image.height} alt={image.alt} />
+            <img className="article-image" src={image.src} width={image.width} height={image.height} alt={image.alt} />
         </div>
     );
 }
