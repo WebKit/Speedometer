@@ -1,4 +1,5 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
+// import Image from "next/image";
 
 export default function ArticleContent({ type, content }) {
     if (type === "text") {
@@ -25,7 +26,8 @@ export default function ArticleContent({ type, content }) {
                 {content.map((item, index) =>
                     <li key={`article-list-item-${index}`} className="article-list-item">
                         <div className="article-hero">
-                            <Image className="article-image" src={item.image.src} width={item.image.width} height={item.image.height} alt={item.image.alt} />
+                            {/* <Image className="article-image" src={item.image.src} width={item.image.width} height={item.image.height} alt={item.image.alt} /> */}
+                            <img className="article-image" src={item.image.src} width={item.image.width} height={item.image.height} alt={item.image.alt} />
                         </div>
                         <div className="article-content">
                             <div className="truncate-multiline truncate-multiline-3">{item.text}</div>
@@ -42,7 +44,8 @@ export default function ArticleContent({ type, content }) {
                 {content.map((item, index) =>
                     <div key={`article-grid-item-${index}`} className="grid-item">
                         <div className="article-image-container">
-                            <Image className="article-image" src={item.image.src} width={item.image.width} height={item.image.height} alt={item.image.alt} />
+                            {/* <Image className="article-image" src={item.image.src} width={item.image.width} height={item.image.height} alt={item.image.alt} /> */}
+                            <img className="article-image" src={item.image.src} width={item.image.width} height={item.image.height} alt={item.image.alt} />
                         </div>
                     </div>
                 )}
@@ -54,7 +57,8 @@ export default function ArticleContent({ type, content }) {
         return (
             <>
                 <div className="article-image-container">
-                    <Image className="article-image" src={content.image.src} width={content.image.width} height={content.image.height} alt={content.image.alt} />
+                    {/* <Image className="article-image" src={content.image.src} width={content.image.width} height={content.image.height} alt={content.image.alt} /> */}
+                    <img className="article-image" src={content.image.src} width={content.image.width} height={content.image.height} alt={content.image.alt} />
                 </div>
                 <h3 className="article-title truncate-multiline truncate-multiline-3">{content.title}</h3>
             </>
