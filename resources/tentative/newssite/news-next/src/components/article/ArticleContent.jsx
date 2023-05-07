@@ -1,9 +1,12 @@
 import ArticleImage from "./ArticleImage";
+import ArticleText from "./ArticleText";
 
 export default function ArticleContent({ type, content }) {
     if (type === "text") {
         return (
-            <div className="article-content">{ content } </div>
+            <div className="article-content">
+                <ArticleText text={content} />
+            </div>
         );
     }
 
@@ -12,7 +15,9 @@ export default function ArticleContent({ type, content }) {
             <div className="article-content">
                 <ul className="article-list">
                     {content.map((item, index) =>
-                        <li key={`article-list-item-${index}`} className="article-list-item">{item}</li>
+                        <li key={`article-list-item-${index}`} className="article-list-item">
+                            <ArticleText text={item} />
+                        </li>
                     )}
                 </ul>
             </div>
@@ -26,7 +31,7 @@ export default function ArticleContent({ type, content }) {
                     <li key={`article-list-item-${index}`} className="article-list-item">
                         <ArticleImage className="article-hero" image={item.image} />
                         <div className="article-content">
-                            <div className="truncate-multiline truncate-multiline-3">{item.text}</div>
+                            <ArticleText className="truncate-multiline truncate-multiline-3" text={item.text} type="div" />
                         </div>
                     </li>
                 )}
@@ -50,7 +55,7 @@ export default function ArticleContent({ type, content }) {
         return (
             <>
                 <ArticleImage className="article-image-container" image={content.image} />
-                <h3 className="article-title truncate-multiline truncate-multiline-3">{content.title}</h3>
+                <ArticleText className="article-title truncate-multiline truncate-multiline-3" text={content.title} type="h3"/>
             </>
         );
     }
