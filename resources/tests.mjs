@@ -341,7 +341,6 @@ Suites.push({
     tests: [
         new BenchmarkTestStep("NavigateToBusiness", (page) => {
             page.querySelector("#navbar-navlist-business-link").click();
-            page.querySelector(".skip-link").focus();
         }),
         new BenchmarkTestStep("NavigateToHealth", (page) => {
             page.querySelector("#navbar-navlist-health-link").click();
