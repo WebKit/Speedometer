@@ -333,7 +333,7 @@ Suites.push({
 });
 
 Suites.push({
-    name: "NewsSite - Next",
+    name: "NewsSite-Next",
     url: "tentative/newssite/news-next/dist/index.html",
     async prepare(page) {
         await page.waitForElement(".skip-link");
