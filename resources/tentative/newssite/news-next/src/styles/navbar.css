@@ -142,6 +142,10 @@
       margin-right: 0;
     }
 
+    .navbar-item a {
+      align-items: center;
+    }
+
     #navbar-toggle:checked ~ .navbar-content {
       display: flex;
       flex-direction: column;
