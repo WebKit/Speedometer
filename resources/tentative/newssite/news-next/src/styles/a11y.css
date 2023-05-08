@@ -51,13 +51,13 @@ but useful for people who use screen readers */
     padding: var(--content-spacing-medium);
     border-radius: var(--border-radius-small);
     position: absolute;
-    transform: translateY(-100%);
+    transform: translate(-50%, -100%);
     z-index: var(--index-somewhatimportant);
     text-decoration: none;
   }
   
   .skip-link:focus {
-    transform: translateY(0%);
+    transform: translate(-50%, 0%);
     transition: transform 0.3s ease;
   }
   
