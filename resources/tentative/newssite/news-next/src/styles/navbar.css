@@ -39,7 +39,7 @@
   
   #navbar-toggle:checked
     ~ .navbar-label
-    #hamburger-icon
+    .hamburger-icon
     .animated-icon-inner
     span:nth-child(2) {
     transform: scale(0);
@@ -47,7 +47,7 @@
   
   #navbar-toggle:checked
     ~ .navbar-label
-    #hamburger-icon
+    .hamburger-icon
     .animated-icon-inner
     span:nth-child(1) {
     transform: rotate(45deg);
@@ -55,7 +55,7 @@
   
   #navbar-toggle:checked
     ~ .navbar-label
-    #hamburger-icon
+    .hamburger-icon
     .animated-icon-inner
     span:nth-child(3) {
     transform: rotate(-45deg);
@@ -123,6 +123,39 @@
   
     .navbar-content {
       display: none;
+    }
+
+    .navbar-list {
+      flex-direction: column;
+      overflow-y: auto;
+      margin-top: 40px;
+    }
+
+    .navbar-item {
+      line-height: var(--nav-button-height-mobile);
+      margin: var(--content-spacing-small) 0;
+      align-items: center;
+      padding: 0;
+    }
+
+    .navbar-item:not(:last-child) {
+      margin-right: 0;
+    }
+
+    #navbar-toggle:checked ~ .navbar-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      margin: 0;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background-color: var(--color-utils-black);
+      width: 100%;
+      height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+      height: calc(var(--vh, 1vh) * 100); /* --vh is set in Navbar.jsx */
+      padding: 0 var(--content-spacing-xlarge);
+      overflow: hidden;
     }
   }
   
