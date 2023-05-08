@@ -48,7 +48,7 @@ export default function Navbar({ openSitemap }) {
                 <Logo />
             </button>
             <div className="navbar-content">
-                <NavList id="navbar-navlist" onClickCallback={closeMenu} />
+                <NavList id="navbar-navlist" callback={closeMenu} />
             </div>
         </div>
     );

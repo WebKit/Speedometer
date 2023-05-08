@@ -8,6 +8,7 @@ import "@/styles/nav.css";
 import "@/styles/footer.css";
 import "@/styles/navbar.css";
 import "@/styles/menu.css";
+import "@/styles/dropdown.css";
 import "@/styles/article.css";
 import "@/styles/text.css";
 

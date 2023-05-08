@@ -161,5 +161,32 @@
       padding: 0 var(--content-spacing-xlarge);
       overflow: hidden;
     }
+
+    /* dropdown override */
+    .navbar .dropdown {
+      width: 100%;
+    }
+
+    .navbar .dropdown-toggle {
+      top: 0;
+      width: 100%;
+    }
+
+    .navbar .dropdown-label {
+      /* offset right arrow to center text */
+      padding: 0 0 0 16px;
+    }
+
+    .navbar .dropdown-content {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      box-shadow: none;
+      position: relative;
+      left: auto;
+      top: auto;
+      padding: 0;
+      margin-top: var(--content-spacing-small);
+    }
   }
   
