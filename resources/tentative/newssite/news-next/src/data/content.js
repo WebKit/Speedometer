@@ -255,8 +255,8 @@ export const content = {
         priority: 1,
         sections: [
             {
-                id: "content-us-breaking-news",
-                name: "Breaking News",
+                id: "content-us-world-news",
+                name: "World News",
                 articles: [
                     {
                         class: "columns-3-wide",

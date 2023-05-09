@@ -1,7 +1,19 @@
+import { useState } from "react";
+
 export default function Dropdown({ children }) {
+    const [isOpen, setIsOpen] = useState(false);
+
+    function handleChange(e) {
+        setIsOpen(e.target.checked);
+    }
+
+    function closeDropdown() {
+        setIsOpen(false);
+    }
+
     return (
         <div className="dropdown">
-            <input type="checkbox" id="navbar-dropdown-toggle" className="dropdown-toggle" />
+            <input type="checkbox" id="navbar-dropdown-toggle" className="dropdown-toggle" onChange={handleChange} checked={isOpen} />
             <label htmlFor="navbar-dropdown-toggle" className="dropdown-label">
                 More
                 <div className="animated-icon arrow-icon arrow">
@@ -11,7 +23,7 @@ export default function Dropdown({ children }) {
                     </span>
                 </div>
             </label>
-            <ul className="dropdown-content">{children}</ul>
+            <ul className="dropdown-content" onClick={closeDropdown}>{children}</ul>
         </div>
     );
 }

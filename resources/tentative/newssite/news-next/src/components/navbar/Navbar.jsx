@@ -3,14 +3,14 @@ import NavList from "../navlist/NavList";
 import Logo from "@/assets/Logo";
 
 export default function Navbar({ openSitemap }) {
-    const [isChecked, setIsChecked] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     function handleChange(e) {
-        setIsChecked(e.target.checked);
+        setIsOpen(e.target.checked);
     }
 
     function closeMenu() {
-        setIsChecked(false);
+        setIsOpen(false);
     }
 
     function calculateViewportHeight() {
@@ -34,7 +34,7 @@ export default function Navbar({ openSitemap }) {
 
     return (
         <div className="navbar">
-            <input type="checkbox" id="navbar-toggle" onChange={handleChange} checked={isChecked} />
+            <input type="checkbox" id="navbar-toggle" onChange={handleChange} checked={isOpen} />
             <label htmlFor="navbar-toggle" className="navbar-label">
                 <div className="animated-icon hamburger-icon" title="Hamburger Icon">
                     <span className="animated-icon-inner">
