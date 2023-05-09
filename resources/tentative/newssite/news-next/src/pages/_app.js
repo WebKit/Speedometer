@@ -7,10 +7,11 @@ import "@/styles/header.css";
 import "@/styles/nav.css";
 import "@/styles/footer.css";
 import "@/styles/navbar.css";
-import "@/styles/menu.css";
+import "@/styles/dialog.css";
 import "@/styles/dropdown.css";
 import "@/styles/article.css";
 import "@/styles/text.css";
+import "@/styles/toggle.css";
 
 import { useEffect, useState } from "react";
 

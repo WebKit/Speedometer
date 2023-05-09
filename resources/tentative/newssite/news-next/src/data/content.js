@@ -2,7 +2,7 @@ export const content = {
     home: {
         name: "Home",
         url: "/",
-        priority: 1,
+        priority: 0,
         sections: [
             {
                 id: "content-frontpage-breaking-news",

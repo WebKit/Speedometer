@@ -7,8 +7,6 @@ export default function Document() {
             <body>
                 <Main />
                 <div id="settings-container"></div>
-                <div id="sitemap-container"></div>
-                <div id="menu-container"></div>
                 <NextScript />
             </body>
         </Html>
