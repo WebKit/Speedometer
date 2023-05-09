@@ -18,20 +18,16 @@ export default function NavList({ callback, id }) {
         [[], []]
     );
 
-    function handleClick() {
-        callback();
-    }
-
     return (
         <ul className="navbar-list">
             {navItems.map((key) =>
-                <NavItem id={`${id}-${key}-link`} key={key} label={content[key].name} url={content[key].url} callback={handleClick} />
+                <NavItem id={`${id}-${key}-link`} key={key} label={content[key].name} url={content[key].url} callback={callback} />
             )}
             {dropdownItems.length > 0
                 ? <li className="navbar-item">
                     <Dropdown>
                         {dropdownItems.map((key) =>
-                            <NavItem id={`${id}-${key}-link`} key={key} label={content[key].name} url={content[key].url} callback={handleClick} />
+                            <NavItem id={`${id}-${key}-link`} key={key} label={content[key].name} url={content[key].url} callback={callback} />
                         )}
                     </Dropdown>
                 </li> : null}

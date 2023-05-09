@@ -114,6 +114,10 @@
     color: var(--color-utils-white);
     background-color: var(--color-utils-gray-light);
   }
+
+  .navbar-active-path {
+    display: none;
+  }
   
   @media (max-width: 767px) {
     #navbar-toggle,
@@ -189,6 +193,19 @@
       top: auto;
       padding: 0;
       margin-top: var(--content-spacing-small);
+    }
+
+    .navbar-active-path {
+      display: flex;
+      margin: var(--content-spacing-small) 0 var(--content-spacing-small) var(--content-spacing-small);
+      color: var(--color-utils-white);
+      background-color: var(--color-utils-gray-light);
+      line-height: var(--nav-button-height);
+      border-radius: var(--border-radius-small);
+      padding: 0 8px;
+      text-transform: capitalize;
+      z-index: var(--index-header-button);
+      pointer-events: none;
     }
   }
   

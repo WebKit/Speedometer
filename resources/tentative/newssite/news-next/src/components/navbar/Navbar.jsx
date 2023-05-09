@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
 import NavList from "../navlist/NavList";
 import Logo from "@/assets/Logo";
 
 export default function Navbar({ openSitemap }) {
+    const location = useLocation();
+    console.log(location.pathname.split("/")[1]);
     const [isOpen, setIsOpen] = useState(false);
 
     function handleChange(e) {
         setIsOpen(e.target.checked);
     }
 
-    function closeMenu() {
+    function handleClick() {
         setIsOpen(false);
     }
 
@@ -47,8 +51,9 @@ export default function Navbar({ openSitemap }) {
             <button className="page-navigation-logo" id="sitemap-link" onClick={openSitemap}>
                 <Logo />
             </button>
+            <div className="navbar-active-path">{location.pathname.split("/")[1]}</div>
             <div className="navbar-content">
-                <NavList id="navbar-navlist" callback={closeMenu} />
+                <NavList id="navbar-navlist" callback={handleClick} />
             </div>
         </div>
     );
