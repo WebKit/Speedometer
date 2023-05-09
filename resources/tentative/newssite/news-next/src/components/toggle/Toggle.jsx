@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function Toggle({ label, onChange }) {
+export default function Toggle({ label, onChange, checked }) {
     const [isSelected, setIsSelected] = useState(false);
+
+    useEffect(() => {
+        setIsSelected(checked);
+    }, [checked]);
 
     function handleChange(e) {
         setIsSelected(e.target.checked);

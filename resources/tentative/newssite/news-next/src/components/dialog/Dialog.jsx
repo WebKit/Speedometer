@@ -1,12 +1,22 @@
+import { useState, useEffect } from "react";
 import Toggle from "../toggle/Toggle";
 
 export default function Dialog({ onClose }) {
+    const [isChecked, setIsChecked] = useState(false);
+
+    useEffect(() => {
+        setIsChecked(document.body.classList.contains("reduced-motion"));
+    }, []);
+
     function handleClick() {
         onClose();
     }
 
     function handleChange(e) {
-        console.log("handleChange()", e.target.checked);
+        if (e.target.checked)
+            document.body.classList.add("reduced-motion");
+        else
+            document.body.classList.remove("reduced-motion");
     }
 
     return (
@@ -24,7 +34,7 @@ export default function Dialog({ onClose }) {
             </header>
             <section className="dialog-body">
                 <div className="dialog-item">
-                    <Toggle label="Reduced Motion" onChange={handleChange} />
+                    <Toggle label="Reduced Motion" onChange={handleChange} checked={isChecked} />
                 </div>
             </section>
         </div>
