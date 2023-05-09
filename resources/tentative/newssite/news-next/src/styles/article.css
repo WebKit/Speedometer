@@ -107,6 +107,10 @@
     padding-bottom: var(--content-spacing-medium);
     border-bottom: 1px solid var(--color-utils-offwhite);
   }
+
+  .article-list-item.article-list-vertical {
+    flex-direction: column;
+  }
   
   .article-list-item .article-hero {
     display: flex;

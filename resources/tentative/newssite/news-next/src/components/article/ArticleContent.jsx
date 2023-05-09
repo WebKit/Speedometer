@@ -53,10 +53,14 @@ export default function ArticleContent({ type, content }) {
 
     if (type === "preview") {
         return (
-            <>
-                <ArticleImage className="article-image-container" image={content.image} />
-                <ArticleText className="article-title truncate-multiline truncate-multiline-3" text={content.title} type="h3"/>
-            </>
+            <ul className="article-list">
+                {content.map((item, index) =>
+                    <li key={`article-list-item-${index}`} className="article-list-item article-list-vertical">
+                        <ArticleImage className="article-image-container" image={item.image} />
+                        <ArticleText className="article-title truncate-multiline truncate-multiline-3" text={item.title} type="h3"/>
+                    </li>
+                )}
+            </ul>
         );
     }
 
