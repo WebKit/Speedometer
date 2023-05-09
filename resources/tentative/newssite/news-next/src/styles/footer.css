@@ -78,6 +78,9 @@ footer {
 
   .footer-icons .footer-icons-item button{
     cursor: pointer;
+    display: flex;
+    width: var(--icon-size-small);
+    height: var(--icon-size-small);
   }
 
   .footer-icon {
@@ -118,5 +121,6 @@ footer {
       border-bottom: 1px solid var(--color-utils-gray);
       width: 100%;
       justify-content: center;
+      line-height: 24px;
     }
   }
