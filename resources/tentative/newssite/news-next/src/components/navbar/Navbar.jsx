@@ -6,7 +6,6 @@ import Logo from "@/assets/Logo";
 
 export default function Navbar({ openSitemap }) {
     const location = useLocation();
-    console.log(location.pathname.split("/")[1]);
     const [isOpen, setIsOpen] = useState(false);
 
     function handleChange(e) {

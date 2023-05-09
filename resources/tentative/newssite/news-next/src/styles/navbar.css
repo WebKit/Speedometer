@@ -115,6 +115,7 @@
     background-color: var(--color-utils-gray-light);
   }
 
+  /** new style **/
   .navbar-active-path {
     display: none;
   }
@@ -195,6 +196,7 @@
       margin-top: var(--content-spacing-small);
     }
 
+    /** new style **/
     .navbar-active-path {
       display: flex;
       margin: var(--content-spacing-small) 0 var(--content-spacing-small) var(--content-spacing-small);
