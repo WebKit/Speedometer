@@ -11,6 +11,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Uncensored",
+                        headerLink: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -24,6 +25,7 @@ export const content = {
                     {
                         class: "columns-3-wide",
                         header: "More top stories",
+                        headerLink: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -37,6 +39,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Crime & justice",
+                        headerLink: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
