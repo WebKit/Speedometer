@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Logo() {
+export default function LogoIcon() {
     return (
         <svg width="24" height="24" viewBox="0 0 24 24">
             <title>Logo Icon</title>

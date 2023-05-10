@@ -1,5 +1,5 @@
-import ArticleImage from "./ArticleImage";
-import ArticleText from "./ArticleText";
+import ArticleImage from "./article-image";
+import ArticleText from "./article-text";
 
 export default function ArticleContent({ type, content }) {
     if (type === "text") {

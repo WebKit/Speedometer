@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import Dialog from "@/components/dialog/Dialog";
-import ReducedMotion from "@/assets/ReducedMotion";
-import Facebook from "@/assets/Facebook";
-import Instagram from "@/assets/Instagram";
-import Twitter from "@/assets/Twitter";
+import Dialog from "@/components/dialog/dialog";
+import ReducedMotion from "@/assets/reduced-motion-icon";
+import FacebookIcon from "@/assets/facebook-icon";
+import InstagramIcon from "@/assets/instagram-icon";
+import TwitterIcon from "@/assets/twitter-icon";
 
 export default function Footer() {
     const [showSettings, setShowSettings] = useState(false);
@@ -27,21 +27,21 @@ export default function Footer() {
                                 <li className="footer-icons-item">
                                     <a href="#" id="footer-link-social-facebook">
                                         <div className="footer-icon">
-                                            <Facebook />
+                                            <FacebookIcon />
                                         </div>
                                     </a>
                                 </li>
                                 <li className="footer-icons-item">
                                     <a href="#" id="footer-link-social-instagram">
                                         <div className="footer-icon">
-                                            <Instagram />
+                                            <InstagramIcon />
                                         </div>
                                     </a>
                                 </li>
                                 <li className="footer-icons-item">
                                     <a href="#" id="footer-link-social-twitter">
                                         <div className="footer-icon">
-                                            <Twitter />
+                                            <TwitterIcon />
                                         </div>
                                     </a>
                                 </li>

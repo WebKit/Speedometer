@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function ReducedMotion() {
+export default function ReducedMotionIcon() {
     return (
         <svg height="24" width="24" viewBox="0 0 1200 1200" style={{ transform: "scale(1.5)" }}>
             <title>Reduced Motion Icon</title>

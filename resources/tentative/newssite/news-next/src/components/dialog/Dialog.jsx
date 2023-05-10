@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Toggle from "../toggle/Toggle";
+import Toggle from "../toggle/toggle";
 
 export default function Dialog({ onClose }) {
     const [isChecked, setIsChecked] = useState(false);

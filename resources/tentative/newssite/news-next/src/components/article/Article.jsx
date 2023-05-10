@@ -1,7 +1,7 @@
-import ArticleHeader from "./ArticleHeader";
-import ArticleImage from "./ArticleImage";
-import ArticleText from "./ArticleText";
-import ArticleContent from "./ArticleContent";
+import ArticleHeader from "./article-header";
+import ArticleImage from "./article-image";
+import ArticleText from "./article-text";
+import ArticleContent from "./article-content";
 
 export default function Article({ article }) {
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Twitter() {
+export default function TwitterIcon() {
     return (
         <svg width="24" height="24" viewBox="0 0 24 24">
             <title>Twitter Icon</title>

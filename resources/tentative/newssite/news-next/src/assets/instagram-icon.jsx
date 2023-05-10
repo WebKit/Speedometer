@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Instagram() {
+export default function InstagramIcon() {
     return (
         <svg width="24" height="24" viewBox="0 0 24 24">
             <title>Instagram Icon</title>

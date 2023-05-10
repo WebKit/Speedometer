@@ -1,6 +1,6 @@
 import React from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import Page from "@/partials/page/Page";
+import Page from "@/partials/page/page";
 
 export default function App() {
     return (

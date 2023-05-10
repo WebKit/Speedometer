@@ -1,4 +1,4 @@
-import Article from "@/components/article/Article";
+import Article from "@/components/article/article";
 
 export default function Section({ section }) {
     return (

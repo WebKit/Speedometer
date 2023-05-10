@@ -1,5 +1,5 @@
-import Layout from "@/partials/layout/Layout";
-import Section from "../section/Section";
+import Layout from "@/partials/layout/layout";
+import Section from "../section/section";
 import { content } from "@/data/content";
 
 export default function Page({ id }) {

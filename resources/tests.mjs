@@ -359,7 +359,7 @@ Suites.push({
             page.querySelector("#navbar-navlist-health-link").click();
         }),
         new BenchmarkTestStep("NavigateToHome", (page) => {
-            page.querySelector("#navbar-navlist-home-link").click();
+            page.querySelector("#home-link").click();
         }),
     ],
 });

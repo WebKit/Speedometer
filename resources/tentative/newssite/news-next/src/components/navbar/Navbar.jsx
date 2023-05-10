@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import NavList from "../navlist/NavList";
-import Logo from "@/assets/Logo";
+import NavList from "../navlist/navlist";
+import LogoIcon from "@/assets/logo-icon";
 
 export default function Navbar({ openSitemap }) {
     const location = useLocation();
@@ -47,8 +47,8 @@ export default function Navbar({ openSitemap }) {
                     </span>
                 </div>
             </label>
-            <button className="page-navigation-logo" id="sitemap-link" onClick={openSitemap}>
-                <Logo />
+            <button className="page-navigation-logo" id="home-link" onClick={openSitemap}>
+                <LogoIcon />
             </button>
             <div className="navbar-active-path">{location.pathname.split("/")[1]}</div>
             <div className="navbar-content">

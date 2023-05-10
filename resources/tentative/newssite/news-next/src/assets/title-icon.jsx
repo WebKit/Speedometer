@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Title() {
+export default function TitleIcon() {
     return (
         <svg viewBox="0 0 469 64" width="469" height="64">
             <title>The Daily Broadcast</title>

@@ -2,10 +2,10 @@ import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 
-import Header from "../header/Header";
-import Navigation from "../navigation/Navigation";
-import Main from "../main/Main";
-import Footer from "../footer/Footer";
+import Header from "../header/header";
+import Navigation from "../navigation/navigation";
+import Main from "../main/main";
+import Footer from "../footer/footer";
 
 export default function Layout({ children }) {
     const pageRef = useRef(null);
