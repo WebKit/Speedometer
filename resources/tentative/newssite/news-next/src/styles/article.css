@@ -70,6 +70,10 @@
     object-position: center;
     width: 100%;
   }
+
+  .article-image-captions {
+    font-size: var(--font-size-small);
+  }
   
   .article-title {
     display: flex;
