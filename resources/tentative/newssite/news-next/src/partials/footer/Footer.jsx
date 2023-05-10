@@ -21,6 +21,34 @@ export default function Footer() {
         <>
             <footer className="page-footer">
                 <div className="footer-row">
+                    <div className="footer-column-center">
+                        <div className="footer-links">
+                            <ul className="footer-links-list">
+                                <li className="footer-links-item">
+                                    <a href="#" id="footer-link-terms" className="footer-link">
+                                        Terms of Use
+                                    </a>
+                                </li>
+                                <li className="footer-links-item">
+                                    <a href="#" id="footer-link-privacy" className="footer-link">
+                                        Privacy Policy
+                                    </a>
+                                </li>
+                                <li className="footer-links-item">
+                                    <a href="#" id="footer-link-sell" className="footer-link">
+                                        Do Not Sell Or Share My Personal Information
+                                    </a>
+                                </li>
+                                <li className="footer-links-item">
+                                    <a href="#" id="footer-link-adchoices" className="footer-link">
+                                        Ad Choices
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div className="footer-row">
                     <div className="footer-column-left">
                         <div className="footer-icons">
                             <ul className="footer-icons-list">

@@ -1,4 +1,4 @@
-footer {
+.page-footer {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -100,8 +100,18 @@ footer {
     fill: var(--color-utils-white);
   }
 
+  .footer-links .footer-links-item a {
+    color: var(--color-utils-offwhite);
+    transition: fill 0.3s ease;
+    text-decoration: none;
+  }
+  
+  .footer-links .footer-links-item a:hover {
+    color: var(--color-utils-white);
+  }
+
   @media (max-width: 767px) {
-    footer {
+    .page-footer {
       padding: var(--content-spacing-large) 0 0 0;
     }
   
@@ -122,5 +132,14 @@ footer {
       width: 100%;
       justify-content: center;
       line-height: 24px;
+    }
+
+    .footer-links .footer-links-list {
+      flex-direction: column;
+    }
+  
+    .footer-links .footer-links-item:not(:last-child) {
+      margin-right: 0;
+      margin-bottom: var(--content-spacing-large);
     }
   }
