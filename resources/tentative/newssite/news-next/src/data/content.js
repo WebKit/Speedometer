@@ -935,6 +935,69 @@ export const content = {
         priority: 1,
         sections: [
             {
+                id: "content-politics-latest",
+                name: "latest",
+                articles: [
+                    {
+                        class: "columns-1",
+                        type: "grid",
+                        display: "grid-wrap",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Libero justo laoreet sit amet. Et egestas quis ipsum suspendisse ultrices gravida dictum fusce. Eget aliquet nibh praesent tristique magna. Turpis cursus in hac habitasse platea dictumst quisque sagittis purus.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Arcu cursus euismod quis viverra nibh. Cras ornare arcu dui vivamus arcu. At lectus urna duis convallis convallis tellus id.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Urna et pharetra pharetra massa massa ultricies mi quis hendrerit. Risus sed vulputate odio ut enim blandit volutpat maecenas volutpat. Quis ipsum suspendisse ultrices gravida dictum fusce ut.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Velit aliquet sagittis id consectetur purus ut faucibus. Tellus mauris a diam maecenas sed. Urna neque viverra justo nec. Odio eu feugiat pretium nibh ipsum.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Amet nulla facilisi morbi tempus iaculis urna id. Scelerisque eleifend donec pretium vulputate sapien nec sagittis. Id leo in vitae turpis massa.",
+                                url: "#"
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
                 id: "content-politics-today",
                 name: "Today",
                 articles: [

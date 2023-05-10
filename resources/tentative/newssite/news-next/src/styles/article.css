@@ -46,6 +46,17 @@
     position: relative;
   }
 
+  .article-body a {
+    text-decoration: none;
+    color: var(--color-utils-black);
+    transition: var(--transition-default);
+  }
+
+  .article-body a:hover {
+    color: var(--color-utils-gray-light);
+    text-decoration: underline;
+  }
+
   .article-image-container {
     display: flex;
     width: 100%;
@@ -179,13 +190,3 @@
     width: 66.66%;
   }
   
-  .article-list-item a {
-    text-decoration: none;
-    color: var(--color-utils-black);
-    transition: var(--transition-default);
-  }
-
-  .article-list-item a:hover {
-    color: var(--color-utils-gray-light);
-    text-decoration: underline;
-  }

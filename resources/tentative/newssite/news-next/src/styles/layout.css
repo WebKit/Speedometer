@@ -101,6 +101,10 @@ body {
   row-gap: var(--content-spacing-xlarge);
 }
 
+.grid-container.grid-wrap {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
 .grid-item {
   display: flex;
   flex-direction: column;
@@ -132,10 +136,18 @@ body {
   .columns-4-balanced {
     width: calc(50% - (var(--content-spacing-xlarge) / 2));
   }
+
+  .grid-container.grid-wrap {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 1199px) {
   .columns-wrap {
     width: calc(50% - (var(--content-spacing-xlarge) / 2));
+  }
+
+  .grid-container.grid-wrap {
+    grid-template-columns: 1fr 1fr;
   }
 }

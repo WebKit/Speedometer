@@ -43,10 +43,14 @@ export default function ArticleContent({ type, content, display }) {
 
     if (type === "grid") {
         return (
-            <div className="grid-container">
+            <div className={`grid-container ${display ?? ""}`}>
                 {content.map((item, index) =>
                     <div key={`article-grid-item-${index}`} className="grid-item">
                         <ArticleImage className="article-image-container" image={item.image} meta={item.meta} />
+
+                        {item.url ? <a href={item.url}>
+                            <ArticleText className="article-content truncate-multiline truncate-multiline-3" text={item.text} type="h3"/></a>
+                            : <ArticleText className="article-content truncate-multiline truncate-multiline-3" text={item.text} type="h3"/>}
                     </div>
                 )}
             </div>
