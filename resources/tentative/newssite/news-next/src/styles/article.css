@@ -71,6 +71,7 @@
     width: 100%;
   }
 
+  /* new rules start */
   .article-image-captions {
     font-size: var(--font-size-small);
     margin-top: var(--content-spacing-xsmall);
@@ -107,6 +108,7 @@
   .article-image-tag svg path {
     fill: var(--color-utils-white);
   }
+  /* new rules end */
   
   .article-title {
     display: flex;
@@ -123,6 +125,7 @@
     font-size: var(--font-size-medium);
     line-height: var(--font-size-xlarge);
     margin-top: var(--content-spacing-large);
+    white-space: pre-wrap;
   }
   
   .article-list {
