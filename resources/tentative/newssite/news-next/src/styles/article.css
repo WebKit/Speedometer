@@ -73,6 +73,7 @@
 
   .article-image-captions {
     font-size: var(--font-size-small);
+    margin-top: var(--content-spacing-xsmall);
   }
 
   .article-image-tag {
