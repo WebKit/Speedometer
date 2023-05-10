@@ -950,6 +950,9 @@ export const content = {
                                     width: "1280",
                                     height: "720",
                                 },
+                                meta: {
+                                    tag: "new"
+                                },
                                 text: "Libero justo laoreet sit amet. Et egestas quis ipsum suspendisse ultrices gravida dictum fusce. Eget aliquet nibh praesent tristique magna. Turpis cursus in hac habitasse platea dictumst quisque sagittis purus.",
                                 url: "#"
                             },
@@ -959,6 +962,9 @@ export const content = {
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
                                 },
                                 text: "Arcu cursus euismod quis viverra nibh. Cras ornare arcu dui vivamus arcu. At lectus urna duis convallis convallis tellus id.",
                                 url: "#"
@@ -970,6 +976,9 @@ export const content = {
                                     width: "1280",
                                     height: "720",
                                 },
+                                meta: {
+                                    tag: "new"
+                                },
                                 text: "Urna et pharetra pharetra massa massa ultricies mi quis hendrerit. Risus sed vulputate odio ut enim blandit volutpat maecenas volutpat. Quis ipsum suspendisse ultrices gravida dictum fusce ut.",
                                 url: "#"
                             },
@@ -980,6 +989,9 @@ export const content = {
                                     width: "1280",
                                     height: "720",
                                 },
+                                meta: {
+                                    tag: "new"
+                                },
                                 text: "Velit aliquet sagittis id consectetur purus ut faucibus. Tellus mauris a diam maecenas sed. Urna neque viverra justo nec. Odio eu feugiat pretium nibh ipsum.",
                                 url: "#"
                             },
@@ -989,6 +1001,9 @@ export const content = {
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
                                 },
                                 text: "Amet nulla facilisi morbi tempus iaculis urna id. Scelerisque eleifend donec pretium vulputate sapien nec sagittis. Id leo in vitae turpis massa.",
                                 url: "#"
