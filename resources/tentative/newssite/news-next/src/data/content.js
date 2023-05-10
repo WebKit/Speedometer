@@ -11,7 +11,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Uncensored",
-                        headerLink: "#",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -28,7 +28,7 @@ export const content = {
                     {
                         class: "columns-3-wide",
                         header: "More top stories",
-                        headerLink: "#",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -45,7 +45,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Crime & justice",
-                        headerLink: "#",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -282,6 +282,7 @@ export const content = {
                     {
                         class: "columns-3-wide",
                         header: "Happening Today",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -298,6 +299,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Trending",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -314,6 +316,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Weather",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -581,6 +584,7 @@ export const content = {
                     {
                         class: "columns-3-balanced",
                         header: "Africa",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -597,6 +601,7 @@ export const content = {
                     {
                         class: "columns-3-balanced",
                         header: "China",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -613,6 +618,7 @@ export const content = {
                     {
                         class: "columns-3-balanced",
                         header: "Russia",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -808,6 +814,7 @@ export const content = {
                     {
                         class: "columns-3-wide",
                         header: "Campaign News",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -829,6 +836,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Elections",
+                        url: "#",
                         type: "preview",
                         content: [{
                             image: {
@@ -852,6 +860,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Local Government",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -1052,6 +1061,7 @@ export const content = {
                     {
                         class: "columns-3-wide",
                         header: "Investing",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -1068,6 +1078,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Media",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -1084,6 +1095,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Insights",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -1333,6 +1345,7 @@ export const content = {
                     {
                         class: "columns-3-wide",
                         header: "Latest Facts",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -1349,6 +1362,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Top of our mind",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -1365,6 +1379,7 @@ export const content = {
                     {
                         class: "columns-3-narrow",
                         header: "Editor Report",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -1624,6 +1639,7 @@ export const content = {
                     {
                         class: "columns-3-balanced",
                         header: "Mindfulness",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -1645,6 +1661,7 @@ export const content = {
                     {
                         class: "columns-3-balanced",
                         header: "Latest research",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
@@ -1666,6 +1683,7 @@ export const content = {
                     {
                         class: "columns-3-balanced",
                         header: "Healthy Senior",
+                        url: "#",
                         image: {
                             src: "placeholder_light.jpg",
                             alt: "Placeholder",
