@@ -305,7 +305,8 @@ export const content = {
                             height: "720"
                         },
                         meta: {
-                            captions: "Photo taken by someone."
+                            captions: "Photo taken by someone.",
+                            tag: "breaking"
                         },
                         title: "Sed egestas egestas fringilla phasellus faucibus scelerisque eleifend.",
                         type: "text",
@@ -849,7 +850,8 @@ export const content = {
                             height: "720"
                         },
                         meta: {
-                            captions: "Photo taken by someone."
+                            captions: "Photo taken by someone.",
+                            tag: "breaking"
                         },
                         title: "Adipiscing at in tellus integer feugiat scelerisque varius morbi enim.",
                         type: "list",
@@ -1108,7 +1110,8 @@ export const content = {
                             height: "720"
                         },
                         meta: {
-                            captions: "Photo taken by someone."
+                            captions: "Photo taken by someone.",
+                            tag: "breaking"
                         },
                         title: "Enim lobortis scelerisque fermentum dui faucibus in ornare. Ante metus dictum at tempor.",
                         type: "text",
@@ -1392,7 +1395,7 @@ export const content = {
                             height: "720"
                         },
                         meta: {
-                            captions: "Photo taken by someone."
+                            tag: "breaking"
                         },
                         title: "Senectus et netus et malesuada fames ac turpis egestas. Odio facilisis mauris sit amet massa. Ornare quam viverra orci sagittis eu volutpat odio.",
                         type: "text",
