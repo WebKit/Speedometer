@@ -9,8 +9,7 @@ export default function Article({ article }) {
         <article className={`column ${article.class ?? ""} article`}>
             <ArticleHeader className="article-header" text={article.header} link={article.url} />
             <section className="article-body">
-                <ArticleImage className="article-image-container" image={article.image} />
-                <ArticleText className="article-image-captions" text={article?.meta?.captions} />
+                <ArticleImage className="article-image-container" image={article.image} meta={article.meta} />
                 <ArticleText className="article-title truncate-singleline" text={article.title} type="h3"/>
                 <ArticleContent type={article.type} content={article.content} />
             </section>

@@ -44,7 +44,7 @@ export default function ArticleContent({ type, content }) {
             <div className="grid-container">
                 {content.map((item, index) =>
                     <div key={`article-grid-item-${index}`} className="grid-item">
-                        <ArticleImage className="article-image-container" image={item.image} />
+                        <ArticleImage className="article-image-container" image={item.image} meta={item.meta} />
                     </div>
                 )}
             </div>

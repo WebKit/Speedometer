@@ -19,7 +19,8 @@ export const content = {
                             height: "720"
                         },
                         meta: {
-                            captions: "Photo taken by someone."
+                            captions: "Photo taken by someone.",
+                            tag: "breaking"
                         },
                         title: "Nisl nunc mi ipsum faucibus vitae aliquet.",
                         type: "text",
@@ -36,7 +37,8 @@ export const content = {
                             height: "720"
                         },
                         meta: {
-                            captions: "Photo taken by someone."
+                            captions: "Photo taken by someone.",
+                            tag: "breaking"
                         },
                         title: "Justo eget magna fermentum iaculis eu non diam phasellus vestibulum.",
                         type: "text",
@@ -53,7 +55,8 @@ export const content = {
                             height: "720"
                         },
                         meta: {
-                            captions: "Photo taken by someone."
+                            captions: "Photo taken by someone.",
+                            tag: "breaking"
                         },
                         title: "Eu sem integer vitae justo eget magna fermentum iaculis.",
                         type: "text",
@@ -145,13 +148,8 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
-                            },
-                            {
-                                image: {
-                                    src: "placeholder_light.jpg",
-                                    alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720"
+                                meta: {
+                                    tag: "watch"
                                 },
                             },
                             {
@@ -161,6 +159,9 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
+                                meta: {
+                                    tag: "watch"
+                                },
                             },
                             {
                                 image: {
@@ -168,6 +169,20 @@ export const content = {
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720"
+                                },
+                                meta: {
+                                    tag: "watch"
+                                },
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                meta: {
+                                    tag: "watch"
                                 },
                             }
                         ]
@@ -713,13 +728,8 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
-                            },
-                            {
-                                image: {
-                                    src: "placeholder_light.jpg",
-                                    alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720"
+                                meta: {
+                                    tag: "watch"
                                 },
                             },
                             {
@@ -729,6 +739,9 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
+                                meta: {
+                                    tag: "watch"
+                                },
                             },
                             {
                                 image: {
@@ -736,6 +749,20 @@ export const content = {
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720"
+                                },
+                                meta: {
+                                    tag: "watch"
+                                },
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                meta: {
+                                    tag: "watch"
                                 },
                             }
                         ]
@@ -960,13 +987,8 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
-                            },
-                            {
-                                image: {
-                                    src: "placeholder_light.jpg",
-                                    alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720"
+                                meta: {
+                                    tag: "watch"
                                 },
                             },
                             {
@@ -976,6 +998,9 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
+                                meta: {
+                                    tag: "watch"
+                                },
                             },
                             {
                                 image: {
@@ -983,6 +1008,20 @@ export const content = {
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720"
+                                },
+                                meta: {
+                                    tag: "watch"
+                                },
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                meta: {
+                                    tag: "watch"
                                 },
                             }
                         ]
@@ -1782,13 +1821,8 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
-                            },
-                            {
-                                image: {
-                                    src: "placeholder_light.jpg",
-                                    alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720"
+                                meta: {
+                                    tag: "watch"
                                 },
                             },
                             {
@@ -1798,6 +1832,9 @@ export const content = {
                                     width: "1280",
                                     height: "720"
                                 },
+                                meta: {
+                                    tag: "watch"
+                                },
                             },
                             {
                                 image: {
@@ -1805,6 +1842,20 @@ export const content = {
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720"
+                                },
+                                meta: {
+                                    tag: "watch"
+                                },
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720"
+                                },
+                                meta: {
+                                    tag: "watch"
                                 },
                             }
                         ]
