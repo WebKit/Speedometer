@@ -1,7 +1,7 @@
 import ArticleImage from "./article-image";
 import ArticleText from "./article-text";
 
-export default function ArticleContent({ type, content }) {
+export default function ArticleContent({ type, content, display }) {
     if (type === "text") {
         return (
             <div className="article-content">
@@ -13,10 +13,12 @@ export default function ArticleContent({ type, content }) {
     if (type === "list") {
         return (
             <div className="article-content">
-                <ul className="article-list">
+                <ul className={`article-list ${display ?? ""}`}>
                     {content.map((item, index) =>
                         <li key={`article-list-item-${index}`} className="article-list-item">
-                            <ArticleText text={item} />
+                            {item.url ? <a href={item.url}>
+                                <ArticleText text={item.content} />
+                            </a> : <ArticleText text={item.content} />}
                         </li>
                     )}
                 </ul>

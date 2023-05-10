@@ -11,7 +11,7 @@ export default function Article({ article }) {
             <section className="article-body">
                 <ArticleImage className="article-image-container" image={article.image} meta={article.meta} />
                 <ArticleText className="article-title truncate-singleline" text={article.title} type="h3"/>
-                <ArticleContent type={article.type} content={article.content} />
+                <ArticleContent type={article.type} content={article.content} display={article.display} />
             </section>
         </article>
     );
