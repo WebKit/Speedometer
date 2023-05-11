@@ -7,14 +7,14 @@ import InstagramIcon from "@/assets/instagram-icon";
 import TwitterIcon from "@/assets/twitter-icon";
 
 export default function Footer() {
-    const [showSettings, setShowSettings] = useState(false);
+    const [showPortal, setShowPortal] = useState(false);
 
-    function openDialog() {
-        setShowSettings(true);
+    function openPortal() {
+        setShowPortal(true);
     }
 
-    function closeDialog() {
-        setShowSettings(false);
+    function closePortal() {
+        setShowPortal(false);
     }
 
     return (
@@ -81,7 +81,7 @@ export default function Footer() {
                         <div className="footer-icons">
                             <ul className="footer-icons-list">
                                 <li className="footer-icons-item">
-                                    <button onClick={openDialog}>
+                                    <button onClick={openPortal}>
                                         <div className="footer-icon">
                                             <ReducedMotion />
                                         </div>
@@ -92,7 +92,7 @@ export default function Footer() {
                     </div>
                 </div>
             </footer>
-            {showSettings ? createPortal(<Dialog onClose={closeDialog} />, document.getElementById("settings-container")) : null}
+            {showPortal ? createPortal(<Dialog onClose={closePortal} />, document.getElementById("settings-container")) : null}
         </>
     );
 }

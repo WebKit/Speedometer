@@ -12,11 +12,7 @@ export default function Layout({ children }) {
     const { pathname } = useLocation();
 
     useEffect(() => {
-        pageRef?.current?.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "instant",
-        });
+        pageRef?.current?.scrollTo({ top: 0, left: 0, behavior: "instant" });
     }, [pathname]);
 
     return (

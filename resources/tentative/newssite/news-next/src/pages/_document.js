@@ -7,6 +7,7 @@ export default function Document() {
             <body>
                 <Main />
                 <div id="settings-container"></div>
+                <div id="notifications-container"></div>
                 <NextScript />
             </body>
         </Html>

@@ -1,6 +1,7 @@
 import "@/styles/variables.css";
 import "@/styles/globals.css";
 import "@/styles/icons.css";
+import "@/styles/button.css";
 import "@/styles/a11y.css";
 import "@/styles/layout.css";
 import "@/styles/header.css";
@@ -12,6 +13,7 @@ import "@/styles/dropdown.css";
 import "@/styles/article.css";
 import "@/styles/text.css";
 import "@/styles/toggle.css";
+import "@/styles/toast.css";
 
 import { useEffect, useState } from "react";
 
