@@ -1,7 +1,7 @@
 import { LCG } from "random-seedable";
-import { SEED, MAX_SELECTOR_LEN } from "./params.js";
+import { DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR, MAX_SELECTOR_LENGTH_TO_GENERATE } from "./params.js";
 
-const random = new LCG(SEED);
+const random = new LCG(DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR);
 
 // The generator assumes the page has the following structure,
 // and it needs to be updated if the structure changes.
@@ -14,7 +14,7 @@ const random = new LCG(SEED);
       <div class="ui ribbon">
       <div class="ui tree-area">
       <div class="ui todo-area">
-        <div class="absolutely-positioned-element">
+        <div class="todoholder">
           <section class="todoapp">
             <header class="header">
             <main class="main">
@@ -34,7 +34,6 @@ const random = new LCG(SEED);
 </body>
 */
 
-// Returns a classname for the element at depth `depth` and in position `index`.
 const getClassname = (depth, index) => {
     switch (depth) {
         case 7:
@@ -54,7 +53,7 @@ const getClassname = (depth, index) => {
         case 3:
             return ".todoapp";
         case 2:
-            return ".absolutely-positioned-element";
+            return ".todoholder";
         case 1:
             switch (index) {
                 case 0:
@@ -73,7 +72,6 @@ const getClassname = (depth, index) => {
     }
 };
 
-// Returns the type for the element at depth `depth` and in position `index`.
 const getType = (depth, index) => {
     switch (depth) {
         case 7:
@@ -100,7 +98,6 @@ const getType = (depth, index) => {
     }
 };
 
-// Returns the next depth depending on the combinator.
 const getNextDepth = (combinator, depth) => {
     switch (combinator) {
         case " ":
@@ -113,7 +110,6 @@ const getNextDepth = (combinator, depth) => {
     }
 };
 
-// Returns the next index depending on the combinator.
 const getNextIndex = (combinator, newDepth, index) => {
     // prettier-ignore
     if (combinator === " + ")
@@ -134,8 +130,7 @@ const getNextIndex = (combinator, newDepth, index) => {
     }
 };
 
-// Returns a random combinator depending on the depth and index.
-// The combinator is chosen so that the generated selector is valid.
+// Returns a random combinator chosen so that the generated selector is valid.
 const chooseCombinator = (depth, index) => {
     const selectors = [" ", " > "];
     if (index > 0 && depth !== 7) {
@@ -145,7 +140,6 @@ const chooseCombinator = (depth, index) => {
     return random.choice(selectors);
 };
 
-// Returns a random element from `options` with probability `probs`.
 const randomWeighted = (options, probs) => {
     const randNum = random.float();
     let accumProb = 0;
@@ -158,31 +152,27 @@ const randomWeighted = (options, probs) => {
     return options[options.length - 1];
 };
 
-// Returns a matching selector for the element at depth `depth` and in position `index`.
 const buildMatchingSelector = (depth, index, oldCombinator, selLen, maxLen) => {
-    // Stop if we've reached the target length.
     // prettier-ignore
     if (selLen >= maxLen)
         return "";
 
-    // Choose a selector.
     const getSelector = randomWeighted([getClassname, getType, () => "*"], [0.6, 0.3, 0.1]);
     const selector = getSelector(depth, index);
     const combinator = chooseCombinator(depth, index);
 
-    // If we're at depth 0, we're done.
     // prettier-ignore
     if (!depth)
         return `${selector}${oldCombinator}`;
 
-    // Otherwise, recurse.
     const nextDepth = getNextDepth(combinator, depth);
     const nextIndex = getNextIndex(combinator, nextDepth, index);
     return buildMatchingSelector(nextDepth, nextIndex, combinator, selLen + 1, maxLen) + selector + oldCombinator;
 };
 
-// Returns a non-matching selector for the element at depth `depth` and in position `index`.
-// We kept the selector from matching by adding the `.just-span` class to the left-most selector.
+// Returns a non-matching selector for the element.
+// We kept the selector from matching by adding the `.just-span` class to the left-most selector or
+// by adding a classname from one of its children.
 // TODO: Is there a better way to ensure the selector is non-matching?
 const buildNonMatchingSelector = (depth, index, oldCombinator, selLen, badSelector) => {
     // If we are in the top node, we are done.
@@ -212,10 +202,10 @@ export const genCss = () => {
     const nonMatchingSelectors = [];
     for (let index = 0; index < 100; index++) {
         // Add `:not(.ui)` to the matching selectors to avoid matching the UI elements.
-        matchingSelectors.push(buildMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LEN)) + ":not(.ui)");
-        matchingSelectors.push(buildMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LEN)) + ":not(.ui)");
-        nonMatchingSelectors.push(buildNonMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LEN)));
-        nonMatchingSelectors.push(buildNonMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LEN)));
+        matchingSelectors.push(buildMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)) + ":not(.ui)");
+        matchingSelectors.push(buildMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)) + ":not(.ui)");
+        nonMatchingSelectors.push(buildNonMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)));
+        nonMatchingSelectors.push(buildNonMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)));
     }
     // Create random color styles. Same color, different opacity.
     // TODO: Choose a better color for the todoMVC theme.

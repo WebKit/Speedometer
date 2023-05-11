@@ -7,12 +7,10 @@ import "./app.css";
 
 const fs = require("fs");
 
-// Generate css matching and non-matching complex css selectors targeted at the todoMVC items.
 const randomCss = genCss();
 fs.writeFileSync("src/react-todomvc/public/matchingCss.css", randomCss.matchingCss);
 fs.writeFileSync("src/react-todomvc/public/nonMatchingCss.css", randomCss.nonMatchingCss);
 
-// Generate the static html for the app UI.
 const html = `<!DOCTYPE html>
 <html lang="en" class="ui spectrum spectrum--medium spectrum--light">
   <head>

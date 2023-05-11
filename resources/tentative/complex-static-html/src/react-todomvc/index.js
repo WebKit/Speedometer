@@ -12,7 +12,7 @@ import "./public/matchingCss.css";
 
 
 const todoHolder = document.createElement("div");
-todoHolder.className = "absolutely-positioned-element";
+todoHolder.className = "todoholder";
 
 render(
     <>
