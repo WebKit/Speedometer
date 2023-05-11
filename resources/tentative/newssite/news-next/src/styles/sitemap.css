@@ -31,7 +31,6 @@
 }
 
 .sitemap-item {
-    padding: 0 12px 0 0;
     margin-bottom: var(--content-spacing-large);
     width: calc(100% / 6);
 }
