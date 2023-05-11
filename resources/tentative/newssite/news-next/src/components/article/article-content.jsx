@@ -16,7 +16,24 @@ export default function ArticleContent({ type, content, display }) {
                 <ul className={`article-list ${display ?? ""}`}>
                     {content.map((item, index) =>
                         <li key={`article-list-item-${index}`} className="article-list-item">
-                            {item.url ? <a href={item.url}>
+                            {item.url && !item.title ? <a href={item.url}>
+                                <ArticleText text={item.content} />
+                            </a> : <ArticleText text={item.content} />}
+                        </li>
+                    )}
+                </ul>
+            </div>
+        );
+    }
+
+    if (type === "articles-list") {
+        return (
+            <div className="article-list-content">
+                <ul className={`article-list ${display ?? ""}`}>
+                    {content.map((item, index) =>
+                        <li key={`article-list-item-${index}`} className="article-list-item">
+                            <ArticleText className="article-title truncate-multiline truncate-multiline-3" text={item.title} type="h3"/>
+                            {item.url && !item.title ? <a href={item.url}>
                                 <ArticleText text={item.content} />
                             </a> : <ArticleText text={item.content} />}
                         </li>
@@ -59,9 +76,9 @@ export default function ArticleContent({ type, content, display }) {
 
     if (type === "preview") {
         return (
-            <ul className="article-list">
+            <ul className={`"article-list ${display ?? ""}`}>
                 {content.map((item, index) =>
-                    <li key={`article-list-item-${index}`} className="article-list-item article-list-vertical">
+                    <li key={`article-list-item-${index}`} className="article-list-item">
                         <ArticleImage className="article-image-container" image={item.image} />
                         <ArticleText className="article-title truncate-multiline truncate-multiline-3" text={item.title} type="h3"/>
                     </li>

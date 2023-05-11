@@ -72,29 +72,20 @@ export const content = {
                     {
                         class: "columns-3-balanced",
                         header: "Happening Now",
-                        image: {
-                            src: "placeholder_light.jpg",
-                            alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
-                        },
-                        meta: {
-                            captions: "Photo taken by someone.",
-                        },
-                        title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                        type: "list",
+                        type: "articles-list",
+                        display: "vertical",
                         content: [
                             {
-                                content: "Tincidunt praesent semper feugiat nibh sed pulvinar proin.",
+                                title: "Lorem ipsum dolor sit amet.",
+                                content: "Molestie nunc non blandit massa enim nec. Ornare suspendisse sed nisi lacus sed viverra tellus in. Id consectetur purus ut faucibus. At auctor urna nunc id cursus metus. Eget aliquet nibh praesent tristique magna. Morbi tristique senectus et netus et malesuada fames.",
                             },
                             {
-                                content: "Ut enim blandit volutpat maecenas volutpat blandit aliquam etiam.",
+                                title: "Consectetur adipiscing elit.",
+                                content: "Sit amet consectetur adipiscing elit ut aliquam purus sit. Consequat nisl vel pretium lectus quam. Sagittis id consectetur purus ut faucibus pulvinar elementum integer enim. Nec sagittis aliquam malesuada bibendum arcu.",
                             },
                             {
-                                content: "At auctor urna nunc id cursus metus aliquam.",
-                            },
-                            {
-                                content: "Sed vulputate odio ut enim blandit volutpat.",
+                                title: "Sed do eiusmod tempor incididunt.",
+                                content: "Pulvinar neque laoreet suspendisse interdum consectetur libero id faucibus nisl. Pulvinar elementum integer enim neque volutpat ac. Lorem donec massa sapien faucibus.",
                             },
                         ],
                     },
@@ -221,6 +212,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -245,6 +237,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -269,6 +262,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -293,6 +287,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -598,6 +593,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -613,6 +609,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -628,6 +625,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -643,6 +641,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -868,6 +867,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -883,6 +883,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -898,6 +899,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -913,6 +915,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1052,6 +1055,7 @@ export const content = {
                         header: "Elections",
                         url: "#",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1248,6 +1252,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1263,6 +1268,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1278,6 +1284,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1293,6 +1300,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1547,6 +1555,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1562,6 +1571,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1577,6 +1587,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1592,6 +1603,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1868,6 +1880,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1883,6 +1896,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1898,6 +1912,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -1913,6 +1928,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -2176,6 +2192,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -2191,6 +2208,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -2206,6 +2224,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
@@ -2221,6 +2240,7 @@ export const content = {
                     {
                         class: "columns-4-balanced",
                         type: "preview",
+                        display: "vertical",
                         content: [
                             {
                                 image: {
