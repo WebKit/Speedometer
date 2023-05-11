@@ -5,6 +5,7 @@ import ReducedMotion from "@/assets/reduced-motion-icon";
 import FacebookIcon from "@/assets/facebook-icon";
 import InstagramIcon from "@/assets/instagram-icon";
 import TwitterIcon from "@/assets/twitter-icon";
+import Sitemap from "@/components/sitemap/sitemap";
 
 export default function Footer() {
     const [showPortal, setShowPortal] = useState(false);
@@ -20,6 +21,11 @@ export default function Footer() {
     return (
         <>
             <footer className="page-footer">
+                <div className="footer-row">
+                    <div className="footer-column-center">
+                        <Sitemap />
+                    </div>
+                </div>
                 <div className="footer-row">
                     <div className="footer-column-center">
                         <div className="footer-links">
