@@ -19,7 +19,7 @@ export default function Toast({ onClose, notification, onAccept, onReject }) {
                 <div className="toast-description">{description}</div>
                 <div className="toast-actions">
                     {actions.map((action) => {
-                        const id = `toast-${action.name}-button`;
+                        const id = `toast-${action.type}-button`;
                         return (
                             <button key={id} id={id} className={`button ${action.priority}-button`} onClick={action.type === "accept" ? onAccept : onReject}>
                                 {action.name}

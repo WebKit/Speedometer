@@ -356,6 +356,7 @@ Suites.push({
             page.querySelector("#navbar-navlist-opinion-link").click();
         }),
         new BenchmarkTestStep("NavigateToHealth", (page) => {
+            page.querySelector("#navbar-dropdown-toggle").click();
             page.querySelector("#navbar-navlist-health-link").click();
         }),
         new BenchmarkTestStep("NavigateToHome", (page) => {
