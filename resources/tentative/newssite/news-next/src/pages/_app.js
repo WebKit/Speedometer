@@ -15,6 +15,7 @@ import "@/styles/text.css";
 import "@/styles/toggle.css";
 import "@/styles/toast.css";
 import "@/styles/sitemap.css";
+import "@/styles/message.css";
 
 import { useEffect, useState } from "react";
 

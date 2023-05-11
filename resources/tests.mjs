@@ -339,8 +339,14 @@ Suites.push({
         await page.waitForElement(".skip-link");
     },
     tests: [
+        new BenchmarkTestStep("CloseToast", (page) => {
+            page.querySelector("#close-toast-link").click();
+        }),
         new BenchmarkTestStep("NavigateToUS", (page) => {
             page.querySelector("#navbar-navlist-us-link").click();
+        }),
+        new BenchmarkTestStep("CloseMessage", (page) => {
+            page.querySelector("#close-message-link").click();
         }),
         new BenchmarkTestStep("NavigateToWorld", (page) => {
             page.querySelector("#navbar-navlist-world-link").click();

@@ -329,6 +329,10 @@ export const content = {
         name: "US",
         url: "/us",
         priority: 1,
+        message: {
+            title: "Watch breaking news!",
+            description: "Something important happened and you should watch it!"
+        },
         sections: [
             {
                 id: "content-us-world-news",

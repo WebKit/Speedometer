@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 
@@ -7,7 +7,16 @@ import Navigation from "../navigation/navigation";
 import Main from "../main/main";
 import Footer from "../footer/footer";
 
-export default function Layout({ children }) {
+import { content } from "@/data/content";
+import { Message } from "@/components/message/message";
+
+export default function Layout({ children, id }) {
+    const [showMessage, setShowMessage] = useState(false);
+
+    useEffect(() => {
+        setShowMessage(content[id].message);
+    }, [id]);
+
     const pageRef = useRef(null);
     const { pathname } = useLocation();
 
@@ -15,12 +24,17 @@ export default function Layout({ children }) {
         pageRef?.current?.scrollTo({ top: 0, left: 0, behavior: "instant" });
     }, [pathname]);
 
+    function closeMessage() {
+        setShowMessage(false);
+    }
+
     return (
         <>
             <HashLink to={`${pathname}#content`} className="skip-link">Skip to content</HashLink>
             <div className="page" ref={pageRef}>
                 <Header />
                 <Navigation />
+                { showMessage ? <Message message={content[id].message} onClose={closeMessage}/> : null }
                 <Main>
                     {children}
                 </Main>

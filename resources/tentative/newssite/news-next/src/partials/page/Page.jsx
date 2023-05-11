@@ -3,8 +3,9 @@ import { createPortal } from "react-dom";
 
 import Layout from "@/partials/layout/layout";
 import Section from "../section/section";
-import { content } from "@/data/content";
 import Toast from "@/components/toast/toast";
+
+import { content } from "@/data/content";
 
 export default function Page({ id }) {
     const [showPortal, setShowPortal] = useState(false);
@@ -29,7 +30,7 @@ export default function Page({ id }) {
 
     return (
         <>
-            <Layout>
+            <Layout id={id}>
                 {content[id].sections.map((section) =>
                     <Section key={section.id} section={section} />
                 )}
