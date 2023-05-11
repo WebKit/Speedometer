@@ -9,6 +9,10 @@ export default function Navigation() {
         navigate("/");
     }
 
+    function logIn() {
+        console.log("logIn()");
+    }
+
     return (
         <>
             <nav className="page-navigation" aria-label="main menu">
@@ -16,7 +20,11 @@ export default function Navigation() {
                     <div className="page-navigation-column-left">
                         <Navbar openSitemap={openSitemap} />
                     </div>
-                    <div className="page-navigation-column-right"></div>
+                    <div className="page-navigation-column-right">
+                        <button id="login-button" className="button secondary-button nav-button" onClick={logIn}>
+                        Log In
+                        </button>
+                    </div>
                 </div>
             </nav>
         </>
