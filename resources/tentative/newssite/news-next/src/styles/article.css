@@ -147,8 +147,11 @@
   
   .article-list-item {
     display: flex;
-    flex-direction: row;
     position: relative;
+  }
+
+  .horizontal .article-list-item {
+    flex-direction: row;
   }
 
   .vertical .article-list-item {

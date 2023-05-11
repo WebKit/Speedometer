@@ -13,7 +13,7 @@ export default function ArticleContent({ type, content, display }) {
     if (type === "list") {
         return (
             <div className="article-content">
-                <ul className={`article-list ${display ?? ""}`}>
+                <ul className={`article-list vertical ${display ?? ""}`}>
                     {content.map((item, index) =>
                         <li key={`article-list-item-${index}`} className="article-list-item">
                             {item.url && !item.title ? <a href={item.url}>
@@ -29,7 +29,7 @@ export default function ArticleContent({ type, content, display }) {
     if (type === "articles-list") {
         return (
             <div className="article-list-content">
-                <ul className={`article-list ${display ?? ""}`}>
+                <ul className="article-list vertical">
                     {content.map((item, index) =>
                         <li key={`article-list-item-${index}`} className="article-list-item">
                             <ArticleText className="article-title truncate-multiline truncate-multiline-3" text={item.title} type="h3"/>
@@ -45,7 +45,7 @@ export default function ArticleContent({ type, content, display }) {
 
     if (type === "excerpt") {
         return (
-            <ul className="article-list">
+            <ul className="article-list horizontal">
                 {content.map((item, index) =>
                     <li key={`article-list-item-${index}`} className="article-list-item">
                         <ArticleImage className="article-hero" image={item.image} />
@@ -76,7 +76,7 @@ export default function ArticleContent({ type, content, display }) {
 
     if (type === "preview") {
         return (
-            <ul className={`"article-list ${display ?? ""}`}>
+            <ul className="article-list vertical">
                 {content.map((item, index) =>
                     <li key={`article-list-item-${index}`} className="article-list-item">
                         <ArticleImage className="article-image-container" image={item.image} />
