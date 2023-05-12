@@ -6,11 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "serve": "http-server ./dist -p 7002 -c-1 --cors"
   },
   "dependencies": {
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.4",
+    "http-server": "^14.1.1",
     "next": "13.3.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",

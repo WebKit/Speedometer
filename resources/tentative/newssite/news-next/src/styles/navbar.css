@@ -119,6 +119,10 @@
   .navbar-active-path {
     display: none;
   }
+
+  .navbar .icons-group {
+    display: none;
+  }
   
   @media (max-width: 767px) {
     #navbar-toggle,
@@ -208,6 +212,12 @@
       text-transform: capitalize;
       z-index: var(--index-header-button);
       pointer-events: none;
+    }
+
+    .navbar .icons-group {
+      display: flex;
+      justify-content: center;
+      margin: var(--content-spacing-xlarge) 0;
     }
   }
   

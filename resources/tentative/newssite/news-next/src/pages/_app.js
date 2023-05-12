@@ -16,6 +16,7 @@ import "@/styles/toggle.css";
 import "@/styles/toast.css";
 import "@/styles/sitemap.css";
 import "@/styles/message.css";
+import "@/styles/icons-group.css";
 
 import { useEffect, useState } from "react";
 

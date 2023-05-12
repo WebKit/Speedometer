@@ -24,6 +24,8 @@
     width: var(--icon-size-small);
     height: var(--icon-size-small);
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
     cursor: pointer;
   }

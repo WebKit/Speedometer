@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 
 import NavList from "../navlist/navlist";
 import LogoIcon from "@/assets/logo-icon";
+import SocialIcons from "@/partials/icons/social-icons";
 
 export default function Navbar({ openSitemap }) {
     const location = useLocation();
@@ -53,6 +54,7 @@ export default function Navbar({ openSitemap }) {
             <div className="navbar-active-path">{location.pathname.split("/")[1]}</div>
             <div className="navbar-content">
                 <NavList id="navbar-navlist" callback={handleClick} />
+                <SocialIcons />
             </div>
         </div>
     );
