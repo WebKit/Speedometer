@@ -1,20 +1,18 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
 
-import { AppComponent } from './app.component';
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { TodoHeaderComponent } from "./todo-header/todo-header.component";
+import { TodoListComponent } from "./todo-list/todo-list.component";
+import { TodoFooterComponent } from "./todo-footer/todo-footer.component";
+import { TodoItemComponent } from "./todo-item/todo-item.component";
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [AppComponent, TodoHeaderComponent, TodoListComponent, TodoFooterComponent, TodoItemComponent],
+    imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule],
+    providers: [],
+    bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

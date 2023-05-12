@@ -143,6 +143,7 @@ export class BenchmarkRunner {
         style.border = "0px none";
         style.position = "absolute";
         frame.setAttribute("scrolling", "no");
+        frame.className = "test-runner";
         const computedStyle = getComputedStyle(document.body);
         const marginLeft = parseInt(computedStyle.marginLeft);
         const marginTop = parseInt(computedStyle.marginTop);

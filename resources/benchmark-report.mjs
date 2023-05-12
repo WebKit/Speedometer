@@ -16,7 +16,7 @@
     document.head.appendChild(styleElement);
 
     let createTest;
-    const valuesByIteration = new Array();
+    const valuesByIteration = [];
 
     window.onload = () => {
         document.body.removeChild(document.querySelector("main"));
@@ -48,7 +48,7 @@
 
             const measuredValuesByFullName = {};
             function addToMeasuredValue(value, fullName, aggregator) {
-                const values = measuredValuesByFullName[fullName] || new Array();
+                const values = measuredValuesByFullName[fullName] || [];
                 measuredValuesByFullName[fullName] = values;
                 values.push(value);
                 values.aggregator = aggregator;
@@ -71,7 +71,7 @@
 
             PerfTestRunner.reportValues(createTest(null, null, false, "pt"), scores);
 
-            const fullNames = new Array();
+            const fullNames = [];
             for (const fullName in measuredValuesByFullName)
                 fullNames.push(fullName);
 
