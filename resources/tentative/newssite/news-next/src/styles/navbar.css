@@ -200,7 +200,7 @@
       margin-top: var(--content-spacing-small);
     }
 
-    /** new style **/
+    /** display current page in navbar **/
     .navbar-active-path {
       display: flex;
       margin: var(--content-spacing-small) 0 var(--content-spacing-small) var(--content-spacing-small);

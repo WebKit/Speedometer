@@ -1,7 +1,7 @@
 .page-header {
     display: flex;
     width: 100%;
-    font-size: 42px;
+    font-size: var(--font-size-xxxlarge);
     font-weight: bold;
     flex-direction: row;
     justify-content: center;
@@ -16,8 +16,7 @@
   .page-header .page-header-title {
     display: flex;
     flex-shrink: 1;
-    padding-bottom: 8px;
-    /* margin-bottom: 16px; */
+    padding-bottom: var(--content-spacing-small);
     border-bottom: 1px solid var(--color-utils-gray);
   }
   

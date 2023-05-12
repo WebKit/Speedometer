@@ -110,9 +110,9 @@
   }
 
   .article-image-tag svg {
-    width: 16px;
-    height: 16px;
-    margin-right: 8px;
+    width: var(--icon-size-tiny);
+    height: var(--icon-size-tiny);
+    margin-right: var(--content-spacing-small);
   }
 
   .article-image-tag svg path {

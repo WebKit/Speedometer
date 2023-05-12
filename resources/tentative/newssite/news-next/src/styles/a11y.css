@@ -78,7 +78,7 @@ but useful for people who use screen readers */
   
   img::after {
     content: "\2639"" " attr(alt);
-    font-size: 18px;
+    font-size: var(--font-size-medium);
     color: var(--color-utils-white);
     position: absolute;
     height: 100%;

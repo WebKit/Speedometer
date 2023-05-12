@@ -1,7 +1,7 @@
 .toggle-outer {
     display: flex;
     justify-content: space-between;
-    padding: 8px;
+    padding: var(--content-spacing-small);
     border-radius: var(--border-radius-medium);
     border: 2px solid var(--color-utils-gray-light);
     color: var(--color-utils-black);

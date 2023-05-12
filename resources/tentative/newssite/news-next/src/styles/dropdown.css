@@ -20,14 +20,13 @@
   .dropdown-label {
     background-color: var(--color-utils-black);
     color: var(--color-utils-offwhite);
-    transition: color 0.3s ease;
     height: var(--nav-button-height);
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    padding: 0 8px;
+    padding: 0 var(--content-spacing-small);
     border-radius: var(--border-radius-small);
     transition-property: color, background-color;
     transition-duration: 0.3s;
@@ -62,12 +61,12 @@
   
   .dropdown-content {
     list-style-type: none;
-    padding: 0 8px;
+    padding: 0 var(--content-spacing-small);
     margin: 0;
     display: none;
     position: absolute;
     top: 100%;
-    left: -8px;
+    left: calc(var(--content-spacing-small) * -1);
     min-width: 200px;
     background-color: var(--color-utils-black);
     z-index: var(--index-dropdown);
