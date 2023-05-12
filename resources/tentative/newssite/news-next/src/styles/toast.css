@@ -28,6 +28,7 @@
     height: var(--icon-size-small);
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
   
   .toast .animated-icon {

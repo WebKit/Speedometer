@@ -25,6 +25,7 @@
     height: var(--icon-size-small);
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
   
   .message .animated-icon {
