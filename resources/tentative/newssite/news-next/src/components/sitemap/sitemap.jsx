@@ -7,8 +7,8 @@ export default function Sitemap() {
     const navItems = keys.reduce(
         (result, key) => {
             // priority 0 does not show up in nav
-            if (content[key].priority === 0)
-                return result;
+            /* if (content[key].priority === 0)
+                return result; */
 
             // push all other nav items and dropdown items
             result.push(key);

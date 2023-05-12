@@ -1,6 +1,6 @@
 export const content = {
     home: {
-        name: "Home",
+        name: "Front Page",
         url: "/",
         priority: 0,
         notification: {
@@ -216,6 +216,192 @@ export const content = {
                                 meta: {
                                     tag: "watch",
                                 },
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                id: "content-frontpage-highlights",
+                name: "Highlights",
+                articles: [
+                    {
+                        class: "columns-wrap",
+                        header: "Domestic Highlights",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "At urna condimentum mattis pellentesque id nibh tortor id. Urna cursus eget nunc scelerisque viverra mauris in. Pretium vulputate sapien nec sagittis aliquam malesuada bibendum arcu.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Enim lobortis scelerisque fermentum dui faucibus in. Vitae semper quis lectus nulla at volutpat. In nisl nisi scelerisque eu ultrices vitae auctor.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Lorem donec massa sapien faucibus et molestie ac feugiat. Quis varius quam quisque id diam vel. Ut tristique et egestas quis ipsum suspendisse. Fermentum posuere urna nec tincidunt praesent semper feugiat.",
+                            },
+                        ],
+                    },
+                    {
+                        class: "columns-wrap",
+                        header: "Global Highlights",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Augue eget arcu dictum varius duis at consectetur. Ornare arcu dui vivamus arcu felis bibendum ut. Magna eget est lorem ipsum dolor sit amet. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Leo urna molestie at elementum eu facilisis sed. Est lorem ipsum dolor sit amet consectetur adipiscing elit pellentesque.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Nisi scelerisque eu ultrices vitae auctor. Quis risus sed vulputate odio. Pellentesque sit amet porttitor eget dolor morbi non. Nullam eget felis eget nunc lobortis mattis aliquam.",
+                            },
+                        ],
+                    },
+                    {
+                        class: "columns-wrap",
+                        header: "Local Highlights",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Mattis ullamcorper velit sed ullamcorper. Orci ac auctor augue mauris augue neque. Condimentum mattis pellentesque id nibh tortor.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Fermentum odio eu feugiat pretium. Urna nec tincidunt praesent semper feugiat nibh sed. Adipiscing elit ut aliquam purus sit.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Vitae tempus quam pellentesque nec nam aliquam sem et. Fringilla urna porttitor rhoncus dolor purus non enim praesent elementum. Congue nisi vitae suscipit tellus mauris a diam maecenas. Quis varius quam quisque id diam.",
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                id: "content-frontpage-top-stories",
+                name: "Top Stories",
+                articles: [
+                    {
+                        class: "columns-1",
+                        type: "grid",
+                        display: "grid-wrap",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Ut venenatis tellus in metus vulputate eu scelerisque. In nulla posuere sollicitudin aliquam ultrices sagittis orci a scelerisque. Mattis nunc sed blandit libero volutpat sed cras ornare arcu. Scelerisque eu ultrices vitae auctor eu augue. Libero justo laoreet sit amet cursus sit amet.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Non consectetur a erat nam. Blandit massa enim nec dui nunc mattis enim ut. Tempor orci eu lobortis elementum nibh tellus molestie nunc. Facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Eget est lorem ipsum dolor sit amet. Vivamus at augue eget arcu dictum varius duis at consectetur. Scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis. Vitae sapien pellentesque habitant morbi tristique senectus et.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Diam in arcu cursus euismod quis viverra nibh cras pulvinar. Est velit egestas dui id ornare arcu odio ut sem. A cras semper auctor neque. Ipsum suspendisse ultrices gravida dictum fusce ut.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Tellus integer feugiat scelerisque varius morbi enim. Diam donec adipiscing tristique risus nec feugiat in fermentum. Volutpat odio facilisis mauris sit amet massa vitae. Tempor orci dapibus ultrices in iaculis nunc sed. Aenean vel elit scelerisque mauris pellentesque pulvinar.",
+                                url: "#"
                             },
                         ],
                     },
@@ -603,6 +789,125 @@ export const content = {
                 ],
             },
             {
+                id: "content-us-crime+justice",
+                name: "Crime & Justice",
+                articles: [
+                    {
+                        class: "columns-3-balanced",
+                        header: "Supreme Court",
+                        type: "articles-list",
+                        content: [
+                            {
+                                title: "Vel risus commodo viverra maecenas.",
+                                content: "Vitae tempus quam pellentesque nec nam aliquam sem. Mi in nulla posuere sollicitudin aliquam ultrices sagittis. Leo integer malesuada nunc vel. Ultricies integer quis auctor elit sed vulputate. Sit amet justo donec enim diam vulputate. Velit aliquet sagittis id consectetur purus ut faucibus pulvinar.",
+                            },
+                            {
+                                title: "Sit amet mattis vulputate enim.",
+                                content: "Urna porttitor rhoncus dolor purus non. Tristique senectus et netus et malesuada fames ac turpis egestas. Suscipit tellus mauris a diam maecenas. Risus ultricies tristique nulla aliquet enim. Quis imperdiet massa tincidunt nunc pulvinar sapien et ligula ullamcorper.",
+                            },
+                            {
+                                title: "Mauris in aliquam sem fringilla ut morbi tincidunt.",
+                                content: "A erat nam at lectus. Orci sagittis eu volutpat odio facilisis mauris sit. Faucibus nisl tincidunt eget nullam non. Nisl condimentum id venenatis a. Suscipit tellus mauris a diam maecenas sed enim. Orci nulla pellentesque dignissim enim sit amet venenatis. Est ultricies integer quis auctor.",
+                            },
+                        ],
+                    },
+                    {
+                        class: "columns-3-balanced",
+                        header: "Local Law",
+                        type: "articles-list",
+                        content: [
+                            {
+                                title: "Sit amet justo donec enim diam vulputate ut.",
+                                content: "Tincidunt dui ut ornare lectus sit amet est. Risus sed vulputate odio ut enim blandit volutpat maecenas volutpat. Posuere urna nec tincidunt praesent semper feugiat nibh sed pulvinar. Euismod in pellentesque massa placerat duis.",
+                            },
+                            {
+                                title: "Aliquam ultrices sagittis orci a scelerisque purus semper eget duis.",
+                                content: "Lobortis feugiat vivamus at augue eget arcu. Id ornare arcu odio ut sem nulla pharetra diam. Mauris in aliquam sem fringilla ut morbi tincidunt augue interdum. Congue quisque egestas diam in arcu cursus euismod quis viverra.",
+                            },
+                            {
+                                title: "In metus vulputate eu scelerisque felis imperdiet proin.",
+                                content: "Elementum pulvinar etiam non quam. Id nibh tortor id aliquet lectus proin nibh. Elementum facilisis leo vel fringilla est ullamcorper eget. Dictum sit amet justo donec enim diam vulputate.",
+                            },
+                        ],
+                    },
+                    {
+                        class: "columns-3-balanced",
+                        header: "Opinion",
+                        type: "articles-list",
+                        content: [
+                            {
+                                title: "Magna ac placerat vestibulum lectus.",
+                                content: "enenatis urna cursus eget nunc scelerisque viverra mauris. Convallis posuere morbi leo urna molestie at elementum. Eu lobortis elementum nibh tellus. Vitae purus faucibus ornare suspendisse sed nisi lacus sed viverra.",
+                            },
+                            {
+                                title: "Nisl rhoncus mattis rhoncus urna neque viverra justo.",
+                                content: "Tristique sollicitudin nibh sit amet. Aliquam purus sit amet luctus venenatis. Vitae nunc sed velit dignissim sodales ut. Elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique senectus. Sit amet risus nullam eget.",
+                            },
+                            {
+                                title: "Sed felis eget velit aliquet sagittis id consectetur purus ut.",
+                                content: "Egestas erat imperdiet sed euismod nisi porta. Vel orci porta non pulvinar neque laoreet. Urna condimentum mattis pellentesque id nibh. Arcu non sodales neque sodales ut etiam sit amet. Elementum curabitur vitae nunc sed velit dignissim.",
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                id: "content-us-latest-media",
+                name: "Latest Media",
+                articles: [
+                    {
+                        class: "columns-1",
+                        type: "grid",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "watch",
+                                },
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "watch",
+                                },
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "watch",
+                                },
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "watch",
+                                },
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
                 id: "content-us-paid-content",
                 name: "Paid Content",
                 articles: [
@@ -817,7 +1122,7 @@ export const content = {
                 ],
             },
             {
-                id: "content-frontpage-world-media",
+                id: "content-world-latest-media",
                 name: "Latest Media",
                 articles: [
                     {
@@ -867,6 +1172,204 @@ export const content = {
                                 meta: {
                                     tag: "watch",
                                 },
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                id: "content-world-today",
+                name: "Today",
+                articles: [
+                    {
+                        class: "columns-3-wide",
+                        header: "Unrest",
+                        url: "#",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                            tag: "breaking",
+                        },
+                        title: "Viverra aliquet eget sit amet. In fermentum posuere urna nec.",
+                        type: "list",
+                        content: [
+                            {
+                                content: "Massa enim nec dui nunc mattis. Ornare lectus sit amet est placerat in.",
+                            },
+                            {
+                                content: "Morbi tristique senectus et netus et malesuada fames ac turpis.",
+                            },
+                            {
+                                content: "Fed vulputate mi sit amet mauris commodo quis imperdiet massa.",
+                            },
+                            {
+                                content: "In egestas erat imperdiet sed euismod nisi porta lorem mollis. Scelerisque eu ultrices vitae auctor eu augue ut lectus arcu.",
+                            },
+                        ],
+                    },
+                    {
+                        class: "columns-3-narrow",
+                        header: "Happening now",
+                        url: "#",
+                        type: "preview",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                title: "Semper auctor neque vitae tempus quam pellentesque nec nam aliquam.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                title: "Viverra maecenas accumsan lacus vel facilisis volutpat.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                title: "Orci sagittis eu volutpat odio facilisis mauris sit.",
+                            },
+                        ],
+                    },
+                    {
+                        class: "columns-3-narrow",
+                        header: "Noteworthy",
+                        url: "#",
+                        type: "preview",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                title: "Nunc aliquet bibendum enim facilisis gravida neque convallis a.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                title: "Ut diam quam nulla porttitor massa id neque aliquam vestibulum.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                title: "Magna fermentum iaculis eu non diam phasellus vestibulum lorem.",
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                id: "content-world-featured",
+                name: "Featured",
+                articles: [
+                    {
+                        class: "columns-3-balanced",
+                        header: "European Union",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                        },
+                        title: "Luctus venenatis lectus magna fringilla urna.",
+                        type: "list",
+                        content: [
+                            {
+                                content: "Nulla facilisi cras fermentum odio eu. Porttitor lacus luctus accumsan tortor posuere ac ut.",
+                            },
+                            {
+                                content: "Phasellus egestas tellus rutrum tellus pellentesque eu tincidunt. Leo vel orci porta non. Sem nulla pharetra diam sit amet nisl.",
+                            },
+                            {
+                                content: "Justo donec enim diam vulputate ut pharetra sit amet aliquam. Eu consequat ac felis donec et.",
+                            },
+                        ],
+                    },
+                    {
+                        class: "columns-3-balanced",
+                        header: "Britain",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                        },
+                        title: "Orci a scelerisque purus semper eget duis.",
+                        type: "text",
+                        content:
+                            "Gravida rutrum quisque non tellus orci ac auctor augue mauris. Enim ut sem viverra aliquet eget. Sit amet volutpat consequat mauris nunc congue nisi vitae.\n\nPraesent tristique magna sit amet purus gravida quis blandit turpis. Commodo odio aenean sed adipiscing diam donec adipiscing tristique risus. Quam quisque id diam vel quam elementum.",
+                    },
+                    {
+                        class: "columns-3-balanced",
+                        header: "Latin America",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                        },
+                        title: "Congue nisi vitae suscipit tellus.",
+                        type: "list",
+                        display: "bullets",
+                        content: [
+                            {
+                                content: "Ut venenatis tellus in metus vulputate.",
+                                url: "#",
+                            },
+                            {
+                                content: "Vitae aliquet nec ullamcorper sit amet risus nullam.",
+                                url: "#",
+                            },
+                            {
+                                content: "Ellus in hac habitasse platea dictumst.",
+                                url: "#",
+                            },
+                            {
+                                content: "In nisl nisi scelerisque eu ultrices vitae.",
+                                url: "#",
+                            },
+                            {
+                                content: "Est ullamcorper eget nulla facilisi etiam dignissim diam quis enim.",
+                                url: "#",
+                            },
+                            {
+                                content: "It volutpat diam ut venenatis tellus.",
+                                url: "#",
                             },
                         ],
                     },
@@ -946,8 +1449,8 @@ export const content = {
         priority: 1,
         sections: [
             {
-                id: "content-politics-latest",
-                name: "latest",
+                id: "content-politics-what-really-matters",
+                name: "What Really Matters",
                 articles: [
                     {
                         class: "columns-1",
@@ -1192,7 +1695,7 @@ export const content = {
                         },
                         title: "Vitae auctor eu augue ut lectus arcu bibendum at varius.",
                         type: "text",
-                        content: "Pharetra diam sit amet nisl suscipit adipiscing bibendum est. Id aliquet lectus proin nibh. Porta lorem mollis aliquam ut porttitor leo a. Congue eu consequat ac felis donec et odio pellentesque.",
+                        content: "Pharetra diam sit amet nisl suscipit adipiscing bibendum est. Id aliquet lectus proin nibh. Porta lorem mollis aliquam ut porttitor leo a. Congue eu consequat ac felis donec et odio pellentesque.\n\nMi ipsum faucibus vitae aliquet nec ullamcorper. Sapien nec sagittis aliquam malesuada bibendum arcu vitae elementum curabitur. Quis imperdiet massa tincidunt nunc pulvinar sapien et ligula ullamcorper.",
                     },
                 ],
             },
@@ -1247,6 +1750,114 @@ export const content = {
                                 meta: {
                                     tag: "watch",
                                 },
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                id: "content-politics-election",
+                name: "Election",
+                articles: [
+                    {
+                        class: "columns-wrap",
+                        header: "Democrats",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Est ullamcorper eget nulla facilisi etiam dignissim. Est pellentesque elit ullamcorper dignissim cras. Velit euismod in pellentesque massa placerat duis ultricies.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Vitae suscipit tellus mauris a diam maecenas sed enim. Aenean sed adipiscing diam donec. Laoreet suspendisse interdum consectetur libero id faucibus nisl tincidunt.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Mattis enim ut tellus elementum sagittis vitae et. Massa sapien faucibus et molestie.",
+                            },
+                        ],
+                    },
+                    {
+                        class: "columns-wrap",
+                        header: "Republicans",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Platea dictumst quisque sagittis purus sit amet volutpat. Ante in nibh mauris cursus mattis molestie a iaculis.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Quis hendrerit dolor magna eget est. Pellentesque pulvinar pellentesque habitant morbi tristique. Adipiscing commodo elit at imperdiet dui.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Donec pretium vulputate sapien nec sagittis aliquam. Cras adipiscing enim eu turpis egestas pretium aenean."
+                            },
+                        ],
+                    },
+                    {
+                        class: "columns-wrap",
+                        header: "Liberals",
+                        type: "excerpt",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Cursus sit amet dictum sit amet justo donec enim. Tempor id eu nisl nunc. Amet cursus sit amet dictum sit amet justo donec.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Enim diam vulputate ut pharetra sit amet aliquam. Tristique senectus et netus et malesuada.",
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                text: "Eu turpis egestas pretium aenean. Auctor elit sed vulputate mi sit amet. In nibh mauris cursus mattis molestie.",
                             },
                         ],
                     },
@@ -1548,6 +2159,128 @@ export const content = {
                                 text: "Diam sollicitudin tempor id eu nisl nunc mi ipsum faucibus. In pellentesque massa placerat duis ultricies lacus sed.",
                             },
                         ],
+                    },
+                ],
+            },
+            {
+                id: "content-business-must-read",
+                name: "Must Read",
+                articles: [
+                    {
+                        class: "columns-1",
+                        type: "grid",
+                        display: "grid-wrap",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Scelerisque viverra mauris in aliquam sem fringilla ut morbi. Senectus et netus et malesuada fames ac turpis egestas. Et tortor at risus viverra. Iaculis nunc sed augue lacus viverra vitae congue. Nulla aliquet porttitor lacus luctus accumsan.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Vitae justo eget magna fermentum. Vel eros donec ac odio tempor orci dapibus. Volutpat est velit egestas dui id ornare arcu odio. Est sit amet facilisis magna. Bibendum est ultricies integer quis auctor elit. Ullamcorper dignissim cras tincidunt lobortis feugiat vivamus.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Nisl tincidunt eget nullam non nisi est sit. At consectetur lorem donec massa sapien faucibus et molestie ac. Semper risus in hendrerit gravida rutrum. Eget aliquet nibh praesent tristique magna sit. Mi quis hendrerit dolor magna eget.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Pulvinar proin gravida hendrerit lectus a. At volutpat diam ut venenatis tellus in metus vulputate eu. Maecenas accumsan lacus vel facilisis volutpat. Enim eu turpis egestas pretium aenean pharetra magna. Orci eu lobortis elementum nibh tellus molestie nunc.",
+                                url: "#"
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                id: "content-business-educational",
+                name: "Educational",
+                articles: [
+                    {
+                        class: "columns-3-balanced",
+                        header: "Business 101",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                        },
+                        title: "Dictumst quisque sagittis purus sit amet.",
+                        type: "text",
+                        content:
+                            "incidunt dui ut ornare lectus sit. Quis varius quam quisque id diam. Adipiscing diam donec adipiscing tristique risus nec feugiat in. Cursus sit amet dictum sit. Lacinia quis vel eros donec ac odio. Accumsan tortor posuere ac ut consequat semper. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing. Integer malesuada nunc vel risus commodo viverra. Arcu risus quis varius quam quisque id diam vel quam.\n\nEnim neque volutpat ac tincidunt vitae semper quis lectus nulla. Eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque. Sed tempus urna et pharetra pharetra massa.",
+                    },
+                    {
+                        class: "columns-3-balanced",
+                        header: "Startup",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                        },
+                        title: "Posuere sollicitudin aliquam ultrices sagittis orci a.",
+                        type: "text",
+                        content:
+                            "Potenti nullam ac tortor vitae purus faucibus. Vulputate mi sit amet mauris. Elit pellentesque habitant morbi tristique senectus. In pellentesque massa placerat duis ultricies. Cras fermentum odio eu feugiat pretium nibh ipsum. Ornare quam viverra orci sagittis eu. Commodo sed egestas egestas fringilla phasellus faucibus scelerisque eleifend. Non diam phasellus vestibulum lorem sed risus. Metus vulputate eu scelerisque felis imperdiet.\n\nMagna ac placerat vestibulum lectus mauris. Lobortis feugiat vivamus at augue eget. Facilisis volutpat est velit egestas dui id ornare arcu odio.",
+                    },
+                    {
+                        class: "columns-3-balanced",
+                        header: "Make profit",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                        },
+                        title: "Scelerisque fermentum dui faucibus in.",
+                        type: "text",
+                        content:
+                            "Ornare aenean euismod elementum nisi quis. Tellus in hac habitasse platea dictumst vestibulum rhoncus est. Nisl nunc mi ipsum faucibus vitae aliquet nec. Eget egestas purus viverra accumsan in nisl nisi scelerisque. Urna duis convallis convallis tellus id interdum velit laoreet. Ultrices sagittis orci a scelerisque purus. Feugiat vivamus at augue eget. Ultricies tristique nulla aliquet enim. Nibh mauris cursus mattis molestie a iaculis at erat pellentesque.\n\nElementum eu facilisis sed odio morbi. Ac turpis egestas integer eget aliquet nibh praesent tristique magna. Tortor at risus viverra adipiscing at in tellus.",
                     },
                 ],
             },
@@ -1873,6 +2606,170 @@ export const content = {
                 ],
             },
             {
+                id: "content-opinion-think-about-it",
+                name: "Think about it",
+                articles: [
+                    {
+                        class: "columns-3-balanced",
+                        header: "Mental Health",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                        },
+                        title: "olutpat ac tincidunt vitae semper quis lectus nulla at. Non quam lacus suspendisse faucibus interdum posuere lorem..",
+                        type: "list",
+                        display: "bullets",
+                        content: [
+                            {
+                                content: "Et tortor consequat id porta nibh venenatis cras sed felis. Neque aliquam vestibulum morbi blandit cursus risus at ultrices mi.",
+                                url: "#",
+                            },
+                            {
+                                content: "Commodo quis imperdiet massa tincidunt nunc. Diam maecenas sed enim ut sem viverra aliquet eget sit.",
+                                url: "#",
+                            },
+                            {
+                                content: "Aliquam malesuada bibendum arcu vitae elementum curabitur. Quis ipsum suspendisse ultrices gravida dictum fusce ut placerat.",
+                                url: "#",
+                            },
+                            {
+                                content: "Quis enim lobortis scelerisque fermentum. Nibh venenatis cras sed felis eget velit aliquet.",
+                                url: "#",
+                            },
+                        ],
+                    },
+                    {
+                        class: "columns-3-balanced",
+                        header: "Better life",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                        },
+                        title: "Placerat vestibulum lectus mauris ultrices. Eros in cursus turpis massa.",
+                        type: "list",
+                        display: "bullets",
+                        content: [
+                            {
+                                content: "In hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit. At lectus urna duis convallis convallis tellus id interdum.",
+                                url: "#",
+                            },
+                            {
+                                content: "Ultrices eros in cursus turpis massa tincidunt dui. Mi tempus imperdiet nulla malesuada pellentesque.",
+                                url: "#",
+                            },
+                            {
+                                content: "Ipsum faucibus vitae aliquet nec ullamcorper sit. Eleifend donec pretium vulputate sapien nec sagittis aliquam.",
+                                url: "#",
+                            },
+                            {
+                                content: "In hac habitasse platea dictumst. Pretium vulputate sapien nec sagittis aliquam malesuada bibendum arcu.",
+                                url: "#",
+                            },
+                        ],
+                    },
+                    {
+                        class: "columns-3-balanced",
+                        header: "The right choice",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                        },
+                        title: "Faucibus et molestie ac feugiat. Enim sit amet venenatis urna cursus eget nunc scelerisque viverra.",
+                        type: "list",
+                        display: "bullets",
+                        content: [
+                            {
+                                content: "Urna porttitor rhoncus dolor purus. Eget sit amet tellus cras adipiscing enim.",
+                                url: "#",
+                            },
+                            {
+                                content: "Leo urna molestie at elementum eu facilisis sed. Metus dictum at tempor commodo ullamcorper a.",
+                                url: "#",
+                            },
+                            {
+                                content: "Non odio euismod lacinia at quis risus sed vulputate.",
+                                url: "#",
+                            },
+                            {
+                                content: "Justo donec enim diam vulputate ut. Euismod elementum nisi quis eleifend.",
+                                url: "#",
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                id: "content-opinion-latest-media",
+                name: "Latest Media",
+                articles: [
+                    {
+                        class: "columns-1",
+                        type: "grid",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "watch",
+                                },
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "watch",
+                                },
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "watch",
+                                },
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "watch",
+                                },
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
                 id: "content-opinion-paid-content",
                 name: "Paid Content",
                 articles: [
@@ -2125,8 +3022,69 @@ export const content = {
                 ],
             },
             {
-                id: "content-health-latest-media",
-                name: "Latest Media",
+                id: "content-health-medical-breakthroughs",
+                name: "Medical Breakthroughs",
+                articles: [
+                    {
+                        class: "columns-3-wide",
+                        header: "Surgical Inventions",
+                        url: "#",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                            tag: "breaking",
+                        },
+                        title: "Nisi est sit amet facilisis magna etiam tempor. Cursus eget nunc scelerisque viverra mauris in aliquam sem fringilla.",
+                        type: "text",
+                        content:
+                            "Ut eu sem integer vitae justo eget. Ut aliquam purus sit amet luctus. Sit amet mauris commodo quis imperdiet massa tincidunt. Tellus rutrum tellus pellentesque eu tincidunt tortor aliquam nulla facilisi. Turpis nunc eget lorem dolor sed. Ultrices in iaculis nunc sed augue lacus. Quam elementum pulvinar etiam non. Urna cursus eget nunc scelerisque. Nisl purus in mollis nunc sed.",
+                    },
+                    {
+                        class: "columns-3-narrow",
+                        header: "Medicare",
+                        url: "#",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                        },
+                        title: "Cras semper auctor neque vitae. Vel turpis nunc eget lorem dolor sed viverra ipsum nunc.",
+                        type: "text",
+                        content:
+                            "Lacus sed viverra tellus in hac habitasse. Sapien faucibus et molestie ac feugiat sed lectus. Pretium aenean pharetra magna ac. Volutpat odio facilisis mauris sit amet massa vitae tortor condimentum. Pellentesque massa placerat duis ultricies lacus sed turpis tincidunt id.\n\nParturient montes nascetur ridiculus mus mauris. Ultrices eros in cursus turpis. Bibendum at varius vel pharetra vel turpis. Luctus venenatis lectus magna fringilla urna porttitor rhoncus dolor.",
+                    },
+                    {
+                        class: "columns-3-narrow",
+                        header: "Medication",
+                        url: "#",
+                        image: {
+                            src: "placeholder_light.jpg",
+                            alt: "Placeholder",
+                            width: "1280",
+                            height: "720",
+                        },
+                        meta: {
+                            captions: "Photo taken by someone.",
+                        },
+                        title: "Ipsum dolor sit amet consectetur adipiscing elit. Velit scelerisque in dictum non consectetur a erat nam.",
+                        type: "text",
+                        content:
+                            "Mattis molestie a iaculis at erat pellentesque adipiscing. Sed augue lacus viverra vitae congue. Volutpat consequat mauris nunc congue nisi vitae suscipit tellus. Lacus laoreet non curabitur gravida arcu. Nisl nisi scelerisque eu ultrices vitae auctor.\n\nInteger vitae justo eget magna fermentum iaculis eu non. Sollicitudin ac orci phasellus egestas. Ligula ullamcorper malesuada proin libero nunc consequat interdum.",
+                    },
+                ],
+            },
+            {
+                id: "content-health-latest-videos",
+                name: "Latest Videos",
                 articles: [
                     {
                         class: "columns-1",
@@ -2175,6 +3133,84 @@ export const content = {
                                 meta: {
                                     tag: "watch",
                                 },
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                id: "content-health-educational",
+                name: "Educational",
+                articles: [
+                    {
+                        class: "columns-1",
+                        type: "grid",
+                        display: "grid-wrap",
+                        content: [
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Orci phasellus egestas tellus rutrum tellus pellentesque eu. Pulvinar neque laoreet suspendisse interdum consectetur. Viverra maecenas accumsan lacus vel facilisis volutpat. Nibh ipsum consequat nisl vel pretium lectus quam id. Leo integer malesuada nunc vel risus commodo viverra.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Proin libero nunc consequat interdum varius sit amet. Convallis posuere morbi leo urna molestie at. Consectetur lorem donec massa sapien faucibus et molestie ac feugiat. Egestas diam in arcu cursus euismod quis viverra nibh.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Elit sed vulputate mi sit. Ullamcorper a lacus vestibulum sed arcu non odio euismod lacinia. Magna eget est lorem ipsum dolor sit amet consectetur. In tellus integer feugiat scelerisque varius morbi enim nunc faucibus. Nam libero justo laoreet sit.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Nam aliquam sem et tortor consequat. Non sodales neque sodales ut etiam sit amet nisl purus. Viverra mauris in aliquam sem. Leo vel fringilla est ullamcorper. Tellus at urna condimentum mattis pellentesque id nibh tortor. Lacus laoreet non curabitur gravida. Ut morbi tincidunt augue interdum velit euismod in pellentesque.",
+                                url: "#"
+                            },
+                            {
+                                image: {
+                                    src: "placeholder_light.jpg",
+                                    alt: "Placeholder",
+                                    width: "1280",
+                                    height: "720",
+                                },
+                                meta: {
+                                    tag: "new"
+                                },
+                                text: "Egestas integer eget aliquet nibh praesent tristique magna sit. Id consectetur purus ut faucibus. Molestie a iaculis at erat pellentesque adipiscing commodo elit at. Nulla facilisi etiam dignissim diam quis enim lobortis scelerisque. Lectus proin nibh nisl condimentum id. Ornare quam viverra orci sagittis eu volutpat odio facilisis mauris.",
+                                url: "#"
                             },
                         ],
                     },
