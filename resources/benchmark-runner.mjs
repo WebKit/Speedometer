@@ -194,6 +194,7 @@ export class BenchmarkRunner {
         style.border = "0px none";
         style.position = "absolute";
         frame.setAttribute("scrolling", "no");
+        frame.className = "test-runner";
         const computedStyle = getComputedStyle(document.body);
         const marginLeft = parseInt(computedStyle.marginLeft);
         const marginTop = parseInt(computedStyle.marginTop);
@@ -362,7 +363,7 @@ export class BenchmarkRunner {
                 if (metric.parent !== parent)
                     parent.addChild(metric);
                 if (results.tests)
-                    collectSubMetrics(`${metric.name}-`, results.tests, metric);
+                    collectSubMetrics(`${metric.name}${Metric.separator}`, results.tests, metric);
             }
         };
 
