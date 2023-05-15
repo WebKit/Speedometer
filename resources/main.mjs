@@ -15,7 +15,7 @@ class MainBenchmarkClient {
     _progressCompleted = null;
     _isRunning = false;
     _hasResults = false;
-    _metrics = {};
+    _metrics = Object.create(null);
 
     constructor() {
         window.addEventListener("DOMContentLoaded", () => this.prepareUI());
@@ -38,7 +38,7 @@ class MainBenchmarkClient {
                 return false;
             }
         }
-        this._metrics = {};
+        this._metrics = Object.create(null);
         this._isRunning = true;
         this.developerMode = params.developerMode;
 
