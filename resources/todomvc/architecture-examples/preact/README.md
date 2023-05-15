@@ -8,7 +8,15 @@ This application uses Preact 10.11.3 to implement a todo application.
 
 ## Implementation details
 
-[TBD]
+Preact:\
+Model: model.js\
+View: ui components\
+controller: app.js
+
+MVC:\
+Model: maintains the data and behavior of an application\
+View: displays the model in the ui\
+Controller: serves as an interface between view & model components
 
 ## Built steps
 

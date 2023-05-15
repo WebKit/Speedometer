@@ -1,7 +1,7 @@
 <script setup>
-import Todos from '../components/TodoComponent.vue'
+import TodosComponent from "../components/TodosComponent.vue";
 </script>
 
 <template>
-  <Todos />
+    <TodosComponent />
 </template>
