@@ -118,7 +118,7 @@ class PageElement {
 
 // The WarmupSuite is used to make sure all runner helper functions and
 // classes are compiled, to avoid unnecessary pauses due to delayed
-// compilation of runner methods in de middle of the measuring cycle.
+// compilation of runner methods in the middle of the measuring cycle.
 const WarmupSuite = {
     name: "Warmup",
     url: "warmup/index.html",
@@ -135,7 +135,6 @@ const WarmupSuite = {
         }),
         new BenchmarkTestStep("WarmingUpPageElementMethods", (page) => {
             const item = page.getElementById("testItem");
-            console.log("WarmingUpPageElementMethods");
             item.setValue("value");
             item.click();
             item.focus();
@@ -156,7 +155,6 @@ const WarmupSuite = {
                 bubbles: true,
                 cancelable: true,
             };
-            console.log("WarmingUpPageElementMouseMethods");
             item.dispatchEvent("mousedown", mouseEventOptions, MouseEvent);
             item.dispatchEvent("mousemove", mouseEventOptions, MouseEvent);
             item.dispatchEvent("mouseup", mouseEventOptions, MouseEvent);
