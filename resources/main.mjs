@@ -204,7 +204,7 @@ class MainBenchmarkClient {
         jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
         jsonLink.setAttribute("download", `${filePrefix}.json`);
 
-        const csvData = this._getFormattedCSVResult();
+        const csvData = this._formattedCSVResult();
         const csvLink = document.getElementById("download-csv");
         csvLink.href = URL.createObjectURL(new Blob([csvData], { type: "text/csv" }));
         csvLink.setAttribute("download", `${filePrefix}.csv`);
@@ -268,7 +268,7 @@ class MainBenchmarkClient {
         return JSON.stringify(this._measuredValuesList, undefined, indent);
     }
 
-    _getFormattedCSVResult() {
+    _formattedCSVResult() {
         // The CSV format is similar to the details view table. Each measurement is a row with
         // the name and N columns with the measurement for each iteration:
         // ```
@@ -279,8 +279,9 @@ class MainBenchmarkClient {
         const labels = ["Name"];
         for (let i = 0; i < params.iterationCount; i++)
             labels.push(`#${i + 1}`);
+        labels.push("Mean");
         const metrics = Array.from(Object.values(this._metrics)).filter((metric) => !metric.name.startsWith("Iteration-"));
-        const metricsValues = metrics.map((metric) => [metric.name, ...metric.values].join(","));
+        const metricsValues = metrics.map((metric) => [metric.name, ...metric.values, metric.mean].join(","));
         const csv = [labels.join(","), ...metricsValues];
 
         return csv.join("\n");
@@ -291,7 +292,7 @@ class MainBenchmarkClient {
     }
 
     copyCSVResults() {
-        navigator.clipboard.writeText(this._getFormattedCSVResult());
+        navigator.clipboard.writeText(this._formattedCSVResult());
     }
 
     _showSection(hash) {
