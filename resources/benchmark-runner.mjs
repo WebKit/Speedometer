@@ -313,16 +313,18 @@ export class BenchmarkRunner {
 
     async _recordTestResults(suite, test, syncTime, asyncTime, unused_height, testDoneCallback) {
         // Skip reporting updates for the warmup suite.
-        if (suite !== WarmupSuite) {
-            const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
-            const total = syncTime + asyncTime;
-            this._measuredValues.tests[suite.name] = suiteResults;
-            suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
-            suiteResults.total += total;
-
-            if (this._client?.didRunTest)
-                await this._client.didRunTest(suite, test);
+        if (suite === WarmupSuite) {
+            testDoneCallback();
+            return;
         }
+        const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
+        const total = syncTime + asyncTime;
+        this._measuredValues.tests[suite.name] = suiteResults;
+        suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
+        suiteResults.total += total;
+
+        if (this._client?.didRunTest)
+            await this._client.didRunTest(suite, test);
 
         testDoneCallback();
     }
