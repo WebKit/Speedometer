@@ -373,6 +373,25 @@ Suites.push({
 });
 
 Suites.push({
+    name: "Charts-observable-plot",
+    url: "tentative/charts/dist/observable-plot.html",
+    async prepare(page) {},
+    tests: [
+        new BenchmarkTestStep("Prepare", (page) => {
+            page.querySelector("#prepare").click();
+        }),
+        new BenchmarkTestStep("Stacked", (page) => {
+            page.querySelector("#reset").click();
+            page.querySelector("#add-stacked-chart-button").click();
+        }),
+        new BenchmarkTestStep("Dotted", (page) => {
+            page.querySelector("#reset").click();
+            page.querySelector("#add-dotted-chart-button").click();
+        }),
+    ],
+});
+
+Suites.push({
     name: "React-Stockcharts",
     url: "tentative/react-stockcharts/build/index.html?type=hybrid",
     async prepare(page) {
