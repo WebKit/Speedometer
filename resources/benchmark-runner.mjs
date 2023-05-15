@@ -289,7 +289,7 @@ export class BenchmarkRunner {
         }
     }
 
-   iterationTotalMetric(i) {
+    iterationTotalMetric(i) {
         if (i >= params.iterationCount)
             throw new Error(`Requested iteration=${i} does not exist.`);
         return this.getMetric(`Iteration-${i}-Total`);
