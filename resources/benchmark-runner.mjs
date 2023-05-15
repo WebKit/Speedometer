@@ -202,7 +202,7 @@ export class BenchmarkRunner {
             await this._runTestAndRecordResults(suite, test);
         performance.mark(suiteEndLabel);
 
-        performance.measure(`suite-${suite.name}`, suitePrepareLabel, suiteEndLabel);
+        performance.measure(`suite-${suite.name}`, suiteStartLabel, suiteEndLabel);
     }
 
     async _prepareSuite(suite) {
