@@ -190,11 +190,19 @@ export class BenchmarkRunner {
     }
 
     async _runSuite(suite) {
+        const suitePrepareLabel = `suite-${suite.name}-prepare`;
+        const suiteStartLabel = `suite-${suite.name}-start`;
+        const suiteEndLabel = `suite-${suite.name}-end`;
+
+        performance.mark(suitePrepareLabel);
         await this._prepareSuite(suite);
-        performance.mark(`start-suite-${suite.name}`);
+        
+        performance.mark(suiteStartLabel);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
-        performance.mark(`end-suite-${suite.name}`);
+        performance.mark(suiteEndLabel);
+
+        performance.measure(`suite-${suite.name}`, suiteStartLabel, suiteEndLabel);
     }
 
     async _prepareSuite(suite) {
