@@ -289,7 +289,7 @@ export class BenchmarkRunner {
         }
     }
 
-    getIterationTotalMetric(i) {
+   iterationTotalMetric(i) {
         if (i >= params.iterationCount)
             throw new Error(`Requested iteration=${i} does not exist.`);
         return this.getMetric(`Iteration-${i}-Total`);
@@ -297,7 +297,7 @@ export class BenchmarkRunner {
 
     _appendIterationMetrics() {
         const getMetric = (name) => this._metrics[name] || (this._metrics[name] = new Metric(name));
-        const getIterationTotalMetric = (i) => getMetric(`Iteration-${i}-Total`);
+        const iterationTotalMetric = (i) => getMetric(`Iteration-${i}-Total`);
         const collectSubMetrics = (prefix, items, parent) => {
             for (let name in items) {
                 const results = items[name];
@@ -320,12 +320,12 @@ export class BenchmarkRunner {
             // Prepare all iteration metrics so they are listed at the end of
             // of the _metrics object, before "Total" and "Score".
             for (let i = 0; i < this._iterationCount; i++)
-                getIterationTotalMetric(i);
+                iterationTotalMetric(i);
             getMetric("Total");
             getMetric("Score");
         }
 
-        const iterationTotal = getIterationTotalMetric(this._metrics.Total.length);
+        const iterationTotal = iterationTotalMetric(this._metrics.Total.length);
         for (const results of Object.values(iterationResults))
             iterationTotal.add(results.total);
         iterationTotal.computeAggregatedMetrics();
