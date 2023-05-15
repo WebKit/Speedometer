@@ -50,9 +50,10 @@ Observable Plot is D3-based and outputs SVG.
 
 When run in development mode, the page will automatically execute the 3
 included graphs:
-* a stacked bar graph
-* a grouped bar graph
-* a graph using dots
+
+-   a stacked bar graph
+-   a grouped bar graph
+-   a graph using dots
 
 In production mode nothing executes by default, the user needs to push the
 buttons to run any code. That's how the benchmark exercizes this code.

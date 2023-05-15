@@ -116,6 +116,11 @@ class PageElement {
     }
 }
 
+function geomeanToScore(geomean) {
+    const correctionFactor = 3; // This factor makes the test score look reasonably fit within 0 to 140.
+    return (60 * 1000) / geomean / correctionFactor;
+}
+
 export class BenchmarkRunner {
     constructor(suites, client) {
         this._suites = suites;
@@ -194,7 +199,7 @@ export class BenchmarkRunner {
 
         performance.mark(suitePrepareLabel);
         await this._prepareSuite(suite);
-        
+
         performance.mark(suiteStartLabel);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
@@ -288,11 +293,10 @@ export class BenchmarkRunner {
             const total = values.reduce((a, b) => a + b);
             const geomean = Math.pow(product, 1 / values.length);
 
-            const correctionFactor = 3; // This factor makes the test score look reasonably fit within 0 to 140.
             this._measuredValues.total = total;
             this._measuredValues.mean = total / values.length;
             this._measuredValues.geomean = geomean;
-            this._measuredValues.score = (60 * 1000) / geomean / correctionFactor;
+            this._measuredValues.score = geomeanToScore(geomean);
             await this._client.didRunSuites(this._measuredValues);
         }
     }
@@ -337,8 +341,8 @@ export class BenchmarkRunner {
         for (const results of Object.values(iterationResults))
             iterationTotal.add(results.total);
         iterationTotal.computeAggregatedMetrics();
-        getMetric("Total").add(iterationTotal.sum);
-        getMetric("Score").add(MILLISECONDS_PER_MINUTE / iterationTotal.sum);
+        getMetric("Total").add(iterationTotal.geomean);
+        getMetric("Score").add(geomeanToScore(iterationTotal.geomean));
 
         for (const metric of Object.values(this._metrics))
             metric.computeAggregatedMetrics();

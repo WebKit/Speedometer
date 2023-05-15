@@ -199,13 +199,13 @@ class MainBenchmarkClient {
         document.getElementById("metrics-results").innerHTML = html;
 
         const filePrefix = `speedometer-3-${new Date().toISOString()}`;
-        let jsonData = this._getFormattedJSONResult({ modern: false });
+        let jsonData = this._formattedJSONResult({ modern: false });
         let jsonLink = document.getElementById("download-classic-json");
         jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
         jsonLink.setAttribute("download", `${filePrefix}.json`);
 
         jsonLink = document.getElementById("download-full-json");
-        jsonData = this._getFormattedJSONResult({ modern: true });
+        jsonData = this._formattedJSONResult({ modern: true });
         jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
         jsonLink.setAttribute("download", `${filePrefix}.json`);
 
@@ -268,7 +268,7 @@ class MainBenchmarkClient {
         this._showSection("#details");
     }
 
-    _getFormattedJSONResult({ modern = false }) {
+    _formattedJSONResult({ modern = false }) {
         const indent = "    ";
         if (modern)
             return JSON.stringify(this._metrics, undefined, indent);
@@ -323,7 +323,7 @@ class MainBenchmarkClient {
     }
 
     copyJsonResults() {
-        navigator.clipboard.writeText(this._getFormattedJSONResult(true));
+        navigator.clipboard.writeText(this._formattedJSONResult({ modern: true }));
     }
 
     copyCSVResults() {
