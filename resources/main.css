@@ -5,6 +5,7 @@
     --foreground-alpha: rgba(235, 235, 235, 0.2);
     --inactive-color: rgb(128, 128, 128);
     --background: rgb(46, 51, 55);
+    --running-background: #f5f5f5;
     --highlight: rgb(232, 79, 79);
     --text-width: 650px;
     --metrics-line-height: 25px;
@@ -263,6 +264,10 @@ button.show-about {
     position: absolute;
     right: 6px;
     text-align: right;
+}
+
+iframe.test-runner {
+    background: var(--running-background);
 }
 
 section#summary > #result-number,

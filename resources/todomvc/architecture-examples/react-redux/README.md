@@ -23,7 +23,7 @@ controller: React connected components + Redux reducers
 MVC:\
 Model: maintains the data and behavior of an application\
 View: displays the model in the ui\
-Container: serves as an interface between view & model components
+Controller: serves as an interface between view & model components
 
 The storage solution uses an in-memory data object that implements a simple array to hold the todos.
 
