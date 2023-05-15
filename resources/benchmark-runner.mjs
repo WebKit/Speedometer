@@ -1,4 +1,4 @@
-import { Metric, MILLISECONDS_PER_MINUTE } from "./metric.mjs";
+import { Metric } from "./metric.mjs";
 import { params } from "./params.mjs";
 
 const performance = globalThis.performance;
