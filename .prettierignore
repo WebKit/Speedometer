@@ -1,15 +1,20 @@
 /node_modules
 **/dist
 package-lock.json
+**/.angular
 
 /resources/tentative/*
 !/resources/tentative/editors
+!/resources/tentative/charts
 
 /resources/todomvc/architecture-examples/*
+!/resources/todomvc/architecture-examples/angular
 !/resources/todomvc/architecture-examples/backbone
 !/resources/todomvc/architecture-examples/preact
 !/resources/todomvc/architecture-examples/react
 !/resources/todomvc/architecture-examples/react-redux
+!/resources/todomvc/architecture-examples/svelte
+!/resources/todomvc/architecture-examples/vue
 
 /resources/todomvc/vanilla-examples/*
 !/resources/todomvc/vanilla-examples/javascript-es5

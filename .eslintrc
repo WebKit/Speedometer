@@ -24,7 +24,7 @@
  */
 
 {
-    "extends": ["eslint:recommended"],
+    "extends": ["eslint:recommended", "plugin:@typescript-eslint/base"],
     "env": {
         "browser": true,
         "node": true,
@@ -71,6 +71,7 @@
         "no-global-assign": 2,
         "no-inner-declarations": 0,
         "no-multi-spaces": 2,
+        "no-multiple-empty-lines": ["error", { "max": 1 }],
         "no-new": 0,
         "no-proto": 0,
         "no-redeclare": 0,

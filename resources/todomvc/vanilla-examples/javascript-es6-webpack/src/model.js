@@ -89,9 +89,8 @@ class Model {
      * Returns a count of all todos
      */
     getCount(callback) {
-        if (!callback) {
+        if (!callback)
             return;
-        }
 
         const stats = {
             active: 0,
@@ -101,11 +100,10 @@ class Model {
 
         this.storage.findAll((data) => {
             for (let todo of data) {
-                if (todo.completed) {
+                if (todo.completed)
                     stats.completed++;
-                } else {
+                else
                     stats.active++;
-                }
 
                 stats.total++;
             }

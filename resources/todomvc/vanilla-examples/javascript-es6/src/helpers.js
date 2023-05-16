@@ -27,9 +27,8 @@ function $delegate(target, selector, type, handler) {
         const potentialElements = qsa(selector, target);
         const hasMatch = Array.prototype.indexOf.call(potentialElements, targetElement) >= 0;
 
-        if (hasMatch) {
+        if (hasMatch)
             handler.call(targetElement, event);
-        }
     };
 
     // https://developer.mozilla.org/en-US/docs/Web/Events/blur
@@ -41,13 +40,11 @@ function $delegate(target, selector, type, handler) {
 // Find the element's parent with the given tag name:
 // $parent(qs('a'), 'div')
 function $parent(element, tagName) {
-    if (!element.parentNode) {
+    if (!element.parentNode)
         return undefined;
-    }
 
-    if (element.parentNode.tagName.toLowerCase() === tagName.toLowerCase()) {
+    if (element.parentNode.tagName.toLowerCase() === tagName.toLowerCase())
         return element.parentNode;
-    }
 
     return $parent(element.parentNode, tagName);
 }

@@ -4,11 +4,20 @@
 .directory
 /node_modules
 
+.vscode
+.angular
+
+/resources/todomvc/architecture-examples/angular/node_modules/
 /resources/todomvc/architecture-examples/backbone/node_modules/
+/resources/todomvc/architecture-examples/jquery/node_modules/
 /resources/todomvc/architecture-examples/preact/node_modules/
 /resources/todomvc/architecture-examples/react/node_modules/
-resources/todomvc/architecture-examples/react-redux/node_modules/
+/resources/todomvc/architecture-examples/react-redux/node_modules/
+/resources/todomvc/architecture-examples/svelte/node_modules/
+/resources/todomvc/architecture-examples/vue/node_modules/
 
 /resources/todomvc/vanilla-examples/javascript-es5/node_modules/
 /resources/todomvc/vanilla-examples/javascript-es6/node_modules/
 /resources/todomvc/vanilla-examples/javascript-es6-webpack/node_modules/
+
+/resources/tentative/charts/node_modules/

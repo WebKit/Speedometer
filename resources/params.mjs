@@ -9,6 +9,7 @@ class Params {
     suites = [];
     testInitiator = "timeout"; // or "raf"
     asyncInitiator = "timeout"; // or "raf"
+    useWarmupSuite = false;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -52,6 +53,11 @@ class Params {
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
             console.error("Got unused search params", unused);
+
+        if (searchParams.has("useWarmupSuite")) {
+            this.useWarmupSuite = true;
+            searchParams.delete("useWarmupSuite");
+        }
     }
 
     _parseInitiator(searchParams, name, defaultValue = "timeout") {

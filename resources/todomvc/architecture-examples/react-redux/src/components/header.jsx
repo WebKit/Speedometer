@@ -8,7 +8,6 @@ export default class Header extends Component {
     };
 
     handleSave = (text) => {
-        // prettier-ignore
         if (text.length !== 0)
             this.props.addTodo(text);
     };

@@ -13,7 +13,7 @@ const htmlEscapes = {
 const reUnescapedHtml = /[&<>"'`]/g;
 const reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);
 
-let escape = (str) => (str && reHasUnescapedHtml.test(str) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str);
+let escape = (str) => str && reHasUnescapedHtml.test(str) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str;
 let escapeHtmlChar = (chr) => htmlEscapes[chr];
 
 class Template {
