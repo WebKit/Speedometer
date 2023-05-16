@@ -329,8 +329,8 @@ export class BenchmarkRunner {
         for (const results of Object.values(iterationResults))
             iterationTotal.add(results.total);
         iterationTotal.computeAggregatedMetrics();
-        getMetric("Total").add(iterationTotal.sum);
-        getMetric("Score").add(MILLISECONDS_PER_MINUTE / iterationTotal.sum);
+        getMetric("Total").add(iterationTotal.geomean);
+        getMetric("Score").add(MILLISECONDS_PER_MINUTE / iterationTotal.geomean);
 
         for (const metric of Object.values(this._metrics))
             metric.computeAggregatedMetrics();
