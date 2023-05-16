@@ -290,7 +290,8 @@ class MeasureStep {
         performance.measure(this._rafLabel, this._rafStartLabel, this._rafEndLabel);
         const delta = endTime - this._rafStartTime;
         this.rafTime += delta;
-        // Keep accumulating RAF time until it's 
+        // Keep accumulating RAF time until there is no more work.
+        // FIXME: Figure out a better way to do this (maybe a configurable iteration count?).
         if (delta >= 1)
             this._rafMeasurement.run();
         else
