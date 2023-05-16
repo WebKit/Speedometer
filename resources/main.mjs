@@ -171,8 +171,8 @@ class MainBenchmarkClient {
         const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
-        document.getElementById("total-chart").innerHTML = renderMetricView({
-            metrics: [metrics["Total"]],
+        document.getElementById("geomean-chart").innerHTML = renderMetricView({
+            metrics: [metrics.Geomean],
             width: plotWidth,
             trackHeight,
             renderChildren: false,
