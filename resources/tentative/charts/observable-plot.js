@@ -17,11 +17,6 @@ const DEFAULT_OPTIONS = {
     height: 1000,
 };
 
-// This is the number of airports we keep for each state in the stacked bar
-// graph. One additional group will be added, that will sum all airports that
-// haven't been kept.
-const AIRPORT_COUNT_PER_STATE = 6;
-
 let preparedData;
 function prepare() {
     /**
@@ -47,7 +42,7 @@ function prepare() {
         .map(([state, airportsInState]) => {
             const totalFlightsInState = d3Array.sum(airportsInState, ({ iata }) => flightsByAirport.get(iata)?.total);
             const sorted = d3Array.sort(airportsInState, ({ iata }) => -flightsByAirport.get(iata)?.total);
-            const mostUsedAirportsInState = sorted.slice(0, AIRPORT_COUNT_PER_STATE);
+            const mostUsedAirportsInState = sorted.slice(0, airportCountPerGroup());
             return {
                 state,
                 total: totalFlightsInState,
@@ -71,12 +66,16 @@ function prepare() {
             index, // This will be used to have consistent colors.
             ...flightsByAirport.get(iata),
         }));
-        enrichedMostUsedAirports.push({
-            state,
-            iata: "Other",
-            total: total - d3Array.sum(mostUsedAirports, ({ iata }) => flightsByAirport.get(iata)?.total),
-            index: enrichedMostUsedAirports.length,
-        });
+        const otherTotal = total - d3Array.sum(mostUsedAirports, ({ iata }) => flightsByAirport.get(iata)?.total);
+
+        if (otherTotal > 0) {
+            enrichedMostUsedAirports.push({
+                state,
+                iata: "Other",
+                total: otherTotal,
+                index: enrichedMostUsedAirports.length,
+            });
+        }
         return enrichedMostUsedAirports;
     });
 
@@ -207,11 +206,28 @@ async function runAllTheThings() {
     ].forEach((id) => document.getElementById(id).click());
 }
 
+// This is the number of airports we keep for each state in the stacked bar
+// graph. One additional group will be added, that will sum all airports that
+// haven't been kept. It's retrieved from the input directly.
+function airportCountPerGroup() {
+    return document.querySelector("#airport-group-size-input").value;
+}
+
+function onGroupSizeInputChange() {
+    document.querySelector("#airport-group-size").textContent = airportCountPerGroup();
+    if (import.meta.env.DEV) {
+        // In dev mode, redraw everything
+        runAllTheThings();
+    }
+}
+
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
 document.getElementById("add-dotted-chart-button").addEventListener("click", addDottedBars);
 document.getElementById("reset").addEventListener("click", reset);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
+document.getElementById("airport-group-size-input").addEventListener("input", onGroupSizeInputChange);
+onGroupSizeInputChange();
 
 if (import.meta.env.DEV)
     runAllTheThings();
