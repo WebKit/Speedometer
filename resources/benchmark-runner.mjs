@@ -170,11 +170,18 @@ export class BenchmarkRunner {
             this._suites = [WarmupSuite, ...suites];
         this._client = client;
         this._page = null;
-        this._metrics = {
-            __proto__: null,
-            Total: new Metric("Total"),
-            Score: new Metric("Score", "score"),
-        };
+        this._metrics = null;
+        this._iterationCount = params.iterationCount;
+    }
+
+    async runMultipleIterations(iterationCount) {
+        this._iterationCount = iterationCount;
+        if (this._client?.willStartFirstIteration)
+            await this._client.willStartFirstIteration(iterationCount);
+        for (let i = 0; i < iterationCount; i++)
+            await this._runAllSuites();
+        if (this._client?.didFinishLastIteration)
+            await this._client.didFinishLastIteration(this._metrics);
     }
 
     _removeFrame() {
@@ -210,15 +217,6 @@ export class BenchmarkRunner {
         document.body.insertBefore(frame, document.body.firstChild);
         this._frame = frame;
         return frame;
-    }
-
-    async runMultipleIterations(iterationCount) {
-        if (this._client?.willStartFirstIteration)
-            await this._client.willStartFirstIteration(iterationCount);
-        for (let i = 0; i < iterationCount; i++)
-            await this._runAllSuites();
-        if (this._client?.didFinishLastIteration)
-            await this._client.didFinishLastIteration(this._metrics);
     }
 
     async _runAllSuites() {
@@ -352,9 +350,16 @@ export class BenchmarkRunner {
             await this._client.didRunSuites(this._measuredValues);
         }
     }
+
+    getIterationTotalMetric(i) {
+        if (i >= params.iterationCount)
+            throw new Error(`Requested iteration=${i} does not exist.`);
+        return this.getMetric(`Iteration-${i}-Total`);
+    }
+
     _appendIterationMetrics() {
         const getMetric = (name) => this._metrics[name] || (this._metrics[name] = new Metric(name));
-
+        const getIterationTotalMetric = (i) => getMetric(`Iteration-${i}-Total`);
         const collectSubMetrics = (prefix, items, parent) => {
             for (let name in items) {
                 const results = items[name];
@@ -366,16 +371,28 @@ export class BenchmarkRunner {
                     collectSubMetrics(`${metric.name}${Metric.separator}`, results.tests, metric);
             }
         };
+        const initializeMetrics = this._metrics === null;
+        if (initializeMetrics)
+            this._metrics = { __proto__: null };
 
         const iterationResults = this._measuredValues.tests;
-        const iterationTotal = getMetric(`Iteration-${this._metrics.Total.length}-Total`);
+        collectSubMetrics("", iterationResults);
+
+        if (initializeMetrics) {
+            // Prepare all iteration metrics so they are listed at the end of
+            // of the _metrics object, before "Total" and "Score".
+            for (let i = 0; i < this._iterationCount; i++)
+                getIterationTotalMetric(i);
+            getMetric("Geomean");
+            getMetric("Score");
+        }
+
+        const iterationTotal = getIterationTotalMetric(this._metrics.Geomean.length);
         for (const results of Object.values(iterationResults))
             iterationTotal.add(results.total);
         iterationTotal.computeAggregatedMetrics();
-
-        this._metrics.Total.add(iterationTotal.sum);
-        this._metrics.Score.add(MILLISECONDS_PER_MINUTE / iterationTotal.sum);
-        collectSubMetrics("", iterationResults);
+        getMetric("Geomean").add(iterationTotal.geomean);
+        getMetric("Score").add(MILLISECONDS_PER_MINUTE / iterationTotal.geomean);
 
         for (const metric of Object.values(this._metrics))
             metric.computeAggregatedMetrics();
