@@ -163,7 +163,24 @@ const WarmupSuite = {
     ],
 };
 
-class RafBracketedCallbacks {
+class TimerCallbacks {
+    constructor(firstCallback, secondCallback) {
+        this._firstCallback = firstCallback;
+        this._secondCallback = secondCallback;
+        this._setTimeoutCallback = this._setTimeout.bind(this);
+    }
+
+    run() {
+        setTimeout(this._setTimeoutCallback, 0);
+    }
+
+    _setTimeout() {
+        this._firstCallback();
+        setTimeout(this._secondCallback, 0);
+    }
+}
+
+class RAFBracketedCallbacks {
     constructor(firstCallback, secondCallback) {
         this._firstCallback = firstCallback;
         this._secondCallback = secondCallback;
@@ -176,7 +193,7 @@ class RafBracketedCallbacks {
     }
 
     _setTimeout() {
-       setTimeout(this._secondCallback, 0);
+        setTimeout(this._secondCallback, 0);
     }
 }
 
@@ -195,8 +212,7 @@ class MeasureStep {
         this._asyncMeasurePromise = new Promise((resolve) => {
             this._asyncDoneCallback = resolve;
         });
-        this._measureAsyncTimeoutCallback = this._measureAsyncTimeout.bind(this);
-        this._rafMeasurement = new RafBracketedCallbacks(this._measureRafStart.bind(this), this._measureRafEnd.bind(this));
+        this._rAFMeasurement = new RAFBracketedCallbacks(this._measureRafStart.bind(this), this._measureRafEnd.bind(this));
 
         this.syncTime = 0;
         this.asyncTime = 0;
@@ -212,9 +228,9 @@ class MeasureStep {
         this._asyncEndLabel = `${this._label}-async-end`;
         this._forcedLayoutStartLabel = `${this._label}-layout-start`;
         this._forcedLayoutEndLabel = `${this._label}-layout-end`;
-        this._rafStartLabel= `${this._label}-raf-start`;
-        this._rafEndLabel= `${this._label}-raf-end`;
-        this._rafLabel = `${this._label}-raf`;
+        this._rAFStartLabel= `${this._label}-raf-start`;
+        this._rAFEndLabel= `${this._label}-raf-end`;
+        this._rAFLabel = `${this._label}-raf`;
 
         this._asyncMetricMode = params.asyncMetric;
     }
@@ -228,9 +244,9 @@ class MeasureStep {
             });
         }
         if (this._asyncMetricMode === "timeout")
-            setTimeout(this._measureSync.bind(this), 0);
+            new TimerCallbacks(this._measureSync.bind(this), this._measureAsyncTimeout.bind(this)).run();
         else if (this._asyncMetricMode === "raf")
-            new RafBracketedCallbacks(this._measureSync.bind(this), this._measureAsyncEnd.bind(this)).run();
+            new RAFBracketedCallbacks(this._measureSync.bind(this), this._measureAsyncEnd.bind(this)).run();
         else
             throw new Error(`Unknown async measure mode: ${this._asyncMetricMode}`);
         await this._done();
@@ -247,10 +263,9 @@ class MeasureStep {
 
         this.syncTime = syncEndTime - syncStartTime;
 
-        if (this._asyncMetricMode === "timeout")
-            setTimeout(this._measureAsyncTimeoutCallback, 0);
-        else
-            this._rafMeasurement.run();
+        // Measure test work scheduled via rAF.
+        if (this._asyncMetricMode === "raf")
+            this._rAFMeasurement.run();
 
         performance.mark(this._asyncStartLabel);
         this._asyncStartTime = performance.now();
@@ -280,20 +295,20 @@ class MeasureStep {
     }
 
     _measureRafStart() {
-        performance.mark(this._rafStartLabel);
-        this._rafStartTime = performance.now();
+        performance.mark(this._rAFStartLabel);
+        this._rAFStartTime = performance.now();
     }
 
     _measureRafEnd() {
         const endTime = performance.now();
-        performance.mark(this._rafEndLabel);
-        performance.measure(this._rafLabel, this._rafStartLabel, this._rafEndLabel);
-        const delta = endTime - this._rafStartTime;
+        performance.mark(this._rAFEndLabel);
+        performance.measure(this._rAFLabel, this._rAFStartLabel, this._rAFEndLabel);
+        const delta = endTime - this._rAFStartTime;
         this.rafTime += delta;
         // Keep accumulating RAF time until there is no more work.
         // FIXME: Figure out a better way to do this (maybe a configurable iteration count?).
         if (delta >= 1)
-            this._rafMeasurement.run();
+            this._rAFMeasurement.run();
         else
             this._asyncDoneCallback();
     }
