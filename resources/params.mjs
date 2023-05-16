@@ -7,12 +7,7 @@ class Params {
     startAutomatically = false;
     iterationCount = 10;
     suites = [];
-<<<<<<< HEAD
-    testInitiator = "timeout"; // or "raf"
-    asyncInitiator = "timeout"; // or "raf"
-=======
     asyncMetric = "timeout"; // or "raf"
->>>>>>> 2023-04-19_raf_async
     useWarmupSuite = false;
 
     constructor(searchParams = undefined) {

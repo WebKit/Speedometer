@@ -116,10 +116,6 @@ class PageElement {
     }
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 2023-04-19_raf_async
 // The WarmupSuite is used to make sure all runner helper functions and
 // classes are compiled, to avoid unnecessary pauses due to delayed
 // compilation of runner methods in the middle of the measuring cycle.
