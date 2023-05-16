@@ -209,7 +209,7 @@ class MeasureStep {
             //    - start("sync time")
             //    - run()
             //    - end("sync time")
-            //    - Schedule setTimeout(..., 0) 
+            //    - Schedule setTimeout(..., 0)
             //    - start("async time")
             // 3. Potential async work
             // 4. setTimeout callback: end("async time")
