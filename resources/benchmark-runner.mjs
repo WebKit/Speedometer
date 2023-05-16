@@ -227,33 +227,12 @@ class MeasureStep {
                 setTimeout(resolve, params.stepWaitTime);
             });
         }
-        if (this._asyncMetricMode === "timeout") {
-            // 1. Schedule setTimeout measure-and-run sync work
-            // 2. setTimeout callback:
-            //    - start("sync time")
-            //    - run()
-            //    - end("sync time")
-            //    - Schedule setTimeout(..., 0)
-            //    - start("async time")
-            // 3. Potential async work
-            // 4. setTimeout callback: end("async time")
+        if (this._asyncMetricMode === "timeout")
             setTimeout(this._measureSync.bind(this), 0);
-        } else if (this._asyncMetricMode === "raf") {
-            // 1. Schedule rAF callbacks:
-            //    - Schedule rAF 1: measure-and-run sync work
-            //    - Schedule rAF 2: measure async work
-            // 2. rAF 1 callback:
-            //    - start("sync time")
-            //    - run()
-            //    - end("sync time")
-            //    - start("async time")
-            // 3. rAF 2 callback: Schedule setTimeout(..., 0) measure task
-            // 4. Potential async work
-            // 5. setTimeout-callback: end("async time")
+        else if (this._asyncMetricMode === "raf")
             new RafBracketedCallbacks(this._measureSync.bind(this), this._measureAsyncEnd.bind(this)).run();
-        } else {
+        else
             throw new Error(`Unknown async measure mode: ${this._asyncMetricMode}`);
-        }
         await this._done();
         this._wasRun = true;
     }
@@ -268,12 +247,12 @@ class MeasureStep {
 
         this.syncTime = syncEndTime - syncStartTime;
 
-        performance.mark(this._asyncStartLabel);
         if (this._asyncMetricMode === "timeout")
             setTimeout(this._measureAsyncTimeoutCallback, 0);
-        else {
+        else
             this._rafMeasurement.run();
-        }
+
+        performance.mark(this._asyncStartLabel);
         this._asyncStartTime = performance.now();
     }
 
@@ -311,11 +290,10 @@ class MeasureStep {
         performance.measure(this._rafLabel, this._rafStartLabel, this._rafEndLabel);
         const delta = endTime - this._rafStartTime;
         this.rafTime += delta;
-        // TODO: this should probably me a fixed iteration.
-        if (delta >= 1) {
-            // Keep on accumulating RAF times.
+        // Keep accumulating RAF time until it's 
+        if (delta >= 1)
             this._rafMeasurement.run();
-        } else
+        else
             this._asyncDoneCallback();
     }
 
