@@ -116,9 +116,58 @@ class PageElement {
     }
 }
 
+// The WarmupSuite is used to make sure all runner helper functions and
+// classes are compiled, to avoid unnecessary pauses due to delayed
+// compilation of runner methods in the middle of the measuring cycle.
+const WarmupSuite = {
+    name: "Warmup",
+    url: "warmup/index.html",
+    async prepare(page) {
+        await page.waitForElement("#testItem");
+    },
+    tests: [
+        // Make sure to run ever page.method once at least
+        new BenchmarkTestStep("WarmingUpPageMethods", (page) => {
+            let results = [];
+            results.push(page.querySelector(".testItem"));
+            results.push(page.querySelectorAll(".item"));
+            results.push(page.getElementById("testItem"));
+        }),
+        new BenchmarkTestStep("WarmingUpPageElementMethods", (page) => {
+            const item = page.getElementById("testItem");
+            item.setValue("value");
+            item.click();
+            item.focus();
+            item.dispatchEvent("change");
+            item.enter("keypress");
+            item.dispatchEvent("input");
+            item.enter("keyup");
+        }),
+        new BenchmarkTestStep("WarmingUpPageElementMouseMethods", (page) => {
+            const item = page.getElementById("testItem");
+            const mouseEventOptions = { clientX: 100, clientY: 100, bubbles: true, cancelable: true };
+            const wheelEventOptions = {
+                clientX: 200,
+                clientY: 200,
+                deltaMode: 0,
+                delta: -10,
+                deltaY: -10,
+                bubbles: true,
+                cancelable: true,
+            };
+            item.dispatchEvent("mousedown", mouseEventOptions, MouseEvent);
+            item.dispatchEvent("mousemove", mouseEventOptions, MouseEvent);
+            item.dispatchEvent("mouseup", mouseEventOptions, MouseEvent);
+            item.dispatchEvent("wheel", wheelEventOptions, WheelEvent);
+        }),
+    ],
+};
+
 export class BenchmarkRunner {
     constructor(suites, client) {
         this._suites = suites;
+        if (params.useWarmupSuite)
+            this._suites = [WarmupSuite, ...suites];
         this._client = client;
         this._page = null;
         this._metrics = null;
@@ -188,11 +237,19 @@ export class BenchmarkRunner {
     }
 
     async _runSuite(suite) {
+        const suitePrepareLabel = `suite-${suite.name}-prepare`;
+        const suiteStartLabel = `suite-${suite.name}-start`;
+        const suiteEndLabel = `suite-${suite.name}-end`;
+
+        performance.mark(suitePrepareLabel);
         await this._prepareSuite(suite);
-        performance.mark(`start-suite-${suite.name}`);
+        
+        performance.mark(suiteStartLabel);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
-        performance.mark(`end-suite-${suite.name}`);
+        performance.mark(suiteEndLabel);
+
+        performance.measure(`suite-${suite.name}`, suiteStartLabel, suiteEndLabel);
     }
 
     async _prepareSuite(suite) {
@@ -253,6 +310,11 @@ export class BenchmarkRunner {
     }
 
     async _recordTestResults(suite, test, syncTime, asyncTime, unused_height, testDoneCallback) {
+        // Skip reporting updates for the warmup suite.
+        if (suite === WarmupSuite) {
+            testDoneCallback();
+            return;
+        }
         const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
         const total = syncTime + asyncTime;
         this._measuredValues.tests[suite.name] = suiteResults;
