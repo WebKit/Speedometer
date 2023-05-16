@@ -321,15 +321,15 @@ export class BenchmarkRunner {
             // of the _metrics object, before "Total" and "Score".
             for (let i = 0; i < this._iterationCount; i++)
                 getIterationTotalMetric(i);
-            getMetric("Total");
+            getMetric("Geomean");
             getMetric("Score");
         }
 
-        const iterationTotal = getIterationTotalMetric(this._metrics.Total.length);
+        const iterationTotal = getIterationTotalMetric(this._metrics.Geomean.length);
         for (const results of Object.values(iterationResults))
             iterationTotal.add(results.total);
         iterationTotal.computeAggregatedMetrics();
-        getMetric("Total").add(iterationTotal.geomean);
+        getMetric("Geomean").add(iterationTotal.geomean);
         getMetric("Score").add(MILLISECONDS_PER_MINUTE / iterationTotal.geomean);
 
         for (const metric of Object.values(this._metrics))
