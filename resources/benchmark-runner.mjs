@@ -163,6 +163,23 @@ const WarmupSuite = {
     ],
 };
 
+class RafBracketedCallbacks {
+    constructor(first_callback, second_callback) {
+        this._first_callback = first_callback;
+        this._second_callback = second_callback;
+        this._setTimeoutCallback = this._setTimeout.bind(this);
+    }
+
+    run() {
+        requestAnimationFrame(this._first_callback);
+        requestAnimationFrame(this._setTimeoutCallback);
+    }
+
+    _setTimeout() {
+       setTimeout(this._second_callback, 0);
+    }
+}
+
 class MeasureStep {
     constructor(runner, suite, test, page, frame) {
         this._runner = runner;
@@ -178,24 +195,26 @@ class MeasureStep {
         this._asyncMeasurePromise = new Promise((resolve) => {
             this._asyncDoneCallback = resolve;
         });
-        this._measureSyncCallback = this._measureSync.bind(this);
         this._measureAsyncTimeoutCallback = this._measureAsyncTimeout.bind(this);
-        this._scheduleMeasureAsyncRafCallback = this._scheduleMeasureAsyncRaf.bind(this);
-        this._measureAsyncRafCallback = this._measureAsyncRaf.bind(this);
+        this._rafMeasurement = new RafBracketedCallbacks(this._measureRafStart.bind(this), this._measureRafEnd.bind(this));
 
         this.syncTime = 0;
         this.asyncTime = 0;
         this.layoutTime = 0;
+        this.rafTime = 0;
 
         this._asyncStartTime = 0;
 
-        const label = `${suite.name}.${test.name}`;
-        this._startLabel = `${label}-start`;
-        this._syncEndLabel = `${label}-sync-end`;
-        this._asyncStartLabel = `${label}-async-start`;
-        this._asyncEndLabel = `${label}-async-end`;
-        this._forcedLayoutStartLabel = `${label}-layout-start`;
-        this._forcedLayoutEndLabel = `${label}-layout-end`;
+        this._label = `${suite.name}.${test.name}`;
+        this._startLabel = `${this._label}-start`;
+        this._syncEndLabel = `${this._label}-sync-end`;
+        this._asyncStartLabel = `${this._label}-async-start`;
+        this._asyncEndLabel = `${this._label}-async-end`;
+        this._forcedLayoutStartLabel = `${this._label}-layout-start`;
+        this._forcedLayoutEndLabel = `${this._label}-layout-end`;
+        this._rafStartLabel= `${this._label}-raf-start`;
+        this._rafEndLabel= `${this._label}-raf-end`;
+        this._rafLabel = `${this._label}-raf`;
 
         this._asyncMetricMode = params.asyncMetric;
     }
@@ -203,6 +222,11 @@ class MeasureStep {
     async run() {
         if (this._wasRun)
             throw Error("MeasureStep can only run once.");
+        if (params.stepWaitTime) {
+            await new Promise((resolve) => {
+                setTimeout(resolve, params.stepWaitTime);
+            });
+        }
         if (this._asyncMetricMode === "timeout") {
             // 1. Schedule setTimeout measure-and-run sync work
             // 2. setTimeout callback:
@@ -213,7 +237,7 @@ class MeasureStep {
             //    - start("async time")
             // 3. Potential async work
             // 4. setTimeout callback: end("async time")
-            setTimeout(this._measureSyncCallback, 0);
+            setTimeout(this._measureSync.bind(this), 0);
         } else if (this._asyncMetricMode === "raf") {
             // 1. Schedule rAF callbacks:
             //    - Schedule rAF 1: measure-and-run sync work
@@ -226,8 +250,7 @@ class MeasureStep {
             // 3. rAF 2 callback: Schedule setTimeout(..., 0) measure task
             // 4. Potential async work
             // 5. setTimeout-callback: end("async time")
-            requestAnimationFrame(this._measureSyncCallback);
-            requestAnimationFrame(this._measureAsyncRafCallback);
+            new RafBracketedCallbacks(this._measureSync.bind(this), this._measureAsyncEnd.bind(this)).run();
         } else {
             throw new Error(`Unknown async measure mode: ${this._asyncMetricMode}`);
         }
@@ -248,6 +271,9 @@ class MeasureStep {
         performance.mark(this._asyncStartLabel);
         if (this._asyncMetricMode === "timeout")
             setTimeout(this._measureAsyncTimeoutCallback, 0);
+        else {
+            this._rafMeasurement.run();
+        }
         this._asyncStartTime = performance.now();
     }
 
@@ -264,31 +290,41 @@ class MeasureStep {
 
     _measureAsyncTimeout() {
         this._measureForceLayout();
-        const endTime = performance.now();
-        this.asyncTime = endTime - this._asyncStartTime;
-        performance.mark(this._asyncEndLabel);
+        this._measureAsyncEnd();
         this._asyncDoneCallback();
     }
 
-    _scheduleMeasureAsyncRaf() {
-        // Delay measuring to capture any additional async tasks.
-        setTimeout(this._measureAsyncRafCallback, 0);
+    _measureAsyncEnd() {
+        const endTime = performance.now();
+        performance.mark(this._asyncEndLabel);
+        this.asyncTime = endTime - this._asyncStartTime;
     }
 
-    _measureAsyncRaf() {
+    _measureRafStart() {
+        performance.mark(this._rafStartLabel);
+        this._rafStartTime = performance.now();
+    }
+
+    _measureRafEnd() {
         const endTime = performance.now();
-        this.asyncTime = endTime - this._asyncStartTime;
-        performance.mark(this._asyncEndLabel);
-        this._asyncDoneCallback();
+        performance.mark(this._rafEndLabel);
+        performance.measure(this._rafLabel, this._rafStartLabel, this._rafEndLabel);
+        const delta = endTime - this._rafStartTime;
+        this.rafTime += delta;
+        // TODO: this should probably me a fixed iteration.
+        if (delta >= 1) {
+            // Keep on accumulating RAF times.
+            this._rafMeasurement.run();
+        } else
+            this._asyncDoneCallback();
     }
 
     async _done() {
         await this._asyncMeasurePromise;
-        const label = `${this.suite.name}.${this.test.name}`;
-        performance.measure(`${label}-sync`, this._startLabel, this._syncEndLabel);
-        performance.measure(`${label}-async`, this._asyncStartLabel, this._asyncEndLabel);
+        performance.measure(`${this._label}-sync`, this._startLabel, this._syncEndLabel);
+        performance.measure(`${this._label}-async`, this._asyncStartLabel, this._asyncEndLabel);
         if (this._asyncMetricMode === "timeout")
-            performance.measure(`${label}-layout`, this._forcedLayoutStartLabel, this._forcedLayoutEndLabel);
+            performance.measure(`${this._label}-layout`, this._forcedLayoutStartLabel, this._forcedLayoutEndLabel);
         await new Promise(requestAnimationFrame);
     }
 }
@@ -398,22 +434,23 @@ export class BenchmarkRunner {
     async _runTestAndRecordResults(suite, test) {
         if (this._client?.willRunTest)
             await this._client.willRunTest(suite, test);
-        const task = new MeasureStep(this, suite, test, this._page, this._frame);
-        await task.run();
-        await this._recordTestResults(task);
+        const step = new MeasureStep(this, suite, test, this._page, this._frame);
+        await step.run();
+        await this._recordTestResults(step);
     }
 
-    async _recordTestResults(task) {
-        const suite = task.suite;
-        const test = task.test;
+    async _recordTestResults(step) {
+        const suite = step.suite;
+        const test = step.test;
         const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
-        const total = task.syncTime + task.asyncTime;
+        const total = step.syncTime + step.asyncTime + step.rafTime;
         this._measuredValues.tests[suite.name] = suiteResults;
         suiteResults.tests[test.name] = {
             tests: {
-                Sync: task.syncTime,
-                Layout: task.layoutTime,
-                Async: task.asyncTime,
+                Sync: step.syncTime,
+                Layout: step.layoutTime,
+                Async: step.asyncTime,
+                RAF: step.rafTime,
             },
             total: total,
         };

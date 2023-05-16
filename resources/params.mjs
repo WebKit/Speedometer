@@ -8,6 +8,7 @@ class Params {
     iterationCount = 10;
     suites = [];
     asyncMetric = "timeout"; // or "raf"
+    stepWaitTime = 0;
     useWarmupSuite = false;
 
     constructor(searchParams = undefined) {
@@ -57,14 +58,22 @@ class Params {
             this.asyncMetric = asyncMetric;
         }
 
-        const unused = Array.from(searchParams.keys());
-        if (unused.length > 0)
-            console.error("Got unused search params", unused);
-
         if (searchParams.has("useWarmupSuite")) {
             this.useWarmupSuite = true;
             searchParams.delete("useWarmupSuite");
         }
+
+        if (searchParams.has("stepWaitTime")) {
+            const stepWaitTime = parseInt(searchParams.get("stepWaitTime"));
+            if (!Number.isFinite(stepWaitTime) || stepWaitTime < 0)
+                throw new Error(`Invalid stepWaitTime param: ${stepWaitTime}. Expected positive int.`);
+            searchParams.delete("stepWaitTime");
+            this.stepWaitTime = stepWaitTime;
+        }
+
+        const unused = Array.from(searchParams.keys());
+        if (unused.length > 0)
+            console.error("Got unused search params", unused);
     }
 
     toSearchParams() {
