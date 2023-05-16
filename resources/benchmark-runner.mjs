@@ -164,19 +164,19 @@ const WarmupSuite = {
 };
 
 class RafBracketedCallbacks {
-    constructor(first_callback, second_callback) {
-        this._first_callback = first_callback;
-        this._second_callback = second_callback;
+    constructor(firstCallback, secondCallback) {
+        this._firstCallback = firstCallback;
+        this._secondCallback = secondCallback;
         this._setTimeoutCallback = this._setTimeout.bind(this);
     }
 
     run() {
-        requestAnimationFrame(this._first_callback);
+        requestAnimationFrame(this._firstCallback);
         requestAnimationFrame(this._setTimeoutCallback);
     }
 
     _setTimeout() {
-       setTimeout(this._second_callback, 0);
+       setTimeout(this._secondCallback, 0);
     }
 }
 
