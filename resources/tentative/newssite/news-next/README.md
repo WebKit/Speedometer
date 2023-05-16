@@ -21,3 +21,9 @@ To create new build files, run:
 ```bash
 npm run build
 ```
+
+## Test steps
+
+The Speedometer test consists of navigating between the different pages of the news site. 
+It includes interactions with the navigation drop-down menu to ensure state changes happen in between the page navigations.
+
