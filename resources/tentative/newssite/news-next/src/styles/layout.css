@@ -73,6 +73,10 @@ body {
   width: 100%;
 }
 
+.columns-2-balanced {
+  width: calc(50% - ((var(--content-spacing-xlarge) * 2) / 3));
+}
+
 .columns-3-balanced {
   width: calc(33.33% - ((var(--content-spacing-xlarge) * 2) / 3));
 }
@@ -118,6 +122,7 @@ body {
 }
 
 @media (max-width: 767px) {
+  .columns-2-balanced,
   .columns-3-balanced,
   .columns-3-wide,
   .columns-3-narrow,
