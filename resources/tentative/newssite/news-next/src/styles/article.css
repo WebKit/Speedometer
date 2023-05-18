@@ -46,6 +46,11 @@
     position: relative;
   }
 
+  /* remove margin-top from first element */
+  .article-content:first-child {
+    margin-top: 0;
+  }
+
   .article-body a {
     text-decoration: none;
     color: var(--color-utils-black);
