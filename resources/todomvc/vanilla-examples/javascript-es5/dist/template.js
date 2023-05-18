@@ -92,11 +92,10 @@
      * @returns {string} String containing the count
      */
     Template.prototype.clearCompletedButton = function (completedTodos) {
-        if (completedTodos > 0) {
+        if (completedTodos > 0)
             return "Clear completed";
-        } else {
+        else
             return "";
-        }
     };
 
     // Export to window

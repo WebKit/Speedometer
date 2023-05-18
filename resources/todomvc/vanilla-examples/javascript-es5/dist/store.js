@@ -43,9 +43,8 @@
      * });
      */
     Store.prototype.find = function (query, callback) {
-        if (!callback) {
+        if (!callback)
             return;
-        }
 
         var todos = JSON.parse(MemoryStorage[this._dbName]).todos;
 
@@ -53,10 +52,10 @@
             this,
             todos.filter(function (todo) {
                 for (var q in query) {
-                    if (query[q] !== todo[q]) {
+                    if (query[q] !== todo[q])
                         return false;
-                    }
                 }
+
                 return true;
             })
         );
@@ -90,9 +89,9 @@
         if (id) {
             for (var i = 0; i < todos.length; i++) {
                 if (todos[i].id === id) {
-                    for (var key in updateData) {
+                    for (var key in updateData)
                         todos[i][key] = updateData[key];
-                    }
+
                     break;
                 }
             }
