@@ -31,9 +31,8 @@
     View.prototype._removeItem = function (id) {
         var elem = qs(`[data-id="${id}"]`);
 
-        if (elem) {
+        if (elem)
             this.$todoList.removeChild(elem);
-        }
     };
 
     View.prototype._clearCompletedButton = function (completedCount, visible) {
@@ -49,9 +48,8 @@
     View.prototype._elementComplete = function (id, completed) {
         var listItem = qs(`[data-id="${id}"]`);
 
-        if (!listItem) {
+        if (!listItem)
             return;
-        }
 
         listItem.className = completed ? "completed" : "";
 
@@ -62,9 +60,8 @@
     View.prototype._editItem = function (id, title) {
         var listItem = qs(`[data-id="${id}"]`);
 
-        if (!listItem) {
+        if (!listItem)
             return;
-        }
 
         listItem.className = `${listItem.className} editing`;
 
@@ -79,9 +76,8 @@
     View.prototype._editItemDone = function (id, title) {
         var listItem = qs(`[data-id="${id}"]`);
 
-        if (!listItem) {
+        if (!listItem)
             return;
-        }
 
         var input = qs("input.edit", listItem);
         listItem.removeChild(input);

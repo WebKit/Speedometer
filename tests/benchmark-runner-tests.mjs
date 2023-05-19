@@ -167,9 +167,10 @@ describe("BenchmarkRunner", () => {
 
             it("should run and record results for every test in suite", async () => {
                 assert.calledThrice(_runTestAndRecordResultsStub);
-                assert.calledWith(peformanceMarkSpy, "start-suite-Suite 1");
-                assert.calledWith(peformanceMarkSpy, "end-suite-Suite 1");
-                expect(peformanceMarkSpy.callCount).to.equal(2);
+                assert.calledWith(peformanceMarkSpy, "suite-Suite 1-prepare");
+                assert.calledWith(peformanceMarkSpy, "suite-Suite 1-start");
+                assert.calledWith(peformanceMarkSpy, "suite-Suite 1-end");
+                expect(peformanceMarkSpy.callCount).to.equal(3);
             });
         });
     });

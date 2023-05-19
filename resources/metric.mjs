@@ -22,18 +22,17 @@ export class Metric {
 
         this.values = [];
 
-        this.parent = undefined;
-        this.children = [];
-
         // Mark properties which refer to other Metric objects as
         // non-enumerable to avoid issue with JSON.stringify due to circular
         // references.
         Object.defineProperties(this, {
             parent: {
                 writable: true,
+                value: undefined,
             },
             children: {
                 writable: true,
+                value: [],
             },
         });
     }
