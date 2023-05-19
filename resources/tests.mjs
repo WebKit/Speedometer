@@ -336,7 +336,7 @@ Suites.push({
     name: "NewsSite-Next",
     url: "tentative/newssite/news-next/dist/index.html",
     async prepare(page) {
-        await page.waitForElement(".page-footer");
+        await page.waitForElement("#close-toast-link");
     },
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
