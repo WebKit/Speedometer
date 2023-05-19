@@ -5,7 +5,12 @@ function uuid() {
         if (i === 8 || i === 12 || i === 16 || i === 20)
             uuid += "-";
 
-        uuid += (i === 12 ? 4 : i === 16 ? (random & 3) | 8 : random).toString(16);
+        let currentNumber = random;
+        if (i === 12)
+            currentNumber = 4;
+        else if (i === 16)
+            currentNumber = 8 | (random & 3);
+        uuid += currentNumber.toString(16);
     }
     return uuid;
 }
