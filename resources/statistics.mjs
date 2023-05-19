@@ -69,9 +69,9 @@ export function confidenceIntervalDelta(confidenceLevel, numberOfSamples, sum, s
         return NaN;
 
     const cdfForProbability = tDistributionInverseCDF[probability];
-    const degreesOfFreedom = numberOfSamples - 1;
+    let degreesOfFreedom = numberOfSamples - 1;
     if (degreesOfFreedom > cdfForProbability.length)
-        throw `We only support up to ${deltas.length} degrees of freedom`;
+        degreesOfFreedom = cdfForProbability.length - 1;
 
     // tDistributionQuantile(degreesOfFreedom, confidenceLevel) * sampleStandardDeviation / sqrt(numberOfSamples) * S/sqrt(numberOfSamples)
     const quantile = cdfForProbability[degreesOfFreedom - 1]; // The first entry is for the one degree of freedom.
