@@ -341,38 +341,53 @@ Suites.push({
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
             page.querySelector("#close-toast-link").click();
+            page.layout();
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-us-link").click();
         }),
         new BenchmarkTestStep("NavigateToWorld", (page) => {
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-world-link").click();
         }),
         new BenchmarkTestStep("NavigateToPolitics", (page) => {
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-politics-link").click();
         }),
         new BenchmarkTestStep("NavigateToBusiness", (page) => {
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-business-link").click();
         }),
         new BenchmarkTestStep("NavigateToOpinion", (page) => {
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-opinion-link").click();
         }),
         new BenchmarkTestStep("NavigateToHealth", (page) => {
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-health-link").click();
         }),
         new BenchmarkTestStep("NavigateToHome", (page) => {
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#home-link").click();
         }),
     ],
