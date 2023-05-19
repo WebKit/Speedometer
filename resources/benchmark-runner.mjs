@@ -163,6 +163,29 @@ const WarmupSuite = {
     ],
 };
 
+class TestInvoker {
+    constructor(syncCallback, asyncCallback, reportCallback) {
+        this._syncCallback = syncCallback;
+        this._asyncCallback = asyncCallback;
+        this._reportCallback = reportCallback;
+    }
+
+    start() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                this._syncCallback();
+                setTimeout(() => {
+                    this._asyncCallback();
+                    requestAnimationFrame(async () => {
+                        await this._reportCallback();
+                        resolve();
+                    });
+                }, 0);
+            }, 0);
+        });
+    }
+}
+
 export class BenchmarkRunner {
     constructor(suites, client) {
         this._suites = suites;
@@ -265,56 +288,51 @@ export class BenchmarkRunner {
 
     async _runTestAndRecordResults(suite, test) {
         /* eslint-disable-next-line no-async-promise-executor */
-        return new Promise(async (resolve) => {
-            if (this._client?.willRunTest)
-                await this._client.willRunTest(suite, test);
+        if (this._client?.willRunTest)
+            await this._client.willRunTest(suite, test);
 
-            setTimeout(() => {
-                this._runTest(suite, test, this._page, resolve);
-            }, 0);
-        });
-    }
-
-    // This function ought be as simple as possible. Don't even use Promise.
-    _runTest(suite, test, page, testDoneCallback) {
         // Prepare all mark labels outside the measuring loop.
         const startLabel = `${suite.name}.${test.name}-start`;
         const syncEndLabel = `${suite.name}.${test.name}-sync-end`;
         const asyncStartLabel = `${suite.name}.${test.name}-async-start`;
         const asyncEndLabel = `${suite.name}.${test.name}-async-end`;
 
-        performance.mark(startLabel);
-        const syncStartTime = performance.now();
-        test.run(page);
-        const syncEndTime = performance.now();
-        performance.mark(syncEndLabel);
+        let syncTime;
+        let asyncStartTime;
+        let asyncTime;
+        const invoker = new TestInvoker(() => {
+            performance.mark(startLabel);
+            const syncStartTime = performance.now();
+            test.run(this._page);
+            const syncEndTime = performance.now();
+            performance.mark(syncEndLabel);
 
-        const syncTime = syncEndTime - syncStartTime;
+            syncTime = syncEndTime - syncStartTime;
 
-        performance.mark(asyncStartLabel);
-        const asyncStartTime = performance.now();
-        setTimeout(() => {
+            performance.mark(asyncStartLabel);
+            asyncStartTime = performance.now();
+        }, () => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
             const height = this._frame.contentDocument.body.getBoundingClientRect().height;
             const asyncEndTime = performance.now();
-            const asyncTime = asyncEndTime - asyncStartTime;
+            asyncTime = asyncEndTime - asyncStartTime;
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
             performance.mark(asyncEndLabel);
             performance.measure(`${suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
             performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
-            window.requestAnimationFrame(() => {
-                this._recordTestResults(suite, test, syncTime, asyncTime, height, testDoneCallback);
-            });
-        }, 0);
+        }, () => {
+            return this._recordTestResults(suite, test, syncTime, asyncTime);
+        });
+
+        return invoker.start();
     }
 
-    async _recordTestResults(suite, test, syncTime, asyncTime, unused_height, testDoneCallback) {
+    async _recordTestResults(suite, test, syncTime, asyncTime) {
         // Skip reporting updates for the warmup suite.
-        if (suite === WarmupSuite) {
-            testDoneCallback();
+        if (suite === WarmupSuite)
             return;
-        }
+
         const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
         const total = syncTime + asyncTime;
         this._measuredValues.tests[suite.name] = suiteResults;
@@ -323,8 +341,6 @@ export class BenchmarkRunner {
 
         if (this._client?.didRunTest)
             await this._client.didRunTest(suite, test);
-
-        testDoneCallback();
     }
 
     async _finalize() {
