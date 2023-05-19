@@ -173,6 +173,43 @@ button,
     border-color: var(--highlight);
 }
 
+.developer-mode {
+    border-radius: 5px;
+    max-height: 80vh;
+    padding: 1rem;
+    background: #e84f4f;
+    border: 1px solid white;
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.developer-mode summary {
+    user-select: none;
+    cursor: pointer;
+}
+
+.developer-mode-content {
+    flex: 1;
+    max-height: 80vh;
+    overflow: auto;
+}
+
+.developer-mode-content ol {
+    list-style: none;
+    padding: 0;
+}
+
+.developer-mode-content button {
+    background: white;
+    padding: 3px;
+    appearance: button;
+    border: 1px solid white;
+    margin: 0 5px;
+}
+
 section {
     display: none;
     --padding-width: 15px;

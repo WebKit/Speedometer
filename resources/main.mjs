@@ -4,6 +4,7 @@ import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { params } from "./params.mjs";
+import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -15,6 +16,7 @@ class MainBenchmarkClient {
     _progressCompleted = null;
     _isRunning = false;
     _hasResults = false;
+    _developerModeContainer = null;
     _metrics = Object.create(null);
 
     constructor() {
@@ -25,22 +27,11 @@ class MainBenchmarkClient {
     startBenchmark() {
         if (this._isRunning)
             return false;
-        if (params.suites.length > 0) {
-            if (!Suites.enable(params.suites)) {
-                const message = `Suite "${params.suites}" does not exist. No tests to run.`;
-                alert(message);
-                console.error(
-                    message,
-                    params.suites,
-                    "\nValid values:",
-                    Suites.map((each) => each.name)
-                );
-                return false;
-            }
-        }
+
+        this._developerModeContainer?.remove();
+
         this._metrics = Object.create(null);
         this._isRunning = true;
-        this.developerMode = params.developerMode;
 
         const enabledSuites = Suites.filter((suite) => !suite.disabled);
         const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => {
@@ -94,7 +85,7 @@ class MainBenchmarkClient {
 
         this._populateDetailedResults(metrics);
 
-        if (this.developerMode)
+        if (params.developerMode)
             this.showResultsDetails();
         else
             this.showResultsSummary();
@@ -223,6 +214,25 @@ class MainBenchmarkClient {
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
+
+        if (params.suites.length > 0) {
+            if (!Suites.enable(params.suites)) {
+                const message = `Suite "${params.suites}" does not exist. No tests to run.`;
+                alert(message);
+                console.error(
+                    message,
+                    params.suites,
+                    "\nValid values:",
+                    Suites.map((each) => each.name)
+                );
+                return false;
+            }
+        }
+
+        if (params.developerMode) {
+            this._developerModeContainer = createDeveloperModeContainer(Suites);
+            document.body.append(this._developerModeContainer);
+        }
 
         if (params.startAutomatically)
             this._startBenchmarkHandler();
