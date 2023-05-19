@@ -19,12 +19,10 @@ export default function Page({ id }) {
     }
 
     function onAccept() {
-        console.log("accept");
         closePortal();
     }
 
     function onReject() {
-        console.log("reject");
         closePortal();
     }
 
