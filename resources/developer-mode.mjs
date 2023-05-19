@@ -1,4 +1,6 @@
-export function createDeveloperModeContainer(suites) {
+import { Suites } from "./tests.mjs";
+
+export function createDeveloperModeContainer() {
     let container = document.createElement("div");
     container.className = "developer-mode";
 
@@ -9,19 +11,19 @@ export function createDeveloperModeContainer(suites) {
 
     let content = document.createElement("div");
     content.className = "developer-mode-content";
-    content.append(createUIForSuites(suites));
+    content.append(createUIForSuites());
     details.append(content);
 
     container.append(details);
     return container;
 }
 
-export function createUIForSuites(suites) {
+export function createUIForSuites() {
     const control = document.createElement("nav");
     const ol = document.createElement("ol");
     const checkboxes = [];
 
-    for (let suite of suites) {
+    for (let suite of Suites) {
         const li = document.createElement("li");
         const checkbox = document.createElement("input");
         checkbox.id = suite.name;
@@ -30,19 +32,18 @@ export function createUIForSuites(suites) {
         checkbox.onclick = (e) => {
             suite.disabled = !checkbox.checked;
             if (e?.ctrlKey || e?.metaKey) {
-                for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
-                    if (suites[suiteIndex] !== suite) {
-                        suites[suiteIndex].disabled = true;
+                for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) {
+                    if (Suites[suiteIndex] !== suite) {
+                        Suites[suiteIndex].disabled = true;
                         checkboxes[suiteIndex].checked = false;
                     } else {
-                        suites[suiteIndex].disabled = false;
+                        Suites[suiteIndex].disabled = false;
                         checkboxes[suiteIndex].checked = true;
                     }
                 }
             }
-            fixupURL(suites);
+            fixupURL();
         };
-        checkbox.onclick();
         checkboxes.push(checkbox);
 
         li.appendChild(checkbox);
@@ -59,38 +60,38 @@ export function createUIForSuites(suites) {
     let button = document.createElement("button");
     button.textContent = "Select all";
     button.onclick = () => {
-        for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
-            suites[suiteIndex].disabled = false;
+        for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) {
+            Suites[suiteIndex].disabled = false;
             checkboxes[suiteIndex].checked = true;
         }
-        fixupURL(suites);
+        fixupURL(Suites);
     };
     control.appendChild(button);
 
     button = document.createElement("button");
     button.textContent = "Unselect all";
     button.onclick = () => {
-        for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
-            suites[suiteIndex].disabled = true;
+        for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) {
+            Suites[suiteIndex].disabled = true;
             checkboxes[suiteIndex].checked = false;
         }
-        fixupURL(suites);
+        fixupURL();
     };
     control.appendChild(button);
 
     return control;
 }
 
-function fixupURL(suites) {
+function fixupURL() {
     // If less than all suites are selected then change the URL "Suites" GET parameter
     // to comma separate only the selected
     let selectedSuites = [];
-    for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
-        if (!suites[suiteIndex].disabled)
-            selectedSuites.push(suites[suiteIndex].name);
+    for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) {
+        if (!Suites[suiteIndex].disabled)
+            selectedSuites.push(Suites[suiteIndex].name);
 
     }
-    if (selectedSuites.length === 0 || selectedSuites.length === suites.length) {
+    if (selectedSuites.length === 0 || selectedSuites.length === Suites.length) {
         let url = new URL(window.location.href);
         url.searchParams.delete("suites");
         url.searchParams.delete("suite");

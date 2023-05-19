@@ -28,6 +28,19 @@ class MainBenchmarkClient {
         if (this._isRunning)
             return false;
 
+        if (Suites.every((suite) => suite.disabled)) {
+            const message = `No suites selected - "${params.suites}" does not exist.`;
+            alert(message);
+            console.error(
+                message,
+                params.suites,
+                "\nValid values:",
+                Suites.map((each) => each.name)
+            );
+
+            return false;
+        }
+
         this._developerModeContainer?.remove();
 
         this._metrics = Object.create(null);
@@ -215,19 +228,8 @@ class MainBenchmarkClient {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
 
-        if (params.suites.length > 0) {
-            if (!Suites.enable(params.suites)) {
-                const message = `Suite "${params.suites}" does not exist. No tests to run.`;
-                alert(message);
-                console.error(
-                    message,
-                    params.suites,
-                    "\nValid values:",
-                    Suites.map((each) => each.name)
-                );
-                return false;
-            }
-        }
+        if (params.suites.length > 0)
+            Suites.enable(params.suites);
 
         if (params.developerMode) {
             this._developerModeContainer = createDeveloperModeContainer(Suites);
