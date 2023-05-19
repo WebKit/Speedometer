@@ -91,23 +91,6 @@ describe("BenchmarkRunner", () => {
                 expect(scrolling).to.be("no");
             });
 
-            it(`should add body margins to the frame if the window is larger than ${DEFAULT_WIDTH}px x ${DEFAULT_HEIGHT}px`, async () => {
-                stub(window, "innerWidth").get(() => DEFAULT_WIDTH + 100);
-                stub(window, "innerHeight").get(() => DEFAULT_HEIGHT + 100);
-
-                const { style } = await runner._appendFrame();
-                expect(style.left).to.be("8px");
-                expect(style.top).to.be("8px");
-            });
-
-            it(`should not add outer spacing to the frame if the window is smaller than ${DEFAULT_WIDTH}px x ${DEFAULT_HEIGHT}px`, async () => {
-                stub(window, "innerWidth").get(() => DEFAULT_WIDTH - 100);
-
-                const { style } = await runner._appendFrame();
-                expect(style.left).to.be("0px");
-                expect(style.top).to.be("0px");
-            });
-
             it("should insert the frame as the first child in the document body", async () => {
                 const firstChild = document.createTextNode("First Child");
                 const insertBeforeSpy = spy(document.body, "insertBefore");

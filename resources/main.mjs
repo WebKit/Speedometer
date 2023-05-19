@@ -54,10 +54,9 @@ class MainBenchmarkClient {
     }
 
     willAddTestFrame(frame) {
-        const main = document.querySelector("#running");
-        const style = getComputedStyle(main);
-        frame.style.left = `${main.offsetLeft + parseInt(style.borderLeftWidth) + parseInt(style.paddingLeft)}px`;
-        frame.style.top = `${main.offsetTop + parseInt(style.borderTopWidth) + parseInt(style.paddingTop)}px`;
+        frame.style.left = "50%";
+        frame.style.top = "50%";
+        frame.style.transform = "translate(-50%, -50%)";
     }
 
     willRunTest(suite, test) {
