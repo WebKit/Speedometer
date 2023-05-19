@@ -200,16 +200,9 @@ export class BenchmarkRunner {
         style.position = "absolute";
         frame.setAttribute("scrolling", "no");
         frame.className = "test-runner";
-        const computedStyle = getComputedStyle(document.body);
-        const marginLeft = parseInt(computedStyle.marginLeft);
-        const marginTop = parseInt(computedStyle.marginTop);
-        if (window.innerWidth > params.viewport.width + marginLeft && window.innerHeight > params.viewport.height + marginTop) {
-            style.left = `${marginLeft}px`;
-            style.top = `${marginTop}px`;
-        } else {
-            style.left = "0px";
-            style.top = "0px";
-        }
+        style.left = "50%";
+        style.top = "50%";
+        style.transform = "translate(-50%, -50%)";
 
         if (this._client?.willAddTestFrame)
             await this._client.willAddTestFrame(frame);
@@ -243,7 +236,7 @@ export class BenchmarkRunner {
 
         performance.mark(suitePrepareLabel);
         await this._prepareSuite(suite);
-        
+
         performance.mark(suiteStartLabel);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
