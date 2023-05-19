@@ -82,29 +82,29 @@ export function createUIForSuites(suites) {
 }
 
 function fixupURL(suites) {
-  // If less than all suites are selected then change the URL "Suites" GET parameter
-  // to comma separate only the selected
-  let selectedSuites = [];
-  for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
-      if (!suites[suiteIndex].disabled) {
-          selectedSuites.push(suites[suiteIndex].name);
-      }
-  }
-  if (selectedSuites.length == 0 || selectedSuites.length == suites.length) {
-      let url = new URL(window.location.href);
-      url.searchParams.delete("suites");
-      url.searchParams.delete("suite");
-      url.search = decodeURIComponent(url.search);
+    // If less than all suites are selected then change the URL "Suites" GET parameter
+    // to comma separate only the selected
+    let selectedSuites = [];
+    for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
+        if (!suites[suiteIndex].disabled)
+            selectedSuites.push(suites[suiteIndex].name);
 
-      // Only push state if changed
-      if (url.href != window.location.href) {
-          window.history.pushState({}, "", url);
-      }
-  } else {
-      let url = new URL(window.location.href);
-      url.searchParams.delete("suite");
-      url.searchParams.set("suites", selectedSuites.join(","));
-      url.search = decodeURIComponent(url.search);
-      window.history.pushState({}, "", url);
-  }
+    }
+    if (selectedSuites.length === 0 || selectedSuites.length === suites.length) {
+        let url = new URL(window.location.href);
+        url.searchParams.delete("suites");
+        url.searchParams.delete("suite");
+        url.search = decodeURIComponent(url.search);
+
+        // Only push state if changed
+        if (url.href !== window.location.href)
+            window.history.pushState({}, "", url);
+
+    } else {
+        let url = new URL(window.location.href);
+        url.searchParams.delete("suite");
+        url.searchParams.set("suites", selectedSuites.join(","));
+        url.search = decodeURIComponent(url.search);
+        window.history.pushState({}, "", url);
+    }
 }
