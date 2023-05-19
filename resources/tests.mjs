@@ -346,7 +346,6 @@ Suites.push({
             page.querySelector("#navbar-navlist-us-link").click();
         }),
         new BenchmarkTestStep("NavigateToWorld", (page) => {
-            page.querySelector("#close-message-link").click();
             page.querySelector("#navbar-dropdown-toggle").click();
             page.querySelector("#navbar-dropdown-toggle").click();
             page.querySelector("#navbar-navlist-world-link").click();
