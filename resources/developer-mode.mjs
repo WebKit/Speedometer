@@ -91,7 +91,7 @@ function fixupURL() {
         if (!Suites[suiteIndex].disabled)
             selectedSuites.push(Suites[suiteIndex].name);
     }
-    if (selectedSuites.length === 0 || selectedSuites.length === Suites.length) {
+    if (!selectedSuites.length || selectedSuites.length === Suites.length) {
         const url = new URL(window.location.href);
         url.searchParams.delete("suites");
         url.searchParams.delete("suite");
