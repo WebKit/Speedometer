@@ -1,0 +1,281 @@
+html {
+    font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(180deg, #a90051 0%, #1e0031 100%),
+        linear-gradient(121.28deg, #340067 0%, #000000 38.54%),
+        linear-gradient(180deg, #00ff19 0%, #000000 100%),
+        linear-gradient(294.84deg, #870202d0 0%, #450000c3 100%),
+        linear-gradient(121.28deg, #32003a 0%, #ff4040 100%),
+        radial-gradient(50% 72.12% at 50% 50%, #eb00ff 0%, #110055 100%);
+    background-blend-mode: color-dodge, screen, overlay, exclusion, difference, normal;
+    color: seashell;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.slide-section {
+    padding-top: 1%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.box {
+    position: relative;
+    flex: 1 1 10%;
+    height: 100%;
+    transition: all 100ms ease-out;
+    text-align: end;
+    overflow: hidden;
+}
+
+.box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.4;
+}
+
+.active {
+    flex-basis: 50%;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.active > img {
+    opacity: 1;
+}
+
+.active > span {
+    opacity: 0;
+}
+
+.box span {
+    position: absolute;
+    top: 10px;
+    right: 13px;
+    opacity: 0.7;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+.box-1 {
+    z-index: 5;
+}
+
+.box-2 {
+    z-index: 4;
+}
+
+.box-3 {
+    z-index: 3;
+}
+
+.box-4 {
+    z-index: 2;
+}
+
+.box-5 {
+    z-index: 1;
+}
+
+.box:not(.active):hover {
+    cursor: pointer;
+    flex-basis: 20%;
+}
+
+.box:not(.active):hover > img {
+    opacity: 0.7;
+}
+
+.table-section {
+    padding-top: 1%;
+    display: flex;
+    justify-content: center;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 5px;
+    width: 95%;
+}
+
+thead {
+    background-image: linear-gradient(
+        to right,
+        #e55d87 0%,
+        #5fc3e4 51%,
+        #e55d87 100%
+    );
+    text-align: left;
+}
+
+tbody td {
+    filter: blur(1px);
+}
+
+tbody tr:nth-child(1) td:nth-child(1)::before {
+    border: solid 0.1em red;
+    border-radius: 0.75em;
+    color: red;
+    content: "★";
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    padding: 0.1em 0.1em;
+    top: 12%;
+    left: 5%;
+    opacity: 0.75;
+    transform: rotate(-25deg) scale(1);
+}
+
+tbody .tr-active td {
+    filter: blur(0);
+}
+
+tbody .tr-active {
+    box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.2),
+    0 16px 24px 2px rgba(0, 0, 0, 0.2), 0 6px 30px 5px rgba(0, 0, 0, 0.2) !important;
+}
+
+th,
+td {
+    font-size: 1rem;
+    padding: 1rem;
+}
+
+th {
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+}
+
+td .price {
+    display: block;
+    text-align: center;
+    font: bold 16px Georgia, Serif;
+    color: #2b106a;
+    background: #be93fd;
+    border: 5px solid #a178df;
+    height: 20px;
+    width: 50px;
+    border-radius: 100px;
+    box-shadow: 0 -5px 10px #ddd inset, 0 3px 0 #999 inset;
+}
+
+table thead tr th:nth-child(1),
+table tbody tr td:nth-child(1) {
+    font-size: 1.125rem;
+    text-align: center;
+    padding-right: 1.25rem;
+    opacity: 0.7;
+}
+
+table tbody tr td:nth-child(2) {
+    font-size: 1.125rem;
+    font-weight: 650;
+}
+
+table thead tr th:last-child,
+table tbody tr td:last-child {
+    text-align: right;
+}
+
+.rating {
+    perspective: 250px;
+    top: 40%;
+    width: 100%;
+}
+
+.rating span {
+    font-size: 16px;
+    color: #fff;
+    opacity: 0.5;
+    display: inline-block;
+    transform: rotateX(45deg);
+    transform-origin: center bottom;
+    backdrop-filter: blur(10px);
+}
+
+.rating span.select {
+    color: #ff0;
+    opacity: 1;
+    transform: rotateX(0deg);
+    animation: blinker 100ms alternate ease-in-out;
+}
+
+.bar {
+    position: relative;
+    border: 3px solid #c34a36;
+    border-radius: 20px;
+}
+
+.bar div {
+    position: relative;
+    width: 0;
+    height: 15px;
+    border-radius: 10px;
+    background-color: #ff6f91;
+    text-align: right;
+}
+
+.bar span {
+    font-weight: 600;
+}
+
+@keyframes blinker {
+    0% {
+        transform: scale(0.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes progress-80-fill {
+    100% {
+        width: 80%;
+    }
+}
+
+@keyframes progress-85-fill {
+    100% {
+        width: 85%;
+    }
+}
+
+@keyframes progress-90-fill {
+    100% {
+        width: 90%;
+    }
+}
+
+@keyframes progress-95-fill {
+    100% {
+        width: 95%;
+    }
+}
+
+@keyframes progress-98-fill {
+    100% {
+        width: 98%;
+    }
+}
