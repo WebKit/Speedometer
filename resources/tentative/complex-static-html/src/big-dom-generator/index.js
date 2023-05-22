@@ -12,12 +12,11 @@ fs.writeFileSync("src/react-todomvc/public/matchingCss.css", randomCss.matchingC
 fs.writeFileSync("src/react-todomvc/public/nonMatchingCss.css", randomCss.nonMatchingCss);
 
 const html = `<!DOCTYPE html>
-<html lang="en" class="ui spectrum spectrum--medium spectrum--light">
+<html lang="en" class="spectrum spectrum--medium spectrum--light">
   <head>
     <title>Big Todo App</title>
-    <link rel="stylesheet" href="app.css">
   </head>
-  <body class="ui">
+  <body>
     ${renderToStaticMarkup(<App />)}
   </body>
 </html>`;

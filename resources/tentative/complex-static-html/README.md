@@ -6,13 +6,13 @@ This is a proposal to embed the TodoMVC benchmark on a complex static DOM.
 
 This workload embeds the todoMVC benchmark in an html page with the following characteristics.
 
-* The page is a big static DOM with around 4000 elements. Every element not belonging to the todoMVC benchmark is marked with a class `ui`.
+* The page is a big static DOM with around 4000 elements.
 * The page is styled using the @spectrum-css adobe library, which relies on css variables for uniform styling.
 * The @spectrum-css rules of the page are post processed using postcss and purgecss.
 * The page includes other 400 complex color css rules using different kinds of css selectors and combinators.
-* 200 of the above rules will fully match elements added by the todoMVC benchmark, but not elements in the UI. E.g. `.toggle-all-container ~ ul > .li-6-0 > .view-6:not(.ui)`.
+* 200 of the above rules will fully match elements added by the todoMVC benchmark, but not elements in the UI. E.g. `.toggle-all-container ~ ul > .li-6 > .view-6.targeted`.
 * 200 of the above rules will partially match elements added by the todoMVC benchmark (the right most selector will match). E.g. `.header.just-span .header ~ .main .view-31`.
-* We added new classes `li-{index}` and `view-{index}` to the todoMVC benchmark to make it easier to match the elements.
+* We added new classes `li-{index}` and `view-{index}` to the todoMVC benchmark list items to make it easier to match the elements. We also added a class `targeted` to them to avoid affecting other elements with the generated CSS.
 
 <p align = "center">
 <img src="complex-dom-workload.png" alt="workload" width="800"/>
@@ -67,5 +67,5 @@ Non Matching rules:
 
 We made only small modifications to the benchmark itself:
 
-* Added new classes `li-{index}` and `view-{index}` to the list items and view elements to make it easier to match the complex css rules.
+* Added new classes `li-{index}` and `view-{index}` to the list items and view elements to make it easier to match the complex css rules, and added a class `targeted` to them to avoid affecting other elements with the generated CSS.
 * Made the info section part of the react component to take it out of the html page.

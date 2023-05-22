@@ -4,12 +4,12 @@ import { TopBar } from "./components/top-bar.jsx";
 import { TreeArea } from "./components/tree-area.jsx";
 
 const TodoArea = () => {
-    return <div className="ui todo-area" />;
+    return <div className="todo-area" />;
 };
 
 export const App = () => {
     return (
-        <div className="ui main-ui" dir="ltr">
+        <div className="main-ui" dir="ltr">
             <ShowMore />
             <Ribbon />
             <TopBar />

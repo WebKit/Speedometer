@@ -7,29 +7,28 @@ const random = new LCG(DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR);
 // and it needs to be updated if the structure changes.
 // TODO: make it less hard-coded.
 /* 
-  <body class="ui">
-    <div class="ui main-ui">
-      <div class="ui show-more">
-      <div class="ui top-bar">
-      <div class="ui ribbon">
-      <div class="ui tree-area">
-      <div class="ui todo-area">
+<body>
+    <div class="main-ui">
+        <div class="show-more"/>
+        <div class=top-bar"/>
+        <div class="ribbon"/>
+        <div class="tree-area"/>
+        <div class="todo-area"/>
         <div class="todoholder">
-          <section class="todoapp">
-            <header class="header">
-            <main class="main">
-              <input class="toggle-all-container">
-              <ul class="todo-list">
-                <li class="li-0-0">
-                  <div class="view-0">
-                <li class="li-1-0">
-                  <div class="view-0">
-                ...
-              </ul>
-            </main>
-          </section>
+            <section class="todoapp"/>
+                <header class="header"/>
+                    <main class="main">
+                        <input class="toggle-all-container">
+                        <ul class="todo-list">
+                            <li class="li-0 targeted">
+                                <div class="view-0 targeted">
+                            <li class="li-1 targeted">
+                                <div class="view-0 targeted">
+                            ...
+                        </ul>
+                    </main>
+            </section>
         </div>
-      </div>
     </div>
 </body>
 */
@@ -39,7 +38,7 @@ const getClassname = (depth, index) => {
         case 7:
             return `.view-${index}`;
         case 6:
-            return `.li-${index}-0`;
+            return `.li-${index}`;
         case 5:
             // prettier-ignore
             if (!index)
@@ -203,9 +202,9 @@ export const genCss = () => {
     const matchingSelectors = [];
     const nonMatchingSelectors = [];
     for (let index = 0; index < 100; index++) {
-        // Add `:not(.ui)` to the matching selectors to avoid matching the UI elements.
-        matchingSelectors.push(buildMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)) + ":not(.ui)");
-        matchingSelectors.push(buildMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)) + ":not(.ui)");
+        // Add `.targeted` to the matching selectors to match only the todoMVC items.
+        matchingSelectors.push(buildMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)) + ".targeted");
+        matchingSelectors.push(buildMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)) + ".targeted");
         nonMatchingSelectors.push(buildNonMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)));
         nonMatchingSelectors.push(buildNonMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)));
     }

@@ -17,7 +17,7 @@ const FolderWrapper = (props) => {
         children.push(<TreeItem key={i} nodeCount={nodeCount} random={random} numChildren={numChildren} maxNumChildren={maxNumChildren} maxDepth={maxDepth} childProbability={childProbability} currentDepth={currentDepth + 1} />);
 
     nodeCount.current = nodeCount.current + 1;
-    return <ul className="ui spectrum-TreeView spectrum-TreeView--sizeS">{children}</ul>;
+    return <ul className="spectrum-TreeView spectrum-TreeView--sizeS">{children}</ul>;
 };
 
 const TreeItem = (props) => {
@@ -27,15 +27,15 @@ const TreeItem = (props) => {
     const children = random.coin(childProbability) ? <FolderWrapper nodeCount={nodeCount} random={random} maxNumChildren={maxNumChildren} maxDepth={maxDepth} childProbability={childProbability} currentDepth={currentDepth + 1} /> : null;
     const treeViewItemIsOpen = children && currentDepth < MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH ? "is-open" : "";
     return (
-        <li className={`ui spectrum-TreeView-item ${treeViewItemIsOpen}`}>
-            <a className="ui spectrum-TreeView-itemLink">
+        <li className={`spectrum-TreeView-item ${treeViewItemIsOpen}`}>
+            <a className="spectrum-TreeView-itemLink">
                 {children ? (
-                    <ChevronRight className="ui spectrum-Icon spectrum-UIIcon-ChevronRight100 spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon" />
+                    <ChevronRight className="spectrum-Icon spectrum-UIIcon-ChevronRight100 spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon" />
                 ) : (
-                    <TaskListIcon className="ui task-list-icon spectrum-Icon spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon spectrum-Icon--sizeM" />
+                    <TaskListIcon className="task-list-icon spectrum-Icon spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon spectrum-Icon--sizeM" />
                 )}
 
-                <span className="ui just-span spectrum-TreeView-itemLabel">{children ? "Sprint" : "Todo List"}</span>
+                <span className="just-span spectrum-TreeView-itemLabel">{children ? "Sprint" : "Todo List"}</span>
             </a>
             {children}
         </li>
@@ -49,8 +49,8 @@ export const TreeArea = () => {
     const maxDepth = MAX_GENERATED_DOM_DEPTH;
     const childProbability = PROBABILITY_OF_HAVING_CHILDREN;
     return (
-        <div className="ui tree-area">
-            <h4 className="ui spectrum-Heading spectrum-Heading--sizeXS">Sprints</h4>
+        <div className="tree-area">
+            <h4 className="spectrum-Heading spectrum-Heading--sizeXS">Sprints</h4>
             <FolderWrapper nodeCount={nodeCount} random={random} maxNumChildren={maxNumChildren} maxDepth={maxDepth} childProbability={childProbability} currentDepth={0} />
         </div>
     );

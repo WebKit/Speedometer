@@ -14,12 +14,12 @@ import GraphGanttIcon from "../assets/Smock_GraphGantt_18_N.svg";
 import ClockIcon from "../assets/Smock_Clock_18_N.svg";
 
 const Divider = () => {
-    return <div className="ui ribbon-divider spectrum-Divider spectrum-Divider--sizeS spectrum-Divider--vertical" />;
+    return <div className="ribbon-divider spectrum-Divider spectrum-Divider--sizeS spectrum-Divider--vertical" />;
 };
 
 export const Ribbon = () => {
     return (
-        <div className="ui ribbon">
+        <div className="ribbon">
             <ActionGroup>
                 <ActionButton Icon={ClockIcon} label={"Send Reminder"} quiet />
                 <OptionsPopOver numOptions={4} />

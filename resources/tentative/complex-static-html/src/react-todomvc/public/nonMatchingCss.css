@@ -18,11 +18,11 @@
             text-decoration-color: rgba(140,140,140,0.004); 
             accent-color: rgba(140,140,140,0.004);
         }
-.top-bar.li-0-0 ~ * > .todoholder > .todoapp > main .view-2 { 
+.top-bar.li-0 ~ * > .todoholder > .todoapp > main .view-2 { 
             accent-color: rgba(140,140,140,0.005); 
             border-right-color: rgba(140,140,140,0.005);
         }
-*.toggle-all-container > ul .li-2-0 + .li-3-0 { 
+*.toggle-all-container > ul .li-2 + .li-3 { 
             border-right-color: rgba(140,140,140,0.006); 
             column-rule-color: rgba(140,140,140,0.006);
         }
@@ -30,7 +30,7 @@ div.view-0 > section .header ~ .main > * div {
             border-top-color: rgba(140,140,140,0.007); 
             outline-color: rgba(140,140,140,0.007);
         }
-.todo-area.toggle-all-container > .todoholder > * .li-2-0 ~ .li-4-0 { 
+.todo-area.toggle-all-container > .todoholder > * .li-2 ~ .li-4 { 
             outline-color: rgba(140,140,140,0.008); 
             column-rule-color: rgba(140,140,140,0.008);
         }
@@ -38,7 +38,7 @@ div.view-0 > section .header ~ .main > * div {
             border-left-color: rgba(140,140,140,0.009); 
             border-color: rgba(140,140,140,0.009);
         }
-.main.li-0-0 > ul .li-4-0 + .li-5-0 { 
+.main.li-0 > ul .li-4 + .li-5 { 
             border-color: rgba(140,140,140,0.01); 
             border-right-color: rgba(140,140,140,0.01);
         }
@@ -46,7 +46,7 @@ div.view-0 > section .header ~ .main > * div {
             border-right-color: rgba(140,140,140,0.011); 
             border-bottom-color: rgba(140,140,140,0.011);
         }
-.todoholder.li-0-0 > .todoapp li + li { 
+.todoholder.li-0 > .todoapp li + li { 
             border-bottom-color: rgba(140,140,140,0.012); 
             text-decoration-color: rgba(140,140,140,0.012);
         }
@@ -54,7 +54,7 @@ div.view-0 > section .header ~ .main > * div {
             border-top-color: rgba(140,140,140,0.013); 
             column-rule-color: rgba(140,140,140,0.013);
         }
-.todoholder.todoapp > * .header ~ .main > .todo-list .li-7-0 { 
+.todoholder.todoapp > * .header ~ .main > .todo-list .li-7 { 
             column-rule-color: rgba(140,140,140,0.014); 
             accent-color: rgba(140,140,140,0.014);
         }
@@ -62,7 +62,7 @@ div.view-0 > section .header ~ .main > * div {
             outline-color: rgba(140,140,140,0.015); 
             border-top-color: rgba(140,140,140,0.015);
         }
-.just-span > .todo-area .li-8-0 { 
+.just-span > .todo-area .li-8 { 
             border-left-color: rgba(140,140,140,0.016); 
             text-decoration-color: rgba(140,140,140,0.016);
         }
@@ -86,7 +86,7 @@ div.view-0 > section .header ~ .main > * div {
             accent-color: rgba(140,140,140,0.021); 
             border-bottom-color: rgba(140,140,140,0.021);
         }
-.just-span > * .li-10-0 + li { 
+.just-span > * .li-10 + li { 
             border-left-color: rgba(140,140,140,0.022); 
             column-rule-color: rgba(140,140,140,0.022);
         }
@@ -94,15 +94,15 @@ div.view-0 > section .header ~ .main > * div {
             border-bottom-color: rgba(140,140,140,0.023); 
             border-right-color: rgba(140,140,140,0.023);
         }
-div.header > .todoapp header ~ .main > ul .li-12-0 { 
+div.header > .todoapp header ~ .main > ul .li-12 { 
             border-color: rgba(140,140,140,0.024); 
             text-decoration-color: rgba(140,140,140,0.024);
         }
-.just-span > .todo-area div ~ .todo-list > .li-12-0 .view-12 { 
+.just-span > .todo-area div ~ .todo-list > .li-12 .view-12 { 
             text-decoration-color: rgba(140,140,140,0.025); 
             outline-color: rgba(140,140,140,0.025);
         }
-.just-span > .todo-area .li-13-0 { 
+.just-span > .todo-area .li-13 { 
             outline-color: rgba(140,140,140,0.026); 
             border-bottom-color: rgba(140,140,140,0.026);
         }
@@ -118,7 +118,7 @@ section.toggle-all-container header ~ .main .view-13 {
             accent-color: rgba(140,140,140,0.029); 
             text-decoration-color: rgba(140,140,140,0.029);
         }
-div.view-0 > .todoapp .header ~ .main > ul .li-15-0 { 
+div.view-0 > .todoapp .header ~ .main > ul .li-15 { 
             border-right-color: rgba(140,140,140,0.03); 
             border-top-color: rgba(140,140,140,0.03);
         }
@@ -126,7 +126,7 @@ div.view-0 > .todoapp .header ~ .main > ul .li-15-0 {
             border-top-color: rgba(140,140,140,0.031); 
             border-bottom-color: rgba(140,140,140,0.031);
         }
-.just-span > .todo-area .li-16-0 { 
+.just-span > .todo-area .li-16 { 
             border-bottom-color: rgba(140,140,140,0.032); 
             accent-color: rgba(140,140,140,0.032);
         }
@@ -134,7 +134,7 @@ div.view-0 > .todoapp .header ~ .main > ul .li-15-0 {
             border-right-color: rgba(140,140,140,0.033); 
             border-color: rgba(140,140,140,0.033);
         }
-.just-span > .todo-area > div > .todoapp .li-17-0 { 
+.just-span > .todo-area > div > .todoapp .li-17 { 
             border-color: rgba(140,140,140,0.034); 
             border-left-color: rgba(140,140,140,0.034);
         }
@@ -146,11 +146,11 @@ div.view-0 > .todoapp .header ~ .main > ul .li-15-0 {
             border-bottom-color: rgba(140,140,140,0.036); 
             column-rule-color: rgba(140,140,140,0.036);
         }
-.todoapp.toggle-all-container .li-6-0 ~ .li-18-0 .view-18 { 
+.todoapp.toggle-all-container .li-6 ~ .li-18 .view-18 { 
             column-rule-color: rgba(140,140,140,0.037); 
             border-color: rgba(140,140,140,0.037);
         }
-.just-span > .todo-area .li-19-0 { 
+.just-span > .todo-area .li-19 { 
             border-bottom-color: rgba(140,140,140,0.038); 
             text-decoration-color: rgba(140,140,140,0.038);
         }
@@ -158,7 +158,7 @@ div.view-0 > .todoapp .header ~ .main > ul .li-15-0 {
             column-rule-color: rgba(140,140,140,0.039); 
             outline-color: rgba(140,140,140,0.039);
         }
-.just-span > div * + .li-20-0 { 
+.just-span > div * + .li-20 { 
             border-left-color: rgba(140,140,140,0.04); 
             accent-color: rgba(140,140,140,0.04);
         }
@@ -166,15 +166,15 @@ div.view-0 > .todoapp .header ~ .main > ul .li-15-0 {
             accent-color: rgba(140,140,140,0.041); 
             border-top-color: rgba(140,140,140,0.041);
         }
-.header.view-0 ~ .main > ul * ~ .li-21-0 { 
+.header.view-0 ~ .main > ul * ~ .li-21 { 
             column-rule-color: rgba(140,140,140,0.042); 
             text-decoration-color: rgba(140,140,140,0.042);
         }
-.just-span > div .li-6-0 ~ li > div { 
+.just-span > div .li-6 ~ li > div { 
             text-decoration-color: rgba(140,140,140,0.043); 
             border-color: rgba(140,140,140,0.043);
         }
-.todoholder.toggle-all-container > .todoapp li + .li-22-0 { 
+.todoholder.toggle-all-container > .todoapp li + .li-22 { 
             border-color: rgba(140,140,140,0.044); 
             outline-color: rgba(140,140,140,0.044);
         }
@@ -190,7 +190,7 @@ div.view-0 > div > * div {
             border-left-color: rgba(140,140,140,0.047); 
             border-top-color: rgba(140,140,140,0.047);
         }
-*.todoapp > section .header ~ main > ul .li-24-0 { 
+*.todoapp > section .header ~ main > ul .li-24 { 
             border-top-color: rgba(140,140,140,0.048); 
             border-right-color: rgba(140,140,140,0.048);
         }
@@ -198,7 +198,7 @@ div.view-0 > div > * div {
             border-left-color: rgba(140,140,140,0.049); 
             border-bottom-color: rgba(140,140,140,0.049);
         }
-.just-span > .todo-area .li-25-0 { 
+.just-span > .todo-area .li-25 { 
             outline-color: rgba(140,140,140,0.05); 
             column-rule-color: rgba(140,140,140,0.05);
         }
@@ -206,7 +206,7 @@ div.view-0 > div > * div {
             column-rule-color: rgba(140,140,140,0.051); 
             accent-color: rgba(140,140,140,0.051);
         }
-.just-span > div .li-25-0 + .li-26-0 { 
+.just-span > div .li-25 + .li-26 { 
             accent-color: rgba(140,140,140,0.052); 
             border-bottom-color: rgba(140,140,140,0.052);
         }
@@ -222,7 +222,7 @@ div.view-0 > div > * div {
             border-top-color: rgba(140,140,140,0.055); 
             outline-color: rgba(140,140,140,0.055);
         }
-.just-span > div * + .li-28-0 { 
+.just-span > div * + .li-28 { 
             outline-color: rgba(140,140,140,0.056); 
             text-decoration-color: rgba(140,140,140,0.056);
         }
@@ -230,7 +230,7 @@ div.view-0 > div > * div {
             text-decoration-color: rgba(140,140,140,0.057); 
             border-color: rgba(140,140,140,0.057);
         }
-.just-span > .todo-area > .todoholder > .todoapp .li-29-0 { 
+.just-span > .todo-area > .todoholder > .todoapp .li-29 { 
             accent-color: rgba(140,140,140,0.058); 
             column-rule-color: rgba(140,140,140,0.058);
         }
@@ -238,7 +238,7 @@ div.view-0 > div > * div {
             column-rule-color: rgba(140,140,140,0.059); 
             border-top-color: rgba(140,140,140,0.059);
         }
-.todoholder.li-0-0 > * .li-29-0 + li { 
+.todoholder.li-0 > * .li-29 + li { 
             border-top-color: rgba(140,140,140,0.06); 
             border-right-color: rgba(140,140,140,0.06);
         }
@@ -246,7 +246,7 @@ div.view-0 > div > * div {
             border-left-color: rgba(140,140,140,0.061); 
             text-decoration-color: rgba(140,140,140,0.061);
         }
-.todoholder.view-0 > section .li-30-0 + .li-31-0 { 
+.todoholder.view-0 > section .li-30 + .li-31 { 
             border-color: rgba(140,140,140,0.062); 
             column-rule-color: rgba(140,140,140,0.062);
         }
@@ -254,7 +254,7 @@ div.view-0 > div > * div {
             column-rule-color: rgba(140,140,140,0.063); 
             accent-color: rgba(140,140,140,0.063);
         }
-*.li-0-0 > .todoapp * ~ .main > ul li { 
+*.li-0 > .todoapp * ~ .main > ul li { 
             border-right-color: rgba(140,140,140,0.064); 
             border-top-color: rgba(140,140,140,0.064);
         }
@@ -262,11 +262,11 @@ div.view-0 > div > * div {
             border-top-color: rgba(140,140,140,0.065); 
             text-decoration-color: rgba(140,140,140,0.065);
         }
-div.todoapp > section .header ~ * > .todo-list .li-33-0 { 
+div.todoapp > section .header ~ * > .todo-list .li-33 { 
             text-decoration-color: rgba(140,140,140,0.066); 
             column-rule-color: rgba(140,140,140,0.066);
         }
-.todoholder.li-0-0 > section .header ~ * > .todo-list .view-33 { 
+.todoholder.li-0 > section .header ~ * > .todo-list .view-33 { 
             column-rule-color: rgba(140,140,140,0.067); 
             border-left-color: rgba(140,140,140,0.067);
         }
@@ -274,11 +274,11 @@ div.todoapp > section .header ~ * > .todo-list .li-33-0 {
             accent-color: rgba(140,140,140,0.068); 
             border-color: rgba(140,140,140,0.068);
         }
-.todoapp.toggle-all-container li ~ .li-34-0 .view-34 { 
+.todoapp.toggle-all-container li ~ .li-34 .view-34 { 
             border-bottom-color: rgba(140,140,140,0.069); 
             text-decoration-color: rgba(140,140,140,0.069);
         }
-.just-span > .todo-area .li-35-0 { 
+.just-span > .todo-area .li-35 { 
             text-decoration-color: rgba(140,140,140,0.07); 
             border-color: rgba(140,140,140,0.07);
         }
@@ -294,11 +294,11 @@ div.todoapp > section .header ~ * > .todo-list .li-33-0 {
             border-top-color: rgba(140,140,140,0.073); 
             column-rule-color: rgba(140,140,140,0.073);
         }
-.just-span > div > .todoholder > section .li-37-0 { 
+.just-span > div > .todoholder > section .li-37 { 
             border-color: rgba(140,140,140,0.074); 
             border-left-color: rgba(140,140,140,0.074);
         }
-*.toggle-all-container .li-7-0 ~ li .view-37 { 
+*.toggle-all-container .li-7 ~ li .view-37 { 
             border-left-color: rgba(140,140,140,0.075); 
             border-right-color: rgba(140,140,140,0.075);
         }
@@ -310,15 +310,15 @@ div.todoapp > section .header ~ * > .todo-list .li-33-0 {
             outline-color: rgba(140,140,140,0.077); 
             border-bottom-color: rgba(140,140,140,0.077);
         }
-div.toggle-all-container > .todoapp .li-38-0 + .li-39-0 { 
+div.toggle-all-container > .todoapp .li-38 + .li-39 { 
             accent-color: rgba(140,140,140,0.078); 
             border-right-color: rgba(140,140,140,0.078);
         }
-.just-span .toggle-all-container ~ .todo-list > .li-39-0 .view-39 { 
+.just-span .toggle-all-container ~ .todo-list > .li-39 .view-39 { 
             border-right-color: rgba(140,140,140,0.079); 
             border-bottom-color: rgba(140,140,140,0.079);
         }
-.header.toggle-all-container ~ main > .todo-list .li-34-0 ~ .li-40-0 { 
+.header.toggle-all-container ~ main > .todo-list .li-34 ~ .li-40 { 
             column-rule-color: rgba(140,140,140,0.08); 
             border-top-color: rgba(140,140,140,0.08);
         }
@@ -334,7 +334,7 @@ div.todoapp > div > section .view-41 {
             border-right-color: rgba(140,140,140,0.083); 
             border-left-color: rgba(140,140,140,0.083);
         }
-.todoholder.li-0-0 > section header ~ .main > ul .li-42-0 { 
+.todoholder.li-0 > section header ~ .main > ul .li-42 { 
             border-left-color: rgba(140,140,140,0.084); 
             column-rule-color: rgba(140,140,140,0.084);
         }
@@ -342,7 +342,7 @@ div.todoapp > div > section .view-41 {
             column-rule-color: rgba(140,140,140,0.085); 
             border-color: rgba(140,140,140,0.085);
         }
-.just-span > div > .todoholder > .todoapp .li-43-0 { 
+.just-span > div > .todoholder > .todoapp .li-43 { 
             border-top-color: rgba(140,140,140,0.086); 
             text-decoration-color: rgba(140,140,140,0.086);
         }
@@ -354,11 +354,11 @@ div.todoapp > div > section .view-41 {
             outline-color: rgba(140,140,140,0.088); 
             border-color: rgba(140,140,140,0.088);
         }
-.top-bar.li-0-0 ~ .todo-area > .todoholder > section > .main .view-44 { 
+.top-bar.li-0 ~ .todo-area > .todoholder > section > .main .view-44 { 
             border-color: rgba(140,140,140,0.089); 
             border-left-color: rgba(140,140,140,0.089);
         }
-.todoholder.todoapp > section .li-44-0 + * { 
+.todoholder.todoapp > section .li-44 + * { 
             column-rule-color: rgba(140,140,140,0.09); 
             accent-color: rgba(140,140,140,0.09);
         }
@@ -366,7 +366,7 @@ div.todoapp > div > section .view-41 {
             accent-color: rgba(140,140,140,0.091); 
             border-left-color: rgba(140,140,140,0.091);
         }
-.just-span > div > div > * .li-46-0 { 
+.just-span > div > div > * .li-46 { 
             border-left-color: rgba(140,140,140,0.092); 
             border-bottom-color: rgba(140,140,140,0.092);
         }
@@ -374,7 +374,7 @@ div.todoapp > div > section .view-41 {
             border-color: rgba(140,140,140,0.093); 
             border-right-color: rgba(140,140,140,0.093);
         }
-.just-span > div .li-47-0 { 
+.just-span > div .li-47 { 
             border-bottom-color: rgba(140,140,140,0.094); 
             text-decoration-color: rgba(140,140,140,0.094);
         }
@@ -382,7 +382,7 @@ div.todoapp > div > section .view-41 {
             text-decoration-color: rgba(140,140,140,0.095); 
             column-rule-color: rgba(140,140,140,0.095);
         }
-.just-span > .todo-area .li-48-0 { 
+.just-span > .todo-area .li-48 { 
             border-right-color: rgba(140,140,140,0.096); 
             border-bottom-color: rgba(140,140,140,0.096);
         }
@@ -398,7 +398,7 @@ section.toggle-all-container header ~ .main .view-48 {
             border-left-color: rgba(140,140,140,0.099); 
             border-color: rgba(140,140,140,0.099);
         }
-.todoholder.todoapp > section .li-49-0 + .li-50-0 { 
+.todoholder.todoapp > section .li-49 + .li-50 { 
             border-color: rgba(140,140,140,0.1); 
             border-top-color: rgba(140,140,140,0.1);
         }
@@ -406,7 +406,7 @@ section.toggle-all-container header ~ .main .view-48 {
             border-top-color: rgba(140,140,140,0.101); 
             outline-color: rgba(140,140,140,0.101);
         }
-.just-span > .todo-area .li-51-0 { 
+.just-span > .todo-area .li-51 { 
             border-right-color: rgba(140,140,140,0.102); 
             border-bottom-color: rgba(140,140,140,0.102);
         }
@@ -414,7 +414,7 @@ section.toggle-all-container header ~ .main .view-48 {
             outline-color: rgba(140,140,140,0.103); 
             accent-color: rgba(140,140,140,0.103);
         }
-.just-span > .todo-area > div > .todoapp .li-52-0 { 
+.just-span > .todo-area > div > .todoapp .li-52 { 
             border-right-color: rgba(140,140,140,0.104); 
             border-bottom-color: rgba(140,140,140,0.104);
         }
@@ -422,7 +422,7 @@ section.toggle-all-container header ~ .main .view-48 {
             border-top-color: rgba(140,140,140,0.105); 
             accent-color: rgba(140,140,140,0.105);
         }
-div.toggle-all-container > .todoapp .header ~ .main > .todo-list .li-53-0 { 
+div.toggle-all-container > .todoapp .header ~ .main > .todo-list .li-53 { 
             accent-color: rgba(140,140,140,0.106); 
             column-rule-color: rgba(140,140,140,0.106);
         }
@@ -430,7 +430,7 @@ div.toggle-all-container > .todoapp .header ~ .main > .todo-list .li-53-0 {
             border-right-color: rgba(140,140,140,0.107); 
             border-bottom-color: rgba(140,140,140,0.107);
         }
-.just-span > .todo-area .li-53-0 + li { 
+.just-span > .todo-area .li-53 + li { 
             border-bottom-color: rgba(140,140,140,0.108); 
             text-decoration-color: rgba(140,140,140,0.108);
         }
@@ -438,7 +438,7 @@ div.toggle-all-container > .todoapp .header ~ .main > .todo-list .li-53-0 {
             text-decoration-color: rgba(140,140,140,0.109); 
             border-top-color: rgba(140,140,140,0.109);
         }
-.just-span > div > .todoholder > .todoapp .li-55-0 { 
+.just-span > div > .todoholder > .todoapp .li-55 { 
             border-color: rgba(140,140,140,0.11); 
             border-right-color: rgba(140,140,140,0.11);
         }
@@ -446,7 +446,7 @@ div.toggle-all-container > .todoapp .header ~ .main > .todo-list .li-53-0 {
             border-right-color: rgba(140,140,140,0.111); 
             accent-color: rgba(140,140,140,0.111);
         }
-*.view-0 > .todoapp .header ~ main > .todo-list .li-56-0 { 
+*.view-0 > .todoapp .header ~ main > .todo-list .li-56 { 
             accent-color: rgba(140,140,140,0.112); 
             text-decoration-color: rgba(140,140,140,0.112);
         }
@@ -454,7 +454,7 @@ div.toggle-all-container > .todoapp .header ~ .main > .todo-list .li-53-0 {
             text-decoration-color: rgba(140,140,140,0.113); 
             border-bottom-color: rgba(140,140,140,0.113);
         }
-main.toggle-all-container > ul li + .li-57-0 { 
+main.toggle-all-container > ul li + .li-57 { 
             column-rule-color: rgba(140,140,140,0.114); 
             border-right-color: rgba(140,140,140,0.114);
         }
@@ -462,7 +462,7 @@ main.toggle-all-container > ul li + .li-57-0 {
             border-right-color: rgba(140,140,140,0.115); 
             text-decoration-color: rgba(140,140,140,0.115);
         }
-main.view-0 > .todo-list li + .li-58-0 { 
+main.view-0 > .todo-list li + .li-58 { 
             column-rule-color: rgba(140,140,140,0.116); 
             border-top-color: rgba(140,140,140,0.116);
         }
@@ -470,7 +470,7 @@ main.view-0 > .todo-list li + .li-58-0 {
             border-left-color: rgba(140,140,140,0.117); 
             text-decoration-color: rgba(140,140,140,0.117);
         }
-.just-span > * > div > section .li-59-0 { 
+.just-span > * > div > section .li-59 { 
             text-decoration-color: rgba(140,140,140,0.118); 
             border-top-color: rgba(140,140,140,0.118);
         }
@@ -478,7 +478,7 @@ main.view-0 > .todo-list li + .li-58-0 {
             border-bottom-color: rgba(140,140,140,0.119); 
             column-rule-color: rgba(140,140,140,0.119);
         }
-.just-span > div .li-60-0 { 
+.just-span > div .li-60 { 
             border-top-color: rgba(140,140,140,0.12); 
             border-color: rgba(140,140,140,0.12);
         }
@@ -490,7 +490,7 @@ main.view-0 > .todo-list li + .li-58-0 {
             border-top-color: rgba(140,140,140,0.122); 
             text-decoration-color: rgba(140,140,140,0.122);
         }
-.todo-area.view-0 * ~ .li-61-0 .view-61 { 
+.todo-area.view-0 * ~ .li-61 .view-61 { 
             column-rule-color: rgba(140,140,140,0.123); 
             border-color: rgba(140,140,140,0.123);
         }
@@ -502,7 +502,7 @@ main.view-0 > .todo-list li + .li-58-0 {
             border-top-color: rgba(140,140,140,0.125); 
             border-color: rgba(140,140,140,0.125);
         }
-.just-span > div .li-62-0 + .li-63-0 { 
+.just-span > div .li-62 + .li-63 { 
             border-color: rgba(140,140,140,0.126); 
             border-bottom-color: rgba(140,140,140,0.126);
         }
@@ -510,7 +510,7 @@ div.view-0 > .todoholder > section .view-63 {
             border-bottom-color: rgba(140,140,140,0.127); 
             border-left-color: rgba(140,140,140,0.127);
         }
-div.view-0 > .todoapp .li-63-0 + .li-64-0 { 
+div.view-0 > .todoapp .li-63 + .li-64 { 
             text-decoration-color: rgba(140,140,140,0.128); 
             border-top-color: rgba(140,140,140,0.128);
         }
@@ -518,7 +518,7 @@ div.view-0 > .todoapp .li-63-0 + .li-64-0 {
             outline-color: rgba(140,140,140,0.129); 
             border-right-color: rgba(140,140,140,0.129);
         }
-main.li-0-0 > ul li + li { 
+main.li-0 > ul li + li { 
             text-decoration-color: rgba(140,140,140,0.13); 
             accent-color: rgba(140,140,140,0.13);
         }
@@ -526,7 +526,7 @@ main.li-0-0 > ul li + li {
             accent-color: rgba(140,140,140,0.131); 
             border-bottom-color: rgba(140,140,140,0.131);
         }
-.just-span > .todo-area .li-65-0 + .li-66-0 { 
+.just-span > .todo-area .li-65 + .li-66 { 
             border-color: rgba(140,140,140,0.132); 
             border-right-color: rgba(140,140,140,0.132);
         }
@@ -534,7 +534,7 @@ main.li-0-0 > ul li + li {
             border-right-color: rgba(140,140,140,0.133); 
             accent-color: rgba(140,140,140,0.133);
         }
-.todoholder.li-0-0 > section .header ~ .main > .todo-list li { 
+.todoholder.li-0 > section .header ~ .main > .todo-list li { 
             accent-color: rgba(140,140,140,0.134); 
             border-color: rgba(140,140,140,0.134);
         }
@@ -542,7 +542,7 @@ main.li-0-0 > ul li + li {
             border-color: rgba(140,140,140,0.135); 
             border-left-color: rgba(140,140,140,0.135);
         }
-div.toggle-all-container > .todoapp header ~ .main > .todo-list .li-68-0 { 
+div.toggle-all-container > .todoapp header ~ .main > .todo-list .li-68 { 
             border-left-color: rgba(140,140,140,0.136); 
             border-top-color: rgba(140,140,140,0.136);
         }
@@ -550,7 +550,7 @@ div.toggle-all-container > .todoapp header ~ .main > .todo-list .li-68-0 {
             border-bottom-color: rgba(140,140,140,0.137); 
             text-decoration-color: rgba(140,140,140,0.137);
         }
-.just-span > .todo-area .li-68-0 + .li-69-0 { 
+.just-span > .todo-area .li-68 + .li-69 { 
             border-right-color: rgba(140,140,140,0.138); 
             border-color: rgba(140,140,140,0.138);
         }
@@ -558,7 +558,7 @@ div.toggle-all-container > .todoapp header ~ .main > .todo-list .li-68-0 {
             border-color: rgba(140,140,140,0.139); 
             accent-color: rgba(140,140,140,0.139);
         }
-.todoholder.toggle-all-container > section .li-69-0 + .li-70-0 { 
+.todoholder.toggle-all-container > section .li-69 + .li-70 { 
             accent-color: rgba(140,140,140,0.14); 
             column-rule-color: rgba(140,140,140,0.14);
         }
@@ -566,7 +566,7 @@ div.toggle-all-container > .todoapp header ~ .main > .todo-list .li-68-0 {
             border-color: rgba(140,140,140,0.141); 
             border-bottom-color: rgba(140,140,140,0.141);
         }
-.todoholder.view-0 > .todoapp li + .li-71-0 { 
+.todoholder.view-0 > .todoapp li + .li-71 { 
             border-left-color: rgba(140,140,140,0.142); 
             accent-color: rgba(140,140,140,0.142);
         }
@@ -574,7 +574,7 @@ div.toggle-all-container > .todoapp header ~ .main > .todo-list .li-68-0 {
             border-top-color: rgba(140,140,140,0.143); 
             border-bottom-color: rgba(140,140,140,0.143);
         }
-.just-span > .todo-area li + .li-72-0 { 
+.just-span > .todo-area li + .li-72 { 
             accent-color: rgba(140,140,140,0.144); 
             column-rule-color: rgba(140,140,140,0.144);
         }
@@ -582,7 +582,7 @@ div.toggle-all-container > .todoapp header ~ .main > .todo-list .li-68-0 {
             border-right-color: rgba(140,140,140,0.145); 
             border-color: rgba(140,140,140,0.145);
         }
-.just-span > .todo-area > .todoholder > .todoapp .li-73-0 { 
+.just-span > .todo-area > .todoholder > .todoapp .li-73 { 
             text-decoration-color: rgba(140,140,140,0.146); 
             column-rule-color: rgba(140,140,140,0.146);
         }
@@ -598,7 +598,7 @@ div.toggle-all-container > .todoapp header ~ .main > .todo-list .li-68-0 {
             accent-color: rgba(140,140,140,0.149); 
             column-rule-color: rgba(140,140,140,0.149);
         }
-.todoholder.li-0-0 > section * ~ .main > * .li-75-0 { 
+.todoholder.li-0 > section * ~ .main > * .li-75 { 
             column-rule-color: rgba(140,140,140,0.15); 
             text-decoration-color: rgba(140,140,140,0.15);
         }
@@ -606,7 +606,7 @@ div.toggle-all-container > .todoapp header ~ .main > .todo-list .li-68-0 {
             accent-color: rgba(140,140,140,0.151); 
             border-top-color: rgba(140,140,140,0.151);
         }
-.just-span > div > .todoholder > .todoapp .li-76-0 { 
+.just-span > div > .todoholder > .todoapp .li-76 { 
             border-top-color: rgba(140,140,140,0.152); 
             text-decoration-color: rgba(140,140,140,0.152);
         }
@@ -622,15 +622,15 @@ div.toggle-all-container > .todoapp header ~ .main > .todo-list .li-68-0 {
             border-color: rgba(140,140,140,0.155); 
             border-left-color: rgba(140,140,140,0.155);
         }
-div.li-0-0 > .todoapp .li-77-0 + * { 
+div.li-0 > .todoapp .li-77 + * { 
             border-left-color: rgba(140,140,140,0.156); 
             border-bottom-color: rgba(140,140,140,0.156);
         }
-.todoholder.li-0-0 > .todoapp header ~ .main > .todo-list .view-78 { 
+.todoholder.li-0 > .todoapp header ~ .main > .todo-list .view-78 { 
             column-rule-color: rgba(140,140,140,0.157); 
             border-color: rgba(140,140,140,0.157);
         }
-.just-span > * .li-78-0 + li { 
+.just-span > * .li-78 + li { 
             border-color: rgba(140,140,140,0.158); 
             border-bottom-color: rgba(140,140,140,0.158);
         }
@@ -638,7 +638,7 @@ div.li-0-0 > .todoapp .li-77-0 + * {
             border-bottom-color: rgba(140,140,140,0.159); 
             border-top-color: rgba(140,140,140,0.159);
         }
-.just-span > .todo-area .li-80-0 { 
+.just-span > .todo-area .li-80 { 
             border-left-color: rgba(140,140,140,0.16); 
             column-rule-color: rgba(140,140,140,0.16);
         }
@@ -646,7 +646,7 @@ div.li-0-0 > .todoapp .li-77-0 + * {
             column-rule-color: rgba(140,140,140,0.161); 
             border-bottom-color: rgba(140,140,140,0.161);
         }
-.just-span > .todo-area > div > .todoapp .li-81-0 { 
+.just-span > .todo-area > div > .todoapp .li-81 { 
             border-bottom-color: rgba(140,140,140,0.162); 
             text-decoration-color: rgba(140,140,140,0.162);
         }
@@ -654,7 +654,7 @@ div.li-0-0 > .todoapp .li-77-0 + * {
             text-decoration-color: rgba(140,140,140,0.163); 
             border-top-color: rgba(140,140,140,0.163);
         }
-*.toggle-all-container > ul li + .li-82-0 { 
+*.toggle-all-container > ul li + .li-82 { 
             border-top-color: rgba(140,140,140,0.164); 
             border-left-color: rgba(140,140,140,0.164);
         }
@@ -662,7 +662,7 @@ div.li-0-0 > .todoapp .li-77-0 + * {
             border-left-color: rgba(140,140,140,0.165); 
             column-rule-color: rgba(140,140,140,0.165);
         }
-.just-span > * .li-82-0 + li { 
+.just-span > * .li-82 + li { 
             accent-color: rgba(140,140,140,0.166); 
             border-right-color: rgba(140,140,140,0.166);
         }
@@ -670,7 +670,7 @@ div.li-0-0 > .todoapp .li-77-0 + * {
             column-rule-color: rgba(140,140,140,0.167); 
             border-color: rgba(140,140,140,0.167);
         }
-*.toggle-all-container > .todoapp .li-83-0 + li { 
+*.toggle-all-container > .todoapp .li-83 + li { 
             border-color: rgba(140,140,140,0.168); 
             border-bottom-color: rgba(140,140,140,0.168);
         }
@@ -678,15 +678,15 @@ div.li-0-0 > .todoapp .li-77-0 + * {
             border-bottom-color: rgba(140,140,140,0.169); 
             border-left-color: rgba(140,140,140,0.169);
         }
-.just-span > div > .todoholder > * .li-85-0 { 
+.just-span > div > .todoholder > * .li-85 { 
             border-left-color: rgba(140,140,140,0.17); 
             outline-color: rgba(140,140,140,0.17);
         }
-.main.li-0-0 .toggle-all-container ~ * div { 
+.main.li-0 .toggle-all-container ~ * div { 
             outline-color: rgba(140,140,140,0.171); 
             text-decoration-color: rgba(140,140,140,0.171);
         }
-div.toggle-all-container > .todoapp * + .li-86-0 { 
+div.toggle-all-container > .todoapp * + .li-86 { 
             column-rule-color: rgba(140,140,140,0.172); 
             border-left-color: rgba(140,140,140,0.172);
         }
@@ -702,7 +702,7 @@ div.toggle-all-container > .todoapp * + .li-86-0 {
             border-top-color: rgba(140,140,140,0.175); 
             border-right-color: rgba(140,140,140,0.175);
         }
-.just-span > div > * > section .li-88-0 { 
+.just-span > div > * > section .li-88 { 
             outline-color: rgba(140,140,140,0.176); 
             column-rule-color: rgba(140,140,140,0.176);
         }
@@ -710,7 +710,7 @@ div.toggle-all-container > .todoapp * + .li-86-0 {
             accent-color: rgba(140,140,140,0.177); 
             text-decoration-color: rgba(140,140,140,0.177);
         }
-.just-span > .todo-area .li-89-0 { 
+.just-span > .todo-area .li-89 { 
             outline-color: rgba(140,140,140,0.178); 
             border-top-color: rgba(140,140,140,0.178);
         }
@@ -718,7 +718,7 @@ div.toggle-all-container > .todoapp * + .li-86-0 {
             border-top-color: rgba(140,140,140,0.179); 
             border-right-color: rgba(140,140,140,0.179);
         }
-*.li-0-0 > section * + li { 
+*.li-0 > section * + li { 
             border-right-color: rgba(140,140,140,0.18); 
             column-rule-color: rgba(140,140,140,0.18);
         }
@@ -726,7 +726,7 @@ section.view-0 > .main .toggle-all-container ~ .todo-list > * .view-90 {
             column-rule-color: rgba(140,140,140,0.181); 
             border-bottom-color: rgba(140,140,140,0.181);
         }
-.just-span > div .li-90-0 + li { 
+.just-span > div .li-90 + li { 
             border-bottom-color: rgba(140,140,140,0.182); 
             border-color: rgba(140,140,140,0.182);
         }
@@ -742,7 +742,7 @@ section.view-0 > .main .toggle-all-container ~ .todo-list > * .view-90 {
             border-color: rgba(140,140,140,0.185); 
             border-right-color: rgba(140,140,140,0.185);
         }
-*.todoapp > .todoapp .li-92-0 + .li-93-0 { 
+*.todoapp > .todoapp .li-92 + .li-93 { 
             accent-color: rgba(140,140,140,0.186); 
             outline-color: rgba(140,140,140,0.186);
         }
@@ -770,11 +770,11 @@ section.view-0 > .main .toggle-all-container ~ .todo-list > * .view-90 {
             border-left-color: rgba(140,140,140,0.192); 
             border-color: rgba(140,140,140,0.192);
         }
-.todo-area.toggle-all-container .li-74-0 ~ li div { 
+.todo-area.toggle-all-container .li-74 ~ li div { 
             text-decoration-color: rgba(140,140,140,0.193); 
             column-rule-color: rgba(140,140,140,0.193);
         }
-.just-span > .todo-area > div > .todoapp .li-97-0 { 
+.just-span > .todo-area > div > .todoapp .li-97 { 
             column-rule-color: rgba(140,140,140,0.194); 
             border-color: rgba(140,140,140,0.194);
         }
@@ -786,11 +786,11 @@ div.todoapp > section li + li {
             border-bottom-color: rgba(140,140,140,0.196); 
             outline-color: rgba(140,140,140,0.196);
         }
-div.li-0-0 ~ .todo-area > .todoholder > .todoapp > .main .view-98 { 
+div.li-0 ~ .todo-area > .todoholder > .todoapp > .main .view-98 { 
             column-rule-color: rgba(140,140,140,0.197); 
             border-color: rgba(140,140,140,0.197);
         }
-.just-span > .todo-area .li-99-0 { 
+.just-span > .todo-area .li-99 { 
             outline-color: rgba(140,140,140,0.198); 
             text-decoration-color: rgba(140,140,140,0.198);
         }
