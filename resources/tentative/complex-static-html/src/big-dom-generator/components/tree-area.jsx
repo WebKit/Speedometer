@@ -21,7 +21,7 @@ const FolderWrapper = (props) => {
 };
 
 const TreeItem = (props) => {
-    const { nodeCount, random, numChildren, maxDepth, maxNumChildren, childProbability, currentDepth } = props;
+    const { nodeCount, random, maxDepth, maxNumChildren, childProbability, currentDepth } = props;
     nodeCount.current = nodeCount.current + 4;
     // Choose whether to have children.
     const children = random.coin(childProbability) ? <FolderWrapper nodeCount={nodeCount} random={random} maxNumChildren={maxNumChildren} maxDepth={maxDepth} childProbability={childProbability} currentDepth={currentDepth + 1} /> : null;

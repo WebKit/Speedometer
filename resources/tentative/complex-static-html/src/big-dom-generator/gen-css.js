@@ -6,7 +6,7 @@ const random = new LCG(DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR);
 // The generator assumes the page has the following structure,
 // and it needs to be updated if the structure changes.
 // TODO: make it less hard-coded.
-/* 
+/*
 <body>
     <div class="main-ui">
         <div class="show-more"/>
@@ -65,18 +65,22 @@ const getClassname = (depth, index) => {
                     return ".tree-area";
                 case 4:
                     return ".todo-area";
+                default:
+                    throw new Error(`Invalid index: ${index}`);
             }
         case 0:
             return ".main-ui";
+        default:
+            throw new Error(`Invalid depth: ${depth}`);
     }
 };
 
 const getType = (depth, index) => {
     switch (depth) {
         case 7:
-            return `div`;
+            return "div";
         case 6:
-            return `li`;
+            return "li";
         case 5:
             // prettier-ignore
             if (!index)
@@ -94,6 +98,8 @@ const getType = (depth, index) => {
             return "div";
         case 0:
             return ".main-ui";
+        default:
+            throw new Error(`Invalid depth: ${depth}`);
     }
 };
 
@@ -106,6 +112,8 @@ const getNextDepth = (combinator, depth) => {
         case " + ":
         case " ~ ":
             return depth;
+        default:
+            throw new Error(`Invalid combinator: ${combinator}`);
     }
 };
 
@@ -177,7 +185,7 @@ const buildNonMatchingSelector = (depth, index, oldCombinator, selLen, badSelect
     // If we are in the top node, we are done.
     // prettier-ignore
     if (!depth)
-        return ".just-span" + oldCombinator;
+        return `.just-span${ oldCombinator}`;
 
     // If we've reached the target length, pick a random classname from its children.
     const getSelector = randomWeighted([getClassname, getType, () => "*"], [0.6, 0.3, 0.1]);
@@ -203,8 +211,8 @@ export const genCss = () => {
     const nonMatchingSelectors = [];
     for (let index = 0; index < 100; index++) {
         // Add `.targeted` to the matching selectors to match only the todoMVC items.
-        matchingSelectors.push(buildMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)) + ".targeted");
-        matchingSelectors.push(buildMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)) + ".targeted");
+        matchingSelectors.push(`${buildMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)) }.targeted`);
+        matchingSelectors.push(`${buildMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)) }.targeted`);
         nonMatchingSelectors.push(buildNonMatchingSelector(6, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)));
         nonMatchingSelectors.push(buildNonMatchingSelector(7, index, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE)));
     }
