@@ -100,18 +100,16 @@ class Model {
 
         this.storage.findAll((data) => {
             for (let todo of data) {
-                if (todo.completed) {
+                if (todo.completed)
                     todos.completed++;
-                } else {
+                else
                     todos.active++;
-                }
 
                 todos.total++;
             }
 
-            if (callback) {
+            if (callback)
                 callback(todos);
-            }
         });
     }
 }

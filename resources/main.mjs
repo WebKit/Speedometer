@@ -4,6 +4,7 @@ import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { params } from "./params.mjs";
+import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -15,6 +16,8 @@ class MainBenchmarkClient {
     _progressCompleted = null;
     _isRunning = false;
     _hasResults = false;
+    _developerModeContainer = null;
+    _metrics = Object.create(null);
 
     constructor() {
         window.addEventListener("DOMContentLoaded", () => this.prepareUI());
@@ -24,21 +27,24 @@ class MainBenchmarkClient {
     startBenchmark() {
         if (this._isRunning)
             return false;
-        if (params.suites.length > 0) {
-            if (!Suites.enable(params.suites)) {
-                const message = `Suite "${params.suites}" does not exist. No tests to run.`;
-                alert(message);
-                console.error(
-                    message,
-                    params.suites,
-                    "\nValid values:",
-                    Suites.map((each) => each.name)
-                );
-                return false;
-            }
+
+        if (Suites.every((suite) => suite.disabled)) {
+            const message = `No suites selected - "${params.suites}" does not exist.`;
+            alert(message);
+            console.error(
+                message,
+                params.suites,
+                "\nValid values:",
+                Suites.map((each) => each.name)
+            );
+
+            return false;
         }
+
+        this._developerModeContainer?.remove();
+
+        this._metrics = Object.create(null);
         this._isRunning = true;
-        this.developerMode = params.developerMode;
 
         const enabledSuites = Suites.filter((suite) => !suite.disabled);
         const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => {
@@ -52,10 +58,9 @@ class MainBenchmarkClient {
     }
 
     willAddTestFrame(frame) {
-        const main = document.querySelector("#running");
-        const style = getComputedStyle(main);
-        frame.style.left = `${main.offsetLeft + parseInt(style.borderLeftWidth) + parseInt(style.paddingLeft)}px`;
-        frame.style.top = `${main.offsetTop + parseInt(style.borderTopWidth) + parseInt(style.paddingTop)}px`;
+        frame.style.left = "50%";
+        frame.style.top = "50%";
+        frame.style.transform = "translate(-50%, -50%)";
     }
 
     willRunTest(suite, test) {
@@ -82,6 +87,7 @@ class MainBenchmarkClient {
         console.assert(this._isRunning);
         this._isRunning = false;
         this._hasResults = true;
+        this._metrics = metrics;
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         this._updateGaugeNeedle(scoreResults.mean);
@@ -91,7 +97,7 @@ class MainBenchmarkClient {
 
         this._populateDetailedResults(metrics);
 
-        if (this.developerMode)
+        if (params.developerMode)
             this.showResultsDetails();
         else
             this.showResultsSummary();
@@ -169,7 +175,7 @@ class MainBenchmarkClient {
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
         document.getElementById("total-chart").innerHTML = renderMetricView({
-            metrics: [metrics["Total"]],
+            metrics: [metrics["Geomean"]],
             width: plotWidth,
             trackHeight,
             renderChildren: false,
@@ -201,7 +207,7 @@ class MainBenchmarkClient {
         jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
         jsonLink.setAttribute("download", `${filePrefix}.json`);
 
-        const csvData = this._getFormattedCSVResult();
+        const csvData = this._formattedCSVResult();
         const csvLink = document.getElementById("download-csv");
         csvLink.href = URL.createObjectURL(new Blob([csvData], { type: "text/csv" }));
         csvLink.setAttribute("download", `${filePrefix}.csv`);
@@ -220,6 +226,14 @@ class MainBenchmarkClient {
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
+
+        if (params.suites.length > 0)
+            Suites.enable(params.suites);
+
+        if (params.developerMode) {
+            this._developerModeContainer = createDeveloperModeContainer(Suites);
+            document.body.append(this._developerModeContainer);
+        }
 
         if (params.startAutomatically)
             this._startBenchmarkHandler();
@@ -265,49 +279,21 @@ class MainBenchmarkClient {
         return JSON.stringify(this._measuredValuesList, undefined, indent);
     }
 
-    _getFormattedCSVResult() {
-        let tests = [];
+    _formattedCSVResult() {
         // The CSV format is similar to the details view table. Each measurement is a row with
         // the name and N columns with the measurement for each iteration:
         // ```
         // Measurement,#1,...,#N
         // TodoMVC-JavaScript-ES5/Total,num,...,num
         // TodoMVC-JavaScript-ES5/Adding100Items,num,...,num
-        // TodoMVC-JavaScript-ES5/Adding100Items/Sync,num,...,num
-        // TodoMVC-JavaScript-ES5/Adding100Items/Async,num,...,num
         // ...
-        // TodoMVC-JavaScript-ES6/Total,num,...,num
-        // TodoMVC-JavaScript-ES6/Adding100Items,num,...,num
-        // TodoMVC-JavaScript-ES6/Adding100Items/Sync,num,...,num
-        // TodoMVC-JavaScript-ES6/Adding100Items/Async,num,...,num
-        // ```
-        const firstIterationTests = this._measuredValuesList[0].tests;
-        for (const suiteName in firstIterationTests) {
-            tests.push([`${suiteName}/Total`]);
-            for (const testName in firstIterationTests[suiteName].tests) {
-                tests.push([`${suiteName}/${testName}`]);
-                for (const subtestName in firstIterationTests[suiteName].tests[testName].tests)
-                    tests.push([`${suiteName}/${testName}/${subtestName}`]);
-            }
-        }
-
-        // Now push each iteration onto the end of the array
-        for (const measuredValue of this._measuredValuesList) {
-            let index = 0;
-            for (const suiteName in measuredValue.tests) {
-                const suiteResults = measuredValue.tests[suiteName];
-                tests[index++].push(suiteResults.total);
-                for (const testName in suiteResults.tests) {
-                    tests[index++].push(suiteResults.tests[testName].total);
-                    for (const subtestName in suiteResults.tests[testName].tests)
-                        tests[index++].push(suiteResults.tests[testName].tests[subtestName]);
-                }
-            }
-        }
-
-        const csv = [["Name"].concat(this._measuredValuesList.map((_, i) => `#${i + 1}`)).join(",")];
-        for (const test of tests)
-            csv.push(test.join(","));
+        const labels = ["Name"];
+        for (let i = 0; i < params.iterationCount; i++)
+            labels.push(`#${i + 1}`);
+        labels.push("Mean");
+        const metrics = Array.from(Object.values(this._metrics)).filter((metric) => !metric.name.startsWith("Iteration-"));
+        const metricsValues = metrics.map((metric) => [metric.name, ...metric.values, metric.mean].join(","));
+        const csv = [labels.join(","), ...metricsValues];
 
         return csv.join("\n");
     }
@@ -317,7 +303,7 @@ class MainBenchmarkClient {
     }
 
     copyCSVResults() {
-        navigator.clipboard.writeText(this._getFormattedCSVResult());
+        navigator.clipboard.writeText(this._formattedCSVResult());
     }
 
     _showSection(hash) {

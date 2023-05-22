@@ -24,7 +24,7 @@
  */
 
 {
-    "extends": ["eslint:recommended"],
+    "extends": ["eslint:recommended", "plugin:@typescript-eslint/base"],
     "env": {
         "browser": true,
         "node": true,

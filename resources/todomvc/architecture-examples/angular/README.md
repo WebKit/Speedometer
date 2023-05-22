@@ -1,27 +1,44 @@
-# Angular14Project
+# Speedometer 3.0: TodoMVC: Angular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.11.
+## Description
 
-## Development server
+This application uses Angular version 14.2.11. to implement a todo application.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+-   [Angular](https://angular.io/) is a development platform for building mobile and desktop web applications
+    using TypeScript/JavaScript and other languages..
 
-## Code scaffolding
+## Implementation details
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Angular:\
+Model: todos.service\
+View: angular component's html\
+ViewModel: angular component's ts
 
-## Build
+MVC:\
+Model: maintains the data and behavior of an application\
+View: displays the model in the ui\
+Controller: serves as an interface between view & model components
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Built steps
 
-## Running unit tests
+```
+terminal:
+1. npm run build
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Requirements
 
-## Running end-to-end tests
+The only requirement is an installation of Node, to be able to install dependencies and run scripts to serve a local server.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```
+* Node (min version: 18.13.0)
+* NPM (min version: 8.19.3)
+```
 
-## Further help
+## Local preview
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
+terminal:
+1. npm install
+2. npm run dev
+```

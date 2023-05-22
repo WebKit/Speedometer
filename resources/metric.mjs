@@ -3,6 +3,8 @@ import * as Statistics from "./statistics.mjs";
 export const MILLISECONDS_PER_MINUTE = 60 * 1000;
 
 export class Metric {
+    static separator = "/";
+
     constructor(name, unit = "ms") {
         if (typeof name !== "string")
             throw new Error(`Invalid metric.name=${name}, expected string.`);
@@ -20,18 +22,17 @@ export class Metric {
 
         this.values = [];
 
-        this.parent = undefined;
-        this.children = [];
-
         // Mark properties which refer to other Metric objects as
         // non-enumerable to avoid issue with JSON.stringify due to circular
         // references.
         Object.defineProperties(this, {
             parent: {
                 writable: true,
+                value: undefined,
             },
             children: {
                 writable: true,
+                value: [],
             },
         });
     }

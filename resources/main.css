@@ -5,6 +5,7 @@
     --foreground-alpha: rgba(235, 235, 235, 0.2);
     --inactive-color: rgb(128, 128, 128);
     --background: rgb(46, 51, 55);
+    --running-background: #f5f5f5;
     --highlight: rgb(232, 79, 79);
     --text-width: 650px;
     --metrics-line-height: 25px;
@@ -172,6 +173,43 @@ button,
     border-color: var(--highlight);
 }
 
+.developer-mode {
+    border-radius: 5px;
+    max-height: 80vh;
+    padding: 1rem;
+    background: #602525;
+    border: 1px solid white;
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.developer-mode summary {
+    user-select: none;
+    cursor: pointer;
+}
+
+.developer-mode-content {
+    flex: 1;
+    max-height: 80vh;
+    overflow: auto;
+}
+
+.developer-mode-content ol {
+    list-style: none;
+    padding: 0;
+}
+
+.developer-mode-content button {
+    background: white;
+    padding: 3px;
+    appearance: button;
+    border: 1px solid white;
+    margin: 0 5px;
+}
+
 section {
     display: none;
     --padding-width: 15px;
@@ -263,6 +301,10 @@ button.show-about {
     position: absolute;
     right: 6px;
     text-align: right;
+}
+
+iframe.test-runner {
+    background: var(--running-background);
 }
 
 section#summary > #result-number,

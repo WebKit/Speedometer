@@ -5,16 +5,13 @@ export const Suites = [];
 
 Suites.enable = function (names) {
     const lowerCaseNames = names.map((each) => each.toLowerCase());
-    let found = false;
     this.forEach((suite) => {
-        if (lowerCaseNames.includes(suite.name.toLowerCase())) {
+        if (lowerCaseNames.includes(suite.name.toLowerCase()))
             suite.disabled = false;
-            found = true;
-        } else {
+        else
             suite.disabled = true;
-        }
+
     });
-    return found;
 };
 
 Suites.push({
@@ -397,6 +394,36 @@ Suites.push({
         new BenchmarkTestStep("Highlight", (page) => {
             page.querySelector("#highlight").click();
             page.querySelector("#layout").click();
+        }),
+    ],
+});
+
+Suites.push({
+    name: "Charts-observable-plot",
+    url: "tentative/charts/dist/observable-plot.html",
+    async prepare(page) {},
+    tests: [
+        new BenchmarkTestStep("Prepare 6", (page) => {
+            page.querySelector("#prepare").click();
+        }),
+        new BenchmarkTestStep("Stacked by 6", (page) => {
+            page.querySelector("#reset").click();
+            page.querySelector("#add-stacked-chart-button").click();
+        }),
+        new BenchmarkTestStep("Prepare 20", (page) => {
+            const sizeSlider = page.querySelector("#airport-group-size-input");
+            sizeSlider.setValue(20);
+            sizeSlider.dispatchEvent("input");
+            sizeSlider.dispatchEvent("change");
+            page.querySelector("#prepare").click();
+        }),
+        new BenchmarkTestStep("Stacked by 20", (page) => {
+            page.querySelector("#reset").click();
+            page.querySelector("#add-stacked-chart-button").click();
+        }),
+        new BenchmarkTestStep("Dotted", (page) => {
+            page.querySelector("#reset").click();
+            page.querySelector("#add-dotted-chart-button").click();
         }),
     ],
 });

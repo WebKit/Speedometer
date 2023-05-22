@@ -116,16 +116,72 @@ class PageElement {
     }
 }
 
+// The WarmupSuite is used to make sure all runner helper functions and
+// classes are compiled, to avoid unnecessary pauses due to delayed
+// compilation of runner methods in the middle of the measuring cycle.
+const WarmupSuite = {
+    name: "Warmup",
+    url: "warmup/index.html",
+    async prepare(page) {
+        await page.waitForElement("#testItem");
+    },
+    tests: [
+        // Make sure to run ever page.method once at least
+        new BenchmarkTestStep("WarmingUpPageMethods", (page) => {
+            let results = [];
+            results.push(page.querySelector(".testItem"));
+            results.push(page.querySelectorAll(".item"));
+            results.push(page.getElementById("testItem"));
+        }),
+        new BenchmarkTestStep("WarmingUpPageElementMethods", (page) => {
+            const item = page.getElementById("testItem");
+            item.setValue("value");
+            item.click();
+            item.focus();
+            item.dispatchEvent("change");
+            item.enter("keypress");
+            item.dispatchEvent("input");
+            item.enter("keyup");
+        }),
+        new BenchmarkTestStep("WarmingUpPageElementMouseMethods", (page) => {
+            const item = page.getElementById("testItem");
+            const mouseEventOptions = { clientX: 100, clientY: 100, bubbles: true, cancelable: true };
+            const wheelEventOptions = {
+                clientX: 200,
+                clientY: 200,
+                deltaMode: 0,
+                delta: -10,
+                deltaY: -10,
+                bubbles: true,
+                cancelable: true,
+            };
+            item.dispatchEvent("mousedown", mouseEventOptions, MouseEvent);
+            item.dispatchEvent("mousemove", mouseEventOptions, MouseEvent);
+            item.dispatchEvent("mouseup", mouseEventOptions, MouseEvent);
+            item.dispatchEvent("wheel", wheelEventOptions, WheelEvent);
+        }),
+    ],
+};
+
 export class BenchmarkRunner {
     constructor(suites, client) {
         this._suites = suites;
+        if (params.useWarmupSuite)
+            this._suites = [WarmupSuite, ...suites];
         this._client = client;
         this._page = null;
-        this._metrics = {
-            __proto__: null,
-            Total: new Metric("Total"),
-            Score: new Metric("Score", "score"),
-        };
+        this._metrics = null;
+        this._iterationCount = params.iterationCount;
+    }
+
+    async runMultipleIterations(iterationCount) {
+        this._iterationCount = iterationCount;
+        if (this._client?.willStartFirstIteration)
+            await this._client.willStartFirstIteration(iterationCount);
+        for (let i = 0; i < iterationCount; i++)
+            await this._runAllSuites();
+        if (this._client?.didFinishLastIteration)
+            await this._client.didFinishLastIteration(this._metrics);
     }
 
     _removeFrame() {
@@ -143,16 +199,10 @@ export class BenchmarkRunner {
         style.border = "0px none";
         style.position = "absolute";
         frame.setAttribute("scrolling", "no");
-        const computedStyle = getComputedStyle(document.body);
-        const marginLeft = parseInt(computedStyle.marginLeft);
-        const marginTop = parseInt(computedStyle.marginTop);
-        if (window.innerWidth > params.viewport.width + marginLeft && window.innerHeight > params.viewport.height + marginTop) {
-            style.left = `${marginLeft}px`;
-            style.top = `${marginTop}px`;
-        } else {
-            style.left = "0px";
-            style.top = "0px";
-        }
+        frame.className = "test-runner";
+        style.left = "50%";
+        style.top = "50%";
+        style.transform = "translate(-50%, -50%)";
 
         if (this._client?.willAddTestFrame)
             await this._client.willAddTestFrame(frame);
@@ -160,15 +210,6 @@ export class BenchmarkRunner {
         document.body.insertBefore(frame, document.body.firstChild);
         this._frame = frame;
         return frame;
-    }
-
-    async runMultipleIterations(iterationCount) {
-        if (this._client?.willStartFirstIteration)
-            await this._client.willStartFirstIteration(iterationCount);
-        for (let i = 0; i < iterationCount; i++)
-            await this._runAllSuites();
-        if (this._client?.didFinishLastIteration)
-            await this._client.didFinishLastIteration(this._metrics);
     }
 
     async _runAllSuites() {
@@ -189,11 +230,19 @@ export class BenchmarkRunner {
     }
 
     async _runSuite(suite) {
+        const suitePrepareLabel = `suite-${suite.name}-prepare`;
+        const suiteStartLabel = `suite-${suite.name}-start`;
+        const suiteEndLabel = `suite-${suite.name}-end`;
+
+        performance.mark(suitePrepareLabel);
         await this._prepareSuite(suite);
-        performance.mark(`start-suite-${suite.name}`);
+
+        performance.mark(suiteStartLabel);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
-        performance.mark(`end-suite-${suite.name}`);
+        performance.mark(suiteEndLabel);
+
+        performance.measure(`suite-${suite.name}`, suiteStartLabel, suiteEndLabel);
     }
 
     async _prepareSuite(suite) {
@@ -254,6 +303,11 @@ export class BenchmarkRunner {
     }
 
     async _recordTestResults(suite, test, syncTime, asyncTime, unused_height, testDoneCallback) {
+        // Skip reporting updates for the warmup suite.
+        if (suite === WarmupSuite) {
+            testDoneCallback();
+            return;
+        }
         const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
         const total = syncTime + asyncTime;
         this._measuredValues.tests[suite.name] = suiteResults;
@@ -289,9 +343,16 @@ export class BenchmarkRunner {
             await this._client.didRunSuites(this._measuredValues);
         }
     }
+
+    getIterationTotalMetric(i) {
+        if (i >= params.iterationCount)
+            throw new Error(`Requested iteration=${i} does not exist.`);
+        return this.getMetric(`Iteration-${i}-Total`);
+    }
+
     _appendIterationMetrics() {
         const getMetric = (name) => this._metrics[name] || (this._metrics[name] = new Metric(name));
-
+        const getIterationTotalMetric = (i) => getMetric(`Iteration-${i}-Total`);
         const collectSubMetrics = (prefix, items, parent) => {
             for (let name in items) {
                 const results = items[name];
@@ -300,19 +361,31 @@ export class BenchmarkRunner {
                 if (metric.parent !== parent)
                     parent.addChild(metric);
                 if (results.tests)
-                    collectSubMetrics(`${metric.name}-`, results.tests, metric);
+                    collectSubMetrics(`${metric.name}${Metric.separator}`, results.tests, metric);
             }
         };
+        const initializeMetrics = this._metrics === null;
+        if (initializeMetrics)
+            this._metrics = { __proto__: null };
 
         const iterationResults = this._measuredValues.tests;
-        const iterationTotal = getMetric(`Iteration-${this._metrics.Total.length}-Total`);
+        collectSubMetrics("", iterationResults);
+
+        if (initializeMetrics) {
+            // Prepare all iteration metrics so they are listed at the end of
+            // of the _metrics object, before "Total" and "Score".
+            for (let i = 0; i < this._iterationCount; i++)
+                getIterationTotalMetric(i);
+            getMetric("Geomean");
+            getMetric("Score");
+        }
+
+        const iterationTotal = getIterationTotalMetric(this._metrics.Geomean.length);
         for (const results of Object.values(iterationResults))
             iterationTotal.add(results.total);
         iterationTotal.computeAggregatedMetrics();
-
-        this._metrics.Total.add(iterationTotal.sum);
-        this._metrics.Score.add(MILLISECONDS_PER_MINUTE / iterationTotal.sum);
-        collectSubMetrics("", iterationResults);
+        getMetric("Geomean").add(iterationTotal.geomean);
+        getMetric("Score").add(MILLISECONDS_PER_MINUTE / iterationTotal.geomean);
 
         for (const metric of Object.values(this._metrics))
             metric.computeAggregatedMetrics();
