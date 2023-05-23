@@ -23,7 +23,6 @@ export class Metric {
         this.values = [];
         this.children = [];
 
-
         // Mark properties which refer to other Metric objects as
         // non-enumerable to avoid issue with JSON.stringify due to circular
         // references.

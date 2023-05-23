@@ -42,7 +42,7 @@ class MainBenchmarkClient {
         }
 
         this._developerModeContainer?.remove();
-      
+
         this._metrics = Object.create(null);
         this._isRunning = true;
 

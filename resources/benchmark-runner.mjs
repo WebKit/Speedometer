@@ -348,15 +348,13 @@ export class BenchmarkRunner {
         }
     }
 
-    iterationTotalMetric(i) {
-        if (i >= params.iterationCount)
-            throw new Error(`Requested iteration=${i} does not exist.`);
-        return this.getMetric(`Iteration-${i}-Total`);
-    }
-
     _appendIterationMetrics() {
         const getMetric = (name) => this._metrics[name] || (this._metrics[name] = new Metric(name));
-        const iterationTotalMetric = (i) => getMetric(`Iteration-${i}-Total`);
+        const iterationTotalMetric = (i) => {
+            if (i >= params.iterationCount)
+                throw new Error(`Requested iteration=${i} does not exist.`);
+            return getMetric(`Iteration-${i}-Total`);
+        };
 
         const collectSubMetrics = (prefix, items, parent) => {
             for (let name in items) {
@@ -384,7 +382,7 @@ export class BenchmarkRunner {
             getMetric("Geomean");
             getMetric("Score");
         }
-        
+
         const geomean = getMetric("Geomean");
         const iterationTotal = iterationTotalMetric(geomean.length);
         for (const results of Object.values(iterationResults))
@@ -392,7 +390,6 @@ export class BenchmarkRunner {
         iterationTotal.computeAggregatedMetrics();
         geomean.add(iterationTotal.geomean);
         getMetric("Score").add(geomeanToScore(iterationTotal.geomean));
-
 
         for (const metric of Object.values(this._metrics))
             metric.computeAggregatedMetrics();

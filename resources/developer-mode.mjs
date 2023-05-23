@@ -42,7 +42,6 @@ export function createUIForSuites() {
                         setSuiteEnabled(suiteIndex, false);
                     else
                         setSuiteEnabled(suiteIndex, true);
-
                 }
             }
             fixupURL();
@@ -91,6 +90,7 @@ function fixupURL() {
         if (!Suites[suiteIndex].disabled)
             selectedSuites.push(Suites[suiteIndex].name);
     }
+
     if (!selectedSuites.length || selectedSuites.length === Suites.length) {
         const url = new URL(window.location.href);
         url.searchParams.delete("suites");
@@ -100,7 +100,6 @@ function fixupURL() {
         // Only push state if changed
         if (url.href !== window.location.href)
             window.history.pushState({}, "", url);
-
     } else {
         const url = new URL(window.location.href);
         url.searchParams.delete("suite");
