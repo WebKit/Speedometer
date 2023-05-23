@@ -174,8 +174,8 @@ class MainBenchmarkClient {
         const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
-        document.getElementById("total-chart").innerHTML = renderMetricView({
-            metrics: [metrics["Geomean"]],
+        document.getElementById("geomean-chart").innerHTML = renderMetricView({
+            metrics: [metrics.Geomean],
             width: plotWidth,
             trackHeight,
             renderChildren: false,
@@ -202,8 +202,13 @@ class MainBenchmarkClient {
         document.getElementById("metrics-results").innerHTML = html;
 
         const filePrefix = `speedometer-3-${new Date().toISOString()}`;
-        const jsonData = this._getFormattedJSONResult();
-        const jsonLink = document.getElementById("download-json");
+        let jsonData = this._formattedJSONResult({ modern: false });
+        let jsonLink = document.getElementById("download-classic-json");
+        jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
+        jsonLink.setAttribute("download", `${filePrefix}.json`);
+
+        jsonLink = document.getElementById("download-full-json");
+        jsonData = this._formattedJSONResult({ modern: true });
         jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
         jsonLink.setAttribute("download", `${filePrefix}.json`);
 
@@ -221,7 +226,7 @@ class MainBenchmarkClient {
         document.querySelectorAll("logo").forEach((button) => {
             button.onclick = this._logoClickHandler.bind(this);
         });
-        document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
+        document.getElementById("copy-full-json").onclick = this.copyJsonResults.bind(this);
         document.getElementById("copy-csv").onclick = this.copyCSVResults.bind(this);
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
@@ -274,8 +279,10 @@ class MainBenchmarkClient {
         this._showSection("#details");
     }
 
-    _getFormattedJSONResult() {
+    _formattedJSONResult({ modern = false }) {
         const indent = "    ";
+        if (modern)
+            return JSON.stringify(this._metrics, undefined, indent);
         return JSON.stringify(this._measuredValuesList, undefined, indent);
     }
 
@@ -299,7 +306,7 @@ class MainBenchmarkClient {
     }
 
     copyJsonResults() {
-        navigator.clipboard.writeText(this._getFormattedJSONResult());
+        navigator.clipboard.writeText(this._formattedJSONResult({ modern: true }));
     }
 
     copyCSVResults() {
