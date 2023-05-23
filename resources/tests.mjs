@@ -10,7 +10,6 @@ Suites.enable = function (names) {
             suite.disabled = false;
         else
             suite.disabled = true;
-
     });
 };
 
