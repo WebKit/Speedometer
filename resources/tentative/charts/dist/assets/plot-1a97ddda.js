@@ -15650,7 +15650,6 @@ const DEFAULT_OPTIONS = {
   // The height is especially used for the ratio.
   height: 1e3
 };
-const AIRPORT_COUNT_PER_STATE = 6;
 let preparedData;
 function prepare() {
   const { airports, flights } = parseAirportsInformation();
@@ -15666,7 +15665,7 @@ function prepare() {
       var _a;
       return -((_a = flightsByAirport.get(iata)) == null ? void 0 : _a.total);
     });
-    const mostUsedAirportsInState = sorted.slice(0, AIRPORT_COUNT_PER_STATE);
+    const mostUsedAirportsInState = sorted.slice(0, airportCountPerGroup());
     return {
       state,
       total: totalFlightsInState,
@@ -15684,15 +15683,18 @@ function prepare() {
       // This will be used to have consistent colors.
       ...flightsByAirport.get(iata)
     }));
-    enrichedMostUsedAirports.push({
-      state,
-      iata: "Other",
-      total: total - sum(mostUsedAirports, ({ iata }) => {
-        var _a;
-        return (_a = flightsByAirport.get(iata)) == null ? void 0 : _a.total;
-      }),
-      index: enrichedMostUsedAirports.length
+    const otherTotal = total - sum(mostUsedAirports, ({ iata }) => {
+      var _a;
+      return (_a = flightsByAirport.get(iata)) == null ? void 0 : _a.total;
     });
+    if (otherTotal > 0) {
+      enrichedMostUsedAirports.push({
+        state,
+        iata: "Other",
+        total: otherTotal,
+        index: enrichedMostUsedAirports.length
+      });
+    }
     return enrichedMostUsedAirports;
   });
   preparedData = {
@@ -15744,8 +15746,6 @@ function addStackedBars() {
     },
     y: { grid: true, tickFormat: "~s" },
     marks: [
-      // This draws stacked bars: by using "state" as the x, all entries with
-      // the same state will be drawn at the same location, and will be stacked.
       barY(preparedData.plotData, {
         x: "state",
         y: "total",
@@ -15753,9 +15753,7 @@ function addStackedBars() {
         title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}
 ${format$1(",")(d.total)} flights`
       }),
-      // These are the labels that go below the bottom line (look at the `dy` property).
       text(preparedData.stateInformationSortedArray, { x: "state", y: "total", text: (d) => format$1(".2~s")(d.total), dy: -10 }),
-      // This is the horizontal bottom line, drawn at y == 0.
       ruleY([0])
     ]
   };
@@ -15795,7 +15793,6 @@ function addDottedBars() {
         title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}
 ${format$1(",")(Math.abs(d.value))} ${d.value > 0 ? "inward" : "outward"} flights`
       }),
-      // horizontal bottom line
       ruleY([0])
     ]
   };
@@ -15813,8 +15810,16 @@ async function runAllTheThings() {
     "add-dotted-chart-button"
   ].forEach((id2) => document.getElementById(id2).click());
 }
+function airportCountPerGroup() {
+  return document.querySelector("#airport-group-size-input").value;
+}
+function onGroupSizeInputChange() {
+  document.querySelector("#airport-group-size").textContent = airportCountPerGroup();
+}
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
 document.getElementById("add-dotted-chart-button").addEventListener("click", addDottedBars);
 document.getElementById("reset").addEventListener("click", reset);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
+document.getElementById("airport-group-size-input").addEventListener("input", onGroupSizeInputChange);
+onGroupSizeInputChange();

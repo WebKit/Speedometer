@@ -23,9 +23,8 @@
             var potentialElements = window.qsa(selector, target);
             var hasMatch = Array.prototype.indexOf.call(potentialElements, targetElement) >= 0;
 
-            if (hasMatch) {
+            if (hasMatch)
                 handler.call(targetElement, event);
-            }
         }
 
         // https://developer.mozilla.org/en-US/docs/Web/Events/blur
@@ -37,12 +36,12 @@
     // Find the element's parent with the given tag name:
     // $parent(qs('a'), 'div');
     window.$parent = function (element, tagName) {
-        if (!element.parentNode) {
+        if (!element.parentNode)
             return undefined;
-        }
-        if (element.parentNode.tagName.toLowerCase() === tagName.toLowerCase()) {
+
+        if (element.parentNode.tagName.toLowerCase() === tagName.toLowerCase())
             return element.parentNode;
-        }
+
         return window.$parent(element.parentNode, tagName);
     };
 

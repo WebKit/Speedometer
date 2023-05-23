@@ -179,6 +179,16 @@ export class BenchmarkRunner {
         this._iterationCount = params.iterationCount;
     }
 
+    async runMultipleIterations(iterationCount) {
+        this._iterationCount = iterationCount;
+        if (this._client?.willStartFirstIteration)
+            await this._client.willStartFirstIteration(iterationCount);
+        for (let i = 0; i < iterationCount; i++)
+            await this._runAllSuites();
+        if (this._client?.didFinishLastIteration)
+            await this._client.didFinishLastIteration(this._metrics);
+    }
+
     _removeFrame() {
         if (this._frame) {
             this._frame.parentNode.removeChild(this._frame);
@@ -195,16 +205,9 @@ export class BenchmarkRunner {
         style.position = "absolute";
         frame.setAttribute("scrolling", "no");
         frame.className = "test-runner";
-        const computedStyle = getComputedStyle(document.body);
-        const marginLeft = parseInt(computedStyle.marginLeft);
-        const marginTop = parseInt(computedStyle.marginTop);
-        if (window.innerWidth > params.viewport.width + marginLeft && window.innerHeight > params.viewport.height + marginTop) {
-            style.left = `${marginLeft}px`;
-            style.top = `${marginTop}px`;
-        } else {
-            style.left = "0px";
-            style.top = "0px";
-        }
+        style.left = "50%";
+        style.top = "50%";
+        style.transform = "translate(-50%, -50%)";
 
         if (this._client?.willAddTestFrame)
             await this._client.willAddTestFrame(frame);
@@ -212,16 +215,6 @@ export class BenchmarkRunner {
         document.body.insertBefore(frame, document.body.firstChild);
         this._frame = frame;
         return frame;
-    }
-
-    async runMultipleIterations(iterationCount) {
-        this._iterationCount = iterationCount;
-        if (this._client?.willStartFirstIteration)
-            await this._client.willStartFirstIteration(iterationCount);
-        for (let i = 0; i < iterationCount; i++)
-            await this._runAllSuites();
-        if (this._client?.didFinishLastIteration)
-            await this._client.didFinishLastIteration(this._metrics);
     }
 
     async _runAllSuites() {
@@ -364,6 +357,7 @@ export class BenchmarkRunner {
     _appendIterationMetrics() {
         const getMetric = (name) => this._metrics[name] || (this._metrics[name] = new Metric(name));
         const iterationTotalMetric = (i) => getMetric(`Iteration-${i}-Total`);
+
         const collectSubMetrics = (prefix, items, parent) => {
             for (let name in items) {
                 const results = items[name];
@@ -398,6 +392,7 @@ export class BenchmarkRunner {
         iterationTotal.computeAggregatedMetrics();
         geomean.add(iterationTotal.geomean);
         getMetric("Score").add(geomeanToScore(iterationTotal.geomean));
+
 
         for (const metric of Object.values(this._metrics))
             metric.computeAggregatedMetrics();
