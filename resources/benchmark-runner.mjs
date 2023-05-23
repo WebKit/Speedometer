@@ -15,6 +15,11 @@ class Page {
         this._frame = frame;
     }
 
+    layout() {
+        const body = this._frame.contentDocument.body.getBoundingClientRect();
+        this.layout.e = document.elementFromPoint((body.width / 2) | 0, (body.height / 2) | 0);
+    }
+
     async waitForElement(selector) {
         return new Promise((resolve) => {
             const resolveIfReady = () => {

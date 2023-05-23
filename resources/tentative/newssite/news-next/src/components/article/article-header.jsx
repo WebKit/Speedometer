@@ -1,0 +1,14 @@
+export default function ArticleHeader({ text, className, link }) {
+    if (!text)
+        return null;
+
+    return (
+        <header className={className}>
+            {link ? <a href={link}>
+                <h2>{text}</h2>
+            </a>
+                : <h2>{text}</h2>
+            }
+        </header>
+    );
+}

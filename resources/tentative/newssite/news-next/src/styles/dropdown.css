@@ -1,0 +1,90 @@
+.dropdown {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  .dropdown-toggle {
+    display: flex;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: calc(var(--nav-button-height) - 2px);
+    left: 0;
+    top: 1px;
+    z-index: var(--index-dropdown-input);
+    transition: none;
+  }
+  
+  .dropdown-label {
+    background-color: var(--color-utils-black);
+    color: var(--color-utils-offwhite);
+    height: var(--nav-button-height);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 0 var(--content-spacing-small);
+    border-radius: var(--border-radius-small);
+    transition-property: color, background-color;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+    z-index: var(--index-dropdown-label);
+  }
+  
+  .dropdown-label:hover {
+    color: var(--color-utils-white);
+    background-color: var(--color-utils-gray-dark);
+  }
+  
+  .arrow {
+    margin-left: 8px;
+  }
+  
+  .dropdown-toggle:checked
+    ~ .dropdown-label
+    .arrow-icon
+    .animated-icon-inner
+    span:nth-child(1) {
+    transform: translate(var(--animated-icon-height-half), 0) rotate(-35deg);
+  }
+  
+  .dropdown-toggle:checked
+    ~ .dropdown-label
+    .arrow-icon
+    .animated-icon-inner
+    span:nth-child(2) {
+    transform: translate(var(--animated-icon-center), 0) rotate(215deg);
+  }
+  
+  .dropdown-content {
+    list-style-type: none;
+    padding: 0 var(--content-spacing-small);
+    margin: 0;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: calc(var(--content-spacing-small) * -1);
+    min-width: 200px;
+    background-color: var(--color-utils-black);
+    z-index: var(--index-dropdown);
+    box-shadow: 0 8px 16px 0 rgb(0 0 0 / 20%);
+  }
+  
+  .dropdown-content .navbar-item {
+    margin-right: 0;
+    margin-bottom: var(--content-spacing-small);
+  }
+  
+  .dropdown-toggle:checked ~ .dropdown-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .dropdown:hover .dropdown-button {
+    color: var(--color-utils-white);
+  }
+  
