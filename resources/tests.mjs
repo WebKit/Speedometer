@@ -478,9 +478,6 @@ Suites.push({
         new BenchmarkTestStep("Draw scatter", (page) => {
             page.querySelector("#add-scatter-chart-button").click();
         }),
-        // Note: this step needs the asynchronous runner to show up in results properly,
-        // because most of the work happens in a rAF, and the synchronous runner's
-        // setTimeout happens too fast.
         new BenchmarkTestStep("Show tooltip", (page) => {
             page.querySelector("#open-tooltip").click();
         }),
