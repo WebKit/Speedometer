@@ -408,7 +408,7 @@ Suites.push({
                 page.querySelector("#home-link").click();
                 page.layout();
             }
-        })
+        }),
     ],
 });
 
