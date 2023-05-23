@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import ArticleImage from "./article-image";
 import ArticleText from "./article-text";
 
@@ -14,8 +16,8 @@ export default function ArticleContent({ type, content, display }) {
         return (
             <div className="article-content">
                 <ul className={`article-list vertical ${display ?? ""}`}>
-                    {content.map((item, index) =>
-                        <li key={`article-list-item-${index}`} className="article-list-item">
+                    {content.map((item) =>
+                        <li key={uuidv4()} className="article-list-item">
                             {item.url && !item.title ? <a href={item.url}>
                                 <ArticleText text={item.content} />
                             </a> : <ArticleText text={item.content} />}
@@ -30,8 +32,8 @@ export default function ArticleContent({ type, content, display }) {
         return (
             <div className="article-list-content">
                 <ul className="article-list vertical">
-                    {content.map((item, index) =>
-                        <li key={`article-list-item-${index}`} className="article-list-item">
+                    {content.map((item) =>
+                        <li key={uuidv4()} className="article-list-item">
                             <ArticleText className="article-title truncate-multiline truncate-multiline-3" text={item.title} type="h3"/>
                             {item.url && !item.title ? <a href={item.url}>
                                 <ArticleText text={item.content} />
@@ -46,8 +48,8 @@ export default function ArticleContent({ type, content, display }) {
     if (type === "excerpt") {
         return (
             <ul className="article-list horizontal">
-                {content.map((item, index) =>
-                    <li key={`article-list-item-${index}`} className="article-list-item">
+                {content.map((item) =>
+                    <li key={uuidv4()} className="article-list-item">
                         <ArticleImage className="article-hero" image={item.image} />
                         <div className="article-content">
                             <ArticleText className="truncate-multiline truncate-multiline-3" text={item.text} type="div" />
@@ -61,8 +63,8 @@ export default function ArticleContent({ type, content, display }) {
     if (type === "grid") {
         return (
             <div className={`grid-container ${display ?? ""}`}>
-                {content.map((item, index) =>
-                    <div key={`article-grid-item-${index}`} className="grid-item">
+                {content.map((item) =>
+                    <div key={uuidv4()} className="grid-item">
                         <ArticleImage className="article-image-container" image={item.image} meta={item.meta} />
 
                         {item.url ? <a href={item.url}>
@@ -77,8 +79,8 @@ export default function ArticleContent({ type, content, display }) {
     if (type === "preview") {
         return (
             <ul className="article-list vertical">
-                {content.map((item, index) =>
-                    <li key={`article-list-item-${index}`} className="article-list-item">
+                {content.map((item) =>
+                    <li key={uuidv4()} className="article-list-item">
                         <ArticleImage className="article-image-container" image={item.image} />
                         <ArticleText className="article-title truncate-multiline truncate-multiline-3" text={item.title} type="h3"/>
                     </li>

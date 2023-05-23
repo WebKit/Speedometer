@@ -3,5 +3,5 @@ export default function ArticleText({ text, className, type = "p" }) {
         return null;
 
     const Tag = type;
-    return <Tag className={`${className ?? ""}`}>{text}</Tag>;
+    return <Tag className={className}>{text}</Tag>;
 }

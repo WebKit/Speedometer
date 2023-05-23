@@ -3,20 +3,15 @@ import Dropdown from "../dropdown/dropdown";
 import NavListItem from "./navlist-item";
 
 export default function NavList({ callback, id }) {
-    const keys = Object.keys(content);
-    const [navItems, dropdownItems] = keys.reduce(
-        (result, key) => {
-            // priority 0 does not show up in nav
-            if (content[key].priority === 0)
-                return result;
+    const navItems = [];
+    const dropdownItems = [];
 
-            // priority 1 shows up in nav list
-            // priority 2 shows up in nav dropdown
-            result[content[key].priority === 1 ? 0 : 1].push(key);
-            return result;
-        },
-        [[], []]
-    );
+    Object.keys(content).forEach(key => {
+        if (content[key].priority === 1)
+            navItems.push(key);
+        else if (content[key].priority === 2)
+            dropdownItems.push(key);
+    });
 
     return (
         <ul className="navbar-list">
