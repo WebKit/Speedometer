@@ -21,6 +21,7 @@ export class Metric {
         this.max = 0.0;
 
         this.values = [];
+        this.children = [];
 
         // Mark properties which refer to other Metric objects as
         // non-enumerable to avoid issue with JSON.stringify due to circular
@@ -29,10 +30,6 @@ export class Metric {
             parent: {
                 writable: true,
                 value: undefined,
-            },
-            children: {
-                writable: true,
-                value: [],
             },
         });
     }

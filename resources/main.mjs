@@ -4,6 +4,7 @@ import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { params } from "./params.mjs";
+import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -15,6 +16,7 @@ class MainBenchmarkClient {
     _progressCompleted = null;
     _isRunning = false;
     _hasResults = false;
+    _developerModeContainer = null;
     _metrics = Object.create(null);
 
     constructor() {
@@ -25,22 +27,24 @@ class MainBenchmarkClient {
     startBenchmark() {
         if (this._isRunning)
             return false;
-        if (params.suites.length > 0) {
-            if (!Suites.enable(params.suites)) {
-                const message = `Suite "${params.suites}" does not exist. No tests to run.`;
-                alert(message);
-                console.error(
-                    message,
-                    params.suites,
-                    "\nValid values:",
-                    Suites.map((each) => each.name)
-                );
-                return false;
-            }
+
+        if (Suites.every((suite) => suite.disabled)) {
+            const message = `No suites selected - "${params.suites}" does not exist.`;
+            alert(message);
+            console.error(
+                message,
+                params.suites,
+                "\nValid values:",
+                Suites.map((each) => each.name)
+            );
+
+            return false;
         }
+
+        this._developerModeContainer?.remove();
+
         this._metrics = Object.create(null);
         this._isRunning = true;
-        this.developerMode = params.developerMode;
 
         const enabledSuites = Suites.filter((suite) => !suite.disabled);
         const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => {
@@ -93,7 +97,7 @@ class MainBenchmarkClient {
 
         this._populateDetailedResults(metrics);
 
-        if (this.developerMode)
+        if (params.developerMode)
             this.showResultsDetails();
         else
             this.showResultsSummary();
@@ -170,8 +174,8 @@ class MainBenchmarkClient {
         const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
-        document.getElementById("total-chart").innerHTML = renderMetricView({
-            metrics: [metrics["Geomean"]],
+        document.getElementById("geomean-chart").innerHTML = renderMetricView({
+            metrics: [metrics.Geomean],
             width: plotWidth,
             trackHeight,
             renderChildren: false,
@@ -198,8 +202,13 @@ class MainBenchmarkClient {
         document.getElementById("metrics-results").innerHTML = html;
 
         const filePrefix = `speedometer-3-${new Date().toISOString()}`;
-        const jsonData = this._getFormattedJSONResult();
-        const jsonLink = document.getElementById("download-json");
+        let jsonData = this._formattedJSONResult({ modern: false });
+        let jsonLink = document.getElementById("download-classic-json");
+        jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
+        jsonLink.setAttribute("download", `${filePrefix}.json`);
+
+        jsonLink = document.getElementById("download-full-json");
+        jsonData = this._formattedJSONResult({ modern: true });
         jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
         jsonLink.setAttribute("download", `${filePrefix}.json`);
 
@@ -217,11 +226,19 @@ class MainBenchmarkClient {
         document.querySelectorAll("logo").forEach((button) => {
             button.onclick = this._logoClickHandler.bind(this);
         });
-        document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
+        document.getElementById("copy-full-json").onclick = this.copyJsonResults.bind(this);
         document.getElementById("copy-csv").onclick = this.copyCSVResults.bind(this);
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
+
+        if (params.suites.length > 0)
+            Suites.enable(params.suites);
+
+        if (params.developerMode) {
+            this._developerModeContainer = createDeveloperModeContainer(Suites);
+            document.body.append(this._developerModeContainer);
+        }
 
         if (params.startAutomatically)
             this._startBenchmarkHandler();
@@ -262,8 +279,10 @@ class MainBenchmarkClient {
         this._showSection("#details");
     }
 
-    _getFormattedJSONResult() {
+    _formattedJSONResult({ modern = false }) {
         const indent = "    ";
+        if (modern)
+            return JSON.stringify(this._metrics, undefined, indent);
         return JSON.stringify(this._measuredValuesList, undefined, indent);
     }
 
@@ -287,7 +306,7 @@ class MainBenchmarkClient {
     }
 
     copyJsonResults() {
-        navigator.clipboard.writeText(this._getFormattedJSONResult());
+        navigator.clipboard.writeText(this._formattedJSONResult({ modern: true }));
     }
 
     copyCSVResults() {
