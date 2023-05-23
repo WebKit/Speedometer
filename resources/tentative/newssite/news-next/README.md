@@ -16,13 +16,21 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Deployment
+## Deployment of changes
+
+To ensure Next.js lint rules are followed, run:
+
+```bash
+npm run lint
+```
 
 To create new build files, run:
 
 ```bash
 npm run build
 ```
+
+Add, commit and push changes to the working branch.
 
 ## Test steps
 
