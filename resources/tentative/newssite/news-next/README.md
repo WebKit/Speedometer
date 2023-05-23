@@ -4,7 +4,7 @@
 
 This app is a news-site built with [Next.js](https://nextjs.org/). It utilizes the [News Site Template](https://github.com/flashdesignory/news-site-template) as the basis for styling and functionality. 
 Since Speedometer expects static files for all apps included, this project's build step uses [static html export](https://nextjs.org/docs/pages/building-your-application/deploying/static-exports).
-<br>Which this implementation, some features of Next.js are not available and therefore ommited to ensure compatibility with Speedometer.
+<br>With this implementation, some features of Next.js are not available and therefore omitted to ensure compatibility with Speedometer.
 
 ## Local Development
 
