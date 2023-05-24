@@ -377,8 +377,8 @@ Suites.push({
             page.querySelector("#create").click();
             page.querySelector("#layout").click();
         }),
-        new BenchmarkTestStep("Big", (page) => {
-            page.querySelector("#big").click();
+        new BenchmarkTestStep("Long", (page) => {
+            page.querySelector("#long").click();
             page.querySelector("#layout").click();
         }),
         new BenchmarkTestStep("Highlight", (page) => {
@@ -397,8 +397,8 @@ Suites.push({
             page.querySelector("#create").click();
             page.querySelector("#layout").click();
         }),
-        new BenchmarkTestStep("Big", (page) => {
-            page.querySelector("#big").click();
+        new BenchmarkTestStep("Long", (page) => {
+            page.querySelector("#long").click();
             page.querySelector("#layout").click();
         }),
         new BenchmarkTestStep("Highlight", (page) => {
