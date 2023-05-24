@@ -8,16 +8,14 @@ class Params {
     iterationCount = 10;
     suites = [];
     useWarmupSuite = false;
-    measurementMethod = 'timer';
+    measurementMethod = "timer";
 
     constructor(searchParams = undefined) {
         if (searchParams)
-            this._copyFromParams(searchParams);
-        Object.freeze(this.viewport);
-        Object.freeze(this);
+            this._copyFromSearchParams(searchParams);
     }
 
-    _copyFromParams(searchParams) {
+    _copyFromSearchParams(searchParams) {
         if (searchParams.has("viewport")) {
             const viewportParam = searchParams.get("viewport");
             const [width, height] = viewportParam.split("x");
@@ -55,7 +53,7 @@ class Params {
 
         if (searchParams.has("measurementMethod")) {
             this.measurementMethod = searchParams.get("measurementMethod");
-            if (this.measurementMethod !== 'timer' && this.measurementMethod !== 'raf')
+            if (this.measurementMethod !== "timer" && this.measurementMethod !== "raf")
                 throw new Error(`Invalid measurement method: ${this.measurementMethod}`);
             searchParams.delete("measurementMethod");
         }
@@ -73,9 +71,11 @@ class Params {
 }
 
 export const defaultParams = new Params();
+Object.freeze(defaultParams.viewport);
+Object.freeze(defaultParams);
 
 const searchParams = new URLSearchParams(window.location.search);
-let maybeCustomParams = defaultParams;
+let maybeCustomParams = new Params();
 try {
     maybeCustomParams = new Params(searchParams);
 } catch (e) {
