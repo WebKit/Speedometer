@@ -67,13 +67,16 @@ export function createUIForIterationCount() {
     range.max = 20;
     range.value = params.iterationCount;
 
+    let label = document.createElement("label");
+    let countLabel = document.createElement("span");
+    countLabel.textContent = params.iterationCount;
+    label.append(`iterations: `, countLabel, document.createElement("br"), range);
+
     range.onchange = () => {
         params.iterationCount = parseInt(range.value);
+        countLabel.textContent = params.iterationCount;
         fixupURL();
     };
-
-    let label = document.createElement("label");
-    label.append("iterations ", range);
 
     return label;
 }
