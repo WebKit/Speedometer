@@ -20,7 +20,7 @@
                     Create
                 </button>
                 &nbsp;
-                <button id="big">
+                <button id="long">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="icon icon-tabler icon-tabler-arrow-big-up-lines-filled"
@@ -42,9 +42,9 @@
                         <path d="M15 20a1 1 0 0 1 .117 1.993l-.117 .007h-6a1 1 0 0 1 -.117 -1.993l.117 -.007h6z" stroke-width="0" fill="currentColor"></path>
                         <path d="M15 17a1 1 0 0 1 .117 1.993l-.117 .007h-6a1 1 0 0 1 -.117 -1.993l.117 -.007h6z" stroke-width="0" fill="currentColor"></path>
                     </svg>
-                    Big text
+                    Long text
                 </button>
-                <button id="small">
+                <button id="short">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="icon icon-tabler icon-tabler-arrow-big-down-lines-filled"
@@ -66,7 +66,7 @@
                         <path d="M15 2a1 1 0 0 1 .117 1.993l-.117 .007h-6a1 1 0 0 1 -.117 -1.993l.117 -.007h6z" stroke-width="0" fill="currentColor"></path>
                         <path d="M15 5a1 1 0 0 1 .117 1.993l-.117 .007h-6a1 1 0 0 1 -.117 -1.993l.117 -.007h6z" stroke-width="0" fill="currentColor"></path>
                     </svg>
-                    Small text
+                    Short text
                 </button>
                 &nbsp;
                 <button id="highlight">
@@ -127,8 +127,8 @@
             <div id="editor"></div>
         </div>
         <script type="module">
-            import { text as smalltext } from "./smalltext.js";
-            import { text as bigtext } from "./bigtext.js";
+            import { text as shorttext } from "./shorttext.js";
+            import { text as longtext } from "./longtext.js";
             import editor from "./tiptap.js";
 
             let editorContainer = document.querySelector("#editor");
@@ -139,16 +139,16 @@
                 create: document.querySelector("#create"),
                 highlight: document.querySelector("#highlight"),
                 unhighlight: document.querySelector("#unhighlight"),
-                big: document.querySelector("#big"),
-                small: document.querySelector("#small"),
+                long: document.querySelector("#long"),
+                short: document.querySelector("#short"),
                 scroll: document.querySelector("#scroll"),
                 layout: document.querySelector("#layout"),
             };
             buttons.scroll.addEventListener("click", scroll);
             buttons.highlight.addEventListener("click", highlight);
             buttons.unhighlight.addEventListener("click", unhighlight);
-            buttons.big.addEventListener("click", big);
-            buttons.small.addEventListener("click", small);
+            buttons.long.addEventListener("click", long);
+            buttons.short.addEventListener("click", short);
             buttons.layout.addEventListener("click", layout);
 
             buttons.create.addEventListener("click", (e) => {
@@ -180,15 +180,15 @@
                 buttons.highlight.classList.toggle("active", false);
                 editorInstance.format(false);
             }
-            function big() {
-                buttons.small.classList.toggle("active", false);
-                buttons.big.classList.toggle("active", true);
-                editorInstance.setValue(bigtext);
+            function long() {
+                buttons.short.classList.toggle("active", false);
+                buttons.long.classList.toggle("active", true);
+                editorInstance.setValue(longtext);
             }
-            function small() {
-                buttons.small.classList.toggle("active", true);
-                buttons.big.classList.toggle("active", false);
-                editorInstance.setValue(smalltext);
+            function short() {
+                buttons.short.classList.toggle("active", true);
+                buttons.long.classList.toggle("active", false);
+                editorInstance.setValue(shorttext);
             }
 
             function scroll() {
