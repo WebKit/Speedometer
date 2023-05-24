@@ -173,7 +173,7 @@ const WarmupSuite = {
     ],
 };
 
-class TestInvoker {
+class TimerTestInvoker {
     constructor(syncCallback, asyncCallback, reportCallback) {
         this._syncCallback = syncCallback;
         this._asyncCallback = asyncCallback;
@@ -192,6 +192,29 @@ class TestInvoker {
                     });
                 }, 0);
             }, 0);
+        });
+    }
+}
+
+class RAFTestInvoker {
+    constructor(syncCallback, asyncCallback, reportCallback) {
+        this._syncCallback = syncCallback;
+        this._asyncCallback = asyncCallback;
+        this._reportCallback = reportCallback;
+    }
+
+    start() {
+        return new Promise((resolve) => {
+            requestAnimationFrame(() => this._syncCallback());
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    this._asyncCallback();
+                    setTimeout(async () => {
+                        await this._reportCallback();
+                        resolve();
+                    }, 0);
+                }, 0);
+            });
         });
     }
 }
@@ -327,7 +350,8 @@ export class BenchmarkRunner {
             performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
         }
         const report = () => this._recordTestResults(suite, test, syncTime, asyncTime);
-        const invoker = new TestInvoker(runSync, measureAsync, report);
+        const invokerClass = params.measurementMethod === 'raf' ? RAFTestInvoker : TimerTestInvoker;
+        const invoker = new invokerClass(runSync, measureAsync, report);
 
         return invoker.start();
     }
