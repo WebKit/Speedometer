@@ -101,7 +101,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-React",
-    url: "todomvc/architecture-examples/react/dist/index.html",
+    url: "todomvc/architecture-examples/react/dist/index.html#/home",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -130,7 +130,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-React-Complex-DOM",
-    url: "tentative/complex-static-html/dist/index.html",
+    url: "tentative/complex-static-html/dist/index.html#/home",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -303,7 +303,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Preact",
-    url: "todomvc/architecture-examples/preact/dist/index.html",
+    url: "todomvc/architecture-examples/preact/dist/index.html#/home",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
