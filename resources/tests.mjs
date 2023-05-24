@@ -359,7 +359,7 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Next",
-    url: "tentative/newssite/news-next/dist/index.html",
+    url: "tentative/newssite/news-next/dist/index.html#/home",
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },

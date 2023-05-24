@@ -17,6 +17,7 @@ export default function App() {
                     <Route path="/politics" element={<Page id="politics" />} />
                     <Route path="/us" element={<Page id="us" />} />
                     <Route path="/world" element={<Page id="world" />} />
+                    <Route path="/home" element={<Page id="home" />} />
                     <Route path="/" element={<Page id="home" />} />
                 </Routes>
             </Router>
