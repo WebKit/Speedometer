@@ -332,12 +332,10 @@ Suites.push({
     name: "NewsSite-Next",
     url: "tentative/newssite/news-next/dist/index.html",
     async prepare(page) {
-        await page.waitForElement("#close-toast-link");
+        await page.waitForElement("#navbar-dropdown-toggle");
     },
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
-            page.querySelector("#close-toast-link").click();
-            page.layout();
             for (let i = 0; i < 25; i++) {
                 page.querySelector("#navbar-dropdown-toggle").click();
                 page.layout();
