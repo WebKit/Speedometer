@@ -207,7 +207,13 @@ button,
     padding: 3px;
     appearance: button;
     border: 1px solid white;
-    margin: 0 5px;
+    margin-top: 5px;
+    margin-inline-end: 3px;
+}
+
+.developer-mode-content hr {
+    width: initial;
+    margin: 10px 0;
 }
 
 section {
