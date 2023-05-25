@@ -234,8 +234,16 @@ export class BenchmarkRunner {
         this._iterationCount = iterationCount;
         if (this._client?.willStartFirstIteration)
             await this._client.willStartFirstIteration(iterationCount);
-        for (let i = 0; i < iterationCount; i++)
-            await this._runAllSuites();
+
+        const iterationStartLabel = "iteration-start";
+        const iterationEndLabel = "iteration-end";
+        for (let i = 0; i < iterationCount; i++) {
+            performance.mark(iterationStartLabel);
+            await this._runAllSuites(i);
+            performance.mark(iterationEndLabel);
+            performance.measure(`iteration-${i}`, iterationStartLabel, iterationEndLabel);
+        }
+
         if (this._client?.didFinishLastIteration)
             await this._client.didFinishLastIteration(this._metrics);
     }
@@ -268,36 +276,51 @@ export class BenchmarkRunner {
         return frame;
     }
 
-    async _runAllSuites() {
+    async _runAllSuites(iteration) {
         this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
 
+        const prepareStartLabel = "runner-prepare-start";
+        const prepareEndLabel = "runner-prepare-end";
+
+        performance.mark(prepareStartLabel);
         this._removeFrame();
         await this._appendFrame();
         this._page = new Page(this._frame);
+        performance.mark(prepareEndLabel);
+        performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
 
         for (const suite of this._suites) {
             if (!suite.disabled)
                 await this._runSuite(suite);
         }
 
+        const finalizeStartLabel = "runner-finalize-start";
+        const finalizeEndLabel = "runner-finalize-end";
+
+        performance.mark(finalizeStartLabel);
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
         await this._finalize();
+        performance.mark(finalizeEndLabel);
+        performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
     }
 
     async _runSuite(suite) {
-        const suitePrepareLabel = `suite-${suite.name}-prepare`;
+        const suitePrepareStartLabel = `suite-${suite.name}-prepare-start`;
+        const suitePrepareEndLabel = `suite-${suite.name}-prepare-end`;
         const suiteStartLabel = `suite-${suite.name}-start`;
         const suiteEndLabel = `suite-${suite.name}-end`;
 
-        performance.mark(suitePrepareLabel);
+        performance.mark(suitePrepareStartLabel);
         await this._prepareSuite(suite);
+        performance.mark(suitePrepareEndLabel);
 
         performance.mark(suiteStartLabel);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
         performance.mark(suiteEndLabel);
 
+        performance.measure(`suite-${suite.name}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
         performance.measure(`suite-${suite.name}`, suiteStartLabel, suiteEndLabel);
     }
 
@@ -348,9 +371,9 @@ export class BenchmarkRunner {
             performance.mark(asyncEndLabel);
             performance.measure(`${suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
             performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
-        }
+        };
         const report = () => this._recordTestResults(suite, test, syncTime, asyncTime);
-        const invokerClass = params.measurementMethod === 'raf' ? RAFTestInvoker : TimerTestInvoker;
+        const invokerClass = params.measurementMethod === "raf" ? RAFTestInvoker : TimerTestInvoker;
         const invoker = new invokerClass(runSync, measureAsync, report);
 
         return invoker.start();
