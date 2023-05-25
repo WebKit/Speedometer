@@ -213,7 +213,7 @@ describe("BenchmarkRunner", () => {
                     const total = syncTime + asyncTime;
                     const mean = total / suite.tests.length;
                     const geomean = Math.pow(total, 1 / suite.tests.length);
-                    const score = (60 * 1000) / geomean / 50; // correctionFactor = 50
+                    const score = (60 * 1000) / geomean / 3; // correctionFactor = 3
 
                     const { total: measuredTotal, mean: measuredMean, geomean: measuredGeomean, score: measuredScore } = runner._measuredValues;
 
