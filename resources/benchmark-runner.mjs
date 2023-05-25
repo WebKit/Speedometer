@@ -122,7 +122,7 @@ class PageElement {
 }
 
 function geomeanToScore(geomean) {
-    const correctionFactor = 3; // This factor makes the test score look reasonably fit within 0 to 140.
+    const correctionFactor = 50; // This factor makes the test score look reasonably fit within 0 to 140.
     return (60 * 1000) / geomean / correctionFactor;
 }
 
