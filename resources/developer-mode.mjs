@@ -72,9 +72,12 @@ export function createUIForIterationCount() {
     countLabel.textContent = params.iterationCount;
     label.append(`iterations: `, countLabel, document.createElement("br"), range);
 
+    range.oninput = () => {
+        countLabel.textContent = range.value;
+    };
+
     range.onchange = () => {
         params.iterationCount = parseInt(range.value);
-        countLabel.textContent = params.iterationCount;
         updateURL();
     };
 
