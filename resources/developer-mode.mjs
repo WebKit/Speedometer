@@ -100,8 +100,16 @@ export function createUIForSuites() {
         checkbox.id = suite.name;
         checkbox.type = "checkbox";
         checkbox.checked = !suite.disabled;
-        checkbox.onclick = (event) => {
+        checkbox.onchange = () => {
             suite.disabled = !checkbox.checked;
+            updateURL();
+        };
+        checkboxes.push(checkbox);
+
+        const label = document.createElement("label");
+        label.append(checkbox, " ", suite.name);
+        li.appendChild(label);
+        label.onclick = (event) => {
             if (event?.ctrlKey || event?.metaKey) {
                 for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) {
                     if (Suites[suiteIndex] !== suite)
@@ -110,15 +118,7 @@ export function createUIForSuites() {
                         setSuiteEnabled(suiteIndex, true);
                 }
             }
-            updateURL();
-        };
-        checkboxes.push(checkbox);
-
-        li.appendChild(checkbox);
-        const label = document.createElement("label");
-        label.appendChild(document.createTextNode(suite.name));
-        li.appendChild(label);
-        label.htmlFor = checkbox.id;
+        }
 
         ol.appendChild(li);
     }
