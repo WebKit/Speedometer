@@ -239,7 +239,7 @@ export class BenchmarkRunner {
         const iterationEndLabel = "iteration-end";
         for (let i = 0; i < iterationCount; i++) {
             performance.mark(iterationStartLabel);
-            await this._runAllSuites(i);
+            await this._runAllSuites();
             performance.mark(iterationEndLabel);
             performance.measure(`iteration-${i}`, iterationStartLabel, iterationEndLabel);
         }
@@ -276,7 +276,7 @@ export class BenchmarkRunner {
         return frame;
     }
 
-    async _runAllSuites(iteration) {
+    async _runAllSuites() {
         this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
 
         const prepareStartLabel = "runner-prepare-start";
