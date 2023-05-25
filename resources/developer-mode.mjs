@@ -33,7 +33,7 @@ export function createUIForMeasurementMethod() {
 
     check.onchange = () => {
         params.measurementMethod = check.checked ? "raf" : "timer";
-        fixupURL();
+        updateURL();
     };
 
     let label = document.createElement("label");
@@ -50,7 +50,7 @@ export function createUIForWarmupSuite() {
 
     check.onchange = () => {
         params.useWarmupSuite = check.checked;
-        fixupURL();
+        updateURL();
     };
 
     let label = document.createElement("label");
@@ -75,7 +75,7 @@ export function createUIForIterationCount() {
     range.onchange = () => {
         params.iterationCount = parseInt(range.value);
         countLabel.textContent = params.iterationCount;
-        fixupURL();
+        updateURL();
     };
 
     return label;
@@ -107,7 +107,7 @@ export function createUIForSuites() {
                         setSuiteEnabled(suiteIndex, true);
                 }
             }
-            fixupURL();
+            updateURL();
         };
         checkboxes.push(checkbox);
 
@@ -128,7 +128,7 @@ export function createUIForSuites() {
         for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
             setSuiteEnabled(suiteIndex, true);
 
-        fixupURL(Suites);
+        updateURL();
     };
     control.appendChild(button);
 
@@ -138,14 +138,14 @@ export function createUIForSuites() {
         for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
             setSuiteEnabled(suiteIndex, false);
 
-        fixupURL();
+        updateURL();
     };
     control.appendChild(button);
 
     return control;
 }
 
-function fixupURL() {
+function updateURL() {
     const url = new URL(window.location.href);
 
     // If less than all suites are selected then change the URL "Suites" GET parameter
@@ -157,10 +157,8 @@ function fixupURL() {
     }
 
     if (!selectedSuites.length || selectedSuites.length === Suites.length) {
-        const url = new URL(window.location.href);
         url.searchParams.delete("suites");
         url.searchParams.delete("suite");
-        url.search = decodeURIComponent(url.search);
     } else {
         url.searchParams.delete("suite");
         url.searchParams.set("suites", selectedSuites.join(","));
