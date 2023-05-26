@@ -327,6 +327,10 @@ export class BenchmarkRunner {
         let asyncStartTime;
         let asyncTime;
         const runSync = () => {
+            if (params.warmupBeforeSync) {
+                const startTime = performance.now();
+                while (performance.now() - startTime < params.warmupBeforeSync); // Infinite loop for the specified ms.
+            }
             performance.mark(startLabel);
             const syncStartTime = performance.now();
             test.run(this._page);
