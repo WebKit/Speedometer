@@ -73,6 +73,10 @@ img {
     -webkit-user-drag: none;
 }
 
+.no-select {
+    user-select: none;
+}
+
 main {
 }
 
@@ -452,6 +456,8 @@ table .number {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    direction: rtl;
+    text-align: left;
 }
 
 section#details h1 {
