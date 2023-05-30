@@ -31,11 +31,11 @@ const TagGroup = () => {
 
     return (
         <div className="spectrum-TagGroup" role="list" aria-label="list">
-            {tags.map((tag, index) => (
+            {tags.map((tag, index) =>
                 <div className={`spectrum-Tag spectrum-TagGroup-item ${tag.className}`} role="listitem" key={index}>
                     <span className="spectrum-Tag-label">{tag.label}</span>
                 </div>
-            ))}
+            )}
         </div>
     );
 };

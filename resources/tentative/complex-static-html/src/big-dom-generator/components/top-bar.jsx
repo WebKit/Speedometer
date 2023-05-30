@@ -86,7 +86,7 @@ export const TopBar = () => {
     return (
         <div className="top-bar">
             <img src={SpeedometerLogo} alt="Speedometer Logo for TODO App" height={40} />
-            <div className={`search-area`}>
+            <div className={"search-area"}>
                 <SearchArea />
             </div>
             <div className="top-bar-right">

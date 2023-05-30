@@ -7,13 +7,13 @@ import AddIcon from "../assets/Smock_Add_18_N.svg";
 const DaysOfTheWeekHeadings = () => {
     const daysOfTheWeek = { Sunday: "S", Monday: "M", Tuesday: "T", Wednesday: "W", Thursday: "T", Friday: "F", Saturday: "S" };
 
-    return Object.entries(daysOfTheWeek).map(([key, value]) => (
+    return Object.entries(daysOfTheWeek).map(([key, value]) =>
         <th key={key} role="columnheader" scope="col" className="spectrum-Calendar-tableCell">
             <abbr className="spectrum-Calendar-dayOfWeek" title={key}>
                 {value}
             </abbr>
         </th>
-    ));
+    );
 };
 
 const CalendarRow = ({ weekStart }) => {

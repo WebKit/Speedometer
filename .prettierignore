@@ -4,7 +4,6 @@ package-lock.json
 **/.angular
 
 /resources/tentative/*
-!/resources/tentative/editors
 !/resources/tentative/charts
 
 /resources/todomvc/architecture-examples/*
@@ -26,3 +25,6 @@ package-lock.json
 !/resources/tentative/complex-static-html/src
 /resources/tentative/complex-static-html/src/*
 !/resources/tentative/complex-static-html/src/big-dom-generator
+
+!/resources/tentative/editors
+/resources/tentative/editors/assets

@@ -6,7 +6,7 @@ const ProgressBar = ({ teamNumber, value }) => {
             <div className="spectrum-FieldLabel spectrum-FieldLabel--sizeS spectrum-ProgressBar-label">Team {teamNumber} progress</div>
             <div className="spectrum-FieldLabel spectrum-FieldLabel--sizeS spectrum-ProgressBar-percentage">{value}%</div>
             <div className="spectrum-ProgressBar-track">
-                <div className="spectrum-ProgressBar-fill" style={{ width: value.toString() + "%" }}></div>
+                <div className="spectrum-ProgressBar-fill" style={{ width: `${value.toString()}%` }}></div>
             </div>
         </div>
     );
@@ -15,7 +15,8 @@ const ProgressBar = ({ teamNumber, value }) => {
 export const AnalyticsPopOver = () => {
     const children = [];
     const numProgressBars = 5;
-    for (let i = 0; i < numProgressBars; i++) children.push(<ProgressBar key={i} teamNumber={i} value={((i + 1) * 10) % 100} />);
+    for (let i = 0; i < numProgressBars; i++)
+        children.push(<ProgressBar key={i} teamNumber={i} value={((i + 1) * 10) % 100} />);
 
     return <VerticalPopOver>{children}</VerticalPopOver>;
 };

@@ -51,7 +51,7 @@ export const Table = () => {
                 </tr>
             </thead>
             <tbody className="spectrum-Table-body">
-                {rows.map((row, index) => (
+                {rows.map((row, index) =>
                     <tr className="spectrum-Table-row" tabIndex="0" key={index}>
                         <td className="spectrum-Table-cell spectrum-Table-checkboxCell">
                             <label className="spectrum-Checkbox spectrum-Checkbox--sizeM spectrum-Table-checkbox">
@@ -65,7 +65,7 @@ export const Table = () => {
                         <td className="spectrum-Table-cell">{row.status}</td>
                         <td className="spectrum-Table-cell">{row.category}</td>
                     </tr>
-                ))}
+                )}
             </tbody>
         </table>
     );
