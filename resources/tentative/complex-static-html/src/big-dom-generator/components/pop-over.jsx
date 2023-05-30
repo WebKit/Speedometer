@@ -1,11 +1,11 @@
 import { Children } from "react";
 
 export const VerticalPopOver = ({ children }) => {
-    const actionItems = Children.toArray(children).map((child, index) => (
+    const actionItems = Children.toArray(children).map((child, index) =>
         <div key={index} className="spectrum-ActionGroup-item">
             {child}
         </div>
-    ));
+    );
     return (
         <div className="spectrum-Popover spectrum-Popover--bottom-right" style={{ marginTop: "25px", padding: "5px" }}>
             <div className="spectrum-ActionGroup spectrum-ActionGroup--vertical spectrum-ActionGroup--sizeS">{actionItems}</div>

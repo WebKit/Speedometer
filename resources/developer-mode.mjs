@@ -70,7 +70,7 @@ export function createUIForIterationCount() {
     let label = document.createElement("label");
     let countLabel = document.createElement("span");
     countLabel.textContent = params.iterationCount;
-    label.append(`iterations: `, countLabel, document.createElement("br"), range);
+    label.append("iterations: ", countLabel, document.createElement("br"), range);
 
     range.oninput = () => {
         countLabel.textContent = range.value;
@@ -118,7 +118,7 @@ export function createUIForSuites() {
                         setSuiteEnabled(suiteIndex, true);
                 }
             }
-        }
+        };
 
         ol.appendChild(li);
     }

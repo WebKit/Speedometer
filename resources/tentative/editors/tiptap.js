@@ -33,11 +33,11 @@ export default async function (element, value) {
             element.scrollTop = 0;
         },
         format(on) {
-            if (on) {
+            if (on)
                 editor.chain().focus().selectAll().setBold().setTextSelection(0).run();
-            } else {
+            else
                 editor.chain().focus().selectAll().unsetBold().setTextSelection(0).run();
-            }
+
         },
     };
 }
