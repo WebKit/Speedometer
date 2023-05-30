@@ -9,8 +9,10 @@
     "private": true,
     "scripts": {
         "build": "rollup -c",
+        "build:embedded": "EMBEDDED=true rollup -c",
         "watch": "rollup -c -w",
         "serve": "http-server ./dist -p 7002 -c-1 --cors",
+        "serve:embedded": "http-server ./embedded-dist -p 7002 -c-1 --cors",
         "dev": "npm run serve & npm run watch"
     },
     "dependencies": {

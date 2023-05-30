@@ -10,7 +10,9 @@
     "scripts": {
         "ng": "ng",
         "dev": "ng serve",
+        "dev:embedded": "ng serve --configuration embedded",
         "build": "ng build --base-href /resources/todomvc/architecture-examples/angular/dist/",
+        "build:embedded": "ng build --configuration embedded",
         "watch": "ng build --watch --configuration development",
         "test": "ng test"
     },

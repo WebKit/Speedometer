@@ -8,12 +8,13 @@ import copy from "rollup-plugin-copy";
 // `npm run build` -> `production` is true
 // `npm run dev` -> `production` is false
 const production = !process.env.ROLLUP_WATCH;
+const embedded = process.env.EMBEDDED;
 
 export default {
-    input: "src/index.js",
+    input: embedded ? "src/embedded.js" : "src/index.js",
     output: [
         {
-            file: "dist/app.js",
+            file: embedded ? "embedded-dist/app.js" : "dist/app.js",
             format: "iife",
             sourcemap: true,
         },
@@ -45,7 +46,11 @@ export default {
         }),
         commonjs(),
         copy({
-            targets: [{ src: "public/index.html", dest: "dist/" }],
+            targets: [
+                { src: "public/index.html", dest: "dist/" },
+                { src: "public/embedded/index.html", dest: "embedded-dist/" },
+                { src: "../../big-dom-generator/dist/logo.png", dest: "embedded-dist/" }
+            ],
         }),
         production && terser(),
     ],

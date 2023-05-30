@@ -10,13 +10,16 @@
     "scripts": {
         "dev": "http-server ./ -p 7001 -c-1 --cors",
         "build": "node scripts/build.js",
-        "serve": "http-server ./dist -p 7002 -c-1 --cors"
+        "build:embedded": "node scripts/build-embedded.js",
+        "serve": "http-server ./dist -p 7002 -c-1 --cors",
+        "serve:embedded": "http-server ./embedded-dist -p 7002 -c-1 --cors"
     },
     "dependencies": {
         "todomvc-app-css": "^2.4.2",
         "todomvc-common": "^1.0.5"
     },
     "devDependencies": {
-        "http-server": "^14.1.1"
+        "http-server": "^14.1.1",
+        "jsdom": "^22.1.0"
     }
 }

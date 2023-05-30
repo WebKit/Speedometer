@@ -1,12 +1,12 @@
 const path = require("path");
 
-module.exports = {
-    entry: {
-        app: "./src/app.js",
+module.exports = (env) => {
+    return { entry: {
+        app: env.embedded ? "./src/embedded.js" : "./src/app.js",
     },
     output: {
         filename: "[name].bundle.js",
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, env.embedded ? "embedded-dist" : "dist"),
         clean: true,
     },
     module: {
@@ -17,4 +17,5 @@ module.exports = {
             },
         ],
     },
+    };
 };

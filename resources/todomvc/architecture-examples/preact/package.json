@@ -9,8 +9,10 @@
     },
     "scripts": {
         "build": "rollup -c --bundleConfigAsCjs",
+        "build:embedded": "EMBEDDED=true rollup -c --bundleConfigAsCjs",
         "dev": "npm-run-all --parallel serve watch",
         "serve": "http-server ./dist -p 7002 -c-1 --cors -o",
+        "serve:embedded": "http-server ./embedded-dist -p 7002 -c-1 --cors -o",
         "watch": "ROLLUP_WATCH=true rollup -c -w --bundleConfigAsCjs"
     },
     "devDependencies": {

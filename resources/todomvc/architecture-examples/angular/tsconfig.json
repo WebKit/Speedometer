@@ -3,7 +3,8 @@
     "compileOnSave": false,
     "compilerOptions": {
         "baseUrl": "./",
-        "outDir": "./dist/out-tsc",
+        // "outDir": "./dist/out-tsc",
+        "outDir": "./embedded-dist/out-tsc",
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "noImplicitOverride": true,

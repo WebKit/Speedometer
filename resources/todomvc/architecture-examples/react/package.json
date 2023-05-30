@@ -9,8 +9,10 @@
     },
     "scripts": {
         "build": "webpack --config webpack.prod.js",
+        "build:embedded": "webpack --config webpack.prod.js --mode=production  --env embedded",
         "dev": "webpack serve --open --config webpack.dev.js",
         "serve": "http-server ./dist -p 7002 -c-1 --cors",
+        "serve:embedded": "http-server ./embedded-dist -p 7002 -c-1 --cors",
         "test": "jest"
     },
     "devDependencies": {
@@ -18,6 +20,7 @@
         "@babel/preset-env": "^7.20.2",
         "@babel/preset-react": "^7.18.6",
         "babel-loader": "^9.1.2",
+        "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.7.3",
         "css-minimizer-webpack-plugin": "^4.2.2",
         "eslint-plugin-react": "^7.32.2",
