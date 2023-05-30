@@ -2,12 +2,15 @@
     font-family: "Helvetica Neue", Helvetica, Verdana, sans-serif;
     line-height: 1.5;
     font-weight: 400;
+    font-size: 13px;
 
     color: #213547;
     background-color: #ffffff;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: none; /* Note that Firefox implements this with the webkit prefix. */
+    text-size-adjust: none;
 }
 
 a {
