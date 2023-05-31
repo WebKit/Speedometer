@@ -57,9 +57,19 @@ class Page {
         return this._wrapElement(element);
     }
 
-    call(function_name) {
-        this._frame.contentWindow[function_name]();
+    call(functionName) {
+        this._frame.contentWindow[functionName]();
         return null;
+    }
+
+    callAsync(functionName) {
+        setTimeout(() => {
+            this._frame.contentWindow[functionName]();
+        }, 0);
+    }
+
+    callToGetElement(functionName) {
+        return this._wrapElement(this._frame.contentWindow[functionName]());
     }
 
     _wrapElement(element) {
@@ -91,6 +101,10 @@ class PageElement {
         this.#node.focus();
     }
 
+    getElementByMethod(name) {
+        return new PageElement(this.#node[name]());
+    }
+
     dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
         if (eventName === "submit")
             // FIXME FireFox doesn't like `new Event('submit')
@@ -107,16 +121,28 @@ class PageElement {
 
     enter(type, options = undefined) {
         const ENTER_KEY_CODE = 13;
-        let eventOptions = {
-            bubbles: true,
-            cancelable: true,
-            keyCode: ENTER_KEY_CODE,
-            which: ENTER_KEY_CODE,
-            key: "Enter",
-        };
+        return this.dispatchKeyEvent(type, ENTER_KEY_CODE, "Enter", options);
+    }
+
+    dispatchKeyEvent(type, keyCode, key, options) {
+        let eventOptions = { bubbles: true, cancelable: true, keyCode, which: keyCode, key };
         if (options !== undefined)
             eventOptions = Object.assign(eventOptions, options);
         const event = new KeyboardEvent(type, eventOptions);
+        this.#node.dispatchEvent(event);
+    }
+
+    dispatchMouseEvent(type, offsetX, offsetY, options) {
+        const boundingRect = this.#node.getBoundingClientRect();
+        const clientX = offsetX + boundingRect.x;
+        const clientY = offsetY + boundingRect.y;
+        const contentWindow = this.#node.ownerDocument.defaultView;
+        const screenX = clientX + contentWindow.screenX;
+        const screenY = clientY + contentWindow.screenY;
+        let eventOptions = { bubbles: true, cancelable: true, clientX, clientY, screenX, screenY };
+        if (options !== undefined)
+            eventOptions = Object.assign(eventOptions, options);
+        const event = new contentWindow.MouseEvent(type, eventOptions);
         this.#node.dispatchEvent(event);
     }
 }
