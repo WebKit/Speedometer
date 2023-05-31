@@ -1,0 +1,21 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "NODE_ENV=production nuxt generate && touch docs/.nojekyll",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "serve": "http-server ./docs -p 9000 -c-1 --cors -o"
+  },
+  "devDependencies": {
+    "@types/node": "^18",
+    "nuxt": "^3.5.2"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1",
+    "news-site-css": "^1.6.5",
+    "uuid": "^9.0.0"
+  }
+}
