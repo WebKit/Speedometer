@@ -8,7 +8,11 @@ class Params {
     iterationCount = 10;
     suites = [];
     useWarmupSuite = false;
-    measurementMethod = "timer";
+    measurementMethod = "timer"; // or "raf"
+    // Wait time before the sync step in ms.
+    waitBeforeSync = 0;
+    // Warmup time before the sync step in ms.
+    warmupBeforeSync = 0;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -49,6 +53,13 @@ class Params {
         if (searchParams.has("useWarmupSuite")) {
             this.useWarmupSuite = true;
             searchParams.delete("useWarmupSuite");
+        }
+
+        if (searchParams.has("waitBeforeSync")) {
+            this.waitBeforeSync = parseInt(searchParams.get("waitBeforeSync"));
+            if (this.waitBeforeSync < 1)
+                throw new Error(`Invalid waitBeforeSync param: ${this.waitBeforeSync}`);
+            searchParams.delete("waitBeforeSync");
         }
 
         if (searchParams.has("warmupBeforeSync")) {

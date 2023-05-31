@@ -173,13 +173,15 @@ const WarmupSuite = {
     ],
 };
 
-class TimerTestInvoker {
+class TestInvoker {
     constructor(syncCallback, asyncCallback, reportCallback) {
         this._syncCallback = syncCallback;
         this._asyncCallback = asyncCallback;
         this._reportCallback = reportCallback;
     }
+}
 
+class TimerTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -191,30 +193,31 @@ class TimerTestInvoker {
                         resolve();
                     });
                 }, 0);
-            }, 0);
+            }, params.waitBeforeSync);
         });
     }
 }
 
-class RAFTestInvoker {
-    constructor(syncCallback, asyncCallback, reportCallback) {
-        this._syncCallback = syncCallback;
-        this._asyncCallback = asyncCallback;
-        this._reportCallback = reportCallback;
-    }
-
+class RAFTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
-            requestAnimationFrame(() => this._syncCallback());
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    this._asyncCallback();
-                    setTimeout(async () => {
-                        await this._reportCallback();
-                        resolve();
-                    }, 0);
+            if (params.waitBeforeSync)
+                setTimeout(() => this._scheduleCallbacks(resolve), params.waitBeforeSync);
+            else
+                this._scheduleCallbacks(resolve);
+        });
+    }
+
+    _scheduleCallbacks(resolve) {
+        requestAnimationFrame(() => this._syncCallback());
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                this._asyncCallback();
+                setTimeout(async () => {
+                    await this._reportCallback();
+                    resolve();
                 }, 0);
-            });
+            }, 0);
         });
     }
 }
@@ -352,7 +355,8 @@ export class BenchmarkRunner {
         const runSync = () => {
             if (params.warmupBeforeSync) {
                 const startTime = performance.now();
-                while (performance.now() - startTime < params.warmupBeforeSync); // Infinite loop for the specified ms.
+                while (performance.now() - startTime < params.warmupBeforeSync)
+                    ; // Infinite loop for the specified ms.
             }
             performance.mark(startLabel);
             const syncStartTime = performance.now();
