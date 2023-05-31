@@ -37,6 +37,7 @@ export default async function (element, value) {
                 editor.chain().focus().selectAll().setBold().setTextSelection(0).run();
             else
                 editor.chain().focus().selectAll().unsetBold().setTextSelection(0).run();
+
         },
     };
 }
