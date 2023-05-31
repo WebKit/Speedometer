@@ -10,6 +10,7 @@ export default defineConfig({
                 index: resolve(__dirname, "index.html"),
                 developer: resolve(__dirname, "developer.html"),
                 plot: resolve(__dirname, "observable-plot.html"),
+                chartjs: resolve(__dirname, "chartjs.html"),
             },
         },
     },

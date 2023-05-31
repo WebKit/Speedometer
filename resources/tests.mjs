@@ -468,6 +468,27 @@ Suites.push({
 });
 
 Suites.push({
+    name: "Charts-chartjs",
+    url: "tentative/charts/dist/chartjs.html",
+    async prepare(page) {},
+    tests: [
+        new BenchmarkTestStep("Prepare", (page) => {
+            page.querySelector("#prepare").click();
+        }),
+        new BenchmarkTestStep("Draw scatter", (page) => {
+            page.querySelector("#add-scatter-chart-button").click();
+        }),
+        new BenchmarkTestStep("Show tooltip", (page) => {
+            page.querySelector("#open-tooltip").click();
+        }),
+        new BenchmarkTestStep("Draw opaque scatter", (page) => {
+            page.querySelector("#opaque-color").click();
+            page.querySelector("#add-scatter-chart-button").click();
+        }),
+    ],
+});
+
+Suites.push({
     name: "React-Stockcharts-SVG",
     url: "tentative/react-stockcharts/build/index.html?type=svg",
     async prepare(page) {
