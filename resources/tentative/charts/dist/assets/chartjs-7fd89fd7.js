@@ -14159,9 +14159,6 @@ function drawScattered(data) {
       ]
     },
     options: {
-      onHover(...args) {
-        console.log(...args);
-      },
       animation: false,
       parsing: {
         xAxisKey: "distance",
