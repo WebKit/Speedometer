@@ -57,14 +57,14 @@ class Params {
 
         if (searchParams.has("waitBeforeSync")) {
             this.waitBeforeSync = parseInt(searchParams.get("waitBeforeSync"));
-            if (this.waitBeforeSync < 1)
+            if (this.waitBeforeSync < 0)
                 throw new Error(`Invalid waitBeforeSync param: ${this.waitBeforeSync}`);
             searchParams.delete("waitBeforeSync");
         }
 
         if (searchParams.has("warmupBeforeSync")) {
             this.warmupBeforeSync = parseInt(searchParams.get("warmupBeforeSync"));
-            if (this.warmupBeforeSync < 1)
+            if (this.warmupBeforeSync < 0)
                 throw new Error(`Invalid warmupBeforeSync param: ${this.warmupBeforeSync}`);
             searchParams.delete("warmupBeforeSync");
         }
