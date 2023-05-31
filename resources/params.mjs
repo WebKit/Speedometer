@@ -51,6 +51,13 @@ class Params {
             searchParams.delete("useWarmupSuite");
         }
 
+        if (searchParams.has("warmupBeforeSync")) {
+            this.warmupBeforeSync = parseInt(searchParams.get("warmupBeforeSync"));
+            if (this.warmupBeforeSync < 1)
+                throw new Error(`Invalid warmupBeforeSync param: ${this.warmupBeforeSync}`);
+            searchParams.delete("warmupBeforeSync");
+        }
+
         if (searchParams.has("measurementMethod")) {
             this.measurementMethod = searchParams.get("measurementMethod");
             if (this.measurementMethod !== "timer" && this.measurementMethod !== "raf")
