@@ -5,7 +5,6 @@ node_modules
 .cache
 .output
 .env
-dist
 .DS_Store
 .fleet
 .idea

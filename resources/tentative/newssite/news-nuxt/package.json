@@ -4,10 +4,10 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "generate": "NODE_ENV=production nuxt generate && touch docs/.nojekyll",
+    "generate": "NODE_ENV=production nuxt generate && touch dist/.nojekyll",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "serve": "http-server ./docs -p 9000 -c-1 --cors -o"
+    "serve": "http-server ./dist -p 9000 -c-1 --cors -o"
   },
   "devDependencies": {
     "@types/node": "^18",
@@ -17,5 +17,14 @@
     "http-server": "^14.1.1",
     "news-site-css": "^1.6.5",
     "uuid": "^9.0.0"
+  },
+  "comments": {
+    "github-pages-replace-generate-script-with": {
+      "generate": "NODE_ENV=production nuxt generate && touch docs/.nojekyll",
+      "serve": "http-server ./docs -p 9000 -c-1 --cors -o"
+    },
+    "github-pages-update-nuxt-config-with": {
+      "properties": ["publicDir", "baseURL"]
+    }
   }
 }
