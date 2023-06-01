@@ -16,6 +16,15 @@ useHead({
 });
 </script>
 
+<script>
+  // "Fixes" an issue with calling history.replaceState too often in certain browsers during testing.
+  // Note: This should NOT be used in a production application.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  history.replaceState = function(state) {
+    return null;
+  }
+</script>
+
 <template>
   <NuxtLayout>
     <NuxtPage />
