@@ -13,11 +13,13 @@
                 <h1>todos</h1>
                 <input id="new-todo" class="new-todo" placeholder="What needs to be done?" autofocus>
             </header>
-            <section id="main" class="main">
-                <input id="toggle-all" class="toggle-all" type="checkbox">
-                <label for="toggle-all">Mark all as complete</label>
+            <main id="main" class="main">
+                <div class="toggle-all-container">
+                    <input id="toggle-all" class="toggle-all" type="checkbox">
+                    <label for="toggle-all">Mark all as complete</label>
+                </div>
                 <ul id="todo-list" class="todo-list"></ul>
-            </section>
+            </main>
             <footer id="footer" class="footer"></footer>
         </section>
         <footer id="info" class="info">
@@ -26,16 +28,16 @@
             <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
         </footer>
         <script id="todo-template" type="text/x-handlebars-template">
-            {{#this}}
-            <li {{#if completed}}class="completed"{{/if}} data-id="{{id}}">
-                <div class="view">
-                    <input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
-                    <label>{{title}}</label>
-                    <button class="destroy"></button>
+            {{#each this as |item index|}}
+            <li class="li-{{index}} {{#if item.completed}}completed{{/if}} targeted" data-id="{{item.id}}">
+                <div class="view-{{index}} targeted">
+                  <input class="toggle" type="checkbox" {{#if item.completed}}checked{{/if}}>
+                  <label>{{item.title}}</label>
+                  <button class="destroy"></button>
                 </div>
-                <input class="edit" value="{{title}}">
-            </li>
-        {{/this}}
+                <input class="edit" value="{{item.title}}">
+              </li>
+        {{/each}}
         </script>
         <script id="footer-template" type="text/x-handlebars-template">
             <span id="todo-count" class="todo-count"><strong>{{activeTodoCount}}</strong> {{activeTodoWord}} left</span>

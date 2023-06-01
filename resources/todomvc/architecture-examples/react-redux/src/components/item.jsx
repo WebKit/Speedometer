@@ -9,6 +9,7 @@ export default class Item extends PureComponent {
         editTodo: PropTypes.func.isRequired,
         deleteTodo: PropTypes.func.isRequired,
         toggleTodo: PropTypes.func.isRequired,
+        index: PropTypes.number.isRequired,
     };
 
     state = {
@@ -29,14 +30,14 @@ export default class Item extends PureComponent {
     };
 
     render() {
-        const { todo, toggleTodo, deleteTodo } = this.props;
+        const { todo, toggleTodo, deleteTodo, index } = this.props;
 
         let element;
         if (this.state.editing) {
             element = <TextInput text={todo.text} editing={this.state.editing} onSave={(text) => this.handleSave(todo.id, text)} />;
         } else {
             element = (
-                <div className="view">
+                <div className={`targeted view-${index}`}>
                     <input className="toggle" type="checkbox" data-testid="todo-item-toggle" checked={todo.completed} onChange={() => toggleTodo(todo.id)} />
                     <label onDoubleClick={this.handleDoubleClick} data-testid="todo-item-label">
                         {todo.text}
@@ -50,8 +51,8 @@ export default class Item extends PureComponent {
             <li
                 className={classnames({
                     completed: todo.completed,
-                    editing: this.state.editing,
-                })}
+                    editing: this.state.editing,},
+                    'targeted', `li-${index}`)}
                 data-testid="todo-item"
             >
                 {element}

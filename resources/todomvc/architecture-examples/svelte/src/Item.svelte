@@ -2,6 +2,7 @@
     import { createEventDispatcher, tick } from 'svelte';
 
     export let item;
+    export let index;
 
     let editing = false;
     const dispatch = createEventDispatcher();
@@ -38,8 +39,8 @@
     }
 </script>
 
-<li class="{item.completed ? 'completed' : ''} {editing ? 'editing' : ''}">
-    <div class="view">
+<li class="li-{index} targeted {item.completed ? 'completed' : ''} {editing ? 'editing' : ''}">
+    <div class="view-{index} targeted">
         <input class="toggle" type="checkbox" on:change={(event) => item.completed = event.target.checked} checked={item.completed} />
         <!-- svelte-ignore a11y-label-has-associated-control -->
         <label on:dblclick={startEdit}>{item.description}</label>

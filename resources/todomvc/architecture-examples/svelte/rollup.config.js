@@ -55,6 +55,9 @@ export default {
                     src: "../../big-dom-generator/dist/index.html",
                     dest: "embedded-dist/",
                     transform: (contents) => {
+                        // Add a link to the app.css file in the head of the HTML
+                        contents = contents.toString().replace("</head>", "<link rel=\"stylesheet\" href=\"app.css\" />\n</head>");
+                        // Replace the todo-area div with the HTML to inject for embedded mode
                         return contents.toString().replace("<div class=\"todo-area\">", `${htmlToInjectForEmbedded}`);
                     },
                 },

@@ -23,7 +23,7 @@ export default class Main extends Component {
             return null;
 
         return (
-            <section className="main" data-testid="main">
+            <main className="main" data-testid="main">
                 <div className="toggle-all-container">
                     <input className="toggle-all" type="checkbox" data-testid="toggle-all" checked={completedCount === todos.length} onChange={toggleAll} />
                     <label className="toggle-all-label" htmlFor="toggle-all">
@@ -31,12 +31,12 @@ export default class Main extends Component {
                     </label>
                 </div>
                 <ul className="todo-list" data-testid="todo-list">
-                    {visibleTodos.map((todo) => (
-                        <Item key={todo.id} todo={todo} editTodo={editTodo} deleteTodo={deleteTodo} toggleTodo={toggleTodo} />
+                    {visibleTodos.map((todo, index) => (
+                        <Item key={todo.id} todo={todo} editTodo={editTodo} deleteTodo={deleteTodo} toggleTodo={toggleTodo} index={index}/>
                     ))}
                 </ul>
                 <Footer completedCount={completedCount} activeCount={activeCount} filter={location.pathname} onClearCompleted={clearCompleted} />;
-            </section>
+            </main>
         );
     }
 }
