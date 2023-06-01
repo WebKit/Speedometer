@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { RouterConfig } from "@nuxt/schema";
 import PageVue from "~/components/molecules/Page.vue";
 // https://router.vuejs.org/api/interfaces/routeroptions.html
@@ -6,37 +7,37 @@ export default <RouterConfig>{
         {
             name: "home",
             path: "/",
-            component: PageVue
+            component: PageVue,
         },
         {
             name: "us",
             path: "/us",
-            component: PageVue
+            component: PageVue,
         },
         {
             name: "world",
             path: "/world",
-            component: PageVue
+            component: PageVue,
         },
         {
             name: "politics",
             path: "/politics",
-            component: PageVue
+            component: PageVue,
         },
         {
             name: "business",
             path: "/business",
-            component: PageVue
+            component: PageVue,
         },
         {
             name: "opinion",
             path: "/opinion",
-            component: PageVue
+            component: PageVue,
         },
         {
             name: "health",
             path: "/health",
-            component: PageVue
-        }
+            component: PageVue,
+        },
     ],
 };

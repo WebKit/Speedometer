@@ -1,1 +1,3 @@
-docs
+dist
+.nuxt
+.output
