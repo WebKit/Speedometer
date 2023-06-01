@@ -14,13 +14,13 @@ export default {
 </script>
 
 <template>
-    <div v-if="tag" :class="[
-        styles['article-image-tag'],
-        styles[tag]
-    ]">
-        <LightningIcon v-if="tag === 'breaking'" />
-        <PlayIcon v-if="tag === 'watch'" />
-        <FireIcon v-if="tag === 'new'" />
-        <ArticleText :text="tag" />
-    </div>
+  <div
+    v-if="tag"
+    :class="[styles['article-image-tag'], styles[tag]]"
+  >
+    <LightningIcon v-if="tag === 'breaking'" />
+    <PlayIcon v-if="tag === 'watch'" />
+    <FireIcon v-if="tag === 'new'" />
+    <ArticleText :text="tag" />
+  </div>
 </template>

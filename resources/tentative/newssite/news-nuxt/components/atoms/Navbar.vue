@@ -1,76 +1,92 @@
 <script setup lang="js">
-    const route = useRoute()
+const route = useRoute()
 </script>
 
 <script lang="js">
-  import navStyles from "news-site-css/dist/nav.module.css";
-  import navbarStyles from "news-site-css/dist/navbar.module.css";
+import navStyles from "news-site-css/dist/nav.module.css";
+import navbarStyles from "news-site-css/dist/navbar.module.css";
 
-  function calculateViewportHeight() {
-      // Since the navbar is supposed to appear below the menu, we can't use position: fixed, height: 100%.
-      // Therefore we are using 100vh for the height. This function fixes the challenge on mobile, where
-      // 100vh might include the addressbar, ect.
+function calculateViewportHeight() {
+    // Since the navbar is supposed to appear below the menu, we can't use position: fixed, height: 100%.
+    // Therefore we are using 100vh for the height. This function fixes the challenge on mobile, where
+    // 100vh might include the addressbar, ect.
 
-      // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
-      let vh = window.innerHeight * 0.01;
-      // Then we set the value in the --vh custom property to the root of the document
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-  }
+    // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+    const vh = window.innerHeight * 0.01;
+    // Then we set the value in the --vh custom property to the root of the document
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+}
 
-  export default {
-    mounted() {
-      calculateViewportHeight();
-      window.addEventListener('resize', calculateViewportHeight);
+export default {
+  props: {
+    callback: Function
+  },
+  data () {
+    return {
+      navbarStyles,
+      navStyles,
+      isOpen: false,
+    }
+  },
+  mounted() {
+    calculateViewportHeight();
+    window.addEventListener('resize', calculateViewportHeight);
+  },
+  unmounted() {
+    window.removeEventListener('resize', calculateViewportHeight);
+  },
+  methods: {
+    handleClick() {
+      this.isOpen = false;
     },
-    unmounted() {
-      window.removeEventListener('resize', calculateViewportHeight);
-    },
-    props: {
-      callback: Function
-    },
-    data () {
-      return {
-        navbarStyles,
-        navStyles,
-        isOpen: false,
-      }
-    },   
-    methods: {
-      handleClick() {
-        this.isOpen = false;
-      },
-      handleChange(e) {
-        this.isOpen = e.target.checked;
-      }
-    },
-  }
+    handleChange(e) {
+      this.isOpen = e.target.checked;
+    }
+  },
+}
 </script>
 
 <template>
-    <div :class="navbarStyles.navbar">
-      <input type="checkbox" :id="navbarStyles['navbar-toggle']" @change="handleChange" :checked="isOpen" />
-      <label :for="navbarStyles['navbar-toggle']" :class="navbarStyles['navbar-label']">
-          <div :class="[
-              navbarStyles['navbar-label-icon'],
-              'animated-icon',
-              'hamburger-icon'
-          ]" title="Hamburger Icon">
-              <span className="animated-icon-inner">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-              </span>
-          </div>
-        </label>
-        <button :class="navStyles['page-navigation-logo']" id="home-link" @click="callback">
-            <LogoIcon />
-        </button>
-        <div :class="navbarStyles['navbar-active-path']">{{ route.path.split("/")[1] }}</div>
-        <div :class="navbarStyles['navbar-content']">
-            <Navlist :callback="handleClick" id="navbar-navlist" />
-            <div :class="navbarStyles['navbar-icons']">
-              <SocialIcons id="navbar-social-icons"/>
-            </div>
-        </div>
+  <div :class="navbarStyles.navbar">
+    <input
+      :id="navbarStyles['navbar-toggle']"
+      type="checkbox"
+      :checked="isOpen"
+      @change="handleChange"
+    >
+    <label
+      :for="navbarStyles['navbar-toggle']"
+      :class="navbarStyles['navbar-label']"
+    >
+      <div
+        :class="[navbarStyles['navbar-label-icon'], 'animated-icon', 'hamburger-icon']"
+        title="Hamburger Icon"
+      >
+        <span className="animated-icon-inner">
+          <span />
+          <span />
+          <span />
+        </span>
+      </div>
+    </label>
+    <button
+      id="home-link"
+      :class="navStyles['page-navigation-logo']"
+      @click="callback"
+    >
+      <LogoIcon />
+    </button>
+    <div :class="navbarStyles['navbar-active-path']">
+      {{ route.path.split("/")[1] }}
     </div>
+    <div :class="navbarStyles['navbar-content']">
+      <Navlist
+        id="navbar-navlist"
+        :callback="handleClick"
+      />
+      <div :class="navbarStyles['navbar-icons']">
+        <SocialIcons id="navbar-social-icons" />
+      </div>
+    </div>
+  </div>
 </template>

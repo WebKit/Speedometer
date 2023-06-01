@@ -10,5 +10,11 @@ export default {
 </script>
 
 <template>
-    <component :is="type || 'p'" v-if="text" :class="textClass">{{ text }}</component>
+  <component
+    :is="type || 'p'"
+    v-if="text"
+    :class="textClass"
+  >
+    {{ text }}
+  </component>
 </template>

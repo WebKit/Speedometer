@@ -26,14 +26,24 @@ export default {
 </script>
 
 <template>
-    <div :class="styles['toggle-outer']">
-        <div :class="styles['toggle-description']">{{ label }}</div>
-        <div :class="styles['toggle-container']">
-            <label :class="styles.label" for="reduced-motion-toggle">
-            <input type="checkbox" id="reduced-motion-toggle" :checked="isSelected" @change="handleChange" />
-            <span :class="styles.switch"></span>
-            <div class="visually-hidden">selected: {{ isSelected ? "true" : "false" }}</div>
-        </label>
-        </div>
+  <div :class="styles['toggle-outer']">
+    <div :class="styles['toggle-description']">
+      {{ label }}
     </div>
+    <div :class="styles['toggle-container']">
+      <label
+        :class="styles.label"
+        for="reduced-motion-toggle"
+      >
+        <input
+          id="reduced-motion-toggle"
+          type="checkbox"
+          :checked="isSelected"
+          @change="handleChange"
+        >
+        <span :class="styles.switch" />
+        <div class="visually-hidden">selected: {{ isSelected ? "true" : "false" }}</div>
+      </label>
+    </div>
+  </div>
 </template>

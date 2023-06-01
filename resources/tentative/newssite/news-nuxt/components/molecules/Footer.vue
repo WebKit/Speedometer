@@ -30,24 +30,32 @@ export default {
         <div :class="styles['footer-links']">
           <ul :class="styles['footer-links-list']">
             <li :class="styles['footer-links-item']">
-              <a href="#" id="footer-link-terms" :class="styles['footer-link']">
-                Terms of Use
-              </a>
+              <a
+                id="footer-link-terms"
+                href="#"
+                :class="styles['footer-link']"
+              > Terms of Use </a>
             </li>
             <li :class="styles['footer-links-item']">
-              <a href="#" id="footer-link-privacy" :class="styles['footer-link']">
-                Privacy Policy
-              </a>
+              <a
+                id="footer-link-privacy"
+                href="#"
+                :class="styles['footer-link']"
+              > Privacy Policy </a>
             </li>
             <li :class="styles['footer-links-item']">
-              <a href="#" id="footer-link-sell" :class="styles['footer-link']">
-                Do Not Sell Or Share My Personal Information
-              </a>
+              <a
+                id="footer-link-sell"
+                href="#"
+                :class="styles['footer-link']"
+              > Do Not Sell Or Share My Personal Information </a>
             </li>
             <li :class="styles['footer-links-item']">
-              <a href="#" id="footer-link-adchoices" :class="styles['footer-link']">
-                Ad Choices
-              </a>
+              <a
+                id="footer-link-adchoices"
+                href="#"
+                :class="styles['footer-link']"
+              > Ad Choices </a>
             </li>
           </ul>
         </div>
@@ -55,15 +63,23 @@ export default {
     </div>
     <div :class="styles['footer-row']">
       <div :class="styles['footer-column-left']">
-        <SocialIcons id="footer-social-icons"/>
+        <SocialIcons id="footer-social-icons" />
       </div>
-      <div :class="styles['footer-column-center']">© {{ new Date().getFullYear() }} No Rights Reserved</div>
+      <div :class="styles['footer-column-center']">
+        © {{ new Date().getFullYear() }} No Rights Reserved
+      </div>
       <div :class="styles['footer-column-right']">
-        <SettingsIcons :onClick="openPortal" id="footer-settings-icons"/>
+        <SettingsIcons
+          id="footer-settings-icons"
+          :on-click="openPortal"
+        />
       </div>
     </div>
   </footer>
   <Teleport to="body">
-    <Dialog v-show="showPortal" :onClose="closePortal" />
+    <Dialog
+      v-show="showPortal"
+      :on-close="closePortal"
+    />
   </Teleport>
 </template>
