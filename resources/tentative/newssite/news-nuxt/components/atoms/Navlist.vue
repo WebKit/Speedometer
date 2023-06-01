@@ -14,7 +14,8 @@
 
     export default {
         props: {
-            callback: Function
+            callback: Function,
+            id: String,
         },
         data() {
             return {
@@ -30,12 +31,12 @@
 <template>
     <ul :class="styles['navbar-list']">
         <li v-for="key in navItems" :class="styles['navbar-item']">
-            <NavlistItem :label="content[key].name" :url="content[key].url" :callback="callback"/>
+            <NavlistItem :id="`${id}-${key}-link`" :label="content[key].name" :url="content[key].url" :callback="callback"/>
         </li>
         <li v-if="dropdownItems.length > 0" :class="styles['navbar-item']">
             <Dropdown :animatedIconClass="styles['navbar-label-icon']">
                 <li v-for="key in dropdownItems" :class="[styles['navbar-item'], styles['navbar-dropdown-item']]">
-                    <NavlistItem :label="content[key].name" :url="content[key].url" :callback="callback"/>
+                    <NavlistItem :id="`${id}-${key}-link`" :label="content[key].name" :url="content[key].url" :callback="callback"/>
                 </li>
             </Dropdown>
         </li>

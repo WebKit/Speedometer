@@ -398,6 +398,46 @@ Suites.push({
 });
 
 Suites.push({
+    name: "NewsSite-Nuxt",
+    url: "tentative/newssite/news-nuxt/dist/",
+    async prepare(page) {
+        await page.waitForElement("#navbar-dropdown-toggle");
+    },
+    tests: [
+        new BenchmarkTestStep("NavigateToUS", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-us-link").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("NavigateToWorld", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-world-link").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("NavigateToPolitics", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-politics-link").click();
+            page.layout();
+        }),
+    ],
+});
+
+Suites.push({
     name: "Editor-CodeMirror",
     url: "tentative/editors/dist/codemirror.html",
     async prepare(page) {},

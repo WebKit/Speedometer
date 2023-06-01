@@ -2,7 +2,7 @@
 const path = require("path");
 
 // used for github pages
-// const development = process.env.NODE_ENV === "development";
+const development = process.env.NODE_ENV === "development";
 
 // eslint-disable-next-line no-undef
 export default defineNuxtConfig({
@@ -30,5 +30,6 @@ export default defineNuxtConfig({
     app: {
         // used for github pages
         // baseURL: development ? "" : "/news-site-nuxt-static",
+        baseURL: development ? "" : "/resources/tentative/newssite/news-nuxt/dist",
     }
 });
