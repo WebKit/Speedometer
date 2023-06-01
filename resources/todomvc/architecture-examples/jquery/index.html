@@ -28,7 +28,7 @@
             <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
         </footer>
         <script id="todo-template" type="text/x-handlebars-template">
-            {{#each this as |item index|}}
+            {{#this as |item index|}}
             <li class="li-{{index}} {{#if item.completed}}completed{{/if}} targeted" data-id="{{item.id}}">
                 <div class="view-{{index}} targeted">
                   <input class="toggle" type="checkbox" {{#if item.completed}}checked{{/if}}>
@@ -37,7 +37,7 @@
                 </div>
                 <input class="edit" value="{{item.title}}">
               </li>
-        {{/each}}
+        {{/this}}
         </script>
         <script id="footer-template" type="text/x-handlebars-template">
             <span id="todo-count" class="todo-count"><strong>{{activeTodoCount}}</strong> {{activeTodoWord}} left</span>
