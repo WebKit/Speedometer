@@ -3,18 +3,20 @@
 import ArticleText from "./article-text";
 import ArticleTag from "./article-tag";
 
-export default function ArticleImage({ image, className, meta }) {
+import styles from "news-site-css/dist/article.module.css";
+
+export default function ArticleImage({ image, imageClass, meta }) {
     if (!image)
         return null;
 
     return (
         <>
-            <div className={className}>
+            <div className={imageClass}>
                 {/* <Image className={className} src={image.src} width={image.width} height={image.height} alt={image.alt} /> */}
-                <img className="article-image" src={image.src} width={image.width} height={image.height} alt={image.alt} />
+                <img className={styles["article-image"]} src={image.src} width={image.width} height={image.height} alt={image.alt} />
                 <ArticleTag tag={meta?.tag} />
             </div>
-            <ArticleText className="article-image-captions" text={meta?.captions} />
+            <ArticleText textClass={styles["article-image-captions"]} text={meta?.captions} />
         </>
     );
 }

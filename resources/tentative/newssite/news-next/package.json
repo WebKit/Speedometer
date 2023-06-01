@@ -10,9 +10,11 @@
     "serve": "http-server ./dist -p 7002 -c-1 --cors"
   },
   "dependencies": {
+    "classnames": "^2.3.2",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.4",
     "http-server": "^14.1.1",
+    "news-site-css": "^1.6.5",
     "next": "13.3.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",

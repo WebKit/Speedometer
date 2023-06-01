@@ -5,6 +5,8 @@ import SettingsIcons from "../icons/settings-icons";
 import SocialIcons from "../icons/social-icons";
 import Sitemap from "@/components/sitemap/sitemap";
 
+import styles from "news-site-css/dist/footer.module.css";
+
 export default function Footer() {
     const [showPortal, setShowPortal] = useState(false);
 
@@ -18,33 +20,33 @@ export default function Footer() {
 
     return (
         <>
-            <footer className="page-footer">
-                <div className="footer-row">
-                    <div className="footer-column-center">
+            <footer className={styles["page-footer"]}>
+                <div className={styles["footer-row"]}>
+                    <div className={styles["footer-column-center"]}>
                         <Sitemap />
                     </div>
                 </div>
-                <div className="footer-row">
-                    <div className="footer-column-center">
-                        <div className="footer-links">
-                            <ul className="footer-links-list">
-                                <li className="footer-links-item">
-                                    <a href="#" id="footer-link-terms" className="footer-link">
+                <div className={styles["footer-row"]}>
+                    <div className={styles["footer-column-center"]}>
+                        <div className={styles["footer-links"]}>
+                            <ul className={styles["footer-links-list"]}>
+                                <li className={styles["footer-links-item"]}>
+                                    <a href="#" id="footer-link-terms" className={styles["footer-link"]}>
                                         Terms of Use
                                     </a>
                                 </li>
-                                <li className="footer-links-item">
-                                    <a href="#" id="footer-link-privacy" className="footer-link">
+                                <li className={styles["footer-links-item"]}>
+                                    <a href="#" id="footer-link-privacy" className={styles["footer-link"]}>
                                         Privacy Policy
                                     </a>
                                 </li>
-                                <li className="footer-links-item">
-                                    <a href="#" id="footer-link-sell" className="footer-link">
+                                <li className={styles["footer-links-item"]}>
+                                    <a href="#" id="footer-link-sell" className={styles["footer-link"]}>
                                         Do Not Sell Or Share My Personal Information
                                     </a>
                                 </li>
-                                <li className="footer-links-item">
-                                    <a href="#" id="footer-link-adchoices" className="footer-link">
+                                <li className={styles["footer-links-item"]}>
+                                    <a href="#" id="footer-link-adchoices" className={styles["footer-link"]}>
                                         Ad Choices
                                     </a>
                                 </li>
@@ -52,13 +54,13 @@ export default function Footer() {
                         </div>
                     </div>
                 </div>
-                <div className="footer-row">
-                    <div className="footer-column-left">
-                        <SocialIcons />
+                <div className={styles["footer-row"]}>
+                    <div className={styles["footer-column-left"]}>
+                        <SocialIcons id="footer-social-icons"/>
                     </div>
-                    <div className="footer-column-center">© {new Date().getFullYear()} No Rights Reserved</div>
-                    <div className="footer-column-right">
-                        <SettingsIcons onClick={openPortal} />
+                    <div className={styles["footer-column-center"]}>© {new Date().getFullYear()} No Rights Reserved</div>
+                    <div className={styles["footer-column-right"]}>
+                        <SettingsIcons onClick={openPortal} id="footer-settings-icons" />
                     </div>
                 </div>
             </footer>

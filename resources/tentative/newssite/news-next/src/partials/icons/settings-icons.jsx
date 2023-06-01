@@ -1,12 +1,14 @@
 import ReducedMotion from "@/assets/reduced-motion-icon";
 
-export default function SettingsIcons({ onClick }) {
+import styles from "news-site-css/dist/icons-group.module.css";
+
+export default function SettingsIcons({ onClick, id }) {
     return (
-        <div className="icons-group">
-            <ul className="icons-group-list">
-                <li className="icons-group-item">
-                    <button onClick={onClick}>
-                        <div className="group-icon">
+        <div className={styles["icons-group"]}>
+            <ul className={styles["icons-group-list"]}>
+                <li className={styles["icons-group-item"]}>
+                    <button onClick={onClick} id={`${id}-reduce-motion`}>
+                        <div className={styles["group-icon"]}>
                             <ReducedMotion />
                         </div>
                     </button>
