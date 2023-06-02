@@ -9,13 +9,13 @@ export default defineNuxtConfig({
     components: ["~/components", "~/components/assets", "~/components/atoms", "~/components/molecules"],
     hooks: {
         "pages:extend"(pages: NuxtPage[]) {
-            ["home", "us", "world", "politics", "business", "opinion", "health"].map((name) => {
+            for (const name of ["home", "us", "world", "politics", "business", "opinion", "health"]) {
                 pages.push({
                     name,
                     path: name === "home" ? "/" : `/${name}`,
                     file: "~/components/molecules/Page.vue",
                 });
-            });
+            }
         },
     },
     nitro: {
