@@ -8,3 +8,5 @@ node_modules
 .DS_Store
 .fleet
 .idea
+
+dist/200.html
