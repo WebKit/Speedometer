@@ -22,7 +22,7 @@ export default {
   >
     <img
       :class="styles['article-image']"
-      :src="$config.app.baseURL + '/' + image.src"
+      :src="$config.app.baseURL + image.src"
       :width="image.width"
       :height="image.height"
       :alt="image.alt"
