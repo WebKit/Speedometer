@@ -4,10 +4,14 @@ import { defineNuxtConfig } from "nuxt/config";
 import { NuxtPage } from "nuxt/schema";
 
 export default defineNuxtConfig({
-    ssr: false,
+    ssr: true,
     css: ["news-site-css/dist/variables.css", "news-site-css/dist/global.css", "news-site-css/dist/a11y.css", "news-site-css/dist/icons.css", "news-site-css/dist/text.css"],
     components: ["~/components", "~/components/assets", "~/components/atoms", "~/components/molecules"],
     hooks: {
+        /* "prerender:routes" ({ routes }) {
+            routes.clear();
+            routes.add("/index.html");
+        }, */
         "pages:extend"(pages: NuxtPage[]) {
             for (const name of ["home", "us", "world", "politics", "business", "opinion", "health"]) {
                 pages.push({
@@ -42,6 +46,7 @@ export default defineNuxtConfig({
                 },
             ],
         },
+        baseURL: "./"
     },
     $production: {
         app: {
