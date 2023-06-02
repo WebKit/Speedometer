@@ -126,6 +126,12 @@
             </div>
             <div id="editor"></div>
         </div>
+        <script>
+            // This hack allows to capture the work normally happening in a rAF. We
+            // may be able to remove it if the runner improves.
+            window.requestAnimationFrame = (cb) => window.setTimeout(cb, 0);
+            window.cancelAnimationFrame = window.clearTimeout;
+        </script>
         <script type="module">
             import { code as shorttext } from "./shorttext.js";
             import { code as longtext } from "./longtext.js";
