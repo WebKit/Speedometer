@@ -19,6 +19,9 @@ export default defineNuxtConfig({
         },
     },
     nitro: {
+        prerender: {
+            crawlLinks: false
+        },
         output: {
             publicDir: path.join(__dirname, "dist"),
         },
