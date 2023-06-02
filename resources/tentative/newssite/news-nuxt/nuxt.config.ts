@@ -11,7 +11,9 @@ export default defineNuxtConfig({
             publicDir: path.join(__dirname, "dist"),
         },
     },
-    app: {
-        baseURL: development ? "" : "/resources/tentative/newssite/news-nuxt/dist",
+    $production: {
+        app: {
+            baseURL: "/resources/tentative/newssite/news-nuxt/dist",
+        },
     },
 });
