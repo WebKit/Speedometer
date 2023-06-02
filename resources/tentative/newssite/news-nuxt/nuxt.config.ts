@@ -1,13 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import path from "path";
 import { defineNuxtConfig } from "nuxt/config";
+import { NuxtPage } from "nuxt/schema";
 
 export default defineNuxtConfig({
     ssr: false,
     css: ["news-site-css/dist/variables.css", "news-site-css/dist/global.css", "news-site-css/dist/a11y.css", "news-site-css/dist/icons.css", "news-site-css/dist/text.css"],
     components: ["~/components", "~/components/assets", "~/components/atoms", "~/components/molecules"],
     hooks: {
-        "pages:extend"(pages) {
+        "pages:extend"(pages: NuxtPage[]) {
             ["home", "us", "world", "politics", "business", "opinion", "health"].map((name) => {
                 pages.push({
                     name,
