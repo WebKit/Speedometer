@@ -16,29 +16,19 @@ watch(route, value => {
 }, {deep: true, immediate: true})
 </script>
 
-<script lang="js">
+<script setup>
 import styles from "news-site-css/dist/layout.module.css";
 import { content } from "../data/content";
-export default {
-  data () {
-    return {
-      content,
-      styles,
-      showMessage: false,
-    }
-  },
-  mounted() {
-      this.showMessage = content[this.$route.name].message;
-  },
-  methods: {
-      openMessage() {
-          this.showMessage = true;
-      },
-      closeMessage() {
-          this.showMessage = false;
-      }
-  }
-}
+
+const showMessage = ref(false);
+const route = useRoute();
+
+onMounted(() => {
+  showMessage.value = content[route.name].message;
+})
+
+const openMessage = () => { showMessage.value = true }
+const closeMessage = () => { showMessage.value = false }
 </script>
 
 <template>
