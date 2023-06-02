@@ -7,13 +7,15 @@ export default defineNuxtConfig({
     css: ["news-site-css/dist/variables.css", "news-site-css/dist/global.css", "news-site-css/dist/a11y.css", "news-site-css/dist/icons.css", "news-site-css/dist/text.css"],
     components: ["~/components", "~/components/assets", "~/components/atoms", "~/components/molecules"],
     hooks: {
-        "pages:extend" (routes) {
-            return ["home", "us", "world", "politics", "business", "opinion", "health"].map(name => ({
-                name,
-                route: name === "home" ? "/" : `/${name}`,
-                file: "~/components/molecules/Page.vue",
-            }))
-        }
+        "pages:extend"(pages) {
+            ["home", "us", "world", "politics", "business", "opinion", "health"].map((name) => {
+                pages.push({
+                    name,
+                    path: name === "home" ? "/" : `/${name}`,
+                    file: "~/components/molecules/Page.vue",
+                });
+            });
+        },
     },
     nitro: {
         output: {
