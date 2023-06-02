@@ -2,7 +2,6 @@
 import { nextTick, watch } from '#imports'
 const route = useRoute();
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 watch(route, value => {
     if (document.getElementById('page')){
       if (!route.hash) {
