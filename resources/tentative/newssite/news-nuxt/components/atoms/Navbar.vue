@@ -58,6 +58,7 @@ export default {
       :for="navbarStyles['navbar-toggle']"
       :class="navbarStyles['navbar-label']"
     >
+      <span className="visually-hidden">Navbar Toggle</span>
       <div
         :class="[navbarStyles['navbar-label-icon'], 'animated-icon', 'hamburger-icon']"
         title="Hamburger Icon"

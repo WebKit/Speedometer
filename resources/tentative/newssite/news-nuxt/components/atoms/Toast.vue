@@ -27,6 +27,7 @@ export default {
     <button
       id="close-toast-link"
       :class="toastStyles['toast-close-button']"
+      title="Close Button"
       @click="onClose"
     >
       <div

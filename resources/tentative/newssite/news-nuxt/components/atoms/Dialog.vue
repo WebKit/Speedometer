@@ -35,6 +35,7 @@ export default {
     <button
       id="close-dialog-link"
       :class="styles['dialog-close-button']"
+      title="Close Button"
       @click="onClose"
     >
       <div

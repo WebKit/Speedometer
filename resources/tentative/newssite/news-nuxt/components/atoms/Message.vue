@@ -19,6 +19,7 @@ export default {
     <button
       id="close-message-link"
       :class="styles['message-close-button']"
+      title="Close Button"
       @click="onClose"
     >
       <div

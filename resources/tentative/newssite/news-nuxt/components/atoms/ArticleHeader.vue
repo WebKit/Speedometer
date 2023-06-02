@@ -15,7 +15,7 @@ export default {
   >
     <a
       v-if="link"
-      href="link"
+      :href="link"
     ><h2>{{ text }}</h2></a>
     <h2 v-else>
       {{ text }}
