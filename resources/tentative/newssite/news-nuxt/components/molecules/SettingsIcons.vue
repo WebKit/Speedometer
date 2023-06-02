@@ -2,7 +2,7 @@
 import styles from "news-site-css/dist/icons-group.module.css";
 export default {
   props: {
-      onClick: Function,
+      callback: Function,
       id: String,
   },
   data () {
@@ -19,7 +19,7 @@ export default {
       <li :class="styles['icons-group-item']">
         <button
           :id="`${id}-reduce-motion`"
-          @click="onClick"
+          @click="callback"
         >
           <div :class="styles['group-icon']">
             <ReducedMotionIcon />

@@ -2,7 +2,7 @@
 import styles from "news-site-css/dist/icons-group.module.css";
 export default {
   props: {
-      onClick: Function,
+      callback: Function,
       id: String
   },
   data () {

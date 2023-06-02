@@ -71,7 +71,7 @@ export default {
       <div :class="styles['footer-column-right']">
         <SettingsIcons
           id="footer-settings-icons"
-          :on-click="openPortal"
+          :callback="openPortal"
         />
       </div>
     </div>
