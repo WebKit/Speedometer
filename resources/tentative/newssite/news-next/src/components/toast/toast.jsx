@@ -6,7 +6,7 @@ export default function Toast({ onClose, notification, onAccept, onReject }) {
     const { title, description, actions } = notification;
     return (
         <div className={classNames( toastStyles.toast, toastStyles.open )}>
-            <button id="close-toast-link" className={toastStyles["toast-close-button"]} onClick={onClose}>
+            <button id="close-toast-link" className={toastStyles["toast-close-button"]} onClick={onClose} title="Close Button">
                 <div className={classNames(
                     toastStyles["toast-close-button-icon"],
                     "animated-icon",

@@ -44,6 +44,7 @@ export default function Navbar({ callback }) {
         <div className={navbarStyles.navbar}>
             <input type="checkbox" id={navbarStyles["navbar-toggle"]} onChange={handleChange} checked={isOpen} />
             <label htmlFor={navbarStyles["navbar-toggle"]} className={navbarStyles["navbar-label"]}>
+                <span className="visually-hidden">Navbar Toggle</span>
                 <div className={classNames(
                     navbarStyles["navbar-label-icon"],
                     "animated-icon",
