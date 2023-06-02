@@ -1,5 +1,5 @@
 <script setup lang="js">
-import { nextTick } from 'vue'
+import { nextTick, watch } from '#imports'
 const route = useRoute();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
