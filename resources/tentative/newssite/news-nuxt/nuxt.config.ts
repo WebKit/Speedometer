@@ -11,6 +11,23 @@ export default defineNuxtConfig({
             publicDir: path.join(__dirname, "dist"),
         },
     },
+    app: {
+        head: {
+            title: "The Daily Broadcast",
+            htmlAttrs: {
+                lang: "en",
+            },
+            meta: [
+                { charset: "utf-8" },
+                { name: "viewport", content: "width=device-width, initial-scale=1" },
+                {
+                    hid: "description",
+                    name: "description",
+                    content: "A news site developed with Nuxt.",
+                },
+            ],
+        },
+    },
     $production: {
         app: {
             baseURL: "/resources/tentative/newssite/news-nuxt/dist",
