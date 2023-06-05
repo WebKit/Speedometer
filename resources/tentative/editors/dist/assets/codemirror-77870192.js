@@ -21841,11 +21841,10 @@ async function editor(element, value) {
       changes: { from: 0, to: view.state.doc.length, insert: value2 }
     }),
     format(on) {
-      if (on && extensions.length == 2) {
+      if (on && extensions.length === 2)
         extensions.push(lang);
-      } else if (!on && extensions.length == 3) {
+      else if (!on && extensions.length === 3)
         extensions.pop();
-      }
       view.dispatch({
         effects: StateEffect.reconfigure.of(extensions)
       });

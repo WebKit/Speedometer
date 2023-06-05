@@ -16294,11 +16294,10 @@ async function editor(element, value) {
       element.scrollTop = 0;
     },
     format(on) {
-      if (on) {
+      if (on)
         editor2.chain().focus().selectAll().setBold().setTextSelection(0).run();
-      } else {
+      else
         editor2.chain().focus().selectAll().unsetBold().setTextSelection(0).run();
-      }
     }
   };
 }
