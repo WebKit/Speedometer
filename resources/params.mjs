@@ -3,12 +3,21 @@ class Params {
         width: 800,
         height: 600,
     };
+    // Enable a detailed developer menu to change the current Params.
     developerMode = false;
     startAutomatically = false;
     iterationCount = 10;
     suites = [];
+    // Toggle running a dummy suite once before the normal test suites.
     useWarmupSuite = false;
-    measurementMethod = "timer";
+    // Change how a test measurement is triggered and async time is measured:
+    // "timer": The classic (as in Speedometer 2.x) way using setTimeout
+    // "raf":   Using rAF callbacks, both for triggering the sync part and for measuring async time.
+    measurementMethod = "timer"; // or "raf"
+    // Wait time before the sync step in ms.
+    waitBeforeSync = 0;
+    // Warmup time before the sync step in ms.
+    warmupBeforeSync = 0;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -60,6 +69,13 @@ class Params {
         if (searchParams.has("useWarmupSuite")) {
             this.useWarmupSuite = true;
             searchParams.delete("useWarmupSuite");
+        }
+
+        if (searchParams.has("waitBeforeSync")) {
+            this.waitBeforeSync = this._parseInt(searchParams.get("waitBeforeSync"), "waitBeforeSync");
+            if (this.waitBeforeSync < 0)
+                throw new Error(`Invalid waitBeforeSync param: '${this.waitBeforeSync}', must be >= 0.`);
+            searchParams.delete("waitBeforeSync");
         }
 
         if (searchParams.has("warmupBeforeSync")) {
