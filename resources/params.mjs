@@ -3,11 +3,17 @@ class Params {
         width: 800,
         height: 600,
     };
+    // Enable a detailed developer menu to change the current Params.
     developerMode = false;
     startAutomatically = false;
     iterationCount = 10;
     suites = [];
+    // Toggle running a dummy suite once before the normal test suites.
     useWarmupSuite = false;
+    // Change how a test measurement is triggered and async time is measured:
+    // "timer": The classic (as in Speedometer 2.x) way using setTimeout
+    // "raf":   Using rAF callbacks, both for triggering the sync part and for
+    //          measuring async time.
     measurementMethod = "timer"; // or "raf"
     // Wait time before the sync step in ms.
     waitBeforeSync = 0;
