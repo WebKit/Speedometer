@@ -1,24 +1,27 @@
-function uuid() {
-    let uuid = "";
-    for (let i = 0; i < 32; i++) {
-        const random = (Math.random() * 16) | 0;
-        if (i === 8 || i === 12 || i === 16 || i === 20)
-            uuid += "-";
+// Borrowed from https://github.com/ai/nanoid/blob/3.0.2/non-secure/index.js
+// This alphabet uses `A-Za-z0-9_-` symbols. A genetic algorithm helped
+// optimize the gzip compression for this alphabet.
+const urlAlphabet = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW";
 
-        let currentNumber = random;
-        if (i === 12)
-            currentNumber = 4;
-        else if (i === 16)
-            currentNumber = 8 | (random & 3);
-        uuid += currentNumber.toString(16);
+/**
+ *
+ * @public
+ */
+function nanoid(size = 21) {
+    let id = "";
+    // A compact alternative for `for (var i = 0; i < step; i++)`.
+    let i = size;
+    while (i--) {
+        // `| 0` is more compact and faster than `Math.floor()`.
+        id += urlAlphabet[(Math.random() * 64) | 0];
     }
-    return uuid;
+    return id;
 }
 
 export const todoReducer = (state, action) => {
     switch (action.type) {
         case "ADD_ITEM":
-            return state.concat({ id: uuid(), title: action.payload.title, completed: false });
+            return state.concat({ id: nanoid(), title: action.payload.title, completed: false });
         case "UPDATE_ITEM":
             return state.map((todo) => (todo.id === action.payload.id ? { ...todo, title: action.payload.title } : todo));
         case "REMOVE_ITEM":
