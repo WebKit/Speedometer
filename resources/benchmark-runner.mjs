@@ -354,9 +354,12 @@ export class BenchmarkRunner {
         let asyncTime;
         const runSync = () => {
             if (params.warmupBeforeSync) {
+                performance.mark("warmup-start");
                 const startTime = performance.now();
+                // Infinite loop for the specified ms.
                 while (performance.now() - startTime < params.warmupBeforeSync)
-                    ; // Infinite loop for the specified ms.
+                    continue;
+                performance.mark("warmup-end");
             }
             performance.mark(startLabel);
             const syncStartTime = performance.now();
@@ -377,6 +380,8 @@ export class BenchmarkRunner {
             asyncTime = asyncEndTime - asyncStartTime;
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
             performance.mark(asyncEndLabel);
+            if (params.warmupBeforeSync)
+                performance.measure("warmup", "warmup-start", "warmup-end");
             performance.measure(`${suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
             performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
         };
