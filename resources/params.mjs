@@ -21,7 +21,7 @@ class Params {
 
     _parseInt(value, errorMessage) {
         const number = Number(value);
-        if (!Number.isInteger(value) && errorMessage)
+        if (!Number.isInteger(number) && errorMessage)
             throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
         return parseInt(number);
     }
