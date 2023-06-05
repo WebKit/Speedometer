@@ -19,7 +19,7 @@ class Params {
         const number = Number(value);
         if (!Number.isInteger(value) && errorMessage)
             throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
-        return value;
+        return parseInt(number);
     }
 
     _copyFromSearchParams(searchParams) {
