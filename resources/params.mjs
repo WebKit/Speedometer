@@ -37,7 +37,7 @@ class Params {
         if (searchParams.has("iterationCount")) {
             this.iterationCount = this._parseInt(searchParams.get("iterationCount"), "iterationCount");
             if (this.iterationCount < 1)
-                throw new Error(`Invalid iterationCount param: ${this.iterationCount}`);
+                throw new Error(`Invalid iterationCount param: '${this.iterationCount}', must be > 1.`);
             searchParams.delete("iterationCount");
         }
         if (searchParams.has("suite") || searchParams.has("suites")) {
@@ -60,15 +60,15 @@ class Params {
 
         if (searchParams.has("warmupBeforeSync")) {
             this.warmupBeforeSync = this._parseInt(searchParams.get("warmupBeforeSync"), "warmupBeforeSync");
-            if (this.warmupBeforeSync < 1)
-                throw new Error(`Invalid warmupBeforeSync param: ${this.warmupBeforeSync}`);
+            if (this.warmupBeforeSync < 0)
+                throw new Error(`Invalid warmupBeforeSync param: '${this.warmupBeforeSync}', must be >= 0.`);
             searchParams.delete("warmupBeforeSync");
         }
 
         if (searchParams.has("measurementMethod")) {
             this.measurementMethod = searchParams.get("measurementMethod");
             if (this.measurementMethod !== "timer" && this.measurementMethod !== "raf")
-                throw new Error(`Invalid measurement method: ${this.measurementMethod}`);
+                throw new Error(`Invalid measurement method: '${this.measurementMethod}', must be either 'raf' or 'timer'.`);
             searchParams.delete("measurementMethod");
         }
 
