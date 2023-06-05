@@ -13,6 +13,10 @@ class Params {
     constructor(searchParams = undefined) {
         if (searchParams)
             this._copyFromSearchParams(searchParams);
+        if (!this.developerMode) {
+            Object.freeze(this.viewport);
+            Object.freeze(this);
+        }
     }
 
     _copyFromSearchParams(searchParams) {
@@ -78,8 +82,6 @@ class Params {
 }
 
 export const defaultParams = new Params();
-Object.freeze(defaultParams.viewport);
-Object.freeze(defaultParams);
 
 const searchParams = new URLSearchParams(window.location.search);
 let maybeCustomParams = new Params();
