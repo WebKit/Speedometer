@@ -83,11 +83,22 @@ main {
 .logo {
     position: absolute;
     left: -70px;
-    top: 115px;
+    top: 155px;
     width: 75px;
     height: 406px;
     cursor: pointer;
+    text-decoration: none;
 }
+.version {
+    transform: rotate(-90deg);
+    font-size: 65px;
+    font-family: Futura-Medium, Futura, "Helvetica Neue", Helvetica, Verdana, sans-serif;
+    font-style: italic;
+    position: absolute;
+    right: -5px;
+    top: -110px;
+}
+
 
 h1 {
     margin-top: 30px;
