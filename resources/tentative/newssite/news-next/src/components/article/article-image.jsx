@@ -1,5 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
-// import Image from "next/image";
+import Image from "next/image";
 import ArticleText from "./article-text";
 import ArticleTag from "./article-tag";
 
@@ -12,8 +11,7 @@ export default function ArticleImage({ image, imageClass, meta }) {
     return (
         <>
             <div className={imageClass}>
-                {/* <Image className={className} src={image.src} width={image.width} height={image.height} alt={image.alt} /> */}
-                <img className={styles["article-image"]} src={image.src} width={image.width} height={image.height} alt={image.alt} />
+                <Image className={styles["article-image"]} src={image.src} width={image.width} height={image.height} alt={image.alt} />
                 <ArticleTag tag={meta?.tag} />
             </div>
             <ArticleText textClass={styles["article-image-captions"]} text={meta?.captions} />
