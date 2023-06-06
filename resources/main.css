@@ -92,7 +92,7 @@ main {
 .version {
     transform: rotate(-90deg);
     font-size: 65px;
-    font-family: Futura;
+    font-family: Futura-Medium, Futura, "Helvetica Neue", Helvetica, Verdana, sans-serif;
     font-style: italic;
     position: absolute;
     right: -5px;
