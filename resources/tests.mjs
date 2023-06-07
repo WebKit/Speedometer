@@ -52,7 +52,7 @@ Suites.enable = function (names, tags) {
 Suites.push({
     name: "TodoMVC-JavaScript-ES5",
     url: "todomvc/vanilla-examples/javascript-es5/dist/index.html",
-    tags: ["default", "todomvc"],
+    tags: ["todomvc"],
     async prepare(page) {
         (await page.waitForElement(".new-todo")).focus();
     },
@@ -81,7 +81,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-JavaScript-ES6",
     url: "todomvc/vanilla-examples/javascript-es6/dist/index.html",
-    tags: ["default", "todomvc"],
+    tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -141,7 +141,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-React",
     url: "todomvc/architecture-examples/react/dist/index.html#/home",
-    tags: ["default", "todomvc"],
+    tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
