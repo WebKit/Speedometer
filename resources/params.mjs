@@ -66,14 +66,10 @@ class Params {
             searchParams.delete("suites");
         }
 
-        if (searchParams.has("tag") || searchParams.has("tags")) {
-            if (searchParams.has("tag") && searchParams.has("tags"))
-                throw new Error("Params 'tag' and 'tags' can not be used together.");
+        if (searchParams.has("tags")) {
             if (this.suites.length)
                 throw new Error("'suites' and 'tags' cannot be used together.");
-            const value = searchParams.get("tag") || searchParams.get("tags");
-            this.tags = value.split(",");
-            searchParams.delete("tag");
+            this.tags = searchParams.get("tags").split(",");
             searchParams.delete("tags");
         }
 
