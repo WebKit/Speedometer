@@ -196,9 +196,14 @@ function createUIForSuites(suites, onStep, onRunSuites) {
 }
 
 function startTest() {
+    let message;
     if (params.suites.length > 0) {
-        if (!Suites.enable(params.suites)) {
-            const message = `Suite "${params.suites}" does not exist. No tests to run.`;
+        if (!Suites.enable(params.suites))
+            message = `Suite "${params.suites}" does not exist. No tests to run.`;
+    } else if (params.tags.length > 0) {
+
+    }
+    if (message) {
             alert(message);
             console.error(
                 message,
@@ -206,7 +211,6 @@ function startTest() {
                 "\nValid values:",
                 Suites.map((each) => each.name)
             );
-        }
     }
 
     const interactiveRunner = new window.BenchmarkRunner(Suites, params.iterationCount);

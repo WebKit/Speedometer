@@ -16,6 +16,7 @@ Suites.enable = function (names) {
 Suites.push({
     name: "TodoMVC-JavaScript-ES5",
     url: "todomvc/vanilla-examples/javascript-es5/dist/index.html",
+    tags: ["todomvc"],
     async prepare(page) {
         (await page.waitForElement(".new-todo")).focus();
     },
@@ -44,6 +45,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-JavaScript-ES6",
     url: "todomvc/vanilla-examples/javascript-es6/dist/index.html",
+    tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -73,6 +75,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-JavaScript-ES6-Webpack",
     url: "todomvc/vanilla-examples/javascript-es6-webpack/dist/index.html",
+    tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -102,6 +105,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-React",
     url: "todomvc/architecture-examples/react/dist/index.html#/home",
+    tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -131,6 +135,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-React-Complex-DOM",
     url: "tentative/complex-static-html/dist/index.html#/home",
+    tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -160,6 +165,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-React-Redux",
     url: "todomvc/architecture-examples/react-redux/dist/index.html",
+    tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -188,6 +194,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Backbone",
     url: "todomvc/architecture-examples/backbone/dist/index.html",
+    tags: ["todomvc"],
     async prepare(page) {
         await page.waitForElement("#appIsReady");
         const newTodo = page.querySelector(".new-todo");
@@ -218,6 +225,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Angular",
     url: "todomvc/architecture-examples/angular/dist/index.html",
+    tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -247,6 +255,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Vue",
     url: "todomvc/architecture-examples/vue/dist/index.html",
+    tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -276,6 +285,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-jQuery",
     url: "todomvc/architecture-examples/jquery/dist/index.html",
+    tags: ["todomvc"],
     async prepare(page) {
         await page.waitForElement("#appIsReady");
         const newTodo = page.getElementById("new-todo");
@@ -304,6 +314,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Preact",
     url: "todomvc/architecture-examples/preact/dist/index.html#/home",
+    tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -332,6 +343,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Svelte",
     url: "todomvc/architecture-examples/svelte/dist/index.html",
+    tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -360,6 +372,7 @@ Suites.push({
 Suites.push({
     name: "NewsSite-Next",
     url: "tentative/newssite/news-next/dist/index.html#/home",
+    tags: ["tentative"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
@@ -400,6 +413,7 @@ Suites.push({
 Suites.push({
     name: "Editor-CodeMirror",
     url: "tentative/editors/dist/codemirror.html",
+    tags: ["tentative"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Create", (page) => {
@@ -420,6 +434,7 @@ Suites.push({
 Suites.push({
     name: "Editor-TipTap",
     url: "tentative/editors/dist/tiptap.html",
+    tags: ["tentative"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Create", (page) => {
@@ -440,6 +455,7 @@ Suites.push({
 Suites.push({
     name: "Charts-observable-plot",
     url: "tentative/charts/dist/observable-plot.html",
+    tags: ["tentative", "chart"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Prepare 6", (page) => {
@@ -470,6 +486,7 @@ Suites.push({
 Suites.push({
     name: "Charts-chartjs",
     url: "tentative/charts/dist/chartjs.html",
+    tags: ["tentative", "chart"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Prepare", (page) => {
@@ -491,6 +508,7 @@ Suites.push({
 Suites.push({
     name: "React-Stockcharts-SVG",
     url: "tentative/react-stockcharts/build/index.html?type=svg",
+    tags: ["tentative", "chart", "svg"],
     async prepare(page) {
         await page.waitForElement("#render");
     },
@@ -527,5 +545,10 @@ Suites.push({
     ],
 });
 
+const Tags = new Set(Suites.flatMap(suite => suite.tags));
+
 Object.freeze(Suites);
+Object.freeze(Tags);
+
 globalThis.Suites = Suites;
+globalThis.Tags = Tags;

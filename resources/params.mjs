@@ -8,6 +8,8 @@ class Params {
     startAutomatically = false;
     iterationCount = 10;
     suites = [];
+    // A list of tags to filter suites
+    tags = [];
     // Toggle running a dummy suite once before the normal test suites.
     useWarmupSuite = false;
     // Change how a test measurement is triggered and async time is measured:
@@ -63,6 +65,18 @@ class Params {
             searchParams.delete("suite");
             searchParams.delete("suites");
         }
+
+        if (searchParams.has("tag") || searchParams.has("tags")) {
+            if (searchParams.has("tag") && searchParams.has("tags"))
+                throw new Error("Params 'tag' and 'tags' can not be used together.");
+            if (this.suites.length)
+                throw new Error("'suites' and 'tags' cannot be used together.");
+            const value = searchParams.get("tag") || searchParams.get("tags");
+            this.tags = value.split(",");
+            searchParams.delete("tag");
+            searchParams.delete("tags");
+        }
+
         this.developerMode = searchParams.has("developerMode");
         searchParams.delete("developerMode");
 
