@@ -24,7 +24,7 @@ Suites.enable = function (names, tags) {
     } else {
         console.warn("Neither names nor tags provided. Enabling all default suites.");
         this.forEach((suite) => {
-            suite.disabled = "tentative" in suite.tags;
+            suite.disabled = !("default" in suite.tags);
         });
         return;
     }
@@ -449,7 +449,7 @@ Suites.push({
 Suites.push({
     name: "Editor-CodeMirror",
     url: "tentative/editors/dist/codemirror.html",
-    tags: ["tentative"],
+    tags: ["editor"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Create", (page) => {
@@ -470,7 +470,7 @@ Suites.push({
 Suites.push({
     name: "Editor-TipTap",
     url: "tentative/editors/dist/tiptap.html",
-    tags: ["tentative"],
+    tags: ["editor"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Create", (page) => {
