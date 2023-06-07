@@ -3,20 +3,56 @@ import { BenchmarkTestStep } from "./benchmark-runner.mjs";
 const numberOfItemsToAdd = 100;
 export const Suites = [];
 
-Suites.enable = function (names) {
-    const lowerCaseNames = names.map((each) => each.toLowerCase());
-    this.forEach((suite) => {
-        if (lowerCaseNames.includes(suite.name.toLowerCase()))
-            suite.disabled = false;
-        else
-            suite.disabled = true;
-    });
+Suites.enable = function (names, tags) {
+    if (names?.length) {
+        const lowerCaseNames = names.map((each) => each.toLowerCase());
+        this.forEach((suite) => {
+            if (lowerCaseNames.includes(suite.name.toLowerCase()))
+                suite.disabled = false;
+            else
+                suite.disabled = true;
+        });
+    } else if (tags?.length) {
+        tags = new Set(tags);
+        tags.forEach((tag) => {
+            if (!Tags.has(tag))
+                console.error(`Unknown Suites tag: "${tag}"`);
+        });
+        this.forEach((suite) => {
+            suite.disabled = !suite.tags.some((tag) => tags.has(tag));
+        });
+    } else {
+        console.warn("Neither names nor tags provided. Enabling all default suites.");
+        this.forEach((suite) => {
+            suite.disabled = "tentative" in suite.tags;
+        });
+        return;
+    }
+    if (Suites.some((suite) => !suite.disabled))
+        return;
+    let message, debugInfo;
+    if (names?.length) {
+        message = `Suites "${names}" does not match any Suite. No tests to run.`;
+        debugInfo = {
+            providedNames: names,
+            validNames: Suites.map((each) => each.name),
+        };
+    } else if (tags?.length) {
+        tags = Array.from(tags);
+        message = `Tags "${tags}" does not match any Suite. No tests to run.`;
+        debugInfo = {
+            providedTags: tags,
+            validTags: Array.from(Tags),
+        };
+    }
+    alert(message);
+    console.error(message, debugInfo);
 };
 
 Suites.push({
     name: "TodoMVC-JavaScript-ES5",
     url: "todomvc/vanilla-examples/javascript-es5/dist/index.html",
-    tags: ["todomvc"],
+    tags: ["default", "todomvc"],
     async prepare(page) {
         (await page.waitForElement(".new-todo")).focus();
     },
@@ -45,7 +81,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-JavaScript-ES6",
     url: "todomvc/vanilla-examples/javascript-es6/dist/index.html",
-    tags: ["todomvc"],
+    tags: ["default", "todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -105,7 +141,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-React",
     url: "todomvc/architecture-examples/react/dist/index.html#/home",
-    tags: ["todomvc"],
+    tags: ["default", "todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -135,7 +171,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-React-Complex-DOM",
     url: "tentative/complex-static-html/dist/index.html#/home",
-    tags: ["todomvc"],
+    tags: ["todomvc", "complex"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -372,7 +408,7 @@ Suites.push({
 Suites.push({
     name: "NewsSite-Next",
     url: "tentative/newssite/news-next/dist/index.html#/home",
-    tags: ["tentative"],
+    tags: ["newssite"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
@@ -455,7 +491,7 @@ Suites.push({
 Suites.push({
     name: "Charts-observable-plot",
     url: "tentative/charts/dist/observable-plot.html",
-    tags: ["tentative", "chart"],
+    tags: ["chart"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Prepare 6", (page) => {
@@ -486,7 +522,7 @@ Suites.push({
 Suites.push({
     name: "Charts-chartjs",
     url: "tentative/charts/dist/chartjs.html",
-    tags: ["tentative", "chart"],
+    tags: ["chart"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Prepare", (page) => {
@@ -508,7 +544,7 @@ Suites.push({
 Suites.push({
     name: "React-Stockcharts-SVG",
     url: "tentative/react-stockcharts/build/index.html?type=svg",
-    tags: ["tentative", "chart", "svg"],
+    tags: ["chart", "svg"],
     async prepare(page) {
         await page.waitForElement("#render");
     },
@@ -545,9 +581,17 @@ Suites.push({
     ],
 });
 
-const Tags = new Set(Suites.flatMap(suite => suite.tags));
-
 Object.freeze(Suites);
+Suites.forEach((suite) => {
+    if (suite.url.startsWith("tentative/"))
+        suite.tags.push("all", "tentative");
+    else
+        suite.tags.push("all", "default");
+    Object.freeze(suite.tags);
+    Object.freeze(suite.steps);
+});
+
+const Tags = new Set(Suites.flatMap((suite) => suite.tags));
 Object.freeze(Tags);
 
 globalThis.Suites = Suites;
