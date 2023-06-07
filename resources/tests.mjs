@@ -13,11 +13,11 @@ Suites.enable = function (names, tags) {
                 suite.disabled = true;
         });
     } else if (tags?.length) {
-        tags = new Set(tags);
         tags.forEach((tag) => {
             if (!Tags.has(tag))
                 console.error(`Unknown Suites tag: "${tag}"`);
         });
+        tags = new Set(tags);
         this.forEach((suite) => {
             suite.disabled = !suite.tags.some((tag) => tags.has(tag));
         });
@@ -26,16 +26,15 @@ Suites.enable = function (names, tags) {
         this.forEach((suite) => {
             suite.disabled = !("default" in suite.tags);
         });
-        return;
     }
-    if (Suites.some((suite) => !suite.disabled))
+    if (this.some((suite) => !suite.disabled))
         return;
     let message, debugInfo;
     if (names?.length) {
         message = `Suites "${names}" does not match any Suite. No tests to run.`;
         debugInfo = {
             providedNames: names,
-            validNames: Suites.map((each) => each.name),
+            validNames: this.map((each) => each.name),
         };
     } else if (tags?.length) {
         tags = Array.from(tags);
