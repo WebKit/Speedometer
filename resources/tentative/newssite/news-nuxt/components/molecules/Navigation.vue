@@ -1,9 +1,11 @@
 <script lang="js">
+import { login } from "~/data/buttons";
 import navStyles from "news-site-css/dist/nav.module.css";
 import buttonStyles from "news-site-css/dist/button.module.css";
 export default {
   data () {
     return {
+      login,
       navStyles,
       buttonStyles
     }
@@ -34,7 +36,7 @@ export default {
           :class="[buttonStyles.button, buttonStyles['secondary-button'], navStyles['nav-button']]"
           @click="logIn"
         >
-          Log In
+          {{ login.label }}
         </button>
       </div>
     </div>

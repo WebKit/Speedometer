@@ -1,4 +1,5 @@
 <script lang="js">
+import { social } from "~/data/links";
 import styles from "news-site-css/dist/icons-group.module.css";
 export default {
   props: {
@@ -7,6 +8,7 @@ export default {
   },
   data () {
     return {
+      social,
       styles
     }
   }
@@ -19,7 +21,7 @@ export default {
       <li :class="styles['icons-group-item']">
         <a
           :id="`${id}-facebook`"
-          href="#"
+          :href="social.facebook.href"
         >
           <div :class="styles['group-icon']">
             <FacebookIcon />
@@ -29,7 +31,7 @@ export default {
       <li :class="styles['icons-group-item']">
         <a
           :id="`${id}-instagram`"
-          href="#"
+          :href="social.instagram.href"
         >
           <div :class="styles['group-icon']">
             <InstagramIcon />
@@ -39,7 +41,7 @@ export default {
       <li :class="styles['icons-group-item']">
         <a
           :id="`${id}-twitter`"
-          href="#"
+          :href="social.twitter.href"
         >
           <div :class="styles['group-icon']">
             <TwitterIcon />

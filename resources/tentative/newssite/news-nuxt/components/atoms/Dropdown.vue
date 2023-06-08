@@ -1,4 +1,5 @@
 <script lang="js">
+import { more } from "~/data/buttons";
 import styles from "news-site-css/dist/dropdown.module.css";
 export default {
     props: {
@@ -6,6 +7,7 @@ export default {
     },
     data() {
         return {
+            more,
             styles,
             isOpen: false,
         }
@@ -34,7 +36,7 @@ export default {
       for="navbar-dropdown-toggle"
       :class="styles['dropdown-label']"
     >
-      <span :class="styles['dropdown-label-text']">More</span>
+      <span :class="styles['dropdown-label-text']">{{ more.label }}</span>
       <div :class="['animated-icon', 'arrow-icon', 'arrow', animatedIconClass]">
         <span
           class="animated-icon-inner"

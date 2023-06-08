@@ -1,8 +1,10 @@
 <script lang="js">
+import { legal } from "~/data/links";
 import styles from "news-site-css/dist/footer.module.css";
 export default {
   data() {
     return {
+      legal,
       styles,
       showPortal: false,
     }
@@ -29,33 +31,15 @@ export default {
       <div :class="styles['footer-column-center']">
         <div :class="styles['footer-links']">
           <ul :class="styles['footer-links-list']">
-            <li :class="styles['footer-links-item']">
+            <li
+              v-for="(item, key) in legal"
+              :key="`footer-links-item-${key}`"
+              :class="styles['footer-links-item']">
               <a
-                id="footer-link-terms"
-                href="#"
+                :id="`footer-link-${key}`"
+                :href="item.href"
                 :class="styles['footer-link']"
-              > Terms of Use </a>
-            </li>
-            <li :class="styles['footer-links-item']">
-              <a
-                id="footer-link-privacy"
-                href="#"
-                :class="styles['footer-link']"
-              > Privacy Policy </a>
-            </li>
-            <li :class="styles['footer-links-item']">
-              <a
-                id="footer-link-sell"
-                href="#"
-                :class="styles['footer-link']"
-              > Do Not Sell Or Share My Personal Information </a>
-            </li>
-            <li :class="styles['footer-links-item']">
-              <a
-                id="footer-link-adchoices"
-                href="#"
-                :class="styles['footer-link']"
-              > Ad Choices </a>
+              > {{ item.label }} </a>
             </li>
           </ul>
         </div>
