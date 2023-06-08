@@ -150,7 +150,7 @@ export function createUIForSuites() {
     for (const tag of Tags) {
         if (tag === "all")
             continue;
-        if (i % kTagsPerLine === 0) {
+        if (!(i % kTagsPerLine)) {
             buttons = control.appendChild(document.createElement("div"));
             buttons.className = "button-bar";
         }
@@ -196,13 +196,10 @@ function updateURL() {
         // Try finding common tags that would result in the current suite selection.
         let commonTags = new Set(selectedSuites[0].tags);
         for (const suite of Suites) {
-            if (suite.disabled) {
-                // commonTags = commonTags.difference(suite.tags);
+            if (suite.disabled)
                 suite.tags.forEach((tag) => commonTags.delete(tag));
-            } else {
-                // commonTags = commonTags.intersection(suite.tags);
+            else
                 commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
-            }
         }
         if (commonTags.size) {
             url.searchParams.set("tags", [...commonTags][0]);
