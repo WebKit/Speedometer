@@ -4,8 +4,5 @@
         "next": {
             "rootDir": "resources/newssite/news-next/src"
         }
-    },
-    "rules": {
-        // "no-html-link-for-pages": 0
     }
 }
