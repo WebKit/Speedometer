@@ -449,6 +449,7 @@ Suites.push({
     name: "NewsSite-Nuxt",
     url: "tentative/newssite/news-nuxt/dist/",
     tags: ["newssite"],
+    disabled: true,
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
