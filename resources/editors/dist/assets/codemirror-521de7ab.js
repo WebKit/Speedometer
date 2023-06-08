@@ -21817,7 +21817,7 @@ const autoCloseTags = /* @__PURE__ */ EditorView.inputHandler.of((view, from, to
 });
 let lang = javascript();
 let extensions = [basicSetup, EditorView.lineWrapping];
-async function editor(element, value) {
+function editor(element, value) {
   let view = new EditorView({
     extensions,
     parent: element,
@@ -21853,7 +21853,6 @@ async function editor(element, value) {
 }
 let editorContainer = document.querySelector("#editor");
 let editorInstance = null;
-let editorPromise = null;
 let buttons = {
   create: document.querySelector("#create"),
   highlight: document.querySelector("#highlight"),
@@ -21870,14 +21869,11 @@ buttons.long.addEventListener("click", long);
 buttons.short.addEventListener("click", short);
 buttons.layout.addEventListener("click", layout);
 buttons.create.addEventListener("click", (e) => {
-  if (!editorPromise) {
-    editorPromise = editor(editorContainer);
-    editorPromise.then((instance) => {
-      editorInstance = instance;
-      editorInstance.ready.then(() => {
-        buttons.unhighlight.classList.add("active", "true");
-        buttons.create.setAttribute("disabled", "true");
-      });
+  if (!editorInstance) {
+    editorInstance = editor(editorContainer);
+    editorInstance.ready.then(() => {
+      buttons.unhighlight.classList.add("active", "true");
+      buttons.create.setAttribute("disabled", "true");
     });
   }
 });
