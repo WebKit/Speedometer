@@ -48,7 +48,7 @@ class MainBenchmarkClient {
             for (let i = 1; i < params.iterationCount; i++) {
                 const iterationMarker = progressNode.appendChild(document.createElement("div"));
                 iterationMarker.className = "iteration-marker";
-                iterationMarker.style.left = `${i / params.iterationCount * 100}%`;
+                iterationMarker.style.left = `${(i / params.iterationCount) * 100}%`;
             }
         }
 

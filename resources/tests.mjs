@@ -662,8 +662,6 @@ Suites.push({
 
 Object.freeze(Suites);
 Suites.forEach((suite) => {
-    if (!suite.tags)
-        suite.tags = [];
     if (suite.url.startsWith("tentative/"))
         suite.tags.push("all", "tentative");
     else
