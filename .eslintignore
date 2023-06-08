@@ -30,3 +30,4 @@ package-lock.json
 /resources/tentative/editors/assets
 
 /resources/newssite/*
+!/resources/newssite/news-site-css
