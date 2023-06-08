@@ -1,28 +1,23 @@
-import "@/styles/variables.css";
-import "@/styles/globals.css";
-import "@/styles/icons.css";
-import "@/styles/button.css";
-import "@/styles/a11y.css";
-import "@/styles/layout.css";
-import "@/styles/header.css";
-import "@/styles/nav.css";
-import "@/styles/footer.css";
-import "@/styles/navbar.css";
-import "@/styles/dialog.css";
-import "@/styles/dropdown.css";
-import "@/styles/article.css";
-import "@/styles/text.css";
-import "@/styles/toggle.css";
-import "@/styles/toast.css";
-import "@/styles/sitemap.css";
-import "@/styles/message.css";
-import "@/styles/icons-group.css";
+import "news-site-css/dist/variables.css";
+import "news-site-css/dist/global.css";
+import "news-site-css/dist/a11y.css";
+import "news-site-css/dist/icons.css";
+import "news-site-css/dist/text.css";
 
 import { useEffect, useState } from "react";
+import Script from "next/script";
 
 function App({ Component, pageProps }) {
     const [render, setRender] = useState(false);
     useEffect(() => setRender(true), []);
-    return render ? <Component {...pageProps} /> : null;
+    return render
+        ? <>
+            <Script id="raf-mock">{`// This hack allows to capture the work normally happening in a rAF. We
+// may be able to remove it if the runner improves.
+window.requestAnimationFrame = (cb) => window.setTimeout(cb, 0);
+window.cancelAnimationFrame = window.clearTimeout;`}</Script>
+            <Component {...pageProps} />
+        </>
+        : null;
 }
 export default App;
