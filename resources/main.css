@@ -316,7 +316,7 @@ button.show-about {
 
 #progress .iteration-marker {
     position: absolute;
-    width: 3px;
+    width: 6px;
     height: 100%;
     background-color: var(--background);
 }
