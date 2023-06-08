@@ -8,7 +8,7 @@ export default function NavList({ callback, id }) {
     const navItems = [];
     const dropdownItems = [];
 
-    Object.keys(content).forEach(key => {
+    Object.keys(content).forEach((key) => {
         if (content[key].priority === 1)
             navItems.push(key);
         else if (content[key].priority === 2)
@@ -24,10 +24,11 @@ export default function NavList({ callback, id }) {
                 ? <li className={styles["navbar-item"]}>
                     <Dropdown animatedIconClass={styles["navbar-label-icon"]}>
                         {dropdownItems.map((key) =>
-                            <NavListItem id={`${id}-${key}-link`} key={key} label={content[key].name} url={content[key].url} callback={callback} itemClass={styles["navbar-dropdown-item"]}/>
+                            <NavListItem id={`${id}-${key}-link`} key={key} label={content[key].name} url={content[key].url} callback={callback} itemClass={styles["navbar-dropdown-item"]} />
                         )}
                     </Dropdown>
-                </li> : null}
+                </li>
+                : null}
         </ul>
     );
 }

@@ -27,11 +27,7 @@ export default function Navigation() {
                         <Navbar callback={callback} />
                     </div>
                     <div className={navStyles["page-navigation-column-right"]}>
-                        <button id="login-button" className={classNames(
-                            buttonStyles.button,
-                            buttonStyles["secondary-button"],
-                            navStyles["nav-button"]
-                        )} onClick={logIn}>
+                        <button id="login-button" className={classNames(buttonStyles.button, buttonStyles["secondary-button"], navStyles["nav-button"])} onClick={logIn}>
                             {login.label}
                         </button>
                     </div>

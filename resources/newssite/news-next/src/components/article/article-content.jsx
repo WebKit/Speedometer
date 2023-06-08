@@ -19,16 +19,15 @@ export default function ArticleContent({ type, content, display }) {
     if (type === "list") {
         return (
             <div className={styles["article-content"]}>
-                <ul className={classNames(
-                    styles["article-list"],
-                    styles.vertical,
-                    { [styles[display]]: display }
-                )}>
+                <ul className={classNames(styles["article-list"], styles.vertical, { [styles[display]]: display })}>
                     {content.map((item) =>
                         <li key={uuidv4()} className={styles["article-list-item"]}>
-                            {item.url && !item.title ? <a href={item.url}>
-                                <ArticleText text={item.content} />
-                            </a> : <ArticleText text={item.content} />}
+                            {item.url && !item.title
+                                ? <a href={item.url}>
+                                    <ArticleText text={item.content} />
+                                </a>
+                                : <ArticleText text={item.content} />
+                            }
                         </li>
                     )}
                 </ul>
@@ -39,20 +38,16 @@ export default function ArticleContent({ type, content, display }) {
     if (type === "articles-list") {
         return (
             <div className={styles["article-list-content"]}>
-                <ul className={classNames(
-                    styles["article-list"],
-                    styles.vertical
-                )}>
+                <ul className={classNames(styles["article-list"], styles.vertical)}>
                     {content.map((item) =>
                         <li key={uuidv4()} className={styles["article-list-item"]}>
-                            <ArticleText textClass={classNames(
-                                styles["article-title"],
-                                "truncate-multiline",
-                                "truncate-multiline-3"
-                            )} text={item.title} type="h3"/>
-                            {item.url && !item.title ? <a href={item.url}>
-                                <ArticleText text={item.content} />
-                            </a> : <ArticleText text={item.content} />}
+                            <ArticleText textClass={classNames(styles["article-title"], "truncate-multiline", "truncate-multiline-3")} text={item.title} type="h3" />
+                            {item.url && !item.title
+                                ? <a href={item.url}>
+                                    <ArticleText text={item.content} />
+                                </a>
+                                : <ArticleText text={item.content} />
+                            }
                         </li>
                     )}
                 </ul>
@@ -62,10 +57,7 @@ export default function ArticleContent({ type, content, display }) {
 
     if (type === "excerpt") {
         return (
-            <ul className={classNames(
-                styles["article-list"],
-                styles.horizontal
-            )}>
+            <ul className={classNames(styles["article-list"], styles.horizontal)}>
                 {content.map((item) =>
                     <li key={uuidv4()} className={styles["article-list-item"]}>
                         <ArticleImage imageClass={styles["article-hero"]} image={item.image} />
@@ -80,17 +72,17 @@ export default function ArticleContent({ type, content, display }) {
 
     if (type === "grid") {
         return (
-            <div className={classNames(
-                layoutStyles["grid-container"],
-                { [layoutStyles[display]]: display }
-            )}>
+            <div className={classNames(layoutStyles["grid-container"], { [layoutStyles[display]]: display })}>
                 {content.map((item) =>
                     <div key={uuidv4()} className={layoutStyles["grid-item"]}>
                         <ArticleImage imageClass={styles["article-image-container"]} image={item.image} meta={item.meta} />
 
-                        {item.url ? <a href={item.url}>
-                            <ArticleText textClass={classNames( styles["article-content"], "truncate-multiline", "truncate-multiline-3")} text={item.text} type="h3"/></a>
-                            : <ArticleText textClass={classNames( styles["article-content"], "truncate-multiline", "truncate-multiline-3")} text={item.text} type="h3"/>}
+                        {item.url
+                            ? <a href={item.url}>
+                                <ArticleText textClass={classNames(styles["article-content"], "truncate-multiline", "truncate-multiline-3")} text={item.text} type="h3" />
+                            </a>
+                            : <ArticleText textClass={classNames(styles["article-content"], "truncate-multiline", "truncate-multiline-3")} text={item.text} type="h3" />
+                        }
                     </div>
                 )}
             </div>
@@ -103,7 +95,7 @@ export default function ArticleContent({ type, content, display }) {
                 {content.map((item) =>
                     <li key={uuidv4()} className={styles["article-list-item"]}>
                         <ArticleImage imageClass={styles["article-image-container"]} image={item.image} />
-                        <ArticleText textClass={classNames( styles["article-title"], "truncate-multiline", "truncate-multiline-3")} text={item.title} type="h3"/>
+                        <ArticleText textClass={classNames(styles["article-title"], "truncate-multiline", "truncate-multiline-3")} text={item.title} type="h3" />
                     </li>
                 )}
             </ul>
