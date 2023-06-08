@@ -124,6 +124,8 @@ export function createUIForSuites() {
     }
 
     control.appendChild(ol);
+    const buttons = control.appendChild(document.createElement("div"));
+    buttons.className = "button-bar";
 
     let button = document.createElement("button");
     button.textContent = "Select all";
@@ -133,7 +135,7 @@ export function createUIForSuites() {
 
         updateURL();
     };
-    control.appendChild(button);
+    buttons.appendChild(button);
 
     button = document.createElement("button");
     button.textContent = "Unselect all";
@@ -143,7 +145,7 @@ export function createUIForSuites() {
 
         updateURL();
     };
-    control.appendChild(button);
+    buttons.appendChild(button);
 
     return control;
 }
