@@ -621,6 +621,45 @@ Suites.push({
     ],
 });
 
+Suites.push({
+    name: "Perf-Dashboard",
+    url: "tentative/perf.webkit.org/public/v3/#/charts?since=1678991819934&paneList=((55-1649-53731881-null-(5-2.5-500))-(55-1407-null-null-(5-2.5-500))-(55-1648-null-null-(5-2.5-500))-(55-1974-null-null-(5-2.5-500)))",
+    async prepare(page) {
+        await page.waitForElement("#app-is-ready");
+        page.call('serviceRAF');
+    },
+    tests: [
+        new BenchmarkTestStep("Render", (page) => {
+            page.call('startTest');
+            page.callAsync('serviceRAF');
+        }),
+        new BenchmarkTestStep("SelectingPoints", (page) => {
+            const chartPane = page.callToGetElement('getChartPane');
+            for (let i = 0; i < 20; ++i) {
+                chartPane.dispatchKeyEvent('keydown', 39 /* Right */, 'ArrowRight');
+                page.call('serviceRAF');
+            }
+        }),
+        new BenchmarkTestStep("SelectingRange", (page) => {
+            const canvas = page.callToGetElement('getChartCanvas');
+            const startingX = 118;
+            const startingY = 155;
+            const endingX = 210;
+            const endingY = 121;
+            canvas.dispatchMouseEvent('mousedown', startingX, startingY);
+            page.call('serviceRAF');
+            const movementCount = 20;
+            for (let i = 0; i <= movementCount; ++i) {
+                canvas.dispatchMouseEvent('mousemove', startingX + (endingX - startingX) * i / movementCount,
+                    startingY + (endingY - startingY) * i / movementCount);
+                page.call('serviceRAF');
+            }
+            canvas.dispatchMouseEvent('mouseup', endingX, endingY);
+            page.call('serviceRAF');
+        }),
+    ],
+});
+
 Object.freeze(Suites);
 Suites.forEach((suite) => {
     if (suite.url.startsWith("tentative/"))
