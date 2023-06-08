@@ -314,6 +314,13 @@ button.show-about {
     background-color: var(--foreground);
 }
 
+#progress .iteration-marker {
+    position: absolute;
+    width: 3px;
+    height: 100%;
+    background-color: var(--background);
+}
+
 #info {
     position: absolute;
     bottom: -25px;

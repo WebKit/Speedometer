@@ -42,6 +42,15 @@ class MainBenchmarkClient {
         }
 
         this._developerModeContainer?.remove();
+        this._progressCompleted = document.getElementById("progress-completed");
+        if (params.iterationCount < 50) {
+            const progressNode = document.getElementById("progress");
+            for (let i = 1; i < params.iterationCount; i++) {
+                const iterationMarker = progressNode.appendChild(document.createElement("div"));
+                iterationMarker.className = "iteration-marker";
+                iterationMarker.style.left = `${i / params.iterationCount * 100}%`;
+            }
+        }
 
         this._metrics = Object.create(null);
         this._isRunning = true;
@@ -80,7 +89,6 @@ class MainBenchmarkClient {
     willStartFirstIteration() {
         this._measuredValuesList = [];
         this._finishedTestCount = 0;
-        this._progressCompleted = document.getElementById("progress-completed");
     }
 
     didFinishLastIteration(metrics) {
