@@ -624,6 +624,7 @@ Suites.push({
 Suites.push({
     name: "Perf-Dashboard",
     url: "tentative/perf.webkit.org/public/v3/#/charts?since=1678991819934&paneList=((55-1649-53731881-null-(5-2.5-500))-(55-1407-null-null-(5-2.5-500))-(55-1648-null-null-(5-2.5-500))-(55-1974-null-null-(5-2.5-500)))",
+    tags: ["chart", "webcomponents"],
     async prepare(page) {
         await page.waitForElement("#app-is-ready");
         page.call('serviceRAF');
