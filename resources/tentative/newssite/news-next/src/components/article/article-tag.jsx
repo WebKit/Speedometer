@@ -14,12 +14,12 @@ export default function ArticleTag({ tag }) {
     return (
         <div className={classNames(
             styles["article-image-tag"],
-            styles[tag]
+            styles[tag.type]
         )}>
-            { tag === "breaking" ? <LightningIcon /> : null }
-            { tag === "watch" ? <PlayIcon /> : null }
-            { tag === "new" ? <FireIcon /> : null }
-            <ArticleText text={tag} />
+            { tag.type === "breaking" ? <LightningIcon /> : null }
+            { tag.type === "watch" ? <PlayIcon /> : null }
+            { tag.type === "new" ? <FireIcon /> : null }
+            <ArticleText text={tag.label} />
         </div>
     );
 }

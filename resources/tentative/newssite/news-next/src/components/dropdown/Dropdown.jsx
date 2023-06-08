@@ -1,6 +1,8 @@
 import { useState } from "react";
 import classNames from "classnames";
 
+import { more } from "@/data/buttons";
+
 import styles from "news-site-css/dist/dropdown.module.css";
 
 export default function Dropdown({ children, animatedIconClass }) {
@@ -18,7 +20,7 @@ export default function Dropdown({ children, animatedIconClass }) {
         <div className={styles.dropdown}>
             <input type="checkbox" id="navbar-dropdown-toggle" className={styles["dropdown-toggle"]} onChange={handleChange} checked={isOpen} />
             <label htmlFor="navbar-dropdown-toggle" className={styles["dropdown-label"]}>
-                <span className={styles["dropdown-label-text"]}>More</span>
+                <span className={styles["dropdown-label-text"]}>{more.label}</span>
                 <div className={classNames(
                     "animated-icon",
                     "arrow-icon",

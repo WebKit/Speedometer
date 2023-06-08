@@ -2,6 +2,8 @@ import FacebookIcon from "@/assets/facebook-icon";
 import InstagramIcon from "@/assets/instagram-icon";
 import TwitterIcon from "@/assets/twitter-icon";
 
+import { social } from "@/data/links";
+
 import styles from "news-site-css/dist/icons-group.module.css";
 
 export default function SocialIcons({ id }) {
@@ -9,21 +11,21 @@ export default function SocialIcons({ id }) {
         <div className={styles["icons-group"]}>
             <ul className={styles["icons-group-list"]}>
                 <li className={styles["icons-group-item"]}>
-                    <a href="#" id={`${id}-facebook`}>
+                    <a href={social.facebook.href} id={`${id}-facebook`}>
                         <div className={styles["group-icon"]}>
                             <FacebookIcon />
                         </div>
                     </a>
                 </li>
                 <li className={styles["icons-group-item"]}>
-                    <a href="#" id={`${id}-instagram`}>
+                    <a href={social.instagram.href} id={`${id}-instagram`}>
                         <div className={styles["group-icon"]}>
                             <InstagramIcon />
                         </div>
                     </a>
                 </li>
                 <li className={styles["icons-group-item"]}>
-                    <a href="#" id={`${id}-twitter`}>
+                    <a href={social.twitter.href} id={`${id}-twitter`}>
                         <div className={styles["group-icon"]}>
                             <TwitterIcon />
                         </div>

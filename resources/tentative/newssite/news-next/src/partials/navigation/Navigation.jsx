@@ -3,6 +3,8 @@ import classNames from "classnames";
 
 import Navbar from "../../components/navbar/navbar";
 
+import { login } from "@/data/buttons";
+
 import navStyles from "news-site-css/dist/nav.module.css";
 import buttonStyles from "news-site-css/dist/button.module.css";
 
@@ -30,7 +32,7 @@ export default function Navigation() {
                             buttonStyles["secondary-button"],
                             navStyles["nav-button"]
                         )} onClick={logIn}>
-                        Log In
+                            {login.label}
                         </button>
                     </div>
                 </div>
