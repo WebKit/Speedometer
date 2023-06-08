@@ -123,6 +123,10 @@ export function createUIForSuites() {
         ol.appendChild(li);
     }
 
+    this.createFilterButtons();
+}
+
+function createFilterButtons() {
     control.appendChild(ol);
     const buttons = control.appendChild(document.createElement("div"));
     buttons.className = "button-bar";
