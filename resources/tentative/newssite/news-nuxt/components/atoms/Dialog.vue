@@ -1,4 +1,5 @@
 <script lang="js">
+import { settings } from "~/data/dialog";
 import styles from "news-site-css/dist/dialog.module.css";
 
 export default {
@@ -7,6 +8,7 @@ export default {
     },
     data() {
         return {
+            settings,
             styles,
             isChecked: false,
         }
@@ -49,12 +51,12 @@ export default {
       </div>
     </button>
     <header :class="styles['dialog-header']">
-      <h2>Settings</h2>
+      <h2>{{ settings.header }}</h2>
     </header>
     <section :class="styles['dialog-body']">
       <div :class="styles['dialog-item']">
         <Toggle
-          label="Reduced Motion"
+          :label="settings.items.motion.label"
           :on-change="handleChange"
           :checked="isChecked"
         />
