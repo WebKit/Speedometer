@@ -583,14 +583,14 @@ Suites.push({
 Object.freeze(Suites);
 Suites.forEach((suite) => {
     if (suite.url.startsWith("tentative/"))
-        suite.tags.push("all", "tentative");
+        suite.tags.unshift("all", "tentative");
     else
-        suite.tags.push("all", "default");
+        suite.tags.unshift("all", "default");
     Object.freeze(suite.tags);
     Object.freeze(suite.steps);
 });
 
-const Tags = new Set(Suites.flatMap((suite) => suite.tags));
+export const Tags = new Set(["all", "default", "tentative", ...Suites.flatMap((suite) => suite.tags)]);
 Object.freeze(Tags);
 
 globalThis.Suites = Suites;

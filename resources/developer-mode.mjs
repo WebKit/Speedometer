@@ -1,4 +1,4 @@
-import { Suites } from "./tests.mjs";
+import { Suites, Tags } from "./tests.mjs";
 import { params, defaultParams } from "./params.mjs";
 
 export function createDeveloperModeContainer() {
@@ -88,7 +88,6 @@ export function createUIForSuites() {
     const control = document.createElement("nav");
     const ol = document.createElement("ol");
     const checkboxes = [];
-
     const setSuiteEnabled = (suiteIndex, enabled) => {
         Suites[suiteIndex].disabled = !enabled;
         checkboxes[suiteIndex].checked = enabled;
@@ -122,13 +121,8 @@ export function createUIForSuites() {
 
         ol.appendChild(li);
     }
-
-    this.createFilterButtons();
-}
-
-function createFilterButtons() {
     control.appendChild(ol);
-    const buttons = control.appendChild(document.createElement("div"));
+    let buttons = control.appendChild(document.createElement("div"));
     buttons.className = "button-bar";
 
     let button = document.createElement("button");
@@ -151,6 +145,37 @@ function createFilterButtons() {
     };
     buttons.appendChild(button);
 
+    let i = 0;
+    const kTagsPerLine = 3;
+    for (const tag of Tags) {
+        if (tag === "all")
+            continue;
+        if (i % kTagsPerLine === 0) {
+            buttons = control.appendChild(document.createElement("div"));
+            buttons.className = "button-bar";
+        }
+        i++;
+        button = document.createElement("button");
+        button.className = "tag";
+        button.textContent = `#${tag}`;
+        button.dataTag = tag;
+        button.onclick = (event) => {
+            const extendSelection = event?.shiftKey;
+            const invertSelection = event?.ctrlKey || event?.metaKey;
+            const selectedTag = event.target.dataTag;
+            for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) {
+                let enabled = Suites[suiteIndex].tags.includes(selectedTag);
+                if (invertSelection)
+                    enabled = !enabled;
+                if (extendSelection && !enabled)
+                    continue;
+                setSuiteEnabled(suiteIndex, enabled);
+            }
+            updateURL();
+        };
+        buttons.appendChild(button);
+    }
+
     return control;
 }
 
@@ -159,11 +184,7 @@ function updateURL() {
 
     // If less than all suites are selected then change the URL "Suites" GET parameter
     // to comma separate only the selected
-    const selectedSuites = [];
-    for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) {
-        if (!Suites[suiteIndex].disabled)
-            selectedSuites.push(Suites[suiteIndex].name);
-    }
+    const selectedSuites = Suites.filter((suite) => !suite.disabled);
 
     if (!selectedSuites.length || selectedSuites.length === Suites.length) {
         url.searchParams.delete("tags");
@@ -172,7 +193,24 @@ function updateURL() {
     } else {
         url.searchParams.delete("tags");
         url.searchParams.delete("suite");
-        url.searchParams.set("suites", selectedSuites.join(","));
+        // Try finding common tags that would result in the current suite selection.
+        let commonTags = new Set(selectedSuites[0].tags);
+        for (const suite of Suites) {
+            if (suite.disabled) {
+                // commonTags = commonTags.difference(suite.tags);
+                suite.tags.forEach((tag) => commonTags.delete(tag));
+            } else {
+                // commonTags = commonTags.intersection(suite.tags);
+                commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
+            }
+        }
+        if (commonTags.size) {
+            url.searchParams.set("tags", [...commonTags][0]);
+            url.searchParams.delete("suites");
+        } else {
+            url.searchParams.delete("tags");
+            url.searchParams.set("suites", selectedSuites.map((suite) => suite.name).join(","));
+        }
     }
 
     if (params.measurementMethod === "raf")
