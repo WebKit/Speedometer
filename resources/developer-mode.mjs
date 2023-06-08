@@ -166,9 +166,11 @@ function updateURL() {
     }
 
     if (!selectedSuites.length || selectedSuites.length === Suites.length) {
+        url.searchParams.delete("tags");
         url.searchParams.delete("suites");
         url.searchParams.delete("suite");
     } else {
+        url.searchParams.delete("tags");
         url.searchParams.delete("suite");
         url.searchParams.set("suites", selectedSuites.join(","));
     }
