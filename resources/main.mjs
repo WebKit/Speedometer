@@ -232,8 +232,8 @@ class MainBenchmarkClient {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
 
-        if (params.suites.length > 0)
-            Suites.enable(params.suites);
+        if (params.suites.length > 0 || params.tags.length > 0)
+            Suites.enable(params.suites, params.tags);
 
         if (params.developerMode) {
             this._developerModeContainer = createDeveloperModeContainer(Suites);
