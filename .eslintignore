@@ -31,3 +31,4 @@ package-lock.json
 
 /resources/newssite/*
 !/resources/newssite/news-site-css
+!/resources/newssite/news-nuxt

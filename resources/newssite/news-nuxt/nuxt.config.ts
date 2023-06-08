@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     }, */
     nitro: {
         prerender: {
-            crawlLinks: false
+            crawlLinks: false,
         },
         output: {
             publicDir: path.join(__dirname, "dist"),
@@ -42,7 +42,7 @@ export default defineNuxtConfig({
                 },
             ],
         },
-        baseURL: "./"
+        baseURL: "./",
     },
     $production: {
         app: {
