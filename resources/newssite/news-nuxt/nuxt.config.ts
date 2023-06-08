@@ -46,7 +46,7 @@ export default defineNuxtConfig({
     },
     $production: {
         app: {
-            baseURL: "/resources/tentative/newssite/news-nuxt/dist/",
+            baseURL: "/resources/newssite/news-nuxt/dist/",
         },
     },
 });
