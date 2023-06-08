@@ -3,6 +3,7 @@ const route = useRoute()
 </script>
 
 <script lang="js">
+import { content } from "~/data/content";
 import navStyles from "news-site-css/dist/nav.module.css";
 import navbarStyles from "news-site-css/dist/navbar.module.css";
 
@@ -23,6 +24,7 @@ export default {
   },
   data () {
     return {
+      content,
       navbarStyles,
       navStyles,
       isOpen: false,
@@ -78,7 +80,7 @@ export default {
       <LogoIcon />
     </button>
     <div :class="navbarStyles['navbar-active-path']">
-      {{ route.path.split("/")[1] }}
+      {{ content[route.path.split("/")[1]]?.name ?? '' }}
     </div>
     <div :class="navbarStyles['navbar-content']">
       <Navlist
