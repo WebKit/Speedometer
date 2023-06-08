@@ -534,21 +534,17 @@ Suites.push({
     tags: ["chart"],
     async prepare(page) {},
     tests: [
-        new BenchmarkTestStep("Prepare 6", (page) => {
-            page.querySelector("#prepare").click();
-        }),
         new BenchmarkTestStep("Stacked by 6", (page) => {
+            page.querySelector("#prepare").click();
             page.querySelector("#reset").click();
             page.querySelector("#add-stacked-chart-button").click();
         }),
-        new BenchmarkTestStep("Prepare 20", (page) => {
+        new BenchmarkTestStep("Stacked by 20", (page) => {
             const sizeSlider = page.querySelector("#airport-group-size-input");
             sizeSlider.setValue(20);
             sizeSlider.dispatchEvent("input");
             sizeSlider.dispatchEvent("change");
             page.querySelector("#prepare").click();
-        }),
-        new BenchmarkTestStep("Stacked by 20", (page) => {
             page.querySelector("#reset").click();
             page.querySelector("#add-stacked-chart-button").click();
         }),
@@ -565,10 +561,8 @@ Suites.push({
     tags: ["chart"],
     async prepare(page) {},
     tests: [
-        new BenchmarkTestStep("Prepare", (page) => {
-            page.querySelector("#prepare").click();
-        }),
         new BenchmarkTestStep("Draw scatter", (page) => {
+            page.querySelector("#prepare").click();
             page.querySelector("#add-scatter-chart-button").click();
         }),
         new BenchmarkTestStep("Show tooltip", (page) => {
