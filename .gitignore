@@ -21,3 +21,7 @@
 /resources/todomvc/vanilla-examples/javascript-es6-webpack/node_modules/
 
 /resources/tentative/charts/node_modules/
+
+/resoureces/newssite/news-next/node_modules/
+/resources/newssite/news-nuxt/node_modules/
+/resources/newssite/news-site-css/node_modules/
