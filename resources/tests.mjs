@@ -581,6 +581,7 @@ Suites.push({
 });
 
 Object.freeze(Suites);
+
 Suites.forEach((suite) => {
     if (suite.url.startsWith("tentative/"))
         suite.tags.unshift("all", "tentative");
