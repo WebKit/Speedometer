@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import classNames from "classnames";
 
 import NavList from "../navlist/navlist";
 import LogoIcon from "@/assets/logo-icon";
 import SocialIcons from "@/partials/icons/social-icons";
 
-export default function Navbar({ openSitemap }) {
+import navbarStyles from "news-site-css/dist/navbar.module.css";
+import navStyles from "news-site-css/dist/nav.module.css";
+
+export default function Navbar({ callback }) {
     const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -37,10 +41,15 @@ export default function Navbar({ openSitemap }) {
     }, []);
 
     return (
-        <div className="navbar">
-            <input type="checkbox" id="navbar-toggle" onChange={handleChange} checked={isOpen} />
-            <label htmlFor="navbar-toggle" className="navbar-label">
-                <div className="animated-icon hamburger-icon" title="Hamburger Icon">
+        <div className={navbarStyles.navbar}>
+            <input type="checkbox" id={navbarStyles["navbar-toggle"]} onChange={handleChange} checked={isOpen} />
+            <label htmlFor={navbarStyles["navbar-toggle"]} className={navbarStyles["navbar-label"]}>
+                <span className="visually-hidden">Navbar Toggle</span>
+                <div className={classNames(
+                    navbarStyles["navbar-label-icon"],
+                    "animated-icon",
+                    "hamburger-icon"
+                )} title="Hamburger Icon">
                     <span className="animated-icon-inner">
                         <span></span>
                         <span></span>
@@ -48,13 +57,15 @@ export default function Navbar({ openSitemap }) {
                     </span>
                 </div>
             </label>
-            <button className="page-navigation-logo" id="home-link" onClick={openSitemap}>
+            <button className={navStyles["page-navigation-logo"]} id="home-link" onClick={callback}>
                 <LogoIcon />
             </button>
-            <div className="navbar-active-path">{location.pathname.split("/")[1]}</div>
-            <div className="navbar-content">
+            <div className={navbarStyles["navbar-active-path"]}>{location.pathname.split("/")[1]}</div>
+            <div className={navbarStyles["navbar-content"]}>
                 <NavList id="navbar-navlist" callback={handleClick} />
-                <SocialIcons />
+                <div className={navbarStyles["navbar-icons"]}>
+                    <SocialIcons id="navbar-social-icons"/>
+                </div>
             </div>
         </div>
     );

@@ -1,9 +1,15 @@
 import { NavLink } from "react-router-dom";
+import classNames from "classnames";
 
-export default function NavListItem({ id, label, url, callback }) {
+import styles from "news-site-css/dist/navbar.module.css";
+
+export default function NavListItem({ id, label, url, callback, itemClass }) {
     return (
-        <li className="navbar-item" onClick={callback}>
-            <NavLink to={url} id={id}>
+        <li className={classNames(
+            styles["navbar-item"],
+            itemClass
+        )} onClick={callback}>
+            <NavLink to={url} id={id} className={({ isActive }) => classNames({ [styles.active]: isActive })}>
                 {label}
             </NavLink>
         </li>

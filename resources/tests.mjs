@@ -543,11 +543,11 @@ Suites.push({
             let x = 150;
             let y = 200;
             const coords = (i) => ({ clientX: x + i * 10, clientY: y + i * 2, bubbles: true, cancelable: true });
-            for (let i = 0; i < 100; ) {
-                cursor.dispatchEvent("mousedown", coords(i), MouseEvent);
-                for (let j = 10; j--; )
-                    cursor.dispatchEvent("mousemove", coords(++i), MouseEvent);
-                cursor.dispatchEvent("mouseup", coords(i), MouseEvent);
+            for (let i = 0; i < 5; i++) {
+                cursor.dispatchEvent("mousedown", coords(0), MouseEvent);
+                for (let j = 0; j < 10; j++)
+                    cursor.dispatchEvent("mousemove", coords(j), MouseEvent);
+                cursor.dispatchEvent("mouseup", coords(10), MouseEvent);
             }
         }),
         new BenchmarkTestStep("ZoomTheChart", (page) => {
@@ -561,31 +561,7 @@ Suites.push({
                 bubbles: true,
                 cancelable: true,
             };
-            for (let i = 0; i < 30; i++)
-                cursor.dispatchEvent("wheel", event, WheelEvent);
-
-            event = {
-                clientX: 650,
-                clientY: 200,
-                deltaMode: 0,
-                delta: 10,
-                deltaY: 10,
-                bubbles: true,
-                cancelable: true,
-            };
-            for (let i = 0; i < 10; i++)
-                cursor.dispatchEvent("wheel", event, WheelEvent);
-
-            event = {
-                clientX: 200,
-                clientY: 200,
-                deltaMode: 0,
-                delta: -10,
-                deltaY: -10,
-                bubbles: true,
-                cancelable: true,
-            };
-            for (let i = 0; i < 10; i++)
+            for (let i = 0; i < 15; i++)
                 cursor.dispatchEvent("wheel", event, WheelEvent);
         }),
     ],

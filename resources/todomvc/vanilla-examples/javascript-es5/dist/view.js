@@ -36,7 +36,7 @@
     };
 
     View.prototype._clearCompletedButton = function (completedCount, visible) {
-        this.$clearCompleted.innerHTML = this.template.clearCompletedButton(completedCount);
+        this.$clearCompleted.textContent = this.template.clearCompletedButton(completedCount);
         this.$clearCompleted.style.display = visible ? "block" : "none";
     };
 
@@ -89,17 +89,22 @@
         });
     };
 
+    View.prototype._replaceContentWithHtml = function (element, html) {
+        const parsedDocument = new DOMParser().parseFromString(html, "text/html");
+        element.replaceChildren(...parsedDocument.body.childNodes);
+    };
+
     View.prototype.render = function (viewCmd, parameter) {
         var self = this;
         var viewCommands = {
             showEntries: function () {
-                self.$todoList.innerHTML = self.template.show(parameter);
+                self._replaceContentWithHtml(self.$todoList, self.template.show(parameter));
             },
             removeItem: function () {
                 self._removeItem(parameter);
             },
             updateElementCount: function () {
-                self.$todoItemCounter.innerHTML = self.template.itemCounter(parameter);
+                self._replaceContentWithHtml(self.$todoItemCounter, self.template.itemCounter(parameter));
             },
             clearCompletedButton: function () {
                 self._clearCompletedButton(parameter.completed, parameter.visible);

@@ -1,11 +1,17 @@
 import { useNavigate } from "react-router-dom";
+import classNames from "classnames";
 
 import Navbar from "../../components/navbar/navbar";
+
+import { login } from "@/data/buttons";
+
+import navStyles from "news-site-css/dist/nav.module.css";
+import buttonStyles from "news-site-css/dist/button.module.css";
 
 export default function Navigation() {
     const navigate = useNavigate();
 
-    function openSitemap() {
+    function callback() {
         navigate("/");
     }
 
@@ -15,14 +21,18 @@ export default function Navigation() {
 
     return (
         <>
-            <nav className="page-navigation" aria-label="main menu">
-                <div className="page-navigation-row">
-                    <div className="page-navigation-column-left">
-                        <Navbar openSitemap={openSitemap} />
+            <nav className={navStyles["page-navigation"]} aria-label="main menu">
+                <div className={navStyles["page-navigation-row"]}>
+                    <div className={navStyles["page-navigation-column-left"]}>
+                        <Navbar callback={callback} />
                     </div>
-                    <div className="page-navigation-column-right">
-                        <button id="login-button" className="button secondary-button nav-button" onClick={logIn}>
-                        Log In
+                    <div className={navStyles["page-navigation-column-right"]}>
+                        <button id="login-button" className={classNames(
+                            buttonStyles.button,
+                            buttonStyles["secondary-button"],
+                            navStyles["nav-button"]
+                        )} onClick={logIn}>
+                            {login.label}
                         </button>
                     </div>
                 </div>

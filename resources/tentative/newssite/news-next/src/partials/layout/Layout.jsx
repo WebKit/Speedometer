@@ -10,6 +10,8 @@ import Footer from "../footer/footer";
 import { content } from "@/data/content";
 import { Message } from "@/components/message/message";
 
+import styles from "news-site-css/dist/layout.module.css";
+
 export default function Layout({ children, id }) {
     const [showMessage, setShowMessage] = useState(false);
 
@@ -31,7 +33,7 @@ export default function Layout({ children, id }) {
     return (
         <>
             <HashLink to={`${pathname}#content`} className="skip-link">Skip to content</HashLink>
-            <div className="page" ref={pageRef}>
+            <div className={styles.page} ref={pageRef}>
                 <Header />
                 <Navigation />
                 { showMessage ? <Message message={content[id].message} onClose={closeMessage}/> : null }
