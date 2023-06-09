@@ -70,7 +70,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex: 1;
+    flex-basis: fit-content;
     width: 100%;
 }
 
@@ -92,10 +92,10 @@
     position: relative;
     line-height: var(--nav-button-height);
     display: flex;
+    flex: 1;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    flex: 1;
     border-radius: var(--border-radius-small);
     padding: 0 8px;
     transition-property: color, background-color;
