@@ -583,7 +583,7 @@ Suites.push({
 
 Suites.push({
     name: "React-Stockcharts-SVG",
-    url: "tentative/react-stockcharts/build/index.html?type=svg",
+    url: "react-stockcharts/build/index.html?type=svg",
     tags: ["chart", "svg"],
     async prepare(page) {
         await page.waitForElement("#render");
