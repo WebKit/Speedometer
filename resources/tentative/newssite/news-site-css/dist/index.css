@@ -8,6 +8,7 @@
     --color-utils-gray-light: #6e6e6e;
     --color-utils-gray-lighter: #b1b1b1;
     --color-utils-offwhite: #e6e6e6;
+    --color-utils-red-light: #f50000;
     --theme-advertisement-copy: #b1b1b1;
     --theme-advertisement-icon-fill: #00aecd;
     --theme-advertisement-icon-background: #fff;
@@ -383,6 +384,11 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
 
 /** RTL ICONS-GROUP END **/
 .button {
+    display: flex;
+    text-decoration: none;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
     cursor: pointer;
     font-family: inherit;
     font-size: inherit;
@@ -400,10 +406,22 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
     color: var(--color-utils-black);
 }
 
+.primary-button.dark {
+    border: 1px solid var(--color-utils-black);
+    background-color: var(--color-utils-black);
+    color: var(--color-utils-offwhite);
+}
+
 .primary-button:hover {
     border-color: var(--color-utils-white);
     background-color: var(--color-utils-white);
     color: var(--color-utils-gray-light);
+}
+
+.primary-button.dark:hover {
+    border-color: var(--color-utils-gray-light);
+    background-color: var(--color-utils-gray-light);
+    color: var(--color-utils-offwhite);
 }
 
 .secondary-button {
@@ -412,9 +430,20 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
     background-color: transparent;
 }
 
+.secondary-button.dark {
+    border: 1px solid var(--color-utils-black);
+    color: var(--color-utils-black);
+    background-color: transparent;
+}
+
 .secondary-button:hover {
     border-color: var(--color-utils-white);
     color: var(--color-utils-white);
+}
+
+.secondary-button.dark:hover {
+    border-color: var(--color-utils-gray-light);
+    color: var(--color-utils-gray-light);
 }
 /* used for things that should be hidden in the ui,
 but useful for people who use screen readers */
@@ -507,6 +536,132 @@ img::after {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.input-container {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-family-default);
+    max-width: 400px;
+    position: relative;
+    height: 40px;
+  }
+  
+  .input-container .label {
+    font-size: var(--font-size-small);
+    padding: var(--content-spacing-medium);
+  }
+  
+  .input-container .input {
+    outline: 0;
+    padding: 0 var(--content-spacing-medium);
+    border-radius: var(--border-radius-small);
+    border: var(--border-width-small) solid var(--color-utils-gray-light);
+    color: var(--color-utils-gray-light);
+    transition: var(--transition-default);
+    width: 100%;
+    height: 100%;
+  }
+  
+  .input-container .input[type="submit"] {
+    cursor: pointer;
+    border-color: var(--color-utils-black);
+    background-color: var(--color-utils-black);
+    color: var(--color-utils-white);
+  }
+
+  .input-container .input[type="submit"]:hover,
+  .input-container .input[type="submit"]:focus {
+    border-color: var(--color-utils-gray);
+    background-color: var(--color-utils-gray);
+    color: var(--color-utils-white);
+  }
+  
+  .input-container .input[type="date"] {
+    /* hide default calendar icon */
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=utf8,%3Csvg fill="%43000" fill-opacity="1" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/%3E%3Cpath d="M0 0h24v24H0z" fill="none"/%3E%3C/svg%3E');
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+  }
+  
+  .input-container .input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+  
+  .input-container .input-type-password {
+    padding-right: calc(24px + var(--content-spacing-medium) * 2);
+  }
+  
+  .input-container .input:hover {
+    border-color: var(--color-utils-gray-dark);
+    color: var(--color-utils-gray-dark);
+  }
+  
+  .input-container .input:focus {
+    border-color: var(--color-utils-gray-darker);
+    color: var(--color-utils-gray-darker);
+  }
+  
+  .input-container .input::placeholder {
+    color: var(--color-utils-gray);
+    opacity: 0.5;
+  }
+  
+  .input-container .toggle {
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    position: absolute;
+    right: var(--content-spacing-medium);
+    bottom: calc((40px - 24px) / 2);
+  }
+  
+.form-container {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-utils-offwhite);
+    width: 100%;
+    max-width: 400px;
+    font-family: var(--font-family-default);
+}
+
+.form-content {
+    max-width: 400px;
+    width: 100%;
+    background: var(--color-utils-white);
+    border-radius: var(--border-radius-small);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.form-container form {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.form-item:not(:last-of-type) {
+    margin-right: 0;
+    margin-bottom: var(--content-spacing-medium);
+}
+
+.form-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.form-actions .form-actions-item {
+    height: 40px;
+    flex-grow: 1;
+}
+
+.form-actions .form-actions-item:not(:last-child) {
+    margin-right: var(--content-spacing-medium);
 }
 /* Layout visualization */
 .preview {
@@ -1880,7 +2035,7 @@ html[dir="rtl"] .toast-close-button {
 
 .sitemap a.active,
 .sitemap a.active:hover {
-    color: var(--color-utils-red);
+    color: var(--color-utils-red-light);
     text-decoration: none;
 }
 
@@ -2117,3 +2272,108 @@ html[dir="rtl"] .sidebar-close-button {
 }
 
 /** RTL SIDEBAR END **/
+.modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    /* stylelint-disable */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* stylelint-enable */
+    z-index: var(--index-important);
+    display: none;
+}
+
+.modal:target,
+.modal.open {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    position: absolute;
+    min-width: 300px;
+    max-width: 400px;
+    width: 100%;
+    min-height: 240px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-utils-white);
+    border-radius: var(--border-radius-medium);
+    box-shadow: 0 10px 18px var(--color-utils-gray);
+    font-family: var(--font-family-default);
+    color: var(--color-utils-black);
+    padding: var(--content-spacing-xlarge);
+}
+
+.modal-close-button {
+    position: absolute;
+    top: var(--content-spacing-medium);
+    right: var(--content-spacing-medium);
+    width: var(--icon-size-small);
+    height: var(--icon-size-small);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.modal-close-button-icon {
+    --animated-icon-width: 24px;
+    --animated-icon-background: transparent;
+    --animated-icon-color: var(--color-utils-black);
+    --animated-icon-hover: var(--color-utils-gray-light);
+}
+
+.modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: bold;
+    font-size: var(--font-size-medium);
+    text-transform: uppercase;
+    margin-bottom: var(--content-spacing-large);
+    width: 100%;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.modal-actions {
+    display: flex;
+    margin: var(--content-spacing-large) 0;
+}
+
+.modal-actions .modal-actions-button {
+    padding: 0 var(--content-spacing-large);
+}
+
+.modal-actions .modal-actions-button:not(:last-child) {
+    margin-right: var(--content-spacing-large);
+}
+
+@media (max-width: 419px) {
+    .modal-content {
+        width: calc(100% - var(--content-spacing-xxxlarge) * 2);
+    }
+}
+
+/** RTL DIALOG START **/
+html[dir="rtl"] .modal-actions .modal-actions-button:not(:last-child) {
+    margin-left: var(--content-spacing-large);
+    margin-right: unset;
+}
+
+html[dir="rtl"] .modal-close-button {
+    left: var(--content-spacing-medium);
+    right: unset;
+}
+
+/** RTL DIALOG END **/

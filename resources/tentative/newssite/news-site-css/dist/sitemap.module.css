@@ -20,7 +20,7 @@
 
 .sitemap a.active,
 .sitemap a.active:hover {
-    color: var(--color-utils-red);
+    color: var(--color-utils-red-light);
     text-decoration: none;
 }
 
