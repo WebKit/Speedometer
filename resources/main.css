@@ -89,6 +89,7 @@ main {
     cursor: pointer;
     text-decoration: none;
 }
+
 .version {
     transform: rotate(-90deg);
     font-size: 65px;
@@ -96,7 +97,7 @@ main {
     font-style: italic;
     letter-spacing: -0.05em;
     position: absolute;
-    right: -0px;
+    right: 0;
     top: -105px;
 }
 
