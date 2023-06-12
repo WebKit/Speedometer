@@ -33,14 +33,14 @@ export default function Layout({ children, id }) {
 
     return (
         <>
-            <HashLink to={`${pathname}#content`} className="skip-link">{a11y.skip.label}</HashLink>
+            <HashLink to={`${pathname}#content`} className="skip-link">
+                {a11y.skip.label}
+            </HashLink>
             <div className={styles.page} ref={pageRef}>
                 <Header />
                 <Navigation />
-                { showMessage ? <Message message={content[id].message} onClose={closeMessage}/> : null }
-                <Main>
-                    {children}
-                </Main>
+                {showMessage ? <Message message={content[id].message} onClose={closeMessage} /> : null}
+                <Main>{children}</Main>
                 <Footer />
             </div>
         </>

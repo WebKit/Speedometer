@@ -10,18 +10,11 @@ import articleStyles from "news-site-css/dist/article.module.css";
 
 export default function Article({ article }) {
     return (
-        <article className={classNames(
-            layoutStyles.column,
-            layoutStyles[article.class],
-            articleStyles.article
-        )}>
+        <article className={classNames(layoutStyles.column, layoutStyles[article.class], articleStyles.article)}>
             <ArticleHeader headerClass={articleStyles["article-header"]} text={article.header} link={article.url} />
             <section className={articleStyles["article-body"]}>
                 <ArticleImage imageClass={articleStyles["article-image-container"]} image={article.image} meta={article.meta} />
-                <ArticleText textClass={classNames(
-                    articleStyles["article-title"],
-                    "truncate-singleline"
-                )} text={article.title} type="h3"/>
+                <ArticleText textClass={classNames(articleStyles["article-title"], "truncate-singleline")} text={article.title} type="h3" />
                 <ArticleContent type={article.type} content={article.content} display={article.display} />
             </section>
         </article>

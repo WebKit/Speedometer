@@ -8,12 +8,11 @@ export default function Input({ id = "input", placeholder = "Enter Something", l
     }
 
     return (
-        <div className={classNames(
-            styles["input-container"],
-            containerClass
-        )}>
-            <label className={classNames( styles.label, "visually-hidden")} htmlFor={id}>{label}</label>
-            <input className={classNames( styles.input, styles["input-type-text"])} type={type} autoComplete="off" id={id} placeholder={placeholder} onChange={handleChange}/>
+        <div className={classNames(styles["input-container"], containerClass)}>
+            <label className={classNames(styles.label, "visually-hidden")} htmlFor={id}>
+                {label}
+            </label>
+            <input className={classNames(styles.input, styles["input-type-text"])} type={type} autoComplete="off" id={id} placeholder={placeholder} onChange={handleChange} />
         </div>
     );
 }

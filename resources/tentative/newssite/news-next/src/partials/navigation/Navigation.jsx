@@ -39,28 +39,14 @@ export default function Navigation() {
                         <Navbar callback={openSidebar} />
                     </div>
                     <div className={navStyles["page-navigation-column-right"]}>
-                        <button id="login-button" className={classNames(
-                            buttonStyles.button,
-                            buttonStyles["secondary-button"],
-                            navStyles["nav-button"]
-                        )} onClick={openLogin}>
+                        <button id="login-button" className={classNames(buttonStyles.button, buttonStyles["secondary-button"], navStyles["nav-button"])} onClick={openLogin}>
                             {login.label}
                         </button>
                     </div>
                 </div>
             </nav>
-            {showSidebar
-                ? createPortal(
-                    <Sidebar onClose={closeSidebar} />,
-                    document.getElementById("sitemap-container")
-                )
-                : null}
-            {showLogin
-                ? createPortal(
-                    <Modal onClose={closeLogin} />,
-                    document.getElementById("login-container")
-                )
-                : null}
+            {showSidebar ? createPortal(<Sidebar onClose={closeSidebar} />, document.getElementById("sitemap-container")) : null}
+            {showLogin ? createPortal(<Modal onClose={closeLogin} />, document.getElementById("login-container")) : null}
         </>
     );
 }

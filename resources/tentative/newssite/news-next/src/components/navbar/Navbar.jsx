@@ -49,11 +49,7 @@ export default function Navbar({ callback }) {
             <input type="checkbox" id={navbarStyles["navbar-toggle"]} onChange={handleChange} checked={isOpen} />
             <label htmlFor={navbarStyles["navbar-toggle"]} className={navbarStyles["navbar-label"]}>
                 <span className="visually-hidden">Navbar Toggle</span>
-                <div className={classNames(
-                    navbarStyles["navbar-label-icon"],
-                    "animated-icon",
-                    "hamburger-icon"
-                )} title="Hamburger Icon">
+                <div className={classNames(navbarStyles["navbar-label-icon"], "animated-icon", "hamburger-icon")} title="Hamburger Icon">
                     <span className="animated-icon-inner">
                         <span></span>
                         <span></span>
@@ -68,7 +64,7 @@ export default function Navbar({ callback }) {
             <div className={navbarStyles["navbar-content"]}>
                 <NavList id="navbar-navlist" callback={handleClick} />
                 <div className={navbarStyles["navbar-icons"]}>
-                    <SocialIcons id="navbar-social-icons"/>
+                    <SocialIcons id="navbar-social-icons" />
                 </div>
             </div>
         </div>

@@ -8,14 +8,9 @@ export function Message({ message, onClose }) {
 
     const { title, description } = message;
     return (
-        <div className={classNames( styles.message, styles.open )}>
+        <div className={classNames(styles.message, styles.open)}>
             <button id="close-message-link" className={styles["message-close-button"]} onClick={onClose} title="Close Button">
-                <div className={classNames(
-                    styles["message-close-button-icon"],
-                    "animated-icon",
-                    "close-icon",
-                    "hover"
-                )} title="Close Icon">
+                <div className={classNames(styles["message-close-button-icon"], "animated-icon", "close-icon", "hover")} title="Close Icon">
                     <span className="animated-icon-inner">
                         <span></span>
                         <span></span>

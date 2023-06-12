@@ -36,7 +36,7 @@ export default function Footer() {
                                     const item = legal[key];
                                     return (
                                         <li className={styles["footer-links-item"]} key={`footer-links-item-${key}`}>
-                                            <a href={item.href} id={`footer-link-${key}`} className={styles["footer-link"]} >
+                                            <a href={item.href} id={`footer-link-${key}`} className={styles["footer-link"]}>
                                                 {item.label}
                                             </a>
                                         </li>
@@ -54,19 +54,11 @@ export default function Footer() {
                         © {new Date().getFullYear()} {footer.copyright.label}
                     </div>
                     <div className={styles["footer-column-right"]}>
-                        <SettingsIcons
-                            onClick={openPortal}
-                            id="footer-settings-icons"
-                        />
+                        <SettingsIcons onClick={openPortal} id="footer-settings-icons" />
                     </div>
                 </div>
             </footer>
-            {showPortal
-                ? createPortal(
-                    <Dialog onClose={closePortal} />,
-                    document.getElementById("settings-container")
-                )
-                : null}
+            {showPortal ? createPortal(<Dialog onClose={closePortal} />, document.getElementById("settings-container")) : null}
         </>
     );
 }
