@@ -310,7 +310,14 @@ button.show-about {
     top: 0;
     left: 0;
     height: 6px;
-    width: 0;
+    width: 100%;
+    border: none;
+    background-color: var(--inactive-color);
+}
+
+#progress-completed::-webkit-progress-value,
+#progress-completed::-moz-progress-bar { 
+    background-color: var(--foreground);
     background-color: var(--foreground);
 }
 
