@@ -316,7 +316,7 @@ button.show-about {
 }
 
 #progress-completed::-webkit-progress-value,
-#progress-completed::-moz-progress-bar { 
+#progress-completed::-moz-progress-bar {
     background-color: var(--foreground);
     background-color: var(--foreground);
 }
