@@ -5,6 +5,7 @@ import SettingsIcons from "../icons/settings-icons";
 import SocialIcons from "../icons/social-icons";
 import Sitemap from "@/components/sitemap/sitemap";
 import { legal } from "@/data/links";
+import { footer } from "@/data/footer";
 
 import styles from "news-site-css/dist/footer.module.css";
 
@@ -50,7 +51,7 @@ export default function Footer() {
                         <SocialIcons id="footer-social-icons" />
                     </div>
                     <div className={styles["footer-column-center"]}>
-                        © {new Date().getFullYear()} No Rights Reserved
+                        © {new Date().getFullYear()} {footer.copyright.label}
                     </div>
                     <div className={styles["footer-column-right"]}>
                         <SettingsIcons

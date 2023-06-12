@@ -6,11 +6,15 @@ import NavList from "../navlist/navlist";
 import LogoIcon from "@/assets/logo-icon";
 import SocialIcons from "@/partials/icons/social-icons";
 
+import { content } from "@/data/content";
+
 import navbarStyles from "news-site-css/dist/navbar.module.css";
 import navStyles from "news-site-css/dist/nav.module.css";
 
 export default function Navbar({ callback }) {
     const location = useLocation();
+    // look up label from content
+    const activePath = content[location.pathname.split("/")[1]]?.name || "";
     const [isOpen, setIsOpen] = useState(false);
 
     function handleChange(e) {
@@ -60,7 +64,7 @@ export default function Navbar({ callback }) {
             <button className={navStyles["page-navigation-logo"]} id="home-link" onClick={callback}>
                 <LogoIcon />
             </button>
-            <div className={navbarStyles["navbar-active-path"]}>{location.pathname.split("/")[1]}</div>
+            <div className={navbarStyles["navbar-active-path"]}>{activePath}</div>
             <div className={navbarStyles["navbar-content"]}>
                 <NavList id="navbar-navlist" callback={handleClick} />
                 <div className={navbarStyles["navbar-icons"]}>

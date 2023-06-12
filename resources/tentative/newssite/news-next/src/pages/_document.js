@@ -8,6 +8,8 @@ export default function Document() {
                 <Main />
                 <div id="settings-container"></div>
                 <div id="notifications-container"></div>
+                <div id="sitemap-container"></div>
+                <div id="login-container"></div>
                 <NextScript />
             </body>
         </Html>
