@@ -1,10 +1,12 @@
 <script lang="js">
 import { legal } from "~/data/links";
+import { footer } from "~/data/footer";
 import styles from "news-site-css/dist/footer.module.css";
 export default {
   data() {
     return {
       legal,
+      footer,
       styles,
       showPortal: false,
     }
@@ -50,7 +52,7 @@ export default {
         <SocialIcons id="footer-social-icons" />
       </div>
       <div :class="styles['footer-column-center']">
-        © {{ new Date().getFullYear() }} No Rights Reserved
+        © {{ new Date().getFullYear() }} {{ footer.copyright.label }}
       </div>
       <div :class="styles['footer-column-right']">
         <SettingsIcons

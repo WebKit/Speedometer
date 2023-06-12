@@ -38,3 +38,9 @@ export const legal = {
         target: "external"
     }
 };
+
+export const a11y = {
+    skip: {
+        label: "Skip to content"
+    }
+}
