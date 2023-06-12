@@ -4,7 +4,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import babel from "@rollup/plugin-babel";
 import css from "rollup-plugin-import-css";
 import copy from "rollup-plugin-copy-merge";
-import cleaner from 'rollup-plugin-cleaner';
+import cleaner from "rollup-plugin-cleaner";
 
 // `npm run build` -> `production` is true
 // `npm run dev` -> `production` is false
@@ -20,13 +20,11 @@ export default {
     ],
     plugins: [
         cleaner({
-            targets: [
-              './dist/'
-            ]
+            targets: ["./dist/"],
         }),
         css({
             minify: true,
-            output: "dist/index.min.css"
+            output: "dist/index.min.css",
         }),
         babel({
             babelrc: false,
@@ -42,7 +40,7 @@ export default {
                 {
                     src: ["src/css/*", "!src/css/partials.css", "!src/css/global.css"],
                     dest: "dist/",
-                   rename: (name, extension) => `${name}.module.${extension}`
+                    rename: (name, extension) => `${name}.module.${extension}`,
                 },
                 /* {
                     src: ["src/css/*", "!src/css/partials.css"],
@@ -56,6 +54,8 @@ export default {
                         "src/css/icons-group.css",
                         "src/css/button.css",
                         "src/css/a11y.css",
+                        "src/css/input.css",
+                        "src/css/form.css",
                         "src/css/layout.css",
                         "src/css/advertisement.css",
                         "src/css/header.css",
@@ -71,14 +71,15 @@ export default {
                         "src/css/sitemap.css",
                         "src/css/message.css",
                         "src/css/sidebar.css",
+                        "src/css/modal.css",
                     ],
-                    file: "dist/index.css"
+                    file: "dist/index.css",
                 },
                 {
                     src: ["src/css/*"],
-                    dest: "dist/"
-                }
-            ]
+                    dest: "dist/",
+                },
+            ],
         }),
         production && terser(),
     ],

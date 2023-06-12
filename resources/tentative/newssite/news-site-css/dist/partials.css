@@ -4,6 +4,8 @@
 @import url("./icons-group.css");
 @import url("./button.css");
 @import url("./a11y.css");
+@import url("./input.css");
+@import url("./form.css");
 @import url("./layout.css");
 @import url("./advertisement.css");
 @import url("./header.css");
@@ -19,3 +21,4 @@
 @import url("./sitemap.css");
 @import url("./message.css");
 @import url("./sidebar.css");
+@import url("./modal.css");

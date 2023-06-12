@@ -6,27 +6,28 @@ This package allows you to use the stylesheets in various ways, either by includ
 
 install the package
 
-``` bash
+```bash
 npm install news-site-css
 ```
 
 including the styles in html with a link tag
-``` html
-<link href="news-site-css/dist/index.min.css" rel="stylesheet">
+
+```html
+<link href="news-site-css/dist/index.min.css" rel="stylesheet" />
 ```
 
 importing the styles in JavaScript:
-``` javascript
+
+```javascript
 import "news-site-css/dist/global.css";
 ```
 
 importing a css module in React:
-``` javascript
+
+```javascript
 import styles from "news-site-css/dist/footer.module.css";
 
 export default function Footer() {
-    return (
-        <footer className={styles.footer}></footer>
-    )
+    return <footer className={styles.footer}></footer>;
 }
 ```
