@@ -14,18 +14,15 @@ export default {
 </script>
 
 <template>
-  <div :class="styles['icons-group']">
-    <ul :class="styles['icons-group-list']">
-      <li :class="styles['icons-group-item']">
-        <button
-          :id="`${id}-reduce-motion`"
-          @click="callback"
-        >
-          <div :class="styles['group-icon']">
-            <ReducedMotionIcon />
-          </div>
-        </button>
-      </li>
-    </ul>
-  </div>
+    <div :class="styles['icons-group']">
+        <ul :class="styles['icons-group-list']">
+            <li :class="styles['icons-group-item']">
+                <button :id="`${id}-reduce-motion`" @click="callback">
+                    <div :class="styles['group-icon']">
+                        <ReducedMotionIcon />
+                    </div>
+                </button>
+            </li>
+        </ul>
+    </div>
 </template>

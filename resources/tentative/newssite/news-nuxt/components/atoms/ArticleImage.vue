@@ -16,21 +16,9 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="image"
-    :class="imageClass"
-  >
-    <img
-      :class="styles['article-image']"
-      :src="$config.app.baseURL + image.src"
-      :width="image.width"
-      :height="image.height"
-      :alt="image.alt"
-    >
-    <ArticleTag :tag="meta?.tag" />
-  </div>
-  <ArticleText
-    :text-class="styles['article-image-captions']"
-    :text="meta?.captions"
-  />
+    <div v-if="image" :class="imageClass">
+        <img :class="styles['article-image']" :src="$config.app.baseURL + image.src" :width="image.width" :height="image.height" :alt="image.alt" />
+        <ArticleTag :tag="meta?.tag" />
+    </div>
+    <ArticleText :text-class="styles['article-image-captions']" :text="meta?.captions" />
 </template>

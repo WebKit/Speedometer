@@ -1,5 +1,5 @@
 export const footer = {
     copyright: {
-        label: "all rights reserved!"
-    }
-}
+        label: "all rights reserved!",
+    },
+};

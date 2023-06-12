@@ -1,3 +1,3 @@
 export const sitemap = {
-    header: "Sitemap"
-}
+    header: "Sitemap",
+};
