@@ -29,7 +29,15 @@ package-lock.json
 !/resources/tentative/editors
 /resources/tentative/editors/assets
 
+<<<<<<< HEAD
 !/resources/newssite
 !/resources/newssite/news-next
 !/resources/newssite/news-nuxt
 !/resources/newssite/news-site-css
+=======
+!/resources/tentative/newssite
+!/resources/tentative/newssite/news-next
+!/resources/tentative/newssite/news-rtl
+!/resources/tentative/newssite/news-nuxt
+!/resources/tentative/newssite/news-site-css
+>>>>>>> 3c10906c (initial version)

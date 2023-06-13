@@ -446,6 +446,47 @@ Suites.push({
 });
 
 Suites.push({
+    name: "NewsSite-RTL",
+    url: "tentative/newssite/news-rtl/dist/index.html#/home",
+    tags: ["newssite"],
+    async prepare(page) {
+        await page.waitForElement("#navbar-dropdown-toggle");
+    },
+    tests: [
+        new BenchmarkTestStep("NavigateToUS", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-us-link").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("NavigateToWorld", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-world-link").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("NavigateToPolitics", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-politics-link").click();
+            page.layout();
+        }),
+    ],
+});
+
+Suites.push({
     name: "NewsSite-Nuxt",
     url: "newssite/news-nuxt/dist/",
     tags: ["newssite"],
