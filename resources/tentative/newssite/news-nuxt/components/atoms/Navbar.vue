@@ -49,29 +49,47 @@ export default {
 </script>
 
 <template>
-    <div :class="navbarStyles.navbar">
-        <input :id="navbarStyles['navbar-toggle']" type="checkbox" :checked="isOpen" @change="handleChange" />
-        <label :for="navbarStyles['navbar-toggle']" :class="navbarStyles['navbar-label']">
-            <span className="visually-hidden">Navbar Toggle</span>
-            <div :class="[navbarStyles['navbar-label-icon'], 'animated-icon', 'hamburger-icon']" title="Hamburger Icon">
-                <span className="animated-icon-inner">
-                    <span />
-                    <span />
-                    <span />
-                </span>
-            </div>
-        </label>
-        <button id="home-link" :class="navStyles['page-navigation-logo']" @click="callback">
-            <LogoIcon />
-        </button>
-        <div :class="navbarStyles['navbar-active-path']">
-            {{ content[route.path.split("/")[1]]?.name ?? "" }}
-        </div>
-        <div :class="navbarStyles['navbar-content']">
-            <Navlist id="navbar-navlist" :callback="handleClick" />
-            <div :class="navbarStyles['navbar-icons']">
-                <SocialIcons id="navbar-social-icons" />
-            </div>
-        </div>
+  <div :class="navbarStyles.navbar">
+    <input
+      :id="navbarStyles['navbar-toggle']"
+      type="checkbox"
+      :checked="isOpen"
+      @change="handleChange"
+    >
+    <label
+      :for="navbarStyles['navbar-toggle']"
+      :class="navbarStyles['navbar-label']"
+    >
+      <span className="visually-hidden">Navbar Toggle</span>
+      <div
+        :class="[navbarStyles['navbar-label-icon'], 'animated-icon', 'hamburger-icon']"
+        title="Hamburger Icon"
+      >
+        <span className="animated-icon-inner">
+          <span />
+          <span />
+          <span />
+        </span>
+      </div>
+    </label>
+    <button
+      id="home-link"
+      :class="navStyles['page-navigation-logo']"
+      @click="callback"
+    >
+      <LogoIcon />
+    </button>
+    <div :class="navbarStyles['navbar-active-path']">
+      {{ content[route.path.split("/")[1]]?.name ?? '' }}
     </div>
+    <div :class="navbarStyles['navbar-content']">
+      <Navlist
+        id="navbar-navlist"
+        :callback="handleClick"
+      />
+      <div :class="navbarStyles['navbar-icons']">
+        <SocialIcons id="navbar-social-icons" />
+      </div>
+    </div>
+  </div>
 </template>

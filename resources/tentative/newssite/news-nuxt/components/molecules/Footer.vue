@@ -1,12 +1,10 @@
 <script lang="js">
 import { legal } from "~/data/links";
-import { footer } from "~/data/footer";
 import styles from "news-site-css/dist/footer.module.css";
 export default {
   data() {
     return {
       legal,
-      footer,
       styles,
       showPortal: false,
     }
@@ -23,34 +21,49 @@ export default {
 </script>
 
 <template>
-    <footer :class="styles['page-footer']">
-        <div :class="styles['footer-row']">
-            <div :class="styles['footer-column-center']">
-                <Sitemap />
-            </div>
+  <footer :class="styles['page-footer']">
+    <div :class="styles['footer-row']">
+      <div :class="styles['footer-column-center']">
+        <Sitemap />
+      </div>
+    </div>
+    <div :class="styles['footer-row']">
+      <div :class="styles['footer-column-center']">
+        <div :class="styles['footer-links']">
+          <ul :class="styles['footer-links-list']">
+            <li
+              v-for="(item, key) in legal"
+              :key="`footer-links-item-${key}`"
+              :class="styles['footer-links-item']">
+              <a
+                :id="`footer-link-${key}`"
+                :href="item.href"
+                :class="styles['footer-link']"
+              > {{ item.label }} </a>
+            </li>
+          </ul>
         </div>
-        <div :class="styles['footer-row']">
-            <div :class="styles['footer-column-center']">
-                <div :class="styles['footer-links']">
-                    <ul :class="styles['footer-links-list']">
-                        <li v-for="(item, key) in legal" :key="`footer-links-item-${key}`" :class="styles['footer-links-item']">
-                            <a :id="`footer-link-${key}`" :href="item.href" :class="styles['footer-link']"> {{ item.label }} </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div :class="styles['footer-row']">
-            <div :class="styles['footer-column-left']">
-                <SocialIcons id="footer-social-icons" />
-            </div>
-            <div :class="styles['footer-column-center']">© {{ new Date().getFullYear() }} {{ footer.copyright.label }}</div>
-            <div :class="styles['footer-column-right']">
-                <SettingsIcons id="footer-settings-icons" :callback="openPortal" />
-            </div>
-        </div>
-    </footer>
-    <Teleport to="body">
-        <Dialog v-show="showPortal" :on-close="closePortal" />
-    </Teleport>
+      </div>
+    </div>
+    <div :class="styles['footer-row']">
+      <div :class="styles['footer-column-left']">
+        <SocialIcons id="footer-social-icons" />
+      </div>
+      <div :class="styles['footer-column-center']">
+        © {{ new Date().getFullYear() }} No Rights Reserved
+      </div>
+      <div :class="styles['footer-column-right']">
+        <SettingsIcons
+          id="footer-settings-icons"
+          :callback="openPortal"
+        />
+      </div>
+    </div>
+  </footer>
+  <Teleport to="body">
+    <Dialog
+      v-show="showPortal"
+      :on-close="closePortal"
+    />
+  </Teleport>
 </template>

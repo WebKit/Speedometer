@@ -16,7 +16,12 @@ export default {
 </script>
 
 <template>
-    <NuxtLink :id="id" :active-class="styles['active']" :to="url" @click="callback">
-        {{ label }}
-    </NuxtLink>
+  <NuxtLink
+    :id="id"
+    :active-class="styles['active']"
+    :to="url"
+    @click="callback"
+  >
+    {{ label }}
+  </NuxtLink>
 </template>
