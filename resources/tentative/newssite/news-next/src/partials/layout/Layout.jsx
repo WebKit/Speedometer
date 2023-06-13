@@ -8,7 +8,6 @@ import Main from "../main/main";
 import Footer from "../footer/footer";
 
 import { content } from "@/data/content";
-import { a11y } from "@/data/links";
 import { Message } from "@/components/message/message";
 
 import styles from "news-site-css/dist/layout.module.css";
@@ -34,7 +33,7 @@ export default function Layout({ children, id }) {
     return (
         <>
             <HashLink to={`${pathname}#content`} className="skip-link">
-                {a11y.skip.label}
+                Skip to content
             </HashLink>
             <div className={styles.page} ref={pageRef}>
                 <Header />

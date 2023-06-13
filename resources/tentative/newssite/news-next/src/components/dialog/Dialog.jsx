@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import classNames from "classnames";
 
 import Toggle from "../toggle/toggle";
-import { settings } from "@/data/dialog";
 
 import styles from "news-site-css/dist/dialog.module.css";
 
@@ -33,11 +32,11 @@ export default function Dialog({ onClose }) {
                 </div>
             </button>
             <header className={styles["dialog-header"]}>
-                <h2>{settings.header}</h2>
+                <h2>Settings</h2>
             </header>
             <section className={styles["dialog-body"]}>
                 <div className={styles["dialog-item"]}>
-                    <Toggle label={settings.items.motion.label} onChange={handleChange} checked={isChecked} />
+                    <Toggle label="Reduced Motion" onChange={handleChange} checked={isChecked} />
                 </div>
             </section>
         </div>

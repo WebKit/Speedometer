@@ -1,10 +1,7 @@
-import { useState } from "react";
-import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
-import Sidebar from "@/components/sidebar/sidebar";
-import Modal from "@/components/modal/modal";
-import Navbar from "@/components/navbar/navbar";
+import Navbar from "../../components/navbar/navbar";
 
 import { login } from "@/data/buttons";
 
@@ -12,23 +9,14 @@ import navStyles from "news-site-css/dist/nav.module.css";
 import buttonStyles from "news-site-css/dist/button.module.css";
 
 export default function Navigation() {
-    const [showSidebar, setShowSidebar] = useState(false);
-    const [showLogin, setShowLogin] = useState(false);
+    const navigate = useNavigate();
 
-    function openSidebar() {
-        setShowSidebar(true);
+    function callback() {
+        navigate("/");
     }
 
-    function closeSidebar() {
-        setShowSidebar(false);
-    }
-
-    function openLogin() {
-        setShowLogin(true);
-    }
-
-    function closeLogin() {
-        setShowLogin(false);
+    function logIn() {
+        console.log("logIn()");
     }
 
     return (
@@ -36,17 +24,15 @@ export default function Navigation() {
             <nav className={navStyles["page-navigation"]} aria-label="main menu">
                 <div className={navStyles["page-navigation-row"]}>
                     <div className={navStyles["page-navigation-column-left"]}>
-                        <Navbar callback={openSidebar} />
+                        <Navbar callback={callback} />
                     </div>
                     <div className={navStyles["page-navigation-column-right"]}>
-                        <button id="login-button" className={classNames(buttonStyles.button, buttonStyles["secondary-button"], navStyles["nav-button"])} onClick={openLogin}>
+                        <button id="login-button" className={classNames(buttonStyles.button, buttonStyles["secondary-button"], navStyles["nav-button"])} onClick={logIn}>
                             {login.label}
                         </button>
                     </div>
                 </div>
             </nav>
-            {showSidebar ? createPortal(<Sidebar onClose={closeSidebar} />, document.getElementById("sitemap-container")) : null}
-            {showLogin ? createPortal(<Modal onClose={closeLogin} />, document.getElementById("login-container")) : null}
         </>
     );
 }
