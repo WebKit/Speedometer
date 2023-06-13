@@ -17,4 +17,7 @@ export const login = {
         label: "Submit",
         type: "submit",
     },
+    cancel: {
+        label: "Cancel",
+    },
 };

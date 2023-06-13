@@ -25,7 +25,7 @@ export default function Form({ onCancel, onSubmit }) {
                     <div className={classNames(formStyles["form-actions"], formStyles["form-item"])}>
                         <Input id="submit" placeholder={login.submit.placeholder} label={login.submit.label} type={login.submit.type} containerClass={formStyles["form-actions-item"]} onChange={handleSubmit} />
                         <button id="form-reject-button" className={classNames(buttonStyles.button, buttonStyles["secondary-button"], buttonStyles.dark, formStyles["form-actions-item"])} onClick={onCancel}>
-                            Cancel
+                            {login.cancel.label}
                         </button>
                     </div>
                 </form>
