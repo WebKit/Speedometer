@@ -31,5 +31,5 @@ package-lock.json
 
 !/resources/tentative/newssite
 !/resources/tentative/newssite/news-next
-/resources/tentative/newssite/news-nuxt
+!/resources/tentative/newssite/news-nuxt
 !/resources/tentative/newssite/news-site-css

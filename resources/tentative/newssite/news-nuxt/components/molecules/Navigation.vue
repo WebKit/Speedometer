@@ -22,23 +22,16 @@ export default {
 </script>
 
 <template>
-  <nav
-    :class="navStyles['page-navigation']"
-    aria-label="main menu"
-  >
-    <div :class="navStyles['page-navigation-row']">
-      <div :class="navStyles['page-navigation-column-left']">
-        <Navbar :callback="openSitemap" />
-      </div>
-      <div :class="navStyles['page-navigation-column-right']">
-        <button
-          id="login-button"
-          :class="[buttonStyles.button, buttonStyles['secondary-button'], navStyles['nav-button']]"
-          @click="logIn"
-        >
-          {{ login.label }}
-        </button>
-      </div>
-    </div>
-  </nav>
+    <nav :class="navStyles['page-navigation']" aria-label="main menu">
+        <div :class="navStyles['page-navigation-row']">
+            <div :class="navStyles['page-navigation-column-left']">
+                <Navbar :callback="openSitemap" />
+            </div>
+            <div :class="navStyles['page-navigation-column-right']">
+                <button id="login-button" :class="[buttonStyles.button, buttonStyles['secondary-button'], navStyles['nav-button']]" @click="logIn">
+                    {{ login.label }}
+                </button>
+            </div>
+        </div>
+    </nav>
 </template>

@@ -10,12 +10,9 @@ export default {
 </script>
 
 <template>
-  <header :class="styles['page-header']">
-    <NuxtLink
-      to="/"
-      :class="styles['page-header-title']"
-    >
-      <TitleIcon />
-    </NuxtLink>
-  </header>
+    <header :class="styles['page-header']">
+        <NuxtLink to="/" :class="styles['page-header-title']">
+            <TitleIcon />
+        </NuxtLink>
+    </header>
 </template>
