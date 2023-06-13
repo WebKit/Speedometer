@@ -12,13 +12,10 @@ export default function ArticleTag({ tag }) {
         return null;
 
     return (
-        <div className={classNames(
-            styles["article-image-tag"],
-            styles[tag.type]
-        )}>
-            { tag.type === "breaking" ? <LightningIcon /> : null }
-            { tag.type === "watch" ? <PlayIcon /> : null }
-            { tag.type === "new" ? <FireIcon /> : null }
+        <div className={classNames(styles["article-image-tag"], styles[tag.type])}>
+            {tag.type === "breaking" ? <LightningIcon /> : null}
+            {tag.type === "watch" ? <PlayIcon /> : null}
+            {tag.type === "new" ? <FireIcon /> : null}
             <ArticleText text={tag.label} />
         </div>
     );

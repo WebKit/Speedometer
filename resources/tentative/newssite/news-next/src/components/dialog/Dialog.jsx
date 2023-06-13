@@ -22,14 +22,9 @@ export default function Dialog({ onClose }) {
     }
 
     return (
-        <div id="settings" className={classNames( styles.dialog, styles.open )}>
+        <div id="settings" className={classNames(styles.dialog, styles.open)}>
             <button id="close-dialog-link" className={styles["dialog-close-button"]} onClick={onClose} title="Close Button">
-                <div className={classNames(
-                    styles["dialog-close-button-icon"],
-                    "animated-icon",
-                    "close-icon",
-                    "hover"
-                )} title="Close Icon">
+                <div className={classNames(styles["dialog-close-button-icon"], "animated-icon", "close-icon", "hover")} title="Close Icon">
                     <span className="animated-icon-inner">
                         <span></span>
                         <span></span>

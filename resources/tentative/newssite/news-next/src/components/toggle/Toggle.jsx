@@ -16,7 +16,7 @@ export default function Toggle({ label, onChange, checked }) {
 
     return (
         <div className={styles["toggle-outer"]}>
-            <div className={styles["toggle-description"]}>{ label }</div>
+            <div className={styles["toggle-description"]}>{label}</div>
             <div className={styles["toggle-container"]}>
                 <label className={styles.label} htmlFor="reduced-motion-toggle">
                     <input type="checkbox" id="reduced-motion-toggle" checked={isSelected} onChange={handleChange} />
