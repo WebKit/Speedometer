@@ -26,6 +26,6 @@ export default {
 <template>
     <div :class="[styles['input-container'], containerClass]">
         <label :class="[styles.label, 'visually-hidden']" :v-for="id">{{ label }}</label>
-        <input :id="id" :class="[styles.input, styles['input-type-text']]" :type="type" autocomplete="off" :placeholder="placeholder" :onInput="handleChange" />
+        <input :id="id" :class="[styles.input, styles['input-type-text']]" :type="type" autocomplete="off" :placeholder="type !== 'submit' ? placeholder : undefined" :value="type === 'submit' ? placeholder : undefined" :onInput="handleChange" />
     </div>
 </template>

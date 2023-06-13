@@ -36,7 +36,9 @@ export default {
                 <Input id="password" :placeholder="login.items.password.placeholder" :label="login.items.password.label" :type="login.items.password.type" :container-class="formStyles['form-item']" :on-change="handleChange" />
                 <div :class="[formStyles['form-actions'], formStyles['form-item']]">
                     <Input id="submit" :placeholder="login.submit.placeholder" :label="login.submit.label" :type="login.submit.type" :container-class="formStyles['form-actions-item']" :onChange="handleSubmit" />
-                    <button id="form-reject-button" :class="[buttonStyles.button, buttonStyles['secondary-button'], buttonStyles.dark, formStyles['form-actions-item']]" :onClick="onCancel">Cancel</button>
+                    <button id="form-reject-button" :class="[buttonStyles.button, buttonStyles['secondary-button'], buttonStyles.dark, formStyles['form-actions-item']]" :onClick="onCancel">
+                        {{ login.cancel.label }}
+                    </button>
                 </div>
             </form>
         </div>
