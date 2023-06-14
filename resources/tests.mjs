@@ -488,7 +488,7 @@ Suites.push({
 
 Suites.push({
     name: "Editor-CodeMirror",
-    url: "tentative/editors/dist/codemirror.html",
+    url: "editors/dist/codemirror.html",
     tags: ["editor"],
     async prepare(page) {},
     tests: [
@@ -509,7 +509,7 @@ Suites.push({
 
 Suites.push({
     name: "Editor-TipTap",
-    url: "tentative/editors/dist/tiptap.html",
+    url: "editors/dist/tiptap.html",
     tags: ["editor"],
     async prepare(page) {},
     tests: [
