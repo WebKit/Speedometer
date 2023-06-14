@@ -447,7 +447,7 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Nuxt",
-    url: "newssite/news-nuxt/dist/",
+    url: "newssite/news-nuxt/dist/index.html",
     tags: ["newssite"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
