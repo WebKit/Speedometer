@@ -89,14 +89,16 @@ main {
     cursor: pointer;
     text-decoration: none;
 }
+
 .version {
     transform: rotate(-90deg);
     font-size: 65px;
-    font-family: Futura-Medium, Futura, "Helvetica Neue", Helvetica, Verdana, sans-serif;
+    font-family: Futura-Medium, Futura, Roboto, "Helvetica Neue", Helvetica, Verdana, sans-serif;
     font-style: italic;
+    letter-spacing: -0.05em;
     position: absolute;
-    right: -5px;
-    top: -110px;
+    right: 0;
+    top: -105px;
 }
 
 h1 {
@@ -227,10 +229,15 @@ button,
 .developer-mode-content button {
     background: white;
     flex: auto;
-    padding: 5px;
+    padding: 4px;
     appearance: button;
-    border: 1px solid white;
-    border-radius: 2px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+.developer-mode-content .tag {
+    border-radius: 100vh;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
 }
 .developer-mode-content label {
     width: 100%;
@@ -312,6 +319,13 @@ button.show-about {
     height: 6px;
     width: 0;
     background-color: var(--foreground);
+}
+
+#progress .iteration-marker {
+    position: absolute;
+    width: 6px;
+    height: 100%;
+    background-color: var(--background);
 }
 
 #info {

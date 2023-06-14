@@ -28,3 +28,8 @@ package-lock.json
 
 !/resources/editors
 /resources/editors/assets
+
+!/resources/newssite
+!/resources/newssite/news-next
+!/resources/newssite/news-nuxt
+!/resources/newssite/news-site-css

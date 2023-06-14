@@ -406,7 +406,48 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Next",
-    url: "tentative/newssite/news-next/dist/index.html#/home",
+    url: "newssite/news-next/dist/index.html#/home",
+    tags: ["newssite"],
+    async prepare(page) {
+        await page.waitForElement("#navbar-dropdown-toggle");
+    },
+    tests: [
+        new BenchmarkTestStep("NavigateToUS", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-us-link").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("NavigateToWorld", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-world-link").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("NavigateToPolitics", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-politics-link").click();
+            page.layout();
+        }),
+    ],
+});
+
+Suites.push({
+    name: "NewsSite-Nuxt",
+    url: "newssite/news-nuxt/dist/",
     tags: ["newssite"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
@@ -580,17 +621,58 @@ Suites.push({
     ],
 });
 
+Suites.push({
+    name: "Perf-Dashboard",
+    url: "tentative/perf.webkit.org/public/v3/#/charts?since=1678991819934&paneList=((55-1649-53731881-null-(5-2.5-500))-(55-1407-null-null-(5-2.5-500))-(55-1648-null-null-(5-2.5-500))-(55-1974-null-null-(5-2.5-500)))",
+    tags: ["chart", "webcomponents"],
+    async prepare(page) {
+        await page.waitForElement("#app-is-ready");
+        page.call("serviceRAF");
+    },
+    tests: [
+        new BenchmarkTestStep("Render", (page) => {
+            page.call("startTest");
+            page.callAsync("serviceRAF");
+        }),
+        new BenchmarkTestStep("SelectingPoints", (page) => {
+            const chartPane = page.callToGetElement("getChartPane");
+            for (let i = 0; i < 20; ++i) {
+                chartPane.dispatchKeyEvent("keydown", 39 /* Right */, "ArrowRight");
+                page.call("serviceRAF");
+            }
+        }),
+        new BenchmarkTestStep("SelectingRange", (page) => {
+            const canvas = page.callToGetElement("getChartCanvas");
+            const startingX = 118;
+            const startingY = 155;
+            const endingX = 210;
+            const endingY = 121;
+            canvas.dispatchMouseEvent("mousedown", startingX, startingY);
+            page.call("serviceRAF");
+            const movementCount = 20;
+            for (let i = 0; i <= movementCount; ++i) {
+                canvas.dispatchMouseEvent("mousemove", startingX + ((endingX - startingX) * i) / movementCount, startingY + ((endingY - startingY) * i) / movementCount);
+                page.call("serviceRAF");
+            }
+            canvas.dispatchMouseEvent("mouseup", endingX, endingY);
+            page.call("serviceRAF");
+        }),
+    ],
+});
+
 Object.freeze(Suites);
 Suites.forEach((suite) => {
+    if (!suite.tags)
+        suite.tags = [];
     if (suite.url.startsWith("tentative/"))
-        suite.tags.push("all", "tentative");
+        suite.tags.unshift("all", "tentative");
     else
-        suite.tags.push("all", "default");
+        suite.tags.unshift("all", "default");
     Object.freeze(suite.tags);
     Object.freeze(suite.steps);
 });
 
-const Tags = new Set(Suites.flatMap((suite) => suite.tags));
+export const Tags = new Set(["all", "default", "tentative", ...Suites.flatMap((suite) => suite.tags)]);
 Object.freeze(Tags);
 
 globalThis.Suites = Suites;
