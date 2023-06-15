@@ -15,6 +15,8 @@ export class TodoItemComponent implements AfterViewChecked {
         completed: false,
     };
 
+    @Input() index: number = 0;
+
     @Output() deleteEvent = new EventEmitter<Todo>();
 
     @ViewChild("todoInputRef") inputRef: ElementRef | undefined;

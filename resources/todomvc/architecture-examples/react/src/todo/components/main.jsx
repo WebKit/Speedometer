@@ -33,8 +33,8 @@ export function Main({ todos, dispatch }) {
                 </div>
             ) : null}
             <ul className="todo-list" data-testid="todo-list">
-                {visibleTodos.map((todo) => (
-                    <Item todo={todo} key={todo.id} dispatch={dispatch} />
+                {visibleTodos.map((todo, index) => (
+                    <Item todo={todo} key={todo.id} dispatch={dispatch} index={index} />
                 ))}
             </ul>
         </main>

@@ -50,16 +50,17 @@
 <Header on:addItem={addItem} />
 
 {#if items.length > 0}
-    <section class="main">
-        <input id="toggle-all" class="toggle-all" type="checkbox" on:change={toggleAllItems} checked={numCompleted === items.length} />
-        <label for="toggle-all">Mark all as complete</label>
-
+    <main class="main">
+        <div class="toggle-all-container">
+            <input id="toggle-all" class="toggle-all" type="checkbox" on:change={toggleAllItems} checked={numCompleted === items.length} />
+            <label for="toggle-all">Mark all as complete</label>
+        </div>
         <ul class="todo-list">
             {#each filtered as item, index (item.id)}
-                <Item bind:item editing={editing} on:removeItem={() => removeItem(index)} />
+                <Item bind:item editing={editing} index={index} on:removeItem={() => removeItem(index)} />
             {/each}
         </ul>
 
         <Footer numActive={numActive} currentFilter={currentFilter} numCompleted={numCompleted} on:removeCompletedItems={removeCompletedItems} />
-    </section>
+    </main>
 {/if}
