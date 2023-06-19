@@ -11,6 +11,8 @@ if (process.client) {
     // may be able to remove it if the runner improves.
     window.requestAnimationFrame = (cb) => window.setTimeout(cb, 0);
     window.cancelAnimationFrame = window.clearTimeout;
+    window.requestIdleCallback = undefined;
+    window.cancelIdleCallback = undefined;
 }
 </script>
 
