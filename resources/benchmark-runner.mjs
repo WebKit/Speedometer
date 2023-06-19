@@ -89,6 +89,10 @@ class PageElement {
         this.#node = node;
     }
 
+    getNode() {
+        return this.#node;
+    }
+
     setValue(value) {
         this.#node.value = value;
     }

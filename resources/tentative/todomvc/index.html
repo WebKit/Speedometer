@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="CSS for TodoMVC" />
+	<title>Web Components • TodoMVC</title>
+	<link rel="stylesheet" href="src/styles/partials.css">
+	<script type="module" src="src/components/todo-app/todo-app.component.js"></script>
+	<script type="module" src="src/components/todo-topbar/todo-topbar.component.js"></script>
+	<script type="module" src="src/components/todo-list/todo-list.component.js"></script>
+	<script type="module" src="src/components/todo-item/todo-item.component.js"></script>
+	<script type="module" src="src/components/todo-bottombar/todo-bottombar.component.js"></script>
+	<script type="module" src="src/index.js"></script>
+</head>
+
+<body>
+	<header class="header">
+		<a href="#" style="text-decoration: none;"><h1 class="title">todos</h1></a>
+	</header>
+	<todo-app></todo-app>
+	<footer class="footer">
+		<p class="footer-text">Part of <a class="footer-link" href="http://todomvc.com">TodoMVC</a></p>
+	</footer>
+</body>
+
+</html>
