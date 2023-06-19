@@ -26,5 +26,10 @@ package-lock.json
 /resources/tentative/complex-static-html/src/*
 !/resources/tentative/complex-static-html/src/big-dom-generator
 
-!/resources/tentative/editors
-/resources/tentative/editors/assets
+!/resources/editors
+/resources/editors/assets
+
+!/resources/newssite
+!/resources/newssite/news-next
+!/resources/newssite/news-nuxt
+!/resources/newssite/news-site-css

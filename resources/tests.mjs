@@ -406,7 +406,7 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Next",
-    url: "tentative/newssite/news-next/dist/index.html#/home",
+    url: "newssite/news-next/dist/index.html#/home",
     tags: ["newssite"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
@@ -447,7 +447,7 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Nuxt",
-    url: "tentative/newssite/news-nuxt/dist/",
+    url: "newssite/news-nuxt/dist/",
     tags: ["newssite"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
@@ -488,7 +488,7 @@ Suites.push({
 
 Suites.push({
     name: "Editor-CodeMirror",
-    url: "tentative/editors/dist/codemirror.html",
+    url: "editors/dist/codemirror.html",
     tags: ["editor"],
     async prepare(page) {},
     tests: [
@@ -509,7 +509,7 @@ Suites.push({
 
 Suites.push({
     name: "Editor-TipTap",
-    url: "tentative/editors/dist/tiptap.html",
+    url: "editors/dist/tiptap.html",
     tags: ["editor"],
     async prepare(page) {},
     tests: [
@@ -665,14 +665,14 @@ Suites.forEach((suite) => {
     if (!suite.tags)
         suite.tags = [];
     if (suite.url.startsWith("tentative/"))
-        suite.tags.push("all", "tentative");
+        suite.tags.unshift("all", "tentative");
     else
-        suite.tags.push("all", "default");
+        suite.tags.unshift("all", "default");
     Object.freeze(suite.tags);
     Object.freeze(suite.steps);
 });
 
-const Tags = new Set(Suites.flatMap((suite) => suite.tags));
+export const Tags = new Set(["all", "default", "tentative", ...Suites.flatMap((suite) => suite.tags)]);
 Object.freeze(Tags);
 
 globalThis.Suites = Suites;
