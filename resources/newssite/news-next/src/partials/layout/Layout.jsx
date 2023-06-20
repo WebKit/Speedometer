@@ -8,21 +8,17 @@ import Main from "../main/main";
 import Footer from "../footer/footer";
 import { Message } from "@/components/message/message";
 
-import { content as contentEn } from "@/data/en/content";
-import { content as contentJp } from "@/data/jp/content";
+import { useDataContext } from "@/context/data-context";
 
 import styles from "news-site-css/dist/layout.module.css";
 
 export default function Layout({ children, id }) {
     const [showMessage, setShowMessage] = useState(false);
-
-    // language-switch
-    const urlParams = new URLSearchParams(window.location.search);
-    const lang = urlParams.get("lang") ?? "en";
-    let currentContent = lang === "jp" ? contentJp : contentEn;
+    const data = useDataContext();
+    const { content } = data;
 
     useEffect(() => {
-        setShowMessage(currentContent[id].message);
+        setShowMessage(content[id].message);
     }, [id]);
 
     const pageRef = useRef(null);
@@ -44,7 +40,7 @@ export default function Layout({ children, id }) {
             <div className={styles.page} ref={pageRef}>
                 <Header />
                 <Navigation />
-                {showMessage ? <Message message={currentContent[id].message} onClose={closeMessage} /> : null}
+                {showMessage ? <Message message={content[id].message} onClose={closeMessage} /> : null}
                 <Main>{children}</Main>
                 <Footer />
             </div>

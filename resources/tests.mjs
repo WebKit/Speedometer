@@ -407,7 +407,7 @@ Suites.push({
 Suites.push({
     name: "NewsSite-Next",
     url: "newssite/news-next/dist/index.html#/home",
-    tags: ["newssite"],
+    tags: ["newssite", "language"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
@@ -448,7 +448,48 @@ Suites.push({
 Suites.push({
     name: "NewsSite-NextJapanese",
     url: "newssite/news-next/dist/index.html?lang=jp#/home",
-    tags: ["newssite"],
+    tags: ["newssite", "language"],
+    async prepare(page) {
+        await page.waitForElement("#navbar-dropdown-toggle");
+    },
+    tests: [
+        new BenchmarkTestStep("NavigateToUS", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-us-link").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("NavigateToWorld", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-world-link").click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("NavigateToPolitics", (page) => {
+            for (let i = 0; i < 25; i++) {
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+                page.querySelector("#navbar-dropdown-toggle").click();
+                page.layout();
+            }
+            page.querySelector("#navbar-navlist-politics-link").click();
+            page.layout();
+        }),
+    ],
+});
+
+Suites.push({
+    name: "NewsSite-NextArabic",
+    url: "newssite/news-next/dist/index.html?lang=ar&dir=rtl#/home",
+    tags: ["newssite", "language"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
