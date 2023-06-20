@@ -2,11 +2,18 @@ import { useState, useEffect } from "react";
 import classNames from "classnames";
 
 import Toggle from "../toggle/toggle";
+import { settings as settingsEn } from "@/data/en/dialog";
+import { settings as settingsJp } from "@/data/jp/dialog";
 
 import styles from "news-site-css/dist/dialog.module.css";
 
 export default function Dialog({ onClose }) {
     const [isChecked, setIsChecked] = useState(false);
+
+    // language-switch
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get("lang") ?? "en";
+    let currentSettings = lang === "jp" ? settingsJp : settingsEn;
 
     useEffect(() => {
         setIsChecked(document.body.classList.contains("reduced-motion"));
@@ -32,11 +39,11 @@ export default function Dialog({ onClose }) {
                 </div>
             </button>
             <header className={styles["dialog-header"]}>
-                <h2>Settings</h2>
+                <h2>{currentSettings.header}</h2>
             </header>
             <section className={styles["dialog-body"]}>
                 <div className={styles["dialog-item"]}>
-                    <Toggle label="Reduced Motion" onChange={handleChange} checked={isChecked} />
+                    <Toggle label={currentSettings.items.motion.label} onChange={handleChange} checked={isChecked} />
                 </div>
             </section>
         </div>

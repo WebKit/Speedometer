@@ -151,7 +151,7 @@ export const content = {
                         meta: {
                             captions: "Photo taken by someone.",
                         },
-                        title: "Volutpat est velit egestas dui id ornare arcu.",
+                        title: "Nunc felis tellus, ultrices eget massa ac, lobortis laoreet lorem.",
                         type: "list",
                         content: [
                             {
@@ -454,7 +454,7 @@ export const content = {
                                     "Orci ac auctor augue mauris augue neque gravida. Lectus magna fringilla urna porttitor rhoncus dolor purus non enim. Sagittis aliquam malesuada bibendum arcu vitae. Pellentesque habitant morbi tristique senectus et netus. Etiam erat velit scelerisque in dictum non consectetur a.",
                             },
                             {
-                                title: "Netus et malesuada fames ac turpis egestas maecenas pharetra.",
+                                title: "Suspendisse convallis efficitur felis ac mattis. Cras faucibus ultrices condimentum.",
                                 content:
                                     "Facilisis leo vel fringilla est. Turpis tincidunt id aliquet risus feugiat in ante metus. Viverra ipsum nunc aliquet bibendum enim facilisis. Tristique et egestas quis ipsum suspendisse ultrices gravida dictum. Tristique senectus et netus et malesuada fames ac turpis egestas.",
                             },

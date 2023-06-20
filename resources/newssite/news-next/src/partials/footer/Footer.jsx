@@ -4,12 +4,21 @@ import Dialog from "@/components/dialog/dialog";
 import SettingsIcons from "../icons/settings-icons";
 import SocialIcons from "../icons/social-icons";
 import Sitemap from "@/components/sitemap/sitemap";
-import { legal } from "@/data/links";
+import { legal as legalEn } from "@/data/en/links";
+import { legal as legalJp } from "@/data/jp/links";
+import { footer as footerEn } from "@/data/en/footer";
+import { footer as footerJp } from "@/data/jp/footer";
 
 import styles from "news-site-css/dist/footer.module.css";
 
 export default function Footer() {
     const [showPortal, setShowPortal] = useState(false);
+
+    // language-switch
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get("lang") ?? "en";
+    let currentLegal = lang === "jp" ? legalJp : legalEn;
+    let currentFooter = lang === "jp" ? footerJp : footerEn;
 
     function openPortal() {
         setShowPortal(true);
@@ -31,8 +40,8 @@ export default function Footer() {
                     <div className={styles["footer-column-center"]}>
                         <div className={styles["footer-links"]}>
                             <ul className={styles["footer-links-list"]}>
-                                {Object.keys(legal).map((key) => {
-                                    const item = legal[key];
+                                {Object.keys(currentLegal).map((key) => {
+                                    const item = currentLegal[key];
                                     return (
                                         <li className={styles["footer-links-item"]} key={`footer-links-item-${key}`}>
                                             <a href={item.href} id={`footer-link-${key}`} className={styles["footer-link"]}>
@@ -49,7 +58,9 @@ export default function Footer() {
                     <div className={styles["footer-column-left"]}>
                         <SocialIcons id="footer-social-icons" />
                     </div>
-                    <div className={styles["footer-column-center"]}>© {new Date().getFullYear()} No Rights Reserved</div>
+                    <div className={styles["footer-column-center"]}>
+                        © {new Date().getFullYear()} {currentFooter.copyright.label}
+                    </div>
                     <div className={styles["footer-column-right"]}>
                         <SettingsIcons onClick={openPortal} id="footer-settings-icons" />
                     </div>
