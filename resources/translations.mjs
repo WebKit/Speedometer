@@ -444,3 +444,11 @@ export const todos = {
         " Santiago Quezada Orellana"
     ]
 };
+
+export const defaultTodoText = {
+    en: "Something to do",
+    de: "Etwas zu tun",
+    jp: "何かをする必要がある",
+    ar: "شيئا لفعله",
+    es: "Algo que hacer"
+};

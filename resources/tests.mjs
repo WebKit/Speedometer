@@ -1,6 +1,6 @@
 import { BenchmarkTestStep } from "./benchmark-runner.mjs";
 
-import { todos } from "./translations.mjs";
+import { todos, defaultTodoText } from "./translations.mjs";
 
 const numberOfItemsToAdd = 100;
 export const Suites = [];
@@ -62,7 +62,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 // newTodo.setValue(`Something to do ${i}`);
-                newTodo.setValue(todos.de[i]);
+                newTodo.setValue(todos.de[i] ?? `${defaultTodoText.de} ${i}`);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -93,7 +93,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 // newTodo.setValue(`Something to do ${i}`);
-                newTodo.setValue(todos.jp[i]);
+                newTodo.setValue(todos.jp[i] ?? `${defaultTodoText.jp} ${i}`);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -124,7 +124,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 // newTodo.setValue(`Something to do ${i}`);
-                newTodo.setValue(todos.es[i]);
+                newTodo.setValue(todos.es[i] ?? `${defaultTodoText.es} ${i}`);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -155,7 +155,7 @@ Suites.push({
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 // newTodo.setValue(`Something to do ${i}`);
-                newTodo.setValue(todos.ar[i]);
+                newTodo.setValue(todos.ar[i] ?? `${defaultTodoText.ar} ${i}`);
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keydown");
             }
