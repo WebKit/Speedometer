@@ -1,5 +1,7 @@
 import { BenchmarkTestStep } from "./benchmark-runner.mjs";
 
+import { todos } from "./translations.mjs";
+
 const numberOfItemsToAdd = 100;
 export const Suites = [];
 
@@ -59,7 +61,8 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                // newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.de[i]);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -89,7 +92,8 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                // newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.jp[i]);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -119,7 +123,8 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                // newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.es[i]);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -149,7 +154,8 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                // newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.ar[i]);
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keydown");
             }
