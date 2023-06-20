@@ -15,7 +15,7 @@ import styles from "news-site-css/dist/layout.module.css";
 export default function Layout({ children, id }) {
     const [showMessage, setShowMessage] = useState(false);
     const data = useDataContext();
-    const { content } = data;
+    const { content, links } = data;
 
     useEffect(() => {
         setShowMessage(content[id].message);
@@ -34,9 +34,7 @@ export default function Layout({ children, id }) {
 
     return (
         <>
-            <HashLink to={`${pathname}#content`} className="skip-link">
-                Skip to content
-            </HashLink>
+            <HashLink to={`${pathname}#content`} className="skip-link">{links.a11y.skip.label}</HashLink>
             <div className={styles.page} ref={pageRef}>
                 <Header />
                 <Navigation />
