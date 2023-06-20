@@ -660,6 +660,26 @@ Suites.push({
     ],
 });
 
+Suites.push({
+    name: "Interactive-Catalog-Navigation",
+    url: "tentative/interactive-catalog-navigation/index.html",
+    async prepare(page) {
+        await page.waitForElement("#monitored_span");
+    },
+    tests: [
+        new BenchmarkTestStep("SwitchImage", (page) => {
+            let ele = page.querySelector(`.box-4`);
+            ele.click();
+            page.layout();
+        }),
+        new BenchmarkTestStep("SkipImages", (page) => {
+            let ele = page.querySelector(`.box-1`);
+            ele.click();
+            page.layout();
+        }),
+    ],
+});
+
 Object.freeze(Suites);
 Suites.forEach((suite) => {
     if (!suite.tags)
