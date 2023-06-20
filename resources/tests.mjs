@@ -445,7 +445,7 @@ Suites.push({
     ],
 });
 
-/* Suites.push({
+Suites.push({
     name: "NewsSite-NextJapanese",
     url: "newssite/news-next/dist/index.html?lang=jp#/home",
     tags: ["newssite"],
@@ -484,7 +484,7 @@ Suites.push({
             page.layout();
         }),
     ],
-}); */
+});
 
 Suites.push({
     name: "NewsSite-Nuxt",
