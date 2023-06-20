@@ -42,6 +42,15 @@ class MainBenchmarkClient {
         }
 
         this._developerModeContainer?.remove();
+        this._progressCompleted = document.getElementById("progress-completed");
+        if (params.iterationCount < 50) {
+            const progressNode = document.getElementById("progress");
+            for (let i = 1; i < params.iterationCount; i++) {
+                const iterationMarker = progressNode.appendChild(document.createElement("div"));
+                iterationMarker.className = "iteration-marker";
+                iterationMarker.style.left = `${(i / params.iterationCount) * 100}%`;
+            }
+        }
 
         this._metrics = Object.create(null);
         this._isRunning = true;
@@ -51,6 +60,7 @@ class MainBenchmarkClient {
             return testsCount + suite.tests.length;
         }, 0);
         this.stepCount = params.iterationCount * totalSubtestsCount;
+        this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
         const runner = new BenchmarkRunner(Suites, this);
         runner.runMultipleIterations(params.iterationCount);
@@ -70,7 +80,7 @@ class MainBenchmarkClient {
 
     didRunTest() {
         this._finishedTestCount++;
-        this._progressCompleted.style.width = `${(this._finishedTestCount * 100) / this.stepCount}%`;
+        this._progressCompleted.value = this._finishedTestCount;
     }
 
     didRunSuites(measuredValues) {
@@ -80,7 +90,6 @@ class MainBenchmarkClient {
     willStartFirstIteration() {
         this._measuredValuesList = [];
         this._finishedTestCount = 0;
-        this._progressCompleted = document.getElementById("progress-completed");
     }
 
     didFinishLastIteration(metrics) {
@@ -174,8 +183,8 @@ class MainBenchmarkClient {
         const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
-        document.getElementById("total-chart").innerHTML = renderMetricView({
-            metrics: [metrics["Geomean"]],
+        document.getElementById("geomean-chart").innerHTML = renderMetricView({
+            metrics: [metrics.Geomean],
             width: plotWidth,
             trackHeight,
             renderChildren: false,
@@ -202,8 +211,13 @@ class MainBenchmarkClient {
         document.getElementById("metrics-results").innerHTML = html;
 
         const filePrefix = `speedometer-3-${new Date().toISOString()}`;
-        const jsonData = this._getFormattedJSONResult();
-        const jsonLink = document.getElementById("download-json");
+        let jsonData = this._formattedJSONResult({ modern: false });
+        let jsonLink = document.getElementById("download-classic-json");
+        jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
+        jsonLink.setAttribute("download", `${filePrefix}.json`);
+
+        jsonLink = document.getElementById("download-full-json");
+        jsonData = this._formattedJSONResult({ modern: true });
         jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
         jsonLink.setAttribute("download", `${filePrefix}.json`);
 
@@ -221,14 +235,14 @@ class MainBenchmarkClient {
         document.querySelectorAll("logo").forEach((button) => {
             button.onclick = this._logoClickHandler.bind(this);
         });
-        document.getElementById("copy-json").onclick = this.copyJsonResults.bind(this);
+        document.getElementById("copy-full-json").onclick = this.copyJsonResults.bind(this);
         document.getElementById("copy-csv").onclick = this.copyCSVResults.bind(this);
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
 
-        if (params.suites.length > 0)
-            Suites.enable(params.suites);
+        if (params.suites.length > 0 || params.tags.length > 0)
+            Suites.enable(params.suites, params.tags);
 
         if (params.developerMode) {
             this._developerModeContainer = createDeveloperModeContainer(Suites);
@@ -274,8 +288,10 @@ class MainBenchmarkClient {
         this._showSection("#details");
     }
 
-    _getFormattedJSONResult() {
+    _formattedJSONResult({ modern = false }) {
         const indent = "    ";
+        if (modern)
+            return JSON.stringify(this._metrics, undefined, indent);
         return JSON.stringify(this._measuredValuesList, undefined, indent);
     }
 
@@ -299,7 +315,7 @@ class MainBenchmarkClient {
     }
 
     copyJsonResults() {
-        navigator.clipboard.writeText(this._getFormattedJSONResult());
+        navigator.clipboard.writeText(this._formattedJSONResult({ modern: true }));
     }
 
     copyCSVResults() {

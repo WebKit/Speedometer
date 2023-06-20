@@ -73,16 +73,32 @@ img {
     -webkit-user-drag: none;
 }
 
+.no-select {
+    user-select: none;
+}
+
 main {
 }
 
 .logo {
     position: absolute;
     left: -70px;
-    top: 115px;
+    top: 155px;
     width: 75px;
     height: 406px;
     cursor: pointer;
+    text-decoration: none;
+}
+
+.version {
+    transform: rotate(-90deg);
+    font-size: 65px;
+    font-family: Futura-Medium, Futura, Roboto, "Helvetica Neue", Helvetica, Verdana, sans-serif;
+    font-style: italic;
+    letter-spacing: -0.05em;
+    position: absolute;
+    right: 0;
+    top: -105px;
 }
 
 h1 {
@@ -174,11 +190,11 @@ button,
 }
 
 .developer-mode {
-    border-radius: 5px;
+    border-radius: 10px;
     max-height: 80vh;
     padding: 1rem;
     background: #602525;
-    border: 1px solid white;
+    border: 3px solid rgba(255, 255, 255, 0.5);
     position: fixed;
     left: 10px;
     top: 10px;
@@ -189,6 +205,8 @@ button,
 .developer-mode summary {
     user-select: none;
     cursor: pointer;
+    padding: 1rem;
+    margin: -1rem;
 }
 
 .developer-mode-content {
@@ -200,14 +218,34 @@ button,
 .developer-mode-content ol {
     list-style: none;
     padding: 0;
+    margin: 1em 0 0.5em 0;
+}
+.developer-mode-content .button-bar {
+    display: flex;
+    margin-top: 5px;
+    gap: 3px;
 }
 
 .developer-mode-content button {
     background: white;
-    padding: 3px;
+    flex: auto;
+    padding: 4px;
     appearance: button;
-    border: 1px solid white;
-    margin: 0 5px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+.developer-mode-content .tag {
+    border-radius: 100vh;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+.developer-mode-content label {
+    width: 100%;
+    display: inline-block;
+}
+.developer-mode-content hr {
+    width: initial;
+    margin: 10px 0;
 }
 
 section {
@@ -269,7 +307,6 @@ button.show-about {
     left: 60px;
     right: 60px;
     height: 6px;
-    background-color: var(--inactive-color);
     border-left: 6px solid var(--background);
     border-right: 6px solid var(--background);
 }
@@ -279,8 +316,25 @@ button.show-about {
     top: 0;
     left: 0;
     height: 6px;
-    width: 0;
+    width: 100%;
+    appearance: none;
+    border: none;
+    background-color: var(--inactive-color);
+}
+
+#progress-completed::-webkit-progress-value {
     background-color: var(--foreground);
+}
+
+#progress-completed::-moz-progress-bar {
+    background-color: var(--foreground);
+}
+
+#progress .iteration-marker {
+    position: absolute;
+    width: 6px;
+    height: 100%;
+    background-color: var(--background);
 }
 
 #info {
@@ -446,6 +500,8 @@ table .number {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    direction: rtl;
+    text-align: left;
 }
 
 section#details h1 {

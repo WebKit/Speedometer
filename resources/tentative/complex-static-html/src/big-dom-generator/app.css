@@ -1,0 +1,168 @@
+/*
+Importing the CSS from the Spectrum CSS library.
+*/
+@import "@spectrum-css/vars/dist/spectrum-global.css";
+@import "@spectrum-css/vars/dist/spectrum-medium.css";
+@import "@spectrum-css/vars/dist/spectrum-light.css";
+@import "@spectrum-css/tokens/dist/index.css";
+@import "@spectrum-css/actionbutton/dist/index-vars.css";
+@import "@spectrum-css/clearbutton/dist/index-vars.css";
+@import "@spectrum-css/page/dist/index-vars.css";
+@import "@spectrum-css/textfield/dist/index-vars.css";
+@import "@spectrum-css/search/dist/index-vars.css";
+@import "@spectrum-css/treeview/dist/index-vars.css";
+@import "@spectrum-css/button/dist/index-vars.css";
+@import "@spectrum-css/actiongroup/dist/index-vars.css";
+@import "@spectrum-css/actionbutton/dist/index-vars.css";
+@import "@spectrum-css/menu/dist/index-vars.css";
+@import "@spectrum-css/popover/dist/index-vars.css";
+@import "@spectrum-css/divider/dist/index-vars.css";
+@import "@spectrum-css/datepicker/dist/index-vars.css";
+@import "@spectrum-css/picker/dist/index-vars.css";
+@import "@spectrum-css/pickerbutton/dist/index-vars.css";
+@import "@spectrum-css/calendar/dist/index-vars.css";
+@import "@spectrum-css/typography/dist/index-vars.css";
+@import "@spectrum-css/card/dist/index-vars.css";
+@import "@spectrum-css/progressbar/dist/index-vars.css";
+@import "@spectrum-css/stepper/dist/index-vars.css";
+@import "@spectrum-css/fieldlabel/dist/index-vars.css";
+@import "@spectrum-css/taggroup/dist/index-vars.css";
+@import "@spectrum-css/tag/dist/index-vars.css";
+@import "@spectrum-css/switch/dist/index-vars.css";
+@import "@spectrum-css/fieldgroup/dist/index-vars.css";
+@import "@spectrum-css/checkbox/dist/index-vars.css";
+@import "@spectrum-css/asset/dist/index-vars.css";
+@import "@spectrum-css/dialog/dist/index-vars.css";
+@import "@spectrum-css/radio/dist/index-vars.css";
+@import "@spectrum-css/quickaction/dist/index-vars.css";
+@import "@spectrum-css/buttongroup/dist/index-vars.css";
+@import "@spectrum-css/closebutton/dist/index-vars.css";
+@import "@spectrum-css/modal/dist/index-vars.css";
+@import "@spectrum-css/helptext/dist/index-vars.css";
+@import "@spectrum-css/table/dist/index-vars.css";
+
+/*
+@spectrum-css overrides
+*/
+
+[dir="ltr"] .spectrum-TreeView-itemIndicator {
+    margin-left: calc(-1 * var(--spectrum-treeview-item-affordance-size));
+}
+
+.spectrum-DatePicker-textfield {
+    --spectrum-textfield-border-color: rgb(0, 0, 0);
+    --spectrum-textfield-border-width: 1px;
+    max-width: 158px;
+    display: flex;
+}
+
+.spectrum-Stepper {
+    min-width: 100px;
+    --mod-actionbutton-icon-size: 10px;
+}
+
+.ribbon .spectrum-Stepper > .spectrum-Textfield {
+    --spectrum-textfield-border-color: rgb(0, 0, 0);
+    --spectrum-textfield-border-width: 1px;
+    min-width: 30px;
+}
+
+/*
+Layout CSS for the UI.
+*/
+
+.main-ui {
+    display: grid;
+    grid-template-columns: 3% 22% 75%;
+    grid-template-rows: 50px 50px minmax(0, 100%);
+    height: 100vh;
+}
+
+.top-bar {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    max-height: 50px;
+}
+
+.context-help-popover-body {
+    max-width: 150px;
+    padding: 10px;
+    top: 30px;
+}
+
+.profile-card-popover {
+    padding: 5px;
+    top: 30px;
+    width: 150px;
+}
+
+.todo-area {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 3;
+    grid-row-end: 4;
+}
+
+.ribbon {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    display: grid;
+    grid-auto-flow: column;
+    align-items: center;
+    gap: 5px;
+    margin: 5px 3px;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-height: 40px;
+}
+
+.ribbon-divider {
+    height: 75%;
+}
+
+.analytics-bar {
+    width: 200px;
+}
+
+.date-picker-popover {
+    position: absolute;
+    width: 280px;
+    top: 100%;
+    left: 0px;
+}
+
+.filter-input {
+    max-width: 150px;
+}
+
+.tree-area {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    background-color: white;
+    overflow-y: scroll;
+    padding-left: 5px;
+}
+
+.task-list-icon {
+    padding-left: 14px;
+}
+
+.show-more {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    justify-self: start;
+    align-self: center;
+}
