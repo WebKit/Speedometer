@@ -89,10 +89,6 @@ class PageElement {
         this.#node = node;
     }
 
-    getNode() {
-        return this.#node;
-    }
-
     setValue(value) {
         this.#node.value = value;
     }
@@ -107,6 +103,10 @@ class PageElement {
 
     getElementByMethod(name) {
         return new PageElement(this.#node[name]());
+    }
+
+    callElementMethod(name, ...args) {
+        return this.#node[name](args);
     }
 
     dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {

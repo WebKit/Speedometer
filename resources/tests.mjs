@@ -146,7 +146,7 @@ Suites.push({
     },
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
-            const app = page.querySelector("todo-app").getNode();
+            const app = page.querySelector("todo-app").callElementMethod("getInstance");
             const input = app.topbar.todoInput;
 
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -155,13 +155,13 @@ Suites.push({
             }
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
-            const app = page.querySelector("todo-app").getNode();
+            const app = page.querySelector("todo-app").callElementMethod("getInstance");
             const elements = app.list._elements;
             for (let i = 0; i < numberOfItemsToAdd; i++)
                 elements[i].toggleInput.click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
-            const app = page.querySelector("todo-app").getNode();
+            const app = page.querySelector("todo-app").callElementMethod("getInstance");
             const elements = app.list._elements;
             for (let i = 0; i < numberOfItemsToAdd; i++)
                 elements[i].todoButton.click();

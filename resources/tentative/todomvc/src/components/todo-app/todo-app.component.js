@@ -29,6 +29,10 @@ class TodoApp extends HTMLElement {
         return this._isReady;
     }
 
+    getInstance() {
+        return this;
+    }
+
     addItem = (e) => {
         const { detail: item } = e;
 
