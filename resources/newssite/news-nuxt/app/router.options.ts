@@ -39,5 +39,10 @@ export default <RouterConfig>{
             path: "/health",
             component: PageVue,
         },
+        {
+            name: "",
+            path: "/index.html",
+            component: PageVue,
+        },
     ],
 };
