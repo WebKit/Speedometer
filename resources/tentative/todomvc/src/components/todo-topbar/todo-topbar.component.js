@@ -30,18 +30,21 @@ class TodoTopbar extends HTMLElement {
         // listeners
         this.keysListeners = [];
 
+        this.toggleAll = this.toggleAll.bind(this);
+        this.addItem = this.addItem.bind(this);
+
         this.shadow = this.attachShadow({ mode: "open" });
     }
 
-    toggleAll = (e) => {
+    toggleAll(e) {
         this.dispatchEvent(
             new CustomEvent("toggle-all", {
                 detail: { completed: e.target.checked },
             })
         );
-    };
+    }
 
-    addItem = (e) => {
+    addItem(e) {
         this.dispatchEvent(
             new CustomEvent("add-item", {
                 detail: {
@@ -53,9 +56,9 @@ class TodoTopbar extends HTMLElement {
         );
 
         e.target.value = "";
-    };
+    }
 
-    updateDisplay = () => {
+    updateDisplay() {
         if (this["total-items"] === "0") {
             this.toggleContainer.style.display = "none";
             return;
@@ -77,22 +80,22 @@ class TodoTopbar extends HTMLElement {
                     = this["total-items"] === this["completed-items"];
                 this.toggleInput.disabled = false;
         }
-    };
+    }
 
-    updateRoute = (route) => {
+    updateRoute(route) {
         this._route = route;
         this.updateDisplay();
-    };
+    }
 
-    addListeners = () => {
+    addListeners() {
         this.toggleInput.addEventListener("change", this.toggleAll);
         this.keysListeners.forEach((listener) => listener.connect());
-    };
+    }
 
-    removeListeners = () => {
+    removeListeners() {
         this.toggleInput.removeEventListener("change", this.toggleAll);
         this.keysListeners.forEach((listener) => listener.disconnect());
-    };
+    }
 
     attributeChangedCallback(property, oldValue, newValue) {
         if (oldValue === newValue)

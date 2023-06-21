@@ -27,10 +27,17 @@ class TodoItem extends HTMLElement {
         // listeners
         this.keysListeners = [];
 
+        this.updateItem = this.updateItem.bind(this);
+        this.toggleItem = this.toggleItem.bind(this);
+        this.removeItem = this.removeItem.bind(this);
+        this.startEdit = this.startEdit.bind(this);
+        this.stopEdit = this.stopEdit.bind(this);
+        this.cancelEdit = this.cancelEdit.bind(this);
+
         this.shadow = this.attachShadow({ mode: "open" });
     }
 
-    update = (...args) => {
+    update(...args) {
         [...args].forEach((argument) => {
             switch (argument) {
                 case "id":
@@ -61,23 +68,23 @@ class TodoItem extends HTMLElement {
                     break;
             }
         });
-    };
+    }
 
-    startEdit = () => {
+    startEdit() {
         this.item.classList.add("editing");
         this.editInput.value = this.title;
         this.editInput.focus();
-    };
+    }
 
-    stopEdit = () => {
+    stopEdit() {
         this.item.classList.remove("editing");
-    };
+    }
 
-    cancelEdit = () => {
+    cancelEdit() {
         this.editInput.blur();
-    };
+    }
 
-    toggleItem = () => {
+    toggleItem() {
         // update item first, before dispatch
         this.setAttribute("completed", this.toggleInput.checked);
 
@@ -87,9 +94,9 @@ class TodoItem extends HTMLElement {
                 bubbles: true,
             })
         );
-    };
+    }
 
-    removeItem = () => {
+    removeItem() {
         // dispatch first, before updating item
         this.dispatchEvent(
             new CustomEvent("remove-item", {
@@ -98,9 +105,9 @@ class TodoItem extends HTMLElement {
             })
         );
         this.remove();
-    };
+    }
 
-    updateItem = (e) => {
+    updateItem(e) {
         if (e.target.value !== this.title) {
             if (e.target.value.length === 0) {
                 this.removeItem();
@@ -116,9 +123,9 @@ class TodoItem extends HTMLElement {
         }
 
         this.cancelEdit();
-    };
+    }
 
-    addListeners = () => {
+    addListeners() {
         this.toggleInput.addEventListener("change", this.toggleItem);
         this.todoText.addEventListener(
             "click",
@@ -128,16 +135,16 @@ class TodoItem extends HTMLElement {
         this.todoButton.addEventListener("click", this.removeItem);
 
         this.keysListeners.forEach((listener) => listener.connect());
-    };
+    }
 
-    removeListeners = () => {
+    removeListeners() {
         this.toggleInput.removeEventListener("change", this.toggleItem);
         this.todoText.removeEventListener("click", this.startEdit);
         this.editInput.removeEventListener("blur", this.stopEdit);
         this.todoButton.removeEventListener("click", this.removeItem);
 
         this.keysListeners.forEach((listener) => listener.disconnect());
-    };
+    }
 
     attributeChangedCallback(property, oldValue, newValue) {
         if (oldValue === newValue)

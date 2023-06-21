@@ -19,28 +19,28 @@ class TodoList extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
     }
 
-    addItem = (entry) => {
+    addItem(entry) {
         const element = new TodoItem();
         Object.keys(entry).forEach(key => element.setAttribute(key, entry[key]));
 
         this._elements.push(element);
         this.append(element);
-    };
+    }
 
-    addItems = (items) => {
+    addItems(items) {
         items.forEach((entry) => this.addItem(entry));
-    };
+    }
 
-    removeCompletedItems = () => {
+    removeCompletedItems() {
         this._elements = this._elements.filter((element) => {
             if (element.completed === "true")
                 element.removeItem();
 
             return element.completed === "false";
         });
-    };
+    }
 
-    toggleItems = (completed) => {
+    toggleItems(completed) {
         this._elements.forEach((element) => {
             if (completed && element.completed === "false")
                 element.toggleInput.click();
@@ -48,17 +48,17 @@ class TodoList extends HTMLElement {
                 element.toggleInput.click();
 
         });
-    };
+    }
 
-    updateStyles = () => {
+    updateStyles() {
         if (this["total-items"] !== "0")
             this.element.style.display = "block";
         else
             this.element.style.display = "none";
 
-    };
+    }
 
-    updateView = (element) => {
+    updateView(element) {
         switch (this._route) {
             case "completed":
                 element.style.display
@@ -71,9 +71,9 @@ class TodoList extends HTMLElement {
             default:
                 element.style.display = "block";
         }
-    };
+    }
 
-    updateElements = (type = "", id = "") => {
+    updateElements(type = "", id = "") {
         switch (type) {
             case "route-change":
                 this._elements.forEach((element) => this.updateView(element));
@@ -93,12 +93,12 @@ class TodoList extends HTMLElement {
 
                 break;
         }
-    };
+    }
 
-    updateRoute = (route) => {
+    updateRoute(route) {
         this._route = route;
         this.updateElements("route-change");
-    };
+    }
 
     attributeChangedCallback(property, oldValue, newValue) {
         if (oldValue === newValue)

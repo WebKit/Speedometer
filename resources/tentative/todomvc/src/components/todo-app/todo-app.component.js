@@ -20,6 +20,13 @@ class TodoApp extends HTMLElement {
         // this._data = [...data];
         this._data = [];
 
+        this.addItem = this.addItem.bind(this);
+        this.toggleItem = this.toggleItem.bind(this);
+        this.removeItem = this.removeItem.bind(this);
+        this.updateItem = this.updateItem.bind(this);
+        this.toggleItems = this.toggleItems.bind(this);
+        this.clearCompletedItems = this.clearCompletedItems.bind(this);
+
         this.router = useRouter();
 
         this.shadow = this.attachShadow({ mode: "open" });
@@ -33,16 +40,16 @@ class TodoApp extends HTMLElement {
         return this;
     }
 
-    addItem = (e) => {
+    addItem(e) {
         const { detail: item } = e;
 
         this._data.push(item);
         this.list.addItem(item);
 
         this.update("add-item", item.id);
-    };
+    }
 
-    toggleItem = (e) => {
+    toggleItem(e) {
         this._data.forEach((entry) => {
             if (entry.id === e.detail.id)
                 entry.completed = e.detail.completed;
@@ -50,9 +57,9 @@ class TodoApp extends HTMLElement {
         });
 
         this.update("toggle-item", e.detail.id);
-    };
+    }
 
-    removeItem = (e) => {
+    removeItem(e) {
         this._data.forEach((entry, index) => {
             if (entry.id === e.detail.id)
                 this._data.splice(index, 1);
@@ -60,9 +67,9 @@ class TodoApp extends HTMLElement {
         });
 
         this.update("remove-item", e.detail.id);
-    };
+    }
 
-    updateItem = (e) => {
+    updateItem(e) {
         this._data.forEach((entry) => {
             if (entry.id === e.detail.id)
                 entry.title = e.detail.title;
@@ -70,17 +77,17 @@ class TodoApp extends HTMLElement {
         });
 
         this.update("update-item", e.detail.id);
-    };
+    }
 
-    toggleItems = (e) => {
+    toggleItems(e) {
         this.list.toggleItems(e.detail.completed);
-    };
+    }
 
-    clearCompletedItems = () => {
+    clearCompletedItems() {
         this.list.removeCompletedItems();
-    };
+    }
 
-    update = (type = "", id = "") => {
+    update(type = "", id = "") {
         const totalItems = this._data.length;
         const activeItems = this._data.filter((e) => !e.completed).length;
         const completedItems = totalItems - activeItems;
@@ -94,9 +101,9 @@ class TodoApp extends HTMLElement {
 
         this.bottombar.setAttribute("total-items", totalItems);
         this.bottombar.setAttribute("active-items", activeItems);
-    };
+    }
 
-    addListeners = () => {
+    addListeners() {
         this.topbar.addEventListener("toggle-all", this.toggleItems);
         this.topbar.addEventListener("add-item", this.addItem);
 
@@ -108,9 +115,9 @@ class TodoApp extends HTMLElement {
             "clear-completed-items",
             this.clearCompletedItems
         );
-    };
+    }
 
-    removeListeners = () => {
+    removeListeners() {
         this.topbar.removeEventListener("toggle-all", this.toggleItems);
         this.topbar.removeEventListener("add-item", this.addItem);
 
@@ -122,7 +129,7 @@ class TodoApp extends HTMLElement {
             "clear-completed-items",
             this.clearCompletedItems
         );
-    };
+    }
 
     routeChange = (route) => {
         const routeName = route.split("/")[1] || "all";

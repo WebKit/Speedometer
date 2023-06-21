@@ -16,10 +16,12 @@ class TodoBottombar extends HTMLElement {
         // state
         this.connected = false;
 
+        this.clearCompletedItems = this.clearCompletedItems.bind(this);
+
         this.shadow = this.attachShadow({ mode: "open" });
     }
 
-    updateDisplay = () => {
+    updateDisplay() {
         if (this["total-items"] !== "0")
             this.element.style.display = "block";
         else
@@ -28,9 +30,9 @@ class TodoBottombar extends HTMLElement {
         this.todoStatus.textContent = `${this["active-items"]} ${
             this["active-items"] === "1" ? "item" : "items"
         } left!`;
-    };
+    }
 
-    updateRoute = (route) => {
+    updateRoute(route) {
         this.filterLinks.forEach(link => {
             if (link.dataset.route === route)
                 link.classList.add("selected");
@@ -38,25 +40,25 @@ class TodoBottombar extends HTMLElement {
                 link.classList.remove("selected");
 
         });
-    };
+    }
 
-    clearCompletedItems = () => {
+    clearCompletedItems() {
         this.dispatchEvent(new CustomEvent("clear-completed-items"));
-    };
+    }
 
-    addListeners = () => {
+    addListeners() {
         this.clearCompletedButton.addEventListener(
             "click",
             this.clearCompletedItems
         );
-    };
+    }
 
-    removeListeners = () => {
+    removeListeners() {
         this.clearCompletedButton.removeEventListener(
             "click",
             this.clearCompletedItems
         );
-    };
+    }
 
     attributeChangedCallback(property, oldValue, newValue) {
         if (oldValue === newValue)
