@@ -145,7 +145,7 @@ Suites.push({
         await page.waitForElement("todo-app");
     },
     tests: [
-        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+        /* new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const app = page.querySelector("todo-app").callElementMethod("getInstance");
             const input = app.topbar.todoInput;
 
@@ -165,6 +165,28 @@ Suites.push({
             const elements = app.list._elements;
             for (let i = 0; i < numberOfItemsToAdd; i++)
                 elements[i].todoButton.click();
+        }), */
+        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                input.setValue(`Something to do ${i}`);
+                input.dispatchEvent("input");
+                input.enter("keyup");
+            }
+        }),
+        new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++){
+                const item = items[i].querySelector(".toggle-todo-input");
+                item.click();
+            }
+        }),
+        new BenchmarkTestStep("DeletingAllItems", (page) => {
+            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++){
+                const item = items[i].querySelector(".remove-todo-button");
+                item.click();
+            }
         }),
     ],
 });

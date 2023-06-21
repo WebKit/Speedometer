@@ -109,9 +109,9 @@ class TodoApp extends HTMLElement {
         this.topbar.addEventListener("toggle-all", this.toggleItems);
         this.topbar.addEventListener("add-item", this.addItem);
 
-        this.list.addEventListener("toggle-item", this.toggleItem);
-        this.list.addEventListener("remove-item", this.removeItem);
-        this.list.addEventListener("update-item", this.updateItem);
+        this.list.listNode.addEventListener("toggle-item", this.toggleItem);
+        this.list.listNode.addEventListener("remove-item", this.removeItem);
+        this.list.listNode.addEventListener("update-item", this.updateItem);
 
         this.bottombar.addEventListener(
             "clear-completed-items",
@@ -123,9 +123,9 @@ class TodoApp extends HTMLElement {
         this.topbar.removeEventListener("toggle-all", this.toggleItems);
         this.topbar.removeEventListener("add-item", this.addItem);
 
-        this.list.removeEventListener("toggle-item", this.toggleItem);
-        this.list.removeEventListener("remove-item", this.removeItem);
-        this.list.removeEventListener("update-item", this.updateItem);
+        this.list.listNode.removeEventListener("toggle-item", this.toggleItem);
+        this.list.listNode.removeEventListener("remove-item", this.removeItem);
+        this.list.listNode.removeEventListener("update-item", this.updateItem);
 
         this.bottombar.removeEventListener(
             "clear-completed-items",

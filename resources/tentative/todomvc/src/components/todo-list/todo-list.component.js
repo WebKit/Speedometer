@@ -13,7 +13,7 @@ class TodoList extends HTMLElement {
         this._route = undefined;
         // elements
         const node = document.importNode(template.content, true);
-        this.element = node.querySelector(".todo-list");
+        this.listNode = node.querySelector(".todo-list");
         // shadow dom
         this.shadow = this.attachShadow({ mode: "open" });
         this.shadow.append(node);
@@ -24,7 +24,7 @@ class TodoList extends HTMLElement {
         Object.keys(entry).forEach(key => element.setAttribute(key, entry[key]));
 
         this._elements.push(element);
-        this.append(element);
+        this.listNode.append(element);
     }
 
     addItems(items) {
@@ -52,9 +52,9 @@ class TodoList extends HTMLElement {
 
     updateStyles() {
         if (parseInt(this["total-items"]) !== 0)
-            this.element.style.display = "block";
+            this.listNode.style.display = "block";
         else
-            this.element.style.display = "none";
+            this.listNode.style.display = "none";
 
     }
 
