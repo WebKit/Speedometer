@@ -12,8 +12,13 @@ const Combinator = {
     GENERAL_SIBLING: " ~ ",
 };
 
-const getHtmlMarkup = (angular) => {
-    return angular ? ANGULAR_TODO_MVC_HTML_MARKUP : TODO_MVC_HTML_MARKUP;
+const getHtmlMarkup = (markup) => {
+    switch (markup) {
+        case "angular":
+            return ANGULAR_TODO_MVC_HTML_MARKUP;
+        default:
+            return TODO_MVC_HTML_MARKUP;
+    }
 };
 
 /**
@@ -55,16 +60,16 @@ const getElementType = (element) => {
     return element.nodeName.toLowerCase();
 };
 
-const getElementAtDepth = (element, currentDepth, depth) => {
+const getElementAtDepth = (element, currentDepth, targetDepth) => {
     let currentElement = element;
-    while (currentDepth > depth) {
+    while (currentDepth > targetDepth) {
         currentElement = currentElement.parentElement;
         currentDepth--;
     }
     return currentElement;
 };
 
-const getRandomElement = (combinator, element, currentDepth, depth) => {
+const getRandomElement = (combinator, element, currentDepth, targetDepth) => {
     switch (combinator) {
         case Combinator.CHILD:
             return element.parentElement;
@@ -73,7 +78,7 @@ const getRandomElement = (combinator, element, currentDepth, depth) => {
         case Combinator.GENERAL_SIBLING:
             return getRandomSiblingElementBefore(element);
         case Combinator.DESCENDANT:
-            return getElementAtDepth(element, currentDepth, depth);
+            return getElementAtDepth(element, currentDepth, targetDepth);
         default:
             throw new Error(`Invalid combinator: ${combinator}`);
     }
@@ -125,14 +130,11 @@ const randomWeighted = (options, probabilities) => {
 
 const buildSelectors = (element, depth, oldCombinator, selectorLength, maxSelectorLength, isMatching) => {
     // if nonMatching we add a view-<random-index> class selector that is guaranteed to not have targeted children in the todoMVC
-    if ((!isMatching && !depth) || selectorLength >= maxSelectorLength || !element)
+    if (depth < 0 || selectorLength >= maxSelectorLength)
         return isMatching ? "" : `.view-${random.randRange(0, NUM_TODOS_TO_INSERT_IN_HTML)}${oldCombinator}`;
 
     const getSelector = randomWeighted([getClassname, getElementType, () => "*"], [0.6, 0.3, 0.1]);
     const selector = getSelector(element);
-
-    if (isMatching && !depth)
-        return `${selector}${oldCombinator}`;
 
     const combinator = chooseCombinator(element);
     const nextDepth = getNextDepth(combinator, depth);
@@ -141,16 +143,13 @@ const buildSelectors = (element, depth, oldCombinator, selectorLength, maxSelect
     return buildSelectors(nextElement, nextDepth, combinator, selectorLength + 1, maxSelectorLength, isMatching) + selector + oldCombinator;
 };
 
-const ANGULAR_VIEW_DEPTH = 8;
-const ANGULAR_LI_DEPTH = 7;
-const NON_ANGULAR_VIEW_DEPTH = 6;
-const NON_ANGULAR_LI_DEPTH = 5;
-
-const getInitialDepth = (element, isAngular) => {
-    if (isAngular)
-        return element.tagName === "DIV" ? ANGULAR_VIEW_DEPTH : ANGULAR_LI_DEPTH;
-
-    return element.tagName === "DIV" ? NON_ANGULAR_VIEW_DEPTH : NON_ANGULAR_LI_DEPTH;
+const getInitialDepth = (element) => {
+    let depth = 0;
+    while (element && getClassname(element) !== ".main-ui") {
+        depth++;
+        element = element.parentElement;
+    }
+    return depth;
 };
 
 // Take selectors create random color styles. Same color, different opacity.
@@ -168,27 +167,28 @@ const cssProperties = ["accent-color", "border-bottom-color", "border-color", "b
 
 /**
  * Returns a random 200 matching selectors and 200 non-matching selectors targeted at the todoMVC items.
- * @param {string} isAngular whether to generate angular or react markup
+ * @param {string} markup The markup to generate the selectors for.
  * @returns {string} The css rules for the matching and non-matching selectors.
  */
-export const genCss = (isAngular = false) => {
+export const genCss = (markup) => {
     const matchingSelectors = [];
     const nonMatchingSelectors = [];
-    const htmlMarkup = getHtmlMarkup(isAngular);
+    const htmlMarkup = getHtmlMarkup(markup);
     const dom = new JSDOM(htmlMarkup);
     const { document } = dom.window;
 
-    addTodoItems(document, NUM_TODOS_TO_INSERT_IN_HTML, isAngular);
+    addTodoItems(document, NUM_TODOS_TO_INSERT_IN_HTML, markup);
     const elements = document.querySelectorAll(".main li");
 
     // Generate matching and non-matching selectors for each element.
     elements.forEach((element) => {
         // Add `TARGETED_CLASS` to the matching selectors to match only the todoMVC items.
-        matchingSelectors.push(`${buildSelectors(element, getInitialDepth(element, isAngular), "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE), true)}${TARGETED_CLASS}`);
-        matchingSelectors.push(`${buildSelectors(element.firstChild, getInitialDepth(element.firstChild, isAngular), "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE), true)}${TARGETED_CLASS}`);
+        const elementDepth = getInitialDepth(element);
+        matchingSelectors.push(`${buildSelectors(element, elementDepth, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE), true)}${TARGETED_CLASS}`);
+        matchingSelectors.push(`${buildSelectors(element.firstChild, elementDepth + 1, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE), true)}${TARGETED_CLASS}`);
         // Add `TARGETED_CLASS` to the nonMatchingSelectors to make sure they don't accidentally match other elements on the page.
-        nonMatchingSelectors.push(`${buildSelectors(element, getInitialDepth(element, isAngular), "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE), false)}${TARGETED_CLASS}`);
-        nonMatchingSelectors.push(`${buildSelectors(element.firstChild, getInitialDepth(element.firstChild, isAngular), "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE), false)}${TARGETED_CLASS}`);
+        nonMatchingSelectors.push(`${buildSelectors(element, elementDepth, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE), false)}${TARGETED_CLASS}`);
+        nonMatchingSelectors.push(`${buildSelectors(element.firstChild, elementDepth + 1, "", 0, random.randRange(3, MAX_SELECTOR_LENGTH_TO_GENERATE), false)}${TARGETED_CLASS}`);
     });
 
     const allCssRules = generateCssRules(matchingSelectors.concat(nonMatchingSelectors));

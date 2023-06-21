@@ -1,8 +1,8 @@
 export const ANGULAR_TODO_MVC_HTML_MARKUP = `
 <div class="main-ui" dir="ltr">
     <div class="show-more"></div>
-    <div class="top-bar"></div>
     <div class="ribbon"></div>
+    <div class="top-bar"></div>
     <div class="tree-area"></div>
     <div class="todo-area">
         <div class="todoholder" ng-version="14.3.0">
@@ -29,8 +29,8 @@ export const ANGULAR_TODO_MVC_HTML_MARKUP = `
 export const TODO_MVC_HTML_MARKUP = `
 <div class="main-ui">
     <div class="show-more"></div>
-    <div class="top-bar"/></div>
-    <div class="ribbon"/></div>
+    <div class="ribbon"></div>
+    <div class="top-bar"></div>
     <div class="tree-area"></div>
     <div class="todo-area">
         <div class="todoholder">
@@ -41,7 +41,7 @@ export const TODO_MVC_HTML_MARKUP = `
                         <input class="toggle-all" type="checkbox" data-testid="toggle-all">
                         <label class="toggle-all-label" for="toggle-all">Toggle All Input</label>
                     </div>
-                    <ul class="todo-list" data-testid="todo-list"></ul/>
+                    <ul class="todo-list" data-testid="todo-list"></ul>
                 </main>
             </section>
         </div>
