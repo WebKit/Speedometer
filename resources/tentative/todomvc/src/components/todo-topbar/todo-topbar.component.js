@@ -36,26 +36,26 @@ class TodoTopbar extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
     }
 
-    toggleAll(e) {
+    toggleAll(event) {
         this.dispatchEvent(
             new CustomEvent("toggle-all", {
-                detail: { completed: e.target.checked },
+                detail: { completed: event.target.checked },
             })
         );
     }
 
-    addItem(e) {
+    addItem(event) {
         this.dispatchEvent(
             new CustomEvent("add-item", {
                 detail: {
                     id: nanoid(),
-                    title: e.target.value,
+                    title: event.target.value,
                     completed: false,
                 },
             })
         );
 
-        e.target.value = "";
+        event.target.value = "";
     }
 
     updateDisplay() {

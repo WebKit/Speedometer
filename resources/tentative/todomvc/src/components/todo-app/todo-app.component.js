@@ -40,8 +40,8 @@ class TodoApp extends HTMLElement {
         return this;
     }
 
-    addItem(e) {
-        const { detail: item } = e;
+    addItem(event) {
+        const { detail: item } = event;
 
         this._data.push(item);
         this.list.addItem(item);
@@ -49,38 +49,38 @@ class TodoApp extends HTMLElement {
         this.update("add-item", item.id);
     }
 
-    toggleItem(e) {
+    toggleItem(event) {
         this._data.forEach((entry) => {
-            if (entry.id === e.detail.id)
-                entry.completed = e.detail.completed;
+            if (entry.id === event.detail.id)
+                entry.completed = event.detail.completed;
 
         });
 
-        this.update("toggle-item", e.detail.id);
+        this.update("toggle-item", event.detail.id);
     }
 
-    removeItem(e) {
+    removeItem(event) {
         this._data.forEach((entry, index) => {
-            if (entry.id === e.detail.id)
+            if (entry.id === event.detail.id)
                 this._data.splice(index, 1);
 
         });
 
-        this.update("remove-item", e.detail.id);
+        this.update("remove-item", event.detail.id);
     }
 
-    updateItem(e) {
+    updateItem(event) {
         this._data.forEach((entry) => {
-            if (entry.id === e.detail.id)
-                entry.title = e.detail.title;
+            if (entry.id === event.detail.id)
+                entry.title = event.detail.title;
 
         });
 
-        this.update("update-item", e.detail.id);
+        this.update("update-item", event.detail.id);
     }
 
-    toggleItems(e) {
-        this.list.toggleItems(e.detail.completed);
+    toggleItems(event) {
+        this.list.toggleItems(event.detail.completed);
     }
 
     clearCompletedItems() {
@@ -89,7 +89,7 @@ class TodoApp extends HTMLElement {
 
     update(type = "", id = "") {
         const totalItems = this._data.length;
-        const activeItems = this._data.filter((e) => !e.completed).length;
+        const activeItems = this._data.filter((entry) => !entry.completed).length;
         const completedItems = totalItems - activeItems;
 
         this.list.setAttribute("total-items", totalItems);
