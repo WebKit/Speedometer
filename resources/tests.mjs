@@ -409,7 +409,6 @@ Suites.push({
     url: "todomvc/architecture-examples/lit/rollup/index.html",
     tags: ["todomvc"],
     async prepare(page) {
-        await page.wait
         await page.waitForElement("todo-app");
     },
     tests: [
