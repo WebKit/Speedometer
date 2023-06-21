@@ -84,17 +84,17 @@ export class Todos extends EventTarget {
     update(edit: TodoEdit) {
         const todo = this.#todos.find((todo) => todo.id === edit.id);
 
-        if (todo === undefined) {
+        if (todo === undefined)
             return;
-        }
+
         Object.assign(todo, edit);
     }
 
     toggle(id: number) {
         const todo = this.#todos.find((todo) => todo.id === id);
-        if (todo === undefined) {
+        if (todo === undefined)
             return;
-        }
+
         todo.completed = !todo.completed;
         this.#notifyChange();
     }
@@ -132,9 +132,9 @@ export class Todos extends EventTarget {
 
     #filterFromUrl() {
         let filter = /#\/(.*)/.exec(window.location.hash)?.[1];
-        if (isTodoFilter(filter)) {
+        if (isTodoFilter(filter))
             return filter;
-        }
+
         return "all";
     }
 }

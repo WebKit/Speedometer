@@ -423,12 +423,14 @@ Suites.push({
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const todoApp = page.querySelector("todo-app");
             const checkboxes = todoApp.callElementMethod("getToggles");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const todoApp = page.querySelector("todo-app");
             const deleteButtons = todoApp.callElementMethod("getDestroyButtons");
-            for (let i = 0; i < numberOfItemsToAdd; i++) deleteButtons[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                deleteButtons[i].click();
         }),
     ],
 });

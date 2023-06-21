@@ -13,14 +13,14 @@ interface ListenerCarryingElement extends ReactiveElement {
  */
 export const updateOnEvent = (eventName: string) => (target: ListenerCarryingElement, propertyKey: string) => {
     const descriptor = Object.getOwnPropertyDescriptor(target, propertyKey)!;
-    if (descriptor == null || descriptor.get == null || descriptor.set == null) {
-        throw new Error(`updateOnEvent should only be called on an accessor, ` + `but ${propertyKey} did not have both a getter and setter`);
-    }
+    if (descriptor == null || descriptor.get == null || descriptor.set == null)
+        throw new Error("updateOnEvent should only be called on an accessor, " + `but ${propertyKey} did not have both a getter and setter`);
+
     const { get, set } = descriptor;
     const newDescriptor = {
         ...descriptor,
         set(this: ListenerCarryingElement, v: EventTarget) {
-            const listener = (this.__updateOnEventListener ??= () => this.requestUpdate());
+            const listener = this.__updateOnEventListener ??= () => this.requestUpdate();
             const oldValue = get!.call(this);
             oldValue?.removeEventListener?.(eventName, listener);
             v?.addEventListener?.(eventName, listener);

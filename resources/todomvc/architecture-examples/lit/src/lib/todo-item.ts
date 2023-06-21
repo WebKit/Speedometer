@@ -125,16 +125,16 @@ export class TodoItem extends LitElement {
     ];
 
     @property({ type: Number })
-    idNum = -1;
+        idNum = -1;
 
     @property({ type: String })
-    text = "";
+        text = "";
 
     @property({ type: Boolean })
-    completed = false;
+        completed = false;
 
     @state()
-    isEditing: boolean = false;
+        isEditing: boolean = false;
 
     override render() {
         const itemClassList = {
@@ -177,13 +177,13 @@ export class TodoItem extends LitElement {
     }
 
     #captureEscape(e: KeyboardEvent) {
-        if (e.key === "escape") {
+        if (e.key === "escape") 
             this.#abortEdit(e);
-        }
+        
     }
 
     #abortEdit(e: Event) {
-        (e.target as HTMLInputElement).value = this.text ?? "";
+        e.target as HTMLInputElement.value = this.text ?? "";
     }
 }
 

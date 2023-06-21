@@ -1,5 +1,5 @@
 export default {
-	nodeResolve: {
-		exportConditions: ["development", "browser"],
-	},
+    nodeResolve: {
+        exportConditions: ["development", "browser"],
+    },
 };

@@ -87,7 +87,7 @@ export class TodoFooter extends LitElement {
 
     @updateOnEvent("change")
     @property({ attribute: false })
-    todoList?: Todos;
+        todoList?: Todos;
 
     override render() {
         return this.todoList?.all.length ?? 0 > 0
@@ -98,24 +98,24 @@ export class TodoFooter extends LitElement {
                   <ul class="filters">
                       <li>
                           ${filterLink({
-                              text: "All",
-                              filter: "all",
-                              selectedFilter: this.todoList?.filter,
-                          })}
+        text: "All",
+        filter: "all",
+        selectedFilter: this.todoList?.filter,
+    })}
                       </li>
                       <li>
                           ${filterLink({
-                              text: "Active",
-                              filter: "active",
-                              selectedFilter: this.todoList?.filter,
-                          })}
+        text: "Active",
+        filter: "active",
+        selectedFilter: this.todoList?.filter,
+    })}
                       </li>
                       <li>
                           ${filterLink({
-                              text: "Completed",
-                              filter: "completed",
-                              selectedFilter: this.todoList?.filter,
-                          })}
+        text: "Completed",
+        filter: "completed",
+        selectedFilter: this.todoList?.filter,
+    })}
                       </li>
                   </ul>
                   ${this.todoList?.completed.length ?? 0 > 0 ? html`<button @click=${this.#onClearCompletedClick} class="clear-completed">Clear Completed</button>` : nothing}`
