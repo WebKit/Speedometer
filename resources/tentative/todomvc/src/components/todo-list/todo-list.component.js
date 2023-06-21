@@ -14,7 +14,6 @@ class TodoList extends HTMLElement {
         // elements
         const node = document.importNode(template.content, true);
         this.element = node.querySelector(".todo-list");
-        this.updateStyles();
         // shadow dom
         this.shadow = this.attachShadow({ mode: "open" });
         this.shadow.append(node);
