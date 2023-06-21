@@ -405,6 +405,32 @@ Suites.push({
 });
 
 Suites.push({
+    name: "TodoMVC-Lit",
+    url: "todomvc/architecture-examples/lit/rollup/index.html",
+    tags: ["todomvc"],
+    async prepare(page) {
+        await page.wait
+        await page.waitForElement("todo-app");
+    },
+    tests: [
+        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            const todoApp = page.querySelector('todo-app');
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                todoApp.dispatchEvent('speedometer-addtodo', {detail: `Something to do ${i}`}, CustomEvent);
+            }
+        }),
+        new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const todoApp = page.querySelector("todo-app");
+            todoApp.dispatchEvent("speedometer-clickdone");
+        }),
+        new BenchmarkTestStep("DeletingAllItems", (page) => {
+            const todoApp = page.querySelector("todo-app");
+            todoApp.dispatchEvent("speedometer-clickdestroy");
+        }),
+    ],
+});
+
+Suites.push({
     name: "NewsSite-Next",
     url: "newssite/news-next/dist/index.html#/home",
     tags: ["newssite"],
