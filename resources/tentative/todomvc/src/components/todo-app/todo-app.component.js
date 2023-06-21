@@ -3,7 +3,6 @@ import TodoTopbar from "../todo-topbar/todo-topbar.component.js";
 import TodoList from "../todo-list/todo-list.component.js";
 import TodoBottombar from "../todo-bottombar/todo-bottombar.component.js";
 import { useRouter } from "../../hooks/useRouter.js";
-
 class TodoApp extends HTMLElement {
     constructor() {
         super();
