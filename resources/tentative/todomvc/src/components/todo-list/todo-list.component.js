@@ -12,7 +12,6 @@ class TodoList extends HTMLElement {
         // elements
         this.element = undefined;
         // state
-        this.connected = false;
         this._elements = [];
         this._route = undefined;
 
@@ -51,7 +50,7 @@ class TodoList extends HTMLElement {
     }
 
     updateStyles() {
-        if (this["total-items"] !== "0")
+        if (parseInt(this["total-items"]) !== 0)
             this.element.style.display = "block";
         else
             this.element.style.display = "none";
@@ -104,21 +103,16 @@ class TodoList extends HTMLElement {
         if (oldValue === newValue)
             return;
         this[property] = newValue;
-        if (this.connected)
+        if (this.isConnected)
             this.updateStyles();
 
     }
 
     connectedCallback() {
-        this.connected = true;
         const node = document.importNode(template.content, true);
         this.element = node.querySelector(".todo-list");
         this.updateStyles();
         this.shadow.append(node);
-    }
-
-    disconnectedCallback() {
-        this.connected = false;
     }
 }
 

@@ -13,8 +13,6 @@ class TodoBottombar extends HTMLElement {
         this.clearCompletedButton = undefined;
         this.todoStatus = undefined;
         this.filterLinks = undefined;
-        // state
-        this.connected = false;
 
         this.clearCompletedItems = this.clearCompletedItems.bind(this);
 
@@ -22,7 +20,7 @@ class TodoBottombar extends HTMLElement {
     }
 
     updateDisplay() {
-        if (this["total-items"] !== "0")
+        if (parseInt(this["total-items"]) !== 0)
             this.element.style.display = "block";
         else
             this.element.style.display = "none";
@@ -65,13 +63,12 @@ class TodoBottombar extends HTMLElement {
             return;
         this[property] = newValue;
 
-        if (this.connected)
+        if (this.isConnected)
             this.updateDisplay();
 
     }
 
     connectedCallback() {
-        this.connected = true;
         const node = document.importNode(template.content, true);
         this.element = node.querySelector(".bottombar");
         this.clearCompletedButton = node.querySelector(
@@ -86,7 +83,6 @@ class TodoBottombar extends HTMLElement {
     }
 
     disconnectedCallback() {
-        this.connected = false;
         this.removeListeners();
     }
 }

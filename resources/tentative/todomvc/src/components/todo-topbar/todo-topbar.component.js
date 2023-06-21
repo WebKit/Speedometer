@@ -25,7 +25,6 @@ class TodoTopbar extends HTMLElement {
         this.todoInput = undefined;
         this.toggleInput = undefined;
         // state
-        this.connected = false;
         this._route = undefined;
         // listeners
         this.keysListeners = [];
@@ -59,7 +58,7 @@ class TodoTopbar extends HTMLElement {
     }
 
     updateDisplay() {
-        if (this["total-items"] === "0") {
+        if (parseInt(this["total-items"]) === 0) {
             this.toggleContainer.style.display = "none";
             return;
         }
@@ -69,11 +68,11 @@ class TodoTopbar extends HTMLElement {
         switch (this._route) {
             case "active":
                 this.toggleInput.checked = false;
-                this.toggleInput.disabled = this["active-items"] === "0";
+                this.toggleInput.disabled = parseInt(this["active-items"]) === 0;
                 break;
             case "completed":
-                this.toggleInput.checked = this["completed-items"] !== "0";
-                this.toggleInput.disabled = this["completed-items"] === "0";
+                this.toggleInput.checked = parseInt(this["completed-items"]) !== 0;
+                this.toggleInput.disabled = parseInt(this["completed-items"]) === 0;
                 break;
             default:
                 this.toggleInput.checked
@@ -102,13 +101,12 @@ class TodoTopbar extends HTMLElement {
             return;
         this[property] = newValue;
 
-        if (this.connected)
+        if (this.isConnected)
             this.updateDisplay();
 
     }
 
     connectedCallback() {
-        this.connected = true;
         const node = document.importNode(template.content, true);
 
         this.todoInput = node.querySelector("#new-todo");
@@ -133,7 +131,6 @@ class TodoTopbar extends HTMLElement {
     }
 
     disconnectedCallback() {
-        this.connected = false;
         this.removeListeners();
     }
 }

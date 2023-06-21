@@ -22,8 +22,7 @@ class TodoItem extends HTMLElement {
         this.todoButton = undefined;
         this.editLabel = undefined;
         this.editInput = undefined;
-        // state
-        this.connected = false;
+
         // listeners
         this.keysListeners = [];
 
@@ -151,13 +150,12 @@ class TodoItem extends HTMLElement {
             return;
         this[property] = newValue;
 
-        if (this.connected)
+        if (this.isConnected)
             this.update(property);
 
     }
 
     connectedCallback() {
-        this.connected = true;
         const node = document.importNode(template.content, true);
 
         this.item = node.querySelector(".todo-item");
@@ -193,7 +191,6 @@ class TodoItem extends HTMLElement {
     }
 
     disconnectedCallback() {
-        this.connected = false;
         this.removeListeners();
 
         this.item = undefined;

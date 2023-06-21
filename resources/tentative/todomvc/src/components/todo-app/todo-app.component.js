@@ -15,7 +15,6 @@ class TodoApp extends HTMLElement {
         this.list = undefined;
         this.bottombar = undefined;
         // state
-        this.connected = false;
         this._isReady = false;
         // this._data = [...data];
         this._data = [];
@@ -139,7 +138,6 @@ class TodoApp extends HTMLElement {
     };
 
     connectedCallback() {
-        this.connected = true;
         const node = document.importNode(template.content, true);
 
         this.topbar = new TodoTopbar();
@@ -161,7 +159,6 @@ class TodoApp extends HTMLElement {
     }
 
     disconnectedCallback() {
-        this.connected = false;
         this.removeListeners();
     }
 }
