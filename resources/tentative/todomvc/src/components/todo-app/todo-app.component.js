@@ -16,7 +16,6 @@ class TodoApp extends HTMLElement {
         this.bottombar = undefined;
         // state
         this._isReady = false;
-        // this._data = [...data];
         this._data = [];
 
         this.addItem = this.addItem.bind(this);
