@@ -36,15 +36,28 @@ class Page {
         });
     }
 
-    querySelector(selector) {
-        const element = this._frame.contentDocument.querySelector(selector);
+    getParent(path) {
+        if (!path)
+            return this._frame.contentDocument;
+
+        const parent = path.reduce((root, selector) => {
+            const node = root.querySelector(selector);
+            return node.shadowRoot ?? node;
+        }, this._frame.contentDocument);
+
+        return parent;
+    }
+
+    querySelector(selector, path) {
+        const element = this.getParent(path).querySelector(selector);
+
         if (element === null)
             return null;
         return this._wrapElement(element);
     }
 
-    querySelectorAll(selector) {
-        const elements = Array.from(this._frame.contentDocument.querySelectorAll(selector));
+    querySelectorAll(selector, path) {
+        const elements = Array.from(this.getParent(path).querySelectorAll(selector));
         for (let i = 0; i < elements.length; i++)
             elements[i] = this._wrapElement(elements[i]);
         return elements;
@@ -105,6 +118,10 @@ class PageElement {
         return new PageElement(this.#node[name]());
     }
 
+    callElementMethod(name, ...args) {
+        return this.#node[name](...args);
+    }
+
     dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
         if (eventName === "submit")
             // FIXME FireFox doesn't like `new Event('submit')
@@ -144,6 +161,15 @@ class PageElement {
             eventOptions = Object.assign(eventOptions, options);
         const event = new contentWindow.MouseEvent(type, eventOptions);
         this.#node.dispatchEvent(event);
+    }
+
+    querySelector(selector) {
+        const root = this.#node.shadowRoot ?? this.#node;
+        const element = root.querySelector(selector);
+
+        if (element === null)
+            return null;
+        return new PageElement(element);
     }
 }
 
