@@ -66,7 +66,7 @@
 
 .todo-item-text {
 	word-break: break-all;
-	padding: 0 15px 0 60px;
+	padding: 0 60px;
 	display: block;
 	line-height: 60px;
 	transition: color 0.4s;
@@ -127,5 +127,11 @@
 	.toggle-todo-input {
 		background: none;
 		height: 40px;
+	}
+}
+
+@media (max-width: 430px) {
+	.remove-todo-button {
+		display: block;
 	}
 }

@@ -10,7 +10,7 @@ template.innerHTML = `
         <div class="display-todo">
             <label class="toggle-todo-label visually-hidden">Toggle Todo</label>
             <input class="toggle-todo-input" type="checkbox" />
-            <span class="todo-item-text" tabindex="0">Placeholder Text</span>
+            <span class="todo-item-text truncate-singleline" tabindex="0">Placeholder Text</span>
             <button class="remove-todo-button" title="Remove Todo"></button>
         </div>
         <div class="edit-todo-display">
