@@ -4,8 +4,6 @@ import TodoList from "../todo-list/todo-list.component.js";
 import TodoBottombar from "../todo-bottombar/todo-bottombar.component.js";
 import { useRouter } from "../../hooks/useRouter.js";
 
-// import { data } from "../../data.js";
-
 class TodoApp extends HTMLElement {
     constructor() {
         super();
