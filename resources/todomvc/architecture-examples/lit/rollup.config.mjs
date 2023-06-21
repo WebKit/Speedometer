@@ -24,7 +24,7 @@ export default {
     ],
     input: "src/index.ts",
     output: {
-        file: "rollup/index.js",
+        file: "dist/index.js",
         format: "es",
     },
     preserveEntrySignatures: "strict",

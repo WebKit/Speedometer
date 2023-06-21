@@ -24,6 +24,6 @@ The speedometer TodoMVC tests typically interact directly with DOM elements, emu
 
 1. `npm ci`
 2. `npm run serve --watch`
-3. Navigate your browser to http://localhost:8000/ for the debug build or http://localhost:8000/rollup/ for the optimized build.
+3. Navigate your browser to http://localhost:8000/ for the debug build or http://localhost:8000/dist/ for the optimized build.
 
 If you just want to rebuild the code, simply run `npm run build`. This is automatically run as needed when running `npm run serve --watch`.

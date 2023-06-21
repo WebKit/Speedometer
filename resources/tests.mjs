@@ -406,16 +406,16 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Lit",
-    url: "todomvc/architecture-examples/lit/rollup/index.html",
+    url: "todomvc/architecture-examples/lit/dist/index.html",
     tags: ["todomvc"],
     async prepare(page) {
         await page.waitForElement("todo-app");
     },
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
-            const todoApp = page.querySelector('todo-app');
+            const todoApp = page.querySelector("todo-app");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                todoApp.dispatchEvent('speedometer-addtodo', {detail: `Something to do ${i}`}, CustomEvent);
+                todoApp.dispatchEvent("speedometer-addtodo", { detail: `Something to do ${i}` }, CustomEvent);
             }
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
