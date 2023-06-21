@@ -119,7 +119,7 @@ class PageElement {
     }
 
     callElementMethod(name, ...args) {
-        return this.#node[name](args);
+        return this.#node[name](...args);
     }
 
     dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
