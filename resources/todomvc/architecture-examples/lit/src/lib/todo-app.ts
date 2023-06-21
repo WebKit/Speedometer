@@ -63,17 +63,6 @@ export class TodoApp extends LitElement {
         this.addEventListener(EditTodoEvent.eventName, this.#onEditTodo);
         this.addEventListener(ToggleAllTodoEvent.eventName, this.#onToggleAll);
         this.addEventListener(ClearCompletedEvent.eventName, this.#onClearCompleted);
-
-        // event handlers for emulating user inputs for the benchmark
-        this.addEventListener("speedometer-addtodo", (ev) => {
-            this.#inputTodo(ev.detail);
-        });
-        this.addEventListener("speedometer-clickdone", () => {
-            this.#clickDoneOnAll();
-        });
-        this.addEventListener("speedometer-clickdestroy", () => {
-            this.#clickDestroyOnAll();
-        });
     }
 
     override connectedCallback(): void {
@@ -107,19 +96,16 @@ export class TodoApp extends LitElement {
     @query("todo-form") private form!: TodoForm;
     @query("todo-list") private list!: TodoList;
 
-    async #inputTodo(text: string) {
-        await this.updateComplete;
-        await this.form.manuallyAddTodo(text);
+    getNewTodoInput(): HTMLInputElement {
+        return this.form.newTodoInput;
     }
 
-    async #clickDoneOnAll() {
-        await this.updateComplete;
-        await this.list.clickDoneOnAll();
+    getToggles(): HTMLInputElement[] {
+        return this.list.getToggles();
     }
 
-    async #clickDestroyOnAll() {
-        await this.updateComplete;
-        await this.list.clickDestroyOnAll();
+    getDestroyButtons(): HTMLButtonElement[] {
+        return this.list.getDestroyButtons();
     }
 
     #onAddTodo = (e: AddTodoEvent) => {
@@ -146,11 +132,5 @@ export class TodoApp extends LitElement {
 declare global {
     interface HTMLElementTagNameMap {
         "todo-app": TodoApp;
-    }
-
-    interface HTMLElementEventMap {
-        "speedometer-addtodo": CustomEvent<string>;
-        "speedometer-clickdone": Event;
-        "speedometer-clickdestroy": Event;
     }
 }

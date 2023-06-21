@@ -76,26 +76,24 @@ export class TodoList extends LitElement {
         `;
     }
 
-    async clickDoneOnAll() {
-        await this.updateComplete;
-        const items = [...this.renderRoot.querySelectorAll("todo-item")];
-        await Promise.all(items.map((item) => item.updateComplete));
-        for (const item of items) {
-            item.clickDone();
-        }
-    }
-
-    async clickDestroyOnAll() {
-        await this.updateComplete;
-        const items = [...this.renderRoot.querySelectorAll("todo-item")];
-        await Promise.all(items.map((item) => item.updateComplete));
-        for (const item of items) {
-            item.clickDestroy();
-        }
-    }
-
     #onToggleAllChange() {
         this.dispatchEvent(new ToggleAllTodoEvent());
+    }
+
+    getToggles(): HTMLInputElement[] {
+        const toggles = [];
+        for (const item of this.renderRoot.querySelectorAll("todo-item")) {
+            toggles.push(item.toggle);
+        }
+        return toggles;
+    }
+
+    getDestroyButtons(): HTMLButtonElement[] {
+        const buttons = [];
+        for (const item of this.renderRoot.querySelectorAll("todo-item")) {
+            buttons.push(item.destroyButton);
+        }
+        return buttons;
     }
 }
 

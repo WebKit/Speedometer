@@ -149,16 +149,8 @@ export class TodoItem extends LitElement {
         `;
     }
 
-    @query(".toggle") private doneCheckmark!: HTMLInputElement;
-    @query(".destroy") private destroyButton!: HTMLButtonElement;
-
-    clickDone() {
-        this.doneCheckmark.click();
-    }
-
-    clickDestroy() {
-        this.destroyButton.click();
-    }
+    @query(".toggle") toggle!: HTMLInputElement;
+    @query(".destroy") destroyButton!: HTMLButtonElement;
 
     #toggleTodo() {
         this.dispatchEvent(new EditTodoEvent({ ...this.todo!, completed: !this.todo!.completed }));

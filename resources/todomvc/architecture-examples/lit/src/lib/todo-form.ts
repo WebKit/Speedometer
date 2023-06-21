@@ -41,26 +41,23 @@ export class TodoForm extends LitElement {
     todoList?: Todos;
 
     override render() {
-        return html`<input @change=${this.#onChange} class="new-todo" autofocus autocomplete="off" placeholder="what needs to be done?" />`;
+        return html`<input @change=${this.#onChange} @keydown=${this.#onKeydown} class="new-todo" autofocus autocomplete="off" placeholder="what needs to be done?" />`;
     }
 
-    @query("input") private input!: HTMLInputElement;
+    @query("input", true) newTodoInput!: HTMLInputElement;
 
-    #onChange(e: Event) {
-        const input = e.target as HTMLInputElement;
-        const { value } = input;
+    #onChange() {
+        const { value } = this.newTodoInput;
         if (value.length > 0) {
             this.dispatchEvent(new AddTodoEvent(value));
         }
-        input.value = "";
+        this.newTodoInput.value = "";
     }
 
-    // Emulate typing in an event, then pressing enter.
-    async manuallyAddTodo(text: string) {
-        await this.updateComplete;
-        this.input.value = text;
-        this.input.dispatchEvent(new InputEvent("input"));
-        this.input.dispatchEvent(new Event("change"));
+    #onKeydown(e: KeyboardEvent) {
+        if (e.key === "Enter") {
+            this.#onChange();
+        }
     }
 }
 
