@@ -7,16 +7,19 @@ class TodoBottombar extends HTMLElement {
 
     constructor() {
         super();
-
         // elements
-        this.element = undefined;
-        this.clearCompletedButton = undefined;
-        this.todoStatus = undefined;
-        this.filterLinks = undefined;
-
-        this.clearCompletedItems = this.clearCompletedItems.bind(this);
-
+        const node = document.importNode(template.content, true);
+        this.element = node.querySelector(".bottombar");
+        this.clearCompletedButton = node.querySelector(
+            ".clear-completed-button"
+        );
+        this.todoStatus = node.querySelector(".todo-status");
+        this.filterLinks = node.querySelectorAll(".filter-link");
+        // shadow dom
         this.shadow = this.attachShadow({ mode: "open" });
+        this.shadow.append(node);
+        // bind event handlers
+        this.clearCompletedItems = this.clearCompletedItems.bind(this);
     }
 
     updateDisplay() {
@@ -69,17 +72,8 @@ class TodoBottombar extends HTMLElement {
     }
 
     connectedCallback() {
-        const node = document.importNode(template.content, true);
-        this.element = node.querySelector(".bottombar");
-        this.clearCompletedButton = node.querySelector(
-            ".clear-completed-button"
-        );
-        this.todoStatus = node.querySelector(".todo-status");
-        this.filterLinks = node.querySelectorAll(".filter-link");
-
         this.updateDisplay();
         this.addListeners();
-        this.shadow.append(node);
     }
 
     disconnectedCallback() {

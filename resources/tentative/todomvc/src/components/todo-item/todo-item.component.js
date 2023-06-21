@@ -9,31 +9,31 @@ class TodoItem extends HTMLElement {
 
     constructor() {
         super();
-
         // props
         this.id = "";
         this.title = "Todo Item";
         this.completed = "false";
         // elements
-        this.item = undefined;
-        this.toggleLabel = undefined;
-        this.toggleInput = undefined;
-        this.todoText = undefined;
-        this.todoButton = undefined;
-        this.editLabel = undefined;
-        this.editInput = undefined;
-
+        const node = document.importNode(template.content, true);
+        this.item = node.querySelector(".todo-item");
+        this.toggleLabel = node.querySelector(".toggle-todo-label");
+        this.toggleInput = node.querySelector(".toggle-todo-input");
+        this.todoText = node.querySelector(".todo-item-text");
+        this.todoButton = node.querySelector(".remove-todo-button");
+        this.editLabel = node.querySelector(".edit-todo-label");
+        this.editInput = node.querySelector(".edit-todo-input");
+        // shadow dom
+        this.shadow = this.attachShadow({ mode: "open" });
+        this.shadow.append(node);
         // listeners
         this.keysListeners = [];
-
+        // bind event handlers
         this.updateItem = this.updateItem.bind(this);
         this.toggleItem = this.toggleItem.bind(this);
         this.removeItem = this.removeItem.bind(this);
         this.startEdit = this.startEdit.bind(this);
         this.stopEdit = this.stopEdit.bind(this);
         this.cancelEdit = this.cancelEdit.bind(this);
-
-        this.shadow = this.attachShadow({ mode: "open" });
     }
 
     update(...args) {
@@ -156,15 +156,7 @@ class TodoItem extends HTMLElement {
     }
 
     connectedCallback() {
-        const node = document.importNode(template.content, true);
-
-        this.item = node.querySelector(".todo-item");
-        this.toggleLabel = node.querySelector(".toggle-todo-label");
-        this.toggleInput = node.querySelector(".toggle-todo-input");
-        this.todoText = node.querySelector(".todo-item-text");
-        this.todoButton = node.querySelector(".remove-todo-button");
-        this.editLabel = node.querySelector(".edit-todo-label");
-        this.editInput = node.querySelector(".edit-todo-input");
+        this.update("id", "title", "completed");
 
         this.keysListeners.push(
             useKeyListener({
@@ -184,22 +176,12 @@ class TodoItem extends HTMLElement {
             })
         );
 
-        this.update("id", "title", "completed");
         this.addListeners();
-
-        this.shadow.append(node);
     }
 
     disconnectedCallback() {
         this.removeListeners();
-
-        this.item = undefined;
-        this.toggleLabel = undefined;
-        this.toggleInput = undefined;
-        this.todoText = undefined;
-        this.todoButton = undefined;
-        this.editLabel = undefined;
-        this.editInput = undefined;
+        this.keysListeners = [];
     }
 }
 

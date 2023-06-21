@@ -20,19 +20,21 @@ class TodoTopbar extends HTMLElement {
 
     constructor() {
         super();
-
-        // elements
-        this.todoInput = undefined;
-        this.toggleInput = undefined;
         // state
         this._route = undefined;
+        // elements
+        const node = document.importNode(template.content, true);
+        this.todoInput = node.querySelector("#new-todo");
+        this.toggleInput = node.querySelector("#toggle-all");
+        this.toggleContainer = node.querySelector(".toggle-all-display");
+        // shadow dom
+        this.shadow = this.attachShadow({ mode: "open" });
+        this.shadow.append(node);
         // listeners
         this.keysListeners = [];
-
+        // bind event handlers
         this.toggleAll = this.toggleAll.bind(this);
         this.addItem = this.addItem.bind(this);
-
-        this.shadow = this.attachShadow({ mode: "open" });
     }
 
     toggleAll(event) {
@@ -107,12 +109,6 @@ class TodoTopbar extends HTMLElement {
     }
 
     connectedCallback() {
-        const node = document.importNode(template.content, true);
-
-        this.todoInput = node.querySelector("#new-todo");
-        this.toggleInput = node.querySelector("#toggle-all");
-        this.toggleContainer = node.querySelector(".toggle-all-display");
-
         this.keysListeners.push(
             useKeyListener({
                 target: this.todoInput,
@@ -125,13 +121,12 @@ class TodoTopbar extends HTMLElement {
 
         this.updateDisplay();
         this.addListeners();
-        this.shadow.append(node);
-
         this.todoInput.focus();
     }
 
     disconnectedCallback() {
         this.removeListeners();
+        this.keysListeners = [];
     }
 }
 

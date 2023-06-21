@@ -8,14 +8,16 @@ class TodoList extends HTMLElement {
 
     constructor() {
         super();
-
-        // elements
-        this.element = undefined;
         // state
         this._elements = [];
         this._route = undefined;
-
+        // elements
+        const node = document.importNode(template.content, true);
+        this.element = node.querySelector(".todo-list");
+        this.updateStyles();
+        // shadow dom
         this.shadow = this.attachShadow({ mode: "open" });
+        this.shadow.append(node);
     }
 
     addItem(entry) {
@@ -109,10 +111,7 @@ class TodoList extends HTMLElement {
     }
 
     connectedCallback() {
-        const node = document.importNode(template.content, true);
-        this.element = node.querySelector(".todo-list");
         this.updateStyles();
-        this.shadow.append(node);
     }
 }
 
