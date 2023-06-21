@@ -117,7 +117,7 @@ export class TodoApp extends LitElement {
     };
 
     #onEditTodo = (e: EditTodoEvent) => {
-        this.todoList.update(e.todo);
+        this.todoList.update(e.edit);
     };
 
     #onToggleAll = (_e: ToggleAllTodoEvent) => {

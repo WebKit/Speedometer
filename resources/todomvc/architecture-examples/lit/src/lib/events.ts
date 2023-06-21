@@ -1,4 +1,4 @@
-import type { Todo } from "./todos.js";
+import type { Todo, TodoEdit } from "./todos.js";
 
 /**
  * An event that represents a request to add a new todo.
@@ -34,11 +34,11 @@ export class DeleteTodoEvent extends Event {
 export class EditTodoEvent extends Event {
     static readonly eventName = "todo-edit" as const;
 
-    readonly todo: Todo;
+    readonly edit: TodoEdit;
 
-    constructor(todo: Todo) {
+    constructor(edit: TodoEdit) {
         super(EditTodoEvent.eventName, { bubbles: true, composed: true });
-        this.todo = todo;
+        this.edit = edit;
     }
 }
 

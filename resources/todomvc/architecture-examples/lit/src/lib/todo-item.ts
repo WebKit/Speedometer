@@ -5,7 +5,6 @@ import { state } from "lit/decorators/state.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import { todoStyles } from "./todo.css.js";
-import { type Todo } from "./todos.js";
 import { DeleteTodoEvent, EditTodoEvent } from "./events.js";
 import { query } from "lit/decorators/query.js";
 
@@ -125,8 +124,14 @@ export class TodoItem extends LitElement {
         `,
     ];
 
-    @property({ attribute: false })
-    todo?: Todo;
+    @property({ type: Number })
+    idNum = -1;
+
+    @property({ type: String })
+    text = "";
+
+    @property({ type: Boolean })
+    completed = false;
 
     @state()
     isEditing: boolean = false;
@@ -134,17 +139,17 @@ export class TodoItem extends LitElement {
     override render() {
         const itemClassList = {
             todo: true,
-            completed: this.todo?.completed ?? false,
+            completed: this.completed ?? false,
             editing: this.isEditing,
         };
         return html`
             <li class="${classMap(itemClassList)}">
                 <div class="view">
-                    <input class="toggle" type="checkbox" .checked=${this.todo?.completed ?? false} @change=${this.#toggleTodo} />
-                    <label @dblclick=${this.#beginEdit}> ${this.todo?.text} </label>
+                    <input class="toggle" type="checkbox" .checked=${this.completed ?? false} @change=${this.#toggleTodo} />
+                    <label @dblclick=${this.#beginEdit}> ${this.text} </label>
                     <button @click=${this.#deleteTodo} class="destroy"></button>
                 </div>
-                <input class="edit" type="text" @change=${this.#finishEdit} @keyup=${this.#captureEscape} @blur=${this.#abortEdit} .value=${this.todo?.text ?? ""} />
+                <input class="edit" type="text" @change=${this.#finishEdit} @keyup=${this.#captureEscape} @blur=${this.#abortEdit} .value=${this.text ?? ""} />
             </li>
         `;
     }
@@ -153,11 +158,11 @@ export class TodoItem extends LitElement {
     @query(".destroy") destroyButton!: HTMLButtonElement;
 
     #toggleTodo() {
-        this.dispatchEvent(new EditTodoEvent({ ...this.todo!, completed: !this.todo!.completed }));
+        this.dispatchEvent(new EditTodoEvent({ id: this.idNum, completed: !this.completed }));
     }
 
     #deleteTodo() {
-        this.dispatchEvent(new DeleteTodoEvent(this.todo!.id));
+        this.dispatchEvent(new DeleteTodoEvent(this.idNum));
     }
 
     #beginEdit() {
@@ -167,7 +172,7 @@ export class TodoItem extends LitElement {
     #finishEdit(e: Event) {
         const el = e.target as HTMLInputElement;
         const text = el.value;
-        this.dispatchEvent(new EditTodoEvent({ ...this.todo!, text }));
+        this.dispatchEvent(new EditTodoEvent({ id: this.idNum, text }));
         this.isEditing = false;
     }
 
@@ -178,7 +183,7 @@ export class TodoItem extends LitElement {
     }
 
     #abortEdit(e: Event) {
-        (e.target as HTMLInputElement).value = this.todo?.text ?? "";
+        (e.target as HTMLInputElement).value = this.text ?? "";
     }
 }
 

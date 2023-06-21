@@ -4,6 +4,8 @@ export interface Todo {
     completed: boolean;
 }
 
+export type TodoEdit = Partial<Todo> & { id: number };
+
 const todoFilters = ["all", "active", "completed"] as const;
 export type TodoFilter = (typeof todoFilters)[number];
 function isTodoFilter(value: string | undefined): value is TodoFilter {
@@ -79,13 +81,13 @@ export class Todos extends EventTarget {
         this.#notifyChange();
     }
 
-    update(data: Todo) {
-        const index = this.#todos.findIndex((todo) => todo.id === data.id);
-        const todo = this.#todos[index];
+    update(edit: TodoEdit) {
+        const todo = this.#todos.find((todo) => todo.id === edit.id);
 
-        // Replace the list to trigger updates
-        this.#todos = [...this.#todos.slice(0, index), { ...todo, ...data }, ...this.#todos.slice(index + 1)];
-        this.#notifyChange();
+        if (todo === undefined) {
+            return;
+        }
+        Object.assign(todo, edit);
     }
 
     toggle(id: number) {
