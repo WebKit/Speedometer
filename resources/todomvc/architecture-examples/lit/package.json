@@ -3,6 +3,7 @@
   "type": "module",
   "scripts": {
     "serve": "wireit",
+    "dev": "wireit",
     "build": "wireit",
     "tsc": "wireit",
     "rollup": "wireit"
@@ -26,6 +27,15 @@
       "dependencies": [
         "build"
       ],
+      "files": [
+        "web-dev-server.config.js"
+      ],
+      "service": true,
+      "command": "wds"
+    },
+    "dev": {
+      "#comment": "like serve, only it doesn't do the slow rollup build",
+      "dependencies": ["tsc"],
       "files": [
         "web-dev-server.config.js"
       ],
