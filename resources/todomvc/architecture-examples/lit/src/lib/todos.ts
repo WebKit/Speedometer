@@ -16,24 +16,9 @@ function isTodoFilter(value: string | undefined): value is TodoFilter {
  * @fires a `change` event when the todo list changes.
  */
 export class Todos extends EventTarget {
-	#nextId;
-	#todos: Array<Todo>;
+	#nextId = 1;
+	#todos: Array<Todo> = [];
 	#filter: TodoFilter = this.#filterFromUrl();
-	constructor() {
-		super();
-		const stored = window.localStorage.getItem("todos");
-		let deserialized: { todos: Array<Todo>; nextId: number } | undefined;
-		try {
-			deserialized = stored && JSON.parse(stored);
-		} catch {}
-		if (deserialized) {
-			this.#todos = deserialized.todos;
-			this.#nextId = deserialized.nextId;
-		} else {
-			this.#todos = [];
-			this.#nextId = 1;
-		}
-	}
 
 	get all(): ReadonlyArray<Todo> {
 		return this.#todos;
