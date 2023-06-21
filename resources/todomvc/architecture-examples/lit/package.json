@@ -70,7 +70,7 @@
                 "rollup.config.mjs"
             ],
             "output": [
-                "rollup/index.js"
+                "dist/index.js"
             ],
             "command": "rollup --config rollup.config.mjs"
         }

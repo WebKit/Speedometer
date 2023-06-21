@@ -54,8 +54,9 @@ export class Todos extends EventTarget {
                 return this.completed;
             case "all":
             case undefined:
-                return this.all;
+            // fall through
         }
+        return this.all;
     }
 
     #notifyChange() {

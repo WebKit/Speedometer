@@ -4,7 +4,7 @@ import { property } from "lit/decorators/property.js";
 import { repeat } from "lit/directives/repeat.js";
 
 import { todoStyles } from "./todo.css.js";
-import { Todos } from "./todos.js";
+import { type Todos } from "./todos.js";
 
 import "./todo-item.js";
 import { ToggleAllTodoEvent } from "./events.js";
@@ -98,6 +98,7 @@ export class TodoList extends LitElement {
 }
 
 declare global {
+    // eslint-disable-next-line no-unused-vars
     interface HTMLElementTagNameMap {
         "todo-list": TodoList;
     }

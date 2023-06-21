@@ -12,8 +12,8 @@ import "./todo-form.js";
 import "./todo-footer.js";
 import { AddTodoEvent, DeleteTodoEvent, ToggleAllTodoEvent, EditTodoEvent, ClearCompletedEvent } from "./events.js";
 import { updateOnEvent } from "./utils.js";
-import { TodoForm } from "./todo-form.js";
-import { TodoList } from "./todo-list.js";
+import { type TodoForm } from "./todo-form.js";
+import { type TodoList } from "./todo-list.js";
 
 @customElement("todo-app")
 export class TodoApp extends LitElement {
@@ -130,6 +130,7 @@ export class TodoApp extends LitElement {
 }
 
 declare global {
+    // eslint-disable-next-line no-unused-vars
     interface HTMLElementTagNameMap {
         "todo-app": TodoApp;
     }

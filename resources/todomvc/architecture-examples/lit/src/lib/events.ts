@@ -1,4 +1,4 @@
-import type { Todo, TodoEdit } from "./todos.js";
+import type { TodoEdit } from "./todos.js";
 
 /**
  * An event that represents a request to add a new todo.
@@ -65,6 +65,7 @@ export class ClearCompletedEvent extends Event {
 }
 
 declare global {
+    // eslint-disable-next-line no-unused-vars
     interface HTMLElementEventMap {
         "todo-add": AddTodoEvent;
         "todo-delete": DeleteTodoEvent;

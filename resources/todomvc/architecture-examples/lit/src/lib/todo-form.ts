@@ -4,7 +4,7 @@ import { property } from "lit/decorators/property.js";
 import { query } from "lit/decorators/query.js";
 
 import { todoStyles } from "./todo.css.js";
-import { Todos } from "./todos.js";
+import { type Todos } from "./todos.js";
 import { AddTodoEvent } from "./events.js";
 import { updateOnEvent } from "./utils.js";
 
@@ -57,11 +57,11 @@ export class TodoForm extends LitElement {
     #onKeydown(e: KeyboardEvent) {
         if (e.key === "Enter")
             this.#onChange();
-
     }
 }
 
 declare global {
+    // eslint-disable-next-line no-unused-vars
     interface HTMLElementTagNameMap {
         "todo-form": TodoForm;
     }

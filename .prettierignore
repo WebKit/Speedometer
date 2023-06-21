@@ -10,6 +10,8 @@ package-lock.json
 !/resources/todomvc/architecture-examples/angular
 !/resources/todomvc/architecture-examples/backbone
 !/resources/todomvc/architecture-examples/lit
+/resources/todomvc/architecture-examples/lit/dist
+/resources/todomvc/architecture-examples/lit/.wireit
 !/resources/todomvc/architecture-examples/preact
 !/resources/todomvc/architecture-examples/react
 !/resources/todomvc/architecture-examples/react-redux

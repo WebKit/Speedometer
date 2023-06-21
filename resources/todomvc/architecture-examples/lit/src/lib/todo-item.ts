@@ -177,17 +177,18 @@ export class TodoItem extends LitElement {
     }
 
     #captureEscape(e: KeyboardEvent) {
-        if (e.key === "escape") 
+        if (e.key === "escape")
             this.#abortEdit(e);
-        
     }
 
     #abortEdit(e: Event) {
-        e.target as HTMLInputElement.value = this.text ?? "";
+        const input = e.target as HTMLInputElement;
+        input.value = this.text ?? "";
     }
 }
 
 declare global {
+    // eslint-disable-next-line no-unused-vars
     interface HTMLElementTagNameMap {
         "todo-item": TodoItem;
     }

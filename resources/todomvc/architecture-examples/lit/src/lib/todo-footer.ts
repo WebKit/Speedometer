@@ -4,7 +4,7 @@ import { property } from "lit/decorators/property.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import { todoStyles } from "./todo.css.js";
-import { Todos } from "./todos.js";
+import { type Todos } from "./todos.js";
 import { updateOnEvent } from "./utils.js";
 import { ClearCompletedEvent } from "./events.js";
 
@@ -90,7 +90,8 @@ export class TodoFooter extends LitElement {
         todoList?: Todos;
 
     override render() {
-        return this.todoList?.all.length ?? 0 > 0
+        const isEmpty = (this.todoList?.all.length ?? 0) > 0;
+        return isEmpty
             ? html`<span class="todo-count">
                       <strong>${this.todoList?.active.length}</strong>
                       items left
@@ -118,7 +119,7 @@ export class TodoFooter extends LitElement {
     })}
                       </li>
                   </ul>
-                  ${this.todoList?.completed.length ?? 0 > 0 ? html`<button @click=${this.#onClearCompletedClick} class="clear-completed">Clear Completed</button>` : nothing}`
+                  ${(this.todoList?.completed.length ?? 0) > 0 ? html`<button @click=${this.#onClearCompletedClick} class="clear-completed">Clear Completed</button>` : nothing}`
             : nothing;
     }
 
@@ -132,6 +133,7 @@ function filterLink({ text, filter, selectedFilter }: { text: string; filter: st
 }
 
 declare global {
+    // eslint-disable-next-line no-unused-vars
     interface HTMLElementTagNameMap {
         "todo-footer": TodoFooter;
     }

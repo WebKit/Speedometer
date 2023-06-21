@@ -1,4 +1,4 @@
-import { ReactiveElement } from "lit";
+import type { ReactiveElement } from "lit";
 
 interface ListenerCarryingElement extends ReactiveElement {
     __updateOnEventListener?: () => void;
@@ -13,8 +13,6 @@ interface ListenerCarryingElement extends ReactiveElement {
  */
 export const updateOnEvent = (eventName: string) => (target: ListenerCarryingElement, propertyKey: string) => {
     const descriptor = Object.getOwnPropertyDescriptor(target, propertyKey)!;
-    if (descriptor == null || descriptor.get == null || descriptor.set == null)
-        throw new Error("updateOnEvent should only be called on an accessor, " + `but ${propertyKey} did not have both a getter and setter`);
 
     const { get, set } = descriptor;
     const newDescriptor = {
