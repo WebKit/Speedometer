@@ -56,6 +56,10 @@ input {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+input:placeholder-shown {
+	text-overflow: ellipsis;
+}
+
 /* utility classes */
 
 /* used for things that should be hidden in the ui,
