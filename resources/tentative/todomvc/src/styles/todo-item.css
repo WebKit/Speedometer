@@ -135,3 +135,21 @@
 		display: block;
 	}
 }
+
+/* rtl support */
+html[dir="rtl"] .toggle-todo-input,
+:host-context(html[dir="rtl"]) .toggle-todo-input { 
+	right: 3px;
+	left: unset;
+}
+
+html[dir="rtl"] .todo-item-text,
+:host-context(html[dir="rtl"]) .todo-item-text { 
+	background-position: center right 6px;
+}
+
+html[dir="rtl"] .remove-todo-button,
+:host-context(html[dir="rtl"]) .remove-todo-button { 
+	left: 10px;
+	right: unset;
+}

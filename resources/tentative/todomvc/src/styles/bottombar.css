@@ -132,3 +132,16 @@
 		transform: unset;
 	}
 }
+
+/* rtl support */
+html[dir="rtl"] .todo-status,
+:host-context(html[dir="rtl"]) .todo-status { 
+	right: 12px;
+	left: unset;
+}
+
+html[dir="rtl"] .clear-completed-button,
+:host-context(html[dir="rtl"]) .clear-completed-button { 
+	left: 12px;
+	right: unset;
+}

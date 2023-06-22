@@ -176,14 +176,14 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
-            for (let i = 0; i < numberOfItemsToAdd; i++){
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
                 const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
                 item.click();
             }
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
-            for (let i = 0; i < numberOfItemsToAdd; i++){
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
                 const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
                 item.click();
             }
