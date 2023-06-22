@@ -36,10 +36,7 @@ class Page {
         });
     }
 
-    getParent(path) {
-        if (!path)
-            return this._frame.contentDocument;
-
+    _getParent(path) {
         const parent = path.reduce((root, selector) => {
             const node = root.querySelector(selector);
             return node.shadowRoot ?? node;
@@ -48,16 +45,46 @@ class Page {
         return parent;
     }
 
-    querySelector(selector, path) {
-        const element = this.getParent(path).querySelector(selector);
+    /**
+     * Returns the first element within the document that matches the specified selector, or group of selectors.
+     * If no matches are found, null is returned.
+     *
+     * An optional path param is added to be able to target elements within a shadow DOM or nested shadow DOMs.
+     *
+     * @example
+     * // DOM structure: <todo-app> -> #shadow-root -> <todo-list> -> #shadow-root -> <todo-item>
+     * // return PageElement(<todo-item>)
+     * querySelector("todo-item", ["todo-app", "todo-list"]);
+     *
+     * @param {string} selector A string containing one or more selectors to match.
+     * @param {string[]} [path] An array containing a path to the parent element.
+     * @returns PageElement | null
+     */
+    querySelector(selector, path = []) {
+        const element = this._getParent(path).querySelector(selector);
 
         if (element === null)
             return null;
         return this._wrapElement(element);
     }
 
-    querySelectorAll(selector, path) {
-        const elements = Array.from(this.getParent(path).querySelectorAll(selector));
+    /**
+     * Returns all elements within the document that matches the specified selector, or group of selectors.
+     * If no matches are found, null is returned.
+     *
+     * An optional path param is added to be able to target elements within a shadow DOM or nested shadow DOMs.
+     *
+     * @example
+     * // DOM structure: <todo-app> -> #shadow-root -> <todo-list> -> #shadow-root -> <todo-item>
+     * // return [PageElement(<todo-item>), PageElement(<todo-item>)]
+     * querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+     *
+     * @param {string} selector A string containing one or more selectors to match.
+     * @param {string[]} [path] An array containing a path to the parent element.
+     * @returns array
+     */
+    querySelectorAll(selector, path = []) {
+        const elements = Array.from(this._getParent(path).querySelectorAll(selector));
         for (let i = 0; i < elements.length; i++)
             elements[i] = this._wrapElement(elements[i]);
         return elements;
@@ -118,10 +145,6 @@ class PageElement {
         return new PageElement(this.#node[name]());
     }
 
-    callElementMethod(name, ...args) {
-        return this.#node[name](...args);
-    }
-
     dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
         if (eventName === "submit")
             // FIXME FireFox doesn't like `new Event('submit')
@@ -163,9 +186,25 @@ class PageElement {
         this.#node.dispatchEvent(event);
     }
 
-    querySelector(selector) {
-        const root = this.#node.shadowRoot ?? this.#node;
-        const element = root.querySelector(selector);
+    _getParent(path) {
+        const parent = path.reduce((root, selector) => {
+            const node = root.querySelector(selector);
+            return node.shadowRoot ?? node;
+        }, this.#node.shadowRoot ?? this.#node);
+
+        return parent;
+    }
+
+    /**
+     * Returns the first element found in a node of a PageElement that matches the specified selector, or group of selectors. If a shadow DOM is present in the node, the shadow DOM is used to query.
+     * If no matches are found, null is returned.
+     *
+     * @param {string} selector A string containing one or more selectors to match.
+     * @param {string[]} [path] An array containing a path to the parent element.
+     * @returns PageElement | null
+     */
+    querySelector(selector, path = []) {
+        const element = this._getParent(path).querySelector(selector);
 
         if (element === null)
             return null;
