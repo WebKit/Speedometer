@@ -22,8 +22,12 @@ class TodoItem extends HTMLElement {
         this.todoButton = node.querySelector(".remove-todo-button");
         this.editLabel = node.querySelector(".edit-todo-label");
         this.editInput = node.querySelector(".edit-todo-input");
-        // shadow dom
+        // create shadow dom
         this.shadow = this.attachShadow({ mode: "open" });
+        // rtl support to target with styles
+        this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
+        this.shadow.host.setAttribute("dir", this.htmlDirection);
+        // add shadow dom
         this.shadow.append(node);
         // listeners
         this.keysListeners = [];

@@ -97,6 +97,19 @@
 	text-decoration: underline;
 }
 
+/* rtl support */
+html[dir="rtl"] .todo-status,
+:host([dir="rtl"]) .todo-status { 
+	right: 12px;
+	left: unset;
+}
+
+html[dir="rtl"] .clear-completed-button,
+:host([dir="rtl"]) .clear-completed-button { 
+	left: 12px;
+	right: unset;
+}
+
 @media (max-width: 430px) {
 	.bottombar {
 		height: 120px;
@@ -130,5 +143,18 @@
 		right: unset;
 		top: unset;
 		transform: unset;
+	}
+
+	/* rtl support */
+	html[dir="rtl"] .todo-status,
+	:host([dir="rtl"]) .todo-status { 
+		right: unset;
+		left: unset;
+	}
+
+	html[dir="rtl"] .clear-completed-button,
+	:host([dir="rtl"]) .clear-completed-button { 
+		left: unset;
+		right: unset;
 	}
 }

@@ -27,8 +27,12 @@ class TodoTopbar extends HTMLElement {
         this.todoInput = node.querySelector("#new-todo");
         this.toggleInput = node.querySelector("#toggle-all");
         this.toggleContainer = node.querySelector(".toggle-all-display");
-        // shadow dom
+        // create shadow dom
         this.shadow = this.attachShadow({ mode: "open" });
+        // rtl support to target with styles
+        this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
+        this.shadow.host.setAttribute("dir", this.htmlDirection);
+        // add shadow dom
         this.shadow.append(node);
         // listeners
         this.keysListeners = [];

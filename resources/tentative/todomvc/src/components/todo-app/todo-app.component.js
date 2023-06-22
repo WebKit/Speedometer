@@ -19,8 +19,12 @@ class TodoApp extends HTMLElement {
         node.querySelector("[name=\"bottombar\"]").append(this.bottombar);
         // add items, if data
         this.list.addItems(this._data);
-        // shadow dom
+        // create shadow dom
         this.shadow = this.attachShadow({ mode: "open" });
+        // rtl support to target with styles
+        this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
+        this.shadow.host.setAttribute("dir", this.htmlDirection);
+        // add shadow dom
         this.shadow.append(node);
         // router
         this.router = useRouter();
