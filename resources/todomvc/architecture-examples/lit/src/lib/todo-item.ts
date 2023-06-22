@@ -123,10 +123,10 @@ export class TodoItem extends LitElement {
         `,
     ];
 
-    @property({ type: Number })
-        idNum = -1;
+    @property()
+        todoId = "";
 
-    @property({ type: String })
+    @property()
         text = "";
 
     @property({ type: Boolean })
@@ -154,11 +154,11 @@ export class TodoItem extends LitElement {
     }
 
     #toggleTodo() {
-        this.dispatchEvent(new EditTodoEvent({ id: this.idNum, completed: !this.completed }));
+        this.dispatchEvent(new EditTodoEvent({ id: this.todoId, completed: !this.completed }));
     }
 
     #deleteTodo() {
-        this.dispatchEvent(new DeleteTodoEvent(this.idNum));
+        this.dispatchEvent(new DeleteTodoEvent(this.todoId));
     }
 
     #beginEdit() {
@@ -168,7 +168,7 @@ export class TodoItem extends LitElement {
     #finishEdit(e: Event) {
         const el = e.target as HTMLInputElement;
         const text = el.value;
-        this.dispatchEvent(new EditTodoEvent({ id: this.idNum, text }));
+        this.dispatchEvent(new EditTodoEvent({ id: this.todoId, text }));
         this.isEditing = false;
     }
 

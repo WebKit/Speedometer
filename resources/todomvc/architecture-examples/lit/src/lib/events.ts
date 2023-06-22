@@ -20,9 +20,9 @@ export class AddTodoEvent extends Event {
 export class DeleteTodoEvent extends Event {
     static readonly eventName = "todo-delete" as const;
 
-    readonly id: number;
+    readonly id: string;
 
-    constructor(id: number) {
+    constructor(id: string) {
         super(DeleteTodoEvent.eventName, { bubbles: true, composed: true });
         this.id = id;
     }

@@ -70,7 +70,7 @@ export class TodoList extends LitElement {
                 ${repeat(
         this.todoList?.filtered() ?? [],
         (todo) => todo.id,
-        (todo) => html`<todo-item .idNum=${todo.id} .text=${todo.text} .completed=${todo.completed}></todo-item>`
+        (todo) => html`<todo-item .todoId=${todo.id} .text=${todo.text} .completed=${todo.completed}></todo-item>`
     )}
             </ul>
         `;
