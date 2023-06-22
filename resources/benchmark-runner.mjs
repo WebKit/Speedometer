@@ -190,7 +190,7 @@ class PageElement {
         const parent = path.reduce((root, selector) => {
             const node = root.querySelector(selector);
             return node.shadowRoot ?? node;
-        }, this.#node);
+        }, this.#node.shadowRoot ?? this.#node);
 
         return parent;
     }
