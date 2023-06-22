@@ -6,7 +6,6 @@ import { classMap } from "lit/directives/class-map.js";
 
 import { todoStyles } from "./todo.css.js";
 import { DeleteTodoEvent, EditTodoEvent } from "./events.js";
-import { query } from "lit/decorators/query.js";
 
 @customElement("todo-item")
 export class TodoItem extends LitElement {
@@ -153,9 +152,6 @@ export class TodoItem extends LitElement {
             </li>
         `;
     }
-
-    @query(".toggle") toggle!: HTMLInputElement;
-    @query(".destroy") destroyButton!: HTMLButtonElement;
 
     #toggleTodo() {
         this.dispatchEvent(new EditTodoEvent({ id: this.idNum, completed: !this.completed }));

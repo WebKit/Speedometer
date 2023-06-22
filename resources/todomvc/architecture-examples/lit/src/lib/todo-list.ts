@@ -79,22 +79,6 @@ export class TodoList extends LitElement {
     #onToggleAllChange() {
         this.dispatchEvent(new ToggleAllTodoEvent());
     }
-
-    getToggles(): HTMLInputElement[] {
-        const toggles = [];
-        for (const item of this.renderRoot.querySelectorAll("todo-item"))
-            toggles.push(item.toggle);
-
-        return toggles;
-    }
-
-    getDestroyButtons(): HTMLButtonElement[] {
-        const buttons = [];
-        for (const item of this.renderRoot.querySelectorAll("todo-item"))
-            buttons.push(item.destroyButton);
-
-        return buttons;
-    }
 }
 
 declare global {

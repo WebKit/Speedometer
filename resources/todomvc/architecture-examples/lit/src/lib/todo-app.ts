@@ -1,7 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { customElement } from "lit/decorators/custom-element.js";
-import { query } from "lit/decorators/query.js";
 import { state } from "lit/decorators/state.js";
 
 import { todoStyles } from "./todo.css.js";
@@ -12,8 +11,6 @@ import "./todo-form.js";
 import "./todo-footer.js";
 import { AddTodoEvent, DeleteTodoEvent, ToggleAllTodoEvent, EditTodoEvent, ClearCompletedEvent } from "./events.js";
 import { updateOnEvent } from "./utils.js";
-import { type TodoForm } from "./todo-form.js";
-import { type TodoList } from "./todo-list.js";
 
 @customElement("todo-app")
 export class TodoApp extends LitElement {
@@ -91,21 +88,6 @@ export class TodoApp extends LitElement {
                 .todoList=${this.todoList}
             ></todo-footer>
         </section>`;
-    }
-
-    @query("todo-form") private form!: TodoForm;
-    @query("todo-list") private list!: TodoList;
-
-    getNewTodoInput(): HTMLInputElement {
-        return this.form.newTodoInput;
-    }
-
-    getToggles(): HTMLInputElement[] {
-        return this.list.getToggles();
-    }
-
-    getDestroyButtons(): HTMLButtonElement[] {
-        return this.list.getDestroyButtons();
     }
 
     #onAddTodo = (e: AddTodoEvent) => {
