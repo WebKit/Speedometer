@@ -45,15 +45,6 @@ class Page {
         });
     }
 
-    _getParent(lookupStartNode, path) {
-        const parent = path.reduce((root, selector) => {
-            const node = root.querySelector(selector);
-            return node.shadowRoot ?? node;
-        }, lookupStartNode);
-
-        return parent;
-    }
-
     /**
      * Returns the first element within the document that matches the specified selector, or group of selectors.
      * If no matches are found, null is returned.
@@ -205,9 +196,17 @@ class PageElement {
      * @param {string[]} [path] An array containing a path to the parent element.
      * @returns PageElement | null
      */
-    querySelector(selector, path = []) {
+    querySelectorInShadowRoot(selector, path = []) {
         const lookupStartNode = this.#node.shadowRoot ?? this.#node;
         const element = getParent(lookupStartNode, path).querySelector(selector);
+
+        if (element === null)
+            return null;
+        return new PageElement(element);
+    }
+
+    querySelector(selector) {
+        const element = this.#node.querySelector(selector);
 
         if (element === null)
             return null;
