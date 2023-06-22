@@ -45,15 +45,6 @@ class Page {
         });
     }
 
-    _getParent(lookupStartNode, path) {
-        const parent = path.reduce((root, selector) => {
-            const node = root.querySelector(selector);
-            return node.shadowRoot ?? node;
-        }, lookupStartNode);
-
-        return parent;
-    }
-
     /**
      * Returns the first element within the document that matches the specified selector, or group of selectors.
      * If no matches are found, null is returned.
