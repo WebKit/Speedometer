@@ -19,6 +19,24 @@ function getParent(lookupStartNode, path) {
     return parent;
 }
 
+/**
+ * @param {Array<string>} selectors An array of css selectors.
+ * @param {Element|ShadowRoot} from The root element to query inside.
+ * @yields {Element}
+ */
+function* deepQuerySelectorAll(selectors, from) {
+    if (selectors.length === 1) {
+        yield* from.querySelectorAll(selectors[0]);
+        return;
+    }
+    if (selectors.length === 0)
+        throw new RangeError("querySelectorDeep was passed an empty array of selectors");
+    for (const matched of from.querySelectorAll(selectors[0])) {
+        const parent = matched.shadowRoot ?? matched;
+        yield* deepQuerySelectorAll(selectors.slice(1), parent);
+    }
+}
+
 class Page {
     constructor(frame) {
         this._frame = frame;
@@ -71,7 +89,6 @@ class Page {
 
     /**
      * Returns all elements within the document that matches the specified selector, or group of selectors.
-     * If no matches are found, null is returned.
      *
      * An optional path param is added to be able to target elements within a shadow DOM or nested shadow DOMs.
      *
@@ -85,8 +102,7 @@ class Page {
      * @returns array
      */
     querySelectorAll(selector, path = []) {
-        const lookupStartNode = this._frame.contentDocument;
-        const elements = Array.from(getParent(lookupStartNode, path).querySelectorAll(selector));
+        const elements = Array.from(deepQuerySelectorAll([...path, selector], this._frame.contentDocument));
         for (let i = 0; i < elements.length; i++)
             elements[i] = this._wrapElement(elements[i]);
         return elements;
