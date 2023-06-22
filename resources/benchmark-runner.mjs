@@ -37,9 +37,6 @@ class Page {
     }
 
     getParent(path) {
-        if (!path)
-            return this._frame.contentDocument;
-
         const parent = path.reduce((root, selector) => {
             const node = root.querySelector(selector);
             return node.shadowRoot ?? node;
@@ -48,7 +45,7 @@ class Page {
         return parent;
     }
 
-    querySelector(selector, path) {
+    querySelector(selector, path = []) {
         const element = this.getParent(path).querySelector(selector);
 
         if (element === null)
@@ -56,7 +53,7 @@ class Page {
         return this._wrapElement(element);
     }
 
-    querySelectorAll(selector, path) {
+    querySelectorAll(selector, path = []) {
         const elements = Array.from(this.getParent(path).querySelectorAll(selector));
         for (let i = 0; i < elements.length; i++)
             elements[i] = this._wrapElement(elements[i]);
