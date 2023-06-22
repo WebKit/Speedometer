@@ -501,7 +501,7 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Nuxt",
-    url: "newssite/news-nuxt/dist/",
+    url: "newssite/news-nuxt/dist/index.html",
     tags: ["newssite"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
@@ -546,11 +546,9 @@ Suites.push({
     tags: ["editor"],
     async prepare(page) {},
     tests: [
-        new BenchmarkTestStep("Create", (page) => {
+        new BenchmarkTestStep("Long", (page) => {
             page.querySelector("#create").click();
             page.querySelector("#layout").click();
-        }),
-        new BenchmarkTestStep("Long", (page) => {
             page.querySelector("#long").click();
             page.querySelector("#layout").click();
         }),
@@ -567,11 +565,9 @@ Suites.push({
     tags: ["editor"],
     async prepare(page) {},
     tests: [
-        new BenchmarkTestStep("Create", (page) => {
+        new BenchmarkTestStep("Long", (page) => {
             page.querySelector("#create").click();
             page.querySelector("#layout").click();
-        }),
-        new BenchmarkTestStep("Long", (page) => {
             page.querySelector("#long").click();
             page.querySelector("#layout").click();
         }),

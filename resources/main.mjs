@@ -60,6 +60,7 @@ class MainBenchmarkClient {
             return testsCount + suite.tests.length;
         }, 0);
         this.stepCount = params.iterationCount * totalSubtestsCount;
+        this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
         const runner = new BenchmarkRunner(Suites, this);
         runner.runMultipleIterations(params.iterationCount);
@@ -79,7 +80,7 @@ class MainBenchmarkClient {
 
     didRunTest() {
         this._finishedTestCount++;
-        this._progressCompleted.style.width = `${(this._finishedTestCount * 100) / this.stepCount}%`;
+        this._progressCompleted.value = this._finishedTestCount;
     }
 
     didRunSuites(measuredValues) {

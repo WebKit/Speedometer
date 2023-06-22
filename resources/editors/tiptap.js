@@ -2,7 +2,7 @@
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 
-export default async function (element, value) {
+export default function (element, value) {
     let editor = new Editor({
         element,
         extensions: [StarterKit],

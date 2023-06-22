@@ -18,6 +18,11 @@ export default defineNuxtConfig({
             }
         },
     }, */
+    router: {
+        options: {
+            hashMode: true,
+        },
+    },
     nitro: {
         prerender: {
             crawlLinks: false,
