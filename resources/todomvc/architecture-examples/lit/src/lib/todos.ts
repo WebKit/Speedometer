@@ -88,6 +88,7 @@ export class Todos extends EventTarget {
             return;
 
         Object.assign(todo, edit);
+        this.#notifyChange();
     }
 
     toggle(id: number) {
