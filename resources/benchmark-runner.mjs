@@ -186,16 +186,25 @@ class PageElement {
         this.#node.dispatchEvent(event);
     }
 
+    _getParent(path) {
+        const parent = path.reduce((root, selector) => {
+            const node = root.querySelector(selector);
+            return node.shadowRoot ?? node;
+        }, this.#node);
+
+        return parent;
+    }
+
     /**
      * Returns the first element found in a node of a PageElement that matches the specified selector, or group of selectors. If a shadow DOM is present in the node, the shadow DOM is used to query.
      * If no matches are found, null is returned.
      *
      * @param {string} selector A string containing one or more selectors to match.
+     * @param {string[]} [path] An array containing a path to the parent element.
      * @returns PageElement | null
      */
-    querySelector(selector) {
-        const root = this.#node.shadowRoot ?? this.#node;
-        const element = root.querySelector(selector);
+    querySelector(selector, path = []) {
+        const element = this._getParent(path).querySelector(selector);
 
         if (element === null)
             return null;
