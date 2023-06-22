@@ -10,6 +10,15 @@ export class BenchmarkTestStep {
     }
 }
 
+function getParent(lookupStartNode, path) {
+    const parent = path.reduce((root, selector) => {
+        const node = root.querySelector(selector);
+        return node.shadowRoot ?? node;
+    }, lookupStartNode);
+
+    return parent;
+}
+
 class Page {
     constructor(frame) {
         this._frame = frame;
@@ -36,11 +45,11 @@ class Page {
         });
     }
 
-    _getParent(path) {
+    _getParent(lookupStartNode, path) {
         const parent = path.reduce((root, selector) => {
             const node = root.querySelector(selector);
             return node.shadowRoot ?? node;
-        }, this._frame.contentDocument);
+        }, lookupStartNode);
 
         return parent;
     }
@@ -61,7 +70,8 @@ class Page {
      * @returns PageElement | null
      */
     querySelector(selector, path = []) {
-        const element = this._getParent(path).querySelector(selector);
+        const lookupStartNode = this._frame.contentDocument;
+        const element = getParent(lookupStartNode, path).querySelector(selector);
 
         if (element === null)
             return null;
@@ -84,7 +94,8 @@ class Page {
      * @returns array
      */
     querySelectorAll(selector, path = []) {
-        const elements = Array.from(this._getParent(path).querySelectorAll(selector));
+        const lookupStartNode = this._frame.contentDocument;
+        const elements = Array.from(getParent(lookupStartNode, path).querySelectorAll(selector));
         for (let i = 0; i < elements.length; i++)
             elements[i] = this._wrapElement(elements[i]);
         return elements;
@@ -186,15 +197,6 @@ class PageElement {
         this.#node.dispatchEvent(event);
     }
 
-    _getParent(path) {
-        const parent = path.reduce((root, selector) => {
-            const node = root.querySelector(selector);
-            return node.shadowRoot ?? node;
-        }, this.#node.shadowRoot ?? this.#node);
-
-        return parent;
-    }
-
     /**
      * Returns the first element found in a node of a PageElement that matches the specified selector, or group of selectors. If a shadow DOM is present in the node, the shadow DOM is used to query.
      * If no matches are found, null is returned.
@@ -204,7 +206,8 @@ class PageElement {
      * @returns PageElement | null
      */
     querySelector(selector, path = []) {
-        const element = this._getParent(path).querySelector(selector);
+        const lookupStartNode = this.#node.shadowRoot ?? this.#node;
+        const element = getParent(lookupStartNode, path).querySelector(selector);
 
         if (element === null)
             return null;
