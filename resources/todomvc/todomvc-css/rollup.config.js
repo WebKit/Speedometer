@@ -56,7 +56,7 @@ export default {
             ],
         }),
         constructableCSS({
-            src: ["src/css/*", "!src/css/partials.css", "!src/css/global.css"],
+            src: ["src/css/*", "!src/css/partials.css"],
             dest: "dist/",
         }),
         html(),
