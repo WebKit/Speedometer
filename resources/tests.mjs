@@ -71,7 +71,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 deleteButtons[i].click();
         }),
     ],
@@ -101,7 +101,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 deleteButtons[i].click();
         }),
     ],
@@ -131,7 +131,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 deleteButtons[i].click();
         }),
     ],
@@ -161,7 +161,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 deleteButtons[i].click();
         }),
     ],
@@ -191,7 +191,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 deleteButtons[i].click();
         }),
     ],
@@ -220,7 +220,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 deleteButtons[i].click();
         }),
     ],
@@ -251,7 +251,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 deleteButtons[i].click();
         }),
     ],
@@ -281,7 +281,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 deleteButtons[i].click();
         }),
     ],
@@ -311,7 +311,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 deleteButtons[i].click();
         }),
     ],
@@ -340,7 +340,7 @@ Suites.push({
                 checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 page.querySelector(".destroy").click();
         }),
     ],
@@ -369,7 +369,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 deleteButtons[i].click();
         }),
     ],
@@ -398,7 +398,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                 deleteButtons[i].click();
         }),
     ],
