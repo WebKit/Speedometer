@@ -240,7 +240,6 @@ class InteractiveTimeSeriesChart extends TimeSeriesChart {
 
     _mouseDown(event)
     {
-        console.log('_mouseDown', event.offsetX, event.offsetY, event.screenX, event.screenY, event.target, event.target.getBoundingClientRect());
         this._lastMouseDownLocation = {x: event.offsetX, y: event.offsetY};
     }
 
@@ -371,7 +370,7 @@ class InteractiveTimeSeriesChart extends TimeSeriesChart {
             var source = this._sourceList[i];
             if (!series || !source.interactive)
                 continue;
-            for (var point of series) {
+            for (let point = series.firstPoint(); point; point = series.nextPoint(point)) {
                 var distance = weightedDistance(point);
                 if (minDistance === undefined || distance < minDistance) {
                     minDistance = distance;

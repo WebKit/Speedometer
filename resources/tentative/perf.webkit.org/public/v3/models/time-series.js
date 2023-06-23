@@ -147,7 +147,8 @@ class TimeSeriesView {
 
     findById(id)
     {
-        for (let point of this) {
+        for (let i = this._startingIndex; i < this._afterEndingIndex; ++i) {
+            let point = this._data[i];
             if (point.id == id)
                 return point;
         }
@@ -159,8 +160,10 @@ class TimeSeriesView {
         if (this._values == null) {
             this._values = new Array(this._length);
             let i = 0;
-            for (let point of this)
+            for (let index = this._startingIndex; index < this._afterEndingIndex; ++index) {
+                let point = this._data[index];
                 this._values[i++] = point.value;
+            }
         }
         return this._values;
     }
@@ -169,7 +172,8 @@ class TimeSeriesView {
     {
         const filteredData = [];
         let i = 0;
-        for (let point of this) {
+        for (let index = this._startingIndex; index < this._afterEndingIndex; ++index) {
+            let point = this._data[index];
             if (callback(point, i))
                 filteredData.push(point);
             i++;
@@ -201,7 +205,8 @@ class TimeSeriesView {
     firstPointInTimeRange(startTime, endTime)
     {
         console.assert(startTime <= endTime);
-        for (let point of this) {
+        for (let index = this._startingIndex; index < this._afterEndingIndex; ++index) {
+            let point = this._data[index];
             if (point.time > endTime)
                 return null;
             if (point.time >= startTime)
@@ -213,30 +218,14 @@ class TimeSeriesView {
     lastPointInTimeRange(startTime, endTime)
     {
         console.assert(startTime <= endTime);
-        for (let point of this._reverse()) {
+        for (let index = this._afterEndingIndex - 1; index >= this._startingIndex; --index) {
+            let point = this._data[index];
             if (point.time < startTime)
                 return null;
             if (point.time <= endTime)
                 return point;
         }
         return null;
-    }
-
-    *[Symbol.iterator]()
-    {
-        const data = this._data;
-        const afterEnd = this._afterEndingIndex;
-        let i = this._startingIndex;
-        for (let i = this._startingIndex; i < afterEnd; ++i)
-            yield data[i];
-    }
-
-    *_reverse()
-    {
-        const data = this._data;
-        const beginning = this._startingIndex;
-        for (let i = this._afterEndingIndex - 1; i >= beginning; --i)
-            yield data[i];
     }
 }
 
