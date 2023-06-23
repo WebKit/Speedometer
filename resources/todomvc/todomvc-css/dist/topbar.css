@@ -23,7 +23,7 @@
 	color: rgba(0, 0, 0, 0.4);
 }
 
-.toggle-all-display {
+.toggle-all-container {
 	width: 45px;
 	height: 68px;
 	position: absolute;
@@ -85,8 +85,8 @@ html[dir="rtl"] .new-todo-input,
 	padding: 0 60px 0 32px;
 }
 
-html[dir="rtl"] .toggle-all-display,
-:host([dir="rtl"]) .toggle-all-display { 
+html[dir="rtl"] .toggle-all-container,
+:host([dir="rtl"]) .toggle-all-container { 
 	right: 0;
 	left: unset;
 }

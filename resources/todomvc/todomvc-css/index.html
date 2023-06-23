@@ -17,12 +17,12 @@
                     <label for="new-todo" class="visually-hidden">Enter a new todo.</label>
                     <input id="new-todo" class="new-todo-input" placeholder="What needs to be done?" autofocus />
                 </div>
-                <div class="toggle-all-display">
+                <div class="toggle-all-container">
                     <input id="toggle-all" class="toggle-all-input" type="checkbox" />
                     <label for="toggle-all" class="toggle-all-label">Mark all todos as complete.</label>
                 </div>
             </header>
-            <section class="main">
+            <main class="main">
                 <ul class="todo-list">
                     <li id="todo-item-0" class="todo-item completed">
                         <div class="display-todo">
@@ -31,7 +31,7 @@
                             <span id="update-todo-0" class="todo-item-text truncate-singleline" tabindex="0">Taste JavaScript</span>
                             <button id="remove-todo-0" class="remove-todo-button" title="Remove Todo"></button>
                         </div>
-                        <div class="edit-todo-display">
+                        <div class="edit-todo-container">
                             <label for="edit-todo-0" class="visually-hidden">Edit todo</label>
                             <input id="edit-todo-0" class="edit-todo-input" value="Create a TodoMVC template" />
                         </div>
@@ -43,7 +43,7 @@
                             <span id="update-todo-1" class="todo-item-text truncate-singleline" tabindex="0">Buy a unicorn</span>
                             <button id="remove-todo-1" class="remove-todo-button" title="Remove Todo"></button>
                         </div>
-                        <div class="edit-todo-display">
+                        <div class="edit-todo-container">
                             <label for="edit-todo-1" class="visually-hidden">Edit todo</label>
                             <input id="edit-todo-1" class="edit-todo-input" value="Rule the web" />
                         </div>
@@ -55,13 +55,13 @@
                             <span id="update-todo-2" class="todo-item-text truncate-singleline" tabindex="0">Change me</span>
                             <button id="remove-todo-2" class="remove-todo-button" title="Remove Todo"></button>
                         </div>
-                        <div class="edit-todo-display">
+                        <div class="edit-todo-container">
                             <label for="edit-todo-2" class="visually-hidden">Edit todo</label>
                             <input id="edit-todo-2" class="edit-todo-input" value="Change me" />
                         </div>
                     </li>
                 </ul>
-            </section>
+            </main>
             <footer class="bottombar">
                 <div class="todo-status"><span class="todo-count">0</span> item left</div>
                 <ul class="filter-list">

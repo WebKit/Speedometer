@@ -19,11 +19,11 @@
 	padding: 0;
 }
 
-.edit-todo-display {
+.edit-todo-container {
 	display: none;
 }
 
-.todo-item.editing .edit-todo-display {
+.todo-item.editing .edit-todo-container {
 	display: block;
 }
 
