@@ -28,7 +28,14 @@
      * @constructor
      */
     function Template() {
-        this.defaultTemplate = '<li data-id="{{id}}" class="{{completed}}">' + '<div class="view">' + '<input class="toggle" type="checkbox" {{checked}}>' + "<label>{{title}}</label>" + '<button class="destroy"></button>' + "</div>" + "</li>";
+        this.defaultTemplate
+            = '<li data-id="{{id}}" class="targeted li-{{li-index}} {{completed}}">'
+            + '<div class="targeted view-{{view-index}}">'
+            + '<input class="toggle" type="checkbox" {{checked}}>'
+            + "<label>{{title}}</label>"
+            + '<button class="destroy"></button>'
+            + "</div>"
+            + "</li>";
     }
 
     /**
@@ -66,6 +73,8 @@
             template = template.replace("{{title}}", escape(data[i].title));
             template = template.replace("{{completed}}", completed);
             template = template.replace("{{checked}}", checked);
+            template = template.replace("{{li-index}}", i);
+            template = template.replace("{{view-index}}", i);
 
             view = view + template;
         }

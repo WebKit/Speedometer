@@ -8,7 +8,7 @@ export default function TodoMain({ onChange, onToggle, onRemove, onSave, todos, 
     const activeTodoCount = todos.filter(FILTERS["active"]).length;
 
     return (
-        <section class="main">
+        <main class="main">
             <div class="toggle-all-container">
                 <input class="toggle-all" type="checkbox" checked={activeTodoCount === 0} onChange={onChange} />
                 <label class="toggle-all-label" htmlFor="toggle-all">
@@ -16,10 +16,10 @@ export default function TodoMain({ onChange, onToggle, onRemove, onSave, todos, 
                 </label>
             </div>
             <ul class="todo-list">
-                {visibleTodos.map((todo) =>
-                    <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onRemove={onRemove} onSave={onSave} />
+                {visibleTodos.map((todo, index) =>
+                    <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onRemove={onRemove} onSave={onSave} index={index} />
                 )}
             </ul>
-        </section>
+        </main>
     );
 }

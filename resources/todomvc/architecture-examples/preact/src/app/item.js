@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { h } from "preact";
 import { useState, useEffect, useRef } from "preact/hooks";
-export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
+export default function TodoItem({ onSave, onRemove, onToggle, todo, index }) {
     const [editing, setEditing] = useState(false);
     const inputRef = useRef(null);
 
@@ -47,8 +47,8 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo }) {
     }
 
     return (
-        <li class={cx({ completed: todo.completed, editing })}>
-            <div class="view">
+        <li class={cx("targeted", `li-${index}`, { completed: todo.completed, editing })}>
+            <div class={cx("targeted", `view-${index}`)}>
                 <input class="toggle" type="checkbox" checked={todo.completed} onChange={handleToggle} />
                 <label onDblClick={handleDoubleClick}>{todo.title}</label>
                 <button class="destroy" onClick={handleRemove} />
