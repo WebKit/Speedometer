@@ -173,7 +173,7 @@ function addDottedBars() {
             label: "← outward          Number of flights          inward →",
             labelAnchor: "center",
             tickFormat: (v) => d3Format("~s")(Math.abs(v)),
-            type: "pow",
+            type: dottedGraphAxisType(),
             exponent: 0.2,
         },
         marks: [
@@ -221,12 +221,26 @@ function onGroupSizeInputChange() {
     }
 }
 
+// This checkbox controls the axis for the dotted graph. We can switch between a
+// linear or a square scale.
+function dottedGraphAxisType() {
+    return document.getElementById("dotted-graph-axis-type").checked ? "pow" : "linear";
+}
+
+function onDottedGraphAxisTypeChange() {
+    if (import.meta.env.DEV) {
+        // In dev mode, redraw everything
+        runAllTheThings();
+    }
+}
+
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
 document.getElementById("add-dotted-chart-button").addEventListener("click", addDottedBars);
 document.getElementById("reset").addEventListener("click", reset);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
 document.getElementById("airport-group-size-input").addEventListener("input", onGroupSizeInputChange);
+document.getElementById("dotted-graph-axis-type").addEventListener("input", onDottedGraphAxisTypeChange);
 onGroupSizeInputChange();
 
 if (import.meta.env.DEV)

@@ -135,6 +135,10 @@ class PageElement {
         this.#node.value = value;
     }
 
+    setChecked(bool) {
+        this.#node.checked = bool;
+    }
+
     click() {
         this.#node.click();
     }

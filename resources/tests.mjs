@@ -581,6 +581,10 @@ Suites.push({
         new BenchmarkTestStep("Dotted", (page) => {
             page.querySelector("#reset").click();
             page.querySelector("#add-dotted-chart-button").click();
+            page.layout();
+            page.querySelector("#dotted-graph-axis-type").setChecked(true);
+            page.querySelector("#reset").click();
+            page.querySelector("#add-dotted-chart-button").click();
         }),
     ],
 });

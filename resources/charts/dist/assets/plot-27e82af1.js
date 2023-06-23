@@ -12270,7 +12270,7 @@ function addDottedBars() {
       label: "← outward          Number of flights          inward →",
       labelAnchor: "center",
       tickFormat: (v) => format$1("~s")(Math.abs(v)),
-      type: "pow",
+      type: dottedGraphAxisType(),
       exponent: 0.2
     },
     marks: [
@@ -12306,10 +12306,16 @@ function airportCountPerGroup() {
 function onGroupSizeInputChange() {
   document.querySelector("#airport-group-size").textContent = airportCountPerGroup();
 }
+function dottedGraphAxisType() {
+  return document.getElementById("dotted-graph-axis-type").checked ? "pow" : "linear";
+}
+function onDottedGraphAxisTypeChange() {
+}
 document.getElementById("prepare").addEventListener("click", prepare);
 document.getElementById("add-stacked-chart-button").addEventListener("click", addStackedBars);
 document.getElementById("add-dotted-chart-button").addEventListener("click", addDottedBars);
 document.getElementById("reset").addEventListener("click", reset);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
 document.getElementById("airport-group-size-input").addEventListener("input", onGroupSizeInputChange);
+document.getElementById("dotted-graph-axis-type").addEventListener("input", onDottedGraphAxisTypeChange);
 onGroupSizeInputChange();
