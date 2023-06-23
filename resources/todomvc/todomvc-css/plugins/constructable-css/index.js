@@ -22,14 +22,9 @@ function constructableCSS({ src, dest = "dist/", hook = "generateBundle" } = {})
                 expandDirectories: false,
             });
 
-            await Promise.all(
-                matchedPaths.map(src => create(src, dest))
-            );
-        }
+            await Promise.all(matchedPaths.map((src) => create(src, dest)));
+        },
     };
 }
 
-export {
-    constructableCSS
-};
-
+export { constructableCSS };
