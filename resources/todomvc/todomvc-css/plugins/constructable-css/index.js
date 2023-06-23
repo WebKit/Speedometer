@@ -1,31 +1,35 @@
-import { createFilter } from "@rollup/pluginutils";
+import fs from "fs-extra";
+import path from "path";
+import globby from "globby";
 
-function createStylesheet(code) {
-    const str = code.split("export default \"")[1].split("\";")[0];
-    return {
-        code: `const sheet = new CSSStyleSheet();sheet.replaceSync(${JSON.stringify(str)});export default sheet;`,
-        map: { mappings: "" }
-    };
+async function create(src, dest) {
+    const contents = await fs.readFile(src, "utf-8");
+    const output = `const sheet = new CSSStyleSheet();\nsheet.replaceSync(${JSON.stringify(contents)});\nexport default sheet;\n`;
+    const { name } = path.parse(src);
+    const fileName = `${name}.constructable.js`;
+    const outputPath = path.join(dest, fileName);
+    await fs.writeFile(outputPath, output);
 }
 
-function constructableCSS({ include, exclude } = {}) {
-    if (!include)
-        throw new Error("include option missing");
-
-    const filter = createFilter(include, exclude);
+function constructableCSS({ src, dest = "dist/", hook = "generateBundle" } = {}) {
+    if (!src)
+        throw new Error("src option missing");
 
     return {
-        name: "rollup-plugin-constructable-css",
-        transform(code, id) {
-            if (filter(id))
-                console.log(code);
+        name: "constructable-css",
+        [hook]: async () => {
+            const matchedPaths = await globby(src, {
+                expandDirectories: false,
+            });
 
-            return filter(id) ? createStylesheet(code) : null;
+            await Promise.all(
+                matchedPaths.map(src => create(src, dest))
+            );
         }
     };
-
 }
 
 export {
     constructableCSS
 };
+

@@ -56,9 +56,8 @@ export default {
             ],
         }),
         constructableCSS({
-            // include: "src/css/*.css",
-            include: ["src/css/app.css"],
-            exclude: ["src/css/partials.css"],
+            src: ["src/css/*", "!src/css/partials.css", "!src/css/global.css"],
+            dest: "dist/",
         }),
         html(),
         production && terser(),
