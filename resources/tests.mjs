@@ -1,4 +1,5 @@
 import { BenchmarkTestStep } from "./benchmark-runner.mjs";
+import { todos, defaultTodoText } from "./translations.mjs";
 
 const numberOfItemsToAdd = 100;
 export const Suites = [];
@@ -59,7 +60,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -89,7 +90,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -119,7 +120,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -149,7 +150,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keydown");
             }
@@ -179,7 +180,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keydown");
             }
@@ -209,7 +210,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.enter("keydown");
             }
         }),
@@ -239,7 +240,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -269,7 +270,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keyup");
             }
@@ -299,7 +300,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keyup");
             }
@@ -330,7 +331,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.enter("keyup");
             }
         }),
@@ -358,7 +359,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.enter("keydown");
             }
         }),
@@ -387,7 +388,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
                 newTodo.enter("keydown");
             }
         }),
