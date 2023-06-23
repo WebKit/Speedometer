@@ -71,10 +71,15 @@ Run tools/bundle-v3-scripts to speed up the load time for production.`);
             const pageShadow = document.querySelector('page-component').component()._shadow;
             return pageShadow.querySelector('chart-pane').component()._shadow.querySelector('.chart-pane');
         }
-        
+
         function getChartCanvas()
         {
             return getChartPane().querySelector('interactive-time-series-chart').component()._shadow.querySelector('canvas');
+        }
+
+        function openCharts()
+        {
+            location.hash = '/charts/?since=1678991819934\u0026paneList=((55-1649-53731881-null-(5-2.5-500))-(55-1407-null-null-(5-2.5-500))-(55-1648-null-null-(5-2.5-500))-(55-1974-null-null-(5-2.5-500)))';
         }
 
         function mockAPIs() {
