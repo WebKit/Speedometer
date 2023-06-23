@@ -10,9 +10,9 @@ template.innerHTML = `
     <link rel="stylesheet" href="${mainStyles}" />
     <section class="app">
         <slot name="topbar"></slot>
-        <section class="main">
+        <main class="main">
             <slot name="list"></slot>
-        </section>
+        </main>
         <slot name="bottombar"></slot>
     </section>
 `;

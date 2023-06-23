@@ -13,7 +13,7 @@ template.innerHTML = `
             <span class="todo-item-text truncate-singleline" tabindex="0">Placeholder Text</span>
             <button class="remove-todo-button" title="Remove Todo"></button>
         </div>
-        <div class="edit-todo-display">
+        <div class="edit-todo-container">
             <label class="edit-todo-label visually-hidden">Edit todo</label>
             <input class="edit-todo-input" />
         </div>

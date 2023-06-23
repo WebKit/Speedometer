@@ -11,7 +11,7 @@ template.innerHTML = `
             <label for="new-todo" class="visually-hidden">Enter a new todo.</label>
             <input id="new-todo" class="new-todo-input" placeholder="What needs to be done?" autofocus />
         </div>
-        <div class="toggle-all-display" style="display:none">
+        <div class="toggle-all-container" style="display:none">
             <input id="toggle-all" class="toggle-all-input" type="checkbox" />
             <label for="toggle-all" class="toggle-all-label">Mark all todos as complete.</label>
         </div>

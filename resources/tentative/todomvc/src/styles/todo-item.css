@@ -19,11 +19,11 @@
 	padding: 0;
 }
 
-.edit-todo-display {
+.edit-todo-container {
 	display: none;
 }
 
-.todo-item.editing .edit-todo-display {
+.todo-item.editing .edit-todo-container {
 	display: block;
 }
 
@@ -136,6 +136,7 @@
 	}
 }
 
+/* stylelint-disable */
 /* rtl support */
 html[dir="rtl"] .toggle-todo-input,
 :host([dir="rtl"]) .toggle-todo-input { 
@@ -153,3 +154,4 @@ html[dir="rtl"] .remove-todo-button,
 	left: 10px;
 	right: unset;
 }
+/* stylelint-enable */

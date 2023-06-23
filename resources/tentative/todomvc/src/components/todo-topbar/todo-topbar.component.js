@@ -26,7 +26,7 @@ class TodoTopbar extends HTMLElement {
         const node = document.importNode(template.content, true);
         this.todoInput = node.querySelector("#new-todo");
         this.toggleInput = node.querySelector("#toggle-all");
-        this.toggleContainer = node.querySelector(".toggle-all-display");
+        this.toggleContainer = node.querySelector(".toggle-all-container");
         // create shadow dom
         this.shadow = this.attachShadow({ mode: "open" });
         // rtl support to target with styles
