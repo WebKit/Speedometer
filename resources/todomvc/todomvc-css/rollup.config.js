@@ -7,6 +7,8 @@ import copy from "rollup-plugin-copy-merge";
 import cleaner from "rollup-plugin-cleaner";
 import html from "@rollup/plugin-html";
 
+import { constructableCSS } from "./plugins/constructable-css/index.js";
+
 // `npm run build` -> `production` is true
 // `npm run dev` -> `production` is false
 const production = !process.env.ROLLUP_WATCH;
@@ -52,6 +54,11 @@ export default {
                     dest: "dist/",
                 },
             ],
+        }),
+        constructableCSS({
+            // include: "src/css/*.css",
+            include: ["src/css/app.css"],
+            exclude: ["src/css/partials.css"],
         }),
         html(),
         production && terser(),

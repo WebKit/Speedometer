@@ -8,7 +8,6 @@ This todomvc-css repo implements changes to adhere to some a11y audit results th
 
 -   Visually, there are only minor changes introduced, that overall don't impact the look and feel of a todomvc application.
 -   Structurely, changes have been made to ensure formfields are treated correctly and that the application is accessible to a broader audience.
--   A more detailed explanation of changes can be found in the [changelog](CHANGES.md).
 
 ![](screenshot.png)
 
