@@ -26,9 +26,6 @@ class TodoApp extends HTMLElement {
         this.shadow.host.setAttribute("dir", this.htmlDirection);
         // add shadow dom
         this.shadow.append(node);
-        // router
-        this.router = useRouter();
-        this.router.initRouter(this.routeChange);
         // bind event handlers
         this.addItem = this.addItem.bind(this);
         this.toggleItem = this.toggleItem.bind(this);
@@ -36,6 +33,10 @@ class TodoApp extends HTMLElement {
         this.updateItem = this.updateItem.bind(this);
         this.toggleItems = this.toggleItems.bind(this);
         this.clearCompletedItems = this.clearCompletedItems.bind(this);
+        this.routeChange = this.routeChange.bind(this);
+        // router
+        this.router = useRouter();
+        this.router.initRouter(this.routeChange);
     }
 
     get isReady() {
@@ -137,12 +138,12 @@ class TodoApp extends HTMLElement {
         );
     }
 
-    routeChange = (route) => {
+    routeChange(route) {
         const routeName = route.split("/")[1] || "all";
         this.list.updateRoute(routeName);
         this.bottombar.updateRoute(routeName);
         this.topbar.updateRoute(routeName);
-    };
+    }
 
     connectedCallback() {
         this.update("connected");

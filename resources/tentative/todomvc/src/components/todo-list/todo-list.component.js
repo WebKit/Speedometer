@@ -65,12 +65,10 @@ class TodoList extends HTMLElement {
     updateView(element) {
         switch (this._route) {
             case "completed":
-                element.style.display
-                    = element.completed === "true" ? "block" : "none";
+                element.style.display = element.completed === "true" ? "block" : "none";
                 break;
             case "active":
-                element.style.display
-                    = element.completed === "true" ? "none" : "block";
+                element.style.display = element.completed === "true" ? "none" : "block";
                 break;
             default:
                 element.style.display = "block";
