@@ -6,20 +6,18 @@ class TodoList extends HTMLElement {
         return ["total-items"];
     }
 
+    #elements = [];
+    #route = undefined;
+
     constructor() {
         super();
-        // state
-        this._elements = [];
-        this._route = undefined;
-        // elements
+
         const node = document.importNode(template.content, true);
         this.listNode = node.querySelector(".todo-list");
-        // create shadow dom
+
         this.shadow = this.attachShadow({ mode: "open" });
-        // rtl support to target with styles
         this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
         this.shadow.host.setAttribute("dir", this.htmlDirection);
-        // add shadow dom
         this.shadow.append(node);
     }
 
@@ -27,7 +25,7 @@ class TodoList extends HTMLElement {
         const element = new TodoItem();
         Object.keys(entry).forEach(key => element.setAttribute(key, entry[key]));
 
-        this._elements.push(element);
+        this.#elements.push(element);
         this.listNode.append(element);
     }
 
@@ -36,7 +34,7 @@ class TodoList extends HTMLElement {
     }
 
     removeCompletedItems() {
-        this._elements = this._elements.filter((element) => {
+        this.#elements = this.#elements.filter((element) => {
             if (element.completed === "true")
                 element.removeItem();
 
@@ -45,7 +43,7 @@ class TodoList extends HTMLElement {
     }
 
     toggleItems(completed) {
-        this._elements.forEach((element) => {
+        this.#elements.forEach((element) => {
             if (completed && element.completed === "false")
                 element.toggleInput.click();
             else if (!completed && element.completed === "true")
@@ -63,7 +61,7 @@ class TodoList extends HTMLElement {
     }
 
     updateView(element) {
-        switch (this._route) {
+        switch (this.#route) {
             case "completed":
                 element.style.display = element.completed === "true" ? "block" : "none";
                 break;
@@ -78,18 +76,18 @@ class TodoList extends HTMLElement {
     updateElements(type = "", id = "") {
         switch (type) {
             case "route-change":
-                this._elements.forEach((element) => this.updateView(element));
+                this.#elements.forEach((element) => this.updateView(element));
                 break;
             case "toggle-item":
             case "add-item":
-                this._elements.forEach((element) => {
+                this.#elements.forEach((element) => {
                     if (element.id === id)
                         this.updateView(element);
 
                 });
                 break;
             case "remove-item":
-                this._elements = this._elements.filter(
+                this.#elements = this.#elements.filter(
                     (element) => element.id !== id
                 );
 
@@ -98,7 +96,7 @@ class TodoList extends HTMLElement {
     }
 
     updateRoute(route) {
-        this._route = route;
+        this.#route = route;
         this.updateElements("route-change");
     }
 

@@ -6,7 +6,7 @@
  * @param {number} delay
  * @returns
  */
-export function useDoubleClick(fn, delay){
+export function useDoubleClick(fn, delay) {
     let last = 0;
     return function (...args) {
         const now = new Date().getTime();

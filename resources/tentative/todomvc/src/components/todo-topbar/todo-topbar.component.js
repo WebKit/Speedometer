@@ -18,25 +18,23 @@ class TodoTopbar extends HTMLElement {
         return ["total-items", "active-items", "completed-items"];
     }
 
+    #route = undefined;
+
     constructor() {
         super();
-        // state
-        this._route = undefined;
-        // elements
+
         const node = document.importNode(template.content, true);
         this.todoInput = node.querySelector("#new-todo");
         this.toggleInput = node.querySelector("#toggle-all");
         this.toggleContainer = node.querySelector(".toggle-all-container");
-        // create shadow dom
+
         this.shadow = this.attachShadow({ mode: "open" });
-        // rtl support to target with styles
         this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
         this.shadow.host.setAttribute("dir", this.htmlDirection);
-        // add shadow dom
         this.shadow.append(node);
-        // listeners
+
         this.keysListeners = [];
-        // bind event handlers
+
         this.toggleAll = this.toggleAll.bind(this);
         this.addItem = this.addItem.bind(this);
     }
@@ -50,6 +48,9 @@ class TodoTopbar extends HTMLElement {
     }
 
     addItem(event) {
+        if (!event.target.value.length)
+            return;
+
         this.dispatchEvent(
             new CustomEvent("add-item", {
                 detail: {
@@ -64,21 +65,21 @@ class TodoTopbar extends HTMLElement {
     }
 
     updateDisplay() {
-        if (parseInt(this["total-items"]) === 0) {
+        if (!parseInt(this["total-items"])) {
             this.toggleContainer.style.display = "none";
             return;
         }
 
         this.toggleContainer.style.display = "block";
 
-        switch (this._route) {
+        switch (this.#route) {
             case "active":
                 this.toggleInput.checked = false;
-                this.toggleInput.disabled = parseInt(this["active-items"]) === 0;
+                this.toggleInput.disabled = !parseInt(this["active-items"]);
                 break;
             case "completed":
-                this.toggleInput.checked = parseInt(this["completed-items"]) !== 0;
-                this.toggleInput.disabled = parseInt(this["completed-items"]) === 0;
+                this.toggleInput.checked = parseInt(this["completed-items"]);
+                this.toggleInput.disabled = !parseInt(this["completed-items"]);
                 break;
             default:
                 this.toggleInput.checked
@@ -88,7 +89,7 @@ class TodoTopbar extends HTMLElement {
     }
 
     updateRoute(route) {
-        this._route = route;
+        this.#route = route;
         this.updateDisplay();
     }
 

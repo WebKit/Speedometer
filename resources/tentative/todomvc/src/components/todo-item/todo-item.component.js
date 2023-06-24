@@ -9,11 +9,11 @@ class TodoItem extends HTMLElement {
 
     constructor() {
         super();
-        // props
+
         this.id = "";
         this.title = "Todo Item";
         this.completed = "false";
-        // elements
+
         const node = document.importNode(template.content, true);
         this.item = node.querySelector(".todo-item");
         this.toggleLabel = node.querySelector(".toggle-todo-label");
@@ -22,16 +22,14 @@ class TodoItem extends HTMLElement {
         this.todoButton = node.querySelector(".remove-todo-button");
         this.editLabel = node.querySelector(".edit-todo-label");
         this.editInput = node.querySelector(".edit-todo-input");
-        // create shadow dom
+
         this.shadow = this.attachShadow({ mode: "open" });
-        // rtl support to target with styles
         this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
         this.shadow.host.setAttribute("dir", this.htmlDirection);
-        // add shadow dom
         this.shadow.append(node);
-        // listeners
+
         this.keysListeners = [];
-        // bind event handlers
+
         this.updateItem = this.updateItem.bind(this);
         this.toggleItem = this.toggleItem.bind(this);
         this.removeItem = this.removeItem.bind(this);
@@ -44,21 +42,8 @@ class TodoItem extends HTMLElement {
         [...args].forEach((argument) => {
             switch (argument) {
                 case "id":
-                    if (this.id !== undefined) {
+                    if (this.id !== undefined)
                         this.item.id = `todo-item-${this.id}`;
-                        this.toggleLabel.setAttribute(
-                            "for",
-                            `toggle-todo-${this.id}`
-                        );
-                        this.toggleInput.id = `toggle-todo-${this.id}`;
-                        this.todoText.id = `update-todo-${this.id}`;
-                        this.todoButton.id = `remove-todo-${this.id}`;
-                        this.editLabel.setAttribute(
-                            "for",
-                            `edit-todo-${this.id}`
-                        );
-                        this.editInput.id = `edit-todo-${this.id}`;
-                    }
                     break;
                 case "title":
                     if (this.title !== undefined) {
@@ -111,8 +96,9 @@ class TodoItem extends HTMLElement {
     }
 
     updateItem(event) {
+        console.log("updateItem", event.target.value);
         if (event.target.value !== this.title) {
-            if (event.target.value.length === 0) {
+            if (!event.target.value.length) {
                 this.removeItem();
             } else {
                 this.setAttribute("title", event.target.value);
