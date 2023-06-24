@@ -51,3 +51,21 @@ export default function Footer() {
     );
 }
 ```
+
+constructable stylesheets:
+
+```javascript
+import sheet from "todomvc-app-css-alt/dist/footer.constructable.js";
+
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+```
+
+constructable stylesheets in shadow DOM:
+
+```javascript
+import sheet from "todomvc-app-css-alt/dist/footer.constructable.js";
+
+const node = document.createElement("div");
+const shadow = node.attachShadow({ mode: "open" });
+shadow.adoptedStyleSheets = [sheet];
+```
