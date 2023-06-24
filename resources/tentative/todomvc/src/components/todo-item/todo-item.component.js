@@ -96,7 +96,6 @@ class TodoItem extends HTMLElement {
     }
 
     updateItem(event) {
-        console.log("updateItem", event.target.value);
         if (event.target.value !== this.title) {
             if (!event.target.value.length) {
                 this.removeItem();

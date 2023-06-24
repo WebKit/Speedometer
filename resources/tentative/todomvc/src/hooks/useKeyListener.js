@@ -1,10 +1,10 @@
 export function useKeyListener(props) {
     const { target, event, callbacks } = props;
 
-    function handleEvent(e) {
+    function handleEvent(event) {
         Object.keys(callbacks).forEach( key => {
-            if (e.key === key)
-                callbacks[key](e);
+            if (event.key === key)
+                callbacks[key](event);
 
         });
     }
