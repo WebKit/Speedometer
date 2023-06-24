@@ -1,11 +1,7 @@
 const template = document.createElement("template");
-const globals = "src/styles/global.css";
-const styles = "src/styles/todo-item.css";
 
 template.id = "todo-item-template";
 template.innerHTML = `
-    <link rel="stylesheet" href="${globals}" />
-    <link rel="stylesheet" href="${styles}" />
     <li class="todo-item">
         <div class="display-todo">
             <label for="toggle-todo" class="toggle-todo-label visually-hidden">Toggle Todo</label>

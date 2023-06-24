@@ -1,5 +1,8 @@
 import template from "./todo-bottombar.template.js";
 
+import globalStyles from "../../styles/global.constructable.js";
+import bottombarStyles from "../../styles/bottombar.constructable.js";
+
 class TodoBottombar extends HTMLElement {
     static get observedAttributes() {
         return ["total-items", "active-items"];
@@ -19,6 +22,7 @@ class TodoBottombar extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
         this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
         this.shadow.host.setAttribute("dir", this.htmlDirection);
+        this.shadow.adoptedStyleSheets = [globalStyles, bottombarStyles];
         this.shadow.append(node);
 
         this.clearCompletedItems = this.clearCompletedItems.bind(this);

@@ -1,6 +1,9 @@
 import template from "./todo-list.template.js";
 import TodoItem from "../todo-item/todo-item.component.js";
 
+import globalStyles from "../../styles/global.constructable.js";
+import listStyles from "../../styles/todo-list.constructable.js";
+
 class TodoList extends HTMLElement {
     static get observedAttributes() {
         return ["total-items"];
@@ -18,6 +21,7 @@ class TodoList extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
         this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
         this.shadow.host.setAttribute("dir", this.htmlDirection);
+        this.shadow.adoptedStyleSheets = [globalStyles, listStyles];
         this.shadow.append(node);
     }
 

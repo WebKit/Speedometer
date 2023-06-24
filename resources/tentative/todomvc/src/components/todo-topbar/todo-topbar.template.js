@@ -1,11 +1,7 @@
 const template = document.createElement("template");
-const globals = "src/styles/global.css";
-const styles = "src/styles/topbar.css";
 
 template.id = "todo-topbar-template";
 template.innerHTML = `
-    <link rel="stylesheet" href="${globals}" />
-    <link rel="stylesheet" href="${styles}" />
     <header class="topbar">
         <div class="new-todo-display">
             <label for="new-todo" class="visually-hidden">Enter a new todo.</label>

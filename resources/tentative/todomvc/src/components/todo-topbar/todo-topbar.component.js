@@ -1,6 +1,9 @@
 import template from "./todo-topbar.template.js";
 import { useKeyListener } from "../../hooks/useKeyListener.js";
 
+import globalStyles from "../../styles/global.constructable.js";
+import topbarStyles from "../../styles/topbar.constructable.js";
+
 let urlAlphabet
     = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
 
@@ -31,6 +34,7 @@ class TodoTopbar extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
         this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
         this.shadow.host.setAttribute("dir", this.htmlDirection);
+        this.shadow.adoptedStyleSheets = [globalStyles, topbarStyles];
         this.shadow.append(node);
 
         this.keysListeners = [];

@@ -1,11 +1,7 @@
 const template = document.createElement("template");
-const globals = "src/styles/global.css";
-const styles = "src/styles/bottombar.css";
 
 template.id = "todo-bottombar-template";
 template.innerHTML = `
-    <link rel="stylesheet" href="${globals}" />
-    <link rel="stylesheet" href="${styles}" />
     <footer class="bottombar" style="display:none">
         <div class="todo-status"><span class="todo-count">0</span> item left</div>
         <ul class="filter-list">

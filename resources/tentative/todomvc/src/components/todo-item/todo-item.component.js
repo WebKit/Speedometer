@@ -2,6 +2,9 @@ import template from "./todo-item.template.js";
 import { useDoubleClick } from "../../hooks/useDoubleClick.js";
 import { useKeyListener } from "../../hooks/useKeyListener.js";
 
+import globalStyles from "../../styles/global.constructable.js";
+import itemStyles from "../../styles/todo-item.constructable.js";
+
 class TodoItem extends HTMLElement {
     static get observedAttributes() {
         return ["id", "title", "completed"];
@@ -26,6 +29,7 @@ class TodoItem extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
         this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
         this.shadow.host.setAttribute("dir", this.htmlDirection);
+        this.shadow.adoptedStyleSheets = [globalStyles, itemStyles];
         this.shadow.append(node);
 
         this.keysListeners = [];
