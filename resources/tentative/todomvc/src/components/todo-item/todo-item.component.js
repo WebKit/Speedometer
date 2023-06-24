@@ -73,7 +73,8 @@ class TodoItem extends HTMLElement {
     }
 
     toggleItem() {
-        // update item first, before dispatch
+        // The todo-list checks the "completed" attribute to filter based on route
+        // (therefore the completed state needs to already be updated before the check)
         this.setAttribute("completed", this.toggleInput.checked);
 
         this.dispatchEvent(
@@ -85,7 +86,8 @@ class TodoItem extends HTMLElement {
     }
 
     removeItem() {
-        // dispatch first, before updating item
+        // The todo-list keeps a reference to all elements and updates the list on removal.
+        // (therefore the removal has to happen after the list is updated)
         this.dispatchEvent(
             new CustomEvent("remove-item", {
                 detail: { id: this.id },
