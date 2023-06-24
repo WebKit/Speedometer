@@ -23,14 +23,15 @@
         "@rollup/plugin-node-resolve": "^15.0.2",
         "@rollup/plugin-terser": "^0.4.3",
         "@rollup/pluginutils": "^5.0.2",
+        "fs-extra": "^11.1.1",
+        "globby": "^11.1.0",
         "http-server": "^14.1.1",
         "rollup": "^3.23.0",
         "rollup-plugin-cleaner": "^1.0.0",
         "rollup-plugin-copy-merge": "^1.0.2",
         "rollup-plugin-import-css": "^3.2.1",
         "stylelint": "^15.6.2",
-        "stylelint-config-standard": "^33.0.0",
-        "globby": "^11.1.0"
+        "stylelint-config-standard": "^33.0.0"
     },
     "files": [
         "/dist"
