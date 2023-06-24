@@ -413,24 +413,25 @@ Suites.push({
     },
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
-            const todoApp = page.querySelector("todo-app");
-            const newTodo = page._wrapElement(todoApp.callElementMethod("getNewTodoInput"));
+            const newTodo = page.querySelector(".new-todo", ["todo-app", "todo-form"]);
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 newTodo.setValue(`Something to do ${i}`);
                 newTodo.enter("keydown");
             }
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
-            const todoApp = page.querySelector("todo-app");
-            const checkboxes = todoApp.callElementMethod("getToggles");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                checkboxes[i].click();
+            const todoItems = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const checkbox = todoItems[i].querySelectorInShadowRoot(".toggle");
+                checkbox.click();
+            }
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
-            const todoApp = page.querySelector("todo-app");
-            const deleteButtons = todoApp.callElementMethod("getDestroyButtons");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                deleteButtons[i].click();
+            const todoItems = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const deleteButton = todoItems[i].querySelectorInShadowRoot(".destroy");
+                deleteButton.click();
+            }
         }),
     ],
 });
