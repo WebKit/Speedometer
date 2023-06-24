@@ -7,11 +7,11 @@
 	<meta name="description" content="CSS for TodoMVC" />
 	<title>Web Components • TodoMVC</title>
 	<link rel="stylesheet" href="src/styles/partials.css">
-	<script type="module" src="src/components/todo-app/todo-app.component.js"></script>
+	<!-- load these first, so that they are registered by the time the app components needs them -->
 	<script type="module" src="src/components/todo-topbar/todo-topbar.component.js"></script>
 	<script type="module" src="src/components/todo-list/todo-list.component.js"></script>
-	<script type="module" src="src/components/todo-item/todo-item.component.js"></script>
 	<script type="module" src="src/components/todo-bottombar/todo-bottombar.component.js"></script>
+	<script type="module" src="src/components/todo-app/todo-app.component.js"></script>
 	<script type="module" src="src/index.js"></script>
 </head>
 

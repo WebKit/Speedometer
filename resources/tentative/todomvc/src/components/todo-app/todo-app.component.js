@@ -1,7 +1,4 @@
 import template from "./todo-app.template.js";
-import TodoTopbar from "../todo-topbar/todo-topbar.component.js";
-import TodoList from "../todo-list/todo-list.component.js";
-import TodoBottombar from "../todo-bottombar/todo-bottombar.component.js";
 import { useRouter } from "../../hooks/useRouter.js";
 class TodoApp extends HTMLElement {
     #isReady = false;
@@ -10,13 +7,9 @@ class TodoApp extends HTMLElement {
         super();
 
         const node = document.importNode(template.content, true);
-        this.topbar = new TodoTopbar();
-        this.list = new TodoList();
-        this.bottombar = new TodoBottombar();
-        node.querySelector("[name=\"topbar\"]").append(this.topbar);
-        node.querySelector("[name=\"list\"]").append(this.list);
-        node.querySelector("[name=\"bottombar\"]").append(this.bottombar);
-        this.list.addItems(this.#data);
+        this.topbar = node.querySelector("todo-topbar");
+        this.list = node.querySelector("todo-list");
+        this.bottombar = node.querySelector("todo-bottombar");
 
         this.shadow = this.attachShadow({ mode: "open" });
         this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
@@ -32,7 +25,6 @@ class TodoApp extends HTMLElement {
         this.routeChange = this.routeChange.bind(this);
 
         this.router = useRouter();
-        this.router.initRouter(this.routeChange);
     }
 
     get isReady() {
@@ -144,6 +136,7 @@ class TodoApp extends HTMLElement {
     connectedCallback() {
         this.update("connected");
         this.addListeners();
+        this.router.initRouter(this.routeChange);
         this.#isReady = true;
     }
 
