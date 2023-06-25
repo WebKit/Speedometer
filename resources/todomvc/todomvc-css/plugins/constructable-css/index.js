@@ -1,6 +1,5 @@
 import fs from "fs-extra";
 import path from "path";
-import globby from "globby";
 
 async function create(src, dest) {
     const contents = await fs.readFile(src, "utf-8");
@@ -18,6 +17,7 @@ function constructableCSS({ src, dest = "dist/", hook = "generateBundle" } = {})
     return {
         name: "constructable-css",
         [hook]: async () => {
+            const { globby } = await import("globby");
             const matchedPaths = await globby(src, {
                 expandDirectories: false,
             });
