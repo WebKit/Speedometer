@@ -15,10 +15,10 @@ export class TodoFooter extends LitElement {
         css`
             :host {
                 display: block;
-                color: #777;
                 padding: 10px 15px;
                 height: 20px;
                 text-align: center;
+                font-size: 15px;
                 border-top: 1px solid #e6e6e6;
             }
             :host:before {
@@ -36,8 +36,7 @@ export class TodoFooter extends LitElement {
                 float: left;
                 text-align: left;
             }
-
-            strong {
+            .todo-count strong {
                 font-weight: 300;
             }
 
@@ -53,8 +52,7 @@ export class TodoFooter extends LitElement {
             li {
                 display: inline;
             }
-
-            a {
+            li a {
                 color: inherit;
                 margin: 3px;
                 padding: 3px 7px;
@@ -64,17 +62,17 @@ export class TodoFooter extends LitElement {
             }
 
             a:hover {
-                border-color: rgba(175, 47, 47, 0.1);
+                border-color: #db7676;
             }
 
             a.selected {
-                border-color: rgba(175, 47, 47, 0.2);
+                border-color: #ce4646;
             }
             .clear-completed,
-            .clear-completed:active {
+            :host .clear-completed:active {
                 float: right;
                 position: relative;
-                line-height: 20px;
+                line-height: 19px;
                 text-decoration: none;
                 cursor: pointer;
             }
@@ -87,7 +85,7 @@ export class TodoFooter extends LitElement {
 
     @updateOnEvent("change")
     @property({ attribute: false })
-        todoList?: Todos;
+    todoList?: Todos;
 
     override render() {
         const isEmpty = (this.todoList?.all.length ?? 0) > 0;
@@ -99,24 +97,24 @@ export class TodoFooter extends LitElement {
                   <ul class="filters">
                       <li>
                           ${filterLink({
-        text: "All",
-        filter: "all",
-        selectedFilter: this.todoList?.filter,
-    })}
+                              text: "All",
+                              filter: "all",
+                              selectedFilter: this.todoList?.filter,
+                          })}
                       </li>
                       <li>
                           ${filterLink({
-        text: "Active",
-        filter: "active",
-        selectedFilter: this.todoList?.filter,
-    })}
+                              text: "Active",
+                              filter: "active",
+                              selectedFilter: this.todoList?.filter,
+                          })}
                       </li>
                       <li>
                           ${filterLink({
-        text: "Completed",
-        filter: "completed",
-        selectedFilter: this.todoList?.filter,
-    })}
+                              text: "Completed",
+                              filter: "completed",
+                              selectedFilter: this.todoList?.filter,
+                          })}
                       </li>
                   </ul>
                   ${(this.todoList?.completed.length ?? 0) > 0 ? html`<button @click=${this.#onClearCompletedClick} class="clear-completed">Clear Completed</button>` : nothing}`

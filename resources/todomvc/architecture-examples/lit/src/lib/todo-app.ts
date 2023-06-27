@@ -26,12 +26,12 @@ export class TodoApp extends LitElement {
             }
             h1 {
                 position: absolute;
-                top: -155px;
+                top: -140px;
                 width: 100%;
-                font-size: 100px;
-                font-weight: 100;
+                font-size: 80px;
+                font-weight: 200;
                 text-align: center;
-                color: rgba(175, 47, 47, 0.15);
+                color: #b83f45;
                 -webkit-text-rendering: optimizeLegibility;
                 -moz-text-rendering: optimizeLegibility;
                 text-rendering: optimizeLegibility;
@@ -43,6 +43,9 @@ export class TodoApp extends LitElement {
             }
             .hidden {
                 display: none;
+            }
+            :focus {
+                box-shadow: none !important;
             }
         `,
     ];
@@ -83,8 +86,8 @@ export class TodoApp extends LitElement {
             </section>
             <todo-footer
                 class="${classMap({
-        hidden: this.todoList.all.length === 0,
-    })}"
+                    hidden: this.todoList.all.length === 0,
+                })}"
                 .todoList=${this.todoList}
             ></todo-footer>
         </section>`;

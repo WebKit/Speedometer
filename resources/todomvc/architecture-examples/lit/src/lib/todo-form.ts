@@ -18,45 +18,41 @@ export class TodoForm extends LitElement {
             }
             input::-webkit-input-placeholder {
                 font-style: italic;
-                font-weight: 300;
-                color: #e6e6e6;
+                font-weight: 400;
+                color: rgba(0, 0, 0, 0.4);
             }
-
             input::-moz-placeholder {
                 font-style: italic;
-                font-weight: 300;
-                color: #e6e6e6;
+                font-weight: 400;
+                color: rgba(0, 0, 0, 0.4);
             }
-
             input::input-placeholder {
                 font-style: italic;
-                font-weight: 300;
-                color: #e6e6e6;
+                font-weight: 400;
+                color: rgba(0, 0, 0, 0.4);
             }
         `,
     ];
 
     @updateOnEvent("change")
     @property({ attribute: false })
-        todoList?: Todos;
+    todoList?: Todos;
 
     override render() {
-        return html`<input @change=${this.#onChange} @keydown=${this.#onKeydown} class="new-todo" autofocus autocomplete="off" placeholder="what needs to be done?" />`;
+        return html`<input @change=${this.#onChange} @keydown=${this.#onKeydown} class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" />`;
     }
 
     @query("input", true) newTodoInput!: HTMLInputElement;
 
     #onChange() {
         const { value } = this.newTodoInput;
-        if (value.length > 0)
-            this.dispatchEvent(new AddTodoEvent(value));
+        if (value.length > 0) this.dispatchEvent(new AddTodoEvent(value));
 
         this.newTodoInput.value = "";
     }
 
     #onKeydown(e: KeyboardEvent) {
-        if (e.key === "Enter")
-            this.#onChange();
+        if (e.key === "Enter") this.#onChange();
     }
 }
 

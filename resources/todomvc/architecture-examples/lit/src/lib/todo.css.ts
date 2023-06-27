@@ -13,12 +13,16 @@ export const todoStyles = css`
         font-weight: inherit;
         color: inherit;
         -webkit-appearance: none;
+        -moz-appearance: none;
         appearance: none;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
 
-    :focus {
+    :focus,
+    .toggle:focus + label,
+    .toggle-all:focus + label {
+        box-shadow: 0 0 2px 2px #cf7d7d;
         outline: 0;
     }
 
