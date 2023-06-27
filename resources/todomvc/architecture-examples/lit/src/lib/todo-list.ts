@@ -72,22 +72,22 @@ export class TodoList extends LitElement {
 
     @updateOnEvent("change")
     @property({ attribute: false })
-    todoList?: Todos;
+        todoList?: Todos;
 
     override render() {
         return html`
             ${(this.todoList?.all.length ?? 0) > 0
-                ? html`
+        ? html`
                       <input @change=${this.#onToggleAllChange} id="toggle-all" type="checkbox" class="toggle-all" .checked=${this.todoList?.allCompleted ?? false} />
                       <label for="toggle-all"> Mark all as complete </label>
                   `
-                : nothing}
+        : nothing}
             <ul class="todo-list">
                 ${repeat(
-                    this.todoList?.filtered() ?? [],
-                    (todo) => todo.id,
-                    (todo) => html`<todo-item .todoId=${todo.id} .text=${todo.text} .completed=${todo.completed}></todo-item>`
-                )}
+        this.todoList?.filtered() ?? [],
+        (todo) => todo.id,
+        (todo) => html`<todo-item .todoId=${todo.id} .text=${todo.text} .completed=${todo.completed}></todo-item>`
+    )}
             </ul>
         `;
     }
