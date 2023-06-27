@@ -36,7 +36,7 @@ export class TodoApp extends LitElement {
                 -moz-text-rendering: optimizeLegibility;
                 text-rendering: optimizeLegibility;
             }
-            .main {
+            main {
                 position: relative;
                 z-index: 2;
                 border-top: 1px solid #e6e6e6;
@@ -81,9 +81,9 @@ export class TodoApp extends LitElement {
                 <h1>todos</h1>
                 <todo-form .todoList=${this.todoList}></todo-form>
             </header>
-            <section class="main">
+            <main class="main">
                 <todo-list .todoList=${this.todoList}></todo-list>
-            </section>
+            </main>
             <todo-footer
                 class="${classMap({
         hidden: this.todoList.all.length === 0,
