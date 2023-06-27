@@ -43,7 +43,7 @@ class TodoItem extends HTMLElement {
     }
 
     update(...args) {
-        [...args].forEach((argument) => {
+        args.forEach((argument) => {
             switch (argument) {
                 case "id":
                     if (this.id !== undefined)
