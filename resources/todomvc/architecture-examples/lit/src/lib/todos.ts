@@ -93,9 +93,6 @@ export class Todos extends EventTarget {
                 return this.active;
             case "completed":
                 return this.completed;
-            case "all":
-            case undefined:
-            // fall through
         }
         return this.all;
     }
