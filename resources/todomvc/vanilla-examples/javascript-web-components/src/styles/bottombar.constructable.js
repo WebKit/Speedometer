@@ -1,5 +1,158 @@
 const sheet = new CSSStyleSheet();
-sheet.replaceSync(
-    ':host {\n    display: block;\n\tbox-shadow: none !important;\n}\n\n.bottombar {\n\tpadding: 10px 0;\n\theight: 41px;\n\ttext-align: center;\n\tfont-size: 15px;\n\tborder-top: 1px solid #e6e6e6;\n\tposition: relative;\n}\n\n.bottombar::before {\n\tcontent: \'\';\n\tposition: absolute;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\theight: 50px;\n\toverflow: hidden;\n\tpointer-events: none;\n\tbox-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),\n\t            0 8px 0 -3px #f6f6f6,\n\t            0 9px 1px -3px rgba(0, 0, 0, 0.2),\n\t            0 16px 0 -6px #f6f6f6,\n\t            0 17px 2px -6px rgba(0, 0, 0, 0.2);\n}\n\n.todo-status {\n\ttext-align: left;\n\tpadding: 3px;\n    height: 32px;\n    line-height: 26px;\n\tposition: absolute;\n\tleft: 12px;\n\ttop: 50%;\n    transform: translateY(-50%);\n}\n\n.todo-count {\n\tfont-weight: 300;\n}\n\n.filter-list {\n\tmargin: 0;\n\tpadding: 0;\n\tlist-style: none;\n\tdisplay: inline-block;\n\tposition: absolute;\n\tleft: 0;\n\tright: 0;\n\ttop: 50%;\n    transform: translateY(-50%);\n}\n\n.filter-item {\n\tdisplay: inline-block;\n}\n\n.filter-link {\n\tcolor: inherit;\n\tmargin: 3px;\n\tpadding: 0 7px;\n\ttext-decoration: none;\n\tborder: 1px solid transparent;\n\tborder-radius: 3px;\n\tcursor: pointer;\n\tdisplay: block;\n\theight: 26px;\n\tline-height: 26px;\n}\n\n.filter-link:hover {\n\tborder-color: #DB7676;\n}\n\n.filter-link.selected {\n\tborder-color: #CE4646;\n}\n\n.clear-completed-button,\n.clear-completed-button:active {\n\ttext-decoration: none;\n\tcursor: pointer;\n\tpadding: 3px;\n    height: 32px;\n    line-height: 26px;\n\tposition: absolute;\n\tright: 12px;\n\ttop: 50%;\n    transform: translateY(-50%);\n}\n\n.clear-completed-button:hover {\n\ttext-decoration: underline;\n}\n\n/* rtl support */\nhtml[dir="rtl"] .todo-status,\n:host([dir="rtl"]) .todo-status { \n\tright: 12px;\n\tleft: unset;\n}\n\nhtml[dir="rtl"] .clear-completed-button,\n:host([dir="rtl"]) .clear-completed-button { \n\tleft: 12px;\n\tright: unset;\n}\n\n@media (max-width: 430px) {\n\t.bottombar {\n\t\theight: 120px;\n\t}\n\n\t.todo-status {\n\t\tdisplay: block;\n\t\ttext-align: center;\n\t\tposition: relative;\n\t\tleft: unset;\n\t\tright: unset;\n\t\ttop: unset;\n\t\ttransform: unset;\n\t}\n\n\t.filter-list {\n\t\tdisplay: block;\n\t\tposition: relative;\n\t\tleft: unset;\n\t\tright: unset;\n\t\ttop: unset;\n\t\ttransform: unset;\n\t}\n\n\t.clear-completed-button,\n\t.clear-completed-button:active {\n\t\tdisplay: block;\n\t\tmargin: 0 auto;\n\t\tposition: relative;\n\t\tleft: unset;\n\t\tright: unset;\n\t\ttop: unset;\n\t\ttransform: unset;\n\t}\n\n\t/* rtl support */\n\thtml[dir="rtl"] .todo-status,\n\t:host([dir="rtl"]) .todo-status { \n\t\tright: unset;\n\t\tleft: unset;\n\t}\n\n\thtml[dir="rtl"] .clear-completed-button,\n\t:host([dir="rtl"]) .clear-completed-button { \n\t\tleft: unset;\n\t\tright: unset;\n\t}\n}\n'
-);
+sheet.replaceSync(`:host {
+    display: block;
+    box-shadow: none !important;
+}
+
+.bottombar {
+    padding: 10px 0;
+    height: 41px;
+    text-align: center;
+    font-size: 15px;
+    border-top: 1px solid #e6e6e6;
+    position: relative;
+}
+
+.bottombar::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 50px;
+    overflow: hidden;
+    pointer-events: none;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 8px 0 -3px #f6f6f6, 0 9px 1px -3px rgba(0, 0, 0, 0.2), 0 16px 0 -6px #f6f6f6, 0 17px 2px -6px rgba(0, 0, 0, 0.2);
+}
+
+.todo-status {
+    text-align: left;
+    padding: 3px;
+    height: 32px;
+    line-height: 26px;
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.todo-count {
+    font-weight: 300;
+}
+
+.filter-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.filter-item {
+    display: inline-block;
+}
+
+.filter-link {
+    color: inherit;
+    margin: 3px;
+    padding: 0 7px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    display: block;
+    height: 26px;
+    line-height: 26px;
+}
+
+.filter-link:hover {
+    border-color: #db7676;
+}
+
+.filter-link.selected {
+    border-color: #ce4646;
+}
+
+.clear-completed-button,
+.clear-completed-button:active {
+    text-decoration: none;
+    cursor: pointer;
+    padding: 3px;
+    height: 32px;
+    line-height: 26px;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.clear-completed-button:hover {
+    text-decoration: underline;
+}
+
+/* rtl support */
+html[dir="rtl"] .todo-status,
+:host([dir="rtl"]) .todo-status {
+    right: 12px;
+    left: unset;
+}
+
+html[dir="rtl"] .clear-completed-button,
+:host([dir="rtl"]) .clear-completed-button {
+    left: 12px;
+    right: unset;
+}
+
+@media (max-width: 430px) {
+    .bottombar {
+        height: 120px;
+    }
+
+    .todo-status {
+        display: block;
+        text-align: center;
+        position: relative;
+        left: unset;
+        right: unset;
+        top: unset;
+        transform: unset;
+    }
+
+    .filter-list {
+        display: block;
+        position: relative;
+        left: unset;
+        right: unset;
+        top: unset;
+        transform: unset;
+    }
+
+    .clear-completed-button,
+    .clear-completed-button:active {
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        left: unset;
+        right: unset;
+        top: unset;
+        transform: unset;
+    }
+
+        html[dir="rtl"] .todo-status,
+    :host([dir="rtl"]) .todo-status {
+        right: unset;
+        left: unset;
+    }
+
+    html[dir="rtl"] .clear-completed-button,
+    :host([dir="rtl"]) .clear-completed-button {
+        left: unset;
+        right: unset;
+    }
+}
+`);
 export default sheet;
