@@ -17,7 +17,7 @@ class TodoApp extends HTMLElement {
 
         this.shadow = this.attachShadow({ mode: "open" });
         this.htmlDirection = document.dir || "ltr";
-        this.shadow.host.setAttribute("dir", this.htmlDirection);
+        this.setAttribute("dir", this.htmlDirection);
         this.shadow.adoptedStyleSheets = [globalStyles, appStyles, mainStyles];
         this.shadow.append(node);
 
