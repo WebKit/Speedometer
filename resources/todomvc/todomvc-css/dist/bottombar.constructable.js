@@ -1,3 +1,158 @@
 const sheet = new CSSStyleSheet();
-sheet.replaceSync(":host {\n    display: block;\n    box-shadow: none !important;\n}\n\n.bottombar {\n    padding: 10px 0;\n    height: 41px;\n    text-align: center;\n    font-size: 15px;\n    border-top: 1px solid #e6e6e6;\n    position: relative;\n}\n\n.bottombar::before {\n    content: \"\";\n    position: absolute;\n    right: 0;\n    bottom: 0;\n    left: 0;\n    height: 50px;\n    overflow: hidden;\n    pointer-events: none;\n    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 8px 0 -3px #f6f6f6, 0 9px 1px -3px rgba(0, 0, 0, 0.2), 0 16px 0 -6px #f6f6f6, 0 17px 2px -6px rgba(0, 0, 0, 0.2);\n}\n\n.todo-status {\n    text-align: left;\n    padding: 3px;\n    height: 32px;\n    line-height: 26px;\n    position: absolute;\n    left: 12px;\n    top: 50%;\n    transform: translateY(-50%);\n}\n\n.todo-count {\n    font-weight: 300;\n}\n\n.filter-list {\n    margin: 0;\n    padding: 0;\n    list-style: none;\n    display: inline-block;\n    position: absolute;\n    left: 0;\n    right: 0;\n    top: 50%;\n    transform: translateY(-50%);\n}\n\n.filter-item {\n    display: inline-block;\n}\n\n.filter-link {\n    color: inherit;\n    margin: 3px;\n    padding: 0 7px;\n    text-decoration: none;\n    border: 1px solid transparent;\n    border-radius: 3px;\n    cursor: pointer;\n    display: block;\n    height: 26px;\n    line-height: 26px;\n}\n\n.filter-link:hover {\n    border-color: #db7676;\n}\n\n.filter-link.selected {\n    border-color: #ce4646;\n}\n\n.clear-completed-button,\n.clear-completed-button:active {\n    text-decoration: none;\n    cursor: pointer;\n    padding: 3px;\n    height: 32px;\n    line-height: 26px;\n    position: absolute;\n    right: 12px;\n    top: 50%;\n    transform: translateY(-50%);\n}\n\n.clear-completed-button:hover {\n    text-decoration: underline;\n}\n\n/* rtl support */\nhtml[dir=\"rtl\"] .todo-status,\n:host([dir=\"rtl\"]) .todo-status {\n    right: 12px;\n    left: unset;\n}\n\nhtml[dir=\"rtl\"] .clear-completed-button,\n:host([dir=\"rtl\"]) .clear-completed-button {\n    left: 12px;\n    right: unset;\n}\n\n@media (max-width: 430px) {\n    .bottombar {\n        height: 120px;\n    }\n\n    .todo-status {\n        display: block;\n        text-align: center;\n        position: relative;\n        left: unset;\n        right: unset;\n        top: unset;\n        transform: unset;\n    }\n\n    .filter-list {\n        display: block;\n        position: relative;\n        left: unset;\n        right: unset;\n        top: unset;\n        transform: unset;\n    }\n\n    .clear-completed-button,\n    .clear-completed-button:active {\n        display: block;\n        margin: 0 auto;\n        position: relative;\n        left: unset;\n        right: unset;\n        top: unset;\n        transform: unset;\n    }\n\n    /* rtl support */\n    html[dir=\"rtl\"] .todo-status,\n    :host([dir=\"rtl\"]) .todo-status {\n        right: unset;\n        left: unset;\n    }\n\n    html[dir=\"rtl\"] .clear-completed-button,\n    :host([dir=\"rtl\"]) .clear-completed-button {\n        left: unset;\n        right: unset;\n    }\n}\n");
+sheet.replaceSync(`:host {
+    display: block;
+    box-shadow: none !important;
+}
+
+.bottombar {
+    padding: 10px 0;
+    height: 41px;
+    text-align: center;
+    font-size: 15px;
+    border-top: 1px solid #e6e6e6;
+    position: relative;
+}
+
+.bottombar::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 50px;
+    overflow: hidden;
+    pointer-events: none;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 8px 0 -3px #f6f6f6, 0 9px 1px -3px rgba(0, 0, 0, 0.2), 0 16px 0 -6px #f6f6f6, 0 17px 2px -6px rgba(0, 0, 0, 0.2);
+}
+
+.todo-status {
+    text-align: left;
+    padding: 3px;
+    height: 32px;
+    line-height: 26px;
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.todo-count {
+    font-weight: 300;
+}
+
+.filter-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.filter-item {
+    display: inline-block;
+}
+
+.filter-link {
+    color: inherit;
+    margin: 3px;
+    padding: 0 7px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    display: block;
+    height: 26px;
+    line-height: 26px;
+}
+
+.filter-link:hover {
+    border-color: #db7676;
+}
+
+.filter-link.selected {
+    border-color: #ce4646;
+}
+
+.clear-completed-button,
+.clear-completed-button:active {
+    text-decoration: none;
+    cursor: pointer;
+    padding: 3px;
+    height: 32px;
+    line-height: 26px;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.clear-completed-button:hover {
+    text-decoration: underline;
+}
+
+/* rtl support */
+html[dir="rtl"] .todo-status,
+:host([dir="rtl"]) .todo-status {
+    right: 12px;
+    left: unset;
+}
+
+html[dir="rtl"] .clear-completed-button,
+:host([dir="rtl"]) .clear-completed-button {
+    left: 12px;
+    right: unset;
+}
+
+@media (max-width: 430px) {
+    .bottombar {
+        height: 120px;
+    }
+
+    .todo-status {
+        display: block;
+        text-align: center;
+        position: relative;
+        left: unset;
+        right: unset;
+        top: unset;
+        transform: unset;
+    }
+
+    .filter-list {
+        display: block;
+        position: relative;
+        left: unset;
+        right: unset;
+        top: unset;
+        transform: unset;
+    }
+
+    .clear-completed-button,
+    .clear-completed-button:active {
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        left: unset;
+        right: unset;
+        top: unset;
+        transform: unset;
+    }
+
+        html[dir="rtl"] .todo-status,
+    :host([dir="rtl"]) .todo-status {
+        right: unset;
+        left: unset;
+    }
+
+    html[dir="rtl"] .clear-completed-button,
+    :host([dir="rtl"]) .clear-completed-button {
+        left: unset;
+        right: unset;
+    }
+}
+`);
 export default sheet;

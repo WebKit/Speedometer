@@ -1,3 +1,24 @@
 const sheet = new CSSStyleSheet();
-sheet.replaceSync(":host {\n    display: block;\n    box-shadow: none !important;\n}\n\n.header {\n    margin-top: 27px;\n}\n\n.title {\n    width: 100%;\n    font-size: 80px;\n    line-height: 80px;\n    margin: 0;\n    font-weight: 200;\n    text-align: center;\n    color: #b83f45;\n    -webkit-text-rendering: optimizeLegibility;\n    -moz-text-rendering: optimizeLegibility;\n    text-rendering: optimizeLegibility;\n}\n");
+sheet.replaceSync(`:host {
+    display: block;
+    box-shadow: none !important;
+}
+
+.header {
+    margin-top: 27px;
+}
+
+.title {
+    width: 100%;
+    font-size: 80px;
+    line-height: 80px;
+    margin: 0;
+    font-weight: 200;
+    text-align: center;
+    color: #b83f45;
+    -webkit-text-rendering: optimizeLegibility;
+    -moz-text-rendering: optimizeLegibility;
+    text-rendering: optimizeLegibility;
+}
+`);
 export default sheet;
