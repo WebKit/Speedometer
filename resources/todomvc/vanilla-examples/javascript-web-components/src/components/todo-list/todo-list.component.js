@@ -1,6 +1,8 @@
 import template from "./todo-list.template.js";
 import TodoItem from "../todo-item/todo-item.component.js";
 
+// [TO-D0]: use local package for styles when available:
+// https://github.com/WebKit/Speedometer/pull/254
 import globalStyles from "../../styles/global.constructable.js";
 import listStyles from "../../styles/todo-list.constructable.js";
 

@@ -1,6 +1,8 @@
 import template from "./todo-app.template.js";
 import { useRouter } from "../../hooks/useRouter.js";
 
+// [TO-D0]: use local package for styles when available:
+// https://github.com/WebKit/Speedometer/pull/254
 import globalStyles from "../../styles/global.constructable.js";
 import appStyles from "../../styles/app.constructable.js";
 import mainStyles from "../../styles/main.constructable.js";

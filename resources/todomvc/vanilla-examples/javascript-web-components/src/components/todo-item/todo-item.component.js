@@ -2,6 +2,8 @@ import template from "./todo-item.template.js";
 import { useDoubleClick } from "../../hooks/useDoubleClick.js";
 import { useKeyListener } from "../../hooks/useKeyListener.js";
 
+// [TO-D0]: use local package for styles when available:
+// https://github.com/WebKit/Speedometer/pull/254
 import globalStyles from "../../styles/global.constructable.js";
 import itemStyles from "../../styles/todo-item.constructable.js";
 
