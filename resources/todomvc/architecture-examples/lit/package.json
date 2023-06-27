@@ -1,6 +1,10 @@
 {
     "private": true,
     "type": "module",
+    "engines": {
+        "node": ">=18.13.0",
+        "npm": ">=8.19.3"
+    },
     "scripts": {
         "serve": "wireit",
         "dev": "wireit",
