@@ -513,4 +513,8 @@ export const todos = {
 
 export const defaultTodoText = {
     en: "Something to do",
+    "zh-cn": "做某事",
+    ja: "何かをする必要がある",
+    es: "Algo que hacer",
+    de: "Etwas zu tun",
 };
