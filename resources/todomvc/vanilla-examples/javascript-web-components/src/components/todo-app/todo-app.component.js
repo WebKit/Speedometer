@@ -16,7 +16,7 @@ class TodoApp extends HTMLElement {
         this.bottombar = node.querySelector("todo-bottombar");
 
         this.shadow = this.attachShadow({ mode: "open" });
-        this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
+        this.htmlDirection = document.dir || "ltr";
         this.shadow.host.setAttribute("dir", this.htmlDirection);
         this.shadow.adoptedStyleSheets = [globalStyles, appStyles, mainStyles];
         this.shadow.append(node);
