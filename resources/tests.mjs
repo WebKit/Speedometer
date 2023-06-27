@@ -139,33 +139,12 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-WebComponents",
-    url: "tentative/todomvc/index.html",
+    url: "todomvc/vanilla-examples/javascript-web-components/index.html",
     tags: ["todomvc", "webcomponents"],
     async prepare(page) {
         await page.waitForElement("todo-app");
     },
     tests: [
-        /* new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
-            const app = page.querySelector("todo-app").callElementMethod("getInstance");
-            const input = app.topbar.todoInput;
-
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                input.value = `Something to do ${i}`;
-                input.dispatchEvent(new KeyboardEvent("keyup", { key: "Enter" }));
-            }
-        }),
-        new BenchmarkTestStep("CompletingAllItems", (page) => {
-            const app = page.querySelector("todo-app").callElementMethod("getInstance");
-            const elements = app.list._elements;
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                elements[i].toggleInput.click();
-        }),
-        new BenchmarkTestStep("DeletingAllItems", (page) => {
-            const app = page.querySelector("todo-app").callElementMethod("getInstance");
-            const elements = app.list._elements;
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                elements[i].todoButton.click();
-        }), */
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
             for (let i = 0; i < numberOfItemsToAdd; i++) {
