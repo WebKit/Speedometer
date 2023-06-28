@@ -407,7 +407,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Lit",
     url: "todomvc/architecture-examples/lit/dist/index.html",
-    tags: ["todomvc"],
+    tags: ["todomvc", "webcomponents"],
     async prepare(page) {
         await page.waitForElement("todo-app");
     },
