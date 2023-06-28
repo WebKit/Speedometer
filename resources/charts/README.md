@@ -41,7 +41,7 @@ convenient to open these benchmarks with their specific files.
 
 You can load this benchmark with the `/observable-plot.html` page, for example
 http://localhost:5173/observable-plot.html if you run it locally or
-http://localhost:7000/resources/tentative/charts/dist/observable-plot.html in the
+http://localhost:7000/resources/charts/dist/observable-plot.html in the
 context of the speedometer.
 
 Observable Plot is D3-based and outputs SVG.
@@ -63,7 +63,7 @@ US. You can consult them in the [datasets directory](./datasets).
 
 You can load this benchmark with the `/chartjs.html` page, for example
 http://localhost:5173/chartjs.html if you run it locally or
-http://localhost:7000/resources/tentative/charts/dist/chartjs.html in the
+http://localhost:7000/resources/charts/dist/chartjs.html in the
 context of speedometer.
 
 ChartJS is canvas-based.
