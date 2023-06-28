@@ -1,13 +1,8 @@
 import { createContext, useContext } from "react";
-
 import { content as contentEn } from "@/data/en/content";
-
 import { settings as settingsEn } from "@/data/en/dialog";
-
 import { footer as footerEn } from "@/data/en/footer";
-
 import * as buttonsEn from "@/data/en/buttons";
-
 import * as linksEn from "@/data/en/links";
 
 const contentImport = { en: contentEn };
