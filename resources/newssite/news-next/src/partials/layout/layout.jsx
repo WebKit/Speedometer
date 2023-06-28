@@ -34,7 +34,9 @@ export default function Layout({ children, id }) {
 
     return (
         <>
-            <HashLink to={`${pathname}#content`} className="skip-link">{links.a11y.skip.label}</HashLink>
+            <HashLink to={`${pathname}#content`} className="skip-link">
+                {links.a11y.skip.label}
+            </HashLink>
             <div className={styles.page} ref={pageRef}>
                 <Header />
                 <Navigation />
