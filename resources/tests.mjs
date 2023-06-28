@@ -439,6 +439,38 @@ Suites.push({
 });
 
 Suites.push({
+    name: "TodoMVC-Lit",
+    url: "todomvc/architecture-examples/lit/dist/index.html",
+    tags: ["todomvc", "webcomponents"],
+    async prepare(page) {
+        await page.waitForElement("todo-app");
+    },
+    tests: [
+        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            const newTodo = page.querySelector(".new-todo", ["todo-app", "todo-form"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                newTodo.setValue(`Something to do ${i}`);
+                newTodo.enter("keydown");
+            }
+        }),
+        new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const todoItems = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const checkbox = todoItems[i].querySelectorInShadowRoot(".toggle");
+                checkbox.click();
+            }
+        }),
+        new BenchmarkTestStep("DeletingAllItems", (page) => {
+            const todoItems = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const deleteButton = todoItems[i].querySelectorInShadowRoot(".destroy");
+                deleteButton.click();
+            }
+        }),
+    ],
+});
+
+Suites.push({
     name: "NewsSite-Next",
     url: "newssite/news-next/dist/index.html#/home",
     tags: ["newssite"],
