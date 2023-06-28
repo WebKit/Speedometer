@@ -33,3 +33,5 @@ package-lock.json
 !/resources/newssite/news-next
 !/resources/newssite/news-nuxt
 !/resources/newssite/news-site-css
+
+/resources/react-stockcharts
