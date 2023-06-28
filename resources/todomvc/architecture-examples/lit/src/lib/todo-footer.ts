@@ -88,37 +88,36 @@ export class TodoFooter extends LitElement {
         todoList?: Todos;
 
     override render() {
-        const isEmpty = (this.todoList?.all.length ?? 0) > 0;
-        return isEmpty
-            ? html`<span class="todo-count">
-                      <strong>${this.todoList?.active.length}</strong>
-                      items left
-                  </span>
-                  <ul class="filters">
-                      <li>
-                          ${filterLink({
-        text: "All",
-        filter: "all",
-        selectedFilter: this.todoList?.filter,
-    })}
-                      </li>
-                      <li>
-                          ${filterLink({
-        text: "Active",
-        filter: "active",
-        selectedFilter: this.todoList?.filter,
-    })}
-                      </li>
-                      <li>
-                          ${filterLink({
-        text: "Completed",
-        filter: "completed",
-        selectedFilter: this.todoList?.filter,
-    })}
-                      </li>
-                  </ul>
-                  ${(this.todoList?.completed.length ?? 0) > 0 ? html`<button @click=${this.#onClearCompletedClick} class="clear-completed">Clear Completed</button>` : nothing}`
-            : nothing;
+        if (this.todoList === undefined || this.todoList.all.length === 0)
+            return nothing;
+
+        const allFilter = filterLink({
+            text: "All",
+            filter: "all",
+            selectedFilter: this.todoList?.filter,
+        });
+        const activeFilter = filterLink({
+            text: "Active",
+            filter: "active",
+            selectedFilter: this.todoList?.filter,
+        });
+        const completedFilter = filterLink({
+            text: "Completed",
+            filter: "completed",
+            selectedFilter: this.todoList?.filter,
+        });
+        return html`
+            <span class="todo-count">
+                <strong>${this.todoList?.active.length}</strong>
+                items left
+            </span>
+            <ul class="filters">
+                <li>${allFilter}</li>
+                <li>${activeFilter}</li>
+                <li>${completedFilter}</li>
+            </ul>
+            ${(this.todoList?.completed.length ?? 0) > 0 ? html`<button @click=${this.#onClearCompletedClick} class="clear-completed">Clear Completed</button>` : nothing}
+        `;
     }
 
     #onClearCompletedClick() {
