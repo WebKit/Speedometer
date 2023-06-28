@@ -1,4 +1,3 @@
-
 /* Borrowed from https://github.com/ai/nanoid/blob/3.0.2/non-secure/index.js
 
 The MIT License (MIT)
