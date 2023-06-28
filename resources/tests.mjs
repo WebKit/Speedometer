@@ -139,6 +139,39 @@ Suites.push({
 });
 
 Suites.push({
+    name: "TodoMVC-WebComponents",
+    url: "todomvc/vanilla-examples/javascript-web-components/index.html",
+    tags: ["todomvc", "webcomponents"],
+    async prepare(page) {
+        await page.waitForElement("todo-app");
+    },
+    tests: [
+        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                input.setValue(`Something to do ${i}`);
+                input.dispatchEvent("input");
+                input.enter("keyup");
+            }
+        }),
+        new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
+                item.click();
+            }
+        }),
+        new BenchmarkTestStep("DeletingAllItems", (page) => {
+            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
+                item.click();
+            }
+        }),
+    ],
+});
+
+Suites.push({
     name: "TodoMVC-React",
     url: "todomvc/architecture-examples/react/dist/index.html#/home",
     tags: ["todomvc"],
