@@ -413,7 +413,7 @@ class TimeSeriesChart extends ComponentBase {
 
     _renderTimeSeries(context, metrics, source, series, layerName)
     {
-        for (var point of series) {
+        for (let point = series.firstPoint(); point; point = series.nextPoint(point)) {
             point.x = metrics.timeToX(point.time);
             point.y = metrics.valueToY(point.value);
         }
@@ -445,14 +445,14 @@ class TimeSeriesChart extends ComponentBase {
         context.strokeStyle = this._sourceOptionWithFallback(source, layerName + 'LineStyle', 'lineStyle');
         context.lineWidth = this._sourceOptionWithFallback(source, layerName + 'LineWidth', 'lineWidth');
         context.beginPath();
-        for (var point of series)
+        for (let point = series.firstPoint(); point; point = series.nextPoint(point))
             context.lineTo(point.x, point.y);
         context.stroke();
 
         context.fillStyle = this._sourceOptionWithFallback(source, layerName + 'PointStyle', 'pointStyle');
         var radius = this._sourceOptionWithFallback(source, layerName + 'PointRadius', 'pointRadius');
         if (radius) {
-            for (var point of series)
+            for (let point = series.firstPoint(); point; point = series.nextPoint(point))
                 this._fillCircle(context, point.x, point.y, radius);
         }
     }
@@ -578,7 +578,7 @@ class TimeSeriesChart extends ComponentBase {
         for (var seriesData of this._sampledTimeSeriesData) {
             if (!seriesData)
                 continue;
-            for (var point of seriesData) {
+            for (let point = seriesData.firstPoint(); point; point = seriesData.nextPoint(point)) {
                 var minCandidate = point.interval ? point.interval[0] : point.value;
                 var maxCandidate = point.interval ? point.interval[1] : point.value;
                 min = (min === undefined) ? minCandidate : Math.min(min, minCandidate);

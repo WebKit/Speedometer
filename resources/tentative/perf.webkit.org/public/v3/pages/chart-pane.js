@@ -12,8 +12,10 @@ function createTrendLineExecutableFromAveragingFunction(callback) {
 
         var interval = function () { return null; }
         var result = new Array(averageValues.length);
+        result.firstPoint = () => result[0];
+        result.nextPoint = (point) => result[point.seriesIndex + 1];
         for (var i = 0; i < averageValues.length; i++)
-            result[i] = {time: timeSeries.findPointByIndex(i).time, value: averageValues[i], interval: interval};
+            result[i] = {seriesIndex: i, time: timeSeries.findPointByIndex(i).time, value: averageValues[i], interval: interval};
 
         return Promise.resolve(result);
     }
@@ -30,6 +32,12 @@ const ChartTrendLineTypes = [
         execute: function (source, parameters) {
             return source.measurementSet.fetchSegmentation('segmentTimeSeriesByMaximizingSchwarzCriterion', parameters,
                 source.type, source.includeOutliers, source.extendToFuture).then(function (segmentation) {
+                if (!segmentation)
+                    return segmentation;
+                segmentation.forEach((point, index) => point.seriesIndex = index);
+                segmentation.firstPoint = () => segmentation[0];
+                segmentation.nextPoint = (point) => segmentation[point.seriesIndex + 1];
+                console.log(segmentation.nextPoint(segmentation.firstPoint()));
                 return segmentation;
             });
         },
@@ -62,6 +70,8 @@ const ChartTrendLineTypes = [
                     label: `Potential ${summary.changeLabel}`,
                 };
             });
+            segmentation.firstPoint = () => segmentation[0];
+            segmentation.nextPoint = (point) => segmentation[point.seriesIndex + 1];
             return segmentation;
         },
         parameterList: [

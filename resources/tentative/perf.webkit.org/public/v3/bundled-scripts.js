@@ -316,15 +316,14 @@ findPointByIndex(index)
 {index+=this._startingIndex;if(index<0||index>=this._afterEndingIndex)
 return null;return this._data[index];}
 findById(id)
-{for(let point of this){if(point.id==id)
+{for(let i=this._startingIndex;i<this._afterEndingIndex;++i){let point=this._data[i];if(point.id==id)
 return point;}
 return null;}
 values()
-{if(this._values==null){this._values=new Array(this._length);let i=0;for(let point of this)
-this._values[i++]=point.value;}
+{if(this._values==null){this._values=new Array(this._length);let i=0;for(let index=this._startingIndex;index<this._afterEndingIndex;++index){let point=this._data[index];this._values[i++]=point.value;}}
 return this._values;}
 filter(callback)
-{const filteredData=[];let i=0;for(let point of this){if(callback(point,i))
+{const filteredData=[];let i=0;for(let index=this._startingIndex;index<this._afterEndingIndex;++index){let point=this._data[index];if(callback(point,i))
 filteredData.push(point);i++;}
 return new FilteredTimeSeriesView(this._timeSeries,0,filteredData.length,filteredData);}
 viewTimeRange(startTime,endTime)
@@ -336,19 +335,15 @@ return this._subRange(0,0);return this._subRange(startingIndex,endingIndex+1);}
 _subRange(startingIndex,afterEndingIndex)
 {return new TimeSeriesView(this._timeSeries,startingIndex,afterEndingIndex);}
 firstPointInTimeRange(startTime,endTime)
-{console.assert(startTime<=endTime);for(let point of this){if(point.time>endTime)
+{console.assert(startTime<=endTime);for(let index=this._startingIndex;index<this._afterEndingIndex;++index){let point=this._data[index];if(point.time>endTime)
 return null;if(point.time>=startTime)
 return point;}
 return null;}
 lastPointInTimeRange(startTime,endTime)
-{console.assert(startTime<=endTime);for(let point of this._reverse()){if(point.time<startTime)
+{console.assert(startTime<=endTime);for(let index=this._afterEndingIndex-1;index>=this._startingIndex;--index){let point=this._data[index];if(point.time<startTime)
 return null;if(point.time<=endTime)
 return point;}
-return null;}*[Symbol.iterator]()
-{const data=this._data;const afterEnd=this._afterEndingIndex;let i=this._startingIndex;for(let i=this._startingIndex;i<afterEnd;++i)
-yield data[i];}*_reverse()
-{const data=this._data;const beginning=this._startingIndex;for(let i=this._afterEndingIndex-1;i>=beginning;--i)
-yield data[i];}}
+return null;}}
 class FilteredTimeSeriesView extends TimeSeriesView{_filteredData;_pointIndexMap;constructor(timeSeries,startingIndex,afterEndingIndex,filteredData)
 {console.assert(afterEndingIndex<=filteredData.length);super(timeSeries,startingIndex,afterEndingIndex);this._filteredData=filteredData;}
 get _data(){return this._filteredData;}
@@ -1510,12 +1505,12 @@ if(!this._annotationRows)
 return;for(var row of this._annotationRows){for(var bar of row){if(bar.x>this.chartWidth||bar.x+bar.width<0)
 continue;context.fillStyle=bar.fillStyle;context.fillRect(bar.x,bar.y,bar.width,bar.height);}}}
 _renderTimeSeries(context,metrics,source,series,layerName)
-{for(var point of series){point.x=metrics.timeToX(point.time);point.y=metrics.valueToY(point.value);}
+{for(let point=series.firstPoint();point;point=series.nextPoint(point)){point.x=metrics.timeToX(point.time);point.y=metrics.valueToY(point.value);}
 if(source.intervalStyle){context.strokeStyle=source.intervalStyle;context.fillStyle=source.intervalStyle;context.lineWidth=source.intervalWidth;context.beginPath();var width=1;for(var i=0;i<series.length;i++){var point=series[i];var interval=point.interval;var value=interval?interval[0]:point.value;context.lineTo(point.x-width,metrics.valueToY(value));context.lineTo(point.x+width,metrics.valueToY(value));}
 for(var i=series.length-1;i>=0;i--){var point=series[i];var interval=point.interval;var value=interval?interval[1]:point.value;context.lineTo(point.x+width,metrics.valueToY(value));context.lineTo(point.x-width,metrics.valueToY(value));}
 context.fill();}
-context.strokeStyle=this._sourceOptionWithFallback(source,layerName+'LineStyle','lineStyle');context.lineWidth=this._sourceOptionWithFallback(source,layerName+'LineWidth','lineWidth');context.beginPath();for(var point of series)
-context.lineTo(point.x,point.y);context.stroke();context.fillStyle=this._sourceOptionWithFallback(source,layerName+'PointStyle','pointStyle');var radius=this._sourceOptionWithFallback(source,layerName+'PointRadius','pointRadius');if(radius){for(var point of series)
+context.strokeStyle=this._sourceOptionWithFallback(source,layerName+'LineStyle','lineStyle');context.lineWidth=this._sourceOptionWithFallback(source,layerName+'LineWidth','lineWidth');context.beginPath();for(let point=series.firstPoint();point;point=series.nextPoint(point))
+context.lineTo(point.x,point.y);context.stroke();context.fillStyle=this._sourceOptionWithFallback(source,layerName+'PointStyle','pointStyle');var radius=this._sourceOptionWithFallback(source,layerName+'PointRadius','pointRadius');if(radius){for(let point=series.firstPoint();point;point=series.nextPoint(point))
 this._fillCircle(context,point.x,point.y,radius);}}
 _sourceOptionWithFallback(option,preferred,fallback)
 {return preferred in option?option[preferred]:option[fallback];}
@@ -1540,7 +1535,7 @@ return false;this._renderedTrendLines=true;return true;}
 _ensureValueRangeCache()
 {if(this._valueRangeCache)
 return false;Instrumentation.startMeasuringTime('TimeSeriesChart','valueRangeCache');var startTime=this._startTime;var endTime=this._endTime;var min;var max;for(var seriesData of this._sampledTimeSeriesData){if(!seriesData)
-continue;for(var point of seriesData){var minCandidate=point.interval?point.interval[0]:point.value;var maxCandidate=point.interval?point.interval[1]:point.value;min=(min===undefined)?minCandidate:Math.min(min,minCandidate);max=(max===undefined)?maxCandidate:Math.max(max,maxCandidate);}}
+continue;for(let point=seriesData.firstPoint();point;point=seriesData.nextPoint(point)){var minCandidate=point.interval?point.interval[0]:point.value;var maxCandidate=point.interval?point.interval[1]:point.value;min=(min===undefined)?minCandidate:Math.min(min,minCandidate);max=(max===undefined)?maxCandidate:Math.max(max,maxCandidate);}}
 if(min==max)
 max=max*1.1;this._valueRangeCache=[min,max];Instrumentation.endMeasuringTime('TimeSeriesChart','valueRangeCache');return true;}
 _updateCanvasSizeIfClientSizeChanged()
@@ -1621,7 +1616,7 @@ _mouseLeave(event)
 {if(this._selectionTimeRange||this._indicatorIsLocked||!this._indicatorID)
 return;this._indicatorID=null;this._forceRender=true;this.enqueueToRender();this._notifyIndicatorChanged();}
 _mouseDown(event)
-{console.log('_mouseDown',event.offsetX,event.offsetY,event.screenX,event.screenY,event.target,event.target.getBoundingClientRect());this._lastMouseDownLocation={x:event.offsetX,y:event.offsetY};}
+{this._lastMouseDownLocation={x:event.offsetX,y:event.offsetY};}
 _mouseUp(event)
 {if(this._dragStarted)
 this._endDragging({x:event.offsetX,y:event.offsetY});}
@@ -1652,7 +1647,7 @@ return null;}
 _findClosestPoint(cursorLocation)
 {Instrumentation.startMeasuringTime('InteractiveTimeSeriesChart','findClosestPoint');var metrics=this._layout();function weightedDistance(point){var x=metrics.timeToX(point.time);var y=metrics.valueToY(point.value);var xDiff=cursorLocation.x-x;var yDiff=cursorLocation.y-y;return xDiff*xDiff+yDiff*yDiff/16;}
 var minDistance;var minPoint=null;for(var i=0;i<this._sampledTimeSeriesData.length;i++){var series=this._sampledTimeSeriesData[i];var source=this._sourceList[i];if(!series||!source.interactive)
-continue;for(var point of series){var distance=weightedDistance(point);if(minDistance===undefined||distance<minDistance){minDistance=distance;minPoint=point;}}}
+continue;for(let point=series.firstPoint();point;point=series.nextPoint(point)){var distance=weightedDistance(point);if(minDistance===undefined||distance<minDistance){minDistance=distance;minPoint=point;}}}
 Instrumentation.endMeasuringTime('InteractiveTimeSeriesChart','findClosestPoint');return minPoint?minPoint.id:null;}
 _layout()
 {var metrics=super._layout();metrics.doneWork|=this._forceRender;this._forceRender=false;return metrics;}
@@ -2766,10 +2761,11 @@ static cssTemplate()
 function createTrendLineExecutableFromAveragingFunction(callback){return function(source,parameters){var timeSeries=source.measurementSet.fetchedTimeSeries(source.type,source.includeOutliers,source.extendToFuture);var values=timeSeries.values();if(!values.length)
 return Promise.resolve(null);var averageValues=callback.call(null,values,...parameters);if(!averageValues)
 return Promise.resolve(null);var interval=function(){return null;}
-var result=new Array(averageValues.length);for(var i=0;i<averageValues.length;i++)
-result[i]={time:timeSeries.findPointByIndex(i).time,value:averageValues[i],interval:interval};return Promise.resolve(result);}}
-const ChartTrendLineTypes=[{id:0,label:'None',},{id:5,label:'Segmentation',execute:function(source,parameters){return source.measurementSet.fetchSegmentation('segmentTimeSeriesByMaximizingSchwarzCriterion',parameters,source.type,source.includeOutliers,source.extendToFuture).then(function(segmentation){return segmentation;});},parameterList:[{label:"Segment count weight",value:2.5,min:0.01,max:10,step:0.01},{label:"Grid size",value:500,min:100,max:10000,step:10}]},{id:6,label:'Segmentation with Welch\'s t-test change detection',execute:async function(source,parameters){const segmentation=await source.measurementSet.fetchSegmentation('segmentTimeSeriesByMaximizingSchwarzCriterion',parameters,source.type,source.includeOutliers,source.extendToFuture);if(!segmentation)
-return segmentation;const metric=Metric.findById(source.measurementSet.metricId());const timeSeries=source.measurementSet.fetchedTimeSeries(source.type,source.includeOutliers,source.extendToFuture);segmentation.analysisAnnotations=Statistics.findRangesForChangeDetectionsWithWelchsTTest(timeSeries.values(),segmentation,parameters[parameters.length-1]).map((range)=>{const startPoint=timeSeries.findPointByIndex(range.startIndex);const endPoint=timeSeries.findPointByIndex(range.endIndex);const summary=metric.labelForDifference(range.segmentationStartValue,range.segmentationEndValue,'progression','regression');return{task:null,fillStyle:ChartStyles.annotationFillStyleForTask(null),startTime:startPoint.time,endTime:endPoint.time,label:`Potential ${summary.changeLabel}`,};});return segmentation;},parameterList:[{label:"Segment count weight",value:2.5,min:0.01,max:10,step:0.01},{label:"Grid size",value:500,min:100,max:10000,step:10},{label:"t-test significance",value:0.99,options:Statistics.supportedOneSideTTestProbabilities()},]},{id:1,label:'Simple Moving Average',parameterList:[{label:"Backward window size",value:8,min:2,step:1},{label:"Forward window size",value:4,min:0,step:1}],execute:createTrendLineExecutableFromAveragingFunction(Statistics.movingAverage.bind(Statistics))},{id:2,label:'Cumulative Moving Average',execute:createTrendLineExecutableFromAveragingFunction(Statistics.cumulativeMovingAverage.bind(Statistics))},{id:3,label:'Exponential Moving Average',parameterList:[{label:"Smoothing factor",value:0.01,min:0.001,max:0.9,step:0.001},],execute:createTrendLineExecutableFromAveragingFunction(Statistics.exponentialMovingAverage.bind(Statistics))},];ChartTrendLineTypes.DefaultType=ChartTrendLineTypes[1];class ChartPane extends ChartPaneBase{constructor(chartsPage,platformId,metricId)
+var result=new Array(averageValues.length);result.firstPoint=()=>result[0];result.nextPoint=(point)=>result[point.seriesIndex+1];for(var i=0;i<averageValues.length;i++)
+result[i]={seriesIndex:i,time:timeSeries.findPointByIndex(i).time,value:averageValues[i],interval:interval};return Promise.resolve(result);}}
+const ChartTrendLineTypes=[{id:0,label:'None',},{id:5,label:'Segmentation',execute:function(source,parameters){return source.measurementSet.fetchSegmentation('segmentTimeSeriesByMaximizingSchwarzCriterion',parameters,source.type,source.includeOutliers,source.extendToFuture).then(function(segmentation){if(!segmentation)
+return segmentation;segmentation.forEach((point,index)=>point.seriesIndex=index);segmentation.firstPoint=()=>segmentation[0];segmentation.nextPoint=(point)=>segmentation[point.seriesIndex+1];console.log(segmentation.nextPoint(segmentation.firstPoint()));return segmentation;});},parameterList:[{label:"Segment count weight",value:2.5,min:0.01,max:10,step:0.01},{label:"Grid size",value:500,min:100,max:10000,step:10}]},{id:6,label:'Segmentation with Welch\'s t-test change detection',execute:async function(source,parameters){const segmentation=await source.measurementSet.fetchSegmentation('segmentTimeSeriesByMaximizingSchwarzCriterion',parameters,source.type,source.includeOutliers,source.extendToFuture);if(!segmentation)
+return segmentation;const metric=Metric.findById(source.measurementSet.metricId());const timeSeries=source.measurementSet.fetchedTimeSeries(source.type,source.includeOutliers,source.extendToFuture);segmentation.analysisAnnotations=Statistics.findRangesForChangeDetectionsWithWelchsTTest(timeSeries.values(),segmentation,parameters[parameters.length-1]).map((range)=>{const startPoint=timeSeries.findPointByIndex(range.startIndex);const endPoint=timeSeries.findPointByIndex(range.endIndex);const summary=metric.labelForDifference(range.segmentationStartValue,range.segmentationEndValue,'progression','regression');return{task:null,fillStyle:ChartStyles.annotationFillStyleForTask(null),startTime:startPoint.time,endTime:endPoint.time,label:`Potential ${summary.changeLabel}`,};});segmentation.firstPoint=()=>segmentation[0];segmentation.nextPoint=(point)=>segmentation[point.seriesIndex+1];return segmentation;},parameterList:[{label:"Segment count weight",value:2.5,min:0.01,max:10,step:0.01},{label:"Grid size",value:500,min:100,max:10000,step:10},{label:"t-test significance",value:0.99,options:Statistics.supportedOneSideTTestProbabilities()},]},{id:1,label:'Simple Moving Average',parameterList:[{label:"Backward window size",value:8,min:2,step:1},{label:"Forward window size",value:4,min:0,step:1}],execute:createTrendLineExecutableFromAveragingFunction(Statistics.movingAverage.bind(Statistics))},{id:2,label:'Cumulative Moving Average',execute:createTrendLineExecutableFromAveragingFunction(Statistics.cumulativeMovingAverage.bind(Statistics))},{id:3,label:'Exponential Moving Average',parameterList:[{label:"Smoothing factor",value:0.01,min:0.001,max:0.9,step:0.001},],execute:createTrendLineExecutableFromAveragingFunction(Statistics.exponentialMovingAverage.bind(Statistics))},];ChartTrendLineTypes.DefaultType=ChartTrendLineTypes[1];class ChartPane extends ChartPaneBase{constructor(chartsPage,platformId,metricId)
 {super('chart-pane');this._mainChartIndicatorWasLocked=false;this._chartsPage=chartsPage;this._lockedPopover=null;this._trendLineType=null;this._trendLineParameters=[];this._trendLineVersion=0;this._renderedTrendLineOptions=false;this.configure(platformId,metricId);}
 didConstructShadowTree()
 {this.part('close').listenToAction('activate',()=>{this._chartsPage.closePane(this);});const createWithTestGroupCheckbox=this.content('create-with-test-group');const repetitionCount=this.content('confirm-repetition');const notifyOnCompletion=this.content('notify-on-completion');const repetitionTypeSelection=this.part('repetition-type-selector');createWithTestGroupCheckbox.onchange=()=>{const shouldDisable=!createWithTestGroupCheckbox.checked;repetitionCount.disabled=shouldDisable;notifyOnCompletion.disabled=shouldDisable;repetitionTypeSelection.disabled=shouldDisable;};}
