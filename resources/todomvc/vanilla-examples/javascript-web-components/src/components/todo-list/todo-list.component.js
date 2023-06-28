@@ -21,8 +21,8 @@ class TodoList extends HTMLElement {
         this.listNode = node.querySelector(".todo-list");
 
         this.shadow = this.attachShadow({ mode: "open" });
-        this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
-        this.shadow.host.setAttribute("dir", this.htmlDirection);
+        this.htmlDirection = document.dir || "ltr";
+        this.setAttribute("dir", this.htmlDirection);
         this.shadow.adoptedStyleSheets = [globalStyles, listStyles];
         this.shadow.append(node);
     }

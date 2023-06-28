@@ -23,8 +23,8 @@ class TodoTopbar extends HTMLElement {
         this.toggleContainer = node.querySelector(".toggle-all-container");
 
         this.shadow = this.attachShadow({ mode: "open" });
-        this.htmlDirection = document.querySelector("html").getAttribute("dir") || "ltr";
-        this.shadow.host.setAttribute("dir", this.htmlDirection);
+        this.htmlDirection = document.dir || "ltr";
+        this.setAttribute("dir", this.htmlDirection);
         this.shadow.adoptedStyleSheets = [globalStyles, topbarStyles];
         this.shadow.append(node);
 
