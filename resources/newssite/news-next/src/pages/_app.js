@@ -15,7 +15,10 @@ function App({ Component, pageProps }) {
             <Script id="raf-mock">{`// This hack allows to capture the work normally happening in a rAF. We
 // may be able to remove it if the runner improves.
 window.requestAnimationFrame = (cb) => window.setTimeout(cb, 0);
-window.cancelAnimationFrame = window.clearTimeout;`}</Script>
+window.cancelAnimationFrame = window.clearTimeout;
+// Disable requestIdleCallback until WebKit / Safari supports it.
+window.requestIdleCallback = undefined;
+window.cancelIdleCallback = undefined;`}</Script>
             <Component {...pageProps} />
         </>
         : null;

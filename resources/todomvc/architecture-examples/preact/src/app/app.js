@@ -1,4 +1,4 @@
-import { h } from "preact";
+import { h, Fragment } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 import TodoModel from "./model";
@@ -62,14 +62,14 @@ export default function App() {
     }
 
     return (
-        <div>
+        <>
             <TodoHeader onKeyDown={handleKeyDown} />
             {model.getTodos().length > 0
-                ? <div>
+                ? <>
                     <TodoMain todos={model.getTodos()} route={route} onChange={toggleAll} onToggle={model.toggleItem} onRemove={model.removeItem} onSave={model.updateItem} />
                     <TodoFooter todos={model.getTodos()} route={route} onClearCompleted={model.clearCompleted} />
-                </div>
+                </>
                 : null}
-        </div>
+        </>
     );
 }

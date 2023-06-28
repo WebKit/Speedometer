@@ -19,8 +19,8 @@ let escapeHtmlChar = (chr) => htmlEscapes[chr];
 class Template {
     constructor() {
         this.defaultTemplate = `
-            <li data-id="{{id}}" class="{{completed}}">
-                <div class="view">
+            <li data-id="{{id}}" class="targeted li-{{list-index}} {{completed}}">
+                <div class="targeted view-{{view-index}}">
                     <input class="toggle" type="checkbox" {{checked}}>
                     <label>{{title}}</label>
                     <button class="destroy"></button>
@@ -65,6 +65,8 @@ class Template {
             template = template.replace("{{title}}", escape(data[i].title));
             template = template.replace("{{completed}}", completed);
             template = template.replace("{{checked}}", checked);
+            template = template.replace("{{list-index}}", i);
+            template = template.replace("{{view-index}}", i);
 
             view += template;
         }

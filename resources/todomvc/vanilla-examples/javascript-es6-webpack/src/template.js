@@ -15,9 +15,9 @@ const reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);
 const escape = (str) => str && reHasUnescapedHtml.test(str) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str;
 const escapeHtmlChar = (chr) => htmlEscapes[chr];
 
-const createTodoItem = ({ id, title, completed, checked }) => `
-<li data-id="${id}" class="${completed}">
-    <div class="view">
+const createTodoItem = ({ id, title, completed, checked, index }) => `
+<li data-id="${id}" class="targeted li-${index} ${completed}">
+    <div class="targeted view-${index}">
         <input class="toggle" type="checkbox" ${checked}>
         <label>${title}</label>
         <button class="destroy"></button>
@@ -46,12 +46,13 @@ class Template {
     show(data) {
         let view = "";
 
-        data.reverse().forEach((item) => {
+        data.reverse().forEach((item, index) => {
             view += createTodoItem({
                 id: item.id,
                 title: escape(item.title),
                 completed: item.completed ? "completed" : "",
                 checked: item.completed ? "checked" : "",
+                index: index,
             });
         });
 
