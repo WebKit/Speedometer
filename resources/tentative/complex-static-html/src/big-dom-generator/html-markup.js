@@ -5,22 +5,24 @@ export const ANGULAR_TODO_MVC_HTML_MARKUP = `
     <div class="top-bar"></div>
     <div class="tree-area"></div>
     <div class="todo-area">
-        <div class="todoholder" ng-version="14.3.0">
-            <section class="todoapp">
-                <app-todo-header></app-todo-header>
-                <app-todo-list>
-                    <main class="main">
-                        <div class="toggle-all-container">
-                            <input type="checkbox" class="toggle-all">
-                            <label htmlfor="toggle-all" class="toggle-all-label"> Toggle All Input </label>
-                        </div>
-                        <ul class="todo-list">
-                            <!---->
-                        </ul>
-                    </main>
-                    <!---->
-                </app-todo-list>
-            </section>
+        <div class="todoholder">
+            <app-root ng-version="14.3.0">
+                <section class="todoapp">
+                    <app-todo-header></app-todo-header>
+                    <app-todo-list>
+                        <main class="main">
+                            <div class="toggle-all-container">
+                                <input type="checkbox" class="toggle-all">
+                                <label htmlfor="toggle-all" class="toggle-all-label"> Toggle All Input </label>
+                            </div>
+                            <ul class="todo-list">
+                                <!---->
+                            </ul>
+                        </main>
+                        <!---->
+                    </app-todo-list>
+                </section>
+            </app-root>
         </div>
     </div>
 </div>
