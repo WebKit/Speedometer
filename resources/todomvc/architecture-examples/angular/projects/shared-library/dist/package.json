@@ -1,0 +1,31 @@
+{
+  "name": "shared-library",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^14.2.0",
+    "@angular/core": "^14.2.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "module": "fesm2015/shared-library.mjs",
+  "es2020": "fesm2020/shared-library.mjs",
+  "esm2020": "esm2020/shared-library.mjs",
+  "fesm2020": "fesm2020/shared-library.mjs",
+  "fesm2015": "fesm2015/shared-library.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "esm2020": "./esm2020/shared-library.mjs",
+      "es2020": "./fesm2020/shared-library.mjs",
+      "es2015": "./fesm2015/shared-library.mjs",
+      "node": "./fesm2015/shared-library.mjs",
+      "default": "./fesm2020/shared-library.mjs"
+    }
+  },
+  "sideEffects": false
+}

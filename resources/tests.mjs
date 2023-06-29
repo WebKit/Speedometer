@@ -51,7 +51,7 @@ Suites.enable = function (names, tags) {
 
 Suites.push({
     name: "TodoMVC-JavaScript-ES5",
-    url: "todomvc/vanilla-examples/javascript-es5/dist/index.html",
+    url: "todomvc/vanilla-examples/javascript-es5/standalone/dist/index.html",
     tags: ["todomvc"],
     async prepare(page) {
         (await page.waitForElement(".new-todo")).focus();
@@ -80,7 +80,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-JavaScript-ES6",
-    url: "todomvc/vanilla-examples/javascript-es6/dist/index.html",
+    url: "todomvc/vanilla-examples/javascript-es6/standalone/dist/index.html",
     tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
@@ -110,7 +110,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-JavaScript-ES6-Webpack",
-    url: "todomvc/vanilla-examples/javascript-es6-webpack/dist/index.html",
+    url: "todomvc/vanilla-examples/javascript-es6-webpack/standalone/dist/index.html",
     tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
@@ -173,7 +173,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-React",
-    url: "todomvc/architecture-examples/react/dist/index.html#/home",
+    url: "todomvc/architecture-examples/react/standalone/dist/index.html#/home",
     tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
@@ -203,7 +203,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-React-Complex-DOM",
-    url: "tentative/complex-static-html/dist/index.html#/home",
+    url: "todomvc/architecture-examples/react/complex/dist/index.html#/home",
     tags: ["todomvc", "complex"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
@@ -233,7 +233,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-React-Redux",
-    url: "todomvc/architecture-examples/react-redux/dist/index.html",
+    url: "todomvc/architecture-examples/react-redux/standalone/dist/index.html",
     tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
@@ -262,7 +262,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Backbone",
-    url: "todomvc/architecture-examples/backbone/dist/index.html",
+    url: "todomvc/architecture-examples/backbone/standalone/dist/index.html",
     tags: ["todomvc"],
     async prepare(page) {
         await page.waitForElement("#appIsReady");
@@ -293,7 +293,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Angular",
-    url: "todomvc/architecture-examples/angular/dist/index.html",
+    url: "todomvc/architecture-examples/angular/projects/standalone/dist/index.html",
     tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
@@ -323,7 +323,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Vue",
-    url: "todomvc/architecture-examples/vue/dist/index.html",
+    url: "todomvc/architecture-examples/vue/standalone/dist/index.html",
     tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
@@ -353,7 +353,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-jQuery",
-    url: "todomvc/architecture-examples/jquery/dist/index.html",
+    url: "todomvc/architecture-examples/jquery/standalone/dist/index.html",
     tags: ["todomvc"],
     async prepare(page) {
         await page.waitForElement("#appIsReady");
@@ -382,7 +382,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Preact",
-    url: "todomvc/architecture-examples/preact/dist/index.html#/home",
+    url: "todomvc/architecture-examples/preact/standalone/dist/index.html#/home",
     tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
@@ -411,7 +411,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Svelte",
-    url: "todomvc/architecture-examples/svelte/dist/index.html",
+    url: "todomvc/architecture-examples/svelte/standalone/dist/index.html",
     tags: ["todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");

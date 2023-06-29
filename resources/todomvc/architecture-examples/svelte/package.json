@@ -8,12 +8,17 @@
     },
     "private": true,
     "scripts": {
-        "build": "rollup -c",
-        "watch": "rollup -c -w",
-        "serve": "http-server ./dist -p 7002 -c-1 --cors",
-        "dev": "npm run serve & npm run watch"
+        "build": "rollup -c ./standalone/rollup.config.js",
+        "build:complex": "rollup -c ./complex/rollup.config.js",
+        "watch": "rollup -c ./standalone/rollup.config.js -w",
+        "watch:complex": "rollup -c ./complex/rollup.config.js -w",
+        "serve": "http-server ./standalone/dist -p 7002 -c-1 --cors",
+        "serve:complex": "http-server ./complex/dist -p 7002 -c-1 --cors",
+        "dev": "npm run serve & npm run watch",
+        "dev:complex": "npm run serve:complex & npm run watch:complex"
     },
     "dependencies": {
+        "big-dom-generator": "file:../../big-dom-generator",
         "todomvc-app-css": "^2.4.2",
         "todomvc-common": "^1.0.5"
     },

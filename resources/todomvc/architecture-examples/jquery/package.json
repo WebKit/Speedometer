@@ -1,13 +1,21 @@
 {
   "private": true,
   "scripts": {
-    "build": "node scripts/build.js"
+    "build": "node standalone/scripts/build.js",
+    "build:complex": "node complex/scripts/build.js complex",
+    "serve": "http-server ./standalone/dist -p 7002 -c-1 --cors",
+    "serve:complex": "http-server ./complex/dist -p 7002 -c-1 --cors"
   },
   "dependencies": {
+    "big-dom-generator": "file:../../big-dom-generator",
     "director": "~1.2.2",
     "handlebars": "^4.0.6",
     "jquery": "^3.6.3",
     "todomvc-app-css": "^2.4.2",
     "todomvc-common": "^1.0.5"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "jsdom": "^22.1.0"
   }
 }

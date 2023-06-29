@@ -8,9 +8,12 @@
         "npm": ">=8.19.3"
     },
     "scripts": {
-        "build": "webpack --config webpack.prod.js",
-        "dev": "webpack serve --open --config webpack.dev.js",
-        "serve": "http-server ./dist -p 7002 -c-1 --cors",
+        "build": "webpack --config ./standalone/webpack.prod.js",
+        "build:complex": "webpack --config ./complex/webpack.prod.js",
+        "dev": "webpack serve --open --config ./standalone/webpack.dev.js",
+        "dev:complex": "webpack serve:complex --open --config ./complex/webpack.dev.js",
+        "serve": "http-server ./standalone/dist -p 7002 -c-1 --cors",
+        "serve:complex": "http-server ./complex/dist -p 7002 -c-1 --cors",
         "test": "jest"
     },
     "devDependencies": {
@@ -31,7 +34,9 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
+        "big-dom-generator": "file:../../big-dom-generator",
         "classnames": "^2.2.5",
+        "copy-webpack-plugin": "^11.0.0",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-router-dom": "^6.8.2",

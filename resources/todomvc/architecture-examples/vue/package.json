@@ -8,11 +8,14 @@
         "npm": ">=8.19.3"
     },
     "scripts": {
-        "dev": "vue-cli-service serve",
-        "build": "vue-cli-service build",
+        "dev": "VUE_CLI_SERVICE_CONFIG_PATH='./standalone/vue.config.js' vue-cli-service serve",
+        "dev:complex": "VUE_CLI_SERVICE_CONFIG_PATH='./complex/vue.config.js' vue-cli-service serve",
+        "build": "VUE_CLI_SERVICE_CONFIG_PATH='./standalone/vue.config.js' vue-cli-service build",
+        "build:complex": "VUE_CLI_SERVICE_CONFIG_PATH='./complex/vue.config.js' vue-cli-service build",
         "lint": "vue-cli-service lint"
     },
     "dependencies": {
+        "big-dom-generator": "file:../../big-dom-generator",
         "core-js": "^3.8.3",
         "todomvc-app-css": "^2.4.2",
         "todomvc-common": "^1.0.5",
