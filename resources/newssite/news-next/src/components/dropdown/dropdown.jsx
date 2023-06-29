@@ -7,9 +7,7 @@ import styles from "news-site-css/dist/dropdown.module.css";
 
 export default function Dropdown({ children, animatedIconClass }) {
     const [isOpen, setIsOpen] = useState(false);
-
-    const data = useDataContext();
-    const { buttons } = data;
+    const { buttons } = useDataContext();
 
     function handleChange(e) {
         setIsOpen(e.target.checked);

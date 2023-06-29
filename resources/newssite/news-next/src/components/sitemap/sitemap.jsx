@@ -8,8 +8,7 @@ import { HashLink } from "react-router-hash-link";
 import styles from "news-site-css/dist/sitemap.module.css";
 
 export default function Sitemap() {
-    const data = useDataContext();
-    const { content } = data;
+    const { content } = useDataContext();
 
     const keys = Object.keys(content);
     const navItems = keys.reduce((result, key) => {

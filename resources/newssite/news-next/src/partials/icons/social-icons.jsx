@@ -7,8 +7,7 @@ import { useDataContext } from "@/context/data-context";
 import styles from "news-site-css/dist/icons-group.module.css";
 
 export default function SocialIcons({ id }) {
-    const data = useDataContext();
-    const { links } = data;
+    const { links } = useDataContext();
 
     return (
         <div className={styles["icons-group"]}>

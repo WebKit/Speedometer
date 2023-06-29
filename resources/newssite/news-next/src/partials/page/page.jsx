@@ -9,9 +9,7 @@ import { useDataContext } from "@/context/data-context";
 
 export default function Page({ id }) {
     const [showPortal, setShowPortal] = useState(false);
-
-    const data = useDataContext();
-    const { content } = data;
+    const { content } = useDataContext();
 
     useEffect(() => {
         setShowPortal(content[id].notification);

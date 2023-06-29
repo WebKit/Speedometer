@@ -14,8 +14,7 @@ import styles from "news-site-css/dist/layout.module.css";
 
 export default function Layout({ children, id }) {
     const [showMessage, setShowMessage] = useState(false);
-    const data = useDataContext();
-    const { content, links } = data;
+    const { content, links } = useDataContext();
 
     useEffect(() => {
         setShowMessage(content[id].message);

@@ -10,9 +10,7 @@ import buttonStyles from "news-site-css/dist/button.module.css";
 
 export default function Navigation() {
     const navigate = useNavigate();
-
-    const data = useDataContext();
-    const { buttons } = data;
+    const { buttons } = useDataContext();
 
     function callback() {
         navigate("/");

@@ -8,9 +8,7 @@ import styles from "news-site-css/dist/dialog.module.css";
 
 export default function Dialog({ onClose }) {
     const [isChecked, setIsChecked] = useState(false);
-
-    const data = useDataContext();
-    const { settings } = data;
+    const { settings } = useDataContext();
 
     useEffect(() => {
         setIsChecked(document.body.classList.contains("reduced-motion"));
