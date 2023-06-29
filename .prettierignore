@@ -4,11 +4,13 @@ package-lock.json
 **/.angular
 
 /resources/tentative/*
-!/resources/tentative/charts
 
 /resources/todomvc/architecture-examples/*
 !/resources/todomvc/architecture-examples/angular
 !/resources/todomvc/architecture-examples/backbone
+!/resources/todomvc/architecture-examples/lit
+/resources/todomvc/architecture-examples/lit/dist/index.js
+/resources/todomvc/architecture-examples/lit/.wireit
 !/resources/todomvc/architecture-examples/preact
 !/resources/todomvc/architecture-examples/react
 !/resources/todomvc/architecture-examples/react-redux
@@ -19,6 +21,7 @@ package-lock.json
 !/resources/todomvc/vanilla-examples/javascript-es5
 !/resources/todomvc/vanilla-examples/javascript-es6
 !/resources/todomvc/vanilla-examples/javascript-es6-webpack
+!/resources/todomvc/vanilla-examples/javascript-web-components
 
 !/resources/tentative/complex-static-html
 /resources/tentative/complex-static-html/*
@@ -33,3 +36,7 @@ package-lock.json
 !/resources/newssite/news-next
 !/resources/newssite/news-nuxt
 !/resources/newssite/news-site-css
+
+/resources/perf.webkit.org
+
+/resources/react-stockcharts

@@ -139,6 +139,39 @@ Suites.push({
 });
 
 Suites.push({
+    name: "TodoMVC-WebComponents",
+    url: "todomvc/vanilla-examples/javascript-web-components/index.html",
+    tags: ["todomvc", "webcomponents"],
+    async prepare(page) {
+        await page.waitForElement("todo-app");
+    },
+    tests: [
+        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                input.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                input.dispatchEvent("input");
+                input.enter("keyup");
+            }
+        }),
+        new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
+                item.click();
+            }
+        }),
+        new BenchmarkTestStep("DeletingAllItems", (page) => {
+            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
+                item.click();
+            }
+        }),
+    ],
+});
+
+Suites.push({
     name: "TodoMVC-React",
     url: "todomvc/architecture-examples/react/dist/index.html#/home",
     tags: ["todomvc"],
@@ -406,9 +439,41 @@ Suites.push({
 });
 
 Suites.push({
+    name: "TodoMVC-Lit",
+    url: "todomvc/architecture-examples/lit/dist/index.html",
+    tags: ["todomvc", "webcomponents"],
+    async prepare(page) {
+        await page.waitForElement("todo-app");
+    },
+    tests: [
+        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            const newTodo = page.querySelector(".new-todo", ["todo-app", "todo-form"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                newTodo.setValue(`Something to do ${i}`);
+                newTodo.enter("keydown");
+            }
+        }),
+        new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const todoItems = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const checkbox = todoItems[i].querySelectorInShadowRoot(".toggle");
+                checkbox.click();
+            }
+        }),
+        new BenchmarkTestStep("DeletingAllItems", (page) => {
+            const todoItems = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const deleteButton = todoItems[i].querySelectorInShadowRoot(".destroy");
+                deleteButton.click();
+            }
+        }),
+    ],
+});
+
+Suites.push({
     name: "NewsSite-Next",
     url: "newssite/news-next/dist/index.html#/home",
-    tags: ["newssite"],
+    tags: ["newssite", "language"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
@@ -527,7 +592,7 @@ Suites.push({
 
 Suites.push({
     name: "Charts-observable-plot",
-    url: "tentative/charts/dist/observable-plot.html",
+    url: "charts/dist/observable-plot.html",
     tags: ["chart"],
     async prepare(page) {},
     tests: [
@@ -554,7 +619,7 @@ Suites.push({
 
 Suites.push({
     name: "Charts-chartjs",
-    url: "tentative/charts/dist/chartjs.html",
+    url: "charts/dist/chartjs.html",
     tags: ["chart"],
     async prepare(page) {},
     tests: [
@@ -574,7 +639,7 @@ Suites.push({
 
 Suites.push({
     name: "React-Stockcharts-SVG",
-    url: "tentative/react-stockcharts/build/index.html?type=svg",
+    url: "react-stockcharts/build/index.html?type=svg",
     tags: ["chart", "svg"],
     async prepare(page) {
         await page.waitForElement("#render");
@@ -614,7 +679,7 @@ Suites.push({
 
 Suites.push({
     name: "Perf-Dashboard",
-    url: "tentative/perf.webkit.org/public/v3/#/charts/?since=1678991819934&paneList=((55-1974-null-null-(5-2.5-500)))",
+    url: "perf.webkit.org/public/v3/#/charts/?since=1678991819934&paneList=((55-1974-null-null-(5-2.5-500)))",
     tags: ["chart", "webcomponents"],
     async prepare(page) {
         await page.waitForElement("#app-is-ready");
