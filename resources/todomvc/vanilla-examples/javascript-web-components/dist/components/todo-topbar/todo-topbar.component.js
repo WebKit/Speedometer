@@ -2,8 +2,8 @@ import template from "./todo-topbar.template.js";
 import { useKeyListener } from "../../hooks/useKeyListener.js";
 import { nanoid } from "../../utils/nanoid.js";
 
-import globalStyles from "/node_modules/todomvc-css/dist/global.constructable.js";
-import topbarStyles from "/node_modules/todomvc-css/dist/topbar.constructable.js";
+import globalStyles from "../../styles/global.constructable.js";
+import topbarStyles from "../../styles/topbar.constructable.js";
 
 class TodoTopbar extends HTMLElement {
     static get observedAttributes() {

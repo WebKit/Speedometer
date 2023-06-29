@@ -140,7 +140,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-WebComponents",
-    url: "todomvc/vanilla-examples/javascript-web-components/index.html",
+    url: "todomvc/vanilla-examples/javascript-web-components/dist/index.html",
     tags: ["todomvc", "webcomponents"],
     async prepare(page) {
         await page.waitForElement("todo-app");

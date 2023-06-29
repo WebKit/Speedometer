@@ -2,8 +2,8 @@ import template from "./todo-item.template.js";
 import { useDoubleClick } from "../../hooks/useDoubleClick.js";
 import { useKeyListener } from "../../hooks/useKeyListener.js";
 
-import globalStyles from "/node_modules/todomvc-css/dist/global.constructable.js";
-import itemStyles from "/node_modules/todomvc-css/dist/todo-item.constructable.js";
+import globalStyles from "../../styles/global.constructable.js";
+import itemStyles from "../../styles/todo-item.constructable.js";
 
 class TodoItem extends HTMLElement {
     static get observedAttributes() {

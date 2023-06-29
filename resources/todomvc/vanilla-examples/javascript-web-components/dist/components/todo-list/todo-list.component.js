@@ -1,8 +1,8 @@
 import template from "./todo-list.template.js";
 import TodoItem from "../todo-item/todo-item.component.js";
 
-import globalStyles from "/node_modules/todomvc-css/dist/global.constructable.js";
-import listStyles from "/node_modules/todomvc-css/dist/todo-list.constructable.js";
+import globalStyles from "../../styles/global.constructable.js";
+import listStyles from "../../styles/todo-list.constructable.js";
 
 class TodoList extends HTMLElement {
     static get observedAttributes() {
