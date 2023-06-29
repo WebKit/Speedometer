@@ -25,7 +25,7 @@ const filesToMove = {
 };
 
 const importsToRename = {
-    src: "/node_modules/todomvc-css/dist/",
+    src: "../../../node_modules/todomvc-css/dist/",
     dest: "../../styles/",
     files: [
         "components/todo-app/todo-app.component.js",
