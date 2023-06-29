@@ -23,11 +23,7 @@ package-lock.json
 !/resources/todomvc/vanilla-examples/javascript-es6-webpack
 !/resources/todomvc/vanilla-examples/javascript-web-components
 
-!/resources/tentative/complex-static-html
-/resources/tentative/complex-static-html/*
-!/resources/tentative/complex-static-html/src
-/resources/tentative/complex-static-html/src/*
-!/resources/tentative/complex-static-html/src/big-dom-generator
+!/resources/todomvc/big-dom-generator
 
 !/resources/editors
 /resources/editors/assets

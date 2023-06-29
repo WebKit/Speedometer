@@ -157,9 +157,9 @@ const generateCssRules = (selectors) => {
     return selectors.map((selector, i) => {
         random.shuffle(cssProperties, true);
         return `${selector} {
-                    ${cssProperties[0]}: rgba(140,140,140,${i / 1000});
-                    ${cssProperties[1]}: rgba(140,140,140,${i / 1000});
-                }`;
+    ${cssProperties[0]}: rgba(140, 140, 140, ${i / 1000});
+    ${cssProperties[1]}: rgba(140, 140, 140, ${i / 1000});
+}`;
     });
 };
 
