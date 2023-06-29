@@ -11,7 +11,7 @@ const filesToMove = {
     index: [
         { src: "node_modules/todomvc-css/dist/global.css", dest: "styles/global.css" },
         { src: "node_modules/todomvc-css/dist/header.css", dest: "styles/header.css" },
-        { src: "node_modules/todomvc-css/dist/footer.css", dest: "styles/footer.css" }
+        { src: "node_modules/todomvc-css/dist/footer.css", dest: "styles/footer.css" },
     ],
     app: [
         { src: "node_modules/todomvc-css/dist/global.constructable.js", dest: "styles/global.constructable.js" },
@@ -21,7 +21,7 @@ const filesToMove = {
         { src: "node_modules/todomvc-css/dist/bottombar.constructable.js", dest: "styles/bottombar.constructable.js" },
         { src: "node_modules/todomvc-css/dist/todo-list.constructable.js", dest: "styles/todo-list.constructable.js" },
         { src: "node_modules/todomvc-css/dist/todo-item.constructable.js", dest: "styles/todo-item.constructable.js" },
-    ]
+    ],
 };
 
 const importsToRename = {
@@ -33,7 +33,7 @@ const importsToRename = {
         "components/todo-item/todo-item.component.js",
         "components/todo-list/todo-list.component.js",
         "components/todo-topbar/todo-topbar.component.js",
-    ]
+    ],
 };
 
 const copy = async (src, dest) => {
@@ -86,7 +86,7 @@ const build = async () => {
     await fs.writeFile(`${targetDirectory}/${htmlFile}`, contents);
 
     // rename imports in modules
-    importsToRename.files.forEach(file => updateImports({ file, src: importsToRename.src, dest: importsToRename.dest }));
+    importsToRename.files.forEach((file) => updateImports({ file, src: importsToRename.src, dest: importsToRename.dest }));
 
     console.log("done!!");
 };
