@@ -3,6 +3,5 @@
     "version": "1.0.0",
     "description": "CSS for Angular TodoMVC",
     "main": "generated.css",
-    "dependencies": {
-    }
-  }
+    "dependencies": {}
+}
