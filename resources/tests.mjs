@@ -473,7 +473,7 @@ Suites.push({
 Suites.push({
     name: "NewsSite-Next",
     url: "newssite/news-next/dist/index.html#/home",
-    tags: ["newssite"],
+    tags: ["newssite", "language"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },

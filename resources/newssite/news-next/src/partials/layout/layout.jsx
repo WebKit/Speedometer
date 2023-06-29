@@ -6,14 +6,15 @@ import Header from "../header/header";
 import Navigation from "../navigation/navigation";
 import Main from "../main/main";
 import Footer from "../footer/footer";
-
-import { content } from "@/data/content";
 import { Message } from "@/components/message/message";
+
+import { useDataContext } from "@/context/data-context";
 
 import styles from "news-site-css/dist/layout.module.css";
 
 export default function Layout({ children, id }) {
     const [showMessage, setShowMessage] = useState(false);
+    const { content, links } = useDataContext();
 
     useEffect(() => {
         setShowMessage(content[id].message);
@@ -33,7 +34,7 @@ export default function Layout({ children, id }) {
     return (
         <>
             <HashLink to={`${pathname}#content`} className="skip-link">
-                Skip to content
+                {links.a11y.skip.label}
             </HashLink>
             <div className={styles.page} ref={pageRef}>
                 <Header />
