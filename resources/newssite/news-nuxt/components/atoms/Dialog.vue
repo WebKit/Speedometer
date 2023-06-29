@@ -1,14 +1,17 @@
 <script lang="js">
-import { settings } from "~/data/dialog";
+import { inject } from "vue";
 import styles from "news-site-css/dist/dialog.module.css";
 
 export default {
     props: {
         onClose: Function
     },
+    setup() {
+        const { settings } = inject("data");
+        return { settings };
+    },
     data() {
         return {
-            settings,
             styles,
             isChecked: false,
         }

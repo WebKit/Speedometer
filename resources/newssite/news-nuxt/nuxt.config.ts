@@ -6,18 +6,7 @@ import { defineNuxtConfig } from "nuxt/config";
 export default defineNuxtConfig({
     ssr: false,
     css: ["news-site-css/dist/variables.css", "news-site-css/dist/global.css", "news-site-css/dist/a11y.css", "news-site-css/dist/icons.css", "news-site-css/dist/text.css"],
-    components: ["~/components", "~/components/assets", "~/components/atoms", "~/components/molecules"],
-    /* hooks: {
-        "pages:extend"(pages: NuxtPage[]) {
-            for (const name of ["home", "us", "world", "politics", "business", "opinion", "health"]) {
-                pages.push({
-                    name,
-                    path: name === "home" ? "/" : `/${name}`,
-                    file: "~/components/molecules/Page.vue",
-                });
-            }
-        },
-    }, */
+    components: ["~/components", "~/components/assets", "~/components/atoms", "~/components/molecules", "~/context"],
     router: {
         options: {
             hashMode: true,
