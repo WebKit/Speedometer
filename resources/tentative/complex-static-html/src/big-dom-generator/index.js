@@ -8,8 +8,7 @@ import "./app.css";
 const fs = require("fs");
 
 const randomCss = genCss();
-fs.writeFileSync("src/react-todomvc/public/matchingCss.css", randomCss.matchingCss);
-fs.writeFileSync("src/react-todomvc/public/nonMatchingCss.css", randomCss.nonMatchingCss);
+fs.writeFileSync("src/react-todomvc/public/generated.css", randomCss);
 
 const html = `<!DOCTYPE html>
 <html lang="en" class="spectrum spectrum--medium spectrum--light">
