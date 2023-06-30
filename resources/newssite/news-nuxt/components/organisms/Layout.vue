@@ -1,7 +1,6 @@
 <script setup>
 import { ref, inject, onMounted } from "vue";
 import { useRoute } from "nuxt/app";
-import { nextTick, watch } from "#imports";
 import styles from "news-site-css/dist/layout.module.css";
 
 const showMessage = ref(false);
@@ -16,24 +15,6 @@ onMounted(() => {
 const closeMessage = () => {
     showMessage.value = false;
 };
-
-watch(
-    route,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (value) => {
-        if (document.getElementById("page")) {
-            if (!route.hash) {
-                document.getElementById("page").scrollTo(0, 0);
-            } else {
-                const elementId = route.hash.split("#")[1];
-                nextTick(() => {
-                    document.getElementById(elementId).scrollIntoView();
-                });
-            }
-        }
-    },
-    { deep: true, immediate: true }
-);
 </script>
 
 <template>
