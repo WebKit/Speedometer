@@ -1,6 +1,6 @@
 <script lang="js">
 import { inject } from "vue";
-import { useRoute } from "nuxt/app";
+import { useRoute } from "#imports";
 import navStyles from "news-site-css/dist/nav.module.css";
 import navbarStyles from "news-site-css/dist/navbar.module.css";
 
