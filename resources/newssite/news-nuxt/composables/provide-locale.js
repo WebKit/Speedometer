@@ -1,5 +1,5 @@
 import { provide } from "vue";
-import { useHead } from "nuxt/app";
+import { useHead } from "#imports";
 import { content as contentEn } from "~/data/en/content";
 import { settings as settingsEn } from "~/data/en/dialog";
 import { footer as footerEn } from "~/data/en/footer";
