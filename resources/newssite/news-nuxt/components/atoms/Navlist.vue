@@ -1,28 +1,32 @@
 <script lang="js">
+import { inject } from "vue";
+import { useRoute } from "nuxt/app";
 import styles from "news-site-css/dist/navbar.module.css";
-import { content } from "../../data/content";
-
-const navItems = [];
-const dropdownItems = [];
-
-Object.keys(content).forEach(key => {
-    if (content[key].priority === 1)
-        navItems.push(key);
-    else if (content[key].priority === 2)
-        dropdownItems.push(key);
-});
 
 export default {
     props: {
         callback: Function,
         id: String,
     },
+    setup() {
+        const { content } = inject("data");
+
+        const navItems = [];
+        const dropdownItems = [];
+
+        Object.keys(content).forEach(key => {
+            if (content[key].priority === 1)
+                navItems.push(key);
+            else if (content[key].priority === 2)
+                dropdownItems.push(key);
+        });
+
+        const route = useRoute();
+        return { route, content, navItems, dropdownItems };
+    },
     data() {
         return {
             styles,
-            navItems,
-            dropdownItems,
-            content
         }
     }
 }

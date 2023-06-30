@@ -1,18 +1,19 @@
-<script setup lang="js">
-const route = useRoute();
-</script>
-
 <script lang="js">
-import { content } from "../../data/content";
+import { inject } from "vue";
+import { useRoute } from "#imports";
 export default {
+    setup() {
+        const { content } = inject("data");
+        const route = useRoute();
+        return { route, content };
+    },
     data() {
         return {
-            content,
             showPortal: false,
         }
     },
     mounted() {
-        this.showPortal = content[this.$route.name].notification;
+        this.showPortal = this.content[this.$route.name].notification;
     },
     methods: {
         openPortal() {

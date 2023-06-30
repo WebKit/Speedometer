@@ -1,9 +1,6 @@
-<script setup lang="js">
-const route = useRoute()
-</script>
-
 <script lang="js">
-import { content } from "~/data/content";
+import { inject } from "vue";
+import { useRoute } from "#imports";
 import navStyles from "news-site-css/dist/nav.module.css";
 import navbarStyles from "news-site-css/dist/navbar.module.css";
 
@@ -22,9 +19,13 @@ export default {
   props: {
     callback: Function
   },
+  setup() {
+        const { content } = inject("data");
+        const route = useRoute();
+        return { route, content };
+    },
   data () {
     return {
-      content,
       navbarStyles,
       navStyles,
       isOpen: false,

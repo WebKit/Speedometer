@@ -1,14 +1,17 @@
 <script lang="js">
-import { social } from "~/data/links";
+import { inject } from "vue";
 import styles from "news-site-css/dist/icons-group.module.css";
 export default {
   props: {
       callback: Function,
       id: String
   },
+  setup() {
+        const { links } = inject("data");
+        return { links };
+    },
   data () {
     return {
-      social,
       styles
     }
   }
@@ -19,21 +22,21 @@ export default {
     <div :class="styles['icons-group']">
         <ul :class="styles['icons-group-list']">
             <li :class="styles['icons-group-item']">
-                <a :id="`${id}-facebook`" :href="social.facebook.href">
+                <a :id="`${id}-facebook`" :href="links.social.facebook.href">
                     <div :class="styles['group-icon']">
                         <FacebookIcon />
                     </div>
                 </a>
             </li>
             <li :class="styles['icons-group-item']">
-                <a :id="`${id}-instagram`" :href="social.instagram.href">
+                <a :id="`${id}-instagram`" :href="links.social.instagram.href">
                     <div :class="styles['group-icon']">
                         <InstagramIcon />
                     </div>
                 </a>
             </li>
             <li :class="styles['icons-group-item']">
-                <a :id="`${id}-twitter`" :href="social.twitter.href">
+                <a :id="`${id}-twitter`" :href="links.social.twitter.href">
                     <div :class="styles['group-icon']">
                         <TwitterIcon />
                     </div>
