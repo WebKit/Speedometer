@@ -24,8 +24,9 @@ export default {
         const langFromUrl = urlParams.get("lang");
         const lang = langFromUrl && langFromUrl in strings ? langFromUrl : defaultLanguage;
 
-        document.documentElement.setAttribute("dir", dir);
-        document.documentElement.setAttribute("lang", lang);
+        useHead({
+          htmlAttrs: { dir, lang }
+        })
 
         const value = {
             lang,
