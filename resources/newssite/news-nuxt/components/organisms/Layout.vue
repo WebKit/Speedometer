@@ -1,6 +1,6 @@
 <script setup>
 import { ref, inject, onMounted } from "vue";
-import { useRoute } from "nuxt/app";
+import { useRoute } from "#imports";
 import styles from "news-site-css/dist/layout.module.css";
 
 const showMessage = ref(false);
