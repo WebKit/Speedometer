@@ -38,6 +38,9 @@
 .dropdown-label:hover {
     color: var(--color-utils-white);
     background-color: var(--color-utils-gray-dark);
+
+    /* for high-contrast */
+    text-decoration: var(--active-button-text-decoration);
 }
 
 .dropdown-label-text {

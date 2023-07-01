@@ -1220,6 +1220,9 @@ html[dir="rtl"] .advertisement-icons {
 .navbar-item a:hover {
     color: var(--color-utils-white);
     background-color: var(--color-utils-gray);
+
+    /* for high-contrast */
+    text-decoration: var(--active-button-text-decoration);
 }
 
 .navbar-item a.active {
@@ -1617,6 +1620,9 @@ html[dir="rtl"] .dialog-close-button {
 .dropdown-label:hover {
     color: var(--color-utils-white);
     background-color: var(--color-utils-gray-dark);
+
+    /* for high-contrast */
+    text-decoration: var(--active-button-text-decoration);
 }
 
 .dropdown-label-text {

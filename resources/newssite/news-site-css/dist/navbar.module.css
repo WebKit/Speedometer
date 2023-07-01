@@ -106,6 +106,9 @@
 .navbar-item a:hover {
     color: var(--color-utils-white);
     background-color: var(--color-utils-gray);
+
+    /* for high-contrast */
+    text-decoration: var(--active-button-text-decoration);
 }
 
 .navbar-item a.active {
