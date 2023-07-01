@@ -23,21 +23,21 @@ export default {
         <ul :class="styles['icons-group-list']">
             <li :class="styles['icons-group-item']">
                 <a :id="`${id}-facebook`" :href="links.social.facebook.href">
-                    <div :class="styles['group-icon']">
+                    <div :class="[styles['group-icon'], styles['group-icon-small']]">
                         <FacebookIcon />
                     </div>
                 </a>
             </li>
             <li :class="styles['icons-group-item']">
                 <a :id="`${id}-instagram`" :href="links.social.instagram.href">
-                    <div :class="styles['group-icon']">
+                    <div :class="[styles['group-icon'], styles['group-icon-small']]">
                         <InstagramIcon />
                     </div>
                 </a>
             </li>
             <li :class="styles['icons-group-item']">
                 <a :id="`${id}-twitter`" :href="links.social.twitter.href">
-                    <div :class="styles['group-icon']">
+                    <div :class="[styles['group-icon'], styles['group-icon-small']]">
                         <TwitterIcon />
                     </div>
                 </a>

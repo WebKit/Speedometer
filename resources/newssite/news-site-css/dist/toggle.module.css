@@ -27,21 +27,31 @@
     width: 42px;
     height: 16px;
     display: flex;
-    background-color: var(--color-utils-gray-lighter);
+    background-color: var(--color-toggle-fill-label);
     border-radius: 22px;
     cursor: pointer;
+
+     /* for high-contrast */
+     border-width: var(--width-modal-border);
+     border-color: var(--color-modal-border);
+     border-style: solid;
 }
 
 .toggle-container .switch {
     position: absolute;
     left: 0;
     top: 3px;
-    background-color: var(--color-utils-gray);
+    background-color: var(--color-toggle-fill-checked);
     border-radius: 22px;
     transition: var(--transition-default);
     width: 45%;
     height: 16px;
     pointer-events: none;
+
+    /* for high-contrast */
+    border-width: var(--width-modal-border);
+    border-color: var(--color-modal-border);
+    border-style: solid;
 }
 
 .toggle-container .switch::before {
@@ -49,9 +59,10 @@
     content: "";
     height: 22px;
     width: 22px;
-    left: 0;
-    bottom: -3px;
-    background-color: var(--color-utils-red);
+    top: 50%;
+    left: calc(var(--width-modal-border) * -1);
+    transform: translateY(-11px);
+    background-color: var(--color-toggle-switch);
     border-radius: var(--border-radius-50);
     transition: var(--transition-default);
 }
@@ -66,9 +77,19 @@
 }
 
 .toggle-container .label input[type="checkbox"]:checked + .switch::before {
-    transform: translateX(20px);
+    transform: translate(20px, -11px);
 }
 
 .toggle-container .label input[type="checkbox"]:checked + .switch {
     width: 100%;
+}
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .toggle-container {
+        forced-color-adjust: none;
+    }
 }

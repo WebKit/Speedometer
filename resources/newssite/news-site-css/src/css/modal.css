@@ -50,8 +50,8 @@
 .modal-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-black);
-    --animated-icon-hover: var(--color-utils-gray-light);
+    --animated-icon-color: var(--color-icons-fill-dark);
+    --animated-icon-hover: var(--color-icons-fill-dark-hover);
 }
 
 .modal-header {

@@ -33,8 +33,8 @@
 .navbar-label-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-offwhite);
-    --animated-icon-hover: var(--color-utils-white);
+    --animated-icon-color: var(--color-icons-fill);
+    --animated-icon-hover: var(--color-icons-fill-hover);
 }
 
 /* stylelint-disable */
@@ -111,6 +111,11 @@
 .navbar-item a.active {
     color: var(--color-utils-white);
     background-color: var(--color-utils-gray-light);
+
+    /* for high-contrast */
+    border-width: var(--width-navbar-border);
+    border-color: var(--color-navbar-border);
+    border-style: solid;
 }
 
 /** new style **/

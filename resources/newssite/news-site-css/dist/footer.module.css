@@ -10,6 +10,19 @@
     font-size: var(--font-size-small);
     background-color: var(--color-utils-black);
     color: var(--color-utils-gray-lighter);
+    position: relative;
+}
+
+.page-footer::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    width: calc(100% - (var(--content-spacing-xlarge) * 2));
+    margin: auto;
+
+    /* for high-contrast */
+    border-top: var(--width-navbar-border) solid var(--color-modal-border);
 }
 
 .footer-row {

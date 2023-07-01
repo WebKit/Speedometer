@@ -13,8 +13,10 @@ but useful for people who use screen readers */
     white-space: nowrap;
 }
 
-/* apply reduced-motion class to parent element
-  to manually force reduced-motion on child elements */
+/* Reduced Motion:
+  Apply reduced-motion class to parent element
+  to manually envoke reduced-motion on child elements.
+*/
 .reduced-motion *,
 .reduced-motion *::before,
 .reduced-motion *::after {
@@ -38,6 +40,53 @@ but useful for people who use screen readers */
         scroll-behavior: auto !important;
         transition-duration: 0s !important;
         transition-delay: 0s !important;
+    }
+}
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    button,
+    .animated-icon {
+        forced-color-adjust: none;
+    }
+
+    body {
+        /* high contrast - forced-colors */
+        /* stylelint-disable */
+        --width-navbar-border: 1px;
+        --width-modal-border: 2px;
+        --color-navbar-border: var(--color-utils-black);
+        --color-modal-border: var(--color-utils-black);
+        --color-modal-background: var(--color-utils-offwhite);
+        --color-icons-fill: LinkText;
+        --color-icons-fill-hover: LinkText;
+        --color-icons-fill-dark: LinkText;
+        --color-icons-fill-dark-hover: LinkText;
+        --color-toggle-fill-label: var(--color-utils-white);
+        --color-toggle-fill-checked: var(--color-utils-white);
+        --color-toggle-switch: LinkText;
+        --color-buttons-primary-background: LinkText;
+        --color-buttons-primary-background-hover: LinkText;
+        --color-buttons-primary-text: LinkFace;
+        --color-buttons-primary-text-hover: LinkFace;
+        --color-buttons-primary-background-dark: LinkText;
+        --color-buttons-primary-background-dark-hover: LinkText;
+        --color-buttons-primary-text-dark: LinkFace;
+        --color-buttons-primary-text-dark-hover: LinkFace;
+        --color-buttons-secondary-border: LinkText;
+        --color-buttons-secondary-border-hover: LinkText;
+        --color-buttons-secondary-text: LinkText;
+        --color-buttons-secondary-text-hover: LinkText;
+        --color-buttons-secondary-border-dark: LinkText;
+        --color-buttons-secondary-border-dark-hover: LinkText;
+        --color-buttons-secondary-text-dark: LinkText;
+        --color-buttons-secondary-text-dark-hover: LinkText;
+        --transition-button: var(--transition-default);
+        --active-button-text-decoration: underline;
+        /* stylelint-enable */
     }
 }
 

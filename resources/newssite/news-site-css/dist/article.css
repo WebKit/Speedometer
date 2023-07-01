@@ -104,6 +104,11 @@
     color: var(--color-utils-white);
     padding: var(--content-spacing-xsmall) var(--content-spacing-small);
     text-transform: uppercase;
+
+    /* for high-contrast */
+    border-width: var(--width-navbar-border);
+    border-color: var(--color-navbar-border);
+    border-style: solid;
 }
 
 .article-image-tag.breaking {
@@ -122,7 +127,7 @@
 
 /* stylelint-disable */
 .article-image-tag svg path {
-    fill: var(--color-utils-white);
+    fill: var(--color-icons-fill);
 }
 /* stylelint-enable */
 

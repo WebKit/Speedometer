@@ -6,10 +6,13 @@
     width: 100%;
     min-height: 100px;
     color: var(--color-utils-offwhite);
-    background-color: rgb(0 0 0 / 75%);
+    background-color: var(--color-modal-background);
     font-family: var(--font-family-default);
     z-index: var(--index-important);
     padding: var(--content-spacing-xlarge);
+
+    /* for high-contrast */
+    border-top: var(--width-modal-border) solid var(--color-modal-border);
 }
 
 .toast:target,
@@ -34,8 +37,8 @@
 .toast-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-offwhite);
-    --animated-icon-hover: var(--color-utils-white);
+    --animated-icon-color: var(--color-icons-fill);
+    --animated-icon-hover: var(--color-icons-fill-hover);
 }
 
 .toast-header {

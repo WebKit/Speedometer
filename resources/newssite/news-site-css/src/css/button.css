@@ -16,47 +16,47 @@
 }
 
 .primary-button {
-    border: 1px solid var(--color-utils-offwhite);
-    background-color: var(--color-utils-offwhite);
-    color: var(--color-utils-black);
+    border: 1px solid var(--color-buttons-primary-background);
+    background-color: var(--color-buttons-primary-background);
+    color: var(--color-buttons-primary-text);
 }
 
 .primary-button.dark {
-    border: 1px solid var(--color-utils-black);
-    background-color: var(--color-utils-black);
-    color: var(--color-utils-offwhite);
+    border: 1px solid var(--color-buttons-primary-background-dark);
+    background-color: var(--color-buttons-primary-background-dark);
+    color: var(--color-buttons-primary-text-dark);
 }
 
 .primary-button:hover {
-    border-color: var(--color-utils-white);
-    background-color: var(--color-utils-white);
-    color: var(--color-utils-gray-light);
+    border-color: var(--color-buttons-primary-background-hover);
+    background-color: var(--color-buttons-primary-background-hover);
+    color: var(--color-buttons-primary-text-hover);
 }
 
 .primary-button.dark:hover {
-    border-color: var(--color-utils-gray-light);
-    background-color: var(--color-utils-gray-light);
-    color: var(--color-utils-offwhite);
+    border-color: var(--color-buttons-primary-background-dark-hover);
+    background-color: var(--color-buttons-primary-background-dark-hover);
+    color: var(--color-buttons-primary-text-dark-hover);
 }
 
 .secondary-button {
-    border: 1px solid var(--color-utils-offwhite);
-    color: var(--color-utils-offwhite);
+    border: 1px solid var(--color-buttons-secondary-border);
+    color: var(--color-buttons-secondary-text);
     background-color: transparent;
 }
 
 .secondary-button.dark {
-    border: 1px solid var(--color-utils-black);
-    color: var(--color-utils-black);
+    border: 1px solid var(--color-buttons-secondary-border-dark);
+    color: var(--color-buttons-secondary-text-dark);
     background-color: transparent;
 }
 
 .secondary-button:hover {
-    border-color: var(--color-utils-white);
-    color: var(--color-utils-white);
+    border-color: var(--color-buttons-secondary-border-hover);
+    color: var(--color-buttons-secondary-text-hover);
 }
 
 .secondary-button.dark:hover {
-    border-color: var(--color-utils-gray-light);
-    color: var(--color-utils-gray-light);
+    border-color: var(--color-buttons-secondary-border-dark-hover);
+    color: var(--color-buttons-secondary-text-dark-hover);
 }

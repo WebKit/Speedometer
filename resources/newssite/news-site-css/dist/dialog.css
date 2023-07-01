@@ -15,6 +15,11 @@
     font-family: var(--font-family-default);
     color: var(--color-utils-black);
     padding: var(--content-spacing-xlarge);
+
+    /* for high-contrast */
+    border-width: var(--width-modal-border);
+    border-color: var(--color-modal-border);
+    border-style: solid;
 }
 
 .dialog:target,
@@ -39,8 +44,8 @@
 .dialog-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-black);
-    --animated-icon-hover: var(--color-utils-gray-light);
+    --animated-icon-color: var(--color-icons-fill-dark);
+    --animated-icon-hover: var(--color-icons-fill-dark-hover);
 }
 
 .dialog-header {

@@ -21,6 +21,6 @@
 
 /* stylelint-disable */
 .page-header-title svg path {
-    fill: var(--color-utils-offwhite);
+    fill: var(--color-icons-fill);
 }
 /* stylelint-enable */

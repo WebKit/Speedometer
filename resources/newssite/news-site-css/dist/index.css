@@ -9,6 +9,8 @@
     --color-utils-gray-lighter: #b1b1b1;
     --color-utils-offwhite: #e6e6e6;
     --color-utils-red-light: #f50000;
+    --color-opacity-black-75: rgb(0 0 0 / 75%);
+    --color-opacity-black-100: rgb(0 0 0 / 100%);
     --theme-advertisement-copy: #b1b1b1;
     --theme-advertisement-icon-fill: #00aecd;
     --theme-advertisement-icon-background: #fff;
@@ -19,6 +21,8 @@
     --border-radius-small: 4px;
     --border-radius-medium: 8px;
     --border-radius-large: 16px;
+    --border-width-none: 0;
+    --border-width-xsmall: 2px;
     --border-radius-50: 50%;
     --border-width-small: 1px;
     --border-width-medium: 2px;
@@ -74,6 +78,40 @@
     --index-dropdown: 200;
     --index-dropdown-input: 201;
     --index-dropdown-label: 202;
+}
+
+body {
+    /* high contrast - forced-colors */
+    --width-navbar-border: 0;
+    --width-modal-border: 0;
+    --color-navbar-border: transparent;
+    --color-modal-border: transparent;
+    --color-modal-background: var(--color-opacity-black-75);
+    --color-icons-fill: var(--color-utils-offwhite);
+    --color-icons-fill-hover: var(--color-utils-white);
+    --color-icons-fill-dark: var(--color-utils-black);
+    --color-icons-fill-dark-hover: var(--color-utils-gray-light);
+    --color-toggle-fill-label: var(--color-utils-gray-lighter);
+    --color-toggle-fill-checked: var(--color-utils-gray);
+    --color-toggle-switch: var(--color-utils-red);
+    --color-buttons-primary-background: var(--color-utils-offwhite);
+    --color-buttons-primary-background-hover: var(--color-utils-white);
+    --color-buttons-primary-text: var(--color-utils-black);
+    --color-buttons-primary-text-hover: var(--color-utils-gray-light);
+    --color-buttons-primary-background-dark: var(--color-utils-black);
+    --color-buttons-primary-background-dark-hover: var(--color-utils-gray-light);
+    --color-buttons-primary-text-dark: var(--color-utils-offwhite);
+    --color-buttons-primary-text-dark-hover: var(--color-utils-offwhite);
+    --color-buttons-secondary-border: var(--color-utils-offwhite);
+    --color-buttons-secondary-border-hover: var(--color-utils-white);
+    --color-buttons-secondary-text: var(--color-utils-offwhite);
+    --color-buttons-secondary-text-hover: var(--color-utils-white);
+    --color-buttons-secondary-border-dark: var(--color-utils-black);
+    --color-buttons-secondary-border-dark-hover: var(--color-utils-gray-light);
+    --color-buttons-secondary-text-dark: var(--color-utils-black);
+    --color-buttons-secondary-text-dark-hover: var(--color-utils-gray-light);
+    --transition-button: var(--transition-default);
+    --active-button-text-decoration: none;
 }
 /* reset */
 html,
@@ -353,26 +391,32 @@ html[dir="rtl"] .arrow-icon {
 .icons-group .icons-group-item button {
     cursor: pointer;
     display: flex;
-    width: var(--icon-size-small);
-    height: var(--icon-size-small);
+    border-width: 0;
 }
 
 .group-icon {
     display: flex;
+    position: relative;
+}
+
+.group-icon-small {
     width: var(--icon-size-small);
     height: var(--icon-size-small);
-    position: relative;
-    background-color: var(--color-utils-black);
+}
+
+.group-icon-medium {
+    width: var(--icon-size);
+    height: var(--icon-size);
 }
 
 .group-icon svg path {
-    fill: var(--color-utils-offwhite);
+    fill: var(--color-icons-fill);
     transition: fill 0.3s ease;
 }
 
 /* stylelint-disable */
 .icons-group li:hover .group-icon svg path {
-    fill: var(--color-utils-white);
+    fill: var(--color-icons-fill-hover);
 }
 /* stylelint-enable */
 
@@ -401,49 +445,49 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
 }
 
 .primary-button {
-    border: 1px solid var(--color-utils-offwhite);
-    background-color: var(--color-utils-offwhite);
-    color: var(--color-utils-black);
+    border: 1px solid var(--color-buttons-primary-background);
+    background-color: var(--color-buttons-primary-background);
+    color: var(--color-buttons-primary-text);
 }
 
 .primary-button.dark {
-    border: 1px solid var(--color-utils-black);
-    background-color: var(--color-utils-black);
-    color: var(--color-utils-offwhite);
+    border: 1px solid var(--color-buttons-primary-background-dark);
+    background-color: var(--color-buttons-primary-background-dark);
+    color: var(--color-buttons-primary-text-dark);
 }
 
 .primary-button:hover {
-    border-color: var(--color-utils-white);
-    background-color: var(--color-utils-white);
-    color: var(--color-utils-gray-light);
+    border-color: var(--color-buttons-primary-background-hover);
+    background-color: var(--color-buttons-primary-background-hover);
+    color: var(--color-buttons-primary-text-hover);
 }
 
 .primary-button.dark:hover {
-    border-color: var(--color-utils-gray-light);
-    background-color: var(--color-utils-gray-light);
-    color: var(--color-utils-offwhite);
+    border-color: var(--color-buttons-primary-background-dark-hover);
+    background-color: var(--color-buttons-primary-background-dark-hover);
+    color: var(--color-buttons-primary-text-dark-hover);
 }
 
 .secondary-button {
-    border: 1px solid var(--color-utils-offwhite);
-    color: var(--color-utils-offwhite);
+    border: 1px solid var(--color-buttons-secondary-border);
+    color: var(--color-buttons-secondary-text);
     background-color: transparent;
 }
 
 .secondary-button.dark {
-    border: 1px solid var(--color-utils-black);
-    color: var(--color-utils-black);
+    border: 1px solid var(--color-buttons-secondary-border-dark);
+    color: var(--color-buttons-secondary-text-dark);
     background-color: transparent;
 }
 
 .secondary-button:hover {
-    border-color: var(--color-utils-white);
-    color: var(--color-utils-white);
+    border-color: var(--color-buttons-secondary-border-hover);
+    color: var(--color-buttons-secondary-text-hover);
 }
 
 .secondary-button.dark:hover {
-    border-color: var(--color-utils-gray-light);
-    color: var(--color-utils-gray-light);
+    border-color: var(--color-buttons-secondary-border-dark-hover);
+    color: var(--color-buttons-secondary-text-dark-hover);
 }
 /* used for things that should be hidden in the ui,
 but useful for people who use screen readers */
@@ -460,8 +504,10 @@ but useful for people who use screen readers */
     white-space: nowrap;
 }
 
-/* apply reduced-motion class to parent element
-  to manually force reduced-motion on child elements */
+/* Reduced Motion:
+  Apply reduced-motion class to parent element
+  to manually envoke reduced-motion on child elements.
+*/
 .reduced-motion *,
 .reduced-motion *::before,
 .reduced-motion *::after {
@@ -485,6 +531,53 @@ but useful for people who use screen readers */
         scroll-behavior: auto !important;
         transition-duration: 0s !important;
         transition-delay: 0s !important;
+    }
+}
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    button,
+    .animated-icon {
+        forced-color-adjust: none;
+    }
+
+    body {    
+        /* high contrast - forced-colors */
+        /* stylelint-disable */
+        --width-navbar-border: 1px;
+        --width-modal-border: 2px;
+        --color-navbar-border: var(--color-utils-black);
+        --color-modal-border: var(--color-utils-black);
+        --color-modal-background: var(--color-utils-offwhite);
+        --color-icons-fill: LinkText;
+        --color-icons-fill-hover: LinkText;
+        --color-icons-fill-dark: LinkText;
+        --color-icons-fill-dark-hover: LinkText;
+        --color-toggle-fill-label: var(--color-utils-white);
+        --color-toggle-fill-checked: var(--color-utils-white);
+        --color-toggle-switch: LinkText;
+        --color-buttons-primary-background: LinkText;
+        --color-buttons-primary-background-hover: LinkText;
+        --color-buttons-primary-text: LinkFace;
+        --color-buttons-primary-text-hover: LinkFace;
+        --color-buttons-primary-background-dark: LinkText;
+        --color-buttons-primary-background-dark-hover: LinkText;
+        --color-buttons-primary-text-dark: LinkFace;
+        --color-buttons-primary-text-dark-hover: LinkFace;
+        --color-buttons-secondary-border: LinkText;
+        --color-buttons-secondary-border-hover: LinkText;
+        --color-buttons-secondary-text: LinkText;
+        --color-buttons-secondary-text-hover: LinkText;
+        --color-buttons-secondary-border-dark: LinkText;
+        --color-buttons-secondary-border-dark-hover: LinkText;
+        --color-buttons-secondary-text-dark: LinkText;
+        --color-buttons-secondary-text-dark-hover: LinkText;
+        --transition-button: var(--transition-default);
+        --active-button-text-decoration: underline;
+        /* stylelint-enable */
     }
 }
 
@@ -544,14 +637,14 @@ img::after {
     max-width: 400px;
     position: relative;
     height: 40px;
-  }
-  
-  .input-container .label {
+}
+
+.input-container .label {
     font-size: var(--font-size-small);
     padding: var(--content-spacing-medium);
-  }
-  
-  .input-container .input {
+}
+
+.input-container .input {
     outline: 0;
     padding: 0 var(--content-spacing-medium);
     border-radius: var(--border-radius-small);
@@ -560,63 +653,62 @@ img::after {
     transition: var(--transition-default);
     width: 100%;
     height: 100%;
-  }
-  
-  .input-container .input[type="submit"] {
+}
+
+.input-container .input[type="submit"] {
     cursor: pointer;
     border-color: var(--color-utils-black);
     background-color: var(--color-utils-black);
     color: var(--color-utils-white);
-  }
+}
 
-  .input-container .input[type="submit"]:hover,
-  .input-container .input[type="submit"]:focus {
+.input-container .input[type="submit"]:hover,
+.input-container .input[type="submit"]:focus {
     border-color: var(--color-utils-gray);
     background-color: var(--color-utils-gray);
     color: var(--color-utils-white);
-  }
-  
-  .input-container .input[type="date"] {
+}
+
+.input-container .input[type="date"] {
     /* hide default calendar icon */
     appearance: none;
     background-image: url('data:image/svg+xml;charset=utf8,%3Csvg fill="%43000" fill-opacity="1" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/%3E%3Cpath d="M0 0h24v24H0z" fill="none"/%3E%3C/svg%3E');
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 1em;
-  }
-  
-  .input-container .input[type="date"]::-webkit-calendar-picker-indicator {
+}
+
+.input-container .input[type="date"]::-webkit-calendar-picker-indicator {
     display: none;
-  }
-  
-  .input-container .input-type-password {
+}
+
+.input-container .input-type-password {
     padding-right: calc(24px + var(--content-spacing-medium) * 2);
-  }
-  
-  .input-container .input:hover {
+}
+
+.input-container .input:hover {
     border-color: var(--color-utils-gray-dark);
     color: var(--color-utils-gray-dark);
-  }
-  
-  .input-container .input:focus {
+}
+
+.input-container .input:focus {
     border-color: var(--color-utils-gray-darker);
     color: var(--color-utils-gray-darker);
-  }
-  
-  .input-container .input::placeholder {
+}
+
+.input-container .input::placeholder {
     color: var(--color-utils-gray);
     opacity: 0.5;
-  }
-  
-  .input-container .toggle {
+}
+
+.input-container .toggle {
     margin: 0;
     padding: 0;
     background-color: transparent;
     position: absolute;
     right: var(--content-spacing-medium);
     bottom: calc((40px - 24px) / 2);
-  }
-  
+}
 .form-container {
     display: flex;
     flex-direction: column;
@@ -921,7 +1013,7 @@ html[dir="rtl"] .advertisement-icons {
 
 /* stylelint-disable */
 .page-header-title svg path {
-    fill: var(--color-utils-offwhite);
+    fill: var(--color-icons-fill);
 }
 /* stylelint-enable */
 .page-navigation {
@@ -935,6 +1027,18 @@ html[dir="rtl"] .advertisement-icons {
     top: 0;
     background-color: var(--color-utils-black);
     z-index: var(--index-header);
+}
+
+.page-navigation::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: -2px;
+    width: calc(100% - (var(--content-spacing-xlarge) * 2));
+    margin: auto;
+
+    /* for high-contrast */
+    border-bottom: var(--width-navbar-border) solid var(--color-modal-border);
 }
 
 .page-navigation-row {
@@ -970,12 +1074,12 @@ html[dir="rtl"] .advertisement-icons {
 
 /* stylelint-disable */
 .page-navigation-logo svg path {
-    transition: var(--transition-default);
-    fill: var(--color-utils-offwhite);
+    transition: var(--transition-button);
+    fill: var(--color-icons-fill);
 }
 
 .page-navigation-logo:hover svg path {
-    fill: var(--color-utils-white);
+    fill: var(--color-icons-fill-hover);
 }
 /* stylelint-enable */
 
@@ -985,7 +1089,7 @@ html[dir="rtl"] .advertisement-icons {
     border-radius: var(--border-radius-small);
     height: var(--nav-button-height);
     background-color: transparent;
-    transition: var(--transition-default);
+    transition: var(--transition-buttons);
     cursor: pointer;
 }
 
@@ -1045,8 +1149,8 @@ html[dir="rtl"] .advertisement-icons {
 .navbar-label-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-offwhite);
-    --animated-icon-hover: var(--color-utils-white);
+    --animated-icon-color: var(--color-icons-fill);
+    --animated-icon-hover: var(--color-icons-fill-hover);
 }
 
 /* stylelint-disable */
@@ -1123,6 +1227,11 @@ html[dir="rtl"] .advertisement-icons {
 .navbar-item a.active {
     color: var(--color-utils-white);
     background-color: var(--color-utils-gray-light);
+
+    /* for high-contrast */
+    border-width: var(--width-navbar-border);
+    border-color: var(--color-navbar-border);
+    border-style: solid;
 }
 
 /** new style **/
@@ -1247,6 +1356,19 @@ html[dir="rtl"] .navbar-dropdown-item:not(:last-child) {
     font-size: var(--font-size-small);
     background-color: var(--color-utils-black);
     color: var(--color-utils-gray-lighter);
+    position: relative;
+}
+
+.page-footer::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    width: calc(100% - (var(--content-spacing-xlarge) * 2));
+    margin: auto;
+
+    /* for high-contrast */
+    border-top: var(--width-navbar-border) solid var(--color-modal-border);
 }
 
 .footer-row {
@@ -1374,6 +1496,11 @@ html[dir="rtl"] .footer-links .footer-links-item:not(:last-child) {
     font-family: var(--font-family-default);
     color: var(--color-utils-black);
     padding: var(--content-spacing-xlarge);
+
+    /* for high-contrast */
+    border-width: var(--width-modal-border);
+    border-color: var(--color-modal-border);
+    border-style: solid;
 }
 
 .dialog:target,
@@ -1398,8 +1525,8 @@ html[dir="rtl"] .footer-links .footer-links-item:not(:last-child) {
 .dialog-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-black);
-    --animated-icon-hover: var(--color-utils-gray-light);
+    --animated-icon-color: var(--color-icons-fill-dark);
+    --animated-icon-hover: var(--color-icons-fill-dark-hover);
 }
 
 .dialog-header {
@@ -1570,6 +1697,16 @@ html[dir="rtl"] .dropdown-label-text {
 }
 
 /** RTL DROPDOWN END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .dropdown-label-text {
+        color: LinkText;
+    }
+}
 .article-header {
     font-weight: bold;
     font-size: var(--font-size-small);
@@ -1676,6 +1813,11 @@ html[dir="rtl"] .dropdown-label-text {
     color: var(--color-utils-white);
     padding: var(--content-spacing-xsmall) var(--content-spacing-small);
     text-transform: uppercase;
+
+    /* for high-contrast */
+    border-width: var(--width-navbar-border);
+    border-color: var(--color-navbar-border);
+    border-style: solid;
 }
 
 .article-image-tag.breaking {
@@ -1694,7 +1836,7 @@ html[dir="rtl"] .dropdown-label-text {
 
 /* stylelint-disable */
 .article-image-tag svg path {
-    fill: var(--color-utils-white);
+    fill: var(--color-icons-fill);
 }
 /* stylelint-enable */
 
@@ -1866,21 +2008,31 @@ html[dir="rtl"] .article-image-tag svg {
     width: 42px;
     height: 16px;
     display: flex;
-    background-color: var(--color-utils-gray-lighter);
+    background-color: var(--color-toggle-fill-label);
     border-radius: 22px;
     cursor: pointer;
+
+     /* for high-contrast */
+     border-width: var(--width-modal-border);
+     border-color: var(--color-modal-border);
+     border-style: solid;
 }
 
 .toggle-container .switch {
     position: absolute;
     left: 0;
     top: 3px;
-    background-color: var(--color-utils-gray);
+    background-color: var(--color-toggle-fill-checked);
     border-radius: 22px;
     transition: var(--transition-default);
     width: 45%;
     height: 16px;
     pointer-events: none;
+
+    /* for high-contrast */
+    border-width: var(--width-modal-border);
+    border-color: var(--color-modal-border);
+    border-style: solid;
 }
 
 .toggle-container .switch::before {
@@ -1888,9 +2040,10 @@ html[dir="rtl"] .article-image-tag svg {
     content: "";
     height: 22px;
     width: 22px;
-    left: 0;
-    bottom: -3px;
-    background-color: var(--color-utils-red);
+    top: 50%;
+    left: calc(var(--width-modal-border) * -1);
+    transform: translateY(-11px);
+    background-color: var(--color-toggle-switch);
     border-radius: var(--border-radius-50);
     transition: var(--transition-default);
 }
@@ -1905,11 +2058,21 @@ html[dir="rtl"] .article-image-tag svg {
 }
 
 .toggle-container .label input[type="checkbox"]:checked + .switch::before {
-    transform: translateX(20px);
+    transform: translate(20px, -11px);
 }
 
 .toggle-container .label input[type="checkbox"]:checked + .switch {
     width: 100%;
+}
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .toggle-container {
+        forced-color-adjust: none;
+    }
 }
 .toast {
     position: fixed;
@@ -1919,10 +2082,13 @@ html[dir="rtl"] .article-image-tag svg {
     width: 100%;
     min-height: 100px;
     color: var(--color-utils-offwhite);
-    background-color: rgb(0 0 0 / 75%);
+    background-color: var(--color-modal-background);
     font-family: var(--font-family-default);
     z-index: var(--index-important);
     padding: var(--content-spacing-xlarge);
+
+    /* for high-contrast */
+    border-top: var(--width-modal-border) solid var(--color-modal-border);
 }
 
 .toast:target,
@@ -1947,8 +2113,8 @@ html[dir="rtl"] .article-image-tag svg {
 .toast-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-offwhite);
-    --animated-icon-hover: var(--color-utils-white);
+    --animated-icon-color: var(--color-icons-fill);
+    --animated-icon-hover: var(--color-icons-fill-hover);
 }
 
 .toast-header {
@@ -2036,7 +2202,7 @@ html[dir="rtl"] .toast-close-button {
 .sitemap a.active,
 .sitemap a.active:hover {
     color: var(--color-utils-red-light);
-    text-decoration: none;
+    text-decoration: var(--active-button-text-decoration);
 }
 
 .sitemap-list {
@@ -2088,6 +2254,10 @@ html[dir="rtl"] .toast-close-button {
     font-family: var(--font-family-default);
     padding: var(--content-spacing-large);
     position: relative;
+
+    /* for high-contrast */
+    border-top: var(--width-modal-border) solid var(--color-modal-border);
+    border-bottom: var(--width-modal-border) solid var(--color-modal-border);
 }
 
 .message:target,
@@ -2114,8 +2284,8 @@ html[dir="rtl"] .toast-close-button {
 .message-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-offwhite);
-    --animated-icon-hover: var(--color-utils-white);
+    --animated-icon-color: var(--color-icons-fill);
+    --animated-icon-hover: var(--color-icons-fill-hover);
 }
 
 .message-header {
@@ -2189,8 +2359,8 @@ html[dir="rtl"] .message-close-button {
 .sidebar-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-black);
-    --animated-icon-hover: var(--color-utils-gray-light);
+    --animated-icon-color: var(--color-icons-fill-dark);
+    --animated-icon-hover: var(--color-icons-fill-dark-hover);
 }
 
 .sidebar-header {
@@ -2324,8 +2494,8 @@ html[dir="rtl"] .sidebar-close-button {
 .modal-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-black);
-    --animated-icon-hover: var(--color-utils-gray-light);
+    --animated-icon-color: var(--color-icons-fill-dark);
+    --animated-icon-hover: var(--color-icons-fill-dark-hover);
 }
 
 .modal-header {

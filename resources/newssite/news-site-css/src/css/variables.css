@@ -9,6 +9,8 @@
     --color-utils-gray-lighter: #b1b1b1;
     --color-utils-offwhite: #e6e6e6;
     --color-utils-red-light: #f50000;
+    --color-opacity-black-75: rgb(0 0 0 / 75%);
+    --color-opacity-black-100: rgb(0 0 0 / 100%);
     --theme-advertisement-copy: #b1b1b1;
     --theme-advertisement-icon-fill: #00aecd;
     --theme-advertisement-icon-background: #fff;
@@ -19,6 +21,8 @@
     --border-radius-small: 4px;
     --border-radius-medium: 8px;
     --border-radius-large: 16px;
+    --border-width-none: 0;
+    --border-width-xsmall: 2px;
     --border-radius-50: 50%;
     --border-width-small: 1px;
     --border-width-medium: 2px;
@@ -74,4 +78,38 @@
     --index-dropdown: 200;
     --index-dropdown-input: 201;
     --index-dropdown-label: 202;
+}
+
+body {
+    /* high contrast - forced-colors */
+    --width-navbar-border: 0;
+    --width-modal-border: 0;
+    --color-navbar-border: transparent;
+    --color-modal-border: transparent;
+    --color-modal-background: var(--color-opacity-black-75);
+    --color-icons-fill: var(--color-utils-offwhite);
+    --color-icons-fill-hover: var(--color-utils-white);
+    --color-icons-fill-dark: var(--color-utils-black);
+    --color-icons-fill-dark-hover: var(--color-utils-gray-light);
+    --color-toggle-fill-label: var(--color-utils-gray-lighter);
+    --color-toggle-fill-checked: var(--color-utils-gray);
+    --color-toggle-switch: var(--color-utils-red);
+    --color-buttons-primary-background: var(--color-utils-offwhite);
+    --color-buttons-primary-background-hover: var(--color-utils-white);
+    --color-buttons-primary-text: var(--color-utils-black);
+    --color-buttons-primary-text-hover: var(--color-utils-gray-light);
+    --color-buttons-primary-background-dark: var(--color-utils-black);
+    --color-buttons-primary-background-dark-hover: var(--color-utils-gray-light);
+    --color-buttons-primary-text-dark: var(--color-utils-offwhite);
+    --color-buttons-primary-text-dark-hover: var(--color-utils-offwhite);
+    --color-buttons-secondary-border: var(--color-utils-offwhite);
+    --color-buttons-secondary-border-hover: var(--color-utils-white);
+    --color-buttons-secondary-text: var(--color-utils-offwhite);
+    --color-buttons-secondary-text-hover: var(--color-utils-white);
+    --color-buttons-secondary-border-dark: var(--color-utils-black);
+    --color-buttons-secondary-border-dark-hover: var(--color-utils-gray-light);
+    --color-buttons-secondary-text-dark: var(--color-utils-black);
+    --color-buttons-secondary-text-dark-hover: var(--color-utils-gray-light);
+    --transition-button: var(--transition-default);
+    --active-button-text-decoration: none;
 }

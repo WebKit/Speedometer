@@ -11,9 +11,3 @@
         </g>
     </svg>
 </template>
-
-<style>
-#reduced-motion-icon {
-    transform: scale(1.5);
-}
-</style>

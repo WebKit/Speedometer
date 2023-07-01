@@ -7,6 +7,10 @@
     font-family: var(--font-family-default);
     padding: var(--content-spacing-large);
     position: relative;
+
+    /* for high-contrast */
+    border-top: var(--width-modal-border) solid var(--color-modal-border);
+    border-bottom: var(--width-modal-border) solid var(--color-modal-border);
 }
 
 .message:target,
@@ -33,8 +37,8 @@
 .message-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-offwhite);
-    --animated-icon-hover: var(--color-utils-white);
+    --animated-icon-color: var(--color-icons-fill);
+    --animated-icon-hover: var(--color-icons-fill-hover);
 }
 
 .message-header {
