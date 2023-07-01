@@ -31,10 +31,10 @@
     border-radius: 22px;
     cursor: pointer;
 
-     /* for high-contrast */
-     border-width: var(--width-modal-border);
-     border-color: var(--color-modal-border);
-     border-style: solid;
+    /* for high-contrast */
+    border-width: var(--width-modal-border);
+    border-color: var(--color-modal-border);
+    border-style: solid;
 }
 
 .toggle-container .switch {

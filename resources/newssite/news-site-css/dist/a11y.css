@@ -53,7 +53,7 @@ but useful for people who use screen readers */
         forced-color-adjust: none;
     }
 
-    body {    
+    :root {
         /* high contrast - forced-colors */
         /* stylelint-disable */
         --width-navbar-border: 1px;
