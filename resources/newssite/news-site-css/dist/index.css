@@ -416,7 +416,7 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
     .group-icon svg path {
         fill: var(--high-contrast-icons-fill, --color-utils-black);
     }
-    
+
     .icons-group li:hover .group-icon svg path {
         fill: var(--high-contrast-icons-fill, --color-utils-black);
     }
@@ -490,46 +490,46 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
 */
 @media (forced-colors: active) {
     .primary-button {
-        border: 1px solid var(--high-contrast-button-primary-background, --color-utils-black);
+        border-color: var(--high-contrast-button-primary-background, --color-utils-black);
         background-color: var(--high-contrast-button-primary-background, --color-utils-black);
         color: var(--high-contrast-button-primary-text, --color-utils-white);
     }
-    
+
     .primary-button.dark {
-        border: 1px solid var(--high-contrast-button-primary-background, --color-utils-white);
+        border-color: var(--high-contrast-button-primary-background, --color-utils-white);
         background-color: var(--high-contrast-button-primary-background, --color-utils-white);
         color: var(--high-contrast-button-primary-text, --color-utils-black);
     }
-    
+
     .primary-button:hover {
         border-color: var(--high-contrast-button-primary-background, --color-utils-black);
         background-color: var(--high-contrast-button-primary-background, --color-utils-black);
         color: var(--high-contrast-button-primary-text, --color-utils-white);
     }
-    
+
     .primary-button.dark:hover {
         border-color: var(--high-contrast-button-primary-background, --color-utils-black);
         background-color: var(--high-contrast-button-primary-background, --color-utils-black);
         color: var(--high-contrast-button-primary-text, --color-utils-white);
     }
-    
+
     .secondary-button {
-        border: 1px solid var(--high-contrast-button-secondary-border, --color-utils-black);
+        border-color: var(--high-contrast-button-secondary-border, --color-utils-black);
         color: var(--high-contrast-button-secondary-text, --color-utils-black);
         background-color: transparent;
     }
-    
+
     .secondary-button.dark {
-        border: 1px solid var(--high-contrast-button-secondary-border, --color-utils-white);
+        border-color: var(--high-contrast-button-secondary-border, --color-utils-white);
         color: var(--high-contrast-button-secondary-text, --color-utils-white);
         background-color: transparent;
     }
-    
+
     .secondary-button:hover {
         border-color: var(--high-contrast-button-secondary-border, --color-utils-black);
         color: var(--high-contrast-button-secondary-text, --color-utils-black);
     }
-    
+
     .secondary-button.dark:hover {
         border-color: var(--high-contrast-button-secondary-border, --color-utils-white);
         color: var(--high-contrast-button-secondary-text, --color-utils-white);
@@ -1154,7 +1154,7 @@ html[dir="rtl"] .advertisement-icons {
         transition: var(--transition-default);
         fill: var(--high-contrast-icons-fill, --color-utils-black);
     }
-    
+
     .page-navigation-logo:hover svg path {
         fill: var(--high-contrast-icons-fill, --color-utils-black);
     }

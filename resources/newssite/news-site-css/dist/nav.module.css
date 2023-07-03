@@ -107,7 +107,7 @@
         transition: var(--transition-default);
         fill: var(--high-contrast-icons-fill, --color-utils-black);
     }
-    
+
     .page-navigation-logo:hover svg path {
         fill: var(--high-contrast-icons-fill, --color-utils-black);
     }

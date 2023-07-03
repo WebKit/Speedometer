@@ -67,13 +67,13 @@
 */
 @media (forced-colors: active) {
     .primary-button {
-        border: 1px solid var(--high-contrast-button-primary-background, --color-utils-black);
+        border-color: var(--high-contrast-button-primary-background, --color-utils-black);
         background-color: var(--high-contrast-button-primary-background, --color-utils-black);
         color: var(--high-contrast-button-primary-text, --color-utils-white);
     }
 
     .primary-button.dark {
-        border: 1px solid var(--high-contrast-button-primary-background, --color-utils-white);
+        border-color: var(--high-contrast-button-primary-background, --color-utils-white);
         background-color: var(--high-contrast-button-primary-background, --color-utils-white);
         color: var(--high-contrast-button-primary-text, --color-utils-black);
     }
@@ -91,13 +91,13 @@
     }
 
     .secondary-button {
-        border: 1px solid var(--high-contrast-button-secondary-border, --color-utils-black);
+        border-color: var(--high-contrast-button-secondary-border, --color-utils-black);
         color: var(--high-contrast-button-secondary-text, --color-utils-black);
         background-color: transparent;
     }
 
     .secondary-button.dark {
-        border: 1px solid var(--high-contrast-button-secondary-border, --color-utils-white);
+        border-color: var(--high-contrast-button-secondary-border, --color-utils-white);
         color: var(--high-contrast-button-secondary-text, --color-utils-white);
         background-color: transparent;
     }
