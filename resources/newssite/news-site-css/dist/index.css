@@ -1115,7 +1115,7 @@ html[dir="rtl"] .advertisement-icons {
     border-radius: var(--border-radius-small);
     height: var(--nav-button-height);
     background-color: transparent;
-    transition: var(--transition-defaults);
+    transition: var(--transition-default);
     cursor: pointer;
 }
 
