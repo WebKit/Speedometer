@@ -7,8 +7,13 @@ import "./src/app.css";
 
 const fs = require("fs");
 
-const randomCss = `${genCss()}\n`;
-fs.writeFileSync("./generated.css", randomCss);
+function generateCss(markup, filePath) {
+    const randomCss = `${genCss(markup)}\n`;
+    fs.writeFileSync(filePath, randomCss);
+}
+
+generateCss("", "./generated.css");
+generateCss("angular", "./angular/generated.css");
 
 const html = `<!DOCTYPE html>
 <html lang="en" class="spectrum spectrum--medium spectrum--light">
