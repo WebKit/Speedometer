@@ -123,7 +123,7 @@ html[dir="rtl"] .dropdown-label-text {
 */
 @media (forced-colors: active) {
     .dropdown-label-text {
-        color: LinkText;
+        color: var(--high-contrast-dropdown-label-color, --color-utils-black);
     }
 
     .dropdown-label:hover {

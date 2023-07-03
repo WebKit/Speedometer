@@ -87,6 +87,7 @@
     --high-contrast-text-decoration: underline;
     --high-contrast-toggle-switch-color: LinkText;
     --high-contrast-icons-fill: LinkText;
+    --high-contrast-dropdown-label-color: LinkText;
     --high-contrast-button-primary-background: LinkText;
     --high-contrast-button-primary-text: LinkFace;
     --high-contrast-button-secondary-border: LinkText;
@@ -1784,7 +1785,7 @@ html[dir="rtl"] .dropdown-label-text {
 */
 @media (forced-colors: active) {
     .dropdown-label-text {
-        color: LinkText;
+        color: var(--high-contrast-dropdown-label-color, --color-utils-black);
     }
 
     .dropdown-label:hover {
