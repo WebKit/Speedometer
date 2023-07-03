@@ -1,3 +1,4 @@
+<script src="../../sanitize.js"></script>
 <script>
 if (process.client) {
     // "Fixes" an issue with calling history.replaceState too often in certain browsers during testing.
@@ -6,13 +7,6 @@ if (process.client) {
     history.replaceState = function (state) {
         return null;
     };
-
-    // This hack allows to capture the work normally happening in a rAF. We
-    // may be able to remove it if the runner improves.
-    window.requestAnimationFrame = (cb) => window.setTimeout(cb, 0);
-    window.cancelAnimationFrame = window.clearTimeout;
-    window.requestIdleCallback = undefined;
-    window.cancelIdleCallback = undefined;
 }
 </script>
 
