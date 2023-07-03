@@ -1269,6 +1269,11 @@ html[dir="rtl"] .advertisement-icons {
     background-color: var(--color-utils-gray);
 }
 
+.navbar-item a.active {
+    color: var(--color-utils-white);
+    background-color: var(--color-utils-gray-light);
+}
+
 /** new style **/
 .navbar-active-path {
     display: none;
