@@ -35,7 +35,7 @@ export default class Main extends Component {
                         <Item key={todo.id} todo={todo} editTodo={editTodo} deleteTodo={deleteTodo} toggleTodo={toggleTodo} index={index} />
                     ))}
                 </ul>
-                <Footer completedCount={completedCount} activeCount={activeCount} filter={location.pathname} onClearCompleted={clearCompleted} />;
+                <Footer completedCount={completedCount} activeCount={activeCount} filter={location.pathname} onClearCompleted={clearCompleted} />
             </main>
         );
     }
