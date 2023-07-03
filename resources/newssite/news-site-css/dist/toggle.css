@@ -27,31 +27,21 @@
     width: 42px;
     height: 16px;
     display: flex;
-    background-color: var(--color-toggle-fill-label);
+    background-color: var(--color-utils-gray-lighter);
     border-radius: 22px;
     cursor: pointer;
-
-    /* for high-contrast */
-    border-width: var(--width-modal-border);
-    border-color: var(--color-modal-border);
-    border-style: solid;
 }
 
 .toggle-container .switch {
     position: absolute;
     left: 0;
     top: 3px;
-    background-color: var(--color-toggle-fill-checked);
+    background-color: var(--color-utils-gray);
     border-radius: 22px;
     transition: var(--transition-default);
     width: 45%;
     height: 16px;
     pointer-events: none;
-
-    /* for high-contrast */
-    border-width: var(--width-modal-border);
-    border-color: var(--color-modal-border);
-    border-style: solid;
 }
 
 .toggle-container .switch::before {
@@ -60,9 +50,9 @@
     height: 22px;
     width: 22px;
     top: 50%;
-    left: calc(var(--width-modal-border) * -1);
+    left: 0;
     transform: translateY(-11px);
-    background-color: var(--color-toggle-switch);
+    background-color: var(--color-utils-red);
     border-radius: var(--border-radius-50);
     transition: var(--transition-default);
 }
@@ -91,5 +81,30 @@
 @media (forced-colors: active) {
     .toggle-container {
         forced-color-adjust: none;
+    }
+}
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .toggle-container .label {
+        background-color: var(--color-utils-white);
+        border-width: var(--high-contrast-border-width-medium);
+        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-style: solid;
+    }
+
+    .toggle-container .switch {
+        background-color: var(--color-utils-white);
+        border-width: var(--high-contrast-border-width-medium);
+        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-style: solid;
+    }
+
+    .toggle-container .switch::before {
+        left: calc(var(--high-contrast-border-width-medium) * -1);
+        background-color: var(--high-contrast-toggle-switch-color, --color-utils-black);
     }
 }

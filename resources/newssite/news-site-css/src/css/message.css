@@ -7,10 +7,6 @@
     font-family: var(--font-family-default);
     padding: var(--content-spacing-large);
     position: relative;
-
-    /* for high-contrast */
-    border-top: var(--width-modal-border) solid var(--color-modal-border);
-    border-bottom: var(--width-modal-border) solid var(--color-modal-border);
 }
 
 .message:target,
@@ -37,8 +33,8 @@
 .message-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-icons-fill);
-    --animated-icon-hover: var(--color-icons-fill-hover);
+    --animated-icon-color: var(--color-utils-offwhite);
+    --animated-icon-hover: var(--color-utils-white);
 }
 
 .message-header {
@@ -74,3 +70,19 @@ html[dir="rtl"] .message-close-button {
 }
 
 /** RTL MESSAGE END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .message {
+        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
+        border-bottom: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
+    }
+
+    .message-close-button-icon {
+        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-black);
+        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+}

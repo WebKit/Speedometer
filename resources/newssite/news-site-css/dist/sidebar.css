@@ -36,8 +36,8 @@
 .sidebar-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-icons-fill-dark);
-    --animated-icon-hover: var(--color-icons-fill-dark-hover);
+    --animated-icon-color: var(--color-utils-black);
+    --animated-icon-hover: var(--color-utils-gray-light);
 }
 
 .sidebar-header {
@@ -119,3 +119,14 @@ html[dir="rtl"] .sidebar-close-button {
 }
 
 /** RTL SIDEBAR END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .sidebar-close-button-icon {
+        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-white);
+        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-white);
+    }
+}

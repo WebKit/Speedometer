@@ -80,36 +80,18 @@
     --index-dropdown-label: 202;
 
     /* high contrast - forced-colors */
-    --width-navbar-border: 0;
-    --width-modal-border: 0;
-    --color-navbar-border: transparent;
-    --color-modal-border: transparent;
-    --color-modal-background: var(--color-opacity-black-75);
-    --color-icons-fill: var(--color-utils-offwhite);
-    --color-icons-fill-hover: var(--color-utils-white);
-    --color-icons-fill-dark: var(--color-utils-black);
-    --color-icons-fill-dark-hover: var(--color-utils-gray-light);
-    --color-toggle-fill-label: var(--color-utils-gray-lighter);
-    --color-toggle-fill-checked: var(--color-utils-gray);
-    --color-toggle-switch: var(--color-utils-red);
-    --color-buttons-primary-background: var(--color-utils-offwhite);
-    --color-buttons-primary-background-hover: var(--color-utils-white);
-    --color-buttons-primary-text: var(--color-utils-black);
-    --color-buttons-primary-text-hover: var(--color-utils-gray-light);
-    --color-buttons-primary-background-dark: var(--color-utils-black);
-    --color-buttons-primary-background-dark-hover: var(--color-utils-gray-light);
-    --color-buttons-primary-text-dark: var(--color-utils-offwhite);
-    --color-buttons-primary-text-dark-hover: var(--color-utils-offwhite);
-    --color-buttons-secondary-border: var(--color-utils-offwhite);
-    --color-buttons-secondary-border-hover: var(--color-utils-white);
-    --color-buttons-secondary-text: var(--color-utils-offwhite);
-    --color-buttons-secondary-text-hover: var(--color-utils-white);
-    --color-buttons-secondary-border-dark: var(--color-utils-black);
-    --color-buttons-secondary-border-dark-hover: var(--color-utils-gray-light);
-    --color-buttons-secondary-text-dark: var(--color-utils-black);
-    --color-buttons-secondary-text-dark-hover: var(--color-utils-gray-light);
-    --transition-button: var(--transition-default);
-    --active-button-text-decoration: none;
+    /* stylelint-disable */
+    --high-contrast-border-width-small: 1px;
+    --high-contrast-border-width-medium: 2px;
+    --high-contrast-border-color: var(--color-utils-black);
+    --high-contrast-text-decoration: underline;
+    --high-contrast-toggle-switch-color: LinkText;
+    --high-contrast-icons-fill: LinkText;
+    --high-contrast-button-primary-background: LinkText;
+    --high-contrast-button-primary-text: LinkFace;
+    --high-contrast-button-secondary-border: LinkText;
+    --high-contrast-button-secondary-text: LinkText;
+    /* stylelint enable */
 }
 /* reset */
 html,
@@ -408,13 +390,13 @@ html[dir="rtl"] .arrow-icon {
 }
 
 .group-icon svg path {
-    fill: var(--color-icons-fill);
+    fill: var(--color-utils-offwhite);
     transition: fill 0.3s ease;
 }
 
 /* stylelint-disable */
 .icons-group li:hover .group-icon svg path {
-    fill: var(--color-icons-fill-hover);
+    fill: var(--color-utils-white);
 }
 /* stylelint-enable */
 
@@ -425,6 +407,20 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
 }
 
 /** RTL ICONS-GROUP END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .group-icon svg path {
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+    
+    .icons-group li:hover .group-icon svg path {
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+}
 .button {
     display: flex;
     text-decoration: none;
@@ -443,49 +439,101 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
 }
 
 .primary-button {
-    border: 1px solid var(--color-buttons-primary-background);
-    background-color: var(--color-buttons-primary-background);
-    color: var(--color-buttons-primary-text);
+    border: 1px solid var(--color-utils-offwhite);
+    background-color: var(--color-utils-offwhite);
+    color: var(--color-utils-black);
 }
 
 .primary-button.dark {
-    border: 1px solid var(--color-buttons-primary-background-dark);
-    background-color: var(--color-buttons-primary-background-dark);
-    color: var(--color-buttons-primary-text-dark);
+    border: 1px solid var(--color-utils-black);
+    background-color: var(--color-utils-black);
+    color: var(--color-utils-offwhite);
 }
 
 .primary-button:hover {
-    border-color: var(--color-buttons-primary-background-hover);
-    background-color: var(--color-buttons-primary-background-hover);
-    color: var(--color-buttons-primary-text-hover);
+    border-color: var(--color-utils-white);
+    background-color: var(--color-utils-white);
+    color: var(--color-utils-gray-light);
 }
 
 .primary-button.dark:hover {
-    border-color: var(--color-buttons-primary-background-dark-hover);
-    background-color: var(--color-buttons-primary-background-dark-hover);
-    color: var(--color-buttons-primary-text-dark-hover);
+    border-color: var(--color-utils-gray-light);
+    background-color: var(--color-utils-gray-light);
+    color: var(--color-utils-offwhite);
 }
 
 .secondary-button {
-    border: 1px solid var(--color-buttons-secondary-border);
-    color: var(--color-buttons-secondary-text);
+    border: 1px solid var(--color-utils-offwhite);
+    color: var(--color-utils-offwhite);
     background-color: transparent;
 }
 
 .secondary-button.dark {
-    border: 1px solid var(--color-buttons-secondary-border-dark);
-    color: var(--color-buttons-secondary-text-dark);
+    border: 1px solid var(--color-utils-black);
+    color: var(--color-utils-black);
     background-color: transparent;
 }
 
 .secondary-button:hover {
-    border-color: var(--color-buttons-secondary-border-hover);
-    color: var(--color-buttons-secondary-text-hover);
+    border-color: var(--color-utils-white);
+    color: var(--color-utils-white);
 }
 
 .secondary-button.dark:hover {
-    border-color: var(--color-buttons-secondary-border-dark-hover);
-    color: var(--color-buttons-secondary-text-dark-hover);
+    border-color: var(--color-utils-gray-light);
+    color: var(--color-utils-gray-light);
+}
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .primary-button {
+        border: 1px solid var(--high-contrast-button-primary-background, --color-utils-black);
+        background-color: var(--high-contrast-button-primary-background, --color-utils-black);
+        color: var(--high-contrast-button-primary-text, --color-utils-white);
+    }
+    
+    .primary-button.dark {
+        border: 1px solid var(--high-contrast-button-primary-background, --color-utils-white);
+        background-color: var(--high-contrast-button-primary-background, --color-utils-white);
+        color: var(--high-contrast-button-primary-text, --color-utils-black);
+    }
+    
+    .primary-button:hover {
+        border-color: var(--high-contrast-button-primary-background, --color-utils-black);
+        background-color: var(--high-contrast-button-primary-background, --color-utils-black);
+        color: var(--high-contrast-button-primary-text, --color-utils-white);
+    }
+    
+    .primary-button.dark:hover {
+        border-color: var(--high-contrast-button-primary-background, --color-utils-black);
+        background-color: var(--high-contrast-button-primary-background, --color-utils-black);
+        color: var(--high-contrast-button-primary-text, --color-utils-white);
+    }
+    
+    .secondary-button {
+        border: 1px solid var(--high-contrast-button-secondary-border, --color-utils-black);
+        color: var(--high-contrast-button-secondary-text, --color-utils-black);
+        background-color: transparent;
+    }
+    
+    .secondary-button.dark {
+        border: 1px solid var(--high-contrast-button-secondary-border, --color-utils-white);
+        color: var(--high-contrast-button-secondary-text, --color-utils-white);
+        background-color: transparent;
+    }
+    
+    .secondary-button:hover {
+        border-color: var(--high-contrast-button-secondary-border, --color-utils-black);
+        color: var(--high-contrast-button-secondary-text, --color-utils-black);
+    }
+    
+    .secondary-button.dark:hover {
+        border-color: var(--high-contrast-button-secondary-border, --color-utils-white);
+        color: var(--high-contrast-button-secondary-text, --color-utils-white);
+    }
 }
 /* used for things that should be hidden in the ui,
 but useful for people who use screen readers */
@@ -540,42 +588,6 @@ but useful for people who use screen readers */
     button,
     .animated-icon {
         forced-color-adjust: none;
-    }
-
-    :root {
-        /* high contrast - forced-colors */
-        /* stylelint-disable */
-        --width-navbar-border: 1px;
-        --width-modal-border: 2px;
-        --color-navbar-border: var(--color-utils-black);
-        --color-modal-border: var(--color-utils-black);
-        --color-modal-background: var(--color-utils-offwhite);
-        --color-icons-fill: LinkText;
-        --color-icons-fill-hover: LinkText;
-        --color-icons-fill-dark: LinkText;
-        --color-icons-fill-dark-hover: LinkText;
-        --color-toggle-fill-label: var(--color-utils-white);
-        --color-toggle-fill-checked: var(--color-utils-white);
-        --color-toggle-switch: LinkText;
-        --color-buttons-primary-background: LinkText;
-        --color-buttons-primary-background-hover: LinkText;
-        --color-buttons-primary-text: LinkFace;
-        --color-buttons-primary-text-hover: LinkFace;
-        --color-buttons-primary-background-dark: LinkText;
-        --color-buttons-primary-background-dark-hover: LinkText;
-        --color-buttons-primary-text-dark: LinkFace;
-        --color-buttons-primary-text-dark-hover: LinkFace;
-        --color-buttons-secondary-border: LinkText;
-        --color-buttons-secondary-border-hover: LinkText;
-        --color-buttons-secondary-text: LinkText;
-        --color-buttons-secondary-text-hover: LinkText;
-        --color-buttons-secondary-border-dark: LinkText;
-        --color-buttons-secondary-border-dark-hover: LinkText;
-        --color-buttons-secondary-text-dark: LinkText;
-        --color-buttons-secondary-text-dark-hover: LinkText;
-        --transition-button: var(--transition-default);
-        --active-button-text-decoration: underline;
-        /* stylelint-enable */
     }
 }
 
@@ -1011,9 +1023,28 @@ html[dir="rtl"] .advertisement-icons {
 
 /* stylelint-disable */
 .page-header-title svg path {
-    fill: var(--color-icons-fill);
+    fill: var(--color-utils-offwhite);
+    transition: var(--transition-default);
+}
+
+.page-header-title:hover svg path {
+    fill: var(--color-utils-white);
 }
 /* stylelint-enable */
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .page-header-title svg path {
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+
+    .page-header-title:hover svg path {
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+}
 .page-navigation {
     display: flex;
     flex-direction: column;
@@ -1034,9 +1065,6 @@ html[dir="rtl"] .advertisement-icons {
     bottom: -2px;
     width: calc(100% - (var(--content-spacing-xlarge) * 2));
     margin: auto;
-
-    /* for high-contrast */
-    border-bottom: var(--width-navbar-border) solid var(--color-modal-border);
 }
 
 .page-navigation-row {
@@ -1072,12 +1100,12 @@ html[dir="rtl"] .advertisement-icons {
 
 /* stylelint-disable */
 .page-navigation-logo svg path {
-    transition: var(--transition-button);
-    fill: var(--color-icons-fill);
+    transition: var(--transition-default);
+    fill: var(--color-utils-offwhite);
 }
 
 .page-navigation-logo:hover svg path {
-    fill: var(--color-icons-fill-hover);
+    fill: var(--color-utils-white);
 }
 /* stylelint-enable */
 
@@ -1087,7 +1115,7 @@ html[dir="rtl"] .advertisement-icons {
     border-radius: var(--border-radius-small);
     height: var(--nav-button-height);
     background-color: transparent;
-    transition: var(--transition-buttons);
+    transition: var(--transition-defaults);
     cursor: pointer;
 }
 
@@ -1111,6 +1139,25 @@ html[dir="rtl"] .advertisement-icons {
     }
 
     /** RTL NAV END **/
+}
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .page-navigation::after {
+        border-bottom: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, --color-utils-black);
+    }
+
+    .page-navigation-logo svg path {
+        transition: var(--transition-default);
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+    
+    .page-navigation-logo:hover svg path {
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
 }
 .navbar {
     display: flex;
@@ -1147,8 +1194,8 @@ html[dir="rtl"] .advertisement-icons {
 .navbar-label-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-icons-fill);
-    --animated-icon-hover: var(--color-icons-fill-hover);
+    --animated-icon-color: var(--color-utils-offwhite);
+    --animated-icon-hover: var(--color-utils-white);
 }
 
 /* stylelint-disable */
@@ -1220,19 +1267,6 @@ html[dir="rtl"] .advertisement-icons {
 .navbar-item a:hover {
     color: var(--color-utils-white);
     background-color: var(--color-utils-gray);
-
-    /* for high-contrast */
-    text-decoration: var(--active-button-text-decoration);
-}
-
-.navbar-item a.active {
-    color: var(--color-utils-white);
-    background-color: var(--color-utils-gray-light);
-
-    /* for high-contrast */
-    border-width: var(--width-navbar-border);
-    border-color: var(--color-navbar-border);
-    border-style: solid;
 }
 
 /** new style **/
@@ -1345,6 +1379,27 @@ html[dir="rtl"] .navbar-dropdown-item:not(:last-child) {
 
     /** RTL NAVBAR END **/
 }
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .navbar-label-icon {
+        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-black);
+        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+
+    .navbar-item a:hover {
+        text-decoration: var(--high-contrast-text-decoration);
+    }
+
+    .navbar-item a.active {
+        border-width: var(--high-contrast-border-width-small);
+        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-style: solid;
+    }
+}
 .page-footer {
     display: flex;
     flex-direction: column;
@@ -1367,9 +1422,6 @@ html[dir="rtl"] .navbar-dropdown-item:not(:last-child) {
     top: 0;
     width: calc(100% - (var(--content-spacing-xlarge) * 2));
     margin: auto;
-
-    /* for high-contrast */
-    border-top: var(--width-navbar-border) solid var(--color-modal-border);
 }
 
 .footer-row {
@@ -1480,6 +1532,16 @@ html[dir="rtl"] .footer-links .footer-links-item:not(:last-child) {
 }
 
 /** RTL FOOTER END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .page-footer::before {
+        border-top: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, --color-utils-black);
+    }
+}
 .dialog {
     position: fixed;
     min-width: 300px;
@@ -1497,11 +1559,6 @@ html[dir="rtl"] .footer-links .footer-links-item:not(:last-child) {
     font-family: var(--font-family-default);
     color: var(--color-utils-black);
     padding: var(--content-spacing-xlarge);
-
-    /* for high-contrast */
-    border-width: var(--width-modal-border);
-    border-color: var(--color-modal-border);
-    border-style: solid;
 }
 
 .dialog:target,
@@ -1526,8 +1583,8 @@ html[dir="rtl"] .footer-links .footer-links-item:not(:last-child) {
 .dialog-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-icons-fill-dark);
-    --animated-icon-hover: var(--color-icons-fill-dark-hover);
+    --animated-icon-color: var(--color-utils-black);
+    --animated-icon-hover: var(--color-utils-gray-light);
 }
 
 .dialog-header {
@@ -1580,6 +1637,23 @@ html[dir="rtl"] .dialog-close-button {
 }
 
 /** RTL DIALOG END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .dialog {
+        border-width: var(--high-contrast-border-width-medium);
+        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-style: solid;
+    }
+
+    .dialog-close-button-icon {
+        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-white);
+        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-white);
+    }
+}
 .dropdown {
     display: flex;
     flex-direction: column;
@@ -1620,9 +1694,6 @@ html[dir="rtl"] .dialog-close-button {
 .dropdown-label:hover {
     color: var(--color-utils-white);
     background-color: var(--color-utils-gray-dark);
-
-    /* for high-contrast */
-    text-decoration: var(--active-button-text-decoration);
 }
 
 .dropdown-label-text {
@@ -1709,6 +1780,10 @@ html[dir="rtl"] .dropdown-label-text {
 @media (forced-colors: active) {
     .dropdown-label-text {
         color: LinkText;
+    }
+
+    .dropdown-label:hover {
+        text-decoration: var(--high-contrast-text-decoration);
     }
 }
 .article-header {
@@ -1817,11 +1892,6 @@ html[dir="rtl"] .dropdown-label-text {
     color: var(--color-utils-white);
     padding: var(--content-spacing-xsmall) var(--content-spacing-small);
     text-transform: uppercase;
-
-    /* for high-contrast */
-    border-width: var(--width-navbar-border);
-    border-color: var(--color-navbar-border);
-    border-style: solid;
 }
 
 .article-image-tag.breaking {
@@ -1840,7 +1910,7 @@ html[dir="rtl"] .dropdown-label-text {
 
 /* stylelint-disable */
 .article-image-tag svg path {
-    fill: var(--color-icons-fill);
+    fill: var(--color-utils-offwhite);
 }
 /* stylelint-enable */
 
@@ -1964,6 +2034,22 @@ html[dir="rtl"] .article-image-tag svg {
 }
 
 /** RTL ARTICLE END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .article-image-tag {
+        border-width: var(--high-contrast-border-width-small);
+        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-style: solid;
+    }
+
+    .article-image-tag svg path {
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+}
 .truncate-singleline {
     width: 100%;
     white-space: nowrap;
@@ -2012,31 +2098,21 @@ html[dir="rtl"] .article-image-tag svg {
     width: 42px;
     height: 16px;
     display: flex;
-    background-color: var(--color-toggle-fill-label);
+    background-color: var(--color-utils-gray-lighter);
     border-radius: 22px;
     cursor: pointer;
-
-    /* for high-contrast */
-    border-width: var(--width-modal-border);
-    border-color: var(--color-modal-border);
-    border-style: solid;
 }
 
 .toggle-container .switch {
     position: absolute;
     left: 0;
     top: 3px;
-    background-color: var(--color-toggle-fill-checked);
+    background-color: var(--color-utils-gray);
     border-radius: 22px;
     transition: var(--transition-default);
     width: 45%;
     height: 16px;
     pointer-events: none;
-
-    /* for high-contrast */
-    border-width: var(--width-modal-border);
-    border-color: var(--color-modal-border);
-    border-style: solid;
 }
 
 .toggle-container .switch::before {
@@ -2045,9 +2121,9 @@ html[dir="rtl"] .article-image-tag svg {
     height: 22px;
     width: 22px;
     top: 50%;
-    left: calc(var(--width-modal-border) * -1);
+    left: 0;
     transform: translateY(-11px);
-    background-color: var(--color-toggle-switch);
+    background-color: var(--color-utils-red);
     border-radius: var(--border-radius-50);
     transition: var(--transition-default);
 }
@@ -2078,6 +2154,31 @@ html[dir="rtl"] .article-image-tag svg {
         forced-color-adjust: none;
     }
 }
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .toggle-container .label {
+        background-color: var(--color-utils-white);
+        border-width: var(--high-contrast-border-width-medium);
+        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-style: solid;
+    }
+
+    .toggle-container .switch {
+        background-color: var(--color-utils-white);
+        border-width: var(--high-contrast-border-width-medium);
+        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-style: solid;
+    }
+
+    .toggle-container .switch::before {
+        left: calc(var(--high-contrast-border-width-medium) * -1);
+        background-color: var(--high-contrast-toggle-switch-color, --color-utils-black);
+    }
+}
 .toast {
     position: fixed;
     left: 0;
@@ -2086,13 +2187,10 @@ html[dir="rtl"] .article-image-tag svg {
     width: 100%;
     min-height: 100px;
     color: var(--color-utils-offwhite);
-    background-color: var(--color-modal-background);
+    background-color: var(--color-opacity-black-75);
     font-family: var(--font-family-default);
     z-index: var(--index-important);
     padding: var(--content-spacing-xlarge);
-
-    /* for high-contrast */
-    border-top: var(--width-modal-border) solid var(--color-modal-border);
 }
 
 .toast:target,
@@ -2117,8 +2215,8 @@ html[dir="rtl"] .article-image-tag svg {
 .toast-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-icons-fill);
-    --animated-icon-hover: var(--color-icons-fill-hover);
+    --animated-icon-color: var(--color-utils-offwhite);
+    --animated-icon-hover: var(--color-utils-white);
 }
 
 .toast-header {
@@ -2183,6 +2281,22 @@ html[dir="rtl"] .toast-close-button {
 }
 
 /** RTL TOAST END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .toast {
+        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
+        background-color: var(--color-opacity-black-100);
+    }
+
+    .toast-close-button-icon {
+        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-black);
+        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+}
 .sitemap {
     display: flex;
     flex-direction: column;
@@ -2206,7 +2320,6 @@ html[dir="rtl"] .toast-close-button {
 .sitemap a.active,
 .sitemap a.active:hover {
     color: var(--color-utils-red-light);
-    text-decoration: var(--active-button-text-decoration);
 }
 
 .sitemap-list {
@@ -2249,6 +2362,17 @@ html[dir="rtl"] .toast-close-button {
         width: calc(100% / 4);
     }
 }
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .sitemap a.active,
+    .sitemap a.active:hover {
+        text-decoration: var(--high-contrast-text-decoration);
+    }
+}
 .message {
     display: none;
     flex-direction: column;
@@ -2258,10 +2382,6 @@ html[dir="rtl"] .toast-close-button {
     font-family: var(--font-family-default);
     padding: var(--content-spacing-large);
     position: relative;
-
-    /* for high-contrast */
-    border-top: var(--width-modal-border) solid var(--color-modal-border);
-    border-bottom: var(--width-modal-border) solid var(--color-modal-border);
 }
 
 .message:target,
@@ -2288,8 +2408,8 @@ html[dir="rtl"] .toast-close-button {
 .message-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-icons-fill);
-    --animated-icon-hover: var(--color-icons-fill-hover);
+    --animated-icon-color: var(--color-utils-offwhite);
+    --animated-icon-hover: var(--color-utils-white);
 }
 
 .message-header {
@@ -2325,6 +2445,22 @@ html[dir="rtl"] .message-close-button {
 }
 
 /** RTL MESSAGE END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .message {
+        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
+        border-bottom: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
+    }
+
+    .message-close-button-icon {
+        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-black);
+        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+}
 .sidebar {
     position: fixed;
     max-width: 300px;
@@ -2363,8 +2499,8 @@ html[dir="rtl"] .message-close-button {
 .sidebar-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-icons-fill-dark);
-    --animated-icon-hover: var(--color-icons-fill-dark-hover);
+    --animated-icon-color: var(--color-utils-black);
+    --animated-icon-hover: var(--color-utils-gray-light);
 }
 
 .sidebar-header {
@@ -2446,6 +2582,17 @@ html[dir="rtl"] .sidebar-close-button {
 }
 
 /** RTL SIDEBAR END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .sidebar-close-button-icon {
+        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-white);
+        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-white);
+    }
+}
 .modal {
     position: fixed;
     width: 100%;
@@ -2498,8 +2645,8 @@ html[dir="rtl"] .sidebar-close-button {
 .modal-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-icons-fill-dark);
-    --animated-icon-hover: var(--color-icons-fill-dark-hover);
+    --animated-icon-color: var(--color-utils-black);
+    --animated-icon-hover: var(--color-utils-gray-light);
 }
 
 .modal-header {
@@ -2551,3 +2698,14 @@ html[dir="rtl"] .modal-close-button {
 }
 
 /** RTL DIALOG END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .modal-close-button-icon {
+        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-white);
+        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-white);
+    }
+}

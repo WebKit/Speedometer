@@ -38,9 +38,6 @@
 .dropdown-label:hover {
     color: var(--color-utils-white);
     background-color: var(--color-utils-gray-dark);
-
-    /* for high-contrast */
-    text-decoration: var(--active-button-text-decoration);
 }
 
 .dropdown-label-text {
@@ -127,5 +124,9 @@ html[dir="rtl"] .dropdown-label-text {
 @media (forced-colors: active) {
     .dropdown-label-text {
         color: LinkText;
+    }
+
+    .dropdown-label:hover {
+        text-decoration: var(--high-contrast-text-decoration);
     }
 }

@@ -18,9 +18,6 @@
     bottom: -2px;
     width: calc(100% - (var(--content-spacing-xlarge) * 2));
     margin: auto;
-
-    /* for high-contrast */
-    border-bottom: var(--width-navbar-border) solid var(--color-modal-border);
 }
 
 .page-navigation-row {
@@ -56,12 +53,12 @@
 
 /* stylelint-disable */
 .page-navigation-logo svg path {
-    transition: var(--transition-button);
-    fill: var(--color-icons-fill);
+    transition: var(--transition-default);
+    fill: var(--color-utils-offwhite);
 }
 
 .page-navigation-logo:hover svg path {
-    fill: var(--color-icons-fill-hover);
+    fill: var(--color-utils-white);
 }
 /* stylelint-enable */
 
@@ -71,7 +68,7 @@
     border-radius: var(--border-radius-small);
     height: var(--nav-button-height);
     background-color: transparent;
-    transition: var(--transition-buttons);
+    transition: var(--transition-defaults);
     cursor: pointer;
 }
 
@@ -95,4 +92,23 @@
     }
 
     /** RTL NAV END **/
+}
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .page-navigation::after {
+        border-bottom: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, --color-utils-black);
+    }
+
+    .page-navigation-logo svg path {
+        transition: var(--transition-default);
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+    
+    .page-navigation-logo:hover svg path {
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
 }

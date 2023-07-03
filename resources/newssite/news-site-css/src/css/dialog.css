@@ -15,11 +15,6 @@
     font-family: var(--font-family-default);
     color: var(--color-utils-black);
     padding: var(--content-spacing-xlarge);
-
-    /* for high-contrast */
-    border-width: var(--width-modal-border);
-    border-color: var(--color-modal-border);
-    border-style: solid;
 }
 
 .dialog:target,
@@ -44,8 +39,8 @@
 .dialog-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-icons-fill-dark);
-    --animated-icon-hover: var(--color-icons-fill-dark-hover);
+    --animated-icon-color: var(--color-utils-black);
+    --animated-icon-hover: var(--color-utils-gray-light);
 }
 
 .dialog-header {
@@ -98,3 +93,20 @@ html[dir="rtl"] .dialog-close-button {
 }
 
 /** RTL DIALOG END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .dialog {
+        border-width: var(--high-contrast-border-width-medium);
+        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-style: solid;
+    }
+
+    .dialog-close-button-icon {
+        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-white);
+        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-white);
+    }
+}

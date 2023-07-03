@@ -20,9 +20,6 @@
     top: 0;
     width: calc(100% - (var(--content-spacing-xlarge) * 2));
     margin: auto;
-
-    /* for high-contrast */
-    border-top: var(--width-navbar-border) solid var(--color-modal-border);
 }
 
 .footer-row {
@@ -133,3 +130,13 @@ html[dir="rtl"] .footer-links .footer-links-item:not(:last-child) {
 }
 
 /** RTL FOOTER END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .page-footer::before {
+        border-top: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, --color-utils-black);
+    }
+}

@@ -6,13 +6,10 @@
     width: 100%;
     min-height: 100px;
     color: var(--color-utils-offwhite);
-    background-color: var(--color-modal-background);
+    background-color: var(--color-opacity-black-75);
     font-family: var(--font-family-default);
     z-index: var(--index-important);
     padding: var(--content-spacing-xlarge);
-
-    /* for high-contrast */
-    border-top: var(--width-modal-border) solid var(--color-modal-border);
 }
 
 .toast:target,
@@ -37,8 +34,8 @@
 .toast-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-icons-fill);
-    --animated-icon-hover: var(--color-icons-fill-hover);
+    --animated-icon-color: var(--color-utils-offwhite);
+    --animated-icon-hover: var(--color-utils-white);
 }
 
 .toast-header {
@@ -103,3 +100,19 @@ html[dir="rtl"] .toast-close-button {
 }
 
 /** RTL TOAST END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .toast {
+        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
+        background-color: var(--color-opacity-black-100);
+    }
+
+    .toast-close-button-icon {
+        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-black);
+        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+}

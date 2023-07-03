@@ -80,34 +80,16 @@
     --index-dropdown-label: 202;
 
     /* high contrast - forced-colors */
-    --width-navbar-border: 0;
-    --width-modal-border: 0;
-    --color-navbar-border: transparent;
-    --color-modal-border: transparent;
-    --color-modal-background: var(--color-opacity-black-75);
-    --color-icons-fill: var(--color-utils-offwhite);
-    --color-icons-fill-hover: var(--color-utils-white);
-    --color-icons-fill-dark: var(--color-utils-black);
-    --color-icons-fill-dark-hover: var(--color-utils-gray-light);
-    --color-toggle-fill-label: var(--color-utils-gray-lighter);
-    --color-toggle-fill-checked: var(--color-utils-gray);
-    --color-toggle-switch: var(--color-utils-red);
-    --color-buttons-primary-background: var(--color-utils-offwhite);
-    --color-buttons-primary-background-hover: var(--color-utils-white);
-    --color-buttons-primary-text: var(--color-utils-black);
-    --color-buttons-primary-text-hover: var(--color-utils-gray-light);
-    --color-buttons-primary-background-dark: var(--color-utils-black);
-    --color-buttons-primary-background-dark-hover: var(--color-utils-gray-light);
-    --color-buttons-primary-text-dark: var(--color-utils-offwhite);
-    --color-buttons-primary-text-dark-hover: var(--color-utils-offwhite);
-    --color-buttons-secondary-border: var(--color-utils-offwhite);
-    --color-buttons-secondary-border-hover: var(--color-utils-white);
-    --color-buttons-secondary-text: var(--color-utils-offwhite);
-    --color-buttons-secondary-text-hover: var(--color-utils-white);
-    --color-buttons-secondary-border-dark: var(--color-utils-black);
-    --color-buttons-secondary-border-dark-hover: var(--color-utils-gray-light);
-    --color-buttons-secondary-text-dark: var(--color-utils-black);
-    --color-buttons-secondary-text-dark-hover: var(--color-utils-gray-light);
-    --transition-button: var(--transition-default);
-    --active-button-text-decoration: none;
+    /* stylelint-disable */
+    --high-contrast-border-width-small: 1px;
+    --high-contrast-border-width-medium: 2px;
+    --high-contrast-border-color: var(--color-utils-black);
+    --high-contrast-text-decoration: underline;
+    --high-contrast-toggle-switch-color: LinkText;
+    --high-contrast-icons-fill: LinkText;
+    --high-contrast-button-primary-background: LinkText;
+    --high-contrast-button-primary-text: LinkFace;
+    --high-contrast-button-secondary-border: LinkText;
+    --high-contrast-button-secondary-text: LinkText;
+    /* stylelint enable */
 }

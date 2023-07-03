@@ -41,13 +41,13 @@
 }
 
 .group-icon svg path {
-    fill: var(--color-icons-fill);
+    fill: var(--color-utils-offwhite);
     transition: fill 0.3s ease;
 }
 
 /* stylelint-disable */
 .icons-group li:hover .group-icon svg path {
-    fill: var(--color-icons-fill-hover);
+    fill: var(--color-utils-white);
 }
 /* stylelint-enable */
 
@@ -58,3 +58,17 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
 }
 
 /** RTL ICONS-GROUP END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .group-icon svg path {
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+    
+    .icons-group li:hover .group-icon svg path {
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+}

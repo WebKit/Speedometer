@@ -104,11 +104,6 @@
     color: var(--color-utils-white);
     padding: var(--content-spacing-xsmall) var(--content-spacing-small);
     text-transform: uppercase;
-
-    /* for high-contrast */
-    border-width: var(--width-navbar-border);
-    border-color: var(--color-navbar-border);
-    border-style: solid;
 }
 
 .article-image-tag.breaking {
@@ -127,7 +122,7 @@
 
 /* stylelint-disable */
 .article-image-tag svg path {
-    fill: var(--color-icons-fill);
+    fill: var(--color-utils-offwhite);
 }
 /* stylelint-enable */
 
@@ -251,3 +246,19 @@ html[dir="rtl"] .article-image-tag svg {
 }
 
 /** RTL ARTICLE END **/
+
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to parent element
+  to manually envoke force-colors on child elements.
+*/
+@media (forced-colors: active) {
+    .article-image-tag {
+        border-width: var(--high-contrast-border-width-small);
+        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-style: solid;
+    }
+
+    .article-image-tag svg path {
+        fill: var(--high-contrast-icons-fill, --color-utils-black);
+    }
+}
