@@ -101,10 +101,7 @@ html[dir="rtl"] .toast-close-button {
 
 /** RTL TOAST END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .toast {
         border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, var(--color-utils-black));

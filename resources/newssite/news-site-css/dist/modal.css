@@ -104,10 +104,7 @@ html[dir="rtl"] .modal-close-button {
 
 /** RTL DIALOG END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .modal-close-button-icon {
         --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-white));

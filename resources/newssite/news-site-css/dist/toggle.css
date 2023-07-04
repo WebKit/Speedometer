@@ -74,20 +74,14 @@
     width: 100%;
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .toggle-container {
         forced-color-adjust: none;
     }
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .toggle-container .label {
         background-color: var(--color-utils-white);

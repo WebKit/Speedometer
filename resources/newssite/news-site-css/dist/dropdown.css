@@ -117,10 +117,7 @@ html[dir="rtl"] .dropdown-label-text {
 
 /** RTL DROPDOWN END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .dropdown-label-text {
         color: var(--high-contrast-dropdown-label-color, var(--color-utils-black));

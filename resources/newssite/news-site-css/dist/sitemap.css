@@ -64,10 +64,7 @@
     }
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .sitemap a.active,
     .sitemap a.active:hover {

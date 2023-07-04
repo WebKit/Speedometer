@@ -247,10 +247,7 @@ html[dir="rtl"] .article-image-tag svg {
 
 /** RTL ARTICLE END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .article-image-tag {
         border-width: var(--high-contrast-border-width-small);

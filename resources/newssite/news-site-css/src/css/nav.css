@@ -94,10 +94,7 @@
     /** RTL NAV END **/
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .page-navigation::after {
         border-bottom: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, var(--color-utils-black));

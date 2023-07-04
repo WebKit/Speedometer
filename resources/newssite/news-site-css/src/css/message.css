@@ -71,10 +71,7 @@ html[dir="rtl"] .message-close-button {
 
 /** RTL MESSAGE END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .message {
         border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, var(--color-utils-black));

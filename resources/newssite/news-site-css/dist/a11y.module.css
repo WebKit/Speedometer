@@ -43,10 +43,7 @@ but useful for people who use screen readers */
     }
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     button,
     .animated-icon {

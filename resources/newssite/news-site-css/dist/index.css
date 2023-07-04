@@ -409,10 +409,7 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
 
 /** RTL ICONS-GROUP END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .group-icon svg path {
         fill: var(--high-contrast-icons-fill, var(--color-utils-black));
@@ -485,10 +482,7 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
     color: var(--color-utils-gray-light);
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .primary-button {
         border-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
@@ -581,10 +575,7 @@ but useful for people who use screen readers */
     }
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     button,
     .animated-icon {
@@ -1033,10 +1024,7 @@ html[dir="rtl"] .advertisement-icons {
 }
 /* stylelint-enable */
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .page-header-title svg path {
         fill: var(--high-contrast-icons-fill, var(--color-utils-black));
@@ -1142,10 +1130,7 @@ html[dir="rtl"] .advertisement-icons {
     /** RTL NAV END **/
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .page-navigation::after {
         border-bottom: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, var(--color-utils-black));
@@ -1386,10 +1371,7 @@ html[dir="rtl"] .navbar-dropdown-item:not(:last-child) {
     /** RTL NAVBAR END **/
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .navbar-label-icon {
         --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-black));
@@ -1539,10 +1521,7 @@ html[dir="rtl"] .footer-links .footer-links-item:not(:last-child) {
 
 /** RTL FOOTER END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .page-footer::before {
         border-top: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, var(--color-utils-black));
@@ -1644,10 +1623,7 @@ html[dir="rtl"] .dialog-close-button {
 
 /** RTL DIALOG END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .dialog {
         border-width: var(--high-contrast-border-width-medium);
@@ -1779,10 +1755,7 @@ html[dir="rtl"] .dropdown-label-text {
 
 /** RTL DROPDOWN END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .dropdown-label-text {
         color: var(--high-contrast-dropdown-label-color, var(--color-utils-black));
@@ -2041,10 +2014,7 @@ html[dir="rtl"] .article-image-tag svg {
 
 /** RTL ARTICLE END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .article-image-tag {
         border-width: var(--high-contrast-border-width-small);
@@ -2151,20 +2121,14 @@ html[dir="rtl"] .article-image-tag svg {
     width: 100%;
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .toggle-container {
         forced-color-adjust: none;
     }
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .toggle-container .label {
         background-color: var(--color-utils-white);
@@ -2288,10 +2252,7 @@ html[dir="rtl"] .toast-close-button {
 
 /** RTL TOAST END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .toast {
         border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, var(--color-utils-black));
@@ -2369,10 +2330,7 @@ html[dir="rtl"] .toast-close-button {
     }
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .sitemap a.active,
     .sitemap a.active:hover {
@@ -2452,10 +2410,7 @@ html[dir="rtl"] .message-close-button {
 
 /** RTL MESSAGE END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .message {
         border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, var(--color-utils-black));
@@ -2589,10 +2544,7 @@ html[dir="rtl"] .sidebar-close-button {
 
 /** RTL SIDEBAR END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .sidebar-close-button-icon {
         --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-white));
@@ -2705,10 +2657,7 @@ html[dir="rtl"] .modal-close-button {
 
 /** RTL DIALOG END **/
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .modal-close-button-icon {
         --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-white));

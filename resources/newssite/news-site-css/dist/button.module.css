@@ -61,10 +61,7 @@
     color: var(--color-utils-gray-light);
 }
 
-/* High Contrast / Forced-Colors:
-  Apply forced-colors class to parent element
-  to manually envoke force-colors on child elements.
-*/
+/* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .primary-button {
         border-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
