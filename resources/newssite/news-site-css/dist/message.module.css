@@ -77,12 +77,12 @@ html[dir="rtl"] .message-close-button {
 */
 @media (forced-colors: active) {
     .message {
-        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
-        border-bottom: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
+        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, var(--color-utils-black));
+        border-bottom: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, var(--color-utils-black));
     }
 
     .message-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-black);
-        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-black);
+        --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-black));
+        --animated-icon-hover: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 }

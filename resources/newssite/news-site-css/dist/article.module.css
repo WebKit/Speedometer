@@ -254,11 +254,11 @@ html[dir="rtl"] .article-image-tag svg {
 @media (forced-colors: active) {
     .article-image-tag {
         border-width: var(--high-contrast-border-width-small);
-        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-color: var(--high-contrast-border-color, var(--color-utils-black));
         border-style: solid;
     }
 
     .article-image-tag svg path {
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 }

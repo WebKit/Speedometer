@@ -65,10 +65,10 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
 */
 @media (forced-colors: active) {
     .group-icon svg path {
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 
     .icons-group li:hover .group-icon svg path {
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 }

@@ -137,6 +137,6 @@ html[dir="rtl"] .footer-links .footer-links-item:not(:last-child) {
 */
 @media (forced-colors: active) {
     .page-footer::before {
-        border-top: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, --color-utils-black);
+        border-top: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, var(--color-utils-black));
     }
 }

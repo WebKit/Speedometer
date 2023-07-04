@@ -101,12 +101,12 @@ html[dir="rtl"] .dialog-close-button {
 @media (forced-colors: active) {
     .dialog {
         border-width: var(--high-contrast-border-width-medium);
-        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-color: var(--high-contrast-border-color, var(--color-utils-black));
         border-style: solid;
     }
 
     .dialog-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-white);
-        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-white);
+        --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-white));
+        --animated-icon-hover: var(--high-contrast-icons-fill, var(--color-utils-white));
     }
 }

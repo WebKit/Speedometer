@@ -415,11 +415,11 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
 */
 @media (forced-colors: active) {
     .group-icon svg path {
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 
     .icons-group li:hover .group-icon svg path {
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 }
 .button {
@@ -491,49 +491,49 @@ html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
 */
 @media (forced-colors: active) {
     .primary-button {
-        border-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        background-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        color: var(--high-contrast-button-primary-text, --color-utils-white);
+        border-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        background-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        color: var(--high-contrast-button-primary-text, var(--color-utils-white));
     }
 
     .primary-button.dark {
-        border-color: var(--high-contrast-button-primary-background, --color-utils-white);
-        background-color: var(--high-contrast-button-primary-background, --color-utils-white);
-        color: var(--high-contrast-button-primary-text, --color-utils-black);
+        border-color: var(--high-contrast-button-primary-background, var(--color-utils-white));
+        background-color: var(--high-contrast-button-primary-background, var(--color-utils-white));
+        color: var(--high-contrast-button-primary-text, var(--color-utils-black));
     }
 
     .primary-button:hover {
-        border-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        background-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        color: var(--high-contrast-button-primary-text, --color-utils-white);
+        border-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        background-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        color: var(--high-contrast-button-primary-text, var(--color-utils-white));
     }
 
     .primary-button.dark:hover {
-        border-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        background-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        color: var(--high-contrast-button-primary-text, --color-utils-white);
+        border-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        background-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        color: var(--high-contrast-button-primary-text, var(--color-utils-white));
     }
 
     .secondary-button {
-        border-color: var(--high-contrast-button-secondary-border, --color-utils-black);
-        color: var(--high-contrast-button-secondary-text, --color-utils-black);
+        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-black));
+        color: var(--high-contrast-button-secondary-text, var(--color-utils-black));
         background-color: transparent;
     }
 
     .secondary-button.dark {
-        border-color: var(--high-contrast-button-secondary-border, --color-utils-white);
-        color: var(--high-contrast-button-secondary-text, --color-utils-white);
+        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-white));
+        color: var(--high-contrast-button-secondary-text, var(--color-utils-white));
         background-color: transparent;
     }
 
     .secondary-button:hover {
-        border-color: var(--high-contrast-button-secondary-border, --color-utils-black);
-        color: var(--high-contrast-button-secondary-text, --color-utils-black);
+        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-black));
+        color: var(--high-contrast-button-secondary-text, var(--color-utils-black));
     }
 
     .secondary-button.dark:hover {
-        border-color: var(--high-contrast-button-secondary-border, --color-utils-white);
-        color: var(--high-contrast-button-secondary-text, --color-utils-white);
+        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-white));
+        color: var(--high-contrast-button-secondary-text, var(--color-utils-white));
     }
 }
 /* used for things that should be hidden in the ui,
@@ -1039,11 +1039,11 @@ html[dir="rtl"] .advertisement-icons {
 */
 @media (forced-colors: active) {
     .page-header-title svg path {
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 
     .page-header-title:hover svg path {
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 }
 .page-navigation {
@@ -1148,16 +1148,16 @@ html[dir="rtl"] .advertisement-icons {
 */
 @media (forced-colors: active) {
     .page-navigation::after {
-        border-bottom: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, --color-utils-black);
+        border-bottom: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, var(--color-utils-black));
     }
 
     .page-navigation-logo svg path {
         transition: var(--transition-default);
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 
     .page-navigation-logo:hover svg path {
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 }
 .navbar {
@@ -1392,8 +1392,8 @@ html[dir="rtl"] .navbar-dropdown-item:not(:last-child) {
 */
 @media (forced-colors: active) {
     .navbar-label-icon {
-        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-black);
-        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-black);
+        --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-black));
+        --animated-icon-hover: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 
     .navbar-item a:hover {
@@ -1402,7 +1402,7 @@ html[dir="rtl"] .navbar-dropdown-item:not(:last-child) {
 
     .navbar-item a.active {
         border-width: var(--high-contrast-border-width-small);
-        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-color: var(--high-contrast-border-color, var(--color-utils-black));
         border-style: solid;
     }
 }
@@ -1545,7 +1545,7 @@ html[dir="rtl"] .footer-links .footer-links-item:not(:last-child) {
 */
 @media (forced-colors: active) {
     .page-footer::before {
-        border-top: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, --color-utils-black);
+        border-top: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, var(--color-utils-black));
     }
 }
 .dialog {
@@ -1651,13 +1651,13 @@ html[dir="rtl"] .dialog-close-button {
 @media (forced-colors: active) {
     .dialog {
         border-width: var(--high-contrast-border-width-medium);
-        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-color: var(--high-contrast-border-color, var(--color-utils-black));
         border-style: solid;
     }
 
     .dialog-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-white);
-        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-white);
+        --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-white));
+        --animated-icon-hover: var(--high-contrast-icons-fill, var(--color-utils-white));
     }
 }
 .dropdown {
@@ -1785,7 +1785,7 @@ html[dir="rtl"] .dropdown-label-text {
 */
 @media (forced-colors: active) {
     .dropdown-label-text {
-        color: var(--high-contrast-dropdown-label-color, --color-utils-black);
+        color: var(--high-contrast-dropdown-label-color, var(--color-utils-black));
     }
 
     .dropdown-label:hover {
@@ -2048,12 +2048,12 @@ html[dir="rtl"] .article-image-tag svg {
 @media (forced-colors: active) {
     .article-image-tag {
         border-width: var(--high-contrast-border-width-small);
-        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-color: var(--high-contrast-border-color, var(--color-utils-black));
         border-style: solid;
     }
 
     .article-image-tag svg path {
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 }
 .truncate-singleline {
@@ -2169,20 +2169,20 @@ html[dir="rtl"] .article-image-tag svg {
     .toggle-container .label {
         background-color: var(--color-utils-white);
         border-width: var(--high-contrast-border-width-medium);
-        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-color: var(--high-contrast-border-color, var(--color-utils-black));
         border-style: solid;
     }
 
     .toggle-container .switch {
         background-color: var(--color-utils-white);
         border-width: var(--high-contrast-border-width-medium);
-        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-color: var(--high-contrast-border-color, var(--color-utils-black));
         border-style: solid;
     }
 
     .toggle-container .switch::before {
         left: calc(var(--high-contrast-border-width-medium) * -1);
-        background-color: var(--high-contrast-toggle-switch-color, --color-utils-black);
+        background-color: var(--high-contrast-toggle-switch-color, var(--color-utils-black));
     }
 }
 .toast {
@@ -2294,13 +2294,13 @@ html[dir="rtl"] .toast-close-button {
 */
 @media (forced-colors: active) {
     .toast {
-        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
+        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, var(--color-utils-black));
         background-color: var(--color-opacity-black-100);
     }
 
     .toast-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-black);
-        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-black);
+        --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-black));
+        --animated-icon-hover: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 }
 .sitemap {
@@ -2458,13 +2458,13 @@ html[dir="rtl"] .message-close-button {
 */
 @media (forced-colors: active) {
     .message {
-        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
-        border-bottom: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
+        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, var(--color-utils-black));
+        border-bottom: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, var(--color-utils-black));
     }
 
     .message-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-black);
-        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-black);
+        --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-black));
+        --animated-icon-hover: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 }
 .sidebar {
@@ -2595,8 +2595,8 @@ html[dir="rtl"] .sidebar-close-button {
 */
 @media (forced-colors: active) {
     .sidebar-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-white);
-        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-white);
+        --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-white));
+        --animated-icon-hover: var(--high-contrast-icons-fill, var(--color-utils-white));
     }
 }
 .modal {
@@ -2711,7 +2711,7 @@ html[dir="rtl"] .modal-close-button {
 */
 @media (forced-colors: active) {
     .modal-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-white);
-        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-white);
+        --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-white));
+        --animated-icon-hover: var(--high-contrast-icons-fill, var(--color-utils-white));
     }
 }

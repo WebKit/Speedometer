@@ -92,19 +92,19 @@
     .toggle-container .label {
         background-color: var(--color-utils-white);
         border-width: var(--high-contrast-border-width-medium);
-        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-color: var(--high-contrast-border-color, var(--color-utils-black));
         border-style: solid;
     }
 
     .toggle-container .switch {
         background-color: var(--color-utils-white);
         border-width: var(--high-contrast-border-width-medium);
-        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-color: var(--high-contrast-border-color, var(--color-utils-black));
         border-style: solid;
     }
 
     .toggle-container .switch::before {
         left: calc(var(--high-contrast-border-width-medium) * -1);
-        background-color: var(--high-contrast-toggle-switch-color, --color-utils-black);
+        background-color: var(--high-contrast-toggle-switch-color, var(--color-utils-black));
     }
 }

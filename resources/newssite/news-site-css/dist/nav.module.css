@@ -100,15 +100,15 @@
 */
 @media (forced-colors: active) {
     .page-navigation::after {
-        border-bottom: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, --color-utils-black);
+        border-bottom: var(--high-contrast-border-width-small) solid var(--high-contrast-border-color, var(--color-utils-black));
     }
 
     .page-navigation-logo svg path {
         transition: var(--transition-default);
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 
     .page-navigation-logo:hover svg path {
-        fill: var(--high-contrast-icons-fill, --color-utils-black);
+        fill: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 }

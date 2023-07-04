@@ -107,12 +107,12 @@ html[dir="rtl"] .toast-close-button {
 */
 @media (forced-colors: active) {
     .toast {
-        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, --color-utils-black);
+        border-top: var(--high-contrast-border-width-medium) solid var(--high-contrast-border-color, var(--color-utils-black));
         background-color: var(--color-opacity-black-100);
     }
 
     .toast-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-black);
-        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-black);
+        --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-black));
+        --animated-icon-hover: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 }

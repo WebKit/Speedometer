@@ -230,8 +230,8 @@ html[dir="rtl"] .navbar-dropdown-item:not(:last-child) {
 */
 @media (forced-colors: active) {
     .navbar-label-icon {
-        --animated-icon-color: var(--high-contrast-icons-fill, --color-utils-black);
-        --animated-icon-hover: var(--high-contrast-icons-fill, --color-utils-black);
+        --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-black));
+        --animated-icon-hover: var(--high-contrast-icons-fill, var(--color-utils-black));
     }
 
     .navbar-item a:hover {
@@ -240,7 +240,7 @@ html[dir="rtl"] .navbar-dropdown-item:not(:last-child) {
 
     .navbar-item a.active {
         border-width: var(--high-contrast-border-width-small);
-        border-color: var(--high-contrast-border-color, --color-utils-black);
+        border-color: var(--high-contrast-border-color, var(--color-utils-black));
         border-style: solid;
     }
 }

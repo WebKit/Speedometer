@@ -67,48 +67,48 @@
 */
 @media (forced-colors: active) {
     .primary-button {
-        border-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        background-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        color: var(--high-contrast-button-primary-text, --color-utils-white);
+        border-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        background-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        color: var(--high-contrast-button-primary-text, var(--color-utils-white));
     }
 
     .primary-button.dark {
-        border-color: var(--high-contrast-button-primary-background, --color-utils-white);
-        background-color: var(--high-contrast-button-primary-background, --color-utils-white);
-        color: var(--high-contrast-button-primary-text, --color-utils-black);
+        border-color: var(--high-contrast-button-primary-background, var(--color-utils-white));
+        background-color: var(--high-contrast-button-primary-background, var(--color-utils-white));
+        color: var(--high-contrast-button-primary-text, var(--color-utils-black));
     }
 
     .primary-button:hover {
-        border-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        background-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        color: var(--high-contrast-button-primary-text, --color-utils-white);
+        border-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        background-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        color: var(--high-contrast-button-primary-text, var(--color-utils-white));
     }
 
     .primary-button.dark:hover {
-        border-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        background-color: var(--high-contrast-button-primary-background, --color-utils-black);
-        color: var(--high-contrast-button-primary-text, --color-utils-white);
+        border-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        background-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
+        color: var(--high-contrast-button-primary-text, var(--color-utils-white));
     }
 
     .secondary-button {
-        border-color: var(--high-contrast-button-secondary-border, --color-utils-black);
-        color: var(--high-contrast-button-secondary-text, --color-utils-black);
+        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-black));
+        color: var(--high-contrast-button-secondary-text, var(--color-utils-black));
         background-color: transparent;
     }
 
     .secondary-button.dark {
-        border-color: var(--high-contrast-button-secondary-border, --color-utils-white);
-        color: var(--high-contrast-button-secondary-text, --color-utils-white);
+        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-white));
+        color: var(--high-contrast-button-secondary-text, var(--color-utils-white));
         background-color: transparent;
     }
 
     .secondary-button:hover {
-        border-color: var(--high-contrast-button-secondary-border, --color-utils-black);
-        color: var(--high-contrast-button-secondary-text, --color-utils-black);
+        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-black));
+        color: var(--high-contrast-button-secondary-text, var(--color-utils-black));
     }
 
     .secondary-button.dark:hover {
-        border-color: var(--high-contrast-button-secondary-border, --color-utils-white);
-        color: var(--high-contrast-button-secondary-text, --color-utils-white);
+        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-white));
+        color: var(--high-contrast-button-secondary-text, var(--color-utils-white));
     }
 }
