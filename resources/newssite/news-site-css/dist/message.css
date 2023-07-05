@@ -43,8 +43,8 @@
 .message-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var( --theme-icon-fill-light);
-    --animated-icon-hover: var( --theme-icon-fill-lighter);
+    --animated-icon-color: var(--theme-icon-fill-light);
+    --animated-icon-hover: var(--theme-icon-fill-lighter);
 }
 
 .message-header {

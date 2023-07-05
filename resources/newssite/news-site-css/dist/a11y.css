@@ -61,7 +61,7 @@ but useful for people who use screen readers */
     text-shadow: none !important;
     background-image: none !important;
     color-scheme: light dark !important;
-    scrollbar-color: auto !important
+    scrollbar-color: auto !important;
 }
 /* stylelint-enable */
 

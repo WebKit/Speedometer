@@ -679,7 +679,7 @@ but useful for people who use screen readers */
     text-shadow: none !important;
     background-image: none !important;
     color-scheme: light dark !important;
-    scrollbar-color: auto !important
+    scrollbar-color: auto !important;
 }
 /* stylelint-enable */
 
@@ -1677,8 +1677,8 @@ html[dir="rtl"] .footer-links .footer-links-item:not(:last-child) {
 .dialog-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var( --theme-icon-fill-dark);
-    --animated-icon-hover: var( --theme-icon-fill-medium);
+    --animated-icon-color: var(--theme-icon-fill-dark);
+    --animated-icon-hover: var(--theme-icon-fill-medium);
 }
 
 .dialog-header {
@@ -1739,8 +1739,8 @@ html[dir="rtl"] .dialog-close-button {
     }
 
     .dialog-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icon-fill-dark,  var(--color-system-linktext));
-        --animated-icon-hover: var(--high-contrast-icon-fill-medium,  var(--color-system-linktext));
+        --animated-icon-color: var(--high-contrast-icon-fill-dark, var(--color-system-linktext));
+        --animated-icon-hover: var(--high-contrast-icon-fill-medium, var(--color-system-linktext));
     }
 }
 .dropdown {
@@ -2291,8 +2291,8 @@ html[dir="rtl"] .article-image-tag svg {
 .toast-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var( --theme-icon-fill-light);
-    --animated-icon-hover: var( --theme-icon-fill-lighter);
+    --animated-icon-color: var(--theme-icon-fill-light);
+    --animated-icon-hover: var(--theme-icon-fill-lighter);
 }
 
 .toast-header {
@@ -2489,8 +2489,8 @@ html[dir="rtl"] .toast-close-button {
 .message-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var( --theme-icon-fill-light);
-    --animated-icon-hover: var( --theme-icon-fill-lighter);
+    --animated-icon-color: var(--theme-icon-fill-light);
+    --animated-icon-hover: var(--theme-icon-fill-lighter);
 }
 
 .message-header {
@@ -2576,8 +2576,8 @@ html[dir="rtl"] .message-close-button {
 .sidebar-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var( --theme-icon-fill-dark);
-    --animated-icon-hover: var( --theme-icon-fill-medium);
+    --animated-icon-color: var(--theme-icon-fill-dark);
+    --animated-icon-hover: var(--theme-icon-fill-medium);
 }
 
 .sidebar-header {
@@ -2717,8 +2717,8 @@ html[dir="rtl"] .sidebar-close-button {
 .modal-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var( --theme-icon-fill-dark);
-    --animated-icon-hover: var( --theme-icon-fill-medium);
+    --animated-icon-color: var(--theme-icon-fill-dark);
+    --animated-icon-hover: var(--theme-icon-fill-medium);
 }
 
 .modal-header {

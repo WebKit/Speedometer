@@ -40,8 +40,8 @@
 .dialog-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var( --theme-icon-fill-dark);
-    --animated-icon-hover: var( --theme-icon-fill-medium);
+    --animated-icon-color: var(--theme-icon-fill-dark);
+    --animated-icon-hover: var(--theme-icon-fill-medium);
 }
 
 .dialog-header {
@@ -102,7 +102,7 @@ html[dir="rtl"] .dialog-close-button {
     }
 
     .dialog-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icon-fill-dark,  var(--color-system-linktext));
-        --animated-icon-hover: var(--high-contrast-icon-fill-medium,  var(--color-system-linktext));
+        --animated-icon-color: var(--high-contrast-icon-fill-dark, var(--color-system-linktext));
+        --animated-icon-hover: var(--high-contrast-icon-fill-medium, var(--color-system-linktext));
     }
 }

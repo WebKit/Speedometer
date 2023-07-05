@@ -36,8 +36,8 @@
 .sidebar-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var( --theme-icon-fill-dark);
-    --animated-icon-hover: var( --theme-icon-fill-medium);
+    --animated-icon-color: var(--theme-icon-fill-dark);
+    --animated-icon-hover: var(--theme-icon-fill-medium);
 }
 
 .sidebar-header {
