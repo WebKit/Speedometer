@@ -6,6 +6,6 @@ export const settings = {
         },
         contrast: {
             label: "High Contrast Mode",
-        }
+        },
     },
 };
