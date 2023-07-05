@@ -16,96 +16,96 @@
 }
 
 .primary-button {
-    border: 1px solid var(--color-utils-offwhite);
-    background-color: var(--color-utils-offwhite);
-    color: var(--color-utils-black);
+    border: 1px solid var(--theme-button-color-light);
+    background-color: var(--theme-button-color-light);
+    color: var(--theme-button-color-dark);
 }
 
 .primary-button.dark {
-    border: 1px solid var(--color-utils-black);
-    background-color: var(--color-utils-black);
-    color: var(--color-utils-offwhite);
+    border: 1px solid var(--theme-button-color-dark);
+    background-color: var(--theme-button-color-dark);
+    color: var(--theme-button-color-light);
 }
 
 .primary-button:hover {
-    border-color: var(--color-utils-white);
-    background-color: var(--color-utils-white);
-    color: var(--color-utils-gray-light);
+    border-color: var(--theme-button-color-lighter);
+    background-color: var(--theme-button-color-lighter);
+    color: var(--theme-button-color-medium);
 }
 
 .primary-button.dark:hover {
-    border-color: var(--color-utils-gray-light);
-    background-color: var(--color-utils-gray-light);
-    color: var(--color-utils-offwhite);
+    border-color: var(--theme-button-color-medium);
+    background-color: var(--theme-button-color-medium);
+    color: var(--theme-button-color-lighter);
 }
 
 .secondary-button {
-    border: 1px solid var(--color-utils-offwhite);
-    color: var(--color-utils-offwhite);
+    border: 1px solid var(--theme-button-color-light);
     background-color: transparent;
+    color: var(--theme-button-color-light);
 }
 
 .secondary-button.dark {
-    border: 1px solid var(--color-utils-black);
-    color: var(--color-utils-black);
+    border: 1px solid var(--theme-button-color-dark);
     background-color: transparent;
+    color: var(--theme-button-color-dark);
 }
 
 .secondary-button:hover {
-    border-color: var(--color-utils-white);
-    color: var(--color-utils-white);
+    border-color: var(--theme-button-color-lighter);
+    color: var(--theme-button-color-lighter);
 }
 
 .secondary-button.dark:hover {
-    border-color: var(--color-utils-gray-light);
-    color: var(--color-utils-gray-light);
+    border-color: var(--theme-button-color-medium);
+    color: var(--theme-button-color-medium);
 }
 
 /* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .primary-button {
-        border-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
-        background-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
-        color: var(--high-contrast-button-primary-text, var(--color-utils-white));
+        border-color: var(--high-contrast-button-color-light, var(--color-utils-black));
+        background-color: var(--high-contrast-button-color-light, var(--color-utils-black));
+        color: var(--high-contrast-button-color-dark, var(--color-utils-white));
     }
 
     .primary-button.dark {
-        border-color: var(--high-contrast-button-primary-background, var(--color-utils-white));
-        background-color: var(--high-contrast-button-primary-background, var(--color-utils-white));
-        color: var(--high-contrast-button-primary-text, var(--color-utils-black));
+        border-color: var(--high-contrast-button-color-dark, var(--color-utils-white));
+        background-color: var(--high-contrast-button-color-dark, var(--color-utils-white));
+        color: var(--high-contrast-button-color-light, var(--color-utils-black));
     }
 
     .primary-button:hover {
-        border-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
-        background-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
-        color: var(--high-contrast-button-primary-text, var(--color-utils-white));
+        border-color: var(--high-contrast-button-color-lighter, var(--color-utils-black));
+        background-color: var(--high-contrast-button-color-lighter, var(--color-utils-black));
+        color: var(--high-contrast-button-color-medium, var(--color-utils-white));
     }
 
     .primary-button.dark:hover {
-        border-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
-        background-color: var(--high-contrast-button-primary-background, var(--color-utils-black));
-        color: var(--high-contrast-button-primary-text, var(--color-utils-white));
+        border-color: var(--high-contrast-button-color-medium, var(--color-utils-black));
+        background-color: var(--high-contrast-button-color-medium, var(--color-utils-black));
+        color: var(--high-contrast-button-color-lighter, var(--color-utils-white));
     }
 
     .secondary-button {
-        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-black));
-        color: var(--high-contrast-button-secondary-text, var(--color-utils-black));
+        border-color: var(--high-contrast-button-color-light, var(--color-utils-black));
         background-color: transparent;
+        color: var(--high-contrast-button-color-light, var(--color-utils-black));
     }
 
     .secondary-button.dark {
-        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-white));
-        color: var(--high-contrast-button-secondary-text, var(--color-utils-white));
+        border-color: var(--high-contrast-button-color-dark, var(--color-utils-white));
         background-color: transparent;
+        color: var(--high-contrast-button-color-dark, var(--color-utils-white));
     }
 
     .secondary-button:hover {
-        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-black));
-        color: var(--high-contrast-button-secondary-text, var(--color-utils-black));
+        border-color: var(--high-contrast-button-color-lighter, var(--color-utils-black));
+        color: var(--high-contrast-button-color-lighter, var(--color-utils-black));
     }
 
     .secondary-button.dark:hover {
-        border-color: var(--high-contrast-button-secondary-border, var(--color-utils-white));
-        color: var(--high-contrast-button-secondary-text, var(--color-utils-white));
+        border-color: var(--high-contrast-button-color-medium, var(--color-utils-white));
+        color: var(--high-contrast-button-color-medium, var(--color-utils-white));
     }
 }

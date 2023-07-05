@@ -9,12 +9,12 @@
     --color-utils-gray-lighter: #b1b1b1;
     --color-utils-offwhite: #e6e6e6;
     --color-utils-red-light: #f50000;
+    --color-opacity-black-50: rgb(0 0 0 / 50%);
     --color-opacity-black-75: rgb(0 0 0 / 75%);
     --color-opacity-black-100: rgb(0 0 0 / 100%);
     --theme-advertisement-copy: #b1b1b1;
     --theme-advertisement-icon-fill: #00aecd;
     --theme-advertisement-icon-background: #fff;
-    --theme-image-placeholder: #e5e5e5;
 
     /* layout */
     --border-radius-xsmall: 2px;
@@ -79,18 +79,104 @@
     --index-dropdown-input: 201;
     --index-dropdown-label: 202;
 
+    /* theme */
+    --theme-border-width-small: 0;
+    --theme-border-width-medium: 0;
+    --theme-small-border: none;
+    --theme-medium-border: none;
+    --theme-text-decoration: none;
+    --theme-ui-background: var(--color-utils-white);
+    --theme-ui-foreground: var(--color-utils-black);
+    --theme-dialog-background: var(--color-utils-white);
+    --theme-toast-background: var(--color-opacity-black-75);
+    --theme-message-background: var(--color-utils-red);
+    --theme-modal-background: var(--color-opacity-black-50);
+    --theme-toggle-switch: var(--color-utils-red);
+    --theme-toggle-background: var(--color-utils-gray-lighter);
+    --theme-toggle-foreground: var(--color-utils-gray);
+    --theme-link-highlight: var(--color-utils-red);
+    --theme-link-color: var(--color-utils-black);
+    --theme-link-hover: var(--color-utils-gray-light);
+    --theme-text-highlight: var(--color-utils-red-light);
+    --theme-text-lighter: var(--color-utils-white);
+    --theme-text-light: var(--color-utils-offwhite);
+    --theme-text-medium: var(--color-utils-gray-light);
+    --theme-text-dark: var(--color-utils-black);
+    --theme-image-placeholder: var(--color-utils-offwhite);
+    --theme-tag-background-red: var(--color-utils-red);
+    --theme-tag-background-gray: var(--color-utils-gray);
+    --theme-icon-fill-lighter: var(--color-utils-white);
+    --theme-icon-fill-light: var(--color-utils-offwhite);
+    --theme-icon-fill-medium: var(--color-utils-gray-light);
+    --theme-icon-fill-dark: var(--color-utils-black);
+    --theme-button-color-lighter: var(--color-utils-white);
+    --theme-button-color-light: var(--color-utils-offwhite);
+    --theme-button-color-medium: var(--color-utils-gray-light);
+    --theme-button-color-dark: var(--color-utils-black);
+    --theme-button-color-active: var(--color-utils-gray);
+
+    /* define system colors */
+    --color-system-linktext: #00009f;
+    --color-system-linkface: #e6e6e6;
+    --color-system-canvas: var(--color-utils-white);
+    --color-system-neutral: var(--color-utils-black);
+
     /* high contrast - forced-colors */
     /* stylelint-disable */
     --high-contrast-border-width-small: 1px;
     --high-contrast-border-width-medium: 2px;
-    --high-contrast-border-color: var(--color-utils-black);
+    --high-contrast-small-border: var(--high-contrast-border-width-small) solid var(--color-utils-black);
+    --high-contrast-medium-border: var(--high-contrast-border-width-medium) solid var(--color-utils-black);
     --high-contrast-text-decoration: underline;
-    --high-contrast-toggle-switch-color: LinkText;
-    --high-contrast-icons-fill: LinkText;
-    --high-contrast-dropdown-label-color: LinkText;
-    --high-contrast-button-primary-background: LinkText;
-    --high-contrast-button-primary-text: LinkFace;
-    --high-contrast-button-secondary-border: LinkText;
-    --high-contrast-button-secondary-text: LinkText;
+    --high-contrast-modal-background: var(--color-utils-white);
+    --high-contrast-toggle-switch: LinkText;
+    --high-contrast-toggle-background: var(--color-utils-white);
+    --high-contrast-toggle-foreground: var(--color-utils-white);
+    --high-contrast-icon-fill-lighter: LinkText;
+    --high-contrast-icon-fill-light: LinkText;
+    --high-contrast-icon-fill-medium: LinkText;
+    --high-contrast-icon-fill-dark: LinkText;
+    --high-contrast-button-color-lighter: LinkText;
+    --high-contrast-button-color-light: LinkText;
+    --high-contrast-button-color-medium: LinkFace;
+    --high-contrast-button-color-dark: LinkFace;
     /* stylelint enable */
+}
+
+:root.forced-colors {
+    /* manual high-contrast overrides */
+    --theme-border-width-small: 1px;
+    --theme-border-width-medium: 2px;
+    --theme-small-border: var(--theme-border-width-small) solid var(--color-system-neutral);
+    --theme-medium-border: var(--theme-border-width-medium) solid var(--color-system-neutral);
+    --theme-text-decoration: underline;
+    --theme-ui-background: var(--color-system-canvas);
+    --theme-ui-foreground: var(--color-system-canvas);
+    --theme-dialog-background: var(--color-system-canvas);
+    --theme-toast-background: var(--color-system-canvas);
+    --theme-message-background: var(--color-system-canvas);
+    --theme-toast-background: var(--color-system-canvas);
+    --theme-toggle-switch: var(--color-system-linktext);
+    --theme-toggle-background: var(--color-system-canvas);
+    --theme-toggle-foreground: var(--color-system-canvas);
+    --theme-link-highlight: var(--color-system-linktext);
+    --theme-link-color: var(--color-system-linktext);
+    --theme-link-hover: var(--color-system-linktext);
+    --theme-text-highlight: var(--color-system-linktext);
+    --theme-text-lighter: var(--color-system-neutral);
+    --theme-text-light: var(--color-system-neutral);
+    --theme-text-medium: var(--color-system-neutral);
+    --theme-text-dark: var(--color-system-neutral);
+    --theme-image-placeholder: var(--color-system-canvas);
+    --theme-tag-background-red: var(--color-system-canvas);
+    --theme-tag-background-gray: var(--color-system-canvas);
+    --theme-icon-fill-lighter: var(--color-system-linktext);
+    --theme-icon-fill-light: var(--color-system-linktext);
+    --theme-icon-fill-medium: var(--color-system-linktext);
+    --theme-icon-fill-dark: var(--color-system-linktext);
+    --theme-button-color-lighter: var(--color-system-linktext);
+    --theme-button-color-light: var(--color-system-linktext);
+    --theme-button-color-medium: var(--color-system-canvas);
+    --theme-button-color-dark: var(--color-system-linkface);
+    --theme-button-color-active: var(--color-system-canvas);
 }

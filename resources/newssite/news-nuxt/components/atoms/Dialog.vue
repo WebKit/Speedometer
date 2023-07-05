@@ -13,21 +13,31 @@ export default {
     data() {
         return {
             styles,
-            isChecked: false,
+            reduceMotion: false,
+            highContrast: false,
         }
     },
     mounted() {
-        this.isChecked = document.body.classList.contains("reduced-motion");
+        this.reduceMotion = document.body.classList.contains("reduced-motion");
+        this.highContrast = document.documentElement.classList.contains("forced-colors");
     },
     methods: {
-        handleChange(e) {
-            this.isChecked = e.target.checked;
+        toggleMotion(e) {
+            this.reduceMotion = e.target.checked;
 
             if (e.target.checked)
                 document.body.classList.add("reduced-motion");
             else
                 document.body.classList.remove("reduced-motion");
-        }
+        },
+        toggleContrast(e) {
+            this.reduceMotion = e.target.checked;
+
+            if (e.target.checked)
+                document.documentElement.classList.add("forced-colors");
+            else
+                document.documentElement.classList.remove("forced-colors");
+        },
     }
 }
 </script>
@@ -47,7 +57,10 @@ export default {
         </header>
         <section :class="styles['dialog-body']">
             <div :class="styles['dialog-item']">
-                <Toggle :label="settings.items.motion.label" :on-change="handleChange" :checked="isChecked" />
+                <Toggle id="motion" :label="settings.items.motion.label" :on-change="toggleMotion" :checked="reduceMotion" />
+            </div>
+            <div :class="styles['dialog-item']">
+                <Toggle id="contrast" :label="settings.items.contrast.label" :on-change="toggleContrast" :checked="highContrast" />
             </div>
         </section>
     </div>

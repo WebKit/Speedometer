@@ -7,20 +7,31 @@ import { useDataContext } from "@/context/data-context";
 import styles from "news-site-css/dist/dialog.module.css";
 
 export default function Dialog({ onClose }) {
-    const [isChecked, setIsChecked] = useState(false);
+    const [reduceMotion, setReduceMotion] = useState(false);
+    const [highContrast, setHighContrast] = useState(false);
     const { settings } = useDataContext();
 
     useEffect(() => {
-        setIsChecked(document.body.classList.contains("reduced-motion"));
+        setReduceMotion(document.body.classList.contains("reduced-motion"));
+        setHighContrast(document.documentElement.classList.contains("forced-colors"));
     }, []);
 
-    function handleChange(e) {
-        setIsChecked(e.target.checked);
+    function toggleMotion(e) {
+        setReduceMotion(e.target.checked);
 
         if (e.target.checked)
             document.body.classList.add("reduced-motion");
         else
             document.body.classList.remove("reduced-motion");
+    }
+
+    function toggleContrast(e) {
+        setHighContrast(e.target.checked);
+
+        if (e.target.checked)
+            document.documentElement.classList.add("forced-colors");
+        else
+            document.documentElement.classList.remove("forced-colors");
     }
 
     return (
@@ -38,7 +49,10 @@ export default function Dialog({ onClose }) {
             </header>
             <section className={styles["dialog-body"]}>
                 <div className={styles["dialog-item"]}>
-                    <Toggle label={settings.items.motion.label} onChange={handleChange} checked={isChecked} />
+                    <Toggle id="motion" label={settings.items.motion.label} onChange={toggleMotion} checked={reduceMotion} />
+                </div>
+                <div className={styles["dialog-item"]}>
+                    <Toggle id="contrast" label={settings.items.contrast.label} onChange={toggleContrast} checked={highContrast} />
                 </div>
             </section>
         </div>

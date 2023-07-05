@@ -14,7 +14,7 @@ but useful for people who use screen readers */
 }
 
 /* Reduced Motion:
-  Apply reduced-motion class to parent element
+  Apply reduced-motion class to body tag
   to manually envoke reduced-motion on child elements.
 */
 .reduced-motion *,
@@ -43,7 +43,28 @@ but useful for people who use screen readers */
     }
 }
 
-/* High Contrast / Forced-Colors: */
+/* High Contrast / Forced-Colors:
+  Apply forced-colors class to html tag
+  to manually envoke reduced-motion on child elements.
+*/
+/* stylelint-disable */
+.forced-colors *:not(button):not(.animated-icon),
+.forced-colors *::before,
+.forced-colors *::after {
+    text-decoration-color: unset !important;
+    text-emphasis-color: unset !important;
+    border-color: unset !important;
+    outline-color: unset !important;
+    column-rule-color: unset !important;
+    -webkit-tap-highlight-color: unset !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    background-image: none !important;
+    color-scheme: light dark !important;
+    scrollbar-color: auto !important
+}
+/* stylelint-enable */
+
 @media (forced-colors: active) {
     button,
     .animated-icon {

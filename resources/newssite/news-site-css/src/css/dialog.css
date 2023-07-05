@@ -7,14 +7,15 @@
     bottom: 40px;
     left: 40px;
     right: unset;
-    background-color: var(--color-utils-white);
+    background-color: var(--theme-dialog-background);
     z-index: var(--index-important);
     border-radius: var(--border-radius-medium);
     box-shadow: 0 10px 18px var(--color-utils-gray);
     display: none;
     font-family: var(--font-family-default);
-    color: var(--color-utils-black);
+    color: var(--theme-text-dark);
     padding: var(--content-spacing-xlarge);
+    border: var(--theme-medium-border);
 }
 
 .dialog:target,
@@ -39,8 +40,8 @@
 .dialog-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-black);
-    --animated-icon-hover: var(--color-utils-gray-light);
+    --animated-icon-color: var( --theme-icon-fill-dark);
+    --animated-icon-hover: var( --theme-icon-fill-medium);
 }
 
 .dialog-header {
@@ -97,13 +98,11 @@ html[dir="rtl"] .dialog-close-button {
 /* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .dialog {
-        border-width: var(--high-contrast-border-width-medium);
-        border-color: var(--high-contrast-border-color, var(--color-utils-black));
-        border-style: solid;
+        border: var(--high-contrast-medium-border);
     }
 
     .dialog-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icons-fill, var(--color-utils-white));
-        --animated-icon-hover: var(--high-contrast-icons-fill, var(--color-utils-white));
+        --animated-icon-color: var(--high-contrast-icon-fill-dark,  var(--color-system-linktext));
+        --animated-icon-hover: var(--high-contrast-icon-fill-medium,  var(--color-system-linktext));
     }
 }
