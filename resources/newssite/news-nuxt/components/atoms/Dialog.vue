@@ -18,7 +18,7 @@ export default {
         }
     },
     mounted() {
-        this.reduceMotion = document.body.classList.contains("reduced-motion");
+        this.reduceMotion = document.documentElement.classList.contains("reduced-motion");
         this.highContrast = document.documentElement.classList.contains("forced-colors");
     },
     methods: {
@@ -26,9 +26,9 @@ export default {
             this.reduceMotion = e.target.checked;
 
             if (e.target.checked)
-                document.body.classList.add("reduced-motion");
+                document.documentElement.classList.add("reduced-motion");
             else
-                document.body.classList.remove("reduced-motion");
+                document.documentElement.classList.remove("reduced-motion");
         },
         toggleContrast(e) {
             this.reduceMotion = e.target.checked;

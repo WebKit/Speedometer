@@ -12,7 +12,7 @@ export default function Dialog({ onClose }) {
     const { settings } = useDataContext();
 
     useEffect(() => {
-        setReduceMotion(document.body.classList.contains("reduced-motion"));
+        setReduceMotion(document.documentElement.classList.contains("reduced-motion"));
         setHighContrast(document.documentElement.classList.contains("forced-colors"));
     }, []);
 
@@ -20,9 +20,9 @@ export default function Dialog({ onClose }) {
         setReduceMotion(e.target.checked);
 
         if (e.target.checked)
-            document.body.classList.add("reduced-motion");
+            document.documentElement.classList.add("reduced-motion");
         else
-            document.body.classList.remove("reduced-motion");
+            document.documentElement.classList.remove("reduced-motion");
     }
 
     function toggleContrast(e) {
