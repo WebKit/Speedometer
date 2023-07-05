@@ -10,7 +10,8 @@
         "dev": "wireit",
         "build": "wireit",
         "tsc": "wireit",
-        "rollup": "wireit"
+        "rollup": "wireit",
+        "copy-index-html": "wireit"
     },
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^15.1.0",
@@ -51,7 +52,8 @@
         "build": {
             "dependencies": [
                 "tsc",
-                "rollup"
+                "rollup",
+                "copy-index-html"
             ]
         },
         "tsc": {
@@ -77,6 +79,15 @@
                 "dist/index.js"
             ],
             "command": "rollup --config rollup.config.mjs"
+        },
+        "copy-index-html": {
+            "command": "cp index.html dist/index.html",
+            "files": [
+                "index.html"
+            ],
+            "output": [
+                "dist/index.html"
+            ]
         }
     }
 }
