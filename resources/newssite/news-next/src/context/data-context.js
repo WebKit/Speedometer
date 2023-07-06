@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { dataSource } from "./data-source";
+import { dataSource } from "../data";
 
 const RTL_LOCALES = ["ar", "he", "fa", "ps", "ur"];
 const DEFAULT_LANG = "en";

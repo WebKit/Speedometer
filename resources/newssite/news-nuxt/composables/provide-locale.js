@@ -1,6 +1,6 @@
 import { provide } from "vue";
 import { useHead } from "#imports";
-import { dataSource } from "./provide-locale-data";
+import { dataSource } from "../data";
 
 const RTL_LOCALES = ["ar", "he", "fa", "ps", "ur"];
 const DEFAULT_LANG = "en";
