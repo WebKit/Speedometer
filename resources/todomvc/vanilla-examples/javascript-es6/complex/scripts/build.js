@@ -10,16 +10,9 @@ const TARGET_DIRECTORY = "./complex/dist";
 const COMPLEX_DOM_HTML_FILE = "index.html";
 const TODO_HTML_FILE = "index.html";
 
-const FILES_TO_MOVE = [
-    "node_modules/todomvc-common/base.css",
-    "node_modules/todomvc-app-css/index.css",
-    "node_modules/big-dom-generator/dist/app.css",
-    "node_modules/big-dom-generator/generated.css",
-    "node_modules/big-dom-generator/public/layout.css",
-    "node_modules/big-dom-generator/dist/logo.png",
-];
+const FILES_TO_MOVE = ["node_modules/todomvc-common/base.css", "node_modules/todomvc-app-css/index.css", "node_modules/big-dom-generator/dist/app.css", "node_modules/big-dom-generator/generated.css", "node_modules/big-dom-generator/dist/logo.png"];
 
-const CSS_FILES_TO_ADD_LINKS_FOR = ["app.css", "generated.css", "layout.css"];
+const CSS_FILES_TO_ADD_LINKS_FOR = ["app.css", "generated.css"];
 
 async function build() {
     // remove dist directory if it exists
@@ -34,23 +27,16 @@ async function build() {
             console.error(err);
     });
 
-    // copy html file
-    await fs.copyFile(path.resolve(__dirname, "../../", "node_modules/big-dom-generator/dist/index.html"), path.join(TARGET_DIRECTORY, COMPLEX_DOM_HTML_FILE));
-
     // copy files to move
-    for (let i = 0; i < FILES_TO_MOVE.length; i++) {
-        const fileName = FILES_TO_MOVE[i].split("/").pop();
-        await fs.copyFile(path.resolve(__dirname, "../../", FILES_TO_MOVE[i]), path.join(TARGET_DIRECTORY, fileName));
-    }
+    for (let i = 0; i < FILES_TO_MOVE.length; i++)
+        await fs.copyFile(path.resolve(__dirname, "../../", FILES_TO_MOVE[i]), path.join(TARGET_DIRECTORY, path.basename(FILES_TO_MOVE[i])));
 
     // read todo.html file
     let html = await fs.readFile(path.join(ROOT_DIRECTORY, TODO_HTML_FILE), "utf8");
 
     // remove base paths from files to move
-    for (let i = 0; i < FILES_TO_MOVE.length; i++) {
-        const fileName = FILES_TO_MOVE[i].split("/").pop();
-        html = html.replace(FILES_TO_MOVE[i], fileName);
-    }
+    for (let i = 0; i < FILES_TO_MOVE.length; i++)
+        html = html.replace(FILES_TO_MOVE[i], path.basename(FILES_TO_MOVE[i]));
 
     // remove basePath from source directory
     const sourceDirectoryPathParts = SOURCE_DIRECTORY.split("/");

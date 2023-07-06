@@ -9,7 +9,7 @@
     "private": true,
     "scripts": {
         "dev": "webpack serve --open --config ./standalone/webpack.dev.js",
-        "dev:complex": "webpack serve:complex --open --config ./complex/webpack.dev.js --inline --hot",
+        "dev:complex": "webpack serve --open --config ./complex/webpack.dev.js",
         "build": "webpack --config ./standalone/webpack.prod.js",
         "build:complex": "webpack --config ./complex/webpack.prod.js",
         "serve": "http-server ./standalone/dist -p 7002 -c-1 --cors",

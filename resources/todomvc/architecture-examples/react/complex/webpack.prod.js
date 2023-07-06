@@ -28,7 +28,7 @@ module.exports = merge(common, {
             title: "TodoMVC: React Complex DOM",
             template: "shared/public/index.html",
             templateParameters: {
-                body: getHtmlContent("node_modules/big-dom-generator/dist/index.html", true).replace('<div class="todo-area">', `<div class="todo-area"><div class="todoholder">${htmlToInjectForComplex}</div>`),
+                body: getHtmlContent("node_modules/big-dom-generator/dist/index.html").replace('<div class="todo-area">', `<div class="todo-area"><div class="todoholder">${htmlToInjectForComplex}</div>`),
                 htmlClasses: "spectrum spectrum--medium spectrum--light",
             },
         }),

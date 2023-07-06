@@ -7,6 +7,7 @@ package-lock.json
 
 /resources/todomvc/architecture-examples/*
 !/resources/todomvc/architecture-examples/angular
+/resources/todomvc/architecture-examples/angular/projects/complex/src/index.html
 !/resources/todomvc/architecture-examples/backbone
 !/resources/todomvc/architecture-examples/lit
 /resources/todomvc/architecture-examples/lit/dist/index.js

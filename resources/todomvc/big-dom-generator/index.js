@@ -4,6 +4,7 @@ import { App } from "./src/app";
 import { genCss } from "./gen-css";
 
 import "./src/app.css";
+import "./public/layout.css";
 
 const fs = require("fs");
 

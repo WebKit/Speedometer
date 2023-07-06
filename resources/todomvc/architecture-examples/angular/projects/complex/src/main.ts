@@ -4,7 +4,6 @@ import { AppModule } from "shared-library";
 
 import "big-dom-generator/dist/app.css";
 import "big-dom-generator/angular/generated.css";
-import "big-dom-generator/public/layout.css";
 
 platformBrowserDynamic()
     .bootstrapModule(AppModule)

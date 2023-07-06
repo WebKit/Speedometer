@@ -1,14 +1,14 @@
 const fs = require("fs");
 const path = require("path");
 
-function getHtmlContent(filePath, isComplex = false) {
+function getHtmlContent(filePath) {
     let htmlContent = fs.readFileSync(filePath, "utf8");
-    if (isComplex) {
-        const bodyStartIndex = htmlContent.indexOf("<body>") + 6;
-        const bodyEndIndex = htmlContent.indexOf("</body>");
-        htmlContent = htmlContent.substring(bodyStartIndex, bodyEndIndex);
-        htmlContent = injectHtmlIntoTodoArea(htmlContent, "../../complex/public/partial.html");
-    }
+    const bodyStartIndex = htmlContent.indexOf("<body>");
+    const bodyEndIndex = htmlContent.lastIndexOf("</body>");
+    if (bodyStartIndex < 0 || bodyEndIndex < 0) return htmlContent;
+
+    htmlContent = htmlContent.substring(bodyStartIndex + 6, bodyEndIndex);
+    htmlContent = injectHtmlIntoTodoArea(htmlContent, "../../complex/public/partial.html");
     return htmlContent;
 }
 

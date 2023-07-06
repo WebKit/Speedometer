@@ -11,7 +11,7 @@ module.exports = defineConfig({
             args[0].title = "TodoMVC: Vue Complex DOM";
             args[0].template = "shared/public/index.html";
             args[0].templateParameters = {
-                body: getHtmlContent("node_modules/big-dom-generator/dist/index.html", true),
+                body: getHtmlContent("node_modules/big-dom-generator/dist/index.html"),
                 htmlClasses: "spectrum spectrum--medium spectrum--light",
             };
             return args;

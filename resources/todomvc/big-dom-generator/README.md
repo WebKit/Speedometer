@@ -61,9 +61,21 @@ Non Matching rules:
 
 ## Install
 
+In the root directory of this package, run:
+
 ```bash
-$ npm install big-dom-generator
+$ npm link
 ```
+
+This will create a symlink to the package in the global `node_modules` directory.
+
+In the project where we want to use the big-dom-generator package, run:
+
+```bash
+$ npm link big-dom-generator --save
+```
+
+This will create a symlink to the package in the local `node_modules` directory of the project. The flag `--save` will create an entry in the package.json if one doesn't already exist. Now you can use the package in the project as if it was installed from npm.
 
 ## Usage
 
