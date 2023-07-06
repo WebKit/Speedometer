@@ -33,8 +33,8 @@
 .navbar-label-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--theme-icon-fill-light);
-    --animated-icon-hover: var(--theme-icon-fill-lighter);
+    --animated-icon-color: var(--theme-navigation-text);
+    --animated-icon-hover: var(--theme-navigation-text-hover);
 }
 
 /* stylelint-disable */
@@ -88,7 +88,8 @@
 
 .navbar-item a {
     text-decoration: none;
-    color: var(--theme-button-color-light);
+    color: var(--theme-navigation-text);
+    background-color: var(--theme-navigation-background);
     position: relative;
     line-height: var(--nav-button-height);
     display: flex;
@@ -104,14 +105,14 @@
 }
 
 .navbar-item a:hover {
-    color: var(--theme-button-color-lighter);
-    background-color: var(--theme-button-color-medium);
+    color: var(--theme-navigation-text-hover);
+    background-color: var(--theme-navigation-background-hover);
     text-decoration: var(--theme-text-decoration);
 }
 
 .navbar-item a.active {
-    color: var(--theme-button-color-lighter);
-    background-color: var(--theme-button-color-active);
+    color: var(--theme-navigation-text-hover);
+    background-color: var(--theme-navigation-background-active);
     border: var(--theme-small-border);
 }
 
@@ -200,8 +201,8 @@ html[dir="rtl"] .navbar-dropdown-item:not(:last-child) {
     .navbar-active-path {
         display: flex;
         margin: 0 var(--content-spacing-small);
-        color: var(--theme-text-lighter);
-        background-color: var(--theme-button-color-active);
+        color: var(--theme-navigation-text-hover);
+        background-color: var(--theme-navigation-background-active);
         line-height: var(--nav-button-height);
         border-radius: var(--border-radius-small);
         padding: 0 8px;
@@ -229,15 +230,27 @@ html[dir="rtl"] .navbar-dropdown-item:not(:last-child) {
 /* High Contrast / Forced-Colors: */
 @media (forced-colors: active) {
     .navbar-label-icon {
-        --animated-icon-color: var(--high-contrast-icon-fill-light, var(--color-system-linktext));
-        --animated-icon-hover: var(--high-contrast-icon-fill-lighter, var(--color-system-linktext));
+        --animated-icon-color: var(--high-contrast-navigation-text, var(--color-system-linktext));
+        --animated-icon-hover: var(--high-contrast-navigation-text-hover, var(--color-system-linktext));
+    }
+
+    .navbar-item a {
+        color: var(--high-contrast-navigation-text);
+        background-color: var(--high-contrast-navigation-background);
     }
 
     .navbar-item a:hover {
+        color: var(--high-contrast-navigation-text-hover);
+        background-color: var(--high-contrast-background-hover);
         text-decoration: var(--high-contrast-text-decoration);
     }
 
     .navbar-item a.active {
         border: var(--high-contrast-small-border);
+        background-color: var(--high-contrast-navigation-background-active);
+    }
+
+    .navbar-active-path {
+        color: var(--high-contrast-navigation-text-hover);
     }
 }

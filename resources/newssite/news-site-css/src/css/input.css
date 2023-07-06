@@ -25,16 +25,16 @@
 
 .input-container .input[type="submit"] {
     cursor: pointer;
-    border-color: var(--theme-button-color-dark);
-    background-color: var(--theme-button-color-dark);
-    color: var(--theme-button-color-light);
+    border-color: var(--theme-button-dark-background);
+    background-color: var(--theme-button-dark-background);
+    color: var(--theme-button-dark-text);
 }
 
 .input-container .input[type="submit"]:hover,
 .input-container .input[type="submit"]:focus {
-    border-color: var(--theme-button-color-medium);
-    background-color: var(--theme-button-color-medium);
-    color: var(--theme-button-color-lighter);
+    border-color: var(--theme-button-dark-background-hover);
+    background-color: var(--theme-button-dark-background-hover);
+    color: var(--theme-button-dark-text-hover);
 }
 
 .input-container .input[type="date"] {
@@ -76,4 +76,18 @@
     position: absolute;
     right: var(--content-spacing-medium);
     bottom: calc((40px - 24px) / 2);
+}
+
+/* High Contrast / Forced-Colors: */
+@media (forced-colors: active) {
+    .input-container .input[type="submit"] {
+        border-color: var(--high-contrast-button-light-background);
+        color: var(--high-contrast-button-light-background);
+    }
+    
+    .input-container .input[type="submit"]:hover,
+    .input-container .input[type="submit"]:focus {
+        border-color: var(--high-contrast-button-light-background-hover);
+        color: var(--high-contrast-button-light-background-hover);
+    }
 }
