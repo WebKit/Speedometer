@@ -355,7 +355,7 @@ export const todos = {
         "Bike de goma impresionante",
         "Camisa de acero pequeña",
         "Computadora de concreto refinada",
-        "Sleek Coñada Camisa",
+        "Camisa elegante congelada",
         "Zapatos de concreto inteligentes",
         "Coche de goma hecho a mano",
         "Toallas de goma elegantes",
