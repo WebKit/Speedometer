@@ -64,7 +64,7 @@ class Template {
                 "{{view-index}}": i,
             };
 
-            const template = this.defaultTemplate.replace(stringReplaceRegex, function(matched){
+            const template = this.defaultTemplate.replace(stringReplaceRegex, function (matched) {
                 console.log("matched", matched, valuesToReplace[matched]);
                 return valuesToReplace[matched];
             });
