@@ -3,12 +3,12 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
     entry: {
-        app: "./src/app.js",
+        app: path.resolve(__dirname, "src", "app.js"),
     },
     plugins: [
         new HtmlWebpackPlugin({
             title: "TodoMVC: JavaScript Es6 Webpack",
-            template: "/src/index.html",
+            template: path.resolve(__dirname, "src", "index.html"),
         }),
     ],
     output: {

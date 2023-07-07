@@ -1,4 +1,5 @@
 {
+  "name": "jquery-complex",
   "private": true,
   "scripts": {
     "build": "node scripts/build.js",

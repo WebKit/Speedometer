@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
     entry: {
-        app: "./index.js",
+        app: path.resolve(__dirname, "index.js"),
     },
     output: {
         filename: "[name].bundle.js",
@@ -16,7 +16,7 @@ module.exports = {
         rules: [
             {
                 test: /\.(js|jsx)$/,
-                exclude: /nodeModules/,
+                exclude: /node_modules/,
                 use: {
                     loader: "babel-loader",
                     options: {
@@ -28,8 +28,16 @@ module.exports = {
                 },
             },
             {
-                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                test: /\.svg$/i,
+                issuer: /\.[jt]sx?$/,
+                use: ["@svgr/webpack"],
+            },
+            {
+                test: /\.png$/,
                 type: "asset/resource",
+                generator: {
+                    filename: "[name][ext]",
+                },
             },
         ],
     },

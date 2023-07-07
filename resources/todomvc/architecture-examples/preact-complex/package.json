@@ -1,5 +1,5 @@
 {
-    "name": "preact",
+    "name": "preact-complex",
     "version": "1.0.0",
     "description": "TodoMVC complex app written with Preact.",
     "private": true,

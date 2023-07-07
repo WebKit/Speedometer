@@ -3,12 +3,12 @@ const path = require("path");
 
 module.exports = {
     entry: {
-        app: "./src/index.js",
+        app: path.resolve(__dirname, "src", "index.js"),
     },
     plugins: [
         new HtmlWebpackPlugin({
             title: "TodoMVC: React",
-            template: "public/index.html",
+            template: path.resolve(__dirname, "public", "index.html"),
         }),
     ],
     output: {

@@ -2,15 +2,11 @@ const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
 
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-
-const TerserPlugin = require("terser-webpack-plugin");
-
 const CopyPlugin = require("copy-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = merge(common, {
     mode: "production",
-    devtool: "source-map",
     plugins: [
         new MiniCssExtractPlugin({
             filename: "[name].css",
@@ -24,17 +20,26 @@ module.exports = merge(common, {
                 },
             ],
         }),
+        new webpack.IgnorePlugin({ resourceRegExp: /canvas/ }),
     ],
     module: {
         rules: [
             {
-                test: /\.css$/,
-                use: [MiniCssExtractPlugin.loader, "css-loader"],
-            },
+                test: /\.css$/i,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            postcssOptions: {
+                                plugins: [require("postcss-import"), require("postcss-varfallback"), require("postcss-dropunusedvars"), require("cssnano")],
+                            },
+                        },
+                    },
+                ],
+            }
         ],
     },
-    optimization: {
-        minimize: true,
-        minimizer: [new CssMinimizerPlugin(), new TerserPlugin()],
-    },
+    target: "node",
 });

@@ -28,7 +28,7 @@ async function build() {
 
     // copy files to move
     for (let i = 0; i < FILES_TO_MOVE.length; i++) {
-        // rename app.css to big-dom-generator because there is already a link for one
+        // rename app.css to big-dom-generator.css so it's unique.
         const sourcePath = path.resolve(__dirname, "..", FILES_TO_MOVE[i]);
         const fileName = path.basename(FILES_TO_MOVE[i]);
         const targetPath = fileName === "app.css" ? path.join(TARGET_DIRECTORY, "big-dom-generator.css") : path.join(TARGET_DIRECTORY, fileName);

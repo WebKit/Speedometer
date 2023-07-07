@@ -1,5 +1,5 @@
 {
-    "name": "angular",
+    "name": "angular-complex",
     "version": "1.0.0",
     "description": "TodoMVC complex app written with Angular.",
     "private": true,
