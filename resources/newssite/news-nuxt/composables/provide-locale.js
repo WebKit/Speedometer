@@ -1,27 +1,16 @@
 import { provide } from "vue";
 import { useHead } from "#imports";
-import { content as contentEn } from "~/data/en/content";
-import { settings as settingsEn } from "~/data/en/dialog";
-import { footer as footerEn } from "~/data/en/footer";
-import * as buttonsEn from "~/data/en/buttons";
-import * as linksEn from "~/data/en/links";
+import { dataSource } from "../data";
 
-const strings = {
-    en: {
-        content: contentEn,
-        settings: settingsEn,
-        footer: footerEn,
-        buttons: buttonsEn,
-        links: linksEn,
-    },
-};
+const RTL_LOCALES = ["ar", "he", "fa", "ps", "ur"];
+const DEFAULT_LANG = "en";
+const DEFAULT_DIR = "ltr";
 
 export function provideLocale() {
-    const defaultLanguage = "en";
     const urlParams = new URLSearchParams(window.location.search);
-    const dir = urlParams.get("dir") ?? "ltr";
-    const langFromUrl = urlParams.get("lang");
-    const lang = langFromUrl && langFromUrl in strings ? langFromUrl : defaultLanguage;
+    const langFromUrl = urlParams.get("lang")?.toLowerCase();
+    const lang = langFromUrl && langFromUrl in dataSource ? langFromUrl : DEFAULT_LANG;
+    const dir = lang && RTL_LOCALES.includes(lang) ? "rtl" : DEFAULT_DIR;
 
     useHead({
         htmlAttrs: { dir, lang },
@@ -30,7 +19,7 @@ export function provideLocale() {
     const value = {
         lang,
         dir,
-        ...strings[lang],
+        ...dataSource[lang],
     };
 
     provide("data", value);
