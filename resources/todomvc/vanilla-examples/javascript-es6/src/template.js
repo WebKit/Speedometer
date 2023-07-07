@@ -13,8 +13,10 @@ const htmlEscapes = {
 const reUnescapedHtml = /[&<>"'`]/g;
 const reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);
 
-let escape = (str) => str && reHasUnescapedHtml.test(str) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str;
-let escapeHtmlChar = (chr) => htmlEscapes[chr];
+const escape = (str) => str && reHasUnescapedHtml.test(str) ? str.replace(reUnescapedHtml, escapeHtmlChar) : str;
+const escapeHtmlChar = (chr) => htmlEscapes[chr];
+
+const stringReplaceRegex = /{{id}}|{{title}}|{{completed}}|{{checked}}|{{list-index}}|{{view-index}}/gi;
 
 class Template {
     constructor() {
@@ -47,26 +49,25 @@ class Template {
      * })
      */
     show(data) {
-        let i = 0;
         let view = "";
-        const len = data.length;
 
-        for (i; i < len; i++) {
-            let completed = "";
-            let checked = "";
-            let template = this.defaultTemplate;
+        for (let i = 0; i < data.length; i++) {
+            const completed = data[i].completed ? "completed" : "";
+            const checked = data[i].completed ? "checked" : "";
 
-            if (data[i].completed) {
-                completed = "completed";
-                checked = "checked";
-            }
+            const valuesToReplace = {
+                "{{id}}": data[i].id,
+                "{{title}}": escape(data[i].title),
+                "{{completed}}": completed,
+                "{{checked}}": checked,
+                "{{list-index}}": i,
+                "{{view-index}}": i,
+            };
 
-            template = template.replace("{{id}}", data[i].id);
-            template = template.replace("{{title}}", escape(data[i].title));
-            template = template.replace("{{completed}}", completed);
-            template = template.replace("{{checked}}", checked);
-            template = template.replace("{{list-index}}", i);
-            template = template.replace("{{view-index}}", i);
+            const template = this.defaultTemplate.replace(stringReplaceRegex, function (matched) {
+                console.log("matched", matched, valuesToReplace[matched]);
+                return valuesToReplace[matched];
+            });
 
             view += template;
         }

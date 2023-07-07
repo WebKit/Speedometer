@@ -28,7 +28,14 @@
      * @constructor
      */
     function Template() {
-        this.defaultTemplate = '<li data-id="{{id}}" class="targeted li-{{li-index}} {{completed}}">' + '<div class="targeted view-{{view-index}}">' + '<input class="toggle" type="checkbox" {{checked}}>' + "<label>{{title}}</label>" + '<button class="destroy"></button>' + "</div>" + "</li>";
+        this.defaultTemplate
+            = '<li data-id="{{id}}" class="targeted li-{{li-index}} {{completed}}">'
+            + '<div class="targeted view-{{view-index}}">'
+            + '<input class="toggle" type="checkbox" {{checked}}>'
+            + "<label>{{title}}</label>"
+            + '<button class="destroy"></button>'
+            + "</div>"
+            + "</li>";
     }
 
     /**
