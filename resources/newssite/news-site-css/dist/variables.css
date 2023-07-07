@@ -81,10 +81,10 @@
 
     /* theme */
     --theme-rtl-toggle-switch-position: 0;
-    --theme-border-width-small: 0;
-    --theme-border-width-medium: 0;
-    --theme-small-border: none;
-    --theme-medium-border: none;
+    --theme-border-width-small: 1px;
+    --theme-border-width-medium: 2px;
+    --theme-small-border: var(--theme-border-width-small) solid transparent;
+    --theme-medium-border: var(--theme-border-width-medium) solid transparent;
     --theme-text-decoration: none;
     --theme-ui-background: var(--color-utils-white);
     --theme-ui-foreground: var(--color-utils-black);

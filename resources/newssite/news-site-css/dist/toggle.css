@@ -76,11 +76,6 @@
     width: 100%;
 }
 
-/** RTL TOGGLE START **/
-html[dir="rtl"] .toggle-container .label input[type="checkbox"]:checked + .switch::before {
-    transform: translate(var(--theme-rtl-toggle-switch-position), -11px);
-}
-
 /** RTL TOGGLE END **/
 
 /* High Contrast / Forced-Colors: */
@@ -105,11 +100,6 @@ html[dir="rtl"] .toggle-container .label input[type="checkbox"]:checked + .switc
     .toggle-container .switch::before {
         left: calc(var(--high-contrast-border-width-medium) * -1);
         background-color: var(--high-contrast-toggle-switch, var(--color-system-linktext));
-    }
-
-    /** RTL TOGGLE START **/
-    html[dir="rtl"] .toggle-container .label input[type="checkbox"]:checked + .switch::before {
-        transform: translate(var(--high-contrast-rtl-toggle-switch-position), -11px);
     }
 
     /** RTL TOGGLE END **/

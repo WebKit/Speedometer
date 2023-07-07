@@ -81,10 +81,10 @@
 
     /* theme */
     --theme-rtl-toggle-switch-position: 0;
-    --theme-border-width-small: 0;
-    --theme-border-width-medium: 0;
-    --theme-small-border: none;
-    --theme-medium-border: none;
+    --theme-border-width-small: 1px;
+    --theme-border-width-medium: 2px;
+    --theme-small-border: var(--theme-border-width-small) solid transparent;
+    --theme-medium-border: var(--theme-border-width-medium) solid transparent;
     --theme-text-decoration: none;
     --theme-ui-background: var(--color-utils-white);
     --theme-ui-foreground: var(--color-utils-black);
@@ -2295,11 +2295,6 @@ html[dir="rtl"] .article-image-tag svg {
     width: 100%;
 }
 
-/** RTL TOGGLE START **/
-html[dir="rtl"] .toggle-container .label input[type="checkbox"]:checked + .switch::before {
-    transform: translate(var(--theme-rtl-toggle-switch-position), -11px);
-}
-
 /** RTL TOGGLE END **/
 
 /* High Contrast / Forced-Colors: */
@@ -2324,11 +2319,6 @@ html[dir="rtl"] .toggle-container .label input[type="checkbox"]:checked + .switc
     .toggle-container .switch::before {
         left: calc(var(--high-contrast-border-width-medium) * -1);
         background-color: var(--high-contrast-toggle-switch, var(--color-system-linktext));
-    }
-
-    /** RTL TOGGLE START **/
-    html[dir="rtl"] .toggle-container .label input[type="checkbox"]:checked + .switch::before {
-        transform: translate(var(--high-contrast-rtl-toggle-switch-position), -11px);
     }
 
     /** RTL TOGGLE END **/
