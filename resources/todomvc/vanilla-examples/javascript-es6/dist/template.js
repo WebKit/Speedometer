@@ -65,7 +65,6 @@ class Template {
             };
 
             const template = this.defaultTemplate.replace(stringReplaceRegex, function (matched) {
-                console.log("matched", matched, valuesToReplace[matched]);
                 return valuesToReplace[matched];
             });
 
