@@ -9,11 +9,8 @@
     },
     "scripts": {
         "ng": "ng",
-        "dev": "ng serve standalone",
-        "dev:complex": "ng serve complex",
-        "build": "ng build standalone --base-href /resources/todomvc/architecture-examples/angular/projects/standalone/dist/",
-        "build:complex": "gulp build && ng build complex --base-href /resources/todomvc/architecture-examples/angular/projects/complex/dist/",
-        "build:shared-library": "ng build shared-library",
+        "dev": "ng serve",
+        "build": "ng build --base-href /resources/todomvc/architecture-examples/angular/dist/",
         "watch": "ng build --watch --configuration development",
         "test": "ng test"
     },
@@ -26,9 +23,7 @@
         "@angular/platform-browser": "^14.2.0",
         "@angular/platform-browser-dynamic": "^14.2.0",
         "@angular/router": "^14.2.0",
-        "big-dom-generator": "file:../../big-dom-generator",
         "rxjs": "~7.5.0",
-        "shared-library": "file:projects/shared-library/dist",
         "todomvc-app-css": "^2.4.2",
         "todomvc-common": "^1.0.5",
         "tslib": "^2.3.0",
@@ -39,15 +34,12 @@
         "@angular/cli": "~14.2.11",
         "@angular/compiler-cli": "^14.2.0",
         "@types/jasmine": "~4.0.0",
-        "gulp": "^4.0.2",
-        "gulp-replace": "^1.1.4",
         "jasmine-core": "~4.3.0",
         "karma": "~6.4.0",
         "karma-chrome-launcher": "~3.1.0",
         "karma-coverage": "~2.2.0",
         "karma-jasmine": "~5.1.0",
         "karma-jasmine-html-reporter": "~2.0.0",
-        "ng-packagr": "^14.2.0",
         "typescript": "~4.7.2"
     }
 }

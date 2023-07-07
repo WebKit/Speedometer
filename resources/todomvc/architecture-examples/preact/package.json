@@ -8,14 +8,10 @@
         "npm": ">=8.19.3"
     },
     "scripts": {
-        "build": "rollup -c ./standalone/rollup.config.js --bundleConfigAsCjs",
-        "build:complex": "rollup -c ./complex/rollup.config.js --bundleConfigAsCjs",
+        "build": "rollup -c --bundleConfigAsCjs",
         "dev": "npm-run-all --parallel serve watch",
-        "dev:complex": "npm-run-all --parallel serve:complex watch:complex",
-        "serve": "http-server ./standalone/dist -p 7002 -c-1 --cors -o",
-        "serve:complex": "http-server ./complex/dist -p 7002 -c-1 --cors -o",
-        "watch": "ROLLUP_WATCH=true rollup -c ./standalone/rollup.config.js -w --bundleConfigAsCjs",
-        "watch:complex": "ROLLUP_WATCH=true rollup -c ./complex/rollup.config.js -w --bundleConfigAsCjs"
+        "serve": "http-server ./dist -p 7002 -c-1 --cors -o",
+        "watch": "ROLLUP_WATCH=true rollup -c -w --bundleConfigAsCjs"
     },
     "devDependencies": {
         "@babel/plugin-transform-react-jsx": "^7.21.0",
@@ -36,7 +32,6 @@
         "rollup-plugin-resolve": "^0.0.1-predev.1"
     },
     "dependencies": {
-        "big-dom-generator": "file:../../big-dom-generator",
         "classnames": "^2.3.2",
         "linkstate": "^2.0.1",
         "preact": "^10.13.1",

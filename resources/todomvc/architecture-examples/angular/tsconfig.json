@@ -16,9 +16,6 @@
         "experimentalDecorators": true,
         "moduleResolution": "node",
         "importHelpers": true,
-        "paths": {
-            "shared-library": ["dist/shared-library"]
-        },
         "target": "es2020",
         "module": "es2020",
         "lib": ["es2020", "dom"]
