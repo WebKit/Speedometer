@@ -80,6 +80,7 @@
     --index-dropdown-label: 202;
 
     /* theme */
+    --theme-rtl-toggle-switch-position: 0;
     --theme-border-width-small: 0;
     --theme-border-width-medium: 0;
     --theme-small-border: none;
@@ -134,6 +135,7 @@
 
     /* high contrast - forced-colors */
     /* stylelint-disable */
+    --high-contrast-rtl-toggle-switch-position: 20px;
     --high-contrast-border-width-small: 1px;
     --high-contrast-border-width-medium: 2px;
     --high-contrast-small-border: var(--high-contrast-border-width-small) solid var(--color-utils-black);
@@ -165,6 +167,7 @@
 
 :root.forced-colors {
     /* manual high-contrast overrides */
+    --theme-rtl-toggle-switch-position: 20px;
     --theme-border-width-small: 1px;
     --theme-border-width-medium: 2px;
     --theme-small-border: var(--theme-border-width-small) solid var(--color-system-neutral);
