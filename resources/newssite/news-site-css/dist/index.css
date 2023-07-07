@@ -901,12 +901,20 @@ img::after {
 
 .form-actions .form-actions-item {
     height: 40px;
-    flex-grow: 1;
+    width: 50%;
 }
 
 .form-actions .form-actions-item:not(:last-child) {
     margin-right: var(--content-spacing-medium);
 }
+
+/** RTL TOAST START **/
+html[dir="rtl"] .form-actions .form-actions-item:not(:last-child){
+    margin-left: var(--content-spacing-medium);
+    margin-right: unset;
+}
+
+/** RTL TOAST END **/
 /* Layout visualization */
 .preview {
     min-height: 100px;
