@@ -38,7 +38,7 @@ module.exports = merge(common, {
                         },
                     },
                 ],
-            }
+            },
         ],
     },
     target: "node",
