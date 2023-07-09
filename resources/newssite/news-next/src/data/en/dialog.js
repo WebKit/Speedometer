@@ -4,5 +4,8 @@ export const settings = {
         motion: {
             label: "Reduced Motion",
         },
+        contrast: {
+            label: "High Contrast Mode",
+        },
     },
 };
