@@ -8,12 +8,10 @@ import styles from "news-site-css/dist/dialog.module.css";
 
 export default function Dialog({ onClose }) {
     const [reduceMotion, setReduceMotion] = useState(false);
-    const [highContrast, setHighContrast] = useState(false);
     const { settings } = useDataContext();
 
     useEffect(() => {
         setReduceMotion(document.documentElement.classList.contains("reduced-motion"));
-        setHighContrast(document.documentElement.classList.contains("forced-colors"));
     }, []);
 
     function toggleMotion(e) {
@@ -23,15 +21,6 @@ export default function Dialog({ onClose }) {
             document.documentElement.classList.add("reduced-motion");
         else
             document.documentElement.classList.remove("reduced-motion");
-    }
-
-    function toggleContrast(e) {
-        setHighContrast(e.target.checked);
-
-        if (e.target.checked)
-            document.documentElement.classList.add("forced-colors");
-        else
-            document.documentElement.classList.remove("forced-colors");
     }
 
     return (
@@ -50,9 +39,6 @@ export default function Dialog({ onClose }) {
             <section className={styles["dialog-body"]}>
                 <div className={styles["dialog-item"]}>
                     <Toggle id="motion" label={settings.items.motion.label} onChange={toggleMotion} checked={reduceMotion} />
-                </div>
-                <div className={styles["dialog-item"]}>
-                    <Toggle id="contrast" label={settings.items.contrast.label} onChange={toggleContrast} checked={highContrast} />
                 </div>
             </section>
         </div>

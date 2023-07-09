@@ -247,14 +247,3 @@ html[dir="rtl"] .article-image-tag svg {
 }
 
 /** RTL ARTICLE END **/
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .article-image-tag {
-        border: var(--high-contrast-small-border);
-    }
-
-    .article-image-tag svg path {
-        fill: var(--high-contrast-icon-fill-light, var(--color-system-linktext));
-    }
-}

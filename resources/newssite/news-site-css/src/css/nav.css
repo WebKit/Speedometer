@@ -94,18 +94,3 @@
 
     /** RTL NAV END **/
 }
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .page-navigation::after {
-        border-bottom: var(--high-contrast-small-border);
-    }
-
-    .page-navigation-logo svg path {
-        fill: var(--high-contrast-icon-fill-light, var(--color-system-linktext));
-    }
-
-    .page-navigation-logo:hover svg path {
-        fill: var(--high-contrast-icon-fill-lighter, var(--color-system-linktext));
-    }
-}

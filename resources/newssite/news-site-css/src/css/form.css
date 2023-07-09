@@ -46,7 +46,7 @@
 }
 
 /** RTL TOAST START **/
-html[dir="rtl"] .form-actions .form-actions-item:not(:last-child){
+html[dir="rtl"] .form-actions .form-actions-item:not(:last-child) {
     margin-left: var(--content-spacing-medium);
     margin-right: unset;
 }

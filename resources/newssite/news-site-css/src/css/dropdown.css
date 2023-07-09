@@ -113,16 +113,3 @@ html[dir="rtl"] .dropdown-label-text {
 }
 
 /** RTL DROPDOWN END **/
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .dropdown-label {
-        color: var(--high-contrast-navigation-text);
-    }
-
-    .dropdown-label:hover {
-        color: var(--high-contrast-navigation-text-hover);
-        background-color: var(--high-contrastn-background-hover);
-        text-decoration: var(--high-contrast-text-decoration);
-    }
-}

@@ -29,14 +29,3 @@
     fill: var(--theme-icon-fill-lighter);
 }
 /* stylelint-enable */
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .page-header-title svg path {
-        fill: var(--high-contrast-icon-fill-light, var(--color-system-linktext));
-    }
-
-    .page-header-title:hover svg path {
-        fill: var(--high-contrast-icon-fill-light, var(--color-system-linktext));
-    }
-}

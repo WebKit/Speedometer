@@ -226,31 +226,3 @@ html[dir="rtl"] .navbar-dropdown-item:not(:last-child) {
 
     /** RTL NAVBAR END **/
 }
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .navbar-label-icon {
-        --animated-icon-color: var(--high-contrast-navigation-text, var(--color-system-linktext));
-        --animated-icon-hover: var(--high-contrast-navigation-text-hover, var(--color-system-linktext));
-    }
-
-    .navbar-item a {
-        color: var(--high-contrast-navigation-text);
-        background-color: var(--high-contrast-navigation-background);
-    }
-
-    .navbar-item a:hover {
-        color: var(--high-contrast-navigation-text-hover);
-        background-color: var(--high-contrast-background-hover);
-        text-decoration: var(--high-contrast-text-decoration);
-    }
-
-    .navbar-item a.active {
-        border: var(--high-contrast-small-border);
-        background-color: var(--high-contrast-navigation-background-active);
-    }
-
-    .navbar-active-path {
-        color: var(--high-contrast-navigation-text-hover);
-    }
-}

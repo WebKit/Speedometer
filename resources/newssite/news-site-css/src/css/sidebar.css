@@ -124,26 +124,3 @@ html[dir="rtl"] .sidebar-close-button {
 }
 
 /** RTL SIDEBAR END **/
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .sidebar {
-        border-right: var(--high-contrast-medium-border);
-    }
-
-    html[dir="rtl"] .sidebar {
-        border-left: var(--high-contrast-medium-border);
-        border-right: none;
-    }
-
-    .sidebar-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icon-fill-dark, var(--color-system-linktext));
-        --animated-icon-hover: var(--high-contrast-icon-fill-medium, var(--color-system-linktext));
-    }
-
-    .sidebar-list-item a:hover,
-    .sidebar-list-item a:focus {
-        background-color: var(--high-contrast-link-background);
-        text-decoration: var(--high-contrast-text-decoration);
-    }
-}

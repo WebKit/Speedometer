@@ -14,12 +14,10 @@ export default {
         return {
             styles,
             reduceMotion: false,
-            highContrast: false,
         }
     },
     mounted() {
         this.reduceMotion = document.documentElement.classList.contains("reduced-motion");
-        this.highContrast = document.documentElement.classList.contains("forced-colors");
     },
     methods: {
         toggleMotion(e) {
@@ -29,14 +27,6 @@ export default {
                 document.documentElement.classList.add("reduced-motion");
             else
                 document.documentElement.classList.remove("reduced-motion");
-        },
-        toggleContrast(e) {
-            this.reduceMotion = e.target.checked;
-
-            if (e.target.checked)
-                document.documentElement.classList.add("forced-colors");
-            else
-                document.documentElement.classList.remove("forced-colors");
         },
     }
 }
@@ -58,9 +48,6 @@ export default {
         <section :class="styles['dialog-body']">
             <div :class="styles['dialog-item']">
                 <Toggle id="motion" :label="settings.items.motion.label" :on-change="toggleMotion" :checked="reduceMotion" />
-            </div>
-            <div :class="styles['dialog-item']">
-                <Toggle id="contrast" :label="settings.items.contrast.label" :on-change="toggleContrast" :checked="highContrast" />
             </div>
         </section>
     </div>

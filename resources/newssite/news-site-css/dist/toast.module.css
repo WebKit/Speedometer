@@ -101,16 +101,3 @@ html[dir="rtl"] .toast-close-button {
 }
 
 /** RTL TOAST END **/
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .toast {
-        border-top: var(--high-contrast-medium-border);
-        background-color: var(--high-contrast-modal-background);
-    }
-
-    .toast-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icon-fill-light, var(--color-system-linktext));
-        --animated-icon-hover: var(--high-contrast-icon-fill-lighter, var(--color-system-linktext));
-    }
-}

@@ -94,15 +94,3 @@ html[dir="rtl"] .dialog-close-button {
 }
 
 /** RTL DIALOG END **/
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .dialog {
-        border: var(--high-contrast-medium-border);
-    }
-
-    .dialog-close-button-icon {
-        --animated-icon-color: var(--high-contrast-icon-fill-dark, var(--color-system-linktext));
-        --animated-icon-hover: var(--high-contrast-icon-fill-medium, var(--color-system-linktext));
-    }
-}

@@ -77,30 +77,3 @@
 }
 
 /** RTL TOGGLE END **/
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .toggle-container {
-        forced-color-adjust: none;
-    }
-}
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .toggle-container .label {
-        background-color: var(--high-contrast-toggle-background);
-        border: var(--high-contrast-medium-border);
-    }
-
-    .toggle-container .switch {
-        background-color: var(--high-contrast-toggle-foreground);
-        border: var(--high-contrast-medium-border);
-    }
-
-    .toggle-container .switch::before {
-        left: calc(var(--high-contrast-border-width-medium) * -1);
-        background-color: var(--high-contrast-toggle-switch, var(--color-system-linktext));
-    }
-
-    /** RTL TOGGLE END **/
-}

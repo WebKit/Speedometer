@@ -64,19 +64,3 @@
         width: calc(100% / 4);
     }
 }
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .sitemap a {
-        color: var(--high-contrast-navigation-text);
-    }
-    
-    .sitemap a:hover {
-        color: var(--high-contrast-navigation-text-hover);
-    }
-
-    .sitemap a.active,
-    .sitemap a.active:hover {
-        text-decoration: var(--high-contrast-text-decoration);
-    }
-}

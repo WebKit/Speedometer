@@ -77,17 +77,3 @@
     right: var(--content-spacing-medium);
     bottom: calc((40px - 24px) / 2);
 }
-
-/* High Contrast / Forced-Colors: */
-@media (forced-colors: active) {
-    .input-container .input[type="submit"] {
-        border-color: var(--high-contrast-button-light-background);
-        color: var(--high-contrast-button-light-background);
-    }
-    
-    .input-container .input[type="submit"]:hover,
-    .input-container .input[type="submit"]:focus {
-        border-color: var(--high-contrast-button-light-background-hover);
-        color: var(--high-contrast-button-light-background-hover);
-    }
-}
