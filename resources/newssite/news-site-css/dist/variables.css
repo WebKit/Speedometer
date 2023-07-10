@@ -122,6 +122,6 @@
     --theme-navigation-text: var(--color-utils-offwhite);
     --theme-navigation-text-hover: var(--color-utils-white);
     --theme-navigation-background: transparent;
-    --theme-navigation-background-hover: var(--color-utils-gray); 
+    --theme-navigation-background-hover: var(--color-utils-gray);
     --theme-navigation-background-active: var(--color-utils-gray-light);
 }

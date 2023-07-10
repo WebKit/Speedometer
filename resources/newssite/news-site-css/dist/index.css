@@ -122,7 +122,7 @@
     --theme-navigation-text: var(--color-utils-offwhite);
     --theme-navigation-text-hover: var(--color-utils-white);
     --theme-navigation-background: transparent;
-    --theme-navigation-background-hover: var(--color-utils-gray); 
+    --theme-navigation-background-hover: var(--color-utils-gray);
     --theme-navigation-background-active: var(--color-utils-gray-light);
 }
 /* reset */
@@ -722,7 +722,7 @@ img::after {
 }
 
 /** RTL TOAST START **/
-html[dir="rtl"] .form-actions .form-actions-item:not(:last-child){
+html[dir="rtl"] .form-actions .form-actions-item:not(:last-child) {
     margin-left: var(--content-spacing-medium);
     margin-right: unset;
 }
@@ -1483,9 +1483,10 @@ html[dir="rtl"] .footer-links .footer-links-item:not(:last-child) {
     position: absolute;
     top: var(--content-spacing-medium);
     right: var(--content-spacing-medium);
-    width: var(--icon-size-small);
-    height: var(--icon-size-small);
+    width: var(--icon-size-medium);
+    height: var(--icon-size-medium);
     display: flex;
+    justify-content: center;
     align-items: center;
     cursor: pointer;
 }
@@ -2034,11 +2035,12 @@ html[dir="rtl"] .article-image-tag svg {
 
 .toast-close-button {
     position: absolute;
-    top: var(--content-spacing-small);
-    right: var(--content-spacing-small);
-    width: var(--icon-size-small);
-    height: var(--icon-size-small);
+    top: var(--content-spacing-medium);
+    right: var(--content-spacing-medium);
+    width: var(--icon-size-medium);
+    height: var(--icon-size-medium);
     display: flex;
+    justify-content: center;
     align-items: center;
     cursor: pointer;
 }
@@ -2209,12 +2211,11 @@ html[dir="rtl"] .toast-close-button {
 
 .message-close-button {
     position: absolute;
-    top: var(--content-spacing-small);
-    right: var(--content-spacing-small);
-    width: var(--icon-size-small);
-    height: var(--icon-size-small);
+    top: var(--content-spacing-medium);
+    right: var(--content-spacing-medium);
+    width: var(--icon-size-medium);
+    height: var(--icon-size-medium);
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -2291,9 +2292,12 @@ html[dir="rtl"] .message-close-button {
     position: absolute;
     top: var(--content-spacing-medium);
     right: var(--content-spacing-medium);
-    width: var(--icon-size-small);
-    height: var(--icon-size-small);
+    width: var(--icon-size-medium);
+    height: var(--icon-size-medium);
     display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
 .sidebar-close-button-icon {
@@ -2427,9 +2431,10 @@ html[dir="rtl"] .sidebar-close-button {
     position: absolute;
     top: var(--content-spacing-medium);
     right: var(--content-spacing-medium);
-    width: var(--icon-size-small);
-    height: var(--icon-size-small);
+    width: var(--icon-size-medium);
+    height: var(--icon-size-medium);
     display: flex;
+    justify-content: center;
     align-items: center;
     cursor: pointer;
 }
