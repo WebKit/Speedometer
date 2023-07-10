@@ -37,7 +37,6 @@ const ChartTrendLineTypes = [
                 segmentation.forEach((point, index) => point.seriesIndex = index);
                 segmentation.firstPoint = () => segmentation[0];
                 segmentation.nextPoint = (point) => segmentation[point.seriesIndex + 1];
-                console.log(segmentation.nextPoint(segmentation.firstPoint()));
                 return segmentation;
             });
         },
