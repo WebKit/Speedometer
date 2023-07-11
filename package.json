@@ -16,6 +16,7 @@
     "license": "SEE LICENSE IN LICENSE",
     "scripts": {
         "dev": "http-server ./ -p 7000 -c-1 --cors",
+        "server": "http-server ./ -p 7000 --cors",
         "lint:check": "eslint **/*.mjs",
         "lint:fix": "eslint \"**/*.{js,mjs,jsx,ts}\" --fix",
         "pretty:check": "prettier --check ./",
