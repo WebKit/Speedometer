@@ -1,7 +1,15 @@
 import { BenchmarkTestStep } from "./benchmark-runner.mjs";
-import { todos, defaultTodoText } from "./translations.mjs";
+import { todos } from "./translations.mjs";
 
 const numberOfItemsToAdd = 100;
+const defaultLanguage = "en";
+
+function getTodoText(lang, index) {
+    const todosSelection = todos[lang] ?? todos[defaultLanguage];
+    const currentIndex = index % todosSelection.length;
+    return todosSelection[currentIndex];
+}
+
 export const Suites = [];
 
 Suites.enable = function (names, tags) {
@@ -60,7 +68,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText("ja", i));
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -90,7 +98,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText("ru", i));
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -120,7 +128,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText(defaultLanguage, i));
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -149,7 +157,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                input.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                input.setValue(getTodoText(defaultLanguage, i));
                 input.dispatchEvent("input");
                 input.enter("keyup");
             }
@@ -183,7 +191,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText(defaultLanguage, i));
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keydown");
             }
@@ -213,7 +221,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText(defaultLanguage, i));
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keydown");
             }
@@ -243,7 +251,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText(defaultLanguage, i));
                 newTodo.enter("keydown");
             }
         }),
@@ -273,7 +281,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText(defaultLanguage, i));
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -303,7 +311,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText(defaultLanguage, i));
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keyup");
             }
@@ -333,7 +341,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText(defaultLanguage, i));
                 newTodo.dispatchEvent("input");
                 newTodo.enter("keyup");
             }
@@ -364,7 +372,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText(defaultLanguage, i));
                 newTodo.enter("keyup");
             }
         }),
@@ -392,7 +400,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText(defaultLanguage, i));
                 newTodo.enter("keydown");
             }
         }),
@@ -421,7 +429,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(todos.en[i] ?? `${defaultTodoText.en} ${i}`);
+                newTodo.setValue(getTodoText(defaultLanguage, i));
                 newTodo.enter("keydown");
             }
         }),
@@ -449,7 +457,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo", ["todo-app", "todo-form"]);
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(`Something to do ${i}`);
+                newTodo.setValue(getTodoText(defaultLanguage, i));
                 newTodo.enter("keydown");
             }
         }),
