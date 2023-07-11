@@ -1,5 +1,5 @@
 {
-    "name": "react",
+    "name": "todomvc-react",
     "version": "1.0.0",
     "description": "TodoMVC app written with React.",
     "private": true,

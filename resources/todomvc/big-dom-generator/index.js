@@ -3,9 +3,6 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { App } from "./src/app";
 import { genCss } from "./gen-css";
 
-import "./src/app.css";
-import "./public/layout.css";
-
 const fs = require("fs");
 
 function generateCss(markup, filePath) {

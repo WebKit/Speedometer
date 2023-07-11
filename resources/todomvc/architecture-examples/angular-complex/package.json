@@ -1,5 +1,5 @@
 {
-    "name": "angular-complex",
+    "name": "todomvc-angular-complex",
     "version": "1.0.0",
     "description": "TodoMVC complex app written with Angular.",
     "private": true,
@@ -12,8 +12,8 @@
         "serve": "http-server ./dist -p 7002 -c-1 --cors"
     },
     "devDependencies": {
-        "angular": "file:../angular",
         "big-dom-generator": "file:../../big-dom-generator",
-        "jsdom": "^22.1.0"
+        "jsdom": "^22.1.0",
+        "todomvc-angular": "file:../angular"
     }
 }

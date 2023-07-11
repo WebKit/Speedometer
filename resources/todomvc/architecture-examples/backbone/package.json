@@ -1,5 +1,5 @@
 {
-    "name": "backbone",
+    "name": "todomvc-backbone",
     "version": "1.0.0",
     "description": "TodoMVC app written with backbone.",
     "engines": {

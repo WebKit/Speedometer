@@ -1,5 +1,5 @@
 {
-    "name": "vue",
+    "name": "todomvc-vue",
     "version": "1.0.0",
     "description": "TodoMVC app written with Vue.",
     "private": true,

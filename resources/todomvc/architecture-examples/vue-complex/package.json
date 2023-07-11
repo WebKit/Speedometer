@@ -1,5 +1,5 @@
 {
-    "name": "vue-complex",
+    "name": "todomvc-vue-complex",
     "version": "1.0.0",
     "description": "TodoMVC complex app written with Vue.",
     "private": true,
@@ -15,7 +15,7 @@
         "big-dom-generator": "file:../../big-dom-generator",
         "http-server": "^14.1.1",
         "jsdom": "^22.1.0",
-        "vue": "file:../vue"
+        "todomvc-vue": "file:../vue"
     },
     "browserslist": [
         "> 1%",

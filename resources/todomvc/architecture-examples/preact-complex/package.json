@@ -1,5 +1,5 @@
 {
-    "name": "preact-complex",
+    "name": "todomvc-preact-complex",
     "version": "1.0.0",
     "description": "TodoMVC complex app written with Preact.",
     "private": true,
@@ -12,8 +12,9 @@
         "serve": "http-server ./dist -p 7002 -c-1 --cors"
     },
     "devDependencies": {
+        "big-dom-generator": "file:../../big-dom-generator",
         "http-server": "^14.1.1",
         "jsdom": "^22.1.0",
-        "preact": "file:../preact"
+        "todomvc-preact": "file:../preact"
     }
 }

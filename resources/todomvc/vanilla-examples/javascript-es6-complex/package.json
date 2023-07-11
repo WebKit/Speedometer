@@ -1,5 +1,5 @@
 {
-    "name": "javascript-es6-complex",
+    "name": "todomvc-javascript-es6-complex",
     "version": "1.0.0",
     "description": "TodoMVC app written with JavaScript es6 features.",
     "engines": {
@@ -15,7 +15,7 @@
     "devDependencies": {
         "big-dom-generator": "file:../../big-dom-generator",
         "http-server": "^14.1.1",
-        "javascript-es6": "file:../javascript-es6",
-        "jsdom": "^22.1.0"
+        "jsdom": "^22.1.0",
+        "todomvc-javascript-es6": "file:../javascript-es6"
     }
 }

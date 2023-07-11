@@ -1,5 +1,5 @@
 {
-  "name": "jquery-complex",
+  "name": "todomvc-jquery-complex",
   "private": true,
   "scripts": {
     "build": "node scripts/build.js",
@@ -8,7 +8,7 @@
   "devDependencies": {
     "big-dom-generator": "file:../../big-dom-generator",
     "http-server": "^14.1.1",
-    "jquery": "file:../jquery",
-    "jsdom": "^22.1.0"
+    "jsdom": "^22.1.0",
+    "todomvc-jquery": "file:../jquery"
   }
 }

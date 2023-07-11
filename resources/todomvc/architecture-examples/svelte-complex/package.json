@@ -1,5 +1,5 @@
 {
-    "name": "svelte-complex",
+    "name": "todomvc-svelte-complex",
     "version": "1.0.0",
     "description": "TodoMVC app written with Svelte.",
     "engines": {
@@ -15,6 +15,6 @@
         "big-dom-generator": "file:../../big-dom-generator",
         "http-server": "^14.1.1",
         "jsdom": "^22.1.0",
-        "svelte": "file:../svelte"
+        "todomvc-svelte": "file:../svelte"
     }
 }

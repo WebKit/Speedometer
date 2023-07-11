@@ -118,3 +118,18 @@ Alternatively, you can include the CSS file in your angular.json file:
     }
 }
 ```
+
+### What's so special about Angular?
+
+The Angular version of the TodoMVC uses components such as `<app-todo-header>`, `<app-todo-list>`, and `<app-todo-item>` making the default generated.css invalid. This is because the CSS generator doesn't know about these custom elements.
+
+Ex. `<app-todo-list>` wraps around `<main>` which is different from the other implementations of the TodoMVC. The CSS generator doesn't know about this and will generate a selector like this:
+
+```css
+section > .main 
+```
+instead of
+```css
+app-todo-list > .main
+```
+To handle this we add a new markup to the CSS generator to make it aware of these custom elements and generate an additoinal CSS file for Angular.

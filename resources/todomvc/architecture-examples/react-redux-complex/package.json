@@ -1,5 +1,5 @@
 {
-    "name": "react-redux-complex",
+    "name": "todomvc-react-redux-complex",
     "version": "1.0.0",
     "description": "TodoMVC app written with React-Redux.",
     "private": true,
@@ -13,7 +13,8 @@
     },
     "devDependencies": {
         "big-dom-generator": "file:../../big-dom-generator",
+        "http-server": "^14.1.1",
         "jsdom": "^22.1.0",
-        "react-redux": "file:../react-redux"
+        "todomvc-react-redux": "file:../react-redux"
     }
 }
