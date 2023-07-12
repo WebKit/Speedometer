@@ -8,8 +8,9 @@
         "npm": ">=8.19.3"
     },
     "scripts": {
+        "sanitize": "node scripts/sanitize-language.js",
         "dev": "vue-cli-service serve",
-        "build": "vue-cli-service build",
+        "build": "vue-cli-service build && npm run sanitize",
         "lint": "vue-cli-service lint"
     },
     "dependencies": {

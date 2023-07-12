@@ -8,7 +8,8 @@
         "npm": ">=8.19.3"
     },
     "scripts": {
-        "build": "webpack --config webpack.prod.js",
+        "sanitize": "node scripts/sanitize-language.js",
+        "build": "webpack --config webpack.prod.js && npm run sanitize",
         "dev": "webpack serve --open --config webpack.dev.js",
         "serve": "http-server ./dist -p 7002 -c-1 --cors",
         "test": "jest"
