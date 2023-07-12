@@ -1838,7 +1838,7 @@ img::after {
 
 .toggle-container .switch {
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     top: 3px;
     background-color: var(--theme-toggle-foreground);
     border-radius: 22px;
@@ -1855,7 +1855,7 @@ img::after {
     height: 22px;
     width: 22px;
     top: calc(50% - 11px);
-    left: calc(var(--theme-border-width-medium) * -1);
+    inset-inline-start: calc(var(--theme-border-width-medium) * -1);
     background-color: var(--theme-toggle-switch);
     border-radius: var(--border-radius-50);
     transition: var(--transition-default);
@@ -1866,12 +1866,12 @@ img::after {
     height: 16px;
     z-index: -1;
     position: absolute;
-    left: -6px;
+    inset-inline-start: -6px;
     top: 0;
 }
 
 .toggle-container .label input[type="checkbox"]:checked + .switch::before {
-    transform: translateX(20px);
+    inset-inline-start: calc(100% - 22px + var(--theme-border-width-medium));
 }
 
 .toggle-container .label input[type="checkbox"]:checked + .switch {
