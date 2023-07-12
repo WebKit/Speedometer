@@ -110,15 +110,10 @@ html[dir="rtl"] .animated-icon {
 /* stylelint-enable */
 
 .hamburger-icon .animated-icon-inner span {
-    left: var(--animated-icon-center-negative);
+    inset-inline-start: var(--animated-icon-center-negative);
 }
 
 /** RTL ICONS START **/
-html[dir="rtl"] .hamburger-icon .animated-icon-inner span {
-    right: var(--animated-icon-center-negative);
-    left: unset;
-}
-
 html[dir="rtl"] .arrow-icon {
     transform: rotate(180deg);
 }
