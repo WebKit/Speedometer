@@ -126,12 +126,4 @@
     --theme-navigation-background: transparent;
     --theme-navigation-background-hover: var(--color-utils-gray);
     --theme-navigation-background-active: var(--color-utils-gray-light);
-
-    /* define system colors */
-    --color-system-linktext: #00009f;
-    --color-system-linkface: #e6e6e6;
-    --color-system-buttontext: #000;
-    --color-system-buttonface: #efefef;
-    --color-system-canvas: var(--color-utils-white);
-    --color-system-neutral: var(--color-utils-black);
 }
