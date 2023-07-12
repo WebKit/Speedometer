@@ -13,8 +13,10 @@ but useful for people who use screen readers */
     white-space: nowrap;
 }
 
-/* apply reduced-motion class to parent element
-  to manually force reduced-motion on child elements */
+/* Reduced Motion:
+  Apply reduced-motion class to body tag
+  to manually envoke reduced-motion on child elements.
+*/
 .reduced-motion *,
 .reduced-motion *::before,
 .reduced-motion *::after {

@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import FacebookIcon from "@/assets/facebook-icon";
 import InstagramIcon from "@/assets/instagram-icon";
 import TwitterIcon from "@/assets/twitter-icon";
@@ -14,21 +15,21 @@ export default function SocialIcons({ id }) {
             <ul className={styles["icons-group-list"]}>
                 <li className={styles["icons-group-item"]}>
                     <a href={links.social.facebook.href} id={`${id}-facebook`}>
-                        <div className={styles["group-icon"]}>
+                        <div className={classNames(styles["group-icon"], styles["group-icon-small"])}>
                             <FacebookIcon />
                         </div>
                     </a>
                 </li>
                 <li className={styles["icons-group-item"]}>
                     <a href={links.social.instagram.href} id={`${id}-instagram`}>
-                        <div className={styles["group-icon"]}>
+                        <div className={classNames(styles["group-icon"], styles["group-icon-small"])}>
                             <InstagramIcon />
                         </div>
                     </a>
                 </li>
                 <li className={styles["icons-group-item"]}>
                     <a href={links.social.twitter.href} id={`${id}-twitter`}>
-                        <div className={styles["group-icon"]}>
+                        <div className={classNames(styles["group-icon"], styles["group-icon-small"])}>
                             <TwitterIcon />
                         </div>
                     </a>

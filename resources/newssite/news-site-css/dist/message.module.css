@@ -2,11 +2,21 @@
     display: none;
     flex-direction: column;
     width: 100%;
-    background-color: var(--color-utils-red);
-    color: var(--color-utils-white);
+    background-color: var(--theme-message-background);
+    color: var(--theme-text-lighter);
     font-family: var(--font-family-default);
     padding: var(--content-spacing-large);
     position: relative;
+}
+
+.message::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    width: calc(100% - (var(--content-spacing-xlarge) * 2));
+    margin: auto;
+    border-bottom: var(--theme-small-border);
 }
 
 .message:target,
@@ -19,12 +29,11 @@
 
 .message-close-button {
     position: absolute;
-    top: var(--content-spacing-small);
-    right: var(--content-spacing-small);
-    width: var(--icon-size-small);
-    height: var(--icon-size-small);
+    top: var(--content-spacing-medium);
+    inset-inline-end: var(--content-spacing-medium);
+    width: var(--icon-size-medium);
+    height: var(--icon-size-medium);
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -33,8 +42,8 @@
 .message-close-button-icon {
     --animated-icon-width: 24px;
     --animated-icon-background: transparent;
-    --animated-icon-color: var(--color-utils-offwhite);
-    --animated-icon-hover: var(--color-utils-white);
+    --animated-icon-color: var(--theme-icon-fill-light);
+    --animated-icon-hover: var(--theme-icon-fill-lighter);
 }
 
 .message-header {
@@ -62,11 +71,3 @@
     display: inline-block;
     text-align: center;
 }
-
-/** RTL MESSAGE START **/
-html[dir="rtl"] .message-close-button {
-    left: var(--content-spacing-small);
-    right: unset;
-}
-
-/** RTL MESSAGE END **/

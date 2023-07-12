@@ -17,9 +17,9 @@ export default {
     <div :class="styles['icons-group']">
         <ul :class="styles['icons-group-list']">
             <li :class="styles['icons-group-item']">
-                <button :id="`${id}-reduce-motion`" @click="callback">
-                    <div :class="styles['group-icon']">
-                        <ReducedMotionIcon />
+                <button :id="`${id}-a11y`" @click="callback">
+                    <div :class="[styles['group-icon'], styles['group-icon-medium']]">
+                        <A11yIcon />
                     </div>
                 </button>
             </li>

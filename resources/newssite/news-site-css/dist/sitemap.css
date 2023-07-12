@@ -6,22 +6,22 @@
 
 /* stylelint-disable */
 .sitemap a {
-    color: var(--color-utils-offwhite);
+    color: var(--theme-navigation-text);
     transition: var(--transition-default);
     font-size: 14px;
     text-decoration: none;
 }
 
 .sitemap a:hover {
-    color: var(--color-utils-white);
+    color: var(--theme-navigation-text-hover);
     text-decoration: underline;
 }
 /* stylelint-enable */
 
 .sitemap a.active,
 .sitemap a.active:hover {
-    color: var(--color-utils-red-light);
-    text-decoration: none;
+    color: var(--theme-text-highlight);
+    text-decoration: var(--theme-text-decoration);
 }
 
 .sitemap-list {

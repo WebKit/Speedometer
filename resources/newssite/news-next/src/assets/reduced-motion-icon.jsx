@@ -2,7 +2,7 @@ import React from "react";
 
 export default function ReducedMotionIcon() {
     return (
-        <svg height="24" width="24" viewBox="0 0 1200 1200" style={{ transform: "scale(1.5)" }}>
+        <svg height="24" width="24" viewBox="0 0 1200 1200">
             <title>Reduced Motion Icon</title>
             <g>
                 <path d="m411.94 424.61h-332.92c-10.512 0-19.02-8.5078-19.02-19.008s8.5078-19.02 19.02-19.02h332.91c10.5 0 19.02 8.5078 19.02 19.02 0.003906 10.512-8.5156 19.008-19.016 19.008z" />

@@ -10,7 +10,7 @@
 }
 
 .advertisement-container-header {
-    background-color: var(--color-utils-black);
+    background-color: var(--theme-ui-foreground);
     color: var(--color-utils-gray-lighter);
 }
 
@@ -56,7 +56,7 @@
     width: 31px;
     height: 15px;
     position: absolute;
-    right: 1px;
+    inset-inline-end: 1px;
     top: 1px;
 }
 
@@ -80,11 +80,3 @@
     stroke: var(--theme-advertisement-icon-fill);
     fill: var(--theme-advertisement-icon-fill);
 }
-
-/** RTL ADVERTISTEMENT START **/
-html[dir="rtl"] .advertisement-icons {
-    left: 1px;
-    right: unset;
-}
-
-/** RTL ADVERTISTEMENT END **/

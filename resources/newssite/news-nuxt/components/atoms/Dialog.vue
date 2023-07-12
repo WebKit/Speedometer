@@ -13,21 +13,21 @@ export default {
     data() {
         return {
             styles,
-            isChecked: false,
+            reduceMotion: false,
         }
     },
     mounted() {
-        this.isChecked = document.body.classList.contains("reduced-motion");
+        this.reduceMotion = document.documentElement.classList.contains("reduced-motion");
     },
     methods: {
-        handleChange(e) {
-            this.isChecked = e.target.checked;
+        toggleMotion(e) {
+            this.reduceMotion = e.target.checked;
 
             if (e.target.checked)
-                document.body.classList.add("reduced-motion");
+                document.documentElement.classList.add("reduced-motion");
             else
-                document.body.classList.remove("reduced-motion");
-        }
+                document.documentElement.classList.remove("reduced-motion");
+        },
     }
 }
 </script>
@@ -47,7 +47,7 @@ export default {
         </header>
         <section :class="styles['dialog-body']">
             <div :class="styles['dialog-item']">
-                <Toggle :label="settings.items.motion.label" :on-change="handleChange" :checked="isChecked" />
+                <Toggle id="motion" :label="settings.items.motion.label" :on-change="toggleMotion" :checked="reduceMotion" />
             </div>
         </section>
     </div>

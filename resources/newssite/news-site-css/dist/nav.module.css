@@ -7,8 +7,18 @@
     height: var(--nav-height);
     position: sticky;
     top: 0;
-    background-color: var(--color-utils-black);
+    background-color: var(--theme-ui-foreground);
     z-index: var(--index-header);
+}
+
+.page-navigation::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: -2px;
+    width: calc(100% - (var(--content-spacing-xlarge) * 2));
+    margin: auto;
+    border-bottom: var(--theme-small-border);
 }
 
 .page-navigation-row {
@@ -44,18 +54,18 @@
 
 /* stylelint-disable */
 .page-navigation-logo svg path {
+    fill: var(--theme-icon-fill-light);
     transition: var(--transition-default);
-    fill: var(--color-utils-offwhite);
 }
 
 .page-navigation-logo:hover svg path {
-    fill: var(--color-utils-white);
+    fill: var(--theme-icon-fill-lighter);
 }
 /* stylelint-enable */
 
 .page-navigation-button {
     border: 1px solid var(--color-utils-offwhite);
-    color: var(--color-utils-offwhite);
+    color: var(--theme-navigation-text);
     border-radius: var(--border-radius-small);
     height: var(--nav-button-height);
     background-color: transparent;
@@ -64,7 +74,7 @@
 }
 
 .page-navigation-button:hover {
-    color: var(--color-utils-white);
+    color: var(--theme-navigation-text-hover);
 }
 
 .nav-button {
@@ -73,14 +83,6 @@
 
 @media (max-width: 767px) {
     .page-navigation-logo {
-        margin-left: var(--content-spacing-small);
+        margin-inline-start: var(--content-spacing-small);
     }
-
-    /** RTL NAV START **/
-    html[dir="rtl"] .page-navigation-logo {
-        margin-right: var(--content-spacing-small);
-        margin-left: unset;
-    }
-
-    /** RTL NAV END **/
 }

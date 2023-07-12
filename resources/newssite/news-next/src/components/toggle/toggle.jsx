@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import styles from "news-site-css/dist/toggle.module.css";
 
-export default function Toggle({ label, onChange, checked }) {
+export default function Toggle({ id, label, onChange, checked }) {
     const [isSelected, setIsSelected] = useState(false);
 
     useEffect(() => {
@@ -18,8 +18,8 @@ export default function Toggle({ label, onChange, checked }) {
         <div className={styles["toggle-outer"]}>
             <div className={styles["toggle-description"]}>{label}</div>
             <div className={styles["toggle-container"]}>
-                <label className={styles.label} htmlFor="reduced-motion-toggle">
-                    <input type="checkbox" id="reduced-motion-toggle" checked={isSelected} onChange={handleChange} />
+                <label className={styles.label} htmlFor={`${id}-toggle`}>
+                    <input type="checkbox" id={`${id}-toggle`} checked={isSelected} onChange={handleChange} />
                     <span className={styles.switch}></span>
                     <div className="visually-hidden">selected: {isSelected ? "true" : "false"}</div>
                 </label>

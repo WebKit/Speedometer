@@ -3,6 +3,7 @@ import styles from "news-site-css/dist/toggle.module.css";
 
 export default {
     props: {
+        id: String,
         label: String,
         onChange: Function,
         checked: Boolean,
@@ -31,8 +32,8 @@ export default {
             {{ label }}
         </div>
         <div :class="styles['toggle-container']">
-            <label :class="styles.label" for="reduced-motion-toggle">
-                <input id="reduced-motion-toggle" type="checkbox" :checked="isSelected" @change="handleChange" />
+            <label :class="styles.label" :for="`${id}-toggle`">
+                <input :id="`${id}-toggle`" type="checkbox" :checked="isSelected" @change="handleChange" />
                 <span :class="styles.switch" />
                 <div class="visually-hidden">selected: {{ isSelected ? "true" : "false" }}</div>
             </label>

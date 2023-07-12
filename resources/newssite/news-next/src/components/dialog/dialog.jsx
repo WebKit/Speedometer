@@ -7,20 +7,20 @@ import { useDataContext } from "@/context/data-context";
 import styles from "news-site-css/dist/dialog.module.css";
 
 export default function Dialog({ onClose }) {
-    const [isChecked, setIsChecked] = useState(false);
+    const [reduceMotion, setReduceMotion] = useState(false);
     const { settings } = useDataContext();
 
     useEffect(() => {
-        setIsChecked(document.body.classList.contains("reduced-motion"));
+        setReduceMotion(document.documentElement.classList.contains("reduced-motion"));
     }, []);
 
-    function handleChange(e) {
-        setIsChecked(e.target.checked);
+    function toggleMotion(e) {
+        setReduceMotion(e.target.checked);
 
         if (e.target.checked)
-            document.body.classList.add("reduced-motion");
+            document.documentElement.classList.add("reduced-motion");
         else
-            document.body.classList.remove("reduced-motion");
+            document.documentElement.classList.remove("reduced-motion");
     }
 
     return (
@@ -38,7 +38,7 @@ export default function Dialog({ onClose }) {
             </header>
             <section className={styles["dialog-body"]}>
                 <div className={styles["dialog-item"]}>
-                    <Toggle label={settings.items.motion.label} onChange={handleChange} checked={isChecked} />
+                    <Toggle id="motion" label={settings.items.motion.label} onChange={toggleMotion} checked={reduceMotion} />
                 </div>
             </section>
         </div>

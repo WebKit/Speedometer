@@ -25,16 +25,16 @@
 
 .input-container .input[type="submit"] {
     cursor: pointer;
-    border-color: var(--color-utils-black);
-    background-color: var(--color-utils-black);
-    color: var(--color-utils-white);
+    border-color: var(--theme-button-dark-background);
+    background-color: var(--theme-button-dark-background);
+    color: var(--theme-button-dark-text);
 }
 
 .input-container .input[type="submit"]:hover,
 .input-container .input[type="submit"]:focus {
-    border-color: var(--color-utils-gray);
-    background-color: var(--color-utils-gray);
-    color: var(--color-utils-white);
+    border-color: var(--theme-button-dark-background-hover);
+    background-color: var(--theme-button-dark-background-hover);
+    color: var(--theme-button-dark-text-hover);
 }
 
 .input-container .input[type="date"] {

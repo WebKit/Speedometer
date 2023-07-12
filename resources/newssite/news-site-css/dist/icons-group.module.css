@@ -16,39 +16,37 @@
 }
 
 .icons-group .icons-group-item:not(:last-child) {
-    margin-right: var(--content-spacing-large);
+    margin-inline-end: var(--content-spacing-large);
 }
 
 .icons-group .icons-group-item button {
     cursor: pointer;
     display: flex;
-    width: var(--icon-size-small);
-    height: var(--icon-size-small);
+    border-width: 0;
 }
 
 .group-icon {
     display: flex;
+    position: relative;
+}
+
+.group-icon-small {
     width: var(--icon-size-small);
     height: var(--icon-size-small);
-    position: relative;
-    background-color: var(--color-utils-black);
+}
+
+.group-icon-medium {
+    width: var(--icon-size);
+    height: var(--icon-size);
 }
 
 .group-icon svg path {
-    fill: var(--color-utils-offwhite);
+    fill: var(--theme-icon-fill-light);
     transition: fill 0.3s ease;
 }
 
 /* stylelint-disable */
 .icons-group li:hover .group-icon svg path {
-    fill: var(--color-utils-white);
+    fill: var(--theme-icon-fill-lighter);
 }
 /* stylelint-enable */
-
-/** RTL ICONS-GROUP START **/
-html[dir="rtl"] .icons-group .icons-group-item:not(:last-child) {
-    margin-left: var(--content-spacing-large);
-    margin-right: unset;
-}
-
-/** RTL ICONS-GROUP END **/
