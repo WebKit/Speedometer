@@ -87,36 +87,6 @@ Suites.push({
 });
 
 Suites.push({
-    name: "TodoMVC-JavaScript-ES6",
-    url: "todomvc/vanilla-examples/javascript-es6/dist/index.html",
-    tags: ["todomvc"],
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
-    tests: [
-        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
-            const newTodo = page.querySelector(".new-todo");
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(getTodoText("ru", i));
-                newTodo.dispatchEvent("change");
-                newTodo.enter("keypress");
-            }
-        }),
-        new BenchmarkTestStep("CompletingAllItems", (page) => {
-            const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                checkboxes[i].click();
-        }),
-        new BenchmarkTestStep("DeletingAllItems", (page) => {
-            const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
-                deleteButtons[i].click();
-        }),
-    ],
-});
-
-Suites.push({
     name: "TodoMVC-JavaScript-ES6-Webpack",
     url: "todomvc/vanilla-examples/javascript-es6-webpack/dist/index.html",
     tags: ["todomvc"],
@@ -128,7 +98,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                newTodo.setValue(getTodoText(defaultLanguage, i));
+                newTodo.setValue(getTodoText("ru", i));
                 newTodo.dispatchEvent("change");
                 newTodo.enter("keypress");
             }
@@ -211,7 +181,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-React-Complex-DOM",
-    url: "tentative/complex-static-html/dist/index.html#/home",
+    url: "todomvc/architecture-examples/react-complex/dist/index.html#/home",
     tags: ["todomvc", "complex"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");

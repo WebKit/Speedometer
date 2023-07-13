@@ -1,5 +1,5 @@
 {
-    "name": "javascript-es5",
+    "name": "todomvc-javascript-es5",
     "version": "1.0.0",
     "description": "TodoMVC app written with JavaScript es5 features.",
     "engines": {

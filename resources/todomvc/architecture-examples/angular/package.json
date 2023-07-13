@@ -1,5 +1,5 @@
 {
-    "name": "angular",
+    "name": "todomvc-angular",
     "version": "1.0.0",
     "description": "TodoMVC app written with Angular.",
     "private": true,
