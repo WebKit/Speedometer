@@ -8,12 +8,14 @@
         "npm": ">=8.19.3"
     },
     "scripts": {
+        "sanitize": "OUTPUT_FOLDER=./dist node node_modules/sanitize-language",
         "dev": "vue-cli-service serve",
-        "build": "vue-cli-service build",
+        "build": "vue-cli-service build && npm run sanitize",
         "lint": "vue-cli-service lint"
     },
     "dependencies": {
         "core-js": "^3.8.3",
+        "sanitize-language": "file:../../../scripts/sanitize-language",
         "todomvc-app-css": "^2.4.2",
         "todomvc-common": "^1.0.5",
         "vue": "^3.2.47",
