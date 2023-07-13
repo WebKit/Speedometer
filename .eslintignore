@@ -32,8 +32,11 @@ package-lock.json
 !/resources/todomvc/vanilla-examples/javascript-es6-webpack
 !/resources/todomvc/vanilla-examples/javascript-es6-webpack-complex
 !/resources/todomvc/vanilla-examples/javascript-web-components
+!/resources/todomvc/vanilla-examples/javascript-web-components-complex/
 
 !/resources/todomvc/big-dom-generator
+resources/todomvc/big-dom-generator/angular
+resources/todomvc/big-dom-generator/javascript-web-components
 
 !/resources/editors
 /resources/editors/assets

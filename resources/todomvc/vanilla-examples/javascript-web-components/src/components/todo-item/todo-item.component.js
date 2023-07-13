@@ -4,10 +4,11 @@ import { useKeyListener } from "../../hooks/useKeyListener.js";
 
 import globalStyles from "../../../node_modules/todomvc-css/dist/global.constructable.js";
 import itemStyles from "../../../node_modules/todomvc-css/dist/todo-item.constructable.js";
+import additionalStyleSheets from "./../../utils/additional-stylesheets.constructable.js";
 
 class TodoItem extends HTMLElement {
     static get observedAttributes() {
-        return ["id", "title", "completed"];
+        return ["id", "title", "completed", "index"];
     }
 
     constructor() {
@@ -19,6 +20,7 @@ class TodoItem extends HTMLElement {
 
         const node = document.importNode(template.content, true);
         this.item = node.querySelector(".todo-item");
+        this.displayTodo = node.querySelector(".display-todo");
         this.toggleLabel = node.querySelector(".toggle-todo-label");
         this.toggleInput = node.querySelector(".toggle-todo-input");
         this.todoText = node.querySelector(".todo-item-text");
@@ -40,6 +42,7 @@ class TodoItem extends HTMLElement {
         this.startEdit = this.startEdit.bind(this);
         this.stopEdit = this.stopEdit.bind(this);
         this.cancelEdit = this.cancelEdit.bind(this);
+        this.maybeUpdateCss = this.maybeUpdateCss.bind(this);
     }
 
     update(...args) {
@@ -48,6 +51,13 @@ class TodoItem extends HTMLElement {
                 case "id":
                     if (this.id !== undefined)
                         this.item.id = `todo-item-${this.id}`;
+                    break;
+                case "index":
+                    if (this.index !== undefined) {
+                        this.item.classList.add(`li-${this.index}`);
+                        this.displayTodo.classList.add(`view-${this.index}`);
+                        this.maybeUpdateCss();
+                    }
                     break;
                 case "title":
                     if (this.title !== undefined) {
@@ -146,8 +156,15 @@ class TodoItem extends HTMLElement {
             this.update(property);
     }
 
+    maybeUpdateCss() {
+        if (!additionalStyleSheets.length)
+            return;
+        const styleSheetIndex = this.index % additionalStyleSheets.length;
+        this.shadow.adoptedStyleSheets.push(additionalStyleSheets[styleSheetIndex]);
+    }
+
     connectedCallback() {
-        this.update("id", "title", "completed");
+        this.update("id", "title", "completed", "index");
 
         this.keysListeners.push(
             useKeyListener({

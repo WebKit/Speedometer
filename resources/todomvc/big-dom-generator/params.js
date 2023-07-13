@@ -7,3 +7,5 @@ export const PROBABILITY_OF_HAVING_CHILDREN = 0.7;
 export const TARGET_SIZE = 3000;
 
 export const MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH = 15;
+
+export const NUMBER_VARIABLE_VARIATIONS = 5;

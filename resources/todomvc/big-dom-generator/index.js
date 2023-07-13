@@ -14,4 +14,4 @@ const html = `<!DOCTYPE html>
     ${renderToStaticMarkup(<App />)}
   </body>
 </html>`;
-fs.writeFileSync("dist/index.html", html);
+fs.writeFile("dist/index.html", html);
