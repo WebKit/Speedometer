@@ -1,4 +1,5 @@
 const fs = require("fs").promises;
+const path = require("path");
 
 const rootDirectory = "./";
 const sourceDirectory = "./src";
@@ -26,25 +27,21 @@ const build = async () => {
     });
 
     // copy html file
-    await fs.copyFile(`${rootDirectory}${htmlFile}`, `${targetDirectory}/${htmlFile}`);
+    await fs.copyFile(path.join(rootDirectory, htmlFile), path.join(targetDirectory, htmlFile));
 
     // copy files to move
-    for (let i = 0; i < filesToMove.length; i++) {
-        const fileName = filesToMove[i].split("/").pop();
-        await copy(filesToMove[i], `${targetDirectory}/${fileName}`);
-    }
+    for (let i = 0; i < filesToMove.length; i++)
+        await copy(filesToMove[i], path.join(targetDirectory, path.basename(filesToMove[i])));
 
     // read html file
-    let html = await fs.readFile(`${targetDirectory}/${htmlFile}`, "utf8");
+    let html = await fs.readFile(path.join(targetDirectory, htmlFile), "utf8");
 
     // remove base paths from files to move
-    for (let i = 0; i < filesToMove.length; i++) {
-        const fileName = filesToMove[i].split("/").pop();
-        html = html.replace(filesToMove[i], fileName);
-    }
+    for (let i = 0; i < filesToMove.length; i++)
+        html = html.replace(filesToMove[i], path.basename(filesToMove[i]));
 
     // remove basePath from source directory
-    const basePath = `${sourceDirectory.split("/")[1]}/`;
+    const basePath = `${path.basename(sourceDirectory)}/`;
     const re = new RegExp(basePath, "g");
     html = html.replace(re, "");
 
