@@ -7,7 +7,7 @@ const parts = [
     ["b", "l", "a", "c", "k", "l", "i", "s", "t"],
     ["w", "h", "i", "t", "e", "l", "i", "s", "t"],
 ];
-const wordsToUse = ["dissallowlist", "allowlist"];
+const wordsToUse = ["disallowlist", "allowlist"];
 
 const wordsToReplace = parts.map((part) => part.join(""));
 const replacements = new Map();
@@ -31,13 +31,15 @@ async function readAndReplace(fileName) {
         return replacements.get(matched);
     });
 
-    if (contents !== sanitized) await fs.writeFile(fileName, sanitized);
+    if (contents !== sanitized)
+        await fs.writeFile(fileName, sanitized);
 }
 
 async function sanitize() {
-    const files = await getFiles(dirName);
+    const dir = process.env.OUTPUT_FOLDER ?? dirName;
+    const files = await getFiles(dir);
     await Promise.all(files.map((file) => readAndReplace(file)));
-    console.log(`Done sanitizing ${dirName}`);
+    console.log(`Done sanitizing ${dir}`);
 }
 
 sanitize();

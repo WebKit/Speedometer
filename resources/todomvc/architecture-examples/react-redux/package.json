@@ -8,7 +8,7 @@
         "npm": ">=8.19.3"
     },
     "scripts": {
-        "sanitize": "node scripts/sanitize-language.js",
+        "sanitize": "OUTPUT_FOLDER=./dist node node_modules/sanitize-language",
         "build": "webpack --config webpack.prod.js && npm run sanitize",
         "dev": "webpack serve --open --config webpack.dev.js",
         "serve": "http-server ./dist -p 7002 -c-1 --cors",
@@ -43,6 +43,7 @@
         "react-redux": "^7.2.6",
         "react-router-dom": "^5.3.4",
         "redux": "^4.2.0",
+        "sanitize-language": "file:../../../scripts/sanitize-language",
         "todomvc-app-css": "^2.4.2",
         "todomvc-common": "^1.0.5"
     }
