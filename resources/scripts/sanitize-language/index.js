@@ -39,7 +39,7 @@ async function sanitize() {
     const dir = process.env.OUTPUT_FOLDER ?? dirName;
     const files = await getFiles(dir);
     await Promise.all(files.map((file) => readAndReplace(file)));
-    console.log(`Done sanitizing ${dir}`);
+    console.log(`** Done sanitizing ${dir}! **`);
 }
 
 sanitize();
