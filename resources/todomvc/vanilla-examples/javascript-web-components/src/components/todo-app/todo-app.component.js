@@ -42,7 +42,6 @@ class TodoApp extends HTMLElement {
 
     addItem(event) {
         const { detail: item } = event;
-        item.index = this.#data.length;
 
         this.#data.push(item);
         this.list.addItem(item);

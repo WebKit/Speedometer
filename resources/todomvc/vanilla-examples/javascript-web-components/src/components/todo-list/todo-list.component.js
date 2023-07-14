@@ -28,6 +28,7 @@ class TodoList extends HTMLElement {
     addItem(entry) {
         const element = new TodoItem();
         Object.keys(entry).forEach((key) => element.setAttribute(key, entry[key]));
+        element.index = this.#elements.length;
 
         this.#elements.push(element);
         this.listNode.append(element);

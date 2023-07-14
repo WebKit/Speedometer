@@ -9,7 +9,7 @@ const EXTRA_CSS_TO_ADOPT = window.extraCssToAdopt;
 
 class TodoItem extends HTMLElement {
     static get observedAttributes() {
-        return ["id", "title", "completed", "index"];
+        return ["id", "title", "completed"];
     }
 
     constructor() {
@@ -18,6 +18,7 @@ class TodoItem extends HTMLElement {
         this.id = "";
         this.title = "Todo Item";
         this.completed = "false";
+        this.index = 0;
 
         const node = document.importNode(template.content, true);
         this.item = node.querySelector(".todo-item");
@@ -161,7 +162,9 @@ class TodoItem extends HTMLElement {
         if (!EXTRA_CSS_TO_ADOPT)
             return;
         const styleSheetIndex = this.index % EXTRA_CSS_TO_ADOPT.length;
-        this.shadow.adoptedStyleSheets.push(EXTRA_CSS_TO_ADOPT[styleSheetIndex]);
+        const styleSheetToAdopt = EXTRA_CSS_TO_ADOPT[styleSheetIndex];
+        if (styleSheetToAdopt)
+            this.shadow.adoptedStyleSheets.push(styleSheetToAdopt);
     }
 
     connectedCallback() {
