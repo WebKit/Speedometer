@@ -25,7 +25,7 @@ export const genShadowDomVariables = () => {
     const constructableStylesheetsScript
         = "const additionalStyleSheets = [];\n\n"
         + `${shadowRootRules.map((rule, index) => `additionalStyleSheets[${index}] = new CSSStyleSheet();\nadditionalStyleSheets[${index}].replaceSync(\`${rule}\`);`).join("\n\n")};\n\n`
-        + "export default additionalStyleSheets;";
+        + "window.extraCssToAdopt = additionalStyleSheets;";
 
     return { variables: variablesDefinition, styleSheets: constructableStylesheetsScript };
 };

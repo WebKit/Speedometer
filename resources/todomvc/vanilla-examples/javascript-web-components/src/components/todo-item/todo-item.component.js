@@ -4,7 +4,8 @@ import { useKeyListener } from "../../hooks/useKeyListener.js";
 
 import globalStyles from "../../../node_modules/todomvc-css/dist/global.constructable.js";
 import itemStyles from "../../../node_modules/todomvc-css/dist/todo-item.constructable.js";
-import additionalStyleSheets from "./../../utils/additional-stylesheets.constructable.js";
+
+const EXTRA_CSS_TO_ADOPT = window.extraCssToAdopt;
 
 class TodoItem extends HTMLElement {
     static get observedAttributes() {
@@ -157,10 +158,10 @@ class TodoItem extends HTMLElement {
     }
 
     maybeUpdateCss() {
-        if (!additionalStyleSheets.length)
+        if (!EXTRA_CSS_TO_ADOPT)
             return;
-        const styleSheetIndex = this.index % additionalStyleSheets.length;
-        this.shadow.adoptedStyleSheets.push(additionalStyleSheets[styleSheetIndex]);
+        const styleSheetIndex = this.index % EXTRA_CSS_TO_ADOPT.length;
+        this.shadow.adoptedStyleSheets.push(EXTRA_CSS_TO_ADOPT[styleSheetIndex]);
     }
 
     connectedCallback() {
