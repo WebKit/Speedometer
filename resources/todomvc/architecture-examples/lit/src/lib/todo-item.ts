@@ -144,7 +144,8 @@ export class TodoItem extends LitElement {
             return;
         const styleSheetIndex = this.index % EXTRA_CSS_TO_ADOPT.length;
         const styleSheetToAdopt = EXTRA_CSS_TO_ADOPT[styleSheetIndex];
-        this.shadowRoot?.adoptedStyleSheets.push(styleSheetToAdopt);
+        if (styleSheetToAdopt)
+            this.shadowRoot?.adoptedStyleSheets.push(styleSheetToAdopt);
     }
 
     override render() {
