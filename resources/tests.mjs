@@ -481,6 +481,39 @@ Suites.push({
     ],
 });
 
+// TODO: Remove before merging.
+Suites.push({
+    name: "TodoMVC-Lit-Complex-DOM",
+    url: "todomvc/architecture-examples/lit-complex/dist/index.html",
+    tags: ["todomvc", "webcomponents", "complex"],
+    async prepare(page) {
+        await page.waitForElement("todo-app");
+    },
+    tests: [
+        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            const newTodo = page.querySelector(".new-todo", ["todo-app", "todo-form"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                newTodo.setValue(getTodoText(defaultLanguage, i));
+                newTodo.enter("keydown");
+            }
+        }),
+        new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const todoItems = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const checkbox = todoItems[i].querySelectorInShadowRoot(".toggle");
+                checkbox.click();
+            }
+        }),
+        new BenchmarkTestStep("DeletingAllItems", (page) => {
+            const todoItems = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const deleteButton = todoItems[i].querySelectorInShadowRoot(".destroy");
+                deleteButton.click();
+            }
+        }),
+    ],
+});
+
 Suites.push({
     name: "NewsSite-Next",
     url: "newssite/news-next/dist/index.html#/home",

@@ -7,6 +7,7 @@ import { classMap } from "lit/directives/class-map.js";
 import { todoStyles } from "./todo.css.js";
 import { DeleteTodoEvent, EditTodoEvent } from "./events.js";
 
+const EXTRA_CSS_TO_ADOPT = window.extraCssToAdopt;
 @customElement("todo-item")
 export class TodoItem extends LitElement {
     static override styles = [
@@ -131,18 +132,37 @@ export class TodoItem extends LitElement {
     @property({ type: Boolean })
         completed = false;
 
+    @property({ type: Number })
+        index = 0;
+
     @state()
         isEditing: boolean = false;
 
+    override connectedCallback() {
+        super.connectedCallback();
+        if (!EXTRA_CSS_TO_ADOPT)
+            return;
+        const styleSheetIndex = this.index % EXTRA_CSS_TO_ADOPT.length;
+        const styleSheetToAdopt = EXTRA_CSS_TO_ADOPT[styleSheetIndex];
+        this.shadowRoot?.adoptedStyleSheets.push(styleSheetToAdopt);
+    }
+
     override render() {
         const itemClassList = {
+            targeted: true,
             todo: true,
             completed: this.completed ?? false,
             editing: this.isEditing,
+            [`li-${this.index}`]: true,
         };
+        const divClassList = {
+            targeted: true,
+            [`view-${this.index}`]: true,
+        };
+
         return html`
             <li class="${classMap(itemClassList)}">
-                <div class="view">
+                <div class="${classMap(divClassList)}">
                     <input class="toggle" type="checkbox" .checked=${this.completed ?? false} @change=${this.#toggleTodo} />
                     <label @dblclick=${this.#beginEdit}> ${this.text} </label>
                     <button @click=${this.#deleteTodo} class="destroy"></button>
@@ -181,10 +201,13 @@ export class TodoItem extends LitElement {
         input.value = this.text ?? "";
     }
 }
-
 declare global {
     // eslint-disable-next-line no-unused-vars
     interface HTMLElementTagNameMap {
         "todo-item": TodoItem;
+    }
+    // eslint-disable-next-line no-unused-vars
+    interface Window {
+        extraCssToAdopt?: CSSStyleSheet[];
     }
 }
