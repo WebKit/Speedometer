@@ -17,7 +17,6 @@ const html = `<!DOCTYPE html>
 <html lang="en" class="spectrum spectrum--medium spectrum--light">
   <head>
     <title>Big Todo App</title>
-    <script src="app.bundle.js"></script>
     <link rel="stylesheet" href="app.css">
   </head>
   <body>
