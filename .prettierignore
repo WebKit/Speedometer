@@ -34,6 +34,7 @@ package-lock.json
 !/resources/todomvc/vanilla-examples/javascript-web-components
 
 !/resources/todomvc/big-dom-generator
+/resources/todomvc/big-dom-generator/gen-dist/*
 
 !/resources/editors
 /resources/editors/assets
