@@ -8,7 +8,8 @@
     },
     "scripts": {
         "build": "webpack --config webpack.prod.js",
-        "postbuild": "node dist/app.bundle.js && purgecss -css dist/app.css --content dist/index.html --output=dist/app.css && mkdir -p gen-dist && mv dist/app.bundle.js gen-dist/ && mv dist/app.bundle.js.LICENSE.txt gen-dist/",        "dev": "webpack serve --open --config webpack.dev.js",
+        "postbuild": "node dist/app.bundle.js && purgecss -css dist/app.css --content dist/index.html --output=dist/app.css && mkdir -p gen-dist && mv dist/app.bundle.js gen-dist/ && mv dist/app.bundle.js.LICENSE.txt gen-dist/",
+        "dev": "webpack serve --open --config webpack.dev.js",
         "serve": "http-server ./dist -p 7002 -c-1 --cors"
     },
     "devDependencies": {
