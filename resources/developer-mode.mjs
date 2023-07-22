@@ -210,7 +210,7 @@ function updateURL() {
         }
     }
 
-    if (params.measurementMethod !== "timer")
+    if (params.measurementMethod !== "raf")
         url.searchParams.set("measurementMethod", "timer");
     else
         url.searchParams.delete("measurementMethod");
