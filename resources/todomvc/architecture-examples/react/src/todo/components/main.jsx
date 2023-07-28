@@ -2,6 +2,7 @@ import { useMemo, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 
 import { Item } from "./item";
+import classnames from "classnames";
 
 export function Main({ todos, dispatch }) {
     const { pathname: route } = useLocation();
@@ -32,7 +33,7 @@ export function Main({ todos, dispatch }) {
                     </label>
                 </div>
             ) : null}
-            <ul className="todo-list" data-testid="todo-list">
+            <ul className={classnames("todo-list", "show-priority")} data-testid="todo-list">
                 {visibleTodos.map((todo, index) => (
                     <Item todo={todo} key={todo.id} dispatch={dispatch} index={index} />
                 ))}

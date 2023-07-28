@@ -1,8 +1,8 @@
-import { ActionButton } from "./action-group";
+import { ActionButton } from "../action-group";
 
-import ChevronRight from "../assets/Smock_ChevronRight_18_N.svg";
-import ChevronLeft from "../assets/Smock_ChevronLeft_18_N.svg";
-import AddIcon from "../assets/Smock_Add_18_N.svg";
+import ChevronRight from "./../../assets/Smock_ChevronRight_18_N.svg";
+import ChevronLeft from "./../../assets/Smock_ChevronLeft_18_N.svg";
+import AddIcon from "./../../assets/Smock_Add_18_N.svg";
 
 const DaysOfTheWeekHeadings = () => {
     const daysOfTheWeek = { Sunday: "S", Monday: "M", Tuesday: "T", Wednesday: "W", Thursday: "T", Friday: "F", Saturday: "S" };

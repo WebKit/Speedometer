@@ -6,6 +6,9 @@ jQuery(function ($) {
         return a === b ? options.fn(this) : options.inverse(this);
     });
 
+    Handlebars.registerHelper('computeTaskPriority', function (index) {
+        return 4 - (index % 5);
+    });
 
     var util = {
         uuid: function () {

@@ -3,7 +3,6 @@ import { Ribbon } from "./components/ribbon.jsx";
 import { TopBar } from "./components/top-bar.jsx";
 import { TreeArea } from "./components/tree-area.jsx";
 import "./app.css";
-import "../public/layout.css";
 
 const TodoArea = () => {
     return <div className="todo-area" />;

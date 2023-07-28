@@ -1,7 +1,14 @@
-export const ActionButton = ({ Icon, label, quiet, ...rest }) => {
+import classnames from "classnames";
+
+export const ActionItem = ({ className, children }) => {
+    return <div className={classnames("spectrum-ActionGroup-item", className)}>{children}</div>;
+};
+
+export const ActionButton = ({ Icon, label, quiet, className, ...rest }) => {
+    const buttonClassName = classnames("spectrum-ActionButton", "spectrum-ActionButton--sizeM", { "spectrum-ActionButton--quiet": quiet }, className);
     const text = label ? <span className="spectrum-ActionButton-label">{label}</span> : null;
     return (
-        <button className={`spectrum-ActionButton spectrum-ActionButton--sizeM ${quiet ? "spectrum-ActionButton--quiet" : ""} spectrum-ActionGroup-item`} {...rest}>
+        <button className={buttonClassName} {...rest}>
             {Icon && <Icon className="spectrum-Icon spectrum-Icon--sizeM spectrum-ActionButton-icon" focusable="false" aria-hidden="true" />}
             {text}
         </button>
