@@ -20,6 +20,11 @@ class Params {
     waitBeforeSync = 0;
     // Warmup time before the sync step in ms.
     warmupBeforeSync = 0;
+    // Seed for shuffling the execution order of suites.
+    // "off": do not shuffle
+    // "generate": generate a random seed
+    // <integer>: use the provided integer as a seed
+    shuffleSeed = "off";
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -100,6 +105,19 @@ class Params {
             if (this.measurementMethod !== "timer" && this.measurementMethod !== "raf")
                 throw new Error(`Invalid measurement method: '${this.measurementMethod}', must be either 'raf' or 'timer'.`);
             searchParams.delete("measurementMethod");
+        }
+
+        if (searchParams.has("shuffleSeed")) {
+            this.shuffleSeed = searchParams.get("shuffleSeed");
+            if (this.shuffleSeed !== "off") {
+                if (this.shuffleSeed === "generate") {
+                    this.shuffleSeed = Math.floor(Math.random() * 1 << 16);
+                }
+                this.shuffleSeed = parseInt(this.shuffleSeed);
+                if (!Number.isInteger(this.shuffleSeed))
+                    throw new Error(`Invalid shuffle seed: '${this.shuffleSeed}', must be either 'off' or an integer.`);
+            }
+            searchParams.delete("shuffleSeed");
         }
 
         const unused = Array.from(searchParams.keys());
