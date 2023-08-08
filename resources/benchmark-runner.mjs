@@ -315,7 +315,7 @@ class RAFTestInvoker extends TestInvoker {
 }
 
 // https://stackoverflow.com/a/47593316
-function seededHashRng(a) {
+function seededHashRandomNumberGenerator(a) {
     return function() {
       var t = a += 0x6D2B79F5;
       t = Math.imul(t ^ t >>> 15, t | 1);
@@ -333,8 +333,8 @@ export class BenchmarkRunner {
         this._page = null;
         this._metrics = null;
         this._iterationCount = params.iterationCount;
-        if (params.shuffleSeed != "off") {
-            this._rng = seededHashRng(params.shuffleSeed);
+        if (params.shuffleSeed !== "off") {
+            this._suiteOrderRandomNumberGenerator = seededHashRandomNumberGenerator(params.shuffleSeed);
         }
     }
 
@@ -398,11 +398,11 @@ export class BenchmarkRunner {
         performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
 
         let suites = [...this._suites];
-        if (this._rng) {
+        if (this._suiteOrderRandomNumberGenerator) {
             // We just do a simple Fisher-Yates shuffle based on the repeated hash of the
             // seed. This is not a high quality RNG, but it's plenty good enough.
             for (let i = 0; i < suites.length - 1; i++) {
-                let j = i + (this._rng() % (suites.length - i));
+                let j = i + (this._suiteOrderRandomNumberGenerator() % (suites.length - i));
                 let tmp = suites[i];
                 suites[i] = suites[j];
                 suites[j] = tmp;
