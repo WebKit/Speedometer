@@ -109,32 +109,57 @@
                     <div class="version">3.0</div>
                 </a>
                 <div class="section-grid">
-                    <h1 class="section-header">About Speedometer 2.1</h1>
+                    <h1 class="section-header">About Speedometer 3</h1>
                     <div class="section-content">
-                        <p>Speedometer tests a browser's Web app responsiveness by timing simulated user interactions.</p>
-
+                        <p>Speedometer 3 is a benchmark for web browsers that measures Web application responsiveness by timing simulated user interactions on various workloads.</p>
                         <p>
-                            This benchmark simulates user actions for adding, completing, and removing to-do items using multiple examples in TodoMVC. Each example in TodoMVC implements the same todo application using DOM APIs in different ways. Some
-                            call DOM APIs directly from ECMAScript 5 (ES5), ECMASCript 2015 (ES6), ES6 transpiled to ES5, and Elm transpiled to ES5. Others use one of eleven popular JavaScript frameworks: React, React with Redux, Ember.js,
-                            Backbone.js, AngularJS, (new) Angular, Vue.js, jQuery, Preact, Inferno, and Flight. Many of these frameworks are used on the most popular websites in the world, such as Facebook and Twitter. The performance of these types
-                            of operations depends on the speed of the DOM APIs, the JavaScript engine, CSS style resolution, layout, and other technologies.
+                            The following high level user journeys are implemented in the current version. Each of these journeys has one or more workloads which test important aspects of it - for example commonly used patterns, frameworks, or
+                            technologies.
                         </p>
+                        <ul>
+                            <li>Working with a todo list</li>
+                            <ul>
+                                <li>Measures the time to add, complete, and remove 100 todo items in a basic list.</li>
+                                <li>Each example implements the same todo application (TodoMVC) using different techniques and frameworks.</li>
+                                <li>
+                                    Workloads: TodoMVC-JavaScript-ES5, TodoMVC-JavaScript-ES6-Webpack, TodoMVC-WebComponents, TodoMVC-React, TodoMVC-React-Complex-DOM, TodoMVC-React-Redux, TodoMVC-Backbone, TodoMVC-Angular, TodoMVC-Vue,
+                                    TodoMVC-jQuery, TodoMVC-Preact, TodoMVC-Svelte, TodoMVC-Lit
+                                </li>
+                            </ul>
+                            <li>Editing rich text</li>
+                            <ul>
+                                <li>Loading and styling text inside WYSIWYG and code editors.</li>
+                                <li>Workloads: Editor-CodeMirror, Editor-TipTap</li>
+                            </ul>
+                            <li>Rendering charts</li>
+                            <ul>
+                                <li>Loading and interacting with SVG and canvas charts.</li>
+                                <li>Workloads: Charts-observable-plot, Charts-chartjs, React-Stockcharts-SVG, Perf-Dashboard</li>
+                            </ul>
+                            <li>Reading a news site</li>
+                            <ul>
+                                <li>Navigating across pages and interacting with a typical looking news site.</li>
+                                <li>Workloads: NewsSite-Next, NewsSite-Nuxt</li>
+                            </ul>
+                        </ul>
 
-                        <p>
-                            Although user-driven actions like mouse movements and keyboard input cannot be accurately emulated in JavaScript, Speedometer does its best to faithfully replay a typical workload within the demo applications. To make the
-                            run time long enough to measure with the limited precision, we synchronously execute a large number of the operations, such as adding one hundred to-do items.
-                        </p>
-
-                        <p>
-                            Modern browser engines execute some work asynchronously as an optimization strategy to reduce the run time of synchronous operations. While returning control back to JavaScript execution as soon as possible is worth
-                            pursuing, the run time cost of such an asynchronous work should still be taken into a holistic measurement of web application performance. In addition, some modern JavaScript frameworks such as Vue.js and Preact call into
-                            DOM APIs asynchronously as an optimization technique. Speedometer approximates the run time of this asynchronous work in the UI thread with a zero-second timer that is scheduled immediately after each execution of
-                            synchronous operations.
-                        </p>
-
-                        <p>Speedometer does not attempt to measure concurrent asynchronous work that does not directly impact the UI thread, which tends not to affect app responsiveness.</p>
-
-                        <p class="note"><strong>Note:</strong> Speedometer should not be used as a way to compare the performance of different JavaScript frameworks as work load differs greatly in each framework.</p>
+                        <p class="note"><strong>Notes about methodology</strong></p>
+                        <ul>
+                            <li>Although user-driven actions like mouse movements and keyboard input cannot be fully emulated in JavaScript, Speedometer does its best to faithfully replay a typical workload within the demo applications.</li>
+                            <li>To make the run time long enough to measure with the limited precision, we synchronously execute a large number of the operations, such as adding one hundred to-do items.</li>
+                            <li>
+                                Modern browser engines execute some work asynchronously as an optimization strategy to reduce the run time of synchronous operations. While returning control back to JavaScript execution as soon as possible is worth
+                                pursuing, the run time cost of such an asynchronous work should still be taken into a holistic measurement of web application performance. In addition, some JavaScript frameworks call into DOM APIs asynchronously as an
+                                optimization technique. Speedometer approximates the run time of this asynchronous work in the UI thread with a zero-second timer that is scheduled immediately after each execution of synchronous operations.
+                            </li>
+                            <li>Speedometer does not attempt to measure concurrent asynchronous work (e.g. in Web Workers).</li>
+                            <li>Speedometer should not be used as a way to compare the performance of different JavaScript frameworks.</li>
+                            <li>
+                                The goal of all workloads is to represent a scenario that could be found on the Web. Although all workloads strive to use patterns that are commonly used, some implementation details are Speedometer specific and should
+                                not be used as a guideline on how to implement and deploy a standalone app. For example, due to constraints within the test harness, workloads must not depend on a server infrastructure to function properly and are
+                                built as static files ahead of time.
+                            </li>
+                        </ul>
                     </div>
                     <div class="buttons section-footer">
                         <div class="button-row">
