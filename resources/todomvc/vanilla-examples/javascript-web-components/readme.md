@@ -2,11 +2,10 @@
 
 ## Description
 
-[todo]
+A todoMVC application implemented with native web components.
+It utilizes custom elements and html templates to build reusable components.
 
-## Implementation details
-
-[todo]
+In contrast to other workloads, this application uses an updated set of css rules and an optimized dom structure to ensure the application follows best practices in regards to accessibility.
 
 ## Built steps
 
