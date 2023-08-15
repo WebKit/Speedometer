@@ -2,32 +2,51 @@ const fs = require("fs");
 const { JSDOM } = require("jsdom");
 const path = require("path");
 
-const TARGET_DIRECTORY = "./dist";
-const COMPLEX_DOM_HTML_FILE = "index.html";
-const TODO_HTML_FILE = "index.html";
-const CSS_FILES_TO_ADD_LINKS_FOR = ["big-dom-generator.css", "generated.css"];
+function buildComplex(options) {
+    const {
+        callerDirectory,
+        sourceDirectory,
+        title,
+        filesToMove,
+        cssFilePath,
+        cssFolder = "", // sometimes the css file we are looking for may be nested in another folder.
+        cssFileNamePattern, // The css file name pattern is used to find the css file in the source dist directory.
+        extraCssToLink = [],
+        scriptsToLink = [],
+        targetDirectory = "./dist",
+        complexDomHtmlFile = "index.html",
+        todoHtmlFile = "index.html",
+        cssFilesToAddLinksFor = ["big-dom-generator.css"],
+    } = options;
 
-function buildComplex(CALLER_DIRECTORY, SOURCE_DIRECTORY, TITLE, FILES_TO_MOVE) {
     // remove dist directory if it exists
-    fs.rmSync(path.resolve(TARGET_DIRECTORY), { recursive: true, force: true });
+    fs.rmSync(path.resolve(targetDirectory), { recursive: true, force: true });
 
     // re-create the directory.
-    fs.mkdirSync(path.resolve(TARGET_DIRECTORY));
+    fs.mkdirSync(path.resolve(targetDirectory));
 
     // copy dist folder from javascript-es6-webpack
-    fs.cpSync(path.join(CALLER_DIRECTORY, SOURCE_DIRECTORY), path.resolve(TARGET_DIRECTORY), { recursive: true });
+    fs.cpSync(path.join(callerDirectory, sourceDirectory), path.resolve(targetDirectory), { recursive: true });
 
     // copy files to move
-    for (let i = 0; i < FILES_TO_MOVE.length; i++) {
+    for (let i = 0; i < filesToMove.length; i++) {
         // rename app.css to big-dom-generator.css so it's unique.
-        const sourcePath = path.resolve(CALLER_DIRECTORY, "..", FILES_TO_MOVE[i]);
-        const fileName = path.basename(FILES_TO_MOVE[i]);
-        const targetPath = fileName === "app.css" ? path.join(TARGET_DIRECTORY, "big-dom-generator.css") : path.join(TARGET_DIRECTORY, fileName);
+        const sourcePath = path.resolve(callerDirectory, "..", filesToMove[i]);
+        const fileName = path.basename(filesToMove[i]);
+        const targetPath = path.join(targetDirectory, fileName);
         fs.copyFileSync(sourcePath, targetPath);
     }
 
+    if (cssFilePath) {
+        // get the name of the css file that's in the dist, we do this because the name of the css file may change
+        const cssFile = fs.readdirSync(path.join(callerDirectory, sourceDirectory, cssFolder), { withFileTypes: true }).find((dirent) => dirent.isFile() && cssFileNamePattern.test(dirent.name))?.name;
+        // overwrite the css file in the dist directory with the one from the big-dom-generator module
+        // but keep the existing name so we don't need to add a new link
+        fs.copyFileSync(cssFilePath, path.resolve(targetDirectory, cssFolder, cssFile));
+    }
+
     // read todo.html file
-    let html = fs.readFileSync(path.resolve(CALLER_DIRECTORY, path.join("..", "dist", TODO_HTML_FILE)), "utf8");
+    let html = fs.readFileSync(path.resolve(callerDirectory, path.join("..", "dist", todoHtmlFile)), "utf8");
 
     const dom = new JSDOM(html);
     const doc = dom.window.document;
@@ -39,8 +58,8 @@ function buildComplex(CALLER_DIRECTORY, SOURCE_DIRECTORY, TITLE, FILES_TO_MOVE) 
     const htmlToInjectInTodoHolder = body.innerHTML;
     body.innerHTML = getHtmlBodySync("node_modules/big-dom-generator/dist/index.html");
 
-    const title = head.querySelector("title");
-    title.innerHTML = TITLE;
+    const titleElement = head.querySelector("title");
+    titleElement.innerHTML = title;
 
     const todoHolder = dom.window.document.createElement("div");
     todoHolder.className = "todoholder";
@@ -49,17 +68,24 @@ function buildComplex(CALLER_DIRECTORY, SOURCE_DIRECTORY, TITLE, FILES_TO_MOVE) 
     const todoArea = dom.window.document.querySelector(".todo-area");
     todoArea.appendChild(todoHolder);
 
-    for (const cssFile of CSS_FILES_TO_ADD_LINKS_FOR) {
+    const cssFilesToAddLinksForFinal = [...cssFilesToAddLinksFor, ...extraCssToLink];
+    for (const cssFile of cssFilesToAddLinksForFinal) {
         const cssLink = doc.createElement("link");
         cssLink.rel = "stylesheet";
         cssLink.href = cssFile;
         head.appendChild(cssLink);
     }
 
-    const destinationFilePath = path.join(TARGET_DIRECTORY, COMPLEX_DOM_HTML_FILE);
+    for (const script of scriptsToLink) {
+        const scriptLink = doc.createElement("script");
+        scriptLink.src = script;
+        head.appendChild(scriptLink);
+    }
+
+    const destinationFilePath = path.join(targetDirectory, complexDomHtmlFile);
     fs.writeFileSync(destinationFilePath, dom.serialize());
 
-    console.log(`The complex code for ${SOURCE_DIRECTORY} has been written to ${destinationFilePath}.`);
+    console.log(`The complex code for ${sourceDirectory} has been written to ${destinationFilePath}.`);
 }
 
 function getHtmlBodySync(filePath) {

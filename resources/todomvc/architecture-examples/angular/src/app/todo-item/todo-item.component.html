@@ -1,4 +1,4 @@
-<li [ngClass]="'targeted li-' + index + (todo.completed ? ' completed' : '') + (isEditing ? ' editing' : '')">
+<li [ngClass]="'targeted li-' + index + (todo.completed ? ' completed' : '') + (isEditing ? ' editing' : '')" [attr.data-priority]="4 - (index % 5)">
     <div [ngClass]="'targeted view-' + index">
         <input class="toggle" type="checkbox" (click)="toggleTodo()" [checked]="todo.completed" />
         <label (dblclick)="startEdit()">{{ todo.title }}</label>

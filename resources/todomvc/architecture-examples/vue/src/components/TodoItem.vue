@@ -6,6 +6,7 @@
             completed: this.todo.completed,
             editing: this.editing,
         }"
+        :data-priority="4 - (this.index % 5)"
     >
         <div :class="{ targeted: true, [`view-${this.index}`]: true }">
             <input type="checkbox" class="toggle" v-model="toggleModel" />

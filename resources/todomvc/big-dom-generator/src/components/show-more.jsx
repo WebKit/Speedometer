@@ -1,5 +1,5 @@
 import { ActionButton } from "./action-group";
-import { OptionsPopOver } from "./pop-over";
+import { OptionsPopOver } from "./popovers/popover";
 
 import MoreIcon from "./../assets/Smock_MoreCircle_18_N.svg";
 
