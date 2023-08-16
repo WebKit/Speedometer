@@ -3,13 +3,13 @@ import { useRef } from "react";
 import { DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR, MAX_GENERATED_DOM_DEPTH, MAX_NUMBER_OF_CHILDREN, PROBABILITY_OF_HAVING_CHILDREN, TARGET_SIZE, MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH } from "../../params";
 
 import ChevronRight from "./../assets/Smock_ChevronRight_18_N.svg";
-import TaskListIcon from "./../assets/Smock_TaskList_18_N.svg";
 
 const FolderWrapper = (props) => {
     const { nodeCount, random, maxDepth, maxNumChildren, childProbability, currentDepth } = props;
-    // prettier-ignore
-    if (currentDepth >= maxDepth)
+
+    if (nodeCount.current >= TARGET_SIZE || currentDepth >= maxDepth)
         return null;
+
     // Choose a random number of children.
     const numChildren = random.randRange(1, maxNumChildren);
     const children = [];
@@ -22,7 +22,10 @@ const FolderWrapper = (props) => {
 
 const TreeItem = (props) => {
     const { nodeCount, random, maxDepth, maxNumChildren, childProbability, currentDepth } = props;
-    nodeCount.current = nodeCount.current + 4;
+    if (nodeCount.current >= TARGET_SIZE)
+        return null;
+
+    nodeCount.current = nodeCount.current + 5;
     // Choose whether to have children.
     const children = random.coin(childProbability) ? <FolderWrapper nodeCount={nodeCount} random={random} maxNumChildren={maxNumChildren} maxDepth={maxDepth} childProbability={childProbability} currentDepth={currentDepth + 1} /> : null;
     const treeViewItemIsOpen = children && currentDepth < MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH ? "is-open" : "";
@@ -31,9 +34,10 @@ const TreeItem = (props) => {
             <a className="spectrum-TreeView-itemLink">
                 {children
                     ? <ChevronRight className="spectrum-Icon spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon" />
-                    : <TaskListIcon className="task-list-icon spectrum-Icon spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon spectrum-Icon--sizeM" />
+                    : <svg className="spectrum-Icon spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon spectrum-Icon--sizeM" viewBox="0 0 18 18">
+                        <use href="Smock_TaskList_18_N.svg#task-list" />
+                    </svg>
                 }
-
                 <span className="just-span spectrum-TreeView-itemLabel">{children ? "Sprint" : "Todo List"}</span>
             </a>
             {children}

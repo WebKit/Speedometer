@@ -2,6 +2,8 @@ const fs = require("fs");
 const { JSDOM } = require("jsdom");
 const path = require("path");
 
+const COMMON_FILES_TO_MOVE = ["node_modules/big-dom-generator/dist/logo.png", "node_modules/big-dom-generator/dist/Smock_TaskList_18_N.svg"];
+
 function buildComplex(options) {
     const {
         callerDirectory,
@@ -19,6 +21,9 @@ function buildComplex(options) {
         cssFilesToAddLinksFor = ["big-dom-generator.css"],
     } = options;
 
+    // Concatenate the common files with the files to move passed as an argument
+    const allFilesToMove = [...COMMON_FILES_TO_MOVE, ...filesToMove];
+
     // remove dist directory if it exists
     fs.rmSync(path.resolve(targetDirectory), { recursive: true, force: true });
 
@@ -29,10 +34,10 @@ function buildComplex(options) {
     fs.cpSync(path.join(callerDirectory, sourceDirectory), path.resolve(targetDirectory), { recursive: true });
 
     // copy files to move
-    for (let i = 0; i < filesToMove.length; i++) {
+    for (let i = 0; i < allFilesToMove.length; i++) {
         // rename app.css to big-dom-generator.css so it's unique.
-        const sourcePath = path.resolve(callerDirectory, "..", filesToMove[i]);
-        const fileName = path.basename(filesToMove[i]);
+        const sourcePath = path.resolve(callerDirectory, "..", allFilesToMove[i]);
+        const fileName = path.basename(allFilesToMove[i]);
         const targetPath = path.join(targetDirectory, fileName);
         fs.copyFileSync(sourcePath, targetPath);
     }

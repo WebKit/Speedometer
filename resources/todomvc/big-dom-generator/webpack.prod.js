@@ -18,6 +18,10 @@ module.exports = merge(common, {
                     from: "./src/assets/logo.png",
                     to: "logo.png",
                 },
+                {
+                    from: "./src/assets/Smock_TaskList_18_N.svg",
+                    to: "Smock_TaskList_18_N.svg",
+                },
             ],
         }),
         new webpack.IgnorePlugin({ resourceRegExp: /canvas/ }),

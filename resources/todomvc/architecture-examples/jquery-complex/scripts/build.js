@@ -1,10 +1,9 @@
-const fs = require("fs");
 const path = require("path");
 const { buildComplex } = require("big-dom-generator/utils/buildComplex");
 
 const SOURCE_DIRECTORY = "node_modules/todomvc-jquery/dist/";
 const TITLE = "jQuery • TodoMVC Complex DOM";
-const FILES_TO_MOVE = ["node_modules/big-dom-generator/dist/big-dom-generator.css", "node_modules/big-dom-generator/dist/logo.png"];
+const FILES_TO_MOVE = ["node_modules/big-dom-generator/dist/big-dom-generator.css"];
 
 const options = {
     callerDirectory: path.resolve(__dirname),
