@@ -112,10 +112,12 @@ class Params {
             if (this.shuffleSeed !== "off") {
                 if (this.shuffleSeed === "generate") {
                     this.shuffleSeed = Math.floor(Math.random() * 1 << 16);
+                    console.log(`Generated a random suite order seed: ${this.shuffleSeed}`);
+                } else {
+                    this.shuffleSeed = parseInt(this.shuffleSeed);
                 }
-                this.shuffleSeed = parseInt(this.shuffleSeed);
                 if (!Number.isInteger(this.shuffleSeed))
-                    throw new Error(`Invalid shuffle seed: '${this.shuffleSeed}', must be either 'off' or an integer.`);
+                    throw new Error(`Invalid shuffle seed: '${this.shuffleSeed}', must be either 'off', 'generate' or an integer.`);
             }
             searchParams.delete("shuffleSeed");
         }

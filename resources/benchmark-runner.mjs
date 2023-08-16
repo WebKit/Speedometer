@@ -394,8 +394,6 @@ export class BenchmarkRunner {
         this._removeFrame();
         await this._appendFrame();
         this._page = new Page(this._frame);
-        performance.mark(prepareEndLabel);
-        performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
 
         let suites = [...this._suites];
         if (this._suiteOrderRandomNumberGenerator) {
@@ -408,6 +406,9 @@ export class BenchmarkRunner {
                 suites[j] = tmp;
             }
         }
+
+        performance.mark(prepareEndLabel);
+        performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
 
         for (const suite of suites) {
             if (!suite.disabled)
