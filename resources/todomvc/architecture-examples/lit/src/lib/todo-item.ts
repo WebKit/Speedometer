@@ -117,7 +117,7 @@ export class TodoItem extends LitElement {
                 display: none;
             }
 
-            .editing:last-child {
+            :host(:last-child) .editing {
                 margin-bottom: -1px;
             }
         `,
