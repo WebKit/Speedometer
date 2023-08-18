@@ -420,7 +420,7 @@ section#details h1 {
     margin-bottom: 10px;
 }
 
-section#about p {
+section#about .section-content > * {
     width: var(--text-width);
     padding-left: calc((var(--viewport-width) - var(--text-width)) / 2);
 }

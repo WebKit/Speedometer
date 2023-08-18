@@ -30,7 +30,7 @@ const TreeItem = (props) => {
         <li className={`spectrum-TreeView-item ${treeViewItemIsOpen}`}>
             <a className="spectrum-TreeView-itemLink">
                 {children
-                    ? <ChevronRight className="spectrum-Icon spectrum-UIIcon-ChevronRight100 spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon" />
+                    ? <ChevronRight className="spectrum-Icon spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon" />
                     : <TaskListIcon className="task-list-icon spectrum-Icon spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon spectrum-Icon--sizeM" />
                 }
 

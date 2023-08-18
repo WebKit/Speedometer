@@ -32,7 +32,7 @@ export const Item = memo(function Item({ todo, dispatch, index }) {
     );
 
     return (
-        <li className={classnames("targeted", `li-${index}`, { completed: todo.completed })} data-testid="todo-item">
+        <li className={classnames("targeted", `li-${index}`, { completed: todo.completed })} data-priority={4 - (index % 5)} data-testid="todo-item">
             <div className={classnames("targeted", `view-${index}`)}>
                 {isWritable ? (
                     <Input onSubmit={handleUpdate} label="Edit Todo Input" defaultValue={title} onBlur={handleBlur} />

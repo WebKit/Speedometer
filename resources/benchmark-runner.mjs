@@ -215,8 +215,7 @@ class PageElement {
 }
 
 function geomeanToScore(geomean) {
-    const correctionFactor = 50; // This factor makes the test score look reasonably fit within 0 to 140.
-    return (60 * 1000) / geomean / correctionFactor;
+    return 1000 / geomean;
 }
 
 // The WarmupSuite is used to make sure all runner helper functions and
