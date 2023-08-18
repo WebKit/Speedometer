@@ -3,7 +3,7 @@
     box-shadow: none !important;
 }
 
-:host(:last-child) {
+:host(:last-child) > .todo-item {
     border-bottom: none;
 }
 
