@@ -38,101 +38,12 @@ The generator is a nodejs script that uses `renderToStaticMarkup` to generate th
 -   Takes `MAX_DEPTH`, `TARGET_SIZE` and to randomly generate the big folder-like structure embedded in the sidebar.
 -   To generate the sidebar, each node decides if it will have children based on the `CHILD_PROB` value. Then randomly chooses a number of children between 1 and `MAX_BREADTH`.
 
-### CSS Generator
+## Install using local path
 
-Matching rules:
-
--   Starts at the list element or view element of a todoMVC item.
--   The right-most selector will include the `:not(.ui)` selector to avoid matching elements in the UI.
--   Randomly decides the length of the selector between 1 and `MAX_SELECTOR_LENGTH`.
--   Randomly picks the selector for the current step, either a class selector, a type selector or a universal selector (maybe add attributes?).
--   Randomly picks the combinator for the current step, either a child combinator, a descendant combinator, a general sibling combinator or an adjacent sibling combinator. It will only pick valid combinators for the current step, i.e. not a sibling combinator if the current node has no sibling.
--   Stops when the target length was reached.
-
-Non Matching rules:
-
--   Starts at the list element or view element of a todoMVC item.
--   Randomly decides the length of the selector between 1 and `MAX_SELECTOR_LENGTH`.
--   Randomly picks the selector for the current step, either a class selector, a type selector or a universal selector (maybe add attributes?).
--   Randomly picks the combinator for the current step, either a child combinator, a descendant combinato, a general sibling combinator or an adjacent sibling combinator. It will only pick valid combinators for the current step, i.e. not a sibling combinator if the current node has no sibling.
--   When the target length was reached, it will add `.just-span` to the left-most selector to force it to not match any element. The `.just-span` is a class name tag that some span elements in the UI have.
-
-## The CSS
-
-## Install
-
-In the root directory of this package, run:
+In the project where we want to use the big-dom-generator package, for example, `Speedometer/resources/todomvc/architecture-examples/react-complex` run:
 
 ```bash
-$ npm link
+$ npm install ../../big-dom-generator --save-dev
 ```
 
-This will create a symlink to the package in the global `node_modules` directory.
-
-In the project where we want to use the big-dom-generator package, run:
-
-```bash
-$ npm link big-dom-generator --save
-```
-
-This will create a symlink to the package in the local `node_modules` directory of the project. The flag `--save` will create an entry in the package.json if one doesn't already exist. Now you can use the package in the project as if it was installed from npm.
-
-## Usage
-
-To use the big-dom-generator package in a javascript project, you can import the CSS file like this:
-
-```javascript
-import "big-dom-generator/generated.css";
-```
-
-This will import the generated.css file from the big-dom-generator package and apply the styles to your web page.
-
-Alternatively, you can include the CSS file in your HTML file using a link tag:
-
-```html
-<link rel="stylesheet" href="node_modules/big-dom-generator/generated.css" />
-```
-
-To use the angular version of the big-dom-generator package in an Angular project:
-
-Import the CSS file in your Angular component:
-
-```javascript
-import "big-dom-generator/angular/generated.css";
-```
-
-Alternatively, you can include the CSS file in your angular.json file:
-
-```json
-{
-    "projects": {
-        "my-app": {
-            "architect": {
-                "build": {
-                    "options": {
-                        "styles": ["node_modules/big-dom-generator/angular/generated.css"]
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
-### What's so special about Angular?
-
-The Angular version of the TodoMVC uses components such as `<app-todo-header>`, `<app-todo-list>`, and `<app-todo-item>` making the default generated.css invalid. This is because the CSS generator doesn't know about these custom elements.
-
-Ex. `<app-todo-list>` wraps around `<main>` which is different from the other implementations of the TodoMVC. The CSS generator doesn't know about this and will generate a selector like this:
-
-```css
-section > .main
-```
-
-instead of
-
-```css
-app-todo-list > .main
-```
-
-To handle this we add a new markup to the CSS generator to make it aware of these custom elements and generate an additoinal CSS file for Angular.
+The flag `--save-dev` will create an entry in the package.json if one doesn't already exist. Now you can use the package in the project as if it was installed from npm.

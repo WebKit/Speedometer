@@ -9,7 +9,7 @@ module.exports = merge(common, {
     mode: "production",
     plugins: [
         new MiniCssExtractPlugin({
-            filename: "[name].css",
+            filename: "big-dom-generator.css",
             chunkFilename: "[id].css",
         }),
         new CopyPlugin({

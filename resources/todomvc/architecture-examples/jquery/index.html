@@ -18,7 +18,7 @@
                     <input id="toggle-all" class="toggle-all" type="checkbox">
                     <label for="toggle-all">Mark all as complete</label>
                 </div>
-                <ul id="todo-list" class="todo-list"></ul>
+                <ul id="todo-list" class="todo-list show-priority"></ul>
             </main>
             <footer id="footer" class="footer"></footer>
         </section>
@@ -29,7 +29,7 @@
         </footer>
         <script id="todo-template" type="text/x-handlebars-template">
             {{#this as |item index|}}
-            <li class="targeted li-{{index}}{{#if item.completed}} completed{{/if}}" data-id="{{item.id}}">
+            <li class="targeted li-{{index}}{{#if item.completed}} completed{{/if}}" data-id="{{item.id}}" data-priority="{{computeTaskPriority index}}">
                 <div class="targeted view-{{index}}">
                     <input class="toggle" type="checkbox" {{#if item.completed}}checked{{/if}}>
                     <label>{{item.title}}</label>

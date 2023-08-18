@@ -1,4 +1,5 @@
 import { Component } from "react";
+import classnames from "classnames";
 import PropTypes from "prop-types";
 import Item from "./item";
 import Footer from "./footer";
@@ -30,7 +31,7 @@ export default class Main extends Component {
                         Toggle All Input
                     </label>
                 </div>
-                <ul className="todo-list" data-testid="todo-list">
+                <ul className={classnames("todo-list", "show-priority")} data-testid="todo-list">
                     {visibleTodos.map((todo, index) => (
                         <Item key={todo.id} todo={todo} editTodo={editTodo} deleteTodo={deleteTodo} toggleTodo={toggleTodo} index={index} />
                     ))}

@@ -54,6 +54,7 @@ export default class Item extends PureComponent {
                     editing: this.state.editing,
                 })}
                 data-testid="todo-item"
+                data-priority={4 - (index % 5)}
             >
                 {element}
             </li>
