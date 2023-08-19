@@ -10,6 +10,7 @@ import "./todo-item.js";
 import { ToggleAllTodoEvent } from "./events.js";
 import { updateOnEvent } from "./utils.js";
 
+const EXTRA_CSS_TO_ADOPT = window.extraTodoListCssToAdopt;
 @customElement("todo-list")
 export class TodoList extends LitElement {
     static override styles = [
@@ -74,6 +75,12 @@ export class TodoList extends LitElement {
     @property({ attribute: false })
         todoList?: Todos;
 
+    override connectedCallback() {
+        super.connectedCallback();
+        if (EXTRA_CSS_TO_ADOPT)
+            this.shadowRoot?.adoptedStyleSheets.push(EXTRA_CSS_TO_ADOPT);
+    }
+
     override render() {
         return html`
             ${(this.todoList?.all.length ?? 0) > 0
@@ -86,7 +93,7 @@ export class TodoList extends LitElement {
                 ${repeat(
         this.todoList?.filtered() ?? [],
         (todo) => todo.id,
-        (todo, index) => html`<todo-item .todoId=${todo.id} .text=${todo.text} .completed=${todo.completed} .index=${index}></todo-item>`
+        (todo, index) => html`<todo-item data-priority=${4 - (index % 5)} .todoId=${todo.id} .text=${todo.text} .completed=${todo.completed}></todo-item>`
     )}
             </ul>
         `;
@@ -101,5 +108,9 @@ declare global {
     // eslint-disable-next-line no-unused-vars
     interface HTMLElementTagNameMap {
         "todo-list": TodoList;
+    }
+    // eslint-disable-next-line no-unused-vars
+    interface Window {
+        extraTodoListCssToAdopt?: CSSStyleSheet;
     }
 }

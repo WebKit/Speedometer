@@ -2,8 +2,8 @@ const template = document.createElement("template");
 
 template.id = "todo-item-template";
 template.innerHTML = `
-    <li class="targeted todo-item">
-        <div class="targeted display-todo">
+    <li class="todo-item">
+        <div class="display-todo">
             <label for="toggle-todo" class="toggle-todo-label visually-hidden">Toggle Todo</label>
             <input id="toggle-todo" class="toggle-todo-input" type="checkbox" />
             <span class="todo-item-text truncate-singleline" tabindex="0">Placeholder Text</span>

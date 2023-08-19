@@ -140,30 +140,20 @@ export class TodoItem extends LitElement {
 
     override connectedCallback() {
         super.connectedCallback();
-        if (!EXTRA_CSS_TO_ADOPT)
-            return;
-        const styleSheetIndex = this.index % EXTRA_CSS_TO_ADOPT.length;
-        const styleSheetToAdopt = EXTRA_CSS_TO_ADOPT[styleSheetIndex];
-        if (styleSheetToAdopt)
-            this.shadowRoot?.adoptedStyleSheets.push(styleSheetToAdopt);
+        if (EXTRA_CSS_TO_ADOPT)
+            this.shadowRoot?.adoptedStyleSheets.push(EXTRA_CSS_TO_ADOPT);
     }
 
     override render() {
         const itemClassList = {
-            targeted: true,
             todo: true,
             completed: this.completed ?? false,
             editing: this.isEditing,
-            [`li-${this.index}`]: true,
-        };
-        const divClassList = {
-            targeted: true,
-            [`view-${this.index}`]: true,
         };
 
         return html`
             <li class="${classMap(itemClassList)}">
-                <div class="${classMap(divClassList)}">
+                <div class="view">
                     <input class="toggle" type="checkbox" .checked=${this.completed ?? false} @change=${this.#toggleTodo} />
                     <label @dblclick=${this.#beginEdit}> ${this.text} </label>
                     <button @click=${this.#deleteTodo} class="destroy"></button>
@@ -209,6 +199,6 @@ declare global {
     }
     // eslint-disable-next-line no-unused-vars
     interface Window {
-        extraCssToAdopt?: CSSStyleSheet[];
+        extraCssToAdopt?: CSSStyleSheet;
     }
 }

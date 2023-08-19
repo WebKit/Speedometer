@@ -6,7 +6,6 @@ import globalStyles from "../../styles/global.constructable.js";
 import itemStyles from "../../styles/todo-item.constructable.js";
 
 const EXTRA_CSS_TO_ADOPT = window.extraCssToAdopt;
-
 class TodoItem extends HTMLElement {
     static get observedAttributes() {
         return ["id", "title", "completed"];
@@ -55,11 +54,8 @@ class TodoItem extends HTMLElement {
                         this.item.id = `todo-item-${this.id}`;
                     break;
                 case "index":
-                    if (this.index !== undefined) {
-                        this.item.classList.add(`li-${this.index}`);
-                        this.displayTodo.classList.add(`view-${this.index}`);
+                    if (this.index !== undefined)
                         this.maybeUpdateCss();
-                    }
                     break;
                 case "title":
                     if (this.title !== undefined) {
@@ -159,16 +155,13 @@ class TodoItem extends HTMLElement {
     }
 
     maybeUpdateCss() {
-        if (!EXTRA_CSS_TO_ADOPT)
-            return;
-        const styleSheetIndex = this.index % EXTRA_CSS_TO_ADOPT.length;
-        const styleSheetToAdopt = EXTRA_CSS_TO_ADOPT[styleSheetIndex];
-        if (styleSheetToAdopt)
-            this.shadow.adoptedStyleSheets.push(styleSheetToAdopt);
+        if (EXTRA_CSS_TO_ADOPT)
+            this.shadow.adoptedStyleSheets.push(EXTRA_CSS_TO_ADOPT);
     }
 
     connectedCallback() {
         this.update("id", "title", "completed", "index");
+        this.maybeUpdateCss();
 
         this.keysListeners.push(
             useKeyListener({

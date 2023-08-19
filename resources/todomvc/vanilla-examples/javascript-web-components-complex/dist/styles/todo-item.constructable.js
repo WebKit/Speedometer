@@ -4,15 +4,15 @@ sheet.replaceSync(`:host {
     box-shadow: none !important;
 }
 
+:host(:last-child) > .todo-item {
+    border-bottom: none;
+}
+
 .todo-item {
     position: relative;
     font-size: 24px;
     border-bottom: 1px solid #ededed;
     height: 60px;
-}
-
-.todo-item:last-child {
-    border-bottom: none;
 }
 
 .todo-item.editing {

@@ -82,7 +82,7 @@ export class TodoApp extends LitElement {
                 <todo-form .todoList=${this.todoList}></todo-form>
             </header>
             <main class="main">
-                <todo-list .todoList=${this.todoList}></todo-list>
+                <todo-list class="show-priority" .todoList=${this.todoList}></todo-list>
             </main>
             <todo-footer
                 class="${classMap({

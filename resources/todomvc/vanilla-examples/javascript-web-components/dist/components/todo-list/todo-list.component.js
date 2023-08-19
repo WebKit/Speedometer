@@ -4,6 +4,7 @@ import TodoItem from "../todo-item/todo-item.component.js";
 import globalStyles from "../../styles/global.constructable.js";
 import listStyles from "../../styles/todo-list.constructable.js";
 
+const EXTRA_CSS_TO_ADOPT = window.extraTodoListCssToAdopt;
 class TodoList extends HTMLElement {
     static get observedAttributes() {
         return ["total-items"];
@@ -14,7 +15,7 @@ class TodoList extends HTMLElement {
 
     constructor() {
         super();
-
+        
         const node = document.importNode(template.content, true);
         this.listNode = node.querySelector(".todo-list");
 
@@ -23,6 +24,7 @@ class TodoList extends HTMLElement {
         this.setAttribute("dir", this.htmlDirection);
         this.shadow.adoptedStyleSheets = [globalStyles, listStyles];
         this.shadow.append(node);
+        this.classList.add("show-priority");
     }
 
     addItem(entry) {
@@ -32,6 +34,7 @@ class TodoList extends HTMLElement {
 
         this.#elements.push(element);
         this.listNode.append(element);
+        element.setAttribute("data-priority", 4 - (element.index % 5));
     }
 
     addItems(items) {
@@ -109,6 +112,8 @@ class TodoList extends HTMLElement {
     }
 
     connectedCallback() {
+        if (EXTRA_CSS_TO_ADOPT)
+            this.shadow.adoptedStyleSheets.push(EXTRA_CSS_TO_ADOPT);
         this.updateStyles();
     }
 }
