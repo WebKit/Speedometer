@@ -21,7 +21,6 @@ class TodoItem extends HTMLElement {
 
         const node = document.importNode(template.content, true);
         this.item = node.querySelector(".todo-item");
-        this.displayTodo = node.querySelector(".display-todo");
         this.toggleLabel = node.querySelector(".toggle-todo-label");
         this.toggleInput = node.querySelector(".toggle-todo-input");
         this.todoText = node.querySelector(".todo-item-text");
@@ -43,7 +42,6 @@ class TodoItem extends HTMLElement {
         this.startEdit = this.startEdit.bind(this);
         this.stopEdit = this.stopEdit.bind(this);
         this.cancelEdit = this.cancelEdit.bind(this);
-        this.maybeUpdateCss = this.maybeUpdateCss.bind(this);
     }
 
     update(...args) {
@@ -52,10 +50,6 @@ class TodoItem extends HTMLElement {
                 case "id":
                     if (this.id !== undefined)
                         this.item.id = `todo-item-${this.id}`;
-                    break;
-                case "index":
-                    if (this.index !== undefined)
-                        this.maybeUpdateCss();
                     break;
                 case "title":
                     if (this.title !== undefined) {
@@ -154,14 +148,11 @@ class TodoItem extends HTMLElement {
             this.update(property);
     }
 
-    maybeUpdateCss() {
+    connectedCallback() {
         if (EXTRA_CSS_TO_ADOPT)
             this.shadow.adoptedStyleSheets.push(EXTRA_CSS_TO_ADOPT);
-    }
 
-    connectedCallback() {
-        this.update("id", "title", "completed", "index");
-        this.maybeUpdateCss();
+        this.update("id", "title", "completed");
 
         this.keysListeners.push(
             useKeyListener({

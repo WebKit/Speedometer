@@ -15,7 +15,7 @@ class TodoList extends HTMLElement {
 
     constructor() {
         super();
-        
+
         const node = document.importNode(template.content, true);
         this.listNode = node.querySelector(".todo-list");
 
