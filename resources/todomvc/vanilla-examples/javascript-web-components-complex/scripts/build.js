@@ -4,15 +4,15 @@ const { buildComplex } = require("big-dom-generator/utils/buildComplex");
 const SOURCE_DIRECTORY = "node_modules/todomvc-javascript-web-components/dist/";
 const TITLE = "TodoMVC: JavaScript Web Components Complex DOM";
 const FILES_TO_MOVE = [
-    "app.css",
     "node_modules/big-dom-generator/dist/big-dom-generator.css",
     "node_modules/big-dom-generator/dist/logo.png",
-    "node_modules/big-dom-generator/utils/default-variables.css",
-    "node_modules/big-dom-generator/utils/todo-list-extra-css.constructable.js",
-    "node_modules/big-dom-generator/utils/javascript-web-components/todo-item-extra-css.constructable.js",
+    "node_modules/big-dom-generator/utils/web-components-css/app.css",
+    "node_modules/big-dom-generator/utils/web-components-css/default-variables.css",
+    "node_modules/big-dom-generator/utils/web-components-css/vanilla/todo-item-extra-css.js",
+    "node_modules/big-dom-generator/utils/web-components-css/todo-list-extra-css.js",
 ];
 const EXTRA_CSS_TO_LINK = ["app.css", "default-variables.css"];
-const SCRIPTS_TO_LINK = ["todo-item-extra-css.constructable.js", "todo-list-extra-css.constructable.js"];
+const SCRIPTS_TO_LINK = ["todo-item-extra-css.js", "todo-list-extra-css.js"];
 
 const options = {
     callerDirectory: path.resolve(__dirname),
