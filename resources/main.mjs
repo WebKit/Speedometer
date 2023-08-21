@@ -67,6 +67,10 @@ class MainBenchmarkClient {
         return true;
     }
 
+    get metrics() {
+        return this._metrics;
+    }
+
     willAddTestFrame(frame) {
         frame.style.left = "50%";
         frame.style.top = "50%";
