@@ -1,5 +1,5 @@
-import { BenchmarkRunner } from "../resources/benchmark-runner.mjs";
-import { defaultParams } from "../resources/params.mjs";
+import { BenchmarkRunner } from "../resources/runner/benchmark-runner.mjs";
+import { defaultParams } from "../resources/runner/params.mjs";
 
 function TEST_FIXTURE(name) {
     return {
