@@ -1,5 +1,4 @@
 import { BenchmarkRunner } from "./benchmark-runner.mjs";
-import "./benchmark-report.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
