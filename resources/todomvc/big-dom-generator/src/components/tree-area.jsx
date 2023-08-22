@@ -1,6 +1,6 @@
 import { MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH } from "../../params";
+import { generateTreeHead } from "./../tree-generator";
 
-import treeHead from "./../tree-generator";
 import ChevronRight from "./../assets/Smock_ChevronRight_18_N.svg";
 import TaskListIcon from "./../assets/Smock_TaskList_18_N.svg";
 
@@ -36,6 +36,11 @@ const TreeItem = (props) => {
 };
 
 export const TreeArea = () => {
+    // FolderWrapper generates 1 dom element.
+    // TreeItem generates either 5 or 10 elements because ChevronRight is
+    // inlined as a svg element with one path child and TaskListIcon is
+    // inlined as a svg element with 4 path children and one defs child.
+    const treeHead = generateTreeHead(1, 5, 10);
     return (
         <div className="tree-area">
             <h4 className="spectrum-Heading spectrum-Heading--sizeXS">Sprints</h4>
