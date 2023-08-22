@@ -84,7 +84,6 @@ var app = app || {};
         addOne: function (todo) {
             const view = new app.TodoView({ model: todo });
             const $el = view.render().$el;
-            $el.addClass(`targeted li-${todo.get("order") - 1}`);
             $el.attr("data-priority", 4 - ((todo.get("order") - 1) % 5));
             this.$list.append($el);
         },
