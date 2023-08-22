@@ -8,24 +8,31 @@ import TaskListIcon from "./../assets/Smock_TaskList_18_N.svg";
 const FolderWrapper = (props) => {
     const { nodeCount, random, maxDepth, maxNumChildren, childProbability, currentDepth } = props;
     // prettier-ignore
-    if (currentDepth >= maxDepth)
+    if (currentDepth >= maxDepth || nodeCount.current >= TARGET_SIZE)
         return null;
+
+    nodeCount.current = nodeCount.current + 1;
     // Choose a random number of children.
     const numChildren = random.randRange(1, maxNumChildren);
     const children = [];
     for (let i = 0; i < numChildren && nodeCount.current < TARGET_SIZE; i++)
         children.push(<TreeItem key={i} nodeCount={nodeCount} random={random} numChildren={numChildren} maxNumChildren={maxNumChildren} maxDepth={maxDepth} childProbability={childProbability} currentDepth={currentDepth + 1} />);
 
-    nodeCount.current = nodeCount.current + 1;
     return <ul className="spectrum-TreeView spectrum-TreeView--sizeS">{children}</ul>;
 };
 
 const TreeItem = (props) => {
     const { nodeCount, random, maxDepth, maxNumChildren, childProbability, currentDepth } = props;
-    nodeCount.current = nodeCount.current + 4;
-    // Choose whether to have children.
+
+    if (currentDepth >= maxDepth || nodeCount.current >= TARGET_SIZE)
+        return null;
     const children = random.coin(childProbability) ? <FolderWrapper nodeCount={nodeCount} random={random} maxNumChildren={maxNumChildren} maxDepth={maxDepth} childProbability={childProbability} currentDepth={currentDepth + 1} /> : null;
     const treeViewItemIsOpen = children && currentDepth < MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH ? "is-open" : "";
+    if (children)
+        nodeCount.current = nodeCount.current + 5;
+    else 
+        nodeCount.current = nodeCount.current + 10;
+    console.log(nodeCount.current);
     return (
         <li className={`spectrum-TreeView-item ${treeViewItemIsOpen}`}>
             <a className="spectrum-TreeView-itemLink">
