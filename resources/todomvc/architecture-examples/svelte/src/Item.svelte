@@ -39,8 +39,8 @@
     }
 </script>
 
-<li class="targeted li-{index}{item.completed ? ' completed' : ''}{editing ? ' editing' : ''}" data-priority={4 - (index % 5)}>
-    <div class="targeted view-{index}">
+<li class="{item.completed ? ' completed' : ''}{editing ? ' editing' : ''}" data-priority={4 - (index % 5)}>
+    <div class="view">
         <input class="toggle" type="checkbox" on:change={(event) => item.completed = event.target.checked} checked={item.completed} />
         <!-- svelte-ignore a11y-label-has-associated-control -->
         <label on:dblclick={startEdit}>{item.description}</label>

@@ -29,8 +29,8 @@
      */
     function Template() {
         this.defaultTemplate
-            = '<li data-id="{{id}}" class="targeted li-{{li-index}} {{completed}}" data-priority="{{priority}}">'
-            + '<div class="targeted view-{{view-index}}">'
+            = '<li data-id="{{id}}" class="{{completed}}" data-priority="{{priority}}">'
+            + '<div class="view">'
             + '<input class="toggle" type="checkbox" {{checked}}>'
             + "<label>{{title}}</label>"
             + '<button class="destroy"></button>'
@@ -73,8 +73,6 @@
             template = template.replace("{{title}}", escape(data[i].title));
             template = template.replace("{{completed}}", completed);
             template = template.replace("{{checked}}", checked);
-            template = template.replace("{{li-index}}", i);
-            template = template.replace("{{view-index}}", i);
             template = template.replace("{{priority}}", 4 - (i % 5));
 
             view = view + template;

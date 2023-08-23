@@ -29,8 +29,8 @@
         </footer>
         <script id="todo-template" type="text/x-handlebars-template">
             {{#this as |item index|}}
-            <li class="targeted li-{{index}}{{#if item.completed}} completed{{/if}}" data-id="{{item.id}}" data-priority="{{computeTaskPriority index}}">
-                <div class="targeted view-{{index}}">
+            <li class="{{#if item.completed}} completed{{/if}}" data-id="{{item.id}}" data-priority="{{computeTaskPriority index}}">
+                <div class="view">
                     <input class="toggle" type="checkbox" {{#if item.completed}}checked{{/if}}>
                     <label>{{item.title}}</label>
                     <button class="destroy"></button>

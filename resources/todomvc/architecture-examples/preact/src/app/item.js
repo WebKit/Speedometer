@@ -47,8 +47,8 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo, index }) {
     }
 
     return (
-        <li class={cx("targeted", `li-${index}`, { completed: todo.completed, editing })} data-priority={4 - (index % 5)}>
-            <div class={cx("targeted", `view-${index}`)}>
+        <li class={cx({ completed: todo.completed, editing })} data-priority={4 - (index % 5)}>
+            <div class="view">
                 <input class="toggle" type="checkbox" checked={todo.completed} onChange={handleToggle} />
                 <label onDblClick={handleDoubleClick}>{todo.title}</label>
                 <button class="destroy" onClick={handleRemove} />
