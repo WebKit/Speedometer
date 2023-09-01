@@ -147,9 +147,6 @@ export class TodoItem extends LitElement {
     @property({ type: Boolean })
         completed = false;
 
-    @property({ type: Number })
-        index = 0;
-
     @state()
         isEditing: boolean = false;
 

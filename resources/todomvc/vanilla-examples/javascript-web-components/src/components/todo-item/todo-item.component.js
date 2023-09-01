@@ -16,7 +16,6 @@ class TodoItem extends HTMLElement {
         this.id = "";
         this.title = "Todo Item";
         this.completed = "false";
-        this.index = 0;
 
         const node = document.importNode(template.content, true);
         this.item = node.querySelector(".todo-item");

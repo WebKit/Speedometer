@@ -16,7 +16,6 @@ class TodoItem extends HTMLElement {
         this.id = "";
         this.title = "Todo Item";
         this.completed = "false";
-        this.index = 0;
 
         const node = document.importNode(template.content, true);
         this.item = node.querySelector(".todo-item");
@@ -44,7 +43,7 @@ class TodoItem extends HTMLElement {
 
         if (window.extraTodoItemCssToAdopt) {
             let extraAdoptedStyleSheet = new CSSStyleSheet();
-            extraAdoptedStyleSheet .replaceSync(window.extraTodoItemCssToAdopt);
+            extraAdoptedStyleSheet.replaceSync(window.extraTodoItemCssToAdopt);
             this.shadow.adoptedStyleSheets.push(extraAdoptedStyleSheet);
         }
     }
