@@ -53,8 +53,8 @@ The big DOM is produced by the generator in a nodejs script that uses `renderToS
 
 The only requirement is an installation of Node, to be able to install dependencies and run scripts to serve a local server.
 
-* Node (min version: 18.13.0)
-* NPM (min version: 8.19.3)
+-   Node (min version: 18.13.0)
+-   NPM (min version: 8.19.3)
 
 ## How to run
 

@@ -316,12 +316,12 @@ class RAFTestInvoker extends TestInvoker {
 
 // https://stackoverflow.com/a/47593316
 function seededHashRandomNumberGenerator(a) {
-    return function() {
-      var t = a += 0x6D2B79F5;
-      t = Math.imul(t ^ t >>> 15, t | 1);
-      t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-      return ((t ^ t >>> 14) >>> 0);
-    }
+    return function () {
+        var t = a += 0x6d2b79f5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return (t ^ (t >>> 14)) >>> 0;
+    };
 }
 
 export class BenchmarkRunner {
@@ -333,9 +333,9 @@ export class BenchmarkRunner {
         this._page = null;
         this._metrics = null;
         this._iterationCount = params.iterationCount;
-        if (params.shuffleSeed !== "off") {
+        if (params.shuffleSeed !== "off")
             this._suiteOrderRandomNumberGenerator = seededHashRandomNumberGenerator(params.shuffleSeed);
-        }
+
     }
 
     async runMultipleIterations(iterationCount) {
