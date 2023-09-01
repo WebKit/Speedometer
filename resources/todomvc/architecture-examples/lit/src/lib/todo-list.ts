@@ -17,7 +17,7 @@ declare global {
     }
     // eslint-disable-next-line no-unused-vars
     interface Window {
-        extraTodoListCssToAdopt?: CSSStyleSheet;
+        extraTodoListCssToAdopt?: string;
     }
 }
 
