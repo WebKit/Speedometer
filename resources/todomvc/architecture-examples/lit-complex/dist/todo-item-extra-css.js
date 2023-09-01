@@ -1,8 +1,6 @@
-const additionalStyleSheet = new CSSStyleSheet();
-
 // pri-4 variables are used but not defined, so background-color and
 // border-color will fall back to the default variables.
-additionalStyleSheet.replaceSync(`
+const additionalStyleSheet = `
     :host([data-priority="0"]) > li {
         --priority-background-color: var(--complex-todo-red-pri-0);
         --priority-background-color-completed: var(--complex-todo-green-pri-0);
@@ -44,7 +42,6 @@ additionalStyleSheet.replaceSync(`
     .todo.completed > div > :focus,
     .todo.completed > div > .toggle:focus + label {
         box-shadow: var(--complex-box-shadow-green) !important;
-    }
-`);
+    }`;
 
 window.extraTodoItemCssToAdopt = additionalStyleSheet;

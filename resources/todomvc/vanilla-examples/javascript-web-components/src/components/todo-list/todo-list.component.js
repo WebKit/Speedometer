@@ -24,6 +24,12 @@ class TodoList extends HTMLElement {
         this.shadow.adoptedStyleSheets = [globalStyles, listStyles];
         this.shadow.append(node);
         this.classList.add("show-priority");
+
+        if (window.extraTodoListCssToAdopt) {
+            let extraAdoptedStyleSheet = new CSSStyleSheet();
+            extraAdoptedStyleSheet.replaceSync(window.extraTodoListCssToAdopt);
+            this.shadow.adoptedStyleSheets.push(extraAdoptedStyleSheet);
+        }
     }
 
     addItem(entry) {
@@ -111,8 +117,6 @@ class TodoList extends HTMLElement {
     }
 
     connectedCallback() {
-        if (window.extraTodoListCssToAdopt)
-            this.shadow.adoptedStyleSheets.push(window.extraTodoListCssToAdopt);
         this.updateStyles();
     }
 }

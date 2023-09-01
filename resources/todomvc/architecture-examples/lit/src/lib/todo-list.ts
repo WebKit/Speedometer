@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing } from "lit";
+import { LitElement, html, css, nothing, unsafeCSS } from "lit";
 import { customElement } from "lit/decorators/custom-element.js";
 import { property } from "lit/decorators/property.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -9,6 +9,17 @@ import { type Todos } from "./todos.js";
 import "./todo-item.js";
 import { ToggleAllTodoEvent } from "./events.js";
 import { updateOnEvent } from "./utils.js";
+
+declare global {
+    // eslint-disable-next-line no-unused-vars
+    interface HTMLElementTagNameMap {
+        "todo-list": TodoList;
+    }
+    // eslint-disable-next-line no-unused-vars
+    interface Window {
+        extraTodoListCssToAdopt?: CSSStyleSheet;
+    }
+}
 
 @customElement("todo-list")
 export class TodoList extends LitElement {
@@ -68,17 +79,16 @@ export class TodoList extends LitElement {
                 border-bottom: none;
             }
         `,
+        window.extraTodoListCssToAdopt
+            ? css`
+                  ${unsafeCSS(window.extraTodoListCssToAdopt)}
+              `
+            : css``,
     ];
 
     @updateOnEvent("change")
     @property({ attribute: false })
         todoList?: Todos;
-
-    override connectedCallback() {
-        super.connectedCallback();
-        if (window.extraTodoListCssToAdopt)
-            this.shadowRoot?.adoptedStyleSheets.push(window.extraTodoListCssToAdopt);
-    }
 
     override render() {
         return html`
@@ -100,16 +110,5 @@ export class TodoList extends LitElement {
 
     #onToggleAllChange() {
         this.dispatchEvent(new ToggleAllTodoEvent());
-    }
-}
-
-declare global {
-    // eslint-disable-next-line no-unused-vars
-    interface HTMLElementTagNameMap {
-        "todo-list": TodoList;
-    }
-    // eslint-disable-next-line no-unused-vars
-    interface Window {
-        extraTodoListCssToAdopt?: CSSStyleSheet;
     }
 }

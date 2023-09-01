@@ -1,6 +1,4 @@
-const additionalTodoListStyleSheet = new CSSStyleSheet();
-
-additionalTodoListStyleSheet.replaceSync(`:host(.show-priority) {
+const additionalTodoListStyleSheet = `:host(.show-priority) {
     --complex-todo-red-pri-0: rgb(253, 204, 204);
     --complex-todo-red-pri-1: rgb(248, 221, 221);
     --complex-todo-red-pri-2: rgb(251, 234, 234);
@@ -15,6 +13,6 @@ additionalTodoListStyleSheet.replaceSync(`:host(.show-priority) {
     --complex-todo-green-label: rgb(135, 167, 144);
     --complex-box-shadow-red: rgb(193, 133, 133) 0 0 2px 2px inset;
     --complex-box-shadow-green: rgb(125, 207, 137) 0 0 2px 2px inset;
-}`);
+}`;
 
 window.extraTodoListCssToAdopt = additionalTodoListStyleSheet;
