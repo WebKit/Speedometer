@@ -335,10 +335,6 @@ export class BenchmarkRunner {
         this._iterationCount = params.iterationCount;
         if (params.shuffleSeed !== "off")
             this._suiteOrderRandomNumberGenerator = seededHashRandomNumberGenerator(params.shuffleSeed);
-<<<<<<< HEAD
-=======
-
->>>>>>> main
     }
 
     async runMultipleIterations(iterationCount) {
