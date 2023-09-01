@@ -5,7 +5,6 @@ import { useKeyListener } from "../../hooks/useKeyListener.js";
 import globalStyles from "../../styles/global.constructable.js";
 import itemStyles from "../../styles/todo-item.constructable.js";
 
-const EXTRA_CSS_TO_ADOPT = window.extraCssToAdopt;
 class TodoItem extends HTMLElement {
     static get observedAttributes() {
         return ["id", "title", "completed"];
@@ -149,8 +148,8 @@ class TodoItem extends HTMLElement {
     }
 
     connectedCallback() {
-        if (EXTRA_CSS_TO_ADOPT)
-            this.shadow.adoptedStyleSheets.push(EXTRA_CSS_TO_ADOPT);
+        if (window.extraTodoItemCssToAdopt)
+            this.shadow.adoptedStyleSheets.push(window.extraTodoItemCssToAdopt);
 
         this.update("id", "title", "completed");
 

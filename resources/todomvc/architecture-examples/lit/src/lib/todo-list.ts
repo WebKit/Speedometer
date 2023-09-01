@@ -10,7 +10,6 @@ import "./todo-item.js";
 import { ToggleAllTodoEvent } from "./events.js";
 import { updateOnEvent } from "./utils.js";
 
-const EXTRA_CSS_TO_ADOPT = window.extraTodoListCssToAdopt;
 @customElement("todo-list")
 export class TodoList extends LitElement {
     static override styles = [
@@ -77,8 +76,8 @@ export class TodoList extends LitElement {
 
     override connectedCallback() {
         super.connectedCallback();
-        if (EXTRA_CSS_TO_ADOPT)
-            this.shadowRoot?.adoptedStyleSheets.push(EXTRA_CSS_TO_ADOPT);
+        if (window.extraTodoListCssToAdopt)
+            this.shadowRoot?.adoptedStyleSheets.push(window.extraTodoListCssToAdopt);
     }
 
     override render() {

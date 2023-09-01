@@ -1,18 +1,28 @@
 const additionalStyleSheet = new CSSStyleSheet();
-const PRIORITY_LEVELS = 5;
 
-let priorityRules = [];
-for (let i = 0; i < PRIORITY_LEVELS; i++) {
-    priorityRules.push(`
-        :host([data-priority="${i}"]) > li {
-            --priority-background-color: var(--complex-todo-red-pri-${i});
-            --priority-background-color-completed: var(--complex-todo-green-pri-${i});
-        }`);
-}
-priorityRules = priorityRules.join("\n");
-
+// pri-4 variables are used but not defined, so background-color and
+// border-color will fall back to the default variables.
 additionalStyleSheet.replaceSync(`
-    ${priorityRules}
+    :host([data-priority="0"]) > li {
+        --priority-background-color: var(--complex-todo-red-pri-0);
+        --priority-background-color-completed: var(--complex-todo-green-pri-0);
+    }
+    :host([data-priority="1"]) > li {
+        --priority-background-color: var(--complex-todo-red-pri-1);
+        --priority-background-color-completed: var(--complex-todo-green-pri-1);
+    }
+    :host([data-priority="2"]) > li {
+        --priority-background-color: var(--complex-todo-red-pri-2);
+        --priority-background-color-completed: var(--complex-todo-green-pri-2);
+    }
+    :host([data-priority="3"]) > li {
+        --priority-background-color: var(--complex-todo-red-pri-3);
+        --priority-background-color-completed: var(--complex-todo-green-pri-3);
+    }
+    :host([data-priority="4"]) > li {
+        --priority-background-color: var(--complex-todo-red-pri-4);
+        --priority-background-color-completed: var(--complex-todo-green-pri-4);
+    }
     .todo {
         background-color: var(--priority-background-color, var(--complex-background-color-default));
         border-bottom-color: var(--complex-todo-red-border, var(--complex-border-bottom-color-default));
@@ -37,4 +47,4 @@ additionalStyleSheet.replaceSync(`
     }
 `);
 
-window.extraCssToAdopt = additionalStyleSheet;
+window.extraTodoItemCssToAdopt = additionalStyleSheet;

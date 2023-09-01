@@ -7,7 +7,6 @@ import { classMap } from "lit/directives/class-map.js";
 import { todoStyles } from "./todo.css.js";
 import { DeleteTodoEvent, EditTodoEvent } from "./events.js";
 
-const EXTRA_CSS_TO_ADOPT = window.extraCssToAdopt;
 @customElement("todo-item")
 export class TodoItem extends LitElement {
     static override styles = [
@@ -140,8 +139,8 @@ export class TodoItem extends LitElement {
 
     override connectedCallback() {
         super.connectedCallback();
-        if (EXTRA_CSS_TO_ADOPT)
-            this.shadowRoot?.adoptedStyleSheets.push(EXTRA_CSS_TO_ADOPT);
+        if (window.extraTodoItemCssToAdopt)
+            this.shadowRoot?.adoptedStyleSheets.push(window.extraTodoItemCssToAdopt);
     }
 
     override render() {
@@ -192,6 +191,7 @@ export class TodoItem extends LitElement {
         input.value = this.text ?? "";
     }
 }
+
 declare global {
     // eslint-disable-next-line no-unused-vars
     interface HTMLElementTagNameMap {
@@ -199,6 +199,6 @@ declare global {
     }
     // eslint-disable-next-line no-unused-vars
     interface Window {
-        extraCssToAdopt?: CSSStyleSheet;
+        extraTodoItemCssToAdopt?: CSSStyleSheet;
     }
 }
