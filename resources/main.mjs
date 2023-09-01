@@ -1,5 +1,4 @@
 import { BenchmarkRunner } from "./benchmark-runner.mjs";
-import "./benchmark-report.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
@@ -65,6 +64,10 @@ class MainBenchmarkClient {
         const runner = new BenchmarkRunner(Suites, this);
         runner.runMultipleIterations(params.iterationCount);
         return true;
+    }
+
+    get metrics() {
+        return this._metrics;
     }
 
     willAddTestFrame(frame) {
