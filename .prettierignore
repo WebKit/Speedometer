@@ -13,6 +13,7 @@ package-lock.json
 !/resources/todomvc/architecture-examples/lit
 /resources/todomvc/architecture-examples/lit/dist/index.js
 /resources/todomvc/architecture-examples/lit/.wireit
+!/resources/todomvc/architecture-examples/lit-complex
 !/resources/todomvc/architecture-examples/preact
 !/resources/todomvc/architecture-examples/preact-complex
 !/resources/todomvc/architecture-examples/react
@@ -32,6 +33,7 @@ package-lock.json
 !/resources/todomvc/vanilla-examples/javascript-es6-webpack
 !/resources/todomvc/vanilla-examples/javascript-es6-webpack-complex
 !/resources/todomvc/vanilla-examples/javascript-web-components
+!/resources/todomvc/vanilla-examples/javascript-web-components-complex/
 
 !/resources/todomvc/big-dom-generator
 

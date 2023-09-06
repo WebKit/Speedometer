@@ -1,5 +1,5 @@
 {
-    "name": "javascript-web-components",
+    "name": "todomvc-javascript-web-components",
     "version": "1.0.0",
     "description": "TodoMVC app written with JavaScript using web components.",
     "engines": {
