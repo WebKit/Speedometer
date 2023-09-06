@@ -1,3 +1,4 @@
+// pri-4 variables are purposely not defined to test the fallback to the default variables.
 const additionalTodoListStyleSheet = `:host(.show-priority) {
     --complex-todo-red-pri-0: rgb(253, 204, 204);
     --complex-todo-red-pri-1: rgb(248, 221, 221);
