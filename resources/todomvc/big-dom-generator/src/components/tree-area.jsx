@@ -40,7 +40,8 @@ export const TreeArea = () => {
     // TreeItem generates either 5 or 10 elements because ChevronRight is
     // inlined as a svg element with one path child and TaskListIcon is
     // inlined as a svg element with 4 path children and one defs child.
-    const treeHead = generateTreeHead(1, 5, 10);
+    const treeOptions = { listWeight: 1, openItemWeight: 5, closedItemWeight: 10 };
+    const treeHead = generateTreeHead(treeOptions);
     return (
         <div className="tree-area">
             <h4 className="spectrum-Heading spectrum-Heading--sizeXS">Sprints</h4>
