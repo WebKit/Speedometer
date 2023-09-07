@@ -186,7 +186,7 @@ function updateURL() {
     // to comma separate only the selected
     const selectedSuites = Suites.filter((suite) => !suite.disabled);
 
-    if (!selectedSuites.length || selectedSuites.length === Suites.length) {
+    if (!selectedSuites.length) {
         url.searchParams.delete("tags");
         url.searchParams.delete("suites");
         url.searchParams.delete("suite");
@@ -202,7 +202,11 @@ function updateURL() {
                 commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
         }
         if (commonTags.size) {
-            url.searchParams.set("tags", [...commonTags][0]);
+            const tags = [...commonTags][0];
+            if (tags === "default")
+                url.searchParams.delete("tags");
+            else
+                url.searchParams.set("tags", tags);
             url.searchParams.delete("suites");
         } else {
             url.searchParams.delete("tags");
