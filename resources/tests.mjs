@@ -141,7 +141,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) {
                 const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
                 item.click();
             }
@@ -440,7 +440,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const todoItems = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
-            for (let i = 0; i < numberOfItemsToAdd; i++) {
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) {
                 const deleteButton = todoItems[i].querySelectorInShadowRoot(".destroy");
                 deleteButton.click();
             }
