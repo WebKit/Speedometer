@@ -111,7 +111,7 @@ class Params {
             this.shuffleSeed = searchParams.get("shuffleSeed");
             if (this.shuffleSeed !== "off") {
                 if (this.shuffleSeed === "generate") {
-                    this.shuffleSeed = Math.floor(Math.random() * 1 << 16);
+                    this.shuffleSeed = Math.floor((Math.random() * 1) << 16);
                     console.log(`Generated a random suite order seed: ${this.shuffleSeed}`);
                 } else {
                     this.shuffleSeed = parseInt(this.shuffleSeed);
