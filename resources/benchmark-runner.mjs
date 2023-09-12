@@ -548,7 +548,7 @@ export class BenchmarkRunner {
     }
 
     _appendIterationMetrics() {
-        const getMetric = (name) => this._metrics[name] || (this._metrics[name] = new Metric(name));
+        const getMetric = (name, unit = "ms") => this._metrics[name] || (this._metrics[name] = new Metric(name, unit));
         const iterationTotalMetric = (i) => {
             if (i >= params.iterationCount)
                 throw new Error(`Requested iteration=${i} does not exist.`);
@@ -579,7 +579,7 @@ export class BenchmarkRunner {
             for (let i = 0; i < this._iterationCount; i++)
                 iterationTotalMetric(i);
             getMetric("Geomean");
-            getMetric("Score");
+            getMetric("Score", "score");
         }
 
         const geomean = getMetric("Geomean");
