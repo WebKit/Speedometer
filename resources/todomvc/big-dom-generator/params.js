@@ -9,4 +9,4 @@ export const TARGET_SIZE = 6000;
 // The generator will ensure that the generated DOM tree has
 // at least MIN_NUMBER_OF_MAX_DEPTH_BRANCHES of depth MAX_GENERATED_DOM_DEPTH.
 export const MIN_NUMBER_OF_MAX_DEPTH_BRANCHES = 2;
-export const MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH = 15;
+export const MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH = 8;
