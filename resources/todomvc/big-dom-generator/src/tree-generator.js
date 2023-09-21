@@ -43,11 +43,6 @@ export const generateTreeHead = ({ expandableItemWeight, nonExpandableItemWeight
             currentDepth++;
             totalNodes += nodeWeight[childType];
         }
-        // Ensure the last node is not an expandableItem.
-        if (currentNode.type === "expandableItem") {
-            currentNode.type = "nonExpandableItem";
-            totalNodes = totalNodes - nodeWeight["expandableItem"] + nodeWeight["nonExpandableItem"];
-        }
     }
 
     const treeNodes = [treeHead];
