@@ -36,9 +36,9 @@ class TodoList extends HTMLElement {
         const { id, title, completed } = entry;
         const element = new TodoItem();
 
-        element.setAttribute("item-id", id);
-        element.setAttribute("item-title", title);
-        element.setAttribute("item-completed", completed);
+        element.setAttribute("itemid", id);
+        element.setAttribute("itemtitle", title);
+        element.setAttribute("itemcompleted", completed);
 
         const elementIndex = this.#elements.length;
         this.#elements.push(element);
@@ -52,18 +52,18 @@ class TodoList extends HTMLElement {
 
     removeCompletedItems() {
         this.#elements = this.#elements.filter((element) => {
-            if (element["item-completed"] === "true")
+            if (element.itemcompleted === "true")
                 element.removeItem();
 
-            return element["item-completed"] === "false";
+            return element.itemcompleted === "false";
         });
     }
 
     toggleItems(completed) {
         this.#elements.forEach((element) => {
-            if (completed && element["item-completed"] === "false")
+            if (completed && element.itemcompleted === "false")
                 element.toggleInput.click();
-            else if (!completed && element["item-completed"] === "true")
+            else if (!completed && element.itemcompleted === "true")
                 element.toggleInput.click();
         });
     }
@@ -78,10 +78,10 @@ class TodoList extends HTMLElement {
     updateView(element) {
         switch (this.#route) {
             case "completed":
-                element.style.display = element["item-completed"] === "true" ? "block" : "none";
+                element.style.display = element.itemcompleted === "true" ? "block" : "none";
                 break;
             case "active":
-                element.style.display = element["item-completed"] === "true" ? "none" : "block";
+                element.style.display = element.itemcompleted === "true" ? "none" : "block";
                 break;
             default:
                 element.style.display = "block";
@@ -96,13 +96,12 @@ class TodoList extends HTMLElement {
             case "toggle-item":
             case "add-item":
                 this.#elements.forEach((element) => {
-                    if (element["item-id"] === id)
+                    if (element.itemid === id)
                         this.updateView(element);
                 });
                 break;
             case "remove-item":
-                this.#elements = this.#elements.filter((element) => element.id !== id);
-
+                this.#elements = this.#elements.filter((element) => element.itemid !== id);
                 break;
         }
     }
