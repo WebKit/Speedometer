@@ -13,7 +13,6 @@
     },
     "devDependencies": {
         "big-dom-generator": "file:../../big-dom-generator",
-        "jsdom": "^22.1.0",
         "todomvc-angular": "file:../angular"
     }
 }
