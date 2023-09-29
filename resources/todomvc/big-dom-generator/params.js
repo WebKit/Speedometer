@@ -1,3 +1,9 @@
+/**
+ * This file exports several constants that are used to generate a large DOM tree for the TodoMVC application
+ * as well as to generate a CSS selector that targets a specific element in the generated DOM tree.
+ */
+
+// The default seed value for the random number generator.
 export const DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR = 4212021;
 
 // Constraints for the generated tree-view side panel for the complex DOM shell
