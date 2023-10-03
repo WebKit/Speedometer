@@ -33,13 +33,9 @@ class Page {
         return new Promise((resolve) => {
             const resolveIfReady = () => {
                 const element = this.querySelector(selector);
-                if (element) {
-                    window.requestAnimationFrame(() => {
-                        return resolve(element);
-                    });
-                } else {
-                    setTimeout(resolveIfReady, 50);
-                }
+                if (element)
+                    return resolve(element);
+                window.requestAnimationFrame(resolveIfReady);
             };
             resolveIfReady();
         });
