@@ -34,8 +34,9 @@ class Page {
             const resolveIfReady = () => {
                 const element = this.querySelector(selector);
                 if (element)
-                    return resolve(element);
-                window.requestAnimationFrame(resolveIfReady);
+                    resolve(element);
+                else
+                    window.requestAnimationFrame(resolveIfReady);
             };
             resolveIfReady();
         });
