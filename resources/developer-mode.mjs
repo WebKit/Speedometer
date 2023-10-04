@@ -14,18 +14,22 @@ export function createDeveloperModeContainer() {
     content.className = "developer-mode-content";
     content.append(createUIForSuites());
     content.append(document.createElement("hr"));
+    content.append(createUIForIterationCount());
+    content.append(document.createElement("br"));
     content.append(createUIForMeasurementMethod());
     content.append(document.createElement("br"));
     content.append(createUIForWarmupSuite());
     content.append(document.createElement("br"));
-    content.append(createUIForIterationCount());
+    content.append(createUIForWarmupBeforeSync())
+    content.append(document.createElement("br"));
+    content.append(createUIForSyncStepDelay());
     details.append(content);
 
     container.append(details);
     return container;
 }
 
-export function createUIForMeasurementMethod() {
+function createUIForMeasurementMethod() {
     let check = document.createElement("input");
     check.type = "checkbox";
     check.id = "measurement-method";
@@ -42,7 +46,33 @@ export function createUIForMeasurementMethod() {
     return label;
 }
 
-export function createUIForWarmupSuite() {
+
+function createUIForIterationCount() {
+    let range = document.createElement("input");
+    range.type = "range";
+    range.id = "iteration-count";
+    range.min = 1;
+    range.max = 20;
+    range.value = params.iterationCount;
+
+    let label = document.createElement("label");
+    let countLabel = document.createElement("span");
+    countLabel.textContent = params.iterationCount;
+    label.append("Iterations: ", countLabel, document.createElement("br"), range);
+
+    range.oninput = () => {
+        countLabel.textContent = range.value;
+    };
+
+    range.onchange = () => {
+        params.iterationCount = parseInt(range.value);
+        updateURL();
+    };
+
+    return label;
+}
+
+function createUIForWarmupSuite() {
     let check = document.createElement("input");
     check.type = "checkbox";
     check.id = "warmup-suite";
@@ -59,32 +89,46 @@ export function createUIForWarmupSuite() {
     return label;
 }
 
-export function createUIForIterationCount() {
-    let range = document.createElement("input");
+function createUIForWarmupBeforeSync() {
+    const {range, label} = createTimeRangeUI("Warmup time: ", params.warmupBeforeSync);
+    range.onchange = () => {
+        params.warmupBeforeSync = parseInt(range.value);
+        updateURL();
+    };
+    return label;
+}
+
+function createUIForSyncStepDelay() {
+    const {range, label} = createTimeRangeUI("Sync step delay: ", params.waitBeforeSync);
+    range.onchange = () => {
+        params.waitBeforeSync = parseInt(range.value);
+        updateURL();
+    };
+    return label;
+}
+
+
+function createTimeRangeUI(labelText, initialValue) {
+    const range = document.createElement("input");
     range.type = "range";
     range.id = "iteration-count";
-    range.min = 1;
-    range.max = 20;
-    range.value = params.iterationCount;
+    range.min = 0;
+    range.max = 1000;
+    range.value = initialValue;
 
-    let label = document.createElement("label");
-    let countLabel = document.createElement("span");
-    countLabel.textContent = params.iterationCount;
-    label.append("iterations: ", countLabel, document.createElement("br"), range);
+    const label = document.createElement("label");
+    const countLabel = document.createElement("span");
+    countLabel.textContent = initialValue;
+    label.append(labelText, countLabel, " ms", document.createElement("br"), range);
 
     range.oninput = () => {
         countLabel.textContent = range.value;
     };
 
-    range.onchange = () => {
-        params.iterationCount = parseInt(range.value);
-        updateURL();
-    };
-
-    return label;
+    return {range, label};
 }
 
-export function createUIForSuites() {
+function createUIForSuites() {
     const control = document.createElement("nav");
     const ol = document.createElement("ol");
     const checkboxes = [];
@@ -228,6 +272,16 @@ function updateURL() {
         url.searchParams.set("useWarmupSuite", params.useWarmupSuite);
     else
         url.searchParams.delete("useWarmupSuite");
+
+    if (params.warmupBeforeSync !== defaultParams.warmupBeforeSync)
+        url.searchParams.set("warmupBeforeSync", params.warmupBeforeSync);
+    else
+        url.searchParams.delete("warmupBeforeSync");
+
+    if (params.waitBeforeSync !== defaultParams.waitBeforeSync)
+        url.searchParams.set("waitBeforeSync", params.waitBeforeSync);
+    else
+        url.searchParams.delete("waitBeforeSync");
 
     // Only push state if changed
     url.search = decodeURIComponent(url.search);
