@@ -11,7 +11,7 @@
         "build": "rollup -c",
         "watch": "rollup -c -w",
         "serve": "http-server ./dist -p 7002 -c-1 --cors",
-        "dev": "npm run serve & npm run watch --no-watch.clearScreen"
+        "dev": "npm run serve & npm run watch"
     },
     "dependencies": {
         "todomvc-app-css": "^2.4.2",
