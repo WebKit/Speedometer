@@ -1,4 +1,5 @@
 <script>
+    import { onMount } from 'svelte';
     import { router } from './router.js';
     import { uuid } from './utils.js';
 
@@ -12,7 +13,6 @@
 
     let currentFilter = "all";
     let items = [];
-    let editing = null;
 
     function addItem(event) {
         items.push({
@@ -31,8 +31,8 @@
     function toggleAllItems(event) {
         const checked = event.target.checked;
         items = items.map((item) => ({
-        ...item,
-        completed: checked,
+            ...item,
+            completed: checked,
         }));
     }
 
@@ -40,7 +40,9 @@
         items = items.filter((item) => !item.completed);
     }
     
-    router(route => currentFilter = route).init();
+    onMount(() => {
+      router(route => currentFilter = route).init();
+    });
 
     $: filtered = currentFilter === "all" ? items : currentFilter === "completed" ? items.filter((item) => item.completed) : items.filter((item) => !item.completed);
     $: numActive = items.filter((item) => !item.completed).length;
@@ -57,10 +59,10 @@
         </div>
         <ul class="todo-list show-priority">
             {#each filtered as item, index (item.id)}
-                <Item bind:item editing={editing} index={index} on:removeItem={() => removeItem(index)} />
+                <Item bind:item index={index} on:removeItem={() => removeItem(index)} />
             {/each}
         </ul>
 
-        <Footer numActive={numActive} currentFilter={currentFilter} numCompleted={numCompleted} on:removeCompletedItems={removeCompletedItems} />
+        <Footer {numActive} {currentFilter} {numCompleted} on:removeCompletedItems={removeCompletedItems} />
     </main>
 {/if}

@@ -11,9 +11,24 @@ This application uses Svelte 3.58.0 to implement a todo application.
 
 This app has been inspired by the [official Svelte Todomvc app](https://github.com/sveltejs/svelte-todomvc).
 
-[TBD]
+To showcase how a larger application could be architected, we opted to build the todoMVC app with multiple components.
+Components can communicate through events to trigger changes in other components. For example, the Item component dispatchtes the `removeItem` event, which the App component listens for and updates the todo array.
+Additionally, component bindings are used to update automatically any item that changed from within the Item component (`item.description` and `item.completed`).
 
-## Built steps
+Svelte doesn't try to force a specific architectural pattern and instead is a component framework.
+A loose mapping of an MVC pattern:
+
+Svelte:
+Model: App component
+View: UI components
+Controller: App component + component bindings
+
+MVC:
+Model: Maintains the data and behavior of an application
+View: Displays the model in the ui
+Controller: Serves as an interface between view & model components
+
+## Build steps
 
 ```
 terminal:
