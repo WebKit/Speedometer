@@ -64,7 +64,7 @@ sheet.replaceSync(`:host {
 }
 
 .todo-item-text {
-    word-break: break-word;
+    overflow-wrap: break-word;
     padding: 0 60px;
     display: block;
     line-height: 60px;
