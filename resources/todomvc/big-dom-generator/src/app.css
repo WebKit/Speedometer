@@ -86,6 +86,14 @@ Importing the CSS from the Spectrum CSS library.
     min-width: 30px;
 }
 
+.display-none {
+    display: none;
+}
+
+.spectrum-TreeView-item.is-open > .spectrum-TreeView {
+    visibility: unset;
+}
+
 /*
 Layout CSS for the UI.
 */

@@ -3,6 +3,39 @@ import { DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR, MAX_GENERATED_DOM_DEPTH, MAX_
 
 const random = new LCG(DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR);
 
+const fillSubtreeWeights = (node, expandableItemWeight, nonExpandableItemWeight) => {
+    if (node.type === "expandableItem")
+        node.subTreeWeight = node.children.reduce((acc, child) => acc + fillSubtreeWeights(child, expandableItemWeight, nonExpandableItemWeight), expandableItemWeight);
+    else
+        node.subTreeWeight = nonExpandableItemWeight;
+
+    return node.subTreeWeight;
+};
+
+const markDisplayNoneNodes = (node, expandableItemWeight, nonExpandableItemWeight) => {
+    let currentSubTreesWeights = node.subTreeWeight;
+    let currentIndex = 0;
+    let nodeQueue = [node];
+    while (currentSubTreesWeights >= TARGET_SIZE / 2) {
+        const currentNode = nodeQueue[currentIndex];
+        nodeQueue[currentIndex] = null;
+        const expandableChildren = currentNode.children.filter((child) => child.type === "expandableItem");
+        if (expandableChildren.length) {
+            nodeQueue.push(...expandableChildren);
+            currentSubTreesWeights -= expandableItemWeight;
+            let numberOfNonExpandableChildren = currentNode.children.length - expandableChildren.length;
+            currentSubTreesWeights -= numberOfNonExpandableChildren * nonExpandableItemWeight;
+        } else {
+            currentSubTreesWeights -= currentNode.subTreeWeight;
+        }
+        currentIndex++;
+    }
+    nodeQueue.forEach((node) => {
+        if (node)
+            node.isDisplayNone = true;
+    });
+};
+
 /**
  * Generates the blueprint of the tree-view side panel for the complex DOM shell with expandable and non-expandable items.
  * It starts with the minimum number of maximum-depth branches and randomly adds
@@ -21,15 +54,21 @@ const random = new LCG(DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR);
  *         children: [
  *           {
  *             type: "nonExpandableItem",
- *             children: []
+ *             children: [],
+ *             isDisplayNone: false,
+ *             subTreeWeight: 0,
  *           }
- *         ]
+ *         ],
+ *         isDisplayNone: false,
+ *        subTreeWeight: 0,
  *      }
- *    ]
+ *    ],
+ *    isDisplayNone: false,
+ *    subTreeWeight: 0,
  * }
  **/
 export const generateTreeHead = ({ expandableItemWeight, nonExpandableItemWeight }) => {
-    const treeHead = { type: "expandableItem", children: [] };
+    const treeHead = { type: "expandableItem", children: [], isDisplayNone: false, subTreeWeight: 0 };
     const nodeWeight = { expandableItem: expandableItemWeight, nonExpandableItem: nonExpandableItemWeight };
 
     let totalNodes = expandableItemWeight;
@@ -85,5 +124,7 @@ export const generateTreeHead = ({ expandableItemWeight, nonExpandableItemWeight
         }
     }
 
+    fillSubtreeWeights(treeHead, expandableItemWeight, nonExpandableItemWeight);
+    markDisplayNoneNodes(treeHead, expandableItemWeight, nonExpandableItemWeight);
     return treeHead;
 };

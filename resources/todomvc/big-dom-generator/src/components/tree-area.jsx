@@ -1,5 +1,6 @@
 import { MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH } from "../../params";
 import { generateTreeHead } from "./../tree-generator";
+import classNames from "classnames";
 
 import ChevronRight from "./../assets/Smock_ChevronRight_18_N.svg";
 import TaskListIcon from "./../assets/Smock_TaskList_18_N.svg";
@@ -8,10 +9,10 @@ const TreeItem = (props) => {
     const { treeNode, currentDepth } = props;
 
     const isExpandableItem = treeNode.type === "expandableItem";
-    const treeViewItemIsOpen = isExpandableItem && currentDepth < MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH ? "is-open" : "";
+    const treeViewItemIsOpen = isExpandableItem && (currentDepth !== MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH || treeNode.isDisplayNone);
 
     return (
-        <li className={`spectrum-TreeView-item ${treeViewItemIsOpen} nodetype-${treeNode.type}`}>
+        <li className={classNames("spectrum-TreeView-item", { "display-none": treeNode.isDisplayNone, "is-open": treeViewItemIsOpen }, `nodetype-${treeNode.type}`)}>
             {isExpandableItem
                 ? <>
                     <a className="spectrum-TreeView-itemLink">
