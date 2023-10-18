@@ -7,15 +7,18 @@ import itemStyles from "../../styles/todo-item.constructable.js";
 
 class TodoItem extends HTMLElement {
     static get observedAttributes() {
-        return ["id", "title", "completed"];
+        return ["itemid", "itemtitle", "itemcompleted"];
     }
 
     constructor() {
         super();
 
-        this.id = "";
-        this.title = "Todo Item";
-        this.completed = "false";
+        // Renamed this.id to this.itemid and this.title to this.itemtitle.
+        // When the component assigns to this.id or this.title, this causes the browser's implementation of the existing setters to run, which convert these property sets into internal setAttribute calls. This can have surprising consequences.
+        // [Issue]: https://github.com/WebKit/Speedometer/issues/313
+        this.itemid = "";
+        this.itemtitle = "Todo Item";
+        this.itemcompleted = "false";
 
         const node = document.importNode(template.content, true);
         this.item = node.querySelector(".todo-item");
@@ -51,18 +54,18 @@ class TodoItem extends HTMLElement {
     update(...args) {
         args.forEach((argument) => {
             switch (argument) {
-                case "id":
-                    if (this.id !== undefined)
-                        this.item.id = `todo-item-${this.id}`;
+                case "itemid":
+                    if (this.itemid !== undefined)
+                        this.item.id = `todo-item-${this.itemid}`;
                     break;
-                case "title":
-                    if (this.title !== undefined) {
-                        this.todoText.textContent = this.title;
-                        this.editInput.value = this.title;
+                case "itemtitle":
+                    if (this.itemtitle !== undefined) {
+                        this.todoText.textContent = this.itemtitle;
+                        this.editInput.value = this.itemtitle;
                     }
                     break;
-                case "completed":
-                    this.toggleInput.checked = this.completed === "true" ? true : false;
+                case "itemcompleted":
+                    this.toggleInput.checked = this.itemcompleted === "true" ? true : false;
                     break;
             }
         });
@@ -70,7 +73,7 @@ class TodoItem extends HTMLElement {
 
     startEdit() {
         this.item.classList.add("editing");
-        this.editInput.value = this.title;
+        this.editInput.value = this.itemtitle;
         this.editInput.focus();
     }
 
@@ -85,11 +88,11 @@ class TodoItem extends HTMLElement {
     toggleItem() {
         // The todo-list checks the "completed" attribute to filter based on route
         // (therefore the completed state needs to already be updated before the check)
-        this.setAttribute("completed", this.toggleInput.checked);
+        this.setAttribute("itemcompleted", this.toggleInput.checked);
 
         this.dispatchEvent(
             new CustomEvent("toggle-item", {
-                detail: { id: this.id, completed: this.toggleInput.checked },
+                detail: { id: this.itemid, completed: this.toggleInput.checked },
                 bubbles: true,
             })
         );
@@ -100,7 +103,7 @@ class TodoItem extends HTMLElement {
         // (therefore the removal has to happen after the list is updated)
         this.dispatchEvent(
             new CustomEvent("remove-item", {
-                detail: { id: this.id },
+                detail: { id: this.itemid },
                 bubbles: true,
             })
         );
@@ -108,14 +111,14 @@ class TodoItem extends HTMLElement {
     }
 
     updateItem(event) {
-        if (event.target.value !== this.title) {
+        if (event.target.value !== this.itemtitle) {
             if (!event.target.value.length) {
                 this.removeItem();
             } else {
-                this.setAttribute("title", event.target.value);
+                this.setAttribute("itemtitle", event.target.value);
                 this.dispatchEvent(
                     new CustomEvent("update-item", {
-                        detail: { id: this.id, title: event.target.value },
+                        detail: { id: this.itemid, title: event.target.value },
                         bubbles: true,
                     })
                 );
@@ -153,7 +156,7 @@ class TodoItem extends HTMLElement {
     }
 
     connectedCallback() {
-        this.update("id", "title", "completed");
+        this.update("itemid", "itemtitle", "itemcompleted");
 
         this.keysListeners.push(
             useKeyListener({
