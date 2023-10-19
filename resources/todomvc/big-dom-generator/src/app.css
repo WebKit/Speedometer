@@ -90,6 +90,14 @@ Importing the CSS from the Spectrum CSS library.
     display: none;
 }
 
+/*
+The spectrum rule making the open tree view items visible is
+.spectrum-TreeView-item.is-open > .spectrum-TreeView {
+    visibility: visible;
+}
+This can cause descendants of closed tree view items to be visible.
+We unset here to let it inherit the visibility of its parent.
+*/
 .spectrum-TreeView-item.is-open > .spectrum-TreeView {
     visibility: unset;
 }

@@ -3,6 +3,7 @@ import { DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR, MAX_GENERATED_DOM_DEPTH, MAX_
 
 const random = new LCG(DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR);
 
+// Recursively depth-first computing subTreeWeight.
 const fillSubtreeWeights = (node, expandableItemWeight, nonExpandableItemWeight) => {
     if (node.type === "expandableItem")
         node.subTreeWeight = node.children.reduce((acc, child) => acc + fillSubtreeWeights(child, expandableItemWeight, nonExpandableItemWeight), expandableItemWeight);
@@ -12,9 +13,22 @@ const fillSubtreeWeights = (node, expandableItemWeight, nonExpandableItemWeight)
     return node.subTreeWeight;
 };
 
-// Iterate over the tree in a breadth-first manner until the sum of weights of the subtrees with
-// root nodes in the queue is less than the target number of elements we want to have display none.
-// Mark the nodes in the queue as display none.
+/*
+ * Iterate over the exapandableItem nodes in a breadth-first manner until the
+ * sum of weights of the subtrees with root nodes in the queue is less than
+ * the target number of elements we want to have display none. Mark the
+ * nodes in the queue as display none.
+ * Consider the following example with the weights as displayed in the figure
+ * and a 10 as the target of display none elements. The iteration will stop
+ * with the nodes with weights 7 and 2 marked with *.
+ *             20
+ *          /      \
+ *         12       8
+ *        /  \     / \
+ *       5   *7* *2*   6
+ *           /   / \
+ *          7   1   1
+ */
 const markDisplayNoneNodes = (node, expandableItemWeight, nonExpandableItemWeight) => {
     let currentSubTreesWeights = node.subTreeWeight;
     let currentIndex = 0;
