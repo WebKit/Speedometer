@@ -10,7 +10,7 @@ const TreeItem = (props) => {
 
     const isExpandableItem = treeNode.type === "expandableItem";
     /**
-     * Every expandle TreeItem is open by default unless it is at the MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH tresshold.
+     * Every expandable TreeItem is open by default unless it is at the MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH threshold.
      * If it is marked as display none, set it as open so the `visibility: hidden` spectrum rule is removed.
      **/
     const treeViewItemIsOpen = isExpandableItem && (currentDepth !== MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH || treeNode.isDisplayNone);
