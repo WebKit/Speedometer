@@ -1,5 +1,5 @@
 import { LCG } from "random-seedable";
-import { DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR, MAX_GENERATED_DOM_DEPTH, MAX_NUMBER_OF_CHILDREN, PROBABILITY_OF_HAVING_CHILDREN, TARGET_SIZE, MIN_NUMBER_OF_MAX_DEPTH_BRANCHES } from "./../params";
+import { DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR, MAX_GENERATED_DOM_DEPTH, MAX_NUMBER_OF_CHILDREN, PROBABILITY_OF_HAVING_CHILDREN, TARGET_SIZE, MIN_NUMBER_OF_MAX_DEPTH_BRANCHES, PERCENTAGE_OF_DISPLAY_NONE_TREEVIEW_ELEMENTS } from "./../params";
 
 const random = new LCG(DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR);
 
@@ -16,7 +16,7 @@ const markDisplayNoneNodes = (node, expandableItemWeight, nonExpandableItemWeigh
     let currentSubTreesWeights = node.subTreeWeight;
     let currentIndex = 0;
     let nodeQueue = [node];
-    while (currentSubTreesWeights >= TARGET_SIZE / 2) {
+    while (currentSubTreesWeights >= TARGET_SIZE * PERCENTAGE_OF_DISPLAY_NONE_TREEVIEW_ELEMENTS) {
         const currentNode = nodeQueue[currentIndex];
         nodeQueue[currentIndex] = null;
         const expandableChildren = currentNode.children.filter((child) => child.type === "expandableItem");
