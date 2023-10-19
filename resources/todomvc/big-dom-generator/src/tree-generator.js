@@ -12,6 +12,9 @@ const fillSubtreeWeights = (node, expandableItemWeight, nonExpandableItemWeight)
     return node.subTreeWeight;
 };
 
+// Iterate over the tree in a breadth-first manner until the sum of weights of the subtrees with
+// root nodes in the queue is less than the target number of elements we want to have display none.
+// Mark the nodes in the queue as display none.
 const markDisplayNoneNodes = (node, expandableItemWeight, nonExpandableItemWeight) => {
     let currentSubTreesWeights = node.subTreeWeight;
     let currentIndex = 0;
