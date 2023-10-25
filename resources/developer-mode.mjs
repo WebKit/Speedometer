@@ -18,6 +18,8 @@ export function createDeveloperModeContainer() {
     content.append(document.createElement("br"));
     content.append(createUIForWarmupSuite());
     content.append(document.createElement("br"));
+    content.append(createUIForCacheResources());
+    content.append(document.createElement("br"));
     content.append(createUIForIterationCount());
     details.append(content);
 
@@ -55,6 +57,23 @@ export function createUIForWarmupSuite() {
 
     let label = document.createElement("label");
     label.append(check, " ", "warmup suite");
+
+    return label;
+}
+
+export function createUIForCacheResources() {
+    let check = document.createElement("input");
+    check.type = "checkbox";
+    check.id = "cache-resources";
+    check.checked = !!params.cacheResources;
+
+    check.onchange = () => {
+        params.cacheResources = check.checked;
+        updateURL();
+    };
+
+    let label = document.createElement("label");
+    label.append(check, " ", "cache resources");
 
     return label;
 }
@@ -228,6 +247,11 @@ function updateURL() {
         url.searchParams.set("useWarmupSuite", params.useWarmupSuite);
     else
         url.searchParams.delete("useWarmupSuite");
+
+    if (params.cacheResources !== defaultParams.cacheResources)
+        url.searchParams.set("cacheResources", params.cacheResources);
+    else
+        url.searchParams.delete("cacheResources");
 
     // Only push state if changed
     url.search = decodeURIComponent(url.search);

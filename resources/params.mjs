@@ -12,6 +12,8 @@ class Params {
     tags = [];
     // Toggle running a dummy suite once before the normal test suites.
     useWarmupSuite = false;
+    // Toggle priming of the network cache.
+    cacheResources = false;
     // Change how a test measurement is triggered and async time is measured:
     // "timer": The classic (as in Speedometer 2.x) way using setTimeout
     // "raf":   Using rAF callbacks, both for triggering the sync part and for measuring async time.
@@ -84,6 +86,11 @@ class Params {
         if (searchParams.has("useWarmupSuite")) {
             this.useWarmupSuite = true;
             searchParams.delete("useWarmupSuite");
+        }
+
+        if (searchParams.has("cacheResources")) {
+            this.cacheResources = true;
+            searchParams.delete("cacheResources");
         }
 
         if (searchParams.has("waitBeforeSync")) {

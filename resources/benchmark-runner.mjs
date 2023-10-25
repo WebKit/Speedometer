@@ -346,7 +346,7 @@ export class BenchmarkRunner {
         const iterationEndLabel = "iteration-end";
         for (let i = 0; i < iterationCount; i++) {
             performance.mark(iterationStartLabel);
-            await this._runAllSuites();
+            await this._runAllSuites(!i && params.cacheResources);
             performance.mark(iterationEndLabel);
             performance.measure(`iteration-${i}`, iterationStartLabel, iterationEndLabel);
         }
@@ -383,7 +383,7 @@ export class BenchmarkRunner {
         return frame;
     }
 
-    async _runAllSuites() {
+    async _runAllSuites(cacheResources) {
         this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
 
         const prepareStartLabel = "runner-prepare-start";
@@ -403,6 +403,13 @@ export class BenchmarkRunner {
                 let tmp = suites[i];
                 suites[i] = suites[j];
                 suites[j] = tmp;
+            }
+        }
+
+        if (cacheResources) {
+            for (const suite of suites) {
+                if (!suite.disabled)
+                    await this._prepareSuite(suite);
             }
         }
 
