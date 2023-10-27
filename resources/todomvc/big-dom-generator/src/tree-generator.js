@@ -19,8 +19,8 @@ const fillSubtreeWeights = (node, expandableItemWeight, nonExpandableItemWeight)
  * the target number of elements we want to have display none. Mark the
  * nodes in the queue as display none.
  * Consider the following example with the weights as displayed in the figure
- * and a 10 as the target of display none elements. The iteration will stop
- * with the nodes with weights 7 and 2 marked with *.
+ * and 10 as the target number of display none elements. The iteration will
+ * stop with the nodes with weights 7 and 2 marked with *.
  *             20
  *          /      \
  *         12       8
