@@ -46,6 +46,22 @@ function createUIForMeasurementMethod() {
     return label;
 }
 
+function createUIForWarmupSuite() {
+    let check = document.createElement("input");
+    check.type = "checkbox";
+    check.id = "warmup-suite";
+    check.checked = !!params.useWarmupSuite;
+
+    check.onchange = () => {
+        params.useWarmupSuite = check.checked;
+        updateURL();
+    };
+
+    let label = document.createElement("label");
+    label.append(check, " ", "warmup suite");
+
+    return label;
+}
 
 function createUIForIterationCount() {
     let range = document.createElement("input");
@@ -68,23 +84,6 @@ function createUIForIterationCount() {
         params.iterationCount = parseInt(range.value);
         updateURL();
     };
-
-    return label;
-}
-
-function createUIForWarmupSuite() {
-    let check = document.createElement("input");
-    check.type = "checkbox";
-    check.id = "warmup-suite";
-    check.checked = !!params.useWarmupSuite;
-
-    check.onchange = () => {
-        params.useWarmupSuite = check.checked;
-        updateURL();
-    };
-
-    let label = document.createElement("label");
-    label.append(check, " ", "warmup suite");
 
     return label;
 }
