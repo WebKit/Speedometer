@@ -87,6 +87,32 @@ Importing the CSS from the Spectrum CSS library.
 }
 
 /*
+The visibility of closed spectrum TreeView items is set to hidden
+and the spectrum rule making the open TreeView items visible is
+.spectrum-TreeView-item.is-open > .spectrum-TreeView {
+    visibility: visible;
+}
+This can cause descendants of closed tree view items to be visible.
+Our code only closes the TreeView items at the threshold depth of
+the tree, so we unset the visibility to let the open itmes inherit
+the visibility from their parents.
+*/
+.spectrum-TreeView-item.is-open > .spectrum-TreeView {
+    visibility: unset;
+}
+
+/* 
+We've chosen some items of the side TreeView to be hidden using
+display: none instead of visibility: hidden. We unset their visibility
+and height values set by spectrum CSS.
+*/
+.display-none {
+    display: none;
+    visibility: unset !important;
+    height: auto !important;
+}
+
+/*
 Layout CSS for the UI.
 */
 
