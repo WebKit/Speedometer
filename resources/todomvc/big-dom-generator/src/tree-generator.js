@@ -1,7 +1,57 @@
 import { LCG } from "random-seedable";
-import { DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR, MAX_GENERATED_DOM_DEPTH, MAX_NUMBER_OF_CHILDREN, PROBABILITY_OF_HAVING_CHILDREN, TARGET_SIZE, MIN_NUMBER_OF_MAX_DEPTH_BRANCHES } from "./../params";
+import { DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR, MAX_GENERATED_DOM_DEPTH, MAX_NUMBER_OF_CHILDREN, PROBABILITY_OF_HAVING_CHILDREN, TARGET_SIZE, MIN_NUMBER_OF_MAX_DEPTH_BRANCHES, PERCENTAGE_OF_DISPLAY_NONE_TREEVIEW_ELEMENTS } from "./../params";
 
 const random = new LCG(DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR);
+
+// Recursively depth-first computing subTreeWeight.
+const fillSubtreeWeights = (node, expandableItemWeight, nonExpandableItemWeight) => {
+    if (node.type === "expandableItem")
+        node.subTreeWeight = node.children.reduce((acc, child) => acc + fillSubtreeWeights(child, expandableItemWeight, nonExpandableItemWeight), expandableItemWeight);
+    else
+        node.subTreeWeight = nonExpandableItemWeight;
+
+    return node.subTreeWeight;
+};
+
+/*
+ * Iterate over the exapandableItem nodes in a breadth-first manner until the
+ * sum of weights of the subtrees with root nodes in the queue is less than
+ * the target number of elements we want to have display none. Mark the
+ * nodes in the queue as display none.
+ * Consider the following example with the weights as displayed in the figure
+ * and 10 as the target number of display none elements. The iteration will
+ * stop with the nodes with weights 7 and 2 marked with *.
+ *             20
+ *          /      \
+ *         12       8
+ *        /  \     / \
+ *       5   *7* *2*   6
+ *           /   / \
+ *          7   1   1
+ */
+const markDisplayNoneNodes = (node, expandableItemWeight, nonExpandableItemWeight) => {
+    let currentSubTreesWeights = node.subTreeWeight;
+    let currentIndex = 0;
+    let nodeQueue = [node];
+    while (currentSubTreesWeights >= TARGET_SIZE * PERCENTAGE_OF_DISPLAY_NONE_TREEVIEW_ELEMENTS) {
+        const currentNode = nodeQueue[currentIndex];
+        nodeQueue[currentIndex] = null;
+        const expandableChildren = currentNode.children.filter((child) => child.type === "expandableItem");
+        if (expandableChildren.length) {
+            nodeQueue.push(...expandableChildren);
+            currentSubTreesWeights -= expandableItemWeight;
+            let numberOfNonExpandableChildren = currentNode.children.length - expandableChildren.length;
+            currentSubTreesWeights -= numberOfNonExpandableChildren * nonExpandableItemWeight;
+        } else {
+            currentSubTreesWeights -= currentNode.subTreeWeight;
+        }
+        currentIndex++;
+    }
+    nodeQueue.forEach((node) => {
+        if (node)
+            node.isDisplayNone = true;
+    });
+};
 
 /**
  * Generates the blueprint of the tree-view side panel for the complex DOM shell with expandable and non-expandable items.
@@ -21,15 +71,21 @@ const random = new LCG(DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR);
  *         children: [
  *           {
  *             type: "nonExpandableItem",
- *             children: []
+ *             children: [],
+ *             isDisplayNone: false,
+ *             subTreeWeight: 0,
  *           }
- *         ]
+ *         ],
+ *         isDisplayNone: false,
+ *        subTreeWeight: 0,
  *      }
- *    ]
+ *    ],
+ *    isDisplayNone: false,
+ *    subTreeWeight: 0,
  * }
  **/
 export const generateTreeHead = ({ expandableItemWeight, nonExpandableItemWeight }) => {
-    const treeHead = { type: "expandableItem", children: [] };
+    const treeHead = { type: "expandableItem", children: [], isDisplayNone: false, subTreeWeight: 0 };
     const nodeWeight = { expandableItem: expandableItemWeight, nonExpandableItem: nonExpandableItemWeight };
 
     let totalNodes = expandableItemWeight;
@@ -85,5 +141,7 @@ export const generateTreeHead = ({ expandableItemWeight, nonExpandableItemWeight
         }
     }
 
+    fillSubtreeWeights(treeHead, expandableItemWeight, nonExpandableItemWeight);
+    markDisplayNoneNodes(treeHead, expandableItemWeight, nonExpandableItemWeight);
     return treeHead;
 };

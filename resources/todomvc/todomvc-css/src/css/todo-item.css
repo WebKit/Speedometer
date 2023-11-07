@@ -65,7 +65,7 @@
 }
 
 .todo-item-text {
-    word-break: break-all;
+    overflow-wrap: break-word;
     padding: 0 60px;
     display: block;
     line-height: 60px;

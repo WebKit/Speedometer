@@ -9,6 +9,7 @@
     --highlight: rgb(232, 79, 79);
     --text-width: 650px;
     --metrics-line-height: 25px;
+    --scrollbar-width: 10px;
 }
 
 body {
@@ -31,8 +32,8 @@ body {
 ::-webkit-scrollbar-track {
     background-color: var(--inactive-color);
     border-radius: 8px;
-    width: 10px;
-    height: 10px;
+    width: var(--scrollbar-width);
+    height: var(--scrollbar-width);
 }
 ::-webkit-scrollbar-thumb {
     background-color: var(--foreground);
@@ -208,7 +209,6 @@ button,
 
 .developer-mode {
     border-radius: 10px;
-    max-height: 80vh;
     padding: 1rem;
     background: #602525;
     border: 3px solid rgba(255, 255, 255, 0.5);
@@ -230,6 +230,8 @@ button,
     flex: 1;
     max-height: 80vh;
     overflow: auto;
+    margin-right: calc(0px - var(--scrollbar-width));
+    padding-right: var(--scrollbar-width);
 }
 
 .developer-mode-content ol {
@@ -241,6 +243,10 @@ button,
     display: flex;
     margin-top: 5px;
     gap: 3px;
+}
+
+.developer-mode-content li + li {
+    margin-top: 0px;
 }
 
 .developer-mode-content button {

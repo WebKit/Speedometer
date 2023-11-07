@@ -17,6 +17,9 @@ export default {
         sourcemap: true,
         name: "app",
     },
+    watch: {
+        clearScreen: false,
+    },
     plugins: [
         css({
             minify: true,
