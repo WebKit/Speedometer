@@ -33,10 +33,10 @@ class Page {
         return new Promise((resolve) => {
             const resolveIfReady = () => {
                 const element = this.querySelector(selector);
+                let callback = resolveIfReady;
                 if (element)
-                    resolve(element);
-                else
-                    window.requestAnimationFrame(resolveIfReady);
+                    callback = () => resolve(element);
+                window.requestAnimationFrame(callback);
             };
             resolveIfReady();
         });
