@@ -13,14 +13,18 @@ export function createDeveloperModeContainer() {
     const content = document.createElement("div");
     content.className = "developer-mode-content";
     content.append(createUIForSuites());
+
     content.append(document.createElement("hr"));
     content.append(createUIForMeasurementMethod());
     content.append(document.createElement("br"));
     content.append(createUIForWarmupSuite());
     content.append(document.createElement("br"));
     content.append(createUIForIterationCount());
-    details.append(content);
 
+    content.append(document.createElement("hr"));
+    content.append(createUIForRun());
+
+    details.append(content);
     container.append(details);
     return container;
 }
@@ -83,6 +87,7 @@ export function createUIForIterationCount() {
 
     return label;
 }
+
 
 export function createUIForSuites() {
     const control = document.createElement("nav");
@@ -177,6 +182,18 @@ export function createUIForSuites() {
     }
 
     return control;
+}
+
+function createUIForRun() {
+    let button = document.createElement("button");
+    button.textContent = `Start Test`;
+    button.onclick = (event) => {
+        globalThis.benchmarkClient.start();
+    }
+    let buttons = document.createElement("div");
+    buttons.className = "button-bar";
+    buttons.appendChild(button);
+    return buttons
 }
 
 function updateURL() {
