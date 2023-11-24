@@ -20,5 +20,9 @@ window.cancelIdleCallback = () => console.warn("Ignoring cancelIdleCallback");
 
 // Use a common userAgent string to minimize risk of running unfair
 // browser-specific code in workloads.
-navigator.userAgent = "Firefox Safari Chrome";
+Object.defineProperty(navigator, "userAgent", {
+    get() {
+        return "Firefox Safari Chrome";
+    }
+});
 
