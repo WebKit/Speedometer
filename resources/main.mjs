@@ -23,7 +23,12 @@ class MainBenchmarkClient {
         this._showSection(window.location.hash);
     }
 
-    startBenchmark() {
+    start() {
+        if (this._startBenchmark())
+            this._showSection("#running");
+    }
+
+    _startBenchmark() {
         if (this._isRunning)
             return false;
 
@@ -253,7 +258,7 @@ class MainBenchmarkClient {
         }
 
         if (params.startAutomatically)
-            this._startBenchmarkHandler();
+            this.start();
     }
 
     _hashChangeHandler() {
@@ -271,8 +276,7 @@ class MainBenchmarkClient {
     }
 
     _startBenchmarkHandler() {
-        if (this.startBenchmark())
-            this._showSection("#running");
+        this.start();
     }
 
     _logoClickHandler(event) {

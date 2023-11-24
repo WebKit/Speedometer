@@ -13,6 +13,7 @@ export function createDeveloperModeContainer() {
     const content = document.createElement("div");
     content.className = "developer-mode-content";
     content.append(createUIForSuites());
+
     content.append(document.createElement("hr"));
     content.append(createUIForIterationCount());
     content.append(document.createElement("br"));
@@ -25,6 +26,10 @@ export function createDeveloperModeContainer() {
     content.append(createUIForSyncStepDelay());
     details.append(content);
 
+    content.append(document.createElement("hr"));
+    content.append(createUIForRun());
+
+    details.append(content);
     container.append(details);
     return container;
 }
@@ -64,32 +69,16 @@ function createUIForWarmupSuite() {
 }
 
 function createUIForIterationCount() {
-    let range = document.createElement("input");
-    range.type = "range";
-    range.id = "iteration-count";
-    range.min = 1;
-    range.max = 20;
-    range.value = params.iterationCount;
-
-    let label = document.createElement("label");
-    let countLabel = document.createElement("span");
-    countLabel.textContent = params.iterationCount;
-    label.append("Iterations: ", countLabel, document.createElement("br"), range);
-
-    range.oninput = () => {
-        countLabel.textContent = range.value;
-    };
-
+    const { range, label } = createTimeRangeUI("Iterations: ", params.waitBeforeSync, "#");
     range.onchange = () => {
         params.iterationCount = parseInt(range.value);
         updateURL();
     };
-
     return label;
 }
 
 function createUIForWarmupBeforeSync() {
-    const {range, label} = createTimeRangeUI("Warmup time: ", params.warmupBeforeSync);
+    const { range, label } = createTimeRangeUI("Warmup time: ", params.warmupBeforeSync);
     range.onchange = () => {
         params.warmupBeforeSync = parseInt(range.value);
         updateURL();
@@ -98,7 +87,7 @@ function createUIForWarmupBeforeSync() {
 }
 
 function createUIForSyncStepDelay() {
-    const {range, label} = createTimeRangeUI("Sync step delay: ", params.waitBeforeSync);
+    const { range, label } = createTimeRangeUI("Sync step delay: ", params.waitBeforeSync);
     range.onchange = () => {
         params.waitBeforeSync = parseInt(range.value);
         updateURL();
@@ -106,25 +95,26 @@ function createUIForSyncStepDelay() {
     return label;
 }
 
-
-function createTimeRangeUI(labelText, initialValue) {
+function createTimeRangeUI(labelText, initialValue, unit = "ms") {
     const range = document.createElement("input");
     range.type = "range";
-    range.id = "iteration-count";
     range.min = 0;
     range.max = 1000;
     range.value = initialValue;
 
     const label = document.createElement("label");
-    const countLabel = document.createElement("span");
-    countLabel.textContent = initialValue;
-    label.append(labelText, countLabel, " ms", document.createElement("br"), range);
+    const rangeLabel = document.createElement("span");
+    rangeLabel.className = "range-label-data";
+    const rangeValue = document.createElement("span");
+    rangeLabel.append(rangeValue, " ", unit);
+    rangeValue.textContent = initialValue;
+    label.append(labelText, range, rangeLabel);
 
     range.oninput = () => {
-        countLabel.textContent = range.value;
+        rangeValue.textContent = range.value;
     };
 
-    return {range, label};
+    return { range, label };
 }
 
 function createUIForSuites() {
@@ -220,6 +210,18 @@ function createUIForSuites() {
     }
 
     return control;
+}
+
+function createUIForRun() {
+    let button = document.createElement("button");
+    button.textContent = `Start Test`;
+    button.onclick = (event) => {
+        globalThis.benchmarkClient.start();
+    }
+    let buttons = document.createElement("div");
+    buttons.className = "button-bar";
+    buttons.appendChild(button);
+    return buttons
 }
 
 function updateURL() {

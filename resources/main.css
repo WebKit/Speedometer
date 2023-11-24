@@ -245,6 +245,14 @@ button,
     gap: 3px;
 }
 
+.developer-mode-content input[type="range"],
+.developer-mode-content .range-label-data {
+    float: right;
+}
+.developer-mode-content .range-label-data {
+    padding-right: 0.5em;
+}
+
 .developer-mode-content li + li {
     margin-top: 0px;
 }
