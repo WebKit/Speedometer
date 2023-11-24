@@ -69,7 +69,7 @@ function createUIForWarmupSuite() {
 }
 
 function createUIForIterationCount() {
-    const { range, label } = createTimeRangeUI("Iterations: ", params.waitBeforeSync, "#");
+    const { range, label } = createTimeRangeUI("Iterations: ", params.iterationCount, "#");
     range.onchange = () => {
         params.iterationCount = parseInt(range.value);
         updateURL();
