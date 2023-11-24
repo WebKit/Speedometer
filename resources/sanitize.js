@@ -15,10 +15,10 @@ window.setTimeout = function (handler, timeout) {
 };
 
 // Don't support requestIdleCallback on any browser.
-window.requestIdleCallback = undefined;
-window.cancelIdleCallback = undefined;
+window.requestIdleCallback = () => console.warn("Ignoring requestIdleCallback");
+window.cancelIdleCallback = () => console.warn("Ignoring cancelIdleCallback");
 
-// Use a common userAgent string to minimize risk of running unfair 
+// Use a common userAgent string to minimize risk of running unfair
 // browser-specific code in workloads.
 navigator.userAgent = "Firefox Safari Chrome";
 
