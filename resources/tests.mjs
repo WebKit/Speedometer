@@ -26,9 +26,9 @@ Suites.enable = function (names, tags) {
             if (!Tags.has(tag))
                 console.error(`Unknown Suites tag: "${tag}"`);
         });
-        tags = new Set(tags);
+        const tagsSet = new Set(tags);
         this.forEach((suite) => {
-            suite.disabled = !suite.tags.some((tag) => tags.has(tag));
+            suite.disabled = !suite.tags.some((tag) => tagsSet.has(tag));
         });
     } else {
         console.warn("Neither names nor tags provided. Enabling all default suites.");
@@ -46,7 +46,6 @@ Suites.enable = function (names, tags) {
             validNames: this.map((each) => each.name),
         };
     } else if (tags?.length) {
-        tags = Array.from(tags);
         message = `Tags "${tags}" does not match any Suite. No tests to run.`;
         debugInfo = {
             providedTags: tags,
