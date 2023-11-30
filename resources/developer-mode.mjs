@@ -69,7 +69,7 @@ function createUIForWarmupSuite() {
 }
 
 function createUIForIterationCount() {
-    const { range, label } = createTimeRangeUI("Iterations: ", params.iterationCount, "#", 100);
+    const { range, label } = createTimeRangeUI("Iterations: ", params.iterationCount, "#", 1, 100);
     range.onchange = () => {
         params.iterationCount = parseInt(range.value);
         updateURL();
@@ -95,10 +95,10 @@ function createUIForSyncStepDelay() {
     return label;
 }
 
-function createTimeRangeUI(labelText, initialValue, unit = "ms", max = 1000) {
+function createTimeRangeUI(labelText, initialValue, unit = "ms", min = 0, max = 1000) {
     const range = document.createElement("input");
     range.type = "range";
-    range.min = 0;
+    range.min = min;
     range.max = max;
     range.value = initialValue;
 
