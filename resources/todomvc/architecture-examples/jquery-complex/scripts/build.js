@@ -9,7 +9,7 @@ const options = {
     sourceDirectory: path.join("..", "node_modules", "todomvc-jquery", "dist"),
     title: "jQuery • TodoMVC Complex DOM",
     filesToMove: [
-        "node_modules/big-dom-generator/dist/big-dom-generator-v1.css",
+        "node_modules/big-dom-generator/dist/big-dom.css",
         "node_modules/big-dom-generator/dist/logo.png"
     ],
     cssFilePath: path.resolve(__dirname, "..", "node_modules", "big-dom-generator", "utils", "app.css"),

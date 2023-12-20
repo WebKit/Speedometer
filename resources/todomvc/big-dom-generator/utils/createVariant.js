@@ -1,45 +1,21 @@
-const fs = require("fs");
-const postcss = require("postcss");
-const selectorParser = require("postcss-selector-parser");
-
-const INPUT_FILE_PATH = "./dist/big-dom-generator-v1.css";
-const OUTPUT_FILE_PATH = "./dist/big-dom-generator-v2.css";
-let root;
-
 /**
- * Modifies CSS rules based on the provided selector, tuple, and operation.
- *
- * @param {string} cssSelector - The CSS selector to match.
- * @param {Array<[string, string]>} propValueTuples - The property-value tuples to apply.
- * @param {string} operation - The operation to perform ('add', 'remove', or 'modify'). At present, only the "add" operation is implemented.
+ * Create a variant of big-dom.css by adding a property
+ * that creates a CSS stacking context for the overflow scroller (<div class="tree-area">)
+ * to trigger different code paths related to scrolling in browsers.
  */
-function vary(cssSelector, propValueTuples, operation) {
-    try {
-        root.walkRules((rule) => {
-            const selector = selectorParser().processSync(rule);
-
-            if (selector === cssSelector) {
-                const props = propValueTuples.map(([prop, value]) => ({ prop, value }));
-
-                switch (operation) {
-                    case "add":
-                        rule.append(...props);
-                        break;
-                    default:
-                        throw new Error(`Invalid operation '${operation}'.`);
-                }
-            }
-        });
-    } catch (error) {
-        console.error("An error occurred while varying the CSS:", error);
-    }
-}
-
 try {
+    const fs = require("fs");
+    const postcss = require("postcss");
+
+    const INPUT_FILE_PATH = "./dist/big-dom.css";
+    const OUTPUT_FILE_PATH = "./dist/big-dom-with-stacking-context-scrollable.css";
+
     const css = fs.readFileSync(INPUT_FILE_PATH, "utf-8");
-    root = postcss.parse(css);
-    vary(".tree-area", [["isolation", "isolate"]], "add");
+    const root = postcss.parse(css, { from: INPUT_FILE_PATH });
+    root.walkRules(".tree-area", (rule) => {
+        rule.append({ prop: "isolation", value: "isolate" });
+    });
     fs.writeFileSync(OUTPUT_FILE_PATH, root.toString());
 } catch (error) {
-    console.error("An error occurred while processing the CSS:", error);
+    console.error("An error occurred while generating the big dom CSS variant:", error);
 }
