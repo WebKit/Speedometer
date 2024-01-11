@@ -26,7 +26,7 @@ export function renderMetricView(viewParams) {
         .map(
             (metric, i) => `
                 <tr >
-                    <td class="${colors[i % colors.length]}" >●</td>
+                    <td class="${colors[i % colors.length]} no-select" >●</td>
                     <td class="label">${metric.shortName}</td>
                     <td class="number">${metric.mean.toFixed(2)}</td>
                     <td>±</td>
@@ -39,12 +39,14 @@ export function renderMetricView(viewParams) {
         <dl class="metric">
             <dt><h3>${title}<h3></dt>
             <dd>
-                <div class="metric-chart" onclick="document.body.classList.toggle('relative-charts')">
-                    <div class="metric-chart-absolute">
-                        ${absoluteScatterPlot}
-                    </div>
-                    <div class="metric-chart-relative">
-                        ${normalizedScatterPlot}
+                <div class="metric-chart"">
+                    <div onclick="document.body.classList.toggle('relative-charts')">
+                        <div class="metric-chart-absolute">
+                            ${absoluteScatterPlot}
+                        </div>
+                        <div class="metric-chart-relative">
+                            ${normalizedScatterPlot}
+                        </div>
                     </div>
                     <table class="chart chart-legend">${legend}</table>
                 </div>
@@ -259,7 +261,7 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisPosi
         <svg class="scatter-plot chart"
             width="${width}" height="${height}"
             viewBox="${`0 0 ${width} ${height}`}">
-            <g class="horizontal-axis">
+            <g class="horizontal-axis no-select">
                 <line
                     x1="${0}" x2="${width}"
                     y1="${axisY - axisMarginY}" y2="${axisY - axisMarginY}"
