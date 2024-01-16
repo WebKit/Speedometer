@@ -12,19 +12,19 @@ export function createDeveloperModeContainer() {
 
     const content = document.createElement("div");
     content.className = "developer-mode-content";
+
     content.append(createUIForSuites());
 
+    const settings = document.createElement("div");
+    settings.className = "settings";
+    settings.append(createUIForIterationCount());
+    settings.append(createUIForMeasurementMethod());
+    settings.append(createUIForWarmupSuite());
+    settings.append(createUIForWarmupBeforeSync());
+    settings.append(createUIForSyncStepDelay());
+
     content.append(document.createElement("hr"));
-    content.append(createUIForIterationCount());
-    content.append(document.createElement("br"));
-    content.append(createUIForMeasurementMethod());
-    content.append(document.createElement("br"));
-    content.append(createUIForWarmupSuite());
-    content.append(document.createElement("br"));
-    content.append(createUIForWarmupBeforeSync())
-    content.append(document.createElement("br"));
-    content.append(createUIForSyncStepDelay());
-    details.append(content);
+    content.append(settings);
 
     content.append(document.createElement("hr"));
     content.append(createUIForRun());
@@ -32,6 +32,13 @@ export function createDeveloperModeContainer() {
     details.append(content);
     container.append(details);
     return container;
+}
+
+
+function span(text) {
+    const span = document.createElement("span");
+    span.textContent = text;
+    return span;
 }
 
 function createUIForMeasurementMethod() {
@@ -46,7 +53,7 @@ function createUIForMeasurementMethod() {
     };
 
     let label = document.createElement("label");
-    label.append(check, " ", "rAF timing");
+    label.append(check, " ", span("rAF timing"));
 
     return label;
 }
@@ -63,7 +70,7 @@ function createUIForWarmupSuite() {
     };
 
     let label = document.createElement("label");
-    label.append(check, " ", "warmup suite");
+    label.append(check, " ", span("warmup suite"));
 
     return label;
 }
@@ -108,7 +115,7 @@ function createTimeRangeUI(labelText, initialValue, unit = "ms", min = 0, max = 
     const rangeValue = document.createElement("span");
     rangeLabel.append(rangeValue, " ", unit);
     rangeValue.textContent = initialValue;
-    label.append(labelText, range, rangeLabel);
+    label.append(span(labelText), range, rangeLabel);
 
     range.oninput = () => {
         rangeValue.textContent = range.value;
@@ -119,6 +126,7 @@ function createTimeRangeUI(labelText, initialValue, unit = "ms", min = 0, max = 
 
 function createUIForSuites() {
     const control = document.createElement("nav");
+    control.className = "suites";
     const ol = document.createElement("ol");
     const checkboxes = [];
     const setSuiteEnabled = (suiteIndex, enabled) => {
