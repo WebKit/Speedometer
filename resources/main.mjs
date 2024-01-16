@@ -351,7 +351,7 @@ class MainBenchmarkClient {
         if (hash === "#home")
             hash = "";
         window.location.hash = hash;
-    };
+    }
 }
 
 const rootStyle = document.documentElement.style;
