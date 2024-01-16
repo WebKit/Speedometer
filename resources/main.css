@@ -288,7 +288,7 @@ section {
 }
 
 section:target,
-:not(:has(section:target)) #home {
+body:not(body:has(section:target)) #home {
     display: block;
 }
 

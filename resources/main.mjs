@@ -348,9 +348,15 @@ class MainBenchmarkClient {
     }
 
     _setLocationHash(hash) {
-        if (hash === "#home")
-            hash = "";
-        window.location.hash = hash;
+        if (hash === "#home" || hash === "")
+            this._removeLocationHash();
+        else
+            window.location.hash = hash;
+    }
+
+    _removeLocationHash() {
+        const location = window.location;
+        window.history.pushState("", document.title, location.pathname + location.search);
     }
 }
 
