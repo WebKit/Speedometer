@@ -481,8 +481,7 @@ export class BenchmarkRunner {
             }
             performance.mark(startLabel);
             const syncStartTime = performance.now();
-            test.run(this._page);
-            // test.run(this._prepareValue, page._frame.contentWindow, page._frame.contentDocument);
+            test.run(this._prepareValue, this._page._frame.contentWindow, this._page._frame.contentDocument);
             const syncEndTime = performance.now();
             performance.mark(syncEndLabel);
 
