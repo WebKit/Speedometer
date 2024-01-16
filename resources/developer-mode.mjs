@@ -76,7 +76,7 @@ function createUIForWarmupSuite() {
 }
 
 function createUIForIterationCount() {
-    const { range, label } = createTimeRangeUI("Iterations: ", params.iterationCount, "#", 1, 100);
+    const { range, label } = createTimeRangeUI("Iterations: ", params.iterationCount, "#", 1, 200);
     range.onchange = () => {
         params.iterationCount = parseInt(range.value);
         updateURL();
@@ -109,13 +109,15 @@ function createTimeRangeUI(labelText, initialValue, unit = "ms", min = 0, max = 
     range.max = max;
     range.value = initialValue;
 
-    const label = document.createElement("label");
-    const rangeLabel = document.createElement("span");
-    rangeLabel.className = "range-label-data";
+    const rangeValueAndUnit = document.createElement("span");
+    rangeValueAndUnit.className = "range-label-data";
+
     const rangeValue = document.createElement("span");
-    rangeLabel.append(rangeValue, " ", unit);
     rangeValue.textContent = initialValue;
-    label.append(span(labelText), range, rangeLabel);
+    rangeValueAndUnit.append(rangeValue, " ", unit);
+
+    const label = document.createElement("label");
+    label.append(span(labelText), range, rangeValueAndUnit);
 
     range.oninput = () => {
         rangeValue.textContent = range.value;
@@ -272,25 +274,18 @@ function updateURL() {
     else
         url.searchParams.delete("measurementMethod");
 
-    if (params.iterationCount !== defaultParams.iterationCount)
-        url.searchParams.set("iterationCount", params.iterationCount);
-    else
-        url.searchParams.delete("iterationCount");
-
-    if (params.useWarmupSuite !== defaultParams.useWarmupSuite)
-        url.searchParams.set("useWarmupSuite", params.useWarmupSuite);
-    else
-        url.searchParams.delete("useWarmupSuite");
-
-    if (params.warmupBeforeSync !== defaultParams.warmupBeforeSync)
-        url.searchParams.set("warmupBeforeSync", params.warmupBeforeSync);
-    else
-        url.searchParams.delete("warmupBeforeSync");
-
-    if (params.waitBeforeSync !== defaultParams.waitBeforeSync)
-        url.searchParams.set("waitBeforeSync", params.waitBeforeSync);
-    else
-        url.searchParams.delete("waitBeforeSync");
+    const boolParamKeys = [
+        "iterationCount",
+        "useWarmupSuite",
+        "warmupBeforeSync",
+        "waitBeforeSync",
+    ];
+    for (const paramKey of boolParamKeys) {
+        if (params[paramKey] !== defaultParams[paramKey])
+            url.searchParams.set(paramKey, params[paramKey]);
+        else
+            url.searchParams.delete(paramKey);
+    }
 
     // Only push state if changed
     url.search = decodeURIComponent(url.search);
