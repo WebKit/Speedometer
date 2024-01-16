@@ -34,7 +34,6 @@ export function createDeveloperModeContainer() {
     return container;
 }
 
-
 function span(text) {
     const span = document.createElement("span");
     span.textContent = text;
@@ -224,14 +223,14 @@ function createUIForSuites() {
 
 function createUIForRun() {
     let button = document.createElement("button");
-    button.textContent = `Start Test`;
+    button.textContent = "Start Test";
     button.onclick = (event) => {
         globalThis.benchmarkClient.start();
-    }
+    };
     let buttons = document.createElement("div");
     buttons.className = "button-bar";
     buttons.appendChild(button);
-    return buttons
+    return buttons;
 }
 
 function updateURL() {
@@ -274,12 +273,7 @@ function updateURL() {
     else
         url.searchParams.delete("measurementMethod");
 
-    const boolParamKeys = [
-        "iterationCount",
-        "useWarmupSuite",
-        "warmupBeforeSync",
-        "waitBeforeSync",
-    ];
+    const boolParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync"];
     for (const paramKey of boolParamKeys) {
         if (params[paramKey] !== defaultParams[paramKey])
             url.searchParams.set(paramKey, params[paramKey]);
