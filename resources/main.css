@@ -287,7 +287,8 @@ section {
     border-radius: 20px;
 }
 
-section:target {
+section:target,
+body:not(body:has(section:target)) #home {
     display: block;
 }
 
