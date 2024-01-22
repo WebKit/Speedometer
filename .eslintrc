@@ -24,6 +24,7 @@
  */
 
 {
+    "root": true,
     "extends": ["eslint:recommended", "plugin:@typescript-eslint/base"],
     "env": {
         "browser": true,
