@@ -370,7 +370,7 @@ class MainBenchmarkClient {
 
     _removeLocationHash() {
         const location = window.location;
-        window.history.replaceState("", document.title, location.pathname + location.search);
+        window.history.pushState("", document.title, location.pathname + location.search);
     }
 }
 
