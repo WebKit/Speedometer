@@ -3,8 +3,6 @@
 package-lock.json
 **/.angular
 
-/resources/tentative/*
-
 /resources/todomvc/architecture-examples/*
 !/resources/todomvc/architecture-examples/angular
 !/resources/todomvc/architecture-examples/angular-complex
