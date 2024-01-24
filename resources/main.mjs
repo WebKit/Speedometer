@@ -348,15 +348,29 @@ class MainBenchmarkClient {
     }
 
     _setLocationHash(hash) {
-        if (hash === "#home" || hash === "")
+        if (hash === "#home" || hash === "") {
+            window.location.hash = hash = "#home";
             this._removeLocationHash();
-        else
+        } else {
             window.location.hash = hash;
+        }
+        this._updateDocumentTitle(hash);
+    }
+
+    _updateDocumentTitle(hash) {
+        let title = "Speedometer 3";
+        const maybeSection = document.querySelector(hash);
+        if (maybeSection) {
+            const sectionTitle = maybeSection.getAttribute("data-title");
+            if (sectionTitle)
+                title += ` ${sectionTitle}`;
+        }
+        document.title = title;
     }
 
     _removeLocationHash() {
         const location = window.location;
-        window.history.pushState("", document.title, location.pathname + location.search);
+        window.history.replaceState("", document.title, location.pathname + location.search);
     }
 }
 
