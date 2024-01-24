@@ -19,6 +19,7 @@
     "devDependencies": {
         "css-loader": "^6.7.3",
         "css-minimizer-webpack-plugin": "^4.2.2",
+        "follow-redirects": "^1.15.4",
         "html-webpack-plugin": "^5.5.0",
         "http-server": "^14.1.1",
         "mini-css-extract-plugin": "^2.7.2",

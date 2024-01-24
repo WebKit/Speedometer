@@ -17,6 +17,7 @@
         "todomvc-common": "^1.0.5"
     },
     "devDependencies": {
+        "follow-redirects": "^1.15.4",
         "http-server": "^14.1.1"
     }
 }

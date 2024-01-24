@@ -16,6 +16,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "follow-redirects": "^1.15.4",
         "http-server": "^14.1.1",
         "todomvc-css": "file:../../todomvc-css"
     }

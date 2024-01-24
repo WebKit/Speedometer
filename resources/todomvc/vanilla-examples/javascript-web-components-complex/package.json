@@ -16,6 +16,7 @@
     "license": "ISC",
     "devDependencies": {
         "big-dom-generator": "file:../../big-dom-generator",
+        "follow-redirects": "^1.15.4",
         "http-server": "^14.1.1",
         "todomvc-css": "file:../../todomvc-css",
         "todomvc-javascript-web-components": "file:../javascript-web-components"
