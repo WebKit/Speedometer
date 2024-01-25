@@ -339,7 +339,7 @@ class MainBenchmarkClient {
                 return;
             }
         } else {
-            if (hash !== "" && hash !== "#home" && hash !== "#about") {
+            if (hash === "#summary" || hash === "#details") {
                 this._setLocationHash("#home");
                 return;
             }
