@@ -339,7 +339,8 @@ class MainBenchmarkClient {
                 return;
             }
         } else {
-            if (hash === "#summary" || hash === "#details") {
+            // Redirect invalid views to #home directly.
+            if (hash === "#running" || hash === "#summary" || hash === "#details") {
                 this._setLocationHash("#home");
                 return;
             }
