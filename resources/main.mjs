@@ -348,10 +348,21 @@ class MainBenchmarkClient {
     }
 
     _setLocationHash(hash) {
-        if (hash === "#home" || hash === "")
+        if (hash === "#home" || hash === "") {
+            if (window.location.hash !== hash)
+                window.location.hash = "#home";
+            hash = "#home";
             this._removeLocationHash();
-        else
+        } else {
             window.location.hash = hash;
+        }
+        this._updateDocumentTitle(hash);
+    }
+
+    _updateDocumentTitle(hash) {
+        const maybeSection = document.querySelector(hash);
+        const sectionTitle = maybeSection?.getAttribute("data-title") ?? "";
+        document.title = `Speedometer 3 ${sectionTitle}`.trimEnd();
     }
 
     _removeLocationHash() {
