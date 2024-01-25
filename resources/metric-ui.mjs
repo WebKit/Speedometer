@@ -263,7 +263,7 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisPosi
     }
 
     return `
-        <svg class="scatter-plot chart" 
+        <svg class="scatter-plot chart"
             width="${width}" height="${height}"
             viewBox="${`0 0 ${width} ${height}`}">
             <g class="horizontal-axis no-select">
