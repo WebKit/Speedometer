@@ -244,7 +244,7 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisPosi
     // Auto-adjust markers to [2px, 5px] for high iteration counts:
     const iterationsLimit = 20;
     if (values.length > iterationsLimit)
-        markerSize = 1 + (4 / values.length) * iterationsLimit;
+        markerSize = 2 + (3 / values.length) * iterationsLimit;
     // Recalculate height:
     if (height)
         trackHeight = (height - axisHeight - axisMarginY) / trackCount;
