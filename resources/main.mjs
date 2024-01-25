@@ -358,10 +358,8 @@ class MainBenchmarkClient {
     }
 
     _updateDocumentTitle(hash) {
-        let sectionTitle = "";
         const maybeSection = document.querySelector(hash);
-        if (maybeSection)
-            sectionTitle = maybeSection.getAttribute("data-title") ?? "";
+        const sectionTitle = maybeSection?.getAttribute("data-title") ?? "";
         document.title = `Speedometer 3 ${sectionTitle}`.trimEnd();
     }
 
