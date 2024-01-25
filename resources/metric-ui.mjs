@@ -261,7 +261,6 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisPosi
         const xZeroPos = (0 - xMin) * unitToPosX;
         xAxisZeroLine = `<line x1="${xZeroPos}" x2="${xZeroPos}" y1="${0}" y2="${axisY}" class="axis"/>`;
     }
-
     return `
         <svg class="scatter-plot chart"
             width="${width}" height="${height}"
