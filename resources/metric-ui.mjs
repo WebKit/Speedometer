@@ -239,8 +239,12 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisPosi
     // Axis + labels height:
     const axisHeight = 18;
     const axisMarginY = 4;
-    const markerSize = 5;
     const trackMargin = 2;
+    let markerSize = 5;
+    // Auto-adjust markers to [2px, 5px] for high iteration counts:
+    const iterationsLimit = 20;
+    if (values.length > iterationsLimit)
+        markerSize = 1 + (4 / values.length * iterationsLimit);
     // Recalculate height:
     if (height)
         trackHeight = (height - axisHeight - axisMarginY) / trackCount;
@@ -257,8 +261,9 @@ function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisPosi
         const xZeroPos = (0 - xMin) * unitToPosX;
         xAxisZeroLine = `<line x1="${xZeroPos}" x2="${xZeroPos}" y1="${0}" y2="${axisY}" class="axis"/>`;
     }
+
     return `
-        <svg class="scatter-plot chart"
+        <svg class="scatter-plot chart" 
             width="${width}" height="${height}"
             viewBox="${`0 0 ${width} ${height}`}">
             <g class="horizontal-axis no-select">
