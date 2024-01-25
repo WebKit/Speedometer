@@ -349,7 +349,8 @@ class MainBenchmarkClient {
 
     _setLocationHash(hash) {
         if (hash === "#home" || hash === "") {
-            window.location.hash = "#home";
+            if (window.location.hash !== hash)
+                window.location.hash = "#home";
             this._removeLocationHash();
         } else {
             window.location.hash = hash;
