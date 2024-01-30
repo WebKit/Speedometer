@@ -566,8 +566,8 @@ Suites.push({
             }
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                page.querySelectorAll(".toggle")[i].click();
+            for (let i = 1; i <= numberOfItemsToAdd; i++)
+                page.querySelector(`li:nth-child(${i}) .toggle`).click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
@@ -595,8 +595,8 @@ Suites.push({
             }
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
-            for (let i = 0; i < numberOfItemsToAdd; i++)
-                page.querySelectorAll(".toggle")[i].click();
+            for (let i = 1; i <= numberOfItemsToAdd; i++)
+                page.querySelector(`li:nth-child(${i}) .toggle`).click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
