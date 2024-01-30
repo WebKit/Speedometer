@@ -96,6 +96,10 @@ class Page {
         return this._wrapElement(element);
     }
 
+    getElementsByClassName(className) {
+        return this._frame.contentDocument.getElementsByClassName(className);
+    }
+
     call(functionName) {
         this._frame.contentWindow[functionName]();
         return null;

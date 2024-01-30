@@ -566,8 +566,9 @@ Suites.push({
             }
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const allItems = page.getElementsByClassName("toggle");
             for (let i = 0; i < numberOfItemsToAdd; i++)
-                page.querySelectorAll(".toggle")[i].click();
+                allItems[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
@@ -595,8 +596,9 @@ Suites.push({
             }
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const allItems = page.getElementsByClassName("toggle");
             for (let i = 0; i < numberOfItemsToAdd; i++)
-                page.querySelectorAll(".toggle")[i].click();
+                allItems[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
