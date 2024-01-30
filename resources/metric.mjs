@@ -21,8 +21,6 @@ export class Metric {
         this.max = 0.0;
 
         this.values = [];
-
-        this.parent = undefined;
         this.children = [];
 
         // Mark properties which refer to other Metric objects as
@@ -31,9 +29,7 @@ export class Metric {
         Object.defineProperties(this, {
             parent: {
                 writable: true,
-            },
-            children: {
-                writable: true,
+                value: undefined,
             },
         });
     }
