@@ -288,6 +288,7 @@ section {
 }
 
 section:target,
+section.visible,
 body:not(body:has(section:target)) #home {
     display: block;
 }
