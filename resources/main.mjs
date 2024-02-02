@@ -338,11 +338,10 @@ class MainBenchmarkClient {
                 this._setLocationHash("#summary");
                 return;
             }
-        } else {
-            if (hash !== "" && hash !== "#home" && hash !== "#about") {
-                this._setLocationHash("#home");
-                return;
-            }
+        } else if (hash !== "#home" && hash !== "") {
+            // Redirect invalid views to #home directly.
+            this._setLocationHash("#home");
+            return;
         }
         this._setLocationHash(hash);
     }
