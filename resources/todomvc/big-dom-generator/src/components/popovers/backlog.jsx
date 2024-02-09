@@ -14,16 +14,48 @@ export const BacklogPopOver = ({ className }) => {
                 <div className={classnames("spectrum-Checkbox", "spectrum-Checkbox--sizeM")}>
                     <input type="checkbox" className="spectrum-Checkbox-input" title="Done" />
                     <div className="spectrum-Checkbox-box">
-                        <CheckmarkIcon className={classnames("spectrum-Icon", "spectrum-Checkbox-checkmark", "spectrum-UIIcon-Checkmark50")} focusable="false" aria-hidden="true" />
+                        <CheckmarkIcon
+                            className={classnames(
+                                "spectrum-Icon",
+                                "spectrum-Checkbox-checkmark",
+                                "spectrum-UIIcon-Checkmark50",
+                            )}
+                            focusable="false"
+                            aria-hidden="true"
+                        />
                     </div>
                     <label className="spectrum-Checkbox-label">Task {i}</label>
                     <label className="spectrum-Checkbox-label"> Age </label>
                     <ActionGroup>
-                        <button className={classnames("spectrum-Button", "spectrum-Button--fill", "spectrum-Button--primary", "spectrum-Button--sizeS", "spectrum-Button--iconOnly")}>
-                            <EditIcon className={classnames("spectrum-Icon", "spectrum-Icon--sizeS")} focusable="false" aria-hidden="true" />
+                        <button
+                            className={classnames(
+                                "spectrum-Button",
+                                "spectrum-Button--fill",
+                                "spectrum-Button--primary",
+                                "spectrum-Button--sizeS",
+                                "spectrum-Button--iconOnly",
+                            )}
+                        >
+                            <EditIcon
+                                className={classnames("spectrum-Icon", "spectrum-Icon--sizeS")}
+                                focusable="false"
+                                aria-hidden="true"
+                            />
                         </button>
-                        <button className={classnames("spectrum-Button", "spectrum-Button--fill", "spectrum-Button--primary", "spectrum-Button--sizeS", "spectrum-Button--iconOnly")}>
-                            <DeleteIcon className={classnames("spectrum-Icon", "spectrum-Icon--sizeS")} focusable="false" aria-hidden="true" />
+                        <button
+                            className={classnames(
+                                "spectrum-Button",
+                                "spectrum-Button--fill",
+                                "spectrum-Button--primary",
+                                "spectrum-Button--sizeS",
+                                "spectrum-Button--iconOnly",
+                            )}
+                        >
+                            <DeleteIcon
+                                className={classnames("spectrum-Icon", "spectrum-Icon--sizeS")}
+                                focusable="false"
+                                aria-hidden="true"
+                            />
                         </button>
                     </ActionGroup>
                 </div>

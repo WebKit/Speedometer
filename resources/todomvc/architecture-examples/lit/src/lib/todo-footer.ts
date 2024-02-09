@@ -121,7 +121,9 @@ export class TodoFooter extends LitElement {
                 <li>${activeFilter}</li>
                 <li>${completedFilter}</li>
             </ul>
-            ${(this.todoList?.completed.length ?? 0) > 0 ? html`<button @click=${this.#onClearCompletedClick} class="clear-completed">Clear Completed</button>` : nothing}
+            ${(this.todoList?.completed.length ?? 0) > 0
+        ? html`<button @click=${this.#onClearCompletedClick} class="clear-completed">Clear Completed</button>`
+        : nothing}
         `;
     }
 
@@ -130,7 +132,15 @@ export class TodoFooter extends LitElement {
     }
 }
 
-function filterLink({ text, filter, selectedFilter }: { text: string; filter: string; selectedFilter: string | undefined }) {
+function filterLink({
+    text,
+    filter,
+    selectedFilter,
+}: {
+    text: string;
+    filter: string;
+    selectedFilter: string | undefined;
+}) {
     return html`<a class="${classMap({ selected: filter === selectedFilter })}" href="#/${filter}">${text}</a>`;
 }
 

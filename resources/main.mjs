@@ -161,7 +161,8 @@ class MainBenchmarkClient {
             mean: arithmeticMean,
             formattedMean: formattedMean,
             formattedDelta: formattedDelta,
-            formattedMeanAndDelta: formattedMean + (formattedDelta ? ` \xb1 ${formattedDelta} (${formattedPercentDelta})` : ""),
+            formattedMeanAndDelta:
+                formattedMean + (formattedDelta ? ` \xb1 ${formattedDelta} (${formattedPercentDelta})` : ""),
         };
     }
 
@@ -314,7 +315,9 @@ class MainBenchmarkClient {
         for (let i = 0; i < params.iterationCount; i++)
             labels.push(`#${i + 1}`);
         labels.push("Mean");
-        const metrics = Array.from(Object.values(this._metrics)).filter((metric) => !metric.name.startsWith("Iteration-"));
+        const metrics = Array.from(Object.values(this._metrics)).filter(
+            (metric) => !metric.name.startsWith("Iteration-"),
+        );
         const metricsValues = metrics.map((metric) => [metric.name, ...metric.values, metric.mean].join(","));
         const csv = [labels.join(","), ...metricsValues];
 

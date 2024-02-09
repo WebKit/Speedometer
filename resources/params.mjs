@@ -102,8 +102,11 @@ class Params {
 
         if (searchParams.has("measurementMethod")) {
             this.measurementMethod = searchParams.get("measurementMethod");
-            if (this.measurementMethod !== "timer" && this.measurementMethod !== "raf")
-                throw new Error(`Invalid measurement method: '${this.measurementMethod}', must be either 'raf' or 'timer'.`);
+            if (this.measurementMethod !== "timer" && this.measurementMethod !== "raf") {
+                throw new Error(
+                    `Invalid measurement method: '${this.measurementMethod}', must be either 'raf' or 'timer'.`,
+                );
+            }
             searchParams.delete("measurementMethod");
         }
 
@@ -116,8 +119,11 @@ class Params {
                 } else {
                     this.shuffleSeed = parseInt(this.shuffleSeed);
                 }
-                if (!Number.isInteger(this.shuffleSeed))
-                    throw new Error(`Invalid shuffle seed: '${this.shuffleSeed}', must be either 'off', 'generate' or an integer.`);
+                if (!Number.isInteger(this.shuffleSeed)) {
+                    throw new Error(
+                        `Invalid shuffle seed: '${this.shuffleSeed}', must be either 'off', 'generate' or an integer.`,
+                    );
+                }
             }
             searchParams.delete("shuffleSeed");
         }

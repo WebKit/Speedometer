@@ -94,7 +94,13 @@ export class TodoList extends LitElement {
         return html`
             ${(this.todoList?.all.length ?? 0) > 0
         ? html`
-                      <input @change=${this.#onToggleAllChange} id="toggle-all" type="checkbox" class="toggle-all" .checked=${this.todoList?.allCompleted ?? false} />
+                      <input
+                          @change=${this.#onToggleAllChange}
+                          id="toggle-all"
+                          type="checkbox"
+                          class="toggle-all"
+                          .checked=${this.todoList?.allCompleted ?? false}
+                      />
                       <label for="toggle-all"> Mark all as complete </label>
                   `
         : nothing}
@@ -102,7 +108,13 @@ export class TodoList extends LitElement {
                 ${repeat(
         this.todoList?.filtered() ?? [],
         (todo) => todo.id,
-        (todo, index) => html`<todo-item data-priority=${4 - (index % 5)} .todoId=${todo.id} .text=${todo.text} .completed=${todo.completed}></todo-item>`,
+        (todo, index) =>
+            html`<todo-item
+                            data-priority=${4 - (index % 5)}
+                            .todoId=${todo.id}
+                            .text=${todo.text}
+                            .completed=${todo.completed}
+                        ></todo-item>`,
     )}
             </ul>
         `;

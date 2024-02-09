@@ -39,7 +39,14 @@ export class TodoForm extends LitElement {
         todoList?: Todos;
 
     override render() {
-        return html`<input @change=${this.#onChange} @keydown=${this.#onKeydown} class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" />`;
+        return html`<input
+            @change=${this.#onChange}
+            @keydown=${this.#onKeydown}
+            class="new-todo"
+            autofocus
+            autocomplete="off"
+            placeholder="What needs to be done?"
+        />`;
     }
 
     @query("input", true) newTodoInput!: HTMLInputElement;

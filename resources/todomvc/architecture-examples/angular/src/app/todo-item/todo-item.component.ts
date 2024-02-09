@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked, ChangeDetectionStrategy } from "@angular/core";
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    ViewChild,
+    ElementRef,
+    AfterViewChecked,
+    ChangeDetectionStrategy,
+} from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { Todo } from "../todo";
 
