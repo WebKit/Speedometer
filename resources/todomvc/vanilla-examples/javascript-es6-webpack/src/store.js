@@ -56,7 +56,7 @@ export class Store {
                 }
 
                 return true;
-            })
+            }),
         );
     }
 

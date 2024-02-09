@@ -39,7 +39,7 @@ class MainBenchmarkClient {
                 message,
                 params.suites,
                 "\nValid values:",
-                Suites.map((each) => each.name)
+                Suites.map((each) => each.name),
             );
 
             return false;

@@ -28,7 +28,7 @@ export const Item = memo(function Item({ todo, dispatch, index }) {
 
             setIsWritable(false);
         },
-        [id, removeItem, updateItem]
+        [id, removeItem, updateItem],
     );
 
     return (

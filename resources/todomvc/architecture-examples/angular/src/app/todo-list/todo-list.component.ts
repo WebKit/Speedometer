@@ -10,7 +10,7 @@ import { TodosService } from "../todos.service";
 export class TodoListComponent {
     constructor(
         private todosService: TodosService,
-        private location: Location
+        private location: Location,
     ) {}
 
     get todos(): Todo[] {

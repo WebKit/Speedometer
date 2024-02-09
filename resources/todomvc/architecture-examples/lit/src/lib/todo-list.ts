@@ -102,7 +102,7 @@ export class TodoList extends LitElement {
                 ${repeat(
         this.todoList?.filtered() ?? [],
         (todo) => todo.id,
-        (todo, index) => html`<todo-item data-priority=${4 - (index % 5)} .todoId=${todo.id} .text=${todo.text} .completed=${todo.completed}></todo-item>`
+        (todo, index) => html`<todo-item data-priority=${4 - (index % 5)} .todoId=${todo.id} .text=${todo.text} .completed=${todo.completed}></todo-item>`,
     )}
             </ul>
         `;
