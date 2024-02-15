@@ -7,6 +7,16 @@
     </head>
     <body>
         <div id="root"></div>
+        <script>
+            // Because the benchmark runner can't easily capture work happening in
+            // a rAF, let's mock it as a setTimeout instead.
+            window.requestAnimationFrame = (cb) => window.setTimeout(cb, 0);
+            // We also define a setImmediate to use a microtask, so that some
+            // work that wouldn't be captured by our benchmark runner is
+            // now properly captured. This isn't a perfect polyfill but good
+            // enough for this workload.
+            window.setImmediate = window.queueMicrotask;
+        </script>
         <script type="module" src="/src/main.tsx"></script>
     </body>
 </html>
