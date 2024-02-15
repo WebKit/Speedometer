@@ -26,6 +26,17 @@ jobs:
             - name: Run linters
               run: |
                   npm run format
+            - name: Check if anything changed
+              run: |
+                  git_status="`LC_ALL=C git status --porcelain --ignore-submodules -unormal 2>&1`"
+                  if [ -n "$git_status" ]; then
+                      printf "Some file(s) changed as the result of formatting, this means that you need to run the formatter on your patch.\n"
+                      printf "Here is what changed:\n"
+                      printf -- "$git_status\n\n"
+                      printf "And here is the diff:\n"
+                      git diff -U8
+                      exit 1
+                  fi
     build:
         name: Build
         runs-on: macos-latest
