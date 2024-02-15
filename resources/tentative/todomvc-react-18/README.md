@@ -1,30 +1,43 @@
-# React + TypeScript + Vite
+# Speedometer 3.0: TodoMVC with React 18 / Material UI / React Router
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available:
+This application uses React 18.0.0 to implement a todo application.
 
--   [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
--   [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-   [React](https://react.dev/) is a JavaScript library for creating user interfaces.
+-   [Material UI](https://mui.com/) is a UI React-based library that makes it easier to implement a consistent style in an application.
+-   [React Router](https://reactrouter.com/) is a Router for React, that is a library that handles URL changes.
 
-## Expanding the ESLint configuration
+## Implementation details
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+React:\
+ Model: /logic/todo-model.js
+View: /components/\*
+controller: The React Router configuration in /components/App.tsx
 
--   Configure the top-level `parserOptions` property like this:
+    MVC:\
+      Model: maintains the data and behavior of an application\
+      View: displays the model in the ui\
+      Controller: serves as an interface between view & model components
 
-```js
-export default {
-    // other rules...
-    parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-        project: ["./tsconfig.json", "./tsconfig.node.json"],
-        tsconfigRootDir: __dirname,
-    },
-};
+## Built steps
+
+      To build the static files, this application utilizes vite. It minifies and optimizes output files and copies all necessary files to a `dist` folder.
+
+## Requirements
+
+      The only requirement is an installation of Node, to be able to install dependencies and run scripts to serve a local server.
+
+```
+* Node (min version: 18.13.0)
+* NPM (min version: 8.19.3)
 ```
 
--   Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
--   Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
--   Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Local preview
+
+```
+terminal:
+  1. npm install
+  2. npm run dev
+  3. Then open http://localhost:5173 in your browser.
+```
