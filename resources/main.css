@@ -144,6 +144,10 @@ li + ul > li {
     margin-top: 0;
 }
 
+.compact li {
+    margin-top: 5px;
+}
+
 li + ul {
     margin-bottom: 21px;
 }
@@ -445,7 +449,8 @@ section#details h1 {
     margin-bottom: 10px;
 }
 
-section#about .section-content > * {
+section#about .section-content > *,
+section#instructions .section-content > *  {
     width: var(--text-width);
     padding-left: calc((var(--viewport-width) - var(--text-width)) / 2);
 }
