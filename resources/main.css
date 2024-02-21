@@ -450,7 +450,7 @@ section#details h1 {
 }
 
 section#about .section-content > *,
-section#instructions .section-content > *  {
+section#instructions .section-content > * {
     width: var(--text-width);
     padding-left: calc((var(--viewport-width) - var(--text-width)) / 2);
 }
