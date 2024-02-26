@@ -69,7 +69,7 @@ function createUIForWarmupSuite() {
     };
 
     let label = document.createElement("label");
-    label.append(check, " ", span("warmup suite"));
+    label.append(check, " ", span("Use Warmup Suite"));
 
     return label;
 }
