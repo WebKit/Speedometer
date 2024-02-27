@@ -4,7 +4,7 @@
 
 This application embeds the Lit implementation of the TodoMVC application in a static UI shell that mimics a complex web page.
 
-Please refer tto the [Lit README.md](../lit/README.md) for more information on the Lit TodoMVC implementation.
+Please refer to the [Lit README.md](../lit/README.md) for more information on the Lit TodoMVC implementation.
 
 Please refer to the [big-dom-generator README.md](../../big-dom-generator/README.md) for more information on the UI shell.
 
