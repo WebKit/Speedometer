@@ -212,6 +212,7 @@ body {
     grid-row-end: 2;
     justify-self: start;
     align-self: center;
+    z-index: 4;
 }
 
 .show-more > div > ul li:hover {
