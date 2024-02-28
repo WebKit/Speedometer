@@ -24,7 +24,8 @@
         "format": "npm run pretty:fix ; npm run lint:fix",
         "test:chrome": "BROWSER=chrome node tests/run.mjs",
         "test:firefox": "BROWSER=firefox node tests/run.mjs",
-        "test:safari": "BROWSER=safari node tests/run.mjs"
+        "test:safari": "BROWSER=safari node tests/run.mjs",
+        "test:edge": "BROWSER=edge node tests/run.mjs"
     },
     "devDependencies": {
         "@babel/core": "^7.21.3",
