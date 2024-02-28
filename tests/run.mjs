@@ -57,8 +57,12 @@ switch (BROWSER) {
         capabilities = Capabilities.chrome();
         break;
     }
+    case "edge": {
+        capabilities = Capabilities.edge();
+        break;
+    }
     default: {
-        printHelp(`Invalid browser "${BROWSER}", choices are: "safari", "firefox", "chrome"`);
+        printHelp(`Invalid browser "${BROWSER}", choices are: "safari", "firefox", "chrome", "edge"`);
     }
 }
 
