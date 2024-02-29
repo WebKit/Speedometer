@@ -249,6 +249,23 @@ button,
     gap: 3px;
 }
 
+.developer-mode-content .settings label {
+    width: 100%;
+    display: flex;
+}
+.developer-mode-content .settings label * {
+    flex: 1;
+}
+.developer-mode-content .settings input[type="checkbox"] {
+    flex: 0;
+    margin-left: 0px;
+}
+.developer-mode-content .settings .range-label-data {
+    flex: 0;
+    min-width: 5em;
+    text-align: right;
+}
+
 .developer-mode-content li + li {
     margin-top: 0px;
 }
@@ -265,10 +282,6 @@ button,
     border-radius: 100vh;
     color: white;
     background: rgba(255, 255, 255, 0.1);
-}
-.developer-mode-content label {
-    width: 100%;
-    display: inline-block;
 }
 .developer-mode-content hr {
     width: initial;
