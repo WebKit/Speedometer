@@ -1,4 +1,3 @@
-
 # What is Speedometer?
 
 Speedometer is a benchmark for web browsers that measures Web application responsiveness
