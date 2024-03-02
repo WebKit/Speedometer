@@ -2176,7 +2176,7 @@ function genericArray(a2, b) {
   };
 }
 function date$1(a2, b) {
-  var d = new Date();
+  var d = /* @__PURE__ */ new Date();
   return a2 = +a2, b = +b, function(t) {
     return d.setTime(a2 * (1 - t) + b * t), d;
   };
@@ -5889,13 +5889,13 @@ function threshold() {
   };
   return initRange.apply(scale, arguments);
 }
-const t0 = new Date(), t1 = new Date();
+const t0 = /* @__PURE__ */ new Date(), t1 = /* @__PURE__ */ new Date();
 function timeInterval(floori, offseti, count, field2) {
   function interval2(date2) {
-    return floori(date2 = arguments.length === 0 ? new Date() : new Date(+date2)), date2;
+    return floori(date2 = arguments.length === 0 ? /* @__PURE__ */ new Date() : /* @__PURE__ */ new Date(+date2)), date2;
   }
   interval2.floor = (date2) => {
-    return floori(date2 = new Date(+date2)), date2;
+    return floori(date2 = /* @__PURE__ */ new Date(+date2)), date2;
   };
   interval2.ceil = (date2) => {
     return floori(date2 = new Date(date2 - 1)), offseti(date2, 1), floori(date2), date2;
@@ -5905,7 +5905,7 @@ function timeInterval(floori, offseti, count, field2) {
     return date2 - d0 < d1 - date2 ? d0 : d1;
   };
   interval2.offset = (date2, step) => {
-    return offseti(date2 = new Date(+date2), step == null ? 1 : Math.floor(step)), date2;
+    return offseti(date2 = /* @__PURE__ */ new Date(+date2), step == null ? 1 : Math.floor(step)), date2;
   };
   interval2.range = (start2, stop, step) => {
     const range2 = [];
@@ -5915,7 +5915,7 @@ function timeInterval(floori, offseti, count, field2) {
       return range2;
     let previous;
     do
-      range2.push(previous = new Date(+start2)), offseti(start2, step), floori(start2);
+      range2.push(previous = /* @__PURE__ */ new Date(+start2)), offseti(start2, step), floori(start2);
     while (previous < start2 && start2 < stop);
     return range2;
   };
@@ -6344,7 +6344,7 @@ function formatLocale(locale2) {
     return function(date2) {
       var string2 = [], i = -1, j = 0, n = specifier.length, c2, pad2, format2;
       if (!(date2 instanceof Date))
-        date2 = new Date(+date2);
+        date2 = /* @__PURE__ */ new Date(+date2);
       while (++i < n) {
         if (specifier.charCodeAt(i) === 37) {
           string2.push(specifier.slice(j, i));
@@ -6786,7 +6786,7 @@ function date(t) {
   return new Date(t);
 }
 function number$1(t) {
-  return t instanceof Date ? +t : +new Date(+t);
+  return t instanceof Date ? +t : +/* @__PURE__ */ new Date(+t);
 }
 function calendar(ticks2, tickInterval, year, month, week, day, hour, minute, second2, format2) {
   var scale = continuous(), invert = scale.invert, domain = scale.domain;
@@ -7460,7 +7460,7 @@ Transform.prototype = {
 Transform.prototype;
 function format(date2, fallback) {
   if (!(date2 instanceof Date))
-    date2 = new Date(+date2);
+    date2 = /* @__PURE__ */ new Date(+date2);
   if (isNaN(date2))
     return typeof fallback === "function" ? fallback(date2) : fallback;
   const hours = date2.getUTCHours();
@@ -12313,4 +12313,4 @@ document.getElementById("reset").addEventListener("click", reset);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
 document.getElementById("airport-group-size-input").addEventListener("input", onGroupSizeInputChange);
 onGroupSizeInputChange();
-//# sourceMappingURL=plot-37d2a5fb.js.map
+//# sourceMappingURL=plot-562fbdb6.js.map
