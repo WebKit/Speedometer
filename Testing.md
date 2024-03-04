@@ -12,8 +12,8 @@ To run this locally you'll need the browsers installed along with the correspond
 
 -   [chromedriver](https://chromedriver.chromium.org/getting-started)
 -   [geckodriver](https://github.com/mozilla/geckodriver/releases)
--   [safaridriver](https://developer.apple.com/documentation/webkit/testing_with_webdriver_in_safari).
--   [msedgedriver](https://developer.microsoft.com/microsoft-edge/tools/webdriver)
+-   [safaridriver](https://developer.apple.com/documentation/webkit/testing_with_webdriver_in_safari)
+-   [msedgedriver](https://developer.microsoft.com/microsoft-edge/tools/webdriver).
 
 Once installed you can run the following scripts:
 
