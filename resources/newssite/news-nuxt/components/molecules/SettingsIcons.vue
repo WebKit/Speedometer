@@ -1,16 +1,16 @@
 <script lang="js">
 import styles from "news-site-css/dist/icons-group.module.css";
 export default {
-  props: {
-      callback: Function,
-      id: String,
-  },
-  data () {
-    return {
-      styles
-    }
-  }
-}
+    props: {
+        callback: Function,
+        id: String,
+    },
+    data() {
+        return {
+            styles,
+        };
+    },
+};
 </script>
 
 <template>

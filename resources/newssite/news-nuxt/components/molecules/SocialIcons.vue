@@ -2,20 +2,20 @@
 import { inject } from "vue";
 import styles from "news-site-css/dist/icons-group.module.css";
 export default {
-  props: {
-      callback: Function,
-      id: String
-  },
-  setup() {
+    props: {
+        callback: Function,
+        id: String,
+    },
+    setup() {
         const { links } = inject("data");
         return { links };
     },
-  data () {
-    return {
-      styles
-    }
-  }
-}
+    data() {
+        return {
+            styles,
+        };
+    },
+};
 </script>
 
 <template>

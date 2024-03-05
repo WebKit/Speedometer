@@ -10,7 +10,7 @@ export default {
     data() {
         return {
             showPortal: false,
-        }
+        };
     },
     mounted() {
         this.showPortal = this.content[this.$route.name].notification;
@@ -21,9 +21,9 @@ export default {
         },
         closePortal() {
             this.showPortal = false;
-        }
-    }
-}
+        },
+    },
+};
 </script>
 
 <template>

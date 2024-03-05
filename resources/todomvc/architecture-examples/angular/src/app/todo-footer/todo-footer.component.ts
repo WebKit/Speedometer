@@ -8,7 +8,10 @@ import { TodosService } from "../todos.service";
     templateUrl: "./todo-footer.component.html",
 })
 export class TodoFooterComponent {
-    constructor(private todosService: TodosService, private location: Location) {}
+    constructor(
+        private todosService: TodosService,
+        private location: Location
+    ) {}
 
     get todos(): Todo[] {
         return this.todosService.getItems();
