@@ -355,7 +355,13 @@ class MainBenchmarkClient {
         } else {
             window.location.hash = hash;
         }
+        this._updateVisibleSectionAttribute(hash);
         this._updateDocumentTitle(hash);
+    }
+
+    _updateVisibleSectionAttribute(hash) {
+        const sectionId = hash.substring(1);
+        document.documentElement.setAttribute("data-visible-section", sectionId);
     }
 
     _updateDocumentTitle(hash) {

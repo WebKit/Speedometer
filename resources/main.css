@@ -304,9 +304,11 @@ section {
     border-radius: 20px;
 }
 
-section:target,
 section.visible,
-body:not(body:has(section:target)) #home {
+:root[data-visible-section="home"] #home,
+:root[data-visible-section="running"] #running,
+:root[data-visible-section="summary"] #summary,
+:root[data-visible-section="details"] #details {
     display: block;
 }
 
@@ -468,7 +470,7 @@ section#instructions .section-content > * {
     padding-left: calc((var(--viewport-width) - var(--text-width)) / 2);
 }
 
-section#details:target {
+:root[data-visible-section="details"] section#details {
     display: flex;
     flex-direction: column;
 }
