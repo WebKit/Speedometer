@@ -21,7 +21,7 @@
         "lint:fix": "eslint \"**/*.{js,mjs,jsx,ts,tsx}\" --fix",
         "pretty:check": "prettier --check ./",
         "pretty:fix": "prettier --write ./",
-        "format": "npm run pretty:fix ; npm run lint:fix",
+        "format": "npm run pretty:fix && npm run lint:fix",
         "test:chrome": "node tests/run.mjs --browser chrome",
         "test:firefox": "node tests/run.mjs --browser firefox",
         "test:safari": "node tests/run.mjs --browser safari",
