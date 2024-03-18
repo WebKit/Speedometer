@@ -215,53 +215,6 @@ function geomeanToScore(geomean) {
     return 1000 / geomean;
 }
 
-// The WarmupSuite is used to make sure all runner helper functions and
-// classes are compiled, to avoid unnecessary pauses due to delayed
-// compilation of runner methods in the middle of the measuring cycle.
-const WarmupSuite = {
-    name: "Warmup",
-    url: "warmup/index.html",
-    async prepare(page) {
-        await page.waitForElement("#testItem");
-    },
-    tests: [
-        // Make sure to run ever page.method once at least
-        new BenchmarkTestStep("WarmingUpPageMethods", (page) => {
-            let results = [];
-            results.push(page.querySelector(".testItem"));
-            results.push(page.querySelectorAll(".item"));
-            results.push(page.getElementById("testItem"));
-        }),
-        new BenchmarkTestStep("WarmingUpPageElementMethods", (page) => {
-            const item = page.getElementById("testItem");
-            item.setValue("value");
-            item.click();
-            item.focus();
-            item.dispatchEvent("change");
-            item.enter("keypress");
-            item.dispatchEvent("input");
-            item.enter("keyup");
-        }),
-        new BenchmarkTestStep("WarmingUpPageElementMouseMethods", (page) => {
-            const item = page.getElementById("testItem");
-            const mouseEventOptions = { clientX: 100, clientY: 100, bubbles: true, cancelable: true };
-            const wheelEventOptions = {
-                clientX: 200,
-                clientY: 200,
-                deltaMode: 0,
-                delta: -10,
-                deltaY: -10,
-                bubbles: true,
-                cancelable: true,
-            };
-            item.dispatchEvent("mousedown", mouseEventOptions, MouseEvent);
-            item.dispatchEvent("mousemove", mouseEventOptions, MouseEvent);
-            item.dispatchEvent("mouseup", mouseEventOptions, MouseEvent);
-            item.dispatchEvent("wheel", wheelEventOptions, WheelEvent);
-        }),
-    ],
-};
-
 class TestInvoker {
     constructor(syncCallback, asyncCallback, reportCallback) {
         this._syncCallback = syncCallback;
@@ -325,29 +278,33 @@ export class BenchmarkRunner {
     constructor(suites, client) {
         this._suites = suites;
         if (params.useWarmupSuite)
-            this._suites = [WarmupSuite, ...suites];
+            this._suites = [...suites];
         this._client = client;
         this._page = null;
         this._metrics = null;
         this._iterationCount = params.iterationCount;
+        this._currentIteration = 0;
         if (params.shuffleSeed !== "off")
             this._suiteOrderRandomNumberGenerator = seededHashRandomNumberGenerator(params.shuffleSeed);
+    }
+    get currentIteration() {
+        return this._currentIteration;
     }
 
     async runMultipleIterations(iterationCount) {
         this._iterationCount = iterationCount;
+        this._currentIteration = 0;
         if (this._client?.willStartFirstIteration)
-            await this._client.willStartFirstIteration(iterationCount);
+            await this._client.willStartFirstIteration( this._iterationCount);
 
         const iterationStartLabel = "iteration-start";
         const iterationEndLabel = "iteration-end";
-        for (let i = 0; i < iterationCount; i++) {
+        for (; this._currentIteration < this._iterationCount; this._currentIteration++) {
             performance.mark(iterationStartLabel);
             await this._runAllSuites();
             performance.mark(iterationEndLabel);
-            performance.measure(`iteration-${i}`, iterationStartLabel, iterationEndLabel);
+            performance.measure(`iteration-${this._currentIteration}`, iterationStartLabel, iterationEndLabel);
         }
-
         if (this._client?.didFinishLastIteration)
             await this._client.didFinishLastIteration(this._metrics);
     }
@@ -359,7 +316,7 @@ export class BenchmarkRunner {
         }
     }
 
-    async _appendFrame(src) {
+    async _appendFrame() {
         const frame = document.createElement("iframe");
         const style = frame.style;
         style.width = `${params.viewport.width}px`;
@@ -368,9 +325,14 @@ export class BenchmarkRunner {
         style.position = "absolute";
         frame.setAttribute("scrolling", "no");
         frame.className = "test-runner";
-        style.left = "50%";
-        style.top = "50%";
-        style.transform = "translate(-50%, -50%)";
+        if (params.embedded) {
+            style.left = "0px";
+            style.top = "0px";
+        } else {
+            style.left = "50%";
+            style.top = "50%";
+            style.transform = "translate(-50%, -50%)";
+        }
 
         if (this._client?.willAddTestFrame)
             await this._client.willAddTestFrame(frame);
@@ -423,22 +385,35 @@ export class BenchmarkRunner {
     }
 
     async _runSuite(suite) {
+        this._prepareMetrics(suite);
         const suitePrepareStartLabel = `suite-${suite.name}-prepare-start`;
         const suitePrepareEndLabel = `suite-${suite.name}-prepare-end`;
         const suiteStartLabel = `suite-${suite.name}-start`;
         const suiteEndLabel = `suite-${suite.name}-end`;
 
         performance.mark(suitePrepareStartLabel);
+        const prepareStartTime = performance.now();
         await this._prepareSuite(suite);
+        const prepareEndTime = performance.now();
         performance.mark(suitePrepareEndLabel);
+        performance.measure(`suite-${suite.name}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+        if (params.measurePrepare) {
+            const prepareTime = prepareEndTime - prepareStartTime;
+            this._recordPrepareMetric(suite, prepareTime);
+        }
 
         performance.mark(suiteStartLabel);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
         performance.mark(suiteEndLabel);
-
-        performance.measure(`suite-${suite.name}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
         performance.measure(`suite-${suite.name}`, suiteStartLabel, suiteEndLabel);
+    }
+
+    _prepareMetrics(suite) {
+        this._measuredValues.tests[suite.name] = {
+            tests: {},
+            total: 0,
+        };
     }
 
     async _prepareSuite(suite) {
@@ -450,6 +425,12 @@ export class BenchmarkRunner {
             };
             frame.src = `resources/${suite.url}`;
         });
+    }
+
+    _recordPrepareMetric(suite, prepareTime) {
+        const suiteResults = this._measuredValues.tests[suite.name];
+        suiteResults.tests.Prepare = prepareTime;
+        suiteResults.total += prepareTime;
     }
 
     async _runTestAndRecordResults(suite, test) {
@@ -508,13 +489,18 @@ export class BenchmarkRunner {
 
     async _recordTestResults(suite, test, syncTime, asyncTime) {
         // Skip reporting updates for the warmup suite.
-        if (suite === WarmupSuite)
+        if (suite.name === "Warmup")
             return;
 
-        const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
+        const suiteResults = this._measuredValues.tests[suite.name];
         const total = syncTime + asyncTime;
-        this._measuredValues.tests[suite.name] = suiteResults;
-        suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
+        suiteResults.tests[test.name] = {
+            tests: {
+                Sync: syncTime,
+                Async: asyncTime,
+            },
+            total: total
+        };
         suiteResults.total += total;
 
         if (this._client?.didRunTest)
@@ -551,16 +537,24 @@ export class BenchmarkRunner {
                 throw new Error(`Requested iteration=${i} does not exist.`);
             return getMetric(`Iteration-${i}-Total`);
         };
+        const aggregates = Object.create(null);
 
         const collectSubMetrics = (prefix, items, parent) => {
             for (let name in items) {
                 const results = items[name];
                 const metric = getMetric(prefix + name);
-                metric.add(results.total ?? results);
+                const value = results.total ?? results;
+                metric.add(value);
                 if (metric.parent !== parent)
                     parent.addChild(metric);
-                if (results.tests)
+                if (results.tests) {
                     collectSubMetrics(`${metric.name}${Metric.separator}`, results.tests, metric);
+                } else {
+                    let aggregate = aggregates[name];
+                    if (!aggregate)
+                        aggregate = aggregates[name] = new Metric(name);
+                    aggregate.add(value);
+                }
             }
         };
         const initializeMetrics = this._metrics === null;
@@ -583,11 +577,157 @@ export class BenchmarkRunner {
         const iterationTotal = iterationTotalMetric(geomean.length);
         for (const results of Object.values(iterationResults))
             iterationTotal.add(results.total);
+        for (let aggregate of Object.values(aggregates)) {
+            aggregate.computeAggregatedMetrics();
+            getMetric(aggregate.name).add(aggregate.geomean);
+        }
         iterationTotal.computeAggregatedMetrics();
         geomean.add(iterationTotal.geomean);
         getMetric("Score").add(geomeanToScore(iterationTotal.geomean));
 
         for (const metric of Object.values(this._metrics))
             metric.computeAggregatedMetrics();
+    }
+}
+
+class PingBackDone {}
+const DONE = new PingBackDone();
+
+class PostMessageRunner extends BenchmarkRunner {
+    _postMessageHandlers = { __proto__: null };
+
+    constructor(suites, client) {
+        super(suites, client);
+        globalThis.addEventListener("message", this.onMessage.bind(this));
+    }
+
+    onMessage(event) {
+        const { cmd, data = undefined } = event.data;
+        const resolver = this._postMessageHandlers[cmd];
+        if (!resolver)
+            throw Error(`Unknown onMessage: ${cmd}`);
+        if (resolver === DONE)
+            throw Error(`Cannot evaluate ping back resolver twice: ${cmd}`);
+        this._postMessageHandlers[cmd] = DONE;
+        resolver(data);
+    }
+
+    async pingBackMessage(name) {
+        if (this._postMessageHandlers[name] !== DONE)
+            throw Error(`Unknown ping back message: ${name}`);
+        return new Promise(resolver => {
+            this._postMessageHandlers[name] = resolver;
+        });
+    }
+}
+
+export class SubdomainBenchmarkRunner extends PostMessageRunner {
+
+    _finishPromise;
+    _postMessageHandlers = {
+        __proto__: null,
+        prepareDone: DONE,
+        recordPrepareMetric: DONE,
+        recordTestResults: DONE,
+    };
+
+    // Assume all workloads report the metrics back via postMessage.
+    async _runSuite(suite) {
+        this._prepareMetrics(suite);
+        await this._prepareSuite(suite);
+        if (params.measurePrepare) {
+            const { prepareTime } = await this.pingBackMessage("recordPrepareMetric");
+            this._recordPrepareMetric(suite, prepareTime);
+        }
+        for (const test of suite.tests)
+            await this._runTestAndRecordResults(suite, test);
+    }
+
+    async _runTestAndRecordResults(suite, test) {
+        this.postMessage("runTestAndRecordResults");
+        const { syncTime, asyncTime } = await this.pingBackMessage("recordTestResults");
+        await this._recordTestResults(suite, test, syncTime, asyncTime);
+    }
+
+    postMessage(cmd, data) {
+        this._frame.contentWindow.postMessage({ cmd, data }, "*");
+    }
+
+    async _prepareSuite(suite) {
+        await new Promise((resolve) => {
+            const frame = this._page._frame;
+            frame.onload = async () => resolve();
+            const url = new URL(window.location.href);
+            const customParams = params.copy();
+            customParams.embedded = true;
+            customParams.suites = [suite.name];
+            customParams.tags = [];
+            customParams.startAutomatically = true;
+            customParams.developerMode = false;
+            customParams.iterationCount = 1;
+            // TODO: handle local test URLs better
+            if (this._isLocalUrl(url)) {
+                url.port = parseInt(url.port) + this._currentIteration;
+            } else {
+                // Input:  foo-bar.custom.domain.com,   foo-bar-0.custom.domain.com
+                // Output: foo-bar-1.custom.domain.com, foo-bar-1.custom.domain.com
+                const hostParts = url.hostname.split(".");
+                const domainWithoutIndex = hostParts[0].match(DOMAIN_WITHOUT_INDEX_RE).groups.nonIndexed;
+                hostParts[0] = `${domainWithoutIndex}-${this.currentIteration}`;
+                url.host = hostParts.join(".");
+            }
+            url.search = customParams.toSearchParams();
+            frame.src = url.toString();
+        });
+        await this.pingBackMessage("prepareDone");
+        this.postMessage("startSuite");
+    }
+
+    _isLocalUrl(url) {
+        return url.hostname === "127.0.0.1" || url.hostname === "localhost";
+    }
+}
+
+const DOMAIN_WITHOUT_INDEX_RE = /(?<nonIndexed>([^-]+(-[^0-9])?)+)(-[0-9]+)?/;
+
+export class EmbeddedBenchmarkRunner extends PostMessageRunner {
+
+    _postMessageHandlers = {
+        __proto__: null,
+        startSuite: DONE,
+        runTestAndRecordResults: DONE,
+    };
+
+    constructor(suites, client) {
+        super(suites, client);
+        if (globalThis === globalThis.parent) {
+            const msg = "Cannot use embedded runner in toplevel iframe";
+            alert(msg);
+            throw Error(msg);
+        }
+    }
+
+    postMessage(cmd, data) {
+        globalThis.parent.postMessage({ cmd, data }, "*");
+    }
+
+    async _prepareSuite(suite) {
+        await super._prepareSuite(suite);
+        this.postMessage("prepareDone", { prepareTime: 0 });
+        await this.pingBackMessage("startSuite");
+    }
+
+    async _runTestAndRecordResults(suite, test) {
+        await this.pingBackMessage("runTestAndRecordResults");
+        return super._runTestAndRecordResults(suite, test);
+    }
+
+    _recordPrepareMetric(suite, prepareTime) {
+        super._recordPrepareMetric(suite, prepareTime);
+        this.postMessage("recordPrepareMetric", { prepareTime });
+    }
+
+    async _recordTestResults(suite, test, syncTime, asyncTime) {
+        this.postMessage("recordTestResults", { syncTime, asyncTime });
     }
 }

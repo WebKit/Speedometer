@@ -813,3 +813,21 @@ section#about .note {
     color: #fff;
     stroke: #fff;
 }
+
+
+.embedded section {
+    border: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.embedded #logo,
+.embedded #progress,
+.embedded #info,
+.embedded #info-progress,
+.embedded #info-label {
+    display: none !important;
+}

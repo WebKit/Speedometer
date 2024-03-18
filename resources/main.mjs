@@ -1,4 +1,4 @@
-import { BenchmarkRunner } from "./benchmark-runner.mjs";
+import { BenchmarkRunner, SubdomainBenchmarkRunner, EmbeddedBenchmarkRunner } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
@@ -12,11 +12,13 @@ class MainBenchmarkClient {
     suitesCount = null;
     _measuredValuesList = [];
     _finishedTestCount = 0;
+    _totalSubtestsCount = 0;
     _progressCompleted = null;
     _isRunning = false;
     _hasResults = false;
     _developerModeContainer = null;
     _metrics = Object.create(null);
+    _runner = null;
 
     constructor() {
         window.addEventListener("DOMContentLoaded", () => this.prepareUI());
@@ -60,14 +62,19 @@ class MainBenchmarkClient {
         this._isRunning = true;
 
         const enabledSuites = Suites.filter((suite) => !suite.disabled);
-        const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => {
+        this._totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => {
             return testsCount + suite.tests.length;
         }, 0);
-        this.stepCount = params.iterationCount * totalSubtestsCount;
+        this.stepCount = params.iterationCount * this._totalSubtestsCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
-        const runner = new BenchmarkRunner(Suites, this);
-        runner.runMultipleIterations(params.iterationCount);
+        if (params.embedded)
+            this._runner = new EmbeddedBenchmarkRunner(Suites, this);
+        else if (params.domainPerIteration)
+            this._runner = new SubdomainBenchmarkRunner(Suites, this);
+        else
+            this._runner = new BenchmarkRunner(Suites, this);
+        this._runner.runMultipleIterations(params.iterationCount);
         return true;
     }
 
@@ -76,9 +83,6 @@ class MainBenchmarkClient {
     }
 
     willAddTestFrame(frame) {
-        frame.style.left = "50%";
-        frame.style.top = "50%";
-        frame.style.transform = "translate(-50%, -50%)";
     }
 
     willRunTest(suite, test) {
@@ -97,7 +101,7 @@ class MainBenchmarkClient {
 
     willStartFirstIteration() {
         this._measuredValuesList = [];
-        this._finishedTestCount = 0;
+        this._finishedTestCount = params.currentIteration * this._totalSubtestsCount;
     }
 
     didFinishLastIteration(metrics) {
@@ -105,6 +109,9 @@ class MainBenchmarkClient {
         this._isRunning = false;
         this._hasResults = true;
         this._metrics = metrics;
+        // Don't display the results if the runnier is embedded.
+        if (params.embedded)
+            return;
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         this._updateGaugeNeedle(scoreResults.mean);
@@ -191,8 +198,9 @@ class MainBenchmarkClient {
         const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
-        document.getElementById("geomean-chart").innerHTML = renderMetricView({
-            metrics: [metrics.Geomean],
+        const singleToplevelMetrics = Object.values(metrics).filter((each) => each && each.unit === "ms" && !each.parent && !each.children.length);
+        document.getElementById("toplevel-chart").innerHTML = renderMetricView({
+            metrics: singleToplevelMetrics,
             width: plotWidth,
             trackHeight,
             renderChildren: false,
@@ -236,6 +244,8 @@ class MainBenchmarkClient {
     }
 
     prepareUI() {
+        if (params.embedded)
+            document.body.className = "embedded";
         window.addEventListener("hashchange", this._hashChangeHandler.bind(this));
         window.addEventListener("resize", this._resizeScreeHandler.bind(this));
         this._resizeScreeHandler();

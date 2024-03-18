@@ -5,7 +5,7 @@ export const MILLISECONDS_PER_MINUTE = 60 * 1000;
 export class Metric {
     static separator = "/";
 
-    constructor(name, unit = "ms") {
+    constructor(name, unit = "ms", values = []) {
         if (typeof name !== "string")
             throw new Error(`Invalid metric.name=${name}, expected string.`);
         this.name = name;
@@ -20,12 +20,17 @@ export class Metric {
         this.min = 0.0;
         this.max = 0.0;
 
-        this.values = [];
-        this.children = [];
+        this.values = values;
 
         // Mark properties which refer to other Metric objects as
         // non-enumerable to avoid issue with JSON.stringify due to circular
         // references.
+        Object.defineProperties(this, {
+            children: {
+                writable: true,
+                value: [],
+            },
+        });
         Object.defineProperties(this, {
             parent: {
                 writable: true,
