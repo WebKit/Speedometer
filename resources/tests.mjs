@@ -1027,7 +1027,11 @@ Suites.push({
             page.call("serviceRAF");
             const movementCount = 20;
             for (let i = 0; i <= movementCount; ++i) {
-                canvas.dispatchMouseEvent("mousemove", startingX + ((endingX - startingX) * i) / movementCount, startingY + ((endingY - startingY) * i) / movementCount);
+                canvas.dispatchMouseEvent(
+                    "mousemove",
+                    startingX + ((endingX - startingX) * i) / movementCount,
+                    startingY + ((endingY - startingY) * i) / movementCount,
+                );
                 page.call("serviceRAF");
             }
             canvas.dispatchMouseEvent("mouseup", endingX, endingY);

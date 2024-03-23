@@ -13,10 +13,17 @@ const TreeItem = (props) => {
      * Every expandable TreeItem is open by default unless it is at the MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH threshold
      * or it is marked as display:none.
      **/
-    const treeViewItemIsOpen = isExpandableItem && currentDepth !== MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH && !treeNode.isDisplayNone;
+    const treeViewItemIsOpen
+        = isExpandableItem && currentDepth !== MAX_VISIBLE_TREE_VIEW_ITEM_DEPTH && !treeNode.isDisplayNone;
 
     return (
-        <li className={classNames("spectrum-TreeView-item", { "display-none": treeNode.isDisplayNone, "is-open": treeViewItemIsOpen }, `nodetype-${treeNode.type}`)}>
+        <li
+            className={classNames(
+                "spectrum-TreeView-item",
+                { "display-none": treeNode.isDisplayNone, "is-open": treeViewItemIsOpen },
+                `nodetype-${treeNode.type}`,
+            )}
+        >
             {isExpandableItem
                 ? <>
                     <a className="spectrum-TreeView-itemLink">

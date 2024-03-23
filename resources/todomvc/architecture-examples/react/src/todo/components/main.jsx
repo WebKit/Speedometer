@@ -18,16 +18,25 @@ export function Main({ todos, dispatch }) {
 
                 return todo;
             }),
-        [todos, route]
+        [todos, route],
     );
 
-    const toggleAll = useCallback((e) => dispatch({ type: "TOGGLE_ALL", payload: { completed: e.target.checked } }), [dispatch]);
+    const toggleAll = useCallback(
+        (e) => dispatch({ type: "TOGGLE_ALL", payload: { completed: e.target.checked } }),
+        [dispatch],
+    );
 
     return (
         <main className="main" data-testid="main">
             {visibleTodos.length > 0 ? (
                 <div className="toggle-all-container">
-                    <input className="toggle-all" type="checkbox" data-testid="toggle-all" checked={visibleTodos.every((todo) => todo.completed)} onChange={toggleAll} />
+                    <input
+                        className="toggle-all"
+                        type="checkbox"
+                        data-testid="toggle-all"
+                        checked={visibleTodos.every((todo) => todo.completed)}
+                        onChange={toggleAll}
+                    />
                     <label className="toggle-all-label" htmlFor="toggle-all">
                         Toggle All Input
                     </label>

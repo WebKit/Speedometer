@@ -70,7 +70,9 @@ function buildComplex(options) {
     if (cssFilePath) {
         // Get the name of the CSS file that's in the dist, we do this because the name of the CSS file may change
         const cssFolderDirectory = path.join(callerDirectory, sourceDirectory, cssFolder);
-        const cssFile = fs.readdirSync(cssFolderDirectory, { withFileTypes: true }).find((dirent) => dirent.isFile() && cssFileNamePattern.test(dirent.name))?.name;
+        const cssFile = fs
+            .readdirSync(cssFolderDirectory, { withFileTypes: true })
+            .find((dirent) => dirent.isFile() && cssFileNamePattern.test(dirent.name))?.name;
         // Overwrite the CSS file in the dist directory with the one from the big-dom-generator module
         // but keep the existing name so we don't need to add a new link
         fs.copyFileSync(cssFilePath, path.resolve(targetDirectory, cssFolder, cssFile));

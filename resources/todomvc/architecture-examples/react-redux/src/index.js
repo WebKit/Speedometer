@@ -14,5 +14,5 @@ render(
             <Route path="*" component={App} />
         </HashRouter>
     </Provider>,
-    document.getElementById("root")
+    document.getElementById("root"),
 );

@@ -1,12 +1,12 @@
 <script lang="js">
 import styles from "news-site-css/dist/layout.module.css";
 export default {
-  data () {
-    return {
-      styles
-    }
-  }
-}
+    data() {
+        return {
+            styles,
+        };
+    },
+};
 </script>
 
 <template>

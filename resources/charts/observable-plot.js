@@ -139,9 +139,15 @@ function addStackedBars() {
                 x: "state",
                 y: "total",
                 fill: "index",
-                title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}\n${d3Format(",")(d.total)} flights`,
+                title: (d) =>
+                    `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}\n${d3Format(",")(d.total)} flights`,
             }),
-            Plot.text(preparedData.stateInformationSortedArray, { x: "state", y: "total", text: (d) => d3Format(".2~s")(d.total), dy: -10 }),
+            Plot.text(preparedData.stateInformationSortedArray, {
+                x: "state",
+                y: "total",
+                text: (d) => d3Format(".2~s")(d.total),
+                dy: -10,
+            }),
             Plot.ruleY([0]),
         ],
     };
@@ -183,7 +189,8 @@ function addDottedBars() {
                 r: 4,
                 stroke: "value",
                 strokeWidth: 3,
-                title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}\n${d3Format(",")(Math.abs(d.value))} ${d.value > 0 ? "inward" : "outward"} flights`,
+                title: (d) =>
+                    `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}\n${d3Format(",")(Math.abs(d.value))} ${d.value > 0 ? "inward" : "outward"} flights`,
             }),
             Plot.ruleY([0]),
         ],

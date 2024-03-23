@@ -3,25 +3,25 @@ import { inject } from "vue";
 import navStyles from "news-site-css/dist/nav.module.css";
 import buttonStyles from "news-site-css/dist/button.module.css";
 export default {
-  setup() {
+    setup() {
         const { buttons } = inject("data");
         return { buttons };
     },
-  data () {
-    return {
-      navStyles,
-      buttonStyles
-    }
-  },
-  methods: {
-      logIn() {
-        console.log('logIn clicked!');
-      },
-      openSitemap() {
-        navigateTo("/");
-      }
-  },
-}
+    data() {
+        return {
+            navStyles,
+            buttonStyles,
+        };
+    },
+    methods: {
+        logIn() {
+            console.log("logIn clicked!");
+        },
+        openSitemap() {
+            navigateTo("/");
+        },
+    },
+};
 </script>
 
 <template>

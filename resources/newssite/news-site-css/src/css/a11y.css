@@ -80,7 +80,7 @@ img::before {
 }
 
 img::after {
-    content: "\2639"" " attr(alt);
+    content: "\2639" " " attr(alt);
     font-size: var(--font-size-medium);
     color: var(--color-utils-white);
     position: absolute;

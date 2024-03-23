@@ -14,7 +14,15 @@
             <button class="destroy" @click.prevent="deleteTodo"></button>
         </div>
         <div class="input-container">
-            <input id="edit-todo-input" ref="editInputRef" type="text" class="edit" v-model="editModel" @keyup.enter="finishEdit" @blur="cancelEdit" />
+            <input
+                id="edit-todo-input"
+                ref="editInputRef"
+                type="text"
+                class="edit"
+                v-model="editModel"
+                @keyup.enter="finishEdit"
+                @blur="cancelEdit"
+            />
             <label class="visually-hidden" for="edit-todo-input">Edit Todo Input</label>
         </div>
     </li>

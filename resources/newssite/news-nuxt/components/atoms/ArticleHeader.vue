@@ -4,8 +4,8 @@ export default {
         headerClass: String,
         text: String,
         link: String,
-    }
-}
+    },
+};
 </script>
 
 <template>

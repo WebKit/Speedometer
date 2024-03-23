@@ -204,7 +204,13 @@ function startTest() {
         throw Error("window.BenchmarkRunner must be a subclass of InteractiveBenchmarkRunner");
 
     // Don't call step while step is already executing.
-    document.body.appendChild(createUIForSuites(Suites, interactiveRunner.runStep.bind(interactiveRunner), interactiveRunner.runSuites.bind(interactiveRunner)));
+    document.body.appendChild(
+        createUIForSuites(
+            Suites,
+            interactiveRunner.runStep.bind(interactiveRunner),
+            interactiveRunner.runSuites.bind(interactiveRunner),
+        ),
+    );
 
     if (params.startAutomatically)
         document.getElementById("runSuites").click();

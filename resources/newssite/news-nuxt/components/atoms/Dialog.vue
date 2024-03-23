@@ -4,7 +4,7 @@ import styles from "news-site-css/dist/dialog.module.css";
 
 export default {
     props: {
-        onClose: Function
+        onClose: Function,
     },
     setup() {
         const { settings } = inject("data");
@@ -14,7 +14,7 @@ export default {
         return {
             styles,
             reduceMotion: false,
-        }
+        };
     },
     mounted() {
         this.reduceMotion = document.documentElement.classList.contains("reduced-motion");
@@ -23,13 +23,11 @@ export default {
         toggleMotion(e) {
             this.reduceMotion = e.target.checked;
 
-            if (e.target.checked)
-                document.documentElement.classList.add("reduced-motion");
-            else
-                document.documentElement.classList.remove("reduced-motion");
+            if (e.target.checked) document.documentElement.classList.add("reduced-motion");
+            else document.documentElement.classList.remove("reduced-motion");
         },
-    }
-}
+    },
+};
 </script>
 
 <template>
