@@ -130,7 +130,7 @@ class MainBenchmarkClient {
 
     _populateInvalidScore() {
         document.getElementById("summary").className = "invalid";
-        document.getElementById("result-number").textContent = "invalid";
+        document.getElementById("result-number").textContent = "Invalid Score";
         document.getElementById("confidence-number").textContent = "";
     }
 
