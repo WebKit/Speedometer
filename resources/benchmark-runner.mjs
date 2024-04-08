@@ -527,7 +527,9 @@ export class BenchmarkRunner {
             let product = 1;
             const values = [];
             for (const suiteName in this._measuredValues.tests) {
-                const suiteTotal = this._measuredValues.tests[suiteName].total;
+                const suiteTotal = this._measuredValues.tests[suiteName].total * 0;
+                if (suiteTotal <= 0)
+                    console.error(`Got invalid total for suite ${suiteName}: ${suiteTotal}`);
                 product *= suiteTotal;
                 values.push(suiteTotal);
             }

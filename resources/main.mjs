@@ -107,17 +107,32 @@ class MainBenchmarkClient {
         this._metrics = metrics;
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
+        if (scoreResults.isValid)
+            this._populateValidScore(scoreResults);
+        else
+            this._populateInvalidScore();
+
+        this._populateDetailedResults(metrics);
+        if (params.developerMode)
+            this.showResultsDetails();
+        else
+            this.showResultsSummary();
+    }
+
+    _populateValidScore(scoreResults) {
+        document.getElementById("summary").className = "valid";
+
         this._updateGaugeNeedle(scoreResults.mean);
         document.getElementById("result-number").textContent = scoreResults.formattedMean;
         if (scoreResults.formattedDelta)
             document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
 
-        this._populateDetailedResults(metrics);
+    }
 
-        if (params.developerMode)
-            this.showResultsDetails();
-        else
-            this.showResultsSummary();
+    _populateInvalidScore() {
+        document.getElementById("summary").className = "invalid";
+        document.getElementById("result-number").textContent = "invalid";
+        document.getElementById("confidence-number").textContent = "";
     }
 
     _computeResults(measuredValuesList, displayUnit) {
@@ -137,9 +152,7 @@ class MainBenchmarkClient {
         }
 
         const values = measuredValuesList.map(valueForUnit);
-        const sum = values.reduce((a, b) => {
-            return a + b;
-        }, 0);
+        const sum = values.reduce((a, b) => a + b, 0);
         const arithmeticMean = sum / values.length;
         let meanSigFig = 4;
         let formattedDelta;
@@ -162,6 +175,7 @@ class MainBenchmarkClient {
             formattedMean: formattedMean,
             formattedDelta: formattedDelta,
             formattedMeanAndDelta: formattedMean + (formattedDelta ? ` \xb1 ${formattedDelta} (${formattedPercentDelta})` : ""),
+            isValid: values.length > 0 && isFinite(sum) && sum > 0,
         };
     }
 

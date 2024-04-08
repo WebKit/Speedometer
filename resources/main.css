@@ -423,6 +423,14 @@ section#summary > #confidence-number {
     color: var(--inactive-color);
 }
 
+section#summary.invalid .gauge,
+section#summary.invalid hr {
+    opacity: 0.2;
+}
+section#summary.invalid #result-number {
+    color: var(--highlight)
+}
+
 section#details {
     --viewport-height: max(600px, 90vh);
     --viewport-width: max(800px, 80vw);
