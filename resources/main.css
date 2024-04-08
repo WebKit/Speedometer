@@ -430,6 +430,13 @@ section#summary.invalid hr {
 section#summary.invalid #result-number {
     color: var(--highlight);
 }
+#invalid-score-text {
+    display: none;
+    text-align: center;
+}
+section#summary.invalid #invalid-score-text {
+    display: block;
+}
 
 section#details {
     --viewport-height: max(600px, 90vh);
