@@ -428,7 +428,7 @@ section#summary.invalid hr {
     opacity: 0.2;
 }
 section#summary.invalid #result-number {
-    color: var(--highlight)
+    color: var(--highlight);
 }
 
 section#details {

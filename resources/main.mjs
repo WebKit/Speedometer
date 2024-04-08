@@ -126,7 +126,6 @@ class MainBenchmarkClient {
         document.getElementById("result-number").textContent = scoreResults.formattedMean;
         if (scoreResults.formattedDelta)
             document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
-
     }
 
     _populateInvalidScore() {
