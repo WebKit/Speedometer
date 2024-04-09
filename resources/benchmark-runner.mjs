@@ -339,17 +339,29 @@ export class BenchmarkRunner {
         if (this._client?.willStartFirstIteration)
             await this._client.willStartFirstIteration(iterationCount);
 
+        try {
+            await this._runMultipleIterations();
+        } catch (error) {
+            console.error(error);
+            if (this._client?.handleError) {
+                await this._client.handleError(error);
+                return;
+            }
+        }
+
+        if (this._client?.didFinishLastIteration)
+            await this._client.didFinishLastIteration(this._metrics);
+    }
+
+    async _runMultipleIterations() {
         const iterationStartLabel = "iteration-start";
         const iterationEndLabel = "iteration-end";
-        for (let i = 0; i < iterationCount; i++) {
+        for (let i = 0; i < this._iterationCount; i++) {
             performance.mark(iterationStartLabel);
             await this._runAllSuites();
             performance.mark(iterationEndLabel);
             performance.measure(`iteration-${i}`, iterationStartLabel, iterationEndLabel);
         }
-
-        if (this._client?.didFinishLastIteration)
-            await this._client.didFinishLastIteration(this._metrics);
     }
 
     _removeFrame() {
@@ -529,7 +541,7 @@ export class BenchmarkRunner {
             for (const suiteName in this._measuredValues.tests) {
                 const suiteTotal = this._measuredValues.tests[suiteName].total;
                 if (suiteTotal <= 0)
-                    console.error(`Got invalid total for suite ${suiteName}: ${suiteTotal}`);
+                    throw new Error(`Got invalid total for suite ${suiteName}: ${suiteTotal}`);
                 product *= suiteTotal;
                 values.push(suiteTotal);
             }

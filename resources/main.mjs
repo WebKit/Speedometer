@@ -119,6 +119,15 @@ class MainBenchmarkClient {
             this.showResultsSummary();
     }
 
+    handleError(error) {
+        console.assert(this._isRunning);
+        this._isRunning = false;
+        this._hasResults = true;
+        this._metrics = Object.create(null);
+        this._populateInvalidScore();
+        this.showResultsSummary();
+    }
+
     _populateValidScore(scoreResults) {
         document.getElementById("summary").className = "valid";
 
@@ -130,7 +139,7 @@ class MainBenchmarkClient {
 
     _populateInvalidScore() {
         document.getElementById("summary").className = "invalid";
-        document.getElementById("result-number").textContent = "Invalid Score";
+        document.getElementById("result-number").textContent = "Error";
         document.getElementById("confidence-number").textContent = "";
     }
 
