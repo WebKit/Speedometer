@@ -575,7 +575,7 @@ export class BenchmarkRunner {
             // of the _metrics object, before "Total" and "Score".
             for (let i = 0; i < this._iterationCount; i++)
                 iterationTotalMetric(i).description = `Test totals for iteration ${i}`;
-            getMetric("Geomean", "ms").description = "Geomean of test totals"
+            getMetric("Geomean", "ms").description = "Geomean of test totals";
             getMetric("Score", "score").description = "Scaled inverse of the Geomean";
         }
 
