@@ -235,6 +235,10 @@ class MainBenchmarkClient {
         csvLink.setAttribute("download", `${filePrefix}.csv`);
     }
 
+    _renderOverviewChart(id, metric) {
+
+    }
+
     prepareUI() {
         window.addEventListener("hashchange", this._hashChangeHandler.bind(this));
         window.addEventListener("resize", this._resizeScreeHandler.bind(this));
