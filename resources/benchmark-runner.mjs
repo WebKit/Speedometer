@@ -453,7 +453,6 @@ export class BenchmarkRunner {
     }
 
     async _runTestAndRecordResults(suite, test) {
-        /* eslint-disable-next-line no-async-promise-executor */
         if (this._client?.willRunTest)
             await this._client.willRunTest(suite, test);
 
