@@ -19,13 +19,31 @@ function getParent(lookupStartNode, path) {
     return parent;
 }
 
+export function loadFrame({ frame, url }) {
+    return new Promise((resolve, reject) => {
+        frame.onload = () => {
+            resolve({ type: "load-frame", status: "success" });
+        };
+        frame.onerror = () => reject({ type: "load-frame", status: "error" });
+        frame.src = url;
+    });
+}
+
+export function postMessageSent({ type }) {
+    return new Promise((resolve) => {
+        // eslint-disable-next-line consistent-return
+        window.onmessage = (e) => {
+            if (e.data.type === type) {
+                window.onmessage = null;
+                return resolve(e.data);
+            }
+        };
+    });
+}
+
 class Page {
     constructor(frame) {
         this._frame = frame;
-    }
-
-    getLocalStorage() {
-        return this._frame.contentWindow.localStorage;
     }
 
     layout() {
@@ -343,29 +361,17 @@ export class BenchmarkRunner {
         if (this._client?.willStartFirstIteration)
             await this._client.willStartFirstIteration(iterationCount);
 
-        try {
-            await this._runMultipleIterations();
-        } catch (error) {
-            console.error(error);
-            if (this._client?.handleError) {
-                await this._client.handleError(error);
-                return;
-            }
-        }
-
-        if (this._client?.didFinishLastIteration)
-            await this._client.didFinishLastIteration(this._metrics);
-    }
-
-    async _runMultipleIterations() {
         const iterationStartLabel = "iteration-start";
         const iterationEndLabel = "iteration-end";
-        for (let i = 0; i < this._iterationCount; i++) {
+        for (let i = 0; i < iterationCount; i++) {
             performance.mark(iterationStartLabel);
             await this._runAllSuites();
             performance.mark(iterationEndLabel);
             performance.measure(`iteration-${i}`, iterationStartLabel, iterationEndLabel);
         }
+
+        if (this._client?.didFinishLastIteration)
+            await this._client.didFinishLastIteration(this._metrics);
     }
 
     _removeFrame() {
@@ -403,9 +409,6 @@ export class BenchmarkRunner {
         const prepareEndLabel = "runner-prepare-end";
 
         performance.mark(prepareStartLabel);
-        this._removeFrame();
-        await this._appendFrame();
-        this._page = new Page(this._frame);
 
         let suites = [...this._suites];
         if (this._suiteOrderRandomNumberGenerator) {
@@ -418,38 +421,36 @@ export class BenchmarkRunner {
                 suites[j] = tmp;
             }
         }
+
         performance.mark(prepareEndLabel);
         performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
 
-        try {
-            for (const suite of suites) {
-                if (!suite.disabled)
-                    await this._runSuite(suite);
+        for (const suite of suites) {
+            if (!suite.disabled) {
+                await this._appendFrame();
+                this._page = new Page(this._frame);
+                await this._runSuite(suite);
+                this._removeFrame();
             }
-
-        } finally {
-            await this._finishRunAllSuites();
         }
-    }
 
-    async _finishRunAllSuites() {
         const finalizeStartLabel = "runner-finalize-start";
         const finalizeEndLabel = "runner-finalize-end";
 
         performance.mark(finalizeStartLabel);
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
+        await new Promise((resolve) => setTimeout(resolve, 1));
         await this._finalize();
         performance.mark(finalizeEndLabel);
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
     }
 
     async _runSuite(suite) {
-        const suiteName = suite.name;
-        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
-        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
-        const suiteStartLabel = `suite-${suiteName}-start`;
-        const suiteEndLabel = `suite-${suiteName}-end`;
+        const suitePrepareStartLabel = `suite-${suite.name}-prepare-start`;
+        const suitePrepareEndLabel = `suite-${suite.name}-prepare-end`;
+        const suiteStartLabel = `suite-${suite.name}-start`;
+        const suiteEndLabel = `suite-${suite.name}-end`;
 
         performance.mark(suitePrepareStartLabel);
         await this._prepareSuite(suite);
@@ -460,32 +461,17 @@ export class BenchmarkRunner {
             await this._runTestAndRecordResults(suite, test);
         performance.mark(suiteEndLabel);
 
-        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
-        performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
-        this._validateSuiteTotal(suiteName);
-    }
-
-    _validateSuiteTotal(suiteName) {
-        // When the test is fast and the precision is low (for example with Firefox'
-        // privacy.resistFingerprinting preference), it's possible that the measured
-        // total duration for an entire is 0.
-        const suiteTotal = this._measuredValues.tests[suiteName].total;
-        if (suiteTotal === 0)
-            throw new Error(`Got invalid 0-time total for suite ${suiteName}: ${suiteTotal}`);
+        performance.measure(`suite-${suite.name}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+        performance.measure(`suite-${suite.name}`, suiteStartLabel, suiteEndLabel);
     }
 
     async _prepareSuite(suite) {
-        return new Promise((resolve) => {
-            const frame = this._page._frame;
-            frame.onload = async () => {
-                await suite.prepare(this._page);
-                resolve();
-            };
-            frame.src = `${suite.url}`;
-        });
+        const frame = this._page._frame;
+        await Promise.all([postMessageSent({ type: "app-ready" }), loadFrame({ frame, url: `${suite.url}` }), suite.prepare(this._page)]);
     }
 
     async _runTestAndRecordResults(suite, test) {
+        /* eslint-disable-next-line no-async-promise-executor */
         if (this._client?.willRunTest)
             await this._client.willRunTest(suite, test);
 
@@ -606,9 +592,9 @@ export class BenchmarkRunner {
             // Prepare all iteration metrics so they are listed at the end of
             // of the _metrics object, before "Total" and "Score".
             for (let i = 0; i < this._iterationCount; i++)
-                iterationTotalMetric(i).description = `Test totals for iteration ${i}`;
-            getMetric("Geomean", "ms").description = "Geomean of test totals";
-            getMetric("Score", "score").description = "Scaled inverse of the Geomean";
+                iterationTotalMetric(i);
+            getMetric("Geomean");
+            getMetric("Score", "score");
         }
 
         const geomean = getMetric("Geomean");

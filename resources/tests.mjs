@@ -89,7 +89,7 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Emoji",
-    url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+    url: "/workloads/todomvc-web-components/",
     tags: ["todomvc", "experimental"],
     disabled: true,
     async prepare(page) {
@@ -123,11 +123,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-JavaScript-ES5",
-    url: "resources/todomvc/vanilla-examples/javascript-es5/dist/index.html",
+    url: "/workloads/todomvc-es5/",
     tags: ["todomvc"],
-    async prepare(page) {
-        (await page.waitForElement(".new-todo")).focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -152,12 +150,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-JavaScript-ES5-Complex-DOM",
-    url: "resources/todomvc/vanilla-examples/javascript-es5-complex/dist/index.html",
+    url: "/workloads/todomvc-es5-complex/",
     tags: ["todomvc", "complex"],
     disabled: true,
-    async prepare(page) {
-        (await page.waitForElement(".new-todo")).focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -182,13 +178,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-JavaScript-ES6-Webpack",
-    url: "resources/todomvc/vanilla-examples/javascript-es6-webpack/dist/index.html",
+    url: "/workloads/todomvc-es6-webpack/",
     tags: ["todomvc"],
     disabled: true,
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -213,12 +206,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-JavaScript-ES6-Webpack-Complex-DOM",
-    url: "resources/todomvc/vanilla-examples/javascript-es6-webpack-complex/dist/index.html",
+    url: "/workloads/todomvc-es6-webpack-complex/",
     tags: ["todomvc", "complex", "complex-default"],
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -243,11 +233,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-WebComponents",
-    url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+    url: "/workloads/todomvc-web-components/",
     tags: ["todomvc", "webcomponents"],
-    async prepare(page) {
-        await page.waitForElement("todo-app");
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
@@ -276,12 +264,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-WebComponents-Complex-DOM",
-    url: "resources/todomvc/vanilla-examples/javascript-web-components-complex/dist/index.html",
+    url: "/workloads/todomvc-web-components-complex/",
     tags: ["todomvc", "webcomponents", "complex"],
     disabled: true,
-    async prepare(page) {
-        await page.waitForElement("todo-app");
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
@@ -310,13 +296,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-React",
-    url: "resources/todomvc/architecture-examples/react/dist/index.html#/home",
+    url: "/workloads/todomvc-react/",
     tags: ["todomvc"],
     disabled: true,
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -341,12 +324,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-React-Complex-DOM",
-    url: "resources/todomvc/architecture-examples/react-complex/dist/index.html#/home",
+    url: "/workloads/todomvc-react-complex/",
     tags: ["todomvc", "complex", "complex-default"],
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -371,12 +351,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-React-Redux",
-    url: "resources/todomvc/architecture-examples/react-redux/dist/index.html",
+    url: "/workloads/todomvc-react-redux/",
     tags: ["todomvc"],
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -400,13 +377,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-React-Redux-Complex-DOM",
-    url: "resources/todomvc/architecture-examples/react-redux-complex/dist/index.html",
+    url: "/workloads/todomvc-react-redux-complex/",
     tags: ["todomvc", "complex"],
     disabled: true,
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -430,13 +404,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Backbone",
-    url: "resources/todomvc/architecture-examples/backbone/dist/index.html",
+    url: "/workloads/todomvc-backbone/",
     tags: ["todomvc"],
-    async prepare(page) {
-        await page.waitForElement("#appIsReady");
-        const newTodo = page.querySelector(".new-todo");
-        newTodo.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -461,14 +431,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Backbone-Complex-DOM",
-    url: "resources/todomvc/architecture-examples/backbone-complex/dist/index.html",
+    url: "/workloads/todomvc-backbone-complex/",
     tags: ["todomvc", "complex"],
     disabled: true,
-    async prepare(page) {
-        await page.waitForElement("#appIsReady");
-        const newTodo = page.querySelector(".new-todo");
-        newTodo.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -493,13 +459,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Angular",
-    url: "resources/todomvc/architecture-examples/angular/dist/index.html",
+    url: "/workloads/todomvc-angular/",
     tags: ["todomvc"],
     disabled: true,
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -524,12 +487,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Angular-Complex-DOM",
-    url: "resources/todomvc/architecture-examples/angular-complex/dist/index.html",
+    url: "/workloads/todomvc-angular-complex/",
     tags: ["todomvc", "complex", "complex-default"],
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -554,12 +514,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Vue",
-    url: "resources/todomvc/architecture-examples/vue/dist/index.html",
+    url: "/workloads/todomvc-vue/",
     tags: ["todomvc"],
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -584,13 +541,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Vue-Complex-DOM",
-    url: "resources/todomvc/architecture-examples/vue-complex/dist/index.html",
+    url: "/workloads/todomvc-vue-complex/",
     tags: ["todomvc", "complex", "complex-default"],
     disabled: true,
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -615,13 +569,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-jQuery",
-    url: "resources/todomvc/architecture-examples/jquery/dist/index.html",
+    url: "/workloads/todomvc-jquery/",
     tags: ["todomvc"],
-    async prepare(page) {
-        await page.waitForElement("#appIsReady");
-        const newTodo = page.getElementById("new-todo");
-        newTodo.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -643,14 +593,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-jQuery-Complex-DOM",
-    url: "resources/todomvc/architecture-examples/jquery-complex/dist/index.html",
+    url: "/workloads/todomvc-jquery-complex/",
     tags: ["todomvc", "complex"],
     disabled: true,
-    async prepare(page) {
-        await page.waitForElement("#appIsReady");
-        const newTodo = page.getElementById("new-todo");
-        newTodo.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -672,13 +618,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Preact",
-    url: "resources/todomvc/architecture-examples/preact/dist/index.html#/home",
+    url: "/workloads/todomvc-preact/",
     tags: ["todomvc"],
     disabled: true,
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -702,12 +645,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Preact-Complex-DOM",
-    url: "resources/todomvc/architecture-examples/preact-complex/dist/index.html#/home",
+    url: "/workloads/todomvc-preact-complex/",
     tags: ["todomvc", "complex", "complex-default"],
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -731,13 +671,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Svelte",
-    url: "resources/todomvc/architecture-examples/svelte/dist/index.html",
+    url: "/workloads/todomvc-svelte/",
     tags: ["todomvc"],
     disabled: true,
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -761,12 +698,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Svelte-Complex-DOM",
-    url: "resources/todomvc/architecture-examples/svelte-complex/dist/index.html",
+    url: "/workloads/todomvc-svelte-complex/",
     tags: ["todomvc", "complex", "complex-default"],
-    async prepare(page) {
-        const element = await page.waitForElement(".new-todo");
-        element.focus();
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo");
@@ -790,12 +724,10 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Lit",
-    url: "resources/todomvc/architecture-examples/lit/dist/index.html",
+    url: "/workloads/todomvc-lit/",
     tags: ["todomvc", "webcomponents"],
     disabled: true,
-    async prepare(page) {
-        await page.waitForElement("todo-app");
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo", ["todo-app", "todo-form"]);
@@ -823,11 +755,9 @@ Suites.push({
 
 Suites.push({
     name: "TodoMVC-Lit-Complex-DOM",
-    url: "resources/todomvc/architecture-examples/lit-complex/dist/index.html",
+    url: "/workloads/todomvc-lit-complex/",
     tags: ["todomvc", "webcomponents", "complex", "complex-default"],
-    async prepare(page) {
-        await page.waitForElement("todo-app");
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const newTodo = page.querySelector(".new-todo", ["todo-app", "todo-form"]);
@@ -855,11 +785,9 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Next",
-    url: "resources/newssite/news-next/dist/index.html#/home",
+    url: "/workloads/news-site-next/",
     tags: ["newssite", "language"],
-    async prepare(page) {
-        await page.waitForElement("#navbar-dropdown-toggle");
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
             for (let i = 0; i < 25; i++) {
@@ -896,11 +824,9 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Nuxt",
-    url: "resources/newssite/news-nuxt/dist/index.html",
+    url: "/workloads/news-site-nuxt/",
     tags: ["newssite"],
-    async prepare(page) {
-        await page.waitForElement("#navbar-dropdown-toggle");
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
             for (let i = 0; i < 25; i++) {
@@ -937,9 +863,10 @@ Suites.push({
 
 Suites.push({
     name: "Editor-CodeMirror",
-    url: "resources/editors/dist/codemirror.html",
+    url: "/workloads/editors-codemirror/",
     tags: ["editor"],
     async prepare(page) {},
+    disabled: true,
     tests: [
         new BenchmarkTestStep("Long", (page) => {
             page.querySelector("#create").click();
@@ -956,7 +883,7 @@ Suites.push({
 
 Suites.push({
     name: "Editor-TipTap",
-    url: "resources/editors/dist/tiptap.html",
+    url: "/workloads/editors-tiptap/",
     tags: ["editor"],
     async prepare(page) {},
     tests: [
@@ -975,7 +902,7 @@ Suites.push({
 
 Suites.push({
     name: "Charts-observable-plot",
-    url: "resources/charts/dist/observable-plot.html",
+    url: "/workloads/charts-observable-plot/",
     tags: ["chart"],
     async prepare(page) {},
     tests: [
@@ -1002,7 +929,7 @@ Suites.push({
 
 Suites.push({
     name: "Charts-chartjs",
-    url: "resources/charts/dist/chartjs.html",
+    url: "/workloads/charts-chartjs/",
     tags: ["chart"],
     async prepare(page) {},
     tests: [
@@ -1022,11 +949,9 @@ Suites.push({
 
 Suites.push({
     name: "React-Stockcharts-SVG",
-    url: "resources/react-stockcharts/build/index.html?type=svg",
+    url: "/workloads/charts-react-stockcharts/index.html?type=svg",
     tags: ["chart", "svg"],
-    async prepare(page) {
-        await page.waitForElement("#render");
-    },
+    async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Render", (page) => {
             page.getElementById("render").click();
@@ -1062,7 +987,7 @@ Suites.push({
 
 Suites.push({
     name: "Perf-Dashboard",
-    url: "resources/perf.webkit.org/public/v3/#/charts/?since=1678991819934&paneList=((55-1974-null-null-(5-2.5-500)))",
+    url: "/workloads/perf.webkit.org/v3/#/charts/?since=1678991819934&paneList=((55-1974-null-null-(5-2.5-500)))",
     tags: ["chart", "webcomponents"],
     async prepare(page) {
         await page.waitForElement("#app-is-ready");
