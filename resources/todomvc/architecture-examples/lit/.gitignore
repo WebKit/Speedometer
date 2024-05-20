@@ -1,8 +1,0 @@
-/node_modules
-/.tsbuildinfo
-/.wireit
-/.rollup.cache
-
-/lib
-/index.js
-/index.js.map

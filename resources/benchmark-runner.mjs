@@ -19,6 +19,36 @@ function getParent(lookupStartNode, path) {
     return parent;
 }
 
+export function loadFrame({ frame, url }) {
+    return new Promise((resolve, reject) => {
+        frame.onload = () => {
+            resolve({ type: "load-frame", status: "success" });
+        };
+        frame.onerror = () => reject({ type: "load-frame", status: "error" });
+        frame.src = url;
+    });
+}
+
+export function unloadFrame(frame) {
+    return new Promise((resolve) => {
+        if (!frame.contentWindow)
+            resolve({ type: "unload-frame", status: "success" });
+        frame.contentWindow.onunload = () => resolve({ type: "unload-frame", status: "success" });
+    });
+}
+
+export function postMessageSent({ type }) {
+    return new Promise(resolve => {
+        // eslint-disable-next-line consistent-return
+        window.onmessage = (e) => {
+            if (e.data.type === type) {
+                window.onmessage = null;
+                return resolve(e.data);
+            }
+        };
+    });
+}
+
 class Page {
     constructor(frame) {
         this._frame = frame;
@@ -387,9 +417,6 @@ export class BenchmarkRunner {
         const prepareEndLabel = "runner-prepare-end";
 
         performance.mark(prepareStartLabel);
-        this._removeFrame();
-        await this._appendFrame();
-        this._page = new Page(this._frame);
 
         let suites = [...this._suites];
         if (this._suiteOrderRandomNumberGenerator) {
@@ -407,8 +434,12 @@ export class BenchmarkRunner {
         performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
 
         for (const suite of suites) {
-            if (!suite.disabled)
+            if (!suite.disabled){
+                await this._appendFrame();
+                this._page = new Page(this._frame);
                 await this._runSuite(suite);
+                this._removeFrame();
+            }
         }
 
         const finalizeStartLabel = "runner-finalize-start";
@@ -417,6 +448,7 @@ export class BenchmarkRunner {
         performance.mark(finalizeStartLabel);
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
+        await new Promise((resolve) => setTimeout(resolve, 1));
         await this._finalize();
         performance.mark(finalizeEndLabel);
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
@@ -442,14 +474,20 @@ export class BenchmarkRunner {
     }
 
     async _prepareSuite(suite) {
-        return new Promise((resolve) => {
+        /* return new Promise((resolve) => {
             const frame = this._page._frame;
             frame.onload = async () => {
                 await suite.prepare(this._page);
                 resolve();
             };
             frame.src = `resources/${suite.url}`;
-        });
+        }); */
+        const frame = this._page._frame;
+        await Promise.all([
+            postMessageSent({ type: "app-ready" }),
+            loadFrame({ frame, url: `${suite.url}` }),
+            suite.prepare(this._page)
+        ]);
     }
 
     async _runTestAndRecordResults(suite, test) {
