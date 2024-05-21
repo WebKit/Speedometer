@@ -93,15 +93,10 @@ Run tools/bundle-v3-scripts to speed up the load time for production.`);
                         startTest = resolve;
                     });
                     
-                    // [todo]: remove div if we listen for postMessage
                     const div = document.createElement('div');
                     div.id = 'app-is-ready';
                     document.body.appendChild(div);
 
-                    const script = document.createElement('script');
-                    script.src = "benchmark-connector.min.js";
-                    script.type = "module";
-                    document.body.appendChild(script);
                     await promise;
                 }
                 path = path.replaceAll('\u003f', '-').replaceAll('\u0026', '-');
@@ -213,5 +208,26 @@ Run tools/bundle-v3-scripts to speed up the load time for production.`);
     <script src="bundled-scripts.js" onerror="loadUnbundledScripts()"></script>
 </head>
 <body>
+    <script type="module">
+        function loadScript({ url }) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.type = "module";
+                document.body.appendChild(script);
+
+                script.onload = () => {
+                    resolve();
+                };
+                script.onerror = () => reject();
+                script.src = url;
+            });
+        }
+
+        async function init() {
+            await loadScript({ url: "benchmark-connector.min.js" })
+        }
+
+        window.onload = () => init();
+    </script>
 </body>
 </html>

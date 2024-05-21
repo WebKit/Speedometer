@@ -1,0 +1,132 @@
+{
+    "workloads": [
+        { 
+            "name": "charts-chartjs",
+            "type":"static"
+        },
+        { 
+            "name": "charts-observable-plot",
+            "type":"static"
+        },
+        {
+            "name": "charts-react-stockcharts",
+            "type": "static"
+        },
+        {
+            "name": "perf.webkit.org",
+            "type": "static"
+        },
+        { 
+            "name": "editors-codemirror",
+            "type":"static"
+        },
+        { 
+            "name": "editors-tiptap",
+            "type":"static"
+        },
+        { 
+            "name": "news-site-next",
+            "type":"static"
+        },
+        {
+            "name": "news-site-nuxt",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-angular",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-backbone",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-es5",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-es6-webpack",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-jquery",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-lit",
+            "type":"static"
+        },
+        {
+            "name": "todomvc-preact",
+            "type": "static"
+        },
+        { 
+            "name": "todomvc-react",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-react-redux",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-svelte",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-vue",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-web-components",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-angular-complex",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-backbone-complex",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-es5-complex",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-es6-webpack-complex",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-jquery-complex",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-lit-complex",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-react-complex",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-preact-complex",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-react-redux-complex",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-svelte-complex",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-vue-complex",
+            "type":"static"
+        },
+        { 
+            "name": "todomvc-web-components-complex",
+            "type":"static"
+        }
+    ]
+}

@@ -50,6 +50,6 @@
         "typescript": "^5.0.4"
     },
     "dependencies": {
-        "@tkober/speedometer-workloads": "^1.0.10"
+        "@tkober/speedometer-workloads": "^1.0.12"
     }
 }
