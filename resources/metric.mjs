@@ -13,7 +13,8 @@ export class Metric {
         this.description = "";
 
         this.mean = 0.0;
-        // Make "geomean" non-enumerable so we don't serialize it with JSON.stringify.
+        // Make "geomean" non-enumerable so we don't serialize it with JSON.stringify
+        // and avoid some confusion with the top-level Geomean metric.
         Object.defineProperty(this, "geomean", {
             writable: true,
             value: 0,
