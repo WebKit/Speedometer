@@ -46,7 +46,7 @@
         "mocha": "^10.2.0",
         "prettier": "^2.8.3",
         "selenium-webdriver": "^4.8.0",
-        "sinon": "^15.0.1",
+        "sinon": "^17.0.1",
         "typescript": "^5.0.4"
     }
 }
