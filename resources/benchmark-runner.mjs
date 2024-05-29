@@ -422,6 +422,7 @@ export class BenchmarkRunner {
                 if (!suite.disabled)
                     await this._runSuite(suite);
             }
+
         } finally {
             await this._finishRunAllSuites();
         }
