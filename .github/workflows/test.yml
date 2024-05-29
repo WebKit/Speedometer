@@ -42,7 +42,7 @@ jobs:
             matrix:
                 browser: [chrome, firefox, safari]
         steps:
-            - if: ${{ matrix.browser == "firefox" }}
+            - if: ${{ matrix.browser }} == 'firefox'
               - name: Setup firefox
                 run: brew install --cask firefox
             - name: Checkout Branch
