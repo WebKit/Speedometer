@@ -305,6 +305,50 @@ Suites.push({
 });
 
 Suites.push({
+    name: "TodoMVC-React-18",
+    url: "tentative/todomvc-react-18/dist",
+    tags: ["todomvc", "tentative"],
+    async prepare(page) {
+        const element = await page.waitForElement("input[name=todoText]");
+        element.focus();
+    },
+
+    tests: [
+        new BenchmarkTestStep("AddingLotsOfItems", (page) => {
+            const button = page.querySelector(".add-lots-of-items-button");
+            button.click();
+        }),
+        new BenchmarkTestStep("CompletingSomeItems", (page) => {
+            const checkboxes = page.querySelectorAll("input[type='checkbox']");
+
+            // We'll be checking 5 checkboxes, in different parts of the list.
+            const nbCheckboxesToCheck = 20;
+            const steps = checkboxes.length / nbCheckboxesToCheck;
+
+            for (let i = 0; i < nbCheckboxesToCheck; i++)
+                checkboxes.at(i * steps).click();
+        }),
+        new BenchmarkTestStep("Switching to seeing only pending items", (page) => {
+            const link = page.querySelector("a[href$=active]");
+            link.click();
+        }),
+        new BenchmarkTestStep("Switching to seeing all items again", (page) => {
+            const link = page.querySelector("a[href$='/']");
+            link.click();
+        }),
+        new BenchmarkTestStep("Removing completed items", (page) => {
+            const button = page.querySelector("form[action$=removeCompleted] > button[type=submit]");
+            button.click();
+        }),
+        new BenchmarkTestStep("DeletingAllItems", (page) => {
+            const deleteButtons = page.querySelectorAll("button[aria-label=remove]");
+            for (let i = deleteButtons.length - 1; i >= 0; i--)
+                deleteButtons[i].click();
+        }),
+    ],
+});
+
+Suites.push({
     name: "TodoMVC-React-Redux",
     url: "todomvc/architecture-examples/react-redux/dist/index.html",
     tags: ["todomvc"],
