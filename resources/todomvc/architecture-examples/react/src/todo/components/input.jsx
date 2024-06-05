@@ -35,7 +35,7 @@ export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
                 e.target.value = "";
             }
         },
-        [onSubmit]
+        [onSubmit],
     );
 
     return (

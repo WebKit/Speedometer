@@ -27,7 +27,7 @@ export const BacklogPopOver = ({ className }) => {
                         </button>
                     </ActionGroup>
                 </div>
-            </li>
+            </li>,
         );
     }
 

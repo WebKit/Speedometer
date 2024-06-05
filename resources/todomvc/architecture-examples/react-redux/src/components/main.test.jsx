@@ -36,13 +36,13 @@ const setup = (propOverrides) => {
             activeCount,
             visibleTodos,
         },
-        propOverrides
+        propOverrides,
     );
 
     const { rerender } = render(
         <HashRouter>
             <WrappedComponent {...props} />
-        </HashRouter>
+        </HashRouter>,
     );
 
     return {

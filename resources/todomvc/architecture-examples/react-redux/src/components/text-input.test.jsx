@@ -11,7 +11,7 @@ const setup = (propOverrides) => {
             editing: false,
             newTodo: false,
         },
-        propOverrides
+        propOverrides,
     );
 
     const { rerender } = render(<TextInput {...props} />);

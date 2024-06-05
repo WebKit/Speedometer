@@ -32,7 +32,7 @@ export function renderMetricView(viewParams) {
                     <td>±</td>
                     <td>${metric.deltaString}</td>
                     <td>${metric.unit}</td>
-                </tr>`
+                </tr>`,
         )
         .join("");
     return `

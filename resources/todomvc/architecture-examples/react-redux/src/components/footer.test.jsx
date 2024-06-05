@@ -10,7 +10,7 @@ const setup = (propOverrides) => {
             filter: SHOW_ALL,
             onClearCompleted: jest.fn(),
         },
-        propOverrides
+        propOverrides,
     );
 
     const { rerender } = render(<Footer {...props} />);

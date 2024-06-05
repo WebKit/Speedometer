@@ -18,7 +18,7 @@ export function Main({ todos, dispatch }) {
 
                 return todo;
             }),
-        [todos, route]
+        [todos, route],
     );
 
     const toggleAll = useCallback((e) => dispatch({ type: "TOGGLE_ALL", payload: { completed: e.target.checked } }), [dispatch]);

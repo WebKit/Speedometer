@@ -36,7 +36,7 @@ class TodoTopbar extends HTMLElement {
         this.dispatchEvent(
             new CustomEvent("toggle-all", {
                 detail: { completed: event.target.checked },
-            })
+            }),
         );
     }
 
@@ -51,7 +51,7 @@ class TodoTopbar extends HTMLElement {
                     title: event.target.value,
                     completed: false,
                 },
-            })
+            }),
         );
 
         event.target.value = "";
@@ -112,7 +112,7 @@ class TodoTopbar extends HTMLElement {
                 callbacks: {
                     ["Enter"]: this.addItem,
                 },
-            })
+            }),
         );
 
         this.updateDisplay();

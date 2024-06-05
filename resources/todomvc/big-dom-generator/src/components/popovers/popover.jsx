@@ -29,7 +29,7 @@ export const OptionsPopOver = ({ numOptions, className, startRight }) => {
         options.push(
             <li key={i} className="spectrum-Menu-item" role="menuitem" tabIndex="0">
                 <span className="spectrum-Menu-itemLabel">Hidden Option {i}</span>
-            </li>
+            </li>,
         );
     }
     const classNamePopOver = classnames("spectrum-Popover", { "spectrum-Popover--bottom": !startRight }, { "spectrum-Popover--bottom-right": startRight }, className);
