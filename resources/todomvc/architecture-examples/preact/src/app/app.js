@@ -66,7 +66,14 @@ export default function App() {
             <TodoHeader onKeyDown={handleKeyDown} />
             {model.getTodos().length > 0
                 ? <>
-                    <TodoMain todos={model.getTodos()} route={route} onChange={toggleAll} onToggle={model.toggleItem} onRemove={model.removeItem} onSave={model.updateItem} />
+                    <TodoMain
+                        todos={model.getTodos()}
+                        route={route}
+                        onChange={toggleAll}
+                        onToggle={model.toggleItem}
+                        onRemove={model.removeItem}
+                        onSave={model.updateItem}
+                    />
                     <TodoFooter todos={model.getTodos()} route={route} onClearCompleted={model.clearCompleted} />
                 </>
                 : null}

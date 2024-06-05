@@ -19,7 +19,13 @@ export default function Dropdown({ children, animatedIconClass }) {
 
     return (
         <div className={styles.dropdown}>
-            <input type="checkbox" id="navbar-dropdown-toggle" className={styles["dropdown-toggle"]} onChange={handleChange} checked={isOpen} />
+            <input
+                type="checkbox"
+                id="navbar-dropdown-toggle"
+                className={styles["dropdown-toggle"]}
+                onChange={handleChange}
+                checked={isOpen}
+            />
             <label htmlFor="navbar-dropdown-toggle" className={styles["dropdown-label"]}>
                 <span className={styles["dropdown-label-text"]}>{buttons.more.label}</span>
                 <div className={classNames("animated-icon", "arrow-icon", "arrow", animatedIconClass)}>

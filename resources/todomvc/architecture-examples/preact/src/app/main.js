@@ -17,7 +17,14 @@ export default function TodoMain({ onChange, onToggle, onRemove, onSave, todos, 
             </div>
             <ul class="todo-list show-priority">
                 {visibleTodos.map((todo, index) =>
-                    <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onRemove={onRemove} onSave={onSave} index={index} />
+                    <TodoItem
+                        key={todo.id}
+                        todo={todo}
+                        onToggle={onToggle}
+                        onRemove={onRemove}
+                        onSave={onSave}
+                        index={index}
+                    />
                 )}
             </ul>
         </main>

@@ -13,5 +13,7 @@
             <a routerLink="/completed" [class.selected]="filter === 'completed'"> Completed </a>
         </li>
     </ul>
-    <button *ngIf="completedTodos.length" type="button" class="clear-completed" (click)="clearCompleted()">Clear Completed</button>
+    <button *ngIf="completedTodos.length" type="button" class="clear-completed" (click)="clearCompleted()">
+        Clear Completed
+    </button>
 </footer>

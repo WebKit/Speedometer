@@ -9,7 +9,10 @@ export const Item = memo(function Item({ todo, dispatch, index }) {
 
     const toggleItem = useCallback(() => dispatch({ type: "TOGGLE_ITEM", payload: { id } }), [dispatch]);
     const removeItem = useCallback(() => dispatch({ type: "REMOVE_ITEM", payload: { id } }), [dispatch]);
-    const updateItem = useCallback((id, title) => dispatch({ type: "UPDATE_ITEM", payload: { id, title } }), [dispatch]);
+    const updateItem = useCallback(
+        (id, title) => dispatch({ type: "UPDATE_ITEM", payload: { id, title } }),
+        [dispatch],
+    );
 
     const handleDoubleClick = useCallback(() => {
         setIsWritable(true);
@@ -32,13 +35,23 @@ export const Item = memo(function Item({ todo, dispatch, index }) {
     );
 
     return (
-        <li className={classnames({ completed: todo.completed })} data-priority={4 - (index % 5)} data-testid="todo-item">
+        <li
+            className={classnames({ completed: todo.completed })}
+            data-priority={4 - (index % 5)}
+            data-testid="todo-item"
+        >
             <div className="view">
                 {isWritable ? (
                     <Input onSubmit={handleUpdate} label="Edit Todo Input" defaultValue={title} onBlur={handleBlur} />
                 ) : (
                     <>
-                        <input className="toggle" type="checkbox" data-testid="todo-item-toggle" checked={completed} onChange={toggleItem} />
+                        <input
+                            className="toggle"
+                            type="checkbox"
+                            data-testid="todo-item-toggle"
+                            checked={completed}
+                            onChange={toggleItem}
+                        />
                         <label data-testid="todo-item-label" onDoubleClick={handleDoubleClick}>
                             {title}
                         </label>

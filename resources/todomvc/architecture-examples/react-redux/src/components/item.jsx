@@ -34,11 +34,23 @@ export default class Item extends PureComponent {
 
         let element;
         if (this.state.editing) {
-            element = <TextInput text={todo.text} editing={this.state.editing} onSave={(text) => this.handleSave(todo.id, text)} />;
+            element = (
+                <TextInput
+                    text={todo.text}
+                    editing={this.state.editing}
+                    onSave={(text) => this.handleSave(todo.id, text)}
+                />
+            );
         } else {
             element = (
                 <div className="view">
-                    <input className="toggle" type="checkbox" data-testid="todo-item-toggle" checked={todo.completed} onChange={() => toggleTodo(todo.id)} />
+                    <input
+                        className="toggle"
+                        type="checkbox"
+                        data-testid="todo-item-toggle"
+                        checked={todo.completed}
+                        onChange={() => toggleTodo(todo.id)}
+                    />
                     <label onDoubleClick={this.handleDoubleClick} data-testid="todo-item-label">
                         {todo.text}
                     </label>

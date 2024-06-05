@@ -21,7 +21,10 @@ export default function Sitemap() {
             <ul className={styles["sitemap-list"]}>
                 {navItems.map((key) =>
                     <li className={styles["sitemap-item"]} key={`sitemap-page-${content[key].name}`}>
-                        <NavLink to={content[key].url} className={({ isActive }) => classNames({ [styles.active]: isActive })}>
+                        <NavLink
+                            to={content[key].url}
+                            className={({ isActive }) => classNames({ [styles.active]: isActive })}
+                        >
                             <h4 className={styles["sitemap-header"]}>{content[key].name}</h4>
                         </NavLink>
                         <ul className={styles["sitemap-sublist"]}>
