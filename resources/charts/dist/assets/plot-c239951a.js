@@ -12243,7 +12243,12 @@ function addStackedBars() {
         title: (d) => `${d.iata === "Other" ? "Other" : `${d.name}, ${d.city} (${d.iata})`}
 ${format$1(",")(d.total)} flights`
       }),
-      text(preparedData.stateInformationSortedArray, { x: "state", y: "total", text: (d) => format$1(".2~s")(d.total), dy: -10 }),
+      text(preparedData.stateInformationSortedArray, {
+        x: "state",
+        y: "total",
+        text: (d) => format$1(".2~s")(d.total),
+        dy: -10
+      }),
       ruleY([0])
     ]
   };
@@ -12313,4 +12318,4 @@ document.getElementById("reset").addEventListener("click", reset);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
 document.getElementById("airport-group-size-input").addEventListener("input", onGroupSizeInputChange);
 onGroupSizeInputChange();
-//# sourceMappingURL=plot-562fbdb6.js.map
+//# sourceMappingURL=plot-c239951a.js.map

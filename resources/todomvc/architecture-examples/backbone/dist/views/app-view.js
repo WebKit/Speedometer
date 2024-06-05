@@ -64,7 +64,7 @@ var app = app || {};
                     this.statsTemplate({
                         completed: completed,
                         remaining: remaining,
-                    })
+                    }),
                 );
 
                 this.$(".filters li a")
