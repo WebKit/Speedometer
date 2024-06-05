@@ -14,10 +14,21 @@ const ContextualHelp = () => {
     return (
         <>
             <ActionButton Icon={HelpIcon} quiet={false} className="spectrum-ActionGroup-item" />
-            <div role="presentation" className={classNames("spectrum-Popover", "spectrum-Popover--sizeM", "spectrum-Popover--bottom-start", "spectrum-ContextualHelp-popover")}>
+            <div
+                role="presentation"
+                className={classNames(
+                    "spectrum-Popover",
+                    "spectrum-Popover--sizeM",
+                    "spectrum-Popover--bottom-start",
+                    "spectrum-ContextualHelp-popover",
+                )}
+            >
                 <div className="context-help-popover-body">
                     <h2 className="spectrum-ContextualHelp-heading">Todo help</h2>
-                    <p className="spectrum-ContextualHelp-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    <p className="spectrum-ContextualHelp-body">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                        labore et dolore magna aliqua.
+                    </p>
                 </div>
             </div>
         </>

@@ -31,7 +31,9 @@ export default function todos(state = initialState, action) {
         case TOGGLE_ALL:
             // eslint-disable-next-line no-case-declarations
             const areAllMarked = state.every((todo) => todo.completed);
-            return state.map((todo) => (todo.completed === areAllMarked ? { ...todo, completed: !areAllMarked } : todo));
+            return state.map((todo) =>
+                todo.completed === areAllMarked ? { ...todo, completed: !areAllMarked } : todo,
+            );
         case CLEAR_COMPLETED:
             return state.filter((todo) => !todo.completed);
         default:

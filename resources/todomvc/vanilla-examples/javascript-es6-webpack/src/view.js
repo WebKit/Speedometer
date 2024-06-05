@@ -156,7 +156,9 @@ export default class View {
                 $delegate(this.$todoList, ".destroy", "click", (e) => handler({ id: _itemId(e.target) }));
                 break;
             case "itemToggle":
-                $delegate(this.$todoList, ".toggle", "click", (e) => handler({ id: _itemId(e.target), completed: e.target.checked }));
+                $delegate(this.$todoList, ".toggle", "click", (e) =>
+                    handler({ id: _itemId(e.target), completed: e.target.checked }),
+                );
                 break;
             case "itemEditDone":
                 $delegate(this.$todoList, "li .edit", "blur", function (e) {

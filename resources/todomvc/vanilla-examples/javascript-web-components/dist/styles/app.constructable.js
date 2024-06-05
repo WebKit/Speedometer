@@ -9,7 +9,9 @@ sheet.replaceSync(`:host {
     background: #fff;
     margin: 24px 16px 40px 16px;
     position: relative;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+    box-shadow:
+        0 2px 4px 0 rgba(0, 0, 0, 0.2),
+        0 25px 50px 0 rgba(0, 0, 0, 0.1);
 }
 `);
 export default sheet;

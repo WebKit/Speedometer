@@ -5,7 +5,15 @@ import ChevronLeft from "./../../assets/Smock_ChevronLeft_18_N.svg";
 import AddIcon from "./../../assets/Smock_Add_18_N.svg";
 
 const DaysOfTheWeekHeadings = () => {
-    const daysOfTheWeek = { Sunday: "S", Monday: "M", Tuesday: "T", Wednesday: "W", Thursday: "T", Friday: "F", Saturday: "S" };
+    const daysOfTheWeek = {
+        Sunday: "S",
+        Monday: "M",
+        Tuesday: "T",
+        Wednesday: "W",
+        Thursday: "T",
+        Friday: "F",
+        Saturday: "S",
+    };
 
     return Object.entries(daysOfTheWeek).map(([key, value]) =>
         <th key={key} role="columnheader" scope="col" className="spectrum-Calendar-tableCell">
@@ -51,7 +59,13 @@ const CalendarRow = ({ weekStart }) => {
 };
 
 const CalendarBody = () => {
-    const weekStarts = [new Date(2023, 1, 26), new Date(2023, 2, 5), new Date(2023, 2, 12), new Date(2023, 2, 19), new Date(2023, 2, 26)];
+    const weekStarts = [
+        new Date(2023, 1, 26),
+        new Date(2023, 2, 5),
+        new Date(2023, 2, 12),
+        new Date(2023, 2, 19),
+        new Date(2023, 2, 26),
+    ];
     const children = weekStarts.map((weekStart, index) => <CalendarRow key={index} weekStart={weekStart} />);
     return <tbody role="presentation">{children}</tbody>;
 };
@@ -64,8 +78,22 @@ const Calendar = () => {
                     March 2023
                 </div>
 
-                <ActionButton Icon={ChevronLeft} quiet aria-label="Previous" aria-haspopup="false" aria-pressed="false" className="spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet spectrum-Calendar-prevMonth" />
-                <ActionButton Icon={ChevronRight} quiet aria-label="Next" aria-haspopup="false" aria-pressed="false" className="spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet spectrum-Calendar-nextMonth" />
+                <ActionButton
+                    Icon={ChevronLeft}
+                    quiet
+                    aria-label="Previous"
+                    aria-haspopup="false"
+                    aria-pressed="false"
+                    className="spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet spectrum-Calendar-prevMonth"
+                />
+                <ActionButton
+                    Icon={ChevronRight}
+                    quiet
+                    aria-label="Next"
+                    aria-haspopup="false"
+                    aria-pressed="false"
+                    className="spectrum-ActionButton spectrum-ActionButton--sizeS spectrum-ActionButton--quiet spectrum-Calendar-nextMonth"
+                />
             </div>
             <div role="grid" tabIndex="0" aria-readonly="true" className="spectrum-Calendar-body" aria-disabled="false">
                 <table role="presentation" className="spectrum-Calendar-table">
@@ -81,18 +109,37 @@ const Calendar = () => {
 
 export const DatePicker = () => {
     return (
-        <div aria-haspopup="dialog" className="spectrum-DatePicker spectrum-ActionGroup-item" aria-disabled="false" aria-readonly="false" aria-required="false">
+        <div
+            aria-haspopup="dialog"
+            className="spectrum-DatePicker spectrum-ActionGroup-item"
+            aria-disabled="false"
+            aria-readonly="false"
+            aria-required="false"
+        >
             <div className="spectrum-Textfield spectrum-Textfield--sizeM spectrum-DatePicker-textfield">
-                <input type="text" placeholder="New Sprint" defaultValue="" name="field" autoComplete="" className="spectrum-Textfield-input spectrum-DatePicker-input" />
+                <input
+                    type="text"
+                    placeholder="New Sprint"
+                    defaultValue=""
+                    name="field"
+                    autoComplete=""
+                    className="spectrum-Textfield-input spectrum-DatePicker-input"
+                />
             </div>
 
-            <button aria-haspopup="listbox" className="spectrum-PickerButton spectrum-PickerButton--icononly spectrum-PickerButton--right spectrum-PickerButton--sizeM spectrum-DatePicker-button">
+            <button
+                aria-haspopup="listbox"
+                className="spectrum-PickerButton spectrum-PickerButton--icononly spectrum-PickerButton--right spectrum-PickerButton--sizeM spectrum-DatePicker-button"
+            >
                 <div className="spectrum-PickerButton-fill">
                     <AddIcon className="spectrum-Icon spectrum-Icon--sizeM spectrum-PickerButton-menuIcon" />
                 </div>
             </button>
 
-            <div role="presentation" className="spectrum-Popover spectrum-Popover--sizeM spectrum-Popover--bottom date-picker-popover">
+            <div
+                role="presentation"
+                className="spectrum-Popover spectrum-Popover--sizeM spectrum-Popover--bottom date-picker-popover"
+            >
                 <Calendar />
             </div>
         </div>

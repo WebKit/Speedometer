@@ -7,10 +7,10 @@ export default {
     },
     data() {
         return {
-            styles
-        }
-    }
-}
+            styles,
+        };
+    },
+};
 </script>
 
 <template>

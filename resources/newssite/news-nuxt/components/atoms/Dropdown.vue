@@ -13,7 +13,7 @@ export default {
         return {
             styles,
             isOpen: false,
-        }
+        };
     },
     methods: {
         closeDropdown() {
@@ -21,9 +21,9 @@ export default {
         },
         handleChange(e) {
             this.isOpen = e.target.checked;
-        }
-    }
-}
+        },
+    },
+};
 </script>
 
 <template>

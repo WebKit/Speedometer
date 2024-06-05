@@ -33,7 +33,11 @@ export function Footer({ todos, dispatch }) {
                     </a>
                 </li>
             </ul>
-            <button className="clear-completed" disabled={activeTodos.length === todos.length} onClick={removeCompleted}>
+            <button
+                className="clear-completed"
+                disabled={activeTodos.length === todos.length}
+                onClick={removeCompleted}
+            >
                 Clear completed
             </button>
         </footer>

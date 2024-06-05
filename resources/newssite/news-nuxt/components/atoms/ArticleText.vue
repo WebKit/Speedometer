@@ -1,12 +1,11 @@
 <script lang="js">
-
 export default {
     props: {
         text: String,
         textClass: [String, Array],
         type: String,
-    }
-}
+    },
+};
 </script>
 
 <template>

@@ -160,11 +160,23 @@ export class TodoItem extends LitElement {
         return html`
             <li class="${classMap(itemClassList)}">
                 <div class="view">
-                    <input class="toggle" type="checkbox" .checked=${this.completed ?? false} @change=${this.#toggleTodo} />
+                    <input
+                        class="toggle"
+                        type="checkbox"
+                        .checked=${this.completed ?? false}
+                        @change=${this.#toggleTodo}
+                    />
                     <label @dblclick=${this.#beginEdit}> ${this.text} </label>
                     <button @click=${this.#deleteTodo} class="destroy"></button>
                 </div>
-                <input class="edit" type="text" @change=${this.#finishEdit} @keyup=${this.#captureEscape} @blur=${this.#abortEdit} .value=${this.text ?? ""} />
+                <input
+                    class="edit"
+                    type="text"
+                    @change=${this.#finishEdit}
+                    @keyup=${this.#captureEscape}
+                    @blur=${this.#abortEdit}
+                    .value=${this.text ?? ""}
+                />
             </li>
         `;
     }
