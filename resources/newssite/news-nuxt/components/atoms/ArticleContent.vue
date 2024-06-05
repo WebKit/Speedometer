@@ -11,10 +11,10 @@ export default {
     data() {
         return {
             styles,
-            layoutStyles
-        }
-    }
-}
+            layoutStyles,
+        };
+    },
+};
 </script>
 
 <template>

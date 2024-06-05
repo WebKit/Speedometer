@@ -9,9 +9,9 @@ export default {
     data() {
         return {
             styles,
-        }
+        };
     },
-}
+};
 </script>
 
 <template>

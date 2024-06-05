@@ -16,37 +16,37 @@ function calculateViewportHeight() {
 }
 
 export default {
-  props: {
-    callback: Function
-  },
-  setup() {
+    props: {
+        callback: Function,
+    },
+    setup() {
         const { content } = inject("data");
         const route = useRoute();
         return { route, content };
     },
-  data () {
-    return {
-      navbarStyles,
-      navStyles,
-      isOpen: false,
-    }
-  },
-  mounted() {
-    calculateViewportHeight();
-    window.addEventListener('resize', calculateViewportHeight);
-  },
-  unmounted() {
-    window.removeEventListener('resize', calculateViewportHeight);
-  },
-  methods: {
-    handleClick() {
-      this.isOpen = false;
+    data() {
+        return {
+            navbarStyles,
+            navStyles,
+            isOpen: false,
+        };
     },
-    handleChange(e) {
-      this.isOpen = e.target.checked;
-    }
-  },
-}
+    mounted() {
+        calculateViewportHeight();
+        window.addEventListener("resize", calculateViewportHeight);
+    },
+    unmounted() {
+        window.removeEventListener("resize", calculateViewportHeight);
+    },
+    methods: {
+        handleClick() {
+            this.isOpen = false;
+        },
+        handleChange(e) {
+            this.isOpen = e.target.checked;
+        },
+    },
+};
 </script>
 
 <template>

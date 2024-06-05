@@ -12,7 +12,7 @@ export default {
         return {
             styles,
             isSelected: false,
-        }
+        };
     },
     mount() {
         this.isSelected = this.checked;
@@ -21,9 +21,9 @@ export default {
         handleChange(e) {
             this.isSelected = e.target.checked;
             this.onChange(e);
-        }
-    }
-}
+        },
+    },
+};
 </script>
 
 <template>
