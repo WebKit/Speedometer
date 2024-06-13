@@ -29,6 +29,8 @@ export class Params {
     measurePrepare = false;
     // Use a new subdomain for each iteration to avoid caching.
     domainPerIteration = false;
+    // Force a gc before every suite (chrome specific)
+    suiteForceGC = false;
     currentIteration = 0;
     embedded = false;
 
@@ -101,6 +103,9 @@ export class Params {
 
         this.domainPerIteration = searchParams.has("domainPerIteration");
         searchParams.delete("domainPerIteration");
+
+        this.suiteForceGC = searchParams.has("suiteForceGC");
+        searchParams.delete("suiteForceGC");
 
         this.currentIteration = searchParams.get("currentIteration") | 0;
         searchParams.delete("currentIteration");

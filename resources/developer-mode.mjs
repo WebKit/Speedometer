@@ -24,6 +24,7 @@ export function createDeveloperModeContainer() {
     settings.append(createUIForSyncStepDelay());
     settings.append(createUIForMeasurePrepare());
     settings.append(createUIForDomainPerIteration());
+    settings.append(createUIForForceGC());
 
     content.append(settings);
 
@@ -105,6 +106,23 @@ function createUIForDomainPerIteration() {
 
     let label = document.createElement("label");
     label.append(check, " ", "Use Subdomain-Runner");
+
+    return label;
+}
+
+function createUIForForceGC() {
+    let check = document.createElement("input");
+    check.type = "checkbox";
+    check.id = "suite-force-gc";
+    check.checked = params.suiteForceGC;
+
+    check.onchange = () => {
+        params.suiteForceGC = check.checked;
+        updateURL();
+    };
+
+    let label = document.createElement("label");
+    label.append(check, " ", "Force GC before every Suite");
 
     return label;
 }
@@ -308,7 +326,7 @@ function updateURL() {
     else
         url.searchParams.delete("measurementMethod");
 
-    const boolParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "domainPerIteration"];
+    const boolParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "domainPerIteration", "suiteForceGC"];
     for (const paramKey of boolParamKeys) {
         if (params[paramKey] !== defaultParams[paramKey])
             url.searchParams.set(paramKey, params[paramKey]);
