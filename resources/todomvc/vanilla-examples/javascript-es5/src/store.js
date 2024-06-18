@@ -2,7 +2,45 @@
 (function (window) {
     "use strict";
 
-    var MemoryStorage = {};
+    var MemoryStorage = {
+        _data: {},
+        _name: "",
+        init: function(name, data = {}) {
+            this._name = name;
+            if (!this.getData())
+                this.setData(data);
+        },
+        getData: function() {
+            const data = this._data[this._name];
+            if (!data)
+                return null;
+
+            return JSON.parse(data);
+        },
+        setData: function(value) {
+            this._data[this._name] = JSON.stringify(value);
+        }
+    };
+
+    var LocalStorage = {
+        _name: "",
+        init: function(name, data = {}) {
+            this._name = name;
+            if (!this.getData())
+                this.setData(data);
+        },
+        getData: function() {
+            const data = window.localStorage.getItem(this._name);
+            if (!data)
+                return null;
+
+            return JSON.parse(data);
+        },
+        setData: function(value) {
+            window.localStorage.setItem(this._name, JSON.stringify(value));
+        }
+    };
+
     var ID = 1;
 
     /**
@@ -13,20 +51,15 @@
      * @param {function} callback Our fake DB uses callbacks because in
      * real life you probably would be making AJAX calls
      */
-    function Store(name, callback) {
+    function Store(name, callback, type = "memory") {
         callback = callback || function () {};
 
         this._dbName = name;
+        this.storage = type === "memory" ? MemoryStorage : LocalStorage;
 
-        if (!MemoryStorage[name]) {
-            var data = {
-                todos: [],
-            };
+        this.storage.init(name, []);
 
-            MemoryStorage[name] = JSON.stringify(data);
-        }
-
-        callback.call(this, JSON.parse(MemoryStorage[name]));
+        callback.call(this, this.storage.getData());
     }
 
     /**
@@ -46,7 +79,7 @@
         if (!callback)
             return;
 
-        var todos = JSON.parse(MemoryStorage[this._dbName]).todos;
+        var todos = this.storage.getData();
 
         callback.call(
             this,
@@ -68,7 +101,7 @@
      */
     Store.prototype.findAll = function (callback) {
         callback = callback || function () {};
-        callback.call(this, JSON.parse(MemoryStorage[this._dbName]).todos);
+        callback.call(this, this.storage.getData());
     };
 
     /**
@@ -80,8 +113,7 @@
      * @param {number} id An optional param to enter an ID of an item to update
      */
     Store.prototype.save = function (updateData, callback, id) {
-        var data = JSON.parse(MemoryStorage[this._dbName]);
-        var todos = data.todos;
+        var todos = this.storage.getData();
 
         callback = callback || function () {};
 
@@ -96,14 +128,14 @@
                 }
             }
 
-            MemoryStorage[this._dbName] = JSON.stringify(data);
+            this.storage.setData(todos);
             callback.call(this, todos);
         } else {
             // Generate an ID
             updateData.id = ID++;
 
             todos.push(updateData);
-            MemoryStorage[this._dbName] = JSON.stringify(data);
+            this.storage.setData(todos);
             callback.call(this, [updateData]);
         }
     };
@@ -115,8 +147,7 @@
      * @param {function} callback The callback to fire after saving
      */
     Store.prototype.remove = function (id, callback) {
-        var data = JSON.parse(MemoryStorage[this._dbName]);
-        var todos = data.todos;
+        var todos = this.storage.getData();
 
         for (var i = 0; i < todos.length; i++) {
             if (todos[i].id === id) {
@@ -125,7 +156,7 @@
             }
         }
 
-        MemoryStorage[this._dbName] = JSON.stringify(data);
+        this.storage.setData(todos);
         callback.call(this, todos);
     };
 
@@ -135,9 +166,9 @@
      * @param {function} callback The callback to fire after dropping the data
      */
     Store.prototype.drop = function (callback) {
-        var data = { todos: [] };
-        MemoryStorage[this._dbName] = JSON.stringify(data);
-        callback.call(this, data.todos);
+        var data = [];
+        this.storage.setData(data);
+        callback.call(this, data);
     };
 
     // Export to window
