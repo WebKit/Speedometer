@@ -51,7 +51,7 @@
      * @param {function} callback Our fake DB uses callbacks because in
      * real life you probably would be making AJAX calls
      */
-    function Store(name, callback, type = "memory") {
+    function Store(name, callback, type = "disk") {
         callback = callback || function () {};
 
         this._dbName = name;
