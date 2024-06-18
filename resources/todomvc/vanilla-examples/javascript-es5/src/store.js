@@ -5,40 +5,40 @@
     var MemoryStorage = {
         _data: {},
         _name: "",
-        init: function(name, data = {}) {
+        init: function (name, data = {}) {
             this._name = name;
             if (!this.getData())
                 this.setData(data);
         },
-        getData: function() {
+        getData: function () {
             const data = this._data[this._name];
             if (!data)
                 return null;
 
             return JSON.parse(data);
         },
-        setData: function(value) {
+        setData: function (value) {
             this._data[this._name] = JSON.stringify(value);
-        }
+        },
     };
 
     var LocalStorage = {
         _name: "",
-        init: function(name, data = {}) {
+        init: function (name, data = {}) {
             this._name = name;
             if (!this.getData())
                 this.setData(data);
         },
-        getData: function() {
+        getData: function () {
             const data = window.localStorage.getItem(this._name);
             if (!data)
                 return null;
 
             return JSON.parse(data);
         },
-        setData: function(value) {
+        setData: function (value) {
             window.localStorage.setItem(this._name, JSON.stringify(value));
-        }
+        },
     };
 
     var ID = 1;
