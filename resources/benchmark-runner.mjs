@@ -286,20 +286,6 @@ export class BenchmarkRunner {
         this._currentIteration = 0;
         if (params.shuffleSeed !== "off")
             this._suiteOrderRandomNumberGenerator = seededHashRandomNumberGenerator(params.shuffleSeed);
-        this._maybeForceGC = this._initForceGC();
-
-    }
-
-    _initForceGC() {
-        if (!params.suiteForceGC)
-            return () => {};
-        try {
-            let gc_extension = eval("gc");
-            return () => gc_extension({ type: "major", execution: "async" });
-        } catch (e) {
-            console.error("suiteForceGC was enabled but --expose-gc was not set", e);
-        }
-        return () => {};
     }
 
     get currentIteration() {
@@ -406,14 +392,12 @@ export class BenchmarkRunner {
         const suiteStartLabel = `suite-${suite.name}-start`;
         const suiteEndLabel = `suite-${suite.name}-end`;
 
-        await this._maybeForceGC();
         performance.mark(suitePrepareStartLabel);
         const prepareStartTime = performance.now();
         await this._prepareSuite(suite);
         const prepareEndTime = performance.now();
         performance.mark(suitePrepareEndLabel);
         performance.measure(`suite-${suite.name}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
-        await this._maybeForceGC();
 
         if (params.measurePrepare) {
             const prepareTime = prepareEndTime - prepareStartTime;
