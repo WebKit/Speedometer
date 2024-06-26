@@ -442,12 +442,13 @@ export class BenchmarkRunner {
         performance.mark(suitePrepareStartLabel);
         await this._prepareSuite(suite);
         performance.mark(suitePrepareEndLabel);
-        performance.measure(`suite-${suite.name}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
 
         performance.mark(suiteStartLabel);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
         performance.mark(suiteEndLabel);
+
+        performance.measure(`suite-${suite.name}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
         performance.measure(`suite-${suite.name}`, suiteStartLabel, suiteEndLabel);
     }
 
@@ -531,7 +532,7 @@ export class BenchmarkRunner {
 
     async _recordTestResults(suite, test, syncTime, asyncTime) {
         // Skip reporting updates for the warmup suite.
-        if (suite.name === "Warmup")
+        if (suite === WarmupSuite)
             return;
 
         const suiteResults = this._measuredValues.tests[suite.name];
