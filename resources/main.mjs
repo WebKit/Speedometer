@@ -198,9 +198,8 @@ class MainBenchmarkClient {
         const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
-        const singleToplevelMetrics = Object.values(metrics).filter((each) => each && each.unit === "ms" && !each.parent && !each.children.length);
-        document.getElementById("toplevel-chart").innerHTML = renderMetricView({
-            metrics: singleToplevelMetrics,
+        document.getElementById("geomean-chart").innerHTML = renderMetricView({
+            metrics: [metrics.Geomean],
             width: plotWidth,
             trackHeight,
             renderChildren: false,
