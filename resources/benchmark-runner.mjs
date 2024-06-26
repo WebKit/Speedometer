@@ -440,16 +440,9 @@ export class BenchmarkRunner {
         const suiteEndLabel = `suite-${suite.name}-end`;
 
         performance.mark(suitePrepareStartLabel);
-        const prepareStartTime = performance.now();
         await this._prepareSuite(suite);
-        const prepareEndTime = performance.now();
         performance.mark(suitePrepareEndLabel);
         performance.measure(`suite-${suite.name}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
-
-        if (params.measurePrepare) {
-            const prepareTime = prepareEndTime - prepareStartTime;
-            this._recordPrepareMetric(suite, prepareTime);
-        }
 
         performance.mark(suiteStartLabel);
         for (const test of suite.tests)
@@ -684,10 +677,6 @@ export class SubdomainBenchmarkRunner extends PostMessageRunner {
     async _runSuite(suite) {
         this._prepareMetrics(suite);
         await this._prepareSuite(suite);
-        if (params.measurePrepare) {
-            const { prepareTime } = await this.pingBackMessage("recordPrepareMetric");
-            this._recordPrepareMetric(suite, prepareTime);
-        }
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
     }

@@ -25,8 +25,6 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
-    // Emit metrics for the prepare phase.
-    measurePrepare = false;
     // Use a new subdomain for each iteration to avoid caching.
     domainPerIteration = false;
     currentIteration = 0;
@@ -95,9 +93,6 @@ export class Params {
 
         this.developerMode = searchParams.has("developerMode");
         searchParams.delete("developerMode");
-
-        this.measurePrepare = searchParams.has("measurePrepare");
-        searchParams.delete("measurePrepare");
 
         this.domainPerIteration = searchParams.has("domainPerIteration");
         searchParams.delete("domainPerIteration");
