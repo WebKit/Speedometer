@@ -25,7 +25,8 @@
         "test:chrome": "node tests/run.mjs --browser chrome",
         "test:firefox": "node tests/run.mjs --browser firefox",
         "test:safari": "node tests/run.mjs --browser safari",
-        "test:edge": "node tests/run.mjs --browser edge"
+        "test:edge": "node tests/run.mjs --browser edge",
+        "copy-workloads": "npm explore @tkober/speedometer-workloads pnpm run move:apps:custom"
     },
     "devDependencies": {
         "@babel/core": "^7.21.3",
