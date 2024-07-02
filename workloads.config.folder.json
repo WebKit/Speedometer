@@ -1,12 +1,12 @@
 {
     "workloads": [
-        { 
+        {
             "name": "charts-chartjs",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "charts-observable-plot",
-            "type":"static"
+            "type": "static"
         },
         {
             "name": "charts-react-stockcharts",
@@ -16,117 +16,117 @@
             "name": "perf.webkit.org",
             "type": "static"
         },
-        { 
+        {
             "name": "editors-codemirror",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "editors-tiptap",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "news-site-next",
-            "type":"static"
+            "type": "static"
         },
         {
             "name": "news-site-nuxt",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-angular",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-backbone",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-es5",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-es6-webpack",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-jquery",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-lit",
-            "type":"static"
+            "type": "static"
         },
         {
             "name": "todomvc-preact",
             "type": "static"
         },
-        { 
+        {
             "name": "todomvc-react",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-react-redux",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-svelte",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-vue",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-web-components",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-angular-complex",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-backbone-complex",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-es5-complex",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-es6-webpack-complex",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-jquery-complex",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-lit-complex",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-react-complex",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-preact-complex",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-react-redux-complex",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-svelte-complex",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-vue-complex",
-            "type":"static"
+            "type": "static"
         },
-        { 
+        {
             "name": "todomvc-web-components-complex",
-            "type":"static"
+            "type": "static"
         }
     ]
 }
