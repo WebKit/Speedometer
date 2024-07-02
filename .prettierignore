@@ -2,6 +2,9 @@
 **/dist
 package-lock.json
 **/.angular
+**/_nuxt
+**/_next
+/workloads
 
 /resources/todomvc/architecture-examples/*
 !/resources/todomvc/architecture-examples/angular
