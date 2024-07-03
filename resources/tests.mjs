@@ -218,7 +218,7 @@ Suites.push({
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
             const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
             for (let i = 0; i < numberOfItemsToAdd; i++) {
-                input.setValue(getTodoText(defaultLanguage, i));
+                input.setValue(getTodoText("emoji", i));
                 input.dispatchEvent("input");
                 input.enter("keyup");
             }
