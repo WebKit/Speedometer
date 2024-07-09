@@ -722,5 +722,5 @@ export const defaultTodoText = {
     es: "Algo que hacer",
     de: "Etwas zu tun",
     ru: "Кое-что сделать",
-    emoji: "Something to do",
+    emoji: "Something to do 😊",
 };
