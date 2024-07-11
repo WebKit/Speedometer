@@ -1003,7 +1003,27 @@ Suites.push({
 Suites.push({
     name: "Charts-chartjs",
     url: "resources/charts/dist/chartjs.html",
-    tags: ["chart"],
+    tags: ["chart", "compare"],
+    async prepare(page) {},
+    tests: [
+        new BenchmarkTestStep("Draw scatter", (page) => {
+            page.querySelector("#prepare").click();
+            page.querySelector("#add-scatter-chart-button").click();
+        }),
+        new BenchmarkTestStep("Show tooltip", (page) => {
+            page.querySelector("#open-tooltip").click();
+        }),
+        new BenchmarkTestStep("Draw opaque scatter", (page) => {
+            page.querySelector("#opaque-color").click();
+            page.querySelector("#add-scatter-chart-button").click();
+        }),
+    ],
+});
+
+Suites.push({
+    name: "Charts-chartjs-workloads",
+    url: "workloads/charts-chartjs/",
+    tags: ["chart", "compare"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Draw scatter", (page) => {
