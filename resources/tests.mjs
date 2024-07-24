@@ -1,4 +1,4 @@
-import { BenchmarkTestStep } from "./benchmark-runner.mjs";
+import { BenchmarkTestStep, AsyncBenchmarkTestStep } from "./benchmark-runner.mjs";
 import { todos } from "./translations.mjs";
 
 const numberOfItemsToAdd = 100;
@@ -953,7 +953,27 @@ Suites.push({
             page.querySelector("#add-scatter-chart-button").click();
         }),
     ],
-});
+})
+
+Suites.push({
+    name: "Charts-chartjs-Async",
+    url: "charts/dist/chartjs.html",
+    tags: ["chart"],
+    async prepare(page) {},
+    tests: [
+        new AsyncBenchmarkTestStep("Draw scatter", (page) => {
+            page.querySelector("#prepare").click();
+            page.querySelector("#add-scatter-chart-button").click();
+        }),
+        new AsyncBenchmarkTestStep("Show tooltip", (page) => {
+            page.querySelector("#open-tooltip").click();
+        }),
+        new AsyncBenchmarkTestStep("Draw opaque scatter", (page) => {
+            page.querySelector("#opaque-color").click();
+            page.querySelector("#add-scatter-chart-button").click();
+        }),
+    ],
+});;
 
 Suites.push({
     name: "React-Stockcharts-SVG",
