@@ -25,8 +25,16 @@ export default function Dialog({ onClose }) {
 
     return (
         <div id="settings" className={classNames(styles.dialog, styles.open)}>
-            <button id="close-dialog-link" className={styles["dialog-close-button"]} onClick={onClose} title="Close Button">
-                <div className={classNames(styles["dialog-close-button-icon"], "animated-icon", "close-icon", "hover")} title="Close Icon">
+            <button
+                id="close-dialog-link"
+                className={styles["dialog-close-button"]}
+                onClick={onClose}
+                title="Close Button"
+            >
+                <div
+                    className={classNames(styles["dialog-close-button-icon"], "animated-icon", "close-icon", "hover")}
+                    title="Close Icon"
+                >
                     <span className="animated-icon-inner">
                         <span></span>
                         <span></span>
@@ -38,7 +46,12 @@ export default function Dialog({ onClose }) {
             </header>
             <section className={styles["dialog-body"]}>
                 <div className={styles["dialog-item"]}>
-                    <Toggle id="motion" label={settings.items.motion.label} onChange={toggleMotion} checked={reduceMotion} />
+                    <Toggle
+                        id="motion"
+                        label={settings.items.motion.label}
+                        onChange={toggleMotion}
+                        checked={reduceMotion}
+                    />
                 </div>
             </section>
         </div>

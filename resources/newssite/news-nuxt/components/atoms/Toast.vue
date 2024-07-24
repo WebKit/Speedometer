@@ -7,19 +7,19 @@ export default {
         onClose: Function,
         onAccept: Function,
         onReject: Function,
-        notification: Object
+        notification: Object,
     },
     data() {
         return {
             toastStyles,
             buttonStyles,
             callbacks: {
-                'accept': this.onAccept,
-                'reject': this.onReject,
-            }
-        }
+                accept: this.onAccept,
+                reject: this.onReject,
+            },
+        };
     },
-}
+};
 </script>
 
 <template>

@@ -1,14 +1,26 @@
 import { LCG } from "random-seedable";
-import { DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR, MAX_GENERATED_DOM_DEPTH, MAX_NUMBER_OF_CHILDREN, PROBABILITY_OF_HAVING_CHILDREN, TARGET_SIZE, MIN_NUMBER_OF_MAX_DEPTH_BRANCHES, PERCENTAGE_OF_DISPLAY_NONE_TREEVIEW_ELEMENTS } from "./../params";
+import {
+    DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR,
+    MAX_GENERATED_DOM_DEPTH,
+    MAX_NUMBER_OF_CHILDREN,
+    PROBABILITY_OF_HAVING_CHILDREN,
+    TARGET_SIZE,
+    MIN_NUMBER_OF_MAX_DEPTH_BRANCHES,
+    PERCENTAGE_OF_DISPLAY_NONE_TREEVIEW_ELEMENTS,
+} from "./../params";
 
 const random = new LCG(DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR);
 
 // Recursively depth-first computing subTreeWeight.
 const fillSubtreeWeights = (node, expandableItemWeight, nonExpandableItemWeight) => {
-    if (node.type === "expandableItem")
-        node.subTreeWeight = node.children.reduce((acc, child) => acc + fillSubtreeWeights(child, expandableItemWeight, nonExpandableItemWeight), expandableItemWeight);
-    else
+    if (node.type === "expandableItem") {
+        node.subTreeWeight = node.children.reduce(
+            (acc, child) => acc + fillSubtreeWeights(child, expandableItemWeight, nonExpandableItemWeight),
+            expandableItemWeight,
+        );
+    } else {
         node.subTreeWeight = nonExpandableItemWeight;
+    }
 
     return node.subTreeWeight;
 };
@@ -112,7 +124,10 @@ export const generateTreeHead = ({ expandableItemWeight, nonExpandableItemWeight
             switch (currentNode.type) {
                 case "expandableItem":
                     if (random.coin(PROBABILITY_OF_HAVING_CHILDREN) || currentNode.children.length) {
-                        const numberOfNewChildren = random.randRange(1, MAX_NUMBER_OF_CHILDREN - currentNode.children.length + 1);
+                        const numberOfNewChildren = random.randRange(
+                            1,
+                            MAX_NUMBER_OF_CHILDREN - currentNode.children.length + 1,
+                        );
                         for (let i = 0; i < numberOfNewChildren && totalNodes < TARGET_SIZE; i++) {
                             currentNode.children.push({ type: "nonExpandableItem", children: [] });
                             totalNodes += nodeWeight["nonExpandableItem"];

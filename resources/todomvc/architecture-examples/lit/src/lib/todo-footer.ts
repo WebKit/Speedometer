@@ -29,7 +29,12 @@ export class TodoFooter extends LitElement {
                 left: 0;
                 height: 50px;
                 overflow: hidden;
-                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 8px 0 -3px #f6f6f6, 0 9px 1px -3px rgba(0, 0, 0, 0.2), 0 16px 0 -6px #f6f6f6, 0 17px 2px -6px rgba(0, 0, 0, 0.2);
+                box-shadow:
+                    0 1px 1px rgba(0, 0, 0, 0.2),
+                    0 8px 0 -3px #f6f6f6,
+                    0 9px 1px -3px rgba(0, 0, 0, 0.2),
+                    0 16px 0 -6px #f6f6f6,
+                    0 17px 2px -6px rgba(0, 0, 0, 0.2);
             }
 
             .todo-count {
@@ -116,7 +121,9 @@ export class TodoFooter extends LitElement {
                 <li>${activeFilter}</li>
                 <li>${completedFilter}</li>
             </ul>
-            ${(this.todoList?.completed.length ?? 0) > 0 ? html`<button @click=${this.#onClearCompletedClick} class="clear-completed">Clear Completed</button>` : nothing}
+            ${(this.todoList?.completed.length ?? 0) > 0
+        ? html`<button @click=${this.#onClearCompletedClick} class="clear-completed">Clear Completed</button>`
+        : nothing}
         `;
     }
 
@@ -125,7 +132,15 @@ export class TodoFooter extends LitElement {
     }
 }
 
-function filterLink({ text, filter, selectedFilter }: { text: string; filter: string; selectedFilter: string | undefined }) {
+function filterLink({
+    text,
+    filter,
+    selectedFilter,
+}: {
+    text: string;
+    filter: string;
+    selectedFilter: string | undefined;
+}) {
     return html`<a class="${classMap({ selected: filter === selectedFilter })}" href="#/${filter}">${text}</a>`;
 }
 

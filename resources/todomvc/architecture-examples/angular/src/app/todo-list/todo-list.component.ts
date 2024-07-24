@@ -8,7 +8,10 @@ import { TodosService } from "../todos.service";
     templateUrl: "./todo-list.component.html",
 })
 export class TodoListComponent {
-    constructor(private todosService: TodosService, private location: Location) {}
+    constructor(
+        private todosService: TodosService,
+        private location: Location,
+    ) {}
 
     get todos(): Todo[] {
         const filter = this.location.path().split("/")[1] || "all";

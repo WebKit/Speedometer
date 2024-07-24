@@ -86,7 +86,9 @@ const build = async () => {
     await fs.writeFile(`${targetDirectory}/${htmlFile}`, contents);
 
     // rename imports in modules
-    importsToRename.files.forEach((file) => updateImports({ file, src: importsToRename.src, dest: importsToRename.dest }));
+    importsToRename.files.forEach((file) =>
+        updateImports({ file, src: importsToRename.src, dest: importsToRename.dest }),
+    );
 
     console.log("done!!");
 };

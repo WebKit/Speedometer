@@ -55,7 +55,14 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo, index }) {
             </div>
             {editing
                 ? <div class="input-container">
-                    <input class="edit" id="edit-todo-input" ref={inputRef} onBlur={handleSubmit} onKeyDown={handleKeyDown} defaultValue={todo.title} />
+                    <input
+                        class="edit"
+                        id="edit-todo-input"
+                        ref={inputRef}
+                        onBlur={handleSubmit}
+                        onKeyDown={handleKeyDown}
+                        defaultValue={todo.title}
+                    />
                     <label class="visually-hidden" htmlFor="edit-todo-input">
                         Edit Todo Input{" "}
                     </label>

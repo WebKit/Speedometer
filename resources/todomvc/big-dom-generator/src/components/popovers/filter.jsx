@@ -12,12 +12,28 @@ const Stepper = () => {
                 Sprints
             </label>
             <div className="spectrum-Textfield spectrum-Textfield--sizeM spectrum-Stepper-textfield">
-                <input type="text" placeholder="1" autoComplete="" className="spectrum-Textfield-input spectrum-Stepper-input" id="stepper-m" />
+                <input
+                    type="text"
+                    placeholder="1"
+                    autoComplete=""
+                    className="spectrum-Textfield-input spectrum-Stepper-input"
+                    id="stepper-m"
+                />
             </div>
 
             <span className="spectrum-Stepper-buttons">
-                <ActionButton Icon={ChevronUpIcon} aria-haspopup="false" aria-pressed="false" className="spectrum-Stepper-stepUp" />
-                <ActionButton Icon={ChevronDownIcon} aria-haspopup="false" aria-pressed="false" className="spectrum-Stepper-stepDown" />
+                <ActionButton
+                    Icon={ChevronUpIcon}
+                    aria-haspopup="false"
+                    aria-pressed="false"
+                    className="spectrum-Stepper-stepUp"
+                />
+                <ActionButton
+                    Icon={ChevronDownIcon}
+                    aria-haspopup="false"
+                    aria-pressed="false"
+                    className="spectrum-Stepper-stepDown"
+                />
             </span>
         </div>
     );
@@ -49,7 +65,15 @@ export const FilterPopOver = ({ className }) => {
                 <label htmlFor="textfield-1" className="spectrum-FieldLabel spectrum-FieldLabel--sizeS">
                     Name
                 </label>
-                <input id="textfield-1" type="text" name="field" defaultValue="Sprint one" className="spectrum-Textfield-input filter-input" pattern="[\w\s]+" aria-describedby="character-count-6" />
+                <input
+                    id="textfield-1"
+                    type="text"
+                    name="field"
+                    defaultValue="Sprint one"
+                    className="spectrum-Textfield-input filter-input"
+                    pattern="[\w\s]+"
+                    aria-describedby="character-count-6"
+                />
             </div>
             <Stepper />
             <TagGroup />

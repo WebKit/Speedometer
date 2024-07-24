@@ -6,10 +6,24 @@
             <label class="toggle-all-label" htmlFor="toggle-all-input"> Toggle All Input </label>
         </div>
         <ul class="todo-list show-priority">
-            <TodoItem v-for="(todo, index) in filteredTodos" :key="todo.id" :todo="todo" :index="index" @delete-todo="deleteTodo" @edit-todo="editTodo" @toggle-todo="toggleTodo" />
+            <TodoItem
+                v-for="(todo, index) in filteredTodos"
+                :key="todo.id"
+                :todo="todo"
+                :index="index"
+                @delete-todo="deleteTodo"
+                @edit-todo="editTodo"
+                @toggle-todo="toggleTodo"
+            />
         </ul>
     </main>
-    <TodoFooter :todos="todos" @delete-completed="deleteCompleted" :remaining="activeTodos.length" :completed="completedTodos.length" :route="route" />
+    <TodoFooter
+        :todos="todos"
+        @delete-completed="deleteCompleted"
+        :remaining="activeTodos.length"
+        :completed="completedTodos.length"
+        :route="route"
+    />
 </template>
 
 <script>

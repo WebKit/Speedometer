@@ -10,7 +10,9 @@
     --animated-icon-height-half-negative: calc(var(--animated-icon-height-half) * -1);
     --animated-icon-center: calc(var(--animated-icon-width-half) - var(--animated-icon-height-half));
     --animated-icon-center-negative: calc(var(--animated-icon-center) * -1);
-    --animated-icon-bar-spacing: calc(((var(--animated-icon-width) - 3 * var(--animated-icon-height)) / 4) + var(--animated-icon-height));
+    --animated-icon-bar-spacing: calc(
+        ((var(--animated-icon-width) - 3 * var(--animated-icon-height)) / 4) + var(--animated-icon-height)
+    );
     --animated-icon-bar-spacing-negative: calc(var(--animated-icon-bar-spacing) * -1);
 
     --language-direction-adjustment: 1;
@@ -27,7 +29,8 @@ html[dir="rtl"] .animated-icon {
 .animated-icon-inner {
     display: block;
     position: absolute;
-    transform-origin: calc(var(--animated-icon-width-half) * var(--language-direction-adjustment)) var(--animated-icon-height-half);
+    transform-origin: calc(var(--animated-icon-width-half) * var(--language-direction-adjustment))
+        var(--animated-icon-height-half);
     transform: translate(0, var(--animated-icon-center)) rotate(0deg);
     transition: all 0.3s ease;
 }
@@ -60,7 +63,11 @@ html[dir="rtl"] .animated-icon {
 
 /* hamburger icon */
 .hamburger-icon .animated-icon-inner {
-    transform: translate(calc(var(--animated-icon-center) * var(--language-direction-adjustment)), var(--animated-icon-center)) rotate(0deg);
+    transform: translate(
+            calc(var(--animated-icon-center) * var(--language-direction-adjustment)),
+            var(--animated-icon-center)
+        )
+        rotate(0deg);
 }
 
 .hamburger-icon .animated-icon-inner span {
@@ -101,7 +108,8 @@ html[dir="rtl"] .animated-icon {
 }
 
 .arrow-icon.hover:hover .animated-icon-inner span:nth-child(1) {
-    transform: translate(calc(var(--animated-icon-height-half) * var(--language-direction-adjustment)), 0) rotate(-35deg);
+    transform: translate(calc(var(--animated-icon-height-half) * var(--language-direction-adjustment)), 0)
+        rotate(-35deg);
 }
 
 .arrow-icon.hover:hover .animated-icon-inner span:nth-child(2) {

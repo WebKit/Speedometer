@@ -35,12 +35,22 @@ export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
                 e.target.value = "";
             }
         },
-        [onSubmit]
+        [onSubmit],
     );
 
     return (
         <div className="input-container">
-            <input className="new-todo" id="todo-input" type="text" data-testid="text-input" autoFocus placeholder={placeholder} defaultValue={defaultValue} onBlur={handleBlur} onKeyDown={handleKeyDown} />
+            <input
+                className="new-todo"
+                id="todo-input"
+                type="text"
+                data-testid="text-input"
+                autoFocus
+                placeholder={placeholder}
+                defaultValue={defaultValue}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+            />
             <label className="visually-hidden" htmlFor="todo-input">
                 {label}
             </label>

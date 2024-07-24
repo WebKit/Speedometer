@@ -33,7 +33,12 @@ module.exports = merge(common, {
                         loader: "postcss-loader",
                         options: {
                             postcssOptions: {
-                                plugins: [require("postcss-import"), require("postcss-varfallback"), require("postcss-dropunusedvars"), require("cssnano")],
+                                plugins: [
+                                    require("postcss-import"),
+                                    require("postcss-varfallback"),
+                                    require("postcss-dropunusedvars"),
+                                    require("cssnano"),
+                                ],
                             },
                         },
                     },

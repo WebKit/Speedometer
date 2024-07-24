@@ -216,7 +216,12 @@ describe("BenchmarkRunner", () => {
                     const geomean = Math.pow(total, 1 / suite.tests.length);
                     const score = 1000 / geomean;
 
-                    const { total: measuredTotal, mean: measuredMean, geomean: measuredGeomean, score: measuredScore } = runner._measuredValues;
+                    const {
+                        total: measuredTotal,
+                        mean: measuredMean,
+                        geomean: measuredGeomean,
+                        score: measuredScore,
+                    } = runner._measuredValues;
 
                     expect(measuredTotal).to.equal(total);
                     expect(measuredMean).to.equal(mean);

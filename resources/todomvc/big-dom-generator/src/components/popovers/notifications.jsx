@@ -37,11 +37,26 @@ export const NotificationsPopOver = () => {
     ];
 
     const listItems = notifications.map((notification, index) =>
-        <li className={classnames({ completed: notification.checked })} data-priority={notification.priority} key={index}>
+        <li
+            className={classnames({ completed: notification.checked })}
+            data-priority={notification.priority}
+            key={index}
+        >
             <div className={classnames("spectrum-Checkbox", "spectrum-Checkbox--sizeS")}>
-                <input type="checkbox" className="spectrum-Checkbox-input" id={`checkbox-${index}`} defaultChecked={notification.checked} />
+                <input
+                    type="checkbox"
+                    className="spectrum-Checkbox-input"
+                    id={`checkbox-${index}`}
+                    defaultChecked={notification.checked}
+                />
                 <div className="spectrum-Checkbox-box">
-                    <CheckmarkIcon className={classnames("spectrum-Icon", "spectrum-UIIcon-Checkmark100", "spectrum-Checkbox-checkmark")} />
+                    <CheckmarkIcon
+                        className={classnames(
+                            "spectrum-Icon",
+                            "spectrum-UIIcon-Checkmark100",
+                            "spectrum-Checkbox-checkmark",
+                        )}
+                    />
                 </div>
                 <label className="spectrum-Checkbox-label">{notification.title}</label>
                 <label className="spectrum-Checkbox-label">{notification.age}</label>
@@ -51,12 +66,27 @@ export const NotificationsPopOver = () => {
 
     return (
         <div className={classnames("spectrum-Popover", "spectrum-Popover--bottom-right")}>
-            <div className={classnames("spectrum-FieldGroup", "spectrum-FieldGroup--toplabel", "spectrum-FieldGroup--vertical", "spectrum-Popover--bottom-right is-open")} role="group" aria-labelledby="checkboxgroup-label-1">
+            <div
+                className={classnames(
+                    "spectrum-FieldGroup",
+                    "spectrum-FieldGroup--toplabel",
+                    "spectrum-FieldGroup--vertical",
+                    "spectrum-Popover--bottom-right is-open",
+                )}
+                role="group"
+                aria-labelledby="checkboxgroup-label-1"
+            >
                 <div className="notification-tabs">
-                    <div className={classnames("spectrum-FieldLabel", "spectrum-FieldLabel--sizeM")} id="checkboxgroup-label-1">
+                    <div
+                        className={classnames("spectrum-FieldLabel", "spectrum-FieldLabel--sizeM")}
+                        id="checkboxgroup-label-1"
+                    >
                         Messages
                     </div>
-                    <div className={classnames("spectrum-FieldLabel", "spectrum-FieldLabel--sizeM", "is-active")} id="checkboxgroup-label-2">
+                    <div
+                        className={classnames("spectrum-FieldLabel", "spectrum-FieldLabel--sizeM", "is-active")}
+                        id="checkboxgroup-label-2"
+                    >
                         Notifications
                     </div>
                 </div>

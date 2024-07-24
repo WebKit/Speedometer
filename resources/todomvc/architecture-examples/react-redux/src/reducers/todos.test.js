@@ -11,7 +11,7 @@ describe("todos reducer", () => {
             todos([], {
                 type: types.ADD_TODO,
                 text: "Run the tests",
-            })
+            }),
         ).toMatchObject([
             {
                 completed: false,
@@ -31,8 +31,8 @@ describe("todos reducer", () => {
                 {
                     type: types.ADD_TODO,
                     text: "Run the tests",
-                }
-            )
+                },
+            ),
         ).toMatchObject([
             {
                 completed: false,
@@ -61,8 +61,8 @@ describe("todos reducer", () => {
                 {
                     type: types.ADD_TODO,
                     text: "Fix the tests",
-                }
-            )
+                },
+            ),
         ).toMatchObject([
             {
                 text: "Use Redux",
@@ -97,8 +97,8 @@ describe("todos reducer", () => {
                 {
                     type: types.DELETE_TODO,
                     id: 1,
-                }
-            )
+                },
+            ),
         ).toEqual([
             {
                 text: "Use Redux",
@@ -127,8 +127,8 @@ describe("todos reducer", () => {
                     type: types.EDIT_TODO,
                     text: "Fix the tests",
                     id: 1,
-                }
-            )
+                },
+            ),
         ).toEqual([
             {
                 text: "Fix the tests",
@@ -161,8 +161,8 @@ describe("todos reducer", () => {
                 {
                     type: types.TOGGLE_TODO,
                     id: 1,
-                }
-            )
+                },
+            ),
         ).toEqual([
             {
                 text: "Run the tests",
@@ -194,8 +194,8 @@ describe("todos reducer", () => {
                 ],
                 {
                     type: types.TOGGLE_ALL,
-                }
-            )
+                },
+            ),
         ).toMatchObject([
             {
                 text: "Run the tests",
@@ -226,8 +226,8 @@ describe("todos reducer", () => {
                 ],
                 {
                     type: types.TOGGLE_ALL,
-                }
-            )
+                },
+            ),
         ).toEqual([
             {
                 text: "Run the tests",
@@ -259,8 +259,8 @@ describe("todos reducer", () => {
                 ],
                 {
                     type: types.CLEAR_COMPLETED,
-                }
-            )
+                },
+            ),
         ).toEqual([
             {
                 text: "Use Redux",
@@ -295,7 +295,7 @@ describe("todos reducer", () => {
                     completed: false,
                     text: "Write tests",
                 },
-            ])
+            ]),
         ).toMatchObject([
             {
                 text: "Write tests",

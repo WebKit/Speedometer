@@ -94,7 +94,7 @@ class TodoItem extends HTMLElement {
             new CustomEvent("toggle-item", {
                 detail: { id: this.itemid, completed: this.toggleInput.checked },
                 bubbles: true,
-            })
+            }),
         );
     }
 
@@ -105,7 +105,7 @@ class TodoItem extends HTMLElement {
             new CustomEvent("remove-item", {
                 detail: { id: this.itemid },
                 bubbles: true,
-            })
+            }),
         );
         this.remove();
     }
@@ -120,7 +120,7 @@ class TodoItem extends HTMLElement {
                     new CustomEvent("update-item", {
                         detail: { id: this.itemid, title: event.target.value },
                         bubbles: true,
-                    })
+                    }),
                 );
             }
         }
@@ -173,7 +173,7 @@ class TodoItem extends HTMLElement {
                 callbacks: {
                     [" "]: this.startEdit, // this feels weird
                 },
-            })
+            }),
         );
 
         this.addListeners();

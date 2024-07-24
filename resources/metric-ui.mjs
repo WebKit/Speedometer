@@ -1,6 +1,21 @@
 import { Metric } from "./metric.mjs";
 
-export const COLORS = Object.freeze(["blue", "blue-light", "green-light", "green", "yellow", "orange", "red", "magenta", "violet", "purple", "blue-dark", "green-dark", "ochre", "rust"]);
+export const COLORS = Object.freeze([
+    "blue",
+    "blue-light",
+    "green-light",
+    "green",
+    "yellow",
+    "orange",
+    "red",
+    "magenta",
+    "violet",
+    "purple",
+    "blue-dark",
+    "green-dark",
+    "ochre",
+    "rust",
+]);
 
 export function renderMetricView(viewParams) {
     let { metrics, width = 500, trackHeight = 20, subMetricMargin = 35, title = "", colors = COLORS } = viewParams;
@@ -32,7 +47,7 @@ export function renderMetricView(viewParams) {
                     <td>±</td>
                     <td>${metric.deltaString}</td>
                     <td>${metric.unit}</td>
-                </tr>`
+                </tr>`,
         )
         .join("");
     return `
@@ -192,7 +207,10 @@ function prepareScatterPlotValues(metrics, normalize = true) {
         }
         const left = center - width / 2;
         const y = metricIndex;
-        const label = `Mean: ${metric.valueString}\n` + `Min: ${metric.min.toFixed(2)}${unit}\n` + `Max: ${metric.max.toFixed(2)}${unit}`;
+        const label
+            = `Mean: ${metric.valueString}\n`
+            + `Min: ${metric.min.toFixed(2)}${unit}\n`
+            + `Max: ${metric.max.toFixed(2)}${unit}`;
         const rect = [left, y, label, width];
         // Add data for individual points:
         points.push(rect);
@@ -209,7 +227,9 @@ function prepareScatterPlotValues(metrics, normalize = true) {
             // Each value is mapped to a y-coordinate in the range of [metricIndex, metricIndex + 1]
             const valueOffsetY = length === 1 ? 0.5 : i / length;
             const y = metricIndex + valueOffsetY;
-            let label = `Iteration ${i}: ${value.toFixed(3)}${unit}\n` + `Normalized: ${metric.mean.toFixed(3)}${unit} ${sign} ${normalized.toFixed(2)}%`;
+            let label
+                = `Iteration ${i}: ${value.toFixed(3)}${unit}\n`
+                + `Normalized: ${metric.mean.toFixed(3)}${unit} ${sign} ${normalized.toFixed(2)}%`;
             const point = [x, y, label];
             points.push(point);
         }
@@ -217,7 +237,17 @@ function prepareScatterPlotValues(metrics, normalize = true) {
     return points;
 }
 
-function renderScatterPlot({ values, width = 500, height, trackHeight, xAxisPositiveOnly = false, xAxisShowZero = false, xAxisLabel, unit = "", colors = COLORS }) {
+function renderScatterPlot({
+    values,
+    width = 500,
+    height,
+    trackHeight,
+    xAxisPositiveOnly = false,
+    xAxisShowZero = false,
+    xAxisLabel,
+    unit = "",
+    colors = COLORS,
+}) {
     if (!height && !trackHeight)
         throw new Error("Either height or trackHeight must be specified");
     let xMin = Infinity;

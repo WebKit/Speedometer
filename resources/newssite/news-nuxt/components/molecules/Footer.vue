@@ -6,21 +6,21 @@ export default {
         const { footer, links } = inject("data");
         return { footer, links };
     },
-  data() {
-    return {
-      styles,
-      showPortal: false,
-    }
-  },
-  methods: {
-    openPortal() {
-      this.showPortal = true;
+    data() {
+        return {
+            styles,
+            showPortal: false,
+        };
     },
-    closePortal() {
-      this.showPortal = false;
-    }
-  }
-}
+    methods: {
+        openPortal() {
+            this.showPortal = true;
+        },
+        closePortal() {
+            this.showPortal = false;
+        },
+    },
+};
 </script>
 
 <template>

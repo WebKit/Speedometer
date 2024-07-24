@@ -4,12 +4,12 @@ export default {
     props: {
         section: Object,
     },
-  data() {
-    return {
-      styles
-    }
-  }
-}
+    data() {
+        return {
+            styles,
+        };
+    },
+};
 </script>
 
 <template>

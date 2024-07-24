@@ -14,11 +14,9 @@ export default {
         const navItems = [];
         const dropdownItems = [];
 
-        Object.keys(content).forEach(key => {
-            if (content[key].priority === 1)
-                navItems.push(key);
-            else if (content[key].priority === 2)
-                dropdownItems.push(key);
+        Object.keys(content).forEach((key) => {
+            if (content[key].priority === 1) navItems.push(key);
+            else if (content[key].priority === 2) dropdownItems.push(key);
         });
 
         const route = useRoute();
@@ -27,9 +25,9 @@ export default {
     data() {
         return {
             styles,
-        }
-    }
-}
+        };
+    },
+};
 </script>
 
 <template>

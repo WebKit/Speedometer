@@ -18,7 +18,18 @@ export default class Main extends Component {
     };
 
     render() {
-        const { todos, editTodo, deleteTodo, toggleTodo, toggleAll, clearCompleted, location, visibleTodos, completedCount, activeCount } = this.props;
+        const {
+            todos,
+            editTodo,
+            deleteTodo,
+            toggleTodo,
+            toggleAll,
+            clearCompleted,
+            location,
+            visibleTodos,
+            completedCount,
+            activeCount,
+        } = this.props;
 
         if (todos.length === 0)
             return null;
@@ -26,17 +37,35 @@ export default class Main extends Component {
         return (
             <main className="main" data-testid="main">
                 <div className="toggle-all-container">
-                    <input className="toggle-all" type="checkbox" data-testid="toggle-all" checked={completedCount === todos.length} onChange={toggleAll} />
+                    <input
+                        className="toggle-all"
+                        type="checkbox"
+                        data-testid="toggle-all"
+                        checked={completedCount === todos.length}
+                        onChange={toggleAll}
+                    />
                     <label className="toggle-all-label" htmlFor="toggle-all">
                         Toggle All Input
                     </label>
                 </div>
                 <ul className={classnames("todo-list", "show-priority")} data-testid="todo-list">
                     {visibleTodos.map((todo, index) => (
-                        <Item key={todo.id} todo={todo} editTodo={editTodo} deleteTodo={deleteTodo} toggleTodo={toggleTodo} index={index} />
+                        <Item
+                            key={todo.id}
+                            todo={todo}
+                            editTodo={editTodo}
+                            deleteTodo={deleteTodo}
+                            toggleTodo={toggleTodo}
+                            index={index}
+                        />
                     ))}
                 </ul>
-                <Footer completedCount={completedCount} activeCount={activeCount} filter={location.pathname} onClearCompleted={clearCompleted} />
+                <Footer
+                    completedCount={completedCount}
+                    activeCount={activeCount}
+                    filter={location.pathname}
+                    onClearCompleted={clearCompleted}
+                />
             </main>
         );
     }
