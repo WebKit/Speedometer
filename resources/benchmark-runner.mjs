@@ -24,6 +24,10 @@ class Page {
         this._frame = frame;
     }
 
+    getLocalStorage() {
+        return this._frame.contentWindow.localStorage;
+    }
+
     layout() {
         const body = this._frame.contentDocument.body.getBoundingClientRect();
         this.layout.e = document.elementFromPoint((body.width / 2) | 0, (body.height / 2) | 0);
@@ -477,7 +481,7 @@ export class BenchmarkRunner {
                 await suite.prepare(this._page);
                 resolve();
             };
-            frame.src = `resources/${suite.url}`;
+            frame.src = `${suite.url}`;
         });
     }
 
