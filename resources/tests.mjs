@@ -88,6 +88,40 @@ Suites.push({
 });
 
 Suites.push({
+    name: "TodoMVC-Emoji",
+    url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+    tags: ["todomvc", "experimental"],
+    disabled: true,
+    async prepare(page) {
+        await page.waitForElement("todo-app");
+    },
+    tests: [
+        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                input.setValue(getTodoText("emoji", i));
+                input.dispatchEvent("input");
+                input.enter("keyup");
+            }
+        }),
+        new BenchmarkTestStep("CompletingAllItems", (page) => {
+            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
+                item.click();
+            }
+        }),
+        new BenchmarkTestStep("DeletingAllItems", (page) => {
+            const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) {
+                const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
+                item.click();
+            }
+        }),
+    ],
+});
+
+Suites.push({
     name: "TodoMVC-JavaScript-ES5",
     url: "resources/todomvc/vanilla-examples/javascript-es5/dist/index.html",
     tags: ["todomvc"],
