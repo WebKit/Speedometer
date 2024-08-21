@@ -900,7 +900,6 @@ Suites.push({
     tags: ["newssite", "language"],
     async prepare() {},
     config: {
-        remote: true,
         name: "Navigation",
         steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
     },
