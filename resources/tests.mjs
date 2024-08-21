@@ -895,6 +895,18 @@ Suites.push({
 });
 
 Suites.push({
+    name: "NewsSite-PostMessage",
+    url: "experimental/news-next-postmessage/dist/",
+    tags: ["newssite", "language"],
+    async prepare() {},
+    config: {
+        remote: true,
+        name: "Navigation",
+        steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
+    },
+});
+
+Suites.push({
     name: "NewsSite-Nuxt",
     url: "resources/newssite/news-nuxt/dist/index.html",
     tags: ["newssite"],
