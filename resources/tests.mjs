@@ -896,8 +896,9 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-PostMessage",
-    url: "experimental/news-next-postmessage/dist/",
-    tags: ["newssite", "language"],
+    url: "resources/newssite/news-next/dist/",
+    tags: ["experimental", "newssite", "language"],
+    disabled: true,
     async prepare() {},
     config: {
         name: "Navigation",
