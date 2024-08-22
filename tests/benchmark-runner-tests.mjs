@@ -109,11 +109,11 @@ describe("BenchmarkRunner", () => {
 
     describe("Suite", () => {
         describe("runAllSuites", () => {
-            let _runSuiteStub, _finalizeMetricsStub, _appendFrameStub, _removeFrameStub;
+            let _runSuiteStub, _finalizeStub, _appendFrameStub, _removeFrameStub;
 
             before(async () => {
                 _runSuiteStub = stub(runner, "runSuite").callsFake(async () => null);
-                _finalizeMetricsStub = stub(runner, "_finalizeMetrics").callsFake(async () => null);
+                _finalizeStub = stub(runner, "_finalize").callsFake(async () => null);
                 _appendFrameStub = stub(runner, "_appendFrame").callsFake(async () => null);
                 _removeFrameStub = stub(runner, "_removeFrame").callsFake(() => null);
                 for (const suite in runner.suites)
@@ -137,7 +137,7 @@ describe("BenchmarkRunner", () => {
             });
 
             it("should fire the function responsible for finalizing results", () => {
-                assert.calledOnce(_finalizeMetricsStub);
+                assert.calledOnce(_finalizeStub);
             });
         });
 

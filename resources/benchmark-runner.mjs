@@ -398,8 +398,14 @@ export class BenchmarkRunner {
 
     async runAllSuites() {
         const suites = await this._prepareAllSuites();
-        await this._runSuites(suites);
-        await this._finalize();
+        try {
+            for (const suite of suites) {
+                if (!suite.disabled)
+                    await this.runSuite(suite);
+            }
+        } finally {
+            await this._finishRunAllSuites();
+        }
     }
 
     async _prepareAllSuites() {
@@ -434,25 +440,14 @@ export class BenchmarkRunner {
         }
     }
 
-    async _runSuites(suites) {
-        try {
-            for (const suite of suites) {
-                if (!suite.disabled)
-                    await this.runSuite(suite);
-            }
-        } finally {
-            await this._finishRunAllSuites();
-        }
-    }
-
-    async _finalize() {
+    async _finishRunAllSuites() {
         const finalizeStartLabel = "runner-finalize-start";
         const finalizeEndLabel = "runner-finalize-end";
 
         performance.mark(finalizeStartLabel);
         // Remove frame to clear the view for displaying the results.
         this._removeFrame();
-        await this._finalizeMetrics();
+        await this._finalize();
         performance.mark(finalizeEndLabel);
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
     }
@@ -472,7 +467,7 @@ export class BenchmarkRunner {
         await suite.prepare(this._page);
         performance.mark(suitePrepareEndLabel);
 
-        performance.measure(`suite-${suite.name}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
     }
 
     async _loadFrame(suite) {
@@ -484,29 +479,18 @@ export class BenchmarkRunner {
         });
     }
 
-    async _finishRunAllSuites() {
-        const finalizeStartLabel = "runner-finalize-start";
-        const finalizeEndLabel = "runner-finalize-end";
-
-        performance.mark(finalizeStartLabel);
-        // Remove frame to clear the view for displaying the results.
-        this._removeFrame();
-        await this._finalize();
-        performance.mark(finalizeEndLabel);
-        performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
-    }
 
     async _runSuite(suite) {
         const suiteName = suite.name;
-        const suiteStartLabel = `suite-${suite.name}-start`;
-        const suiteEndLabel = `suite-${suite.name}-end`;
+        const suiteStartLabel = `suite-${suiteName}-start`;
+        const suiteEndLabel = `suite-${suiteName}-end`;
 
         performance.mark(suiteStartLabel);
         for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
         performance.mark(suiteEndLabel);
 
-        performance.measure(`suite-${suite.name}`, suiteStartLabel, suiteEndLabel);
+        performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
         this._validateSuiteTotal(suiteName);
     }
 
@@ -587,7 +571,7 @@ export class BenchmarkRunner {
             await this._client.didRunTest(suite, test);
     }
 
-    async _finalizeMetrics() {
+    async _finalize() {
         this._appendIterationMetrics();
         if (this._client?.didRunSuites) {
             let product = 1;
