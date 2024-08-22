@@ -11,12 +11,12 @@ function TEST_FIXTURE(name) {
 const SUITES_FIXTURE = [
     {
         name: "Suite 1",
-        async prepare(page) { },
+        async prepare(page) {},
         tests: [TEST_FIXTURE("Test 1"), TEST_FIXTURE("Test 2"), TEST_FIXTURE("Test 3")],
     },
     {
         name: "Suite 2",
-        async prepare(page) { },
+        async prepare(page) {},
         tests: [TEST_FIXTURE("Test 1")],
     },
 ];
