@@ -21,11 +21,9 @@ jobs:
               with:
                   node-version: 18.13.0
             - name: Install
-              run: |
-                  npm install
+              run: npm install
             - name: Run linters
-              run: |
-                  npm run format
+              run: npm run format
             - name: Check if anything changed
               run: |
                   git_status="`LC_ALL=C git status --porcelain --ignore-submodules -unormal 2>&1`"
@@ -44,6 +42,9 @@ jobs:
             matrix:
                 browser: [chrome, firefox, safari]
         steps:
+            - name: Install Firefox
+              if: ${{ matrix.browser == 'firefox' }}
+              run: brew install --cask firefox
             - name: Checkout Branch
               uses: actions/checkout@v3
             - name: Setup Node
@@ -51,8 +52,7 @@ jobs:
               with:
                   node-version: 18.13.0
             - name: Install
-              run: |
-                  npm install
+              run: npm install
             - name: Run tests
               run: |
                   echo "Running in $BROWSER"

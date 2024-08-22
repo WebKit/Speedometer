@@ -50,7 +50,7 @@
                 </div>
             </section>
 
-            <section id="summary" data-title="Results Summary">
+            <section id="summary" data-title="Results Summary" class="valid">
                 <a href="#home" class="logo">
                     <img srcset="resources/logo@2x.png 2x" src="resources/logo.png" alt="Speedometer" />
                     <div class="version">3.0</div>
@@ -62,6 +62,10 @@
                 <hr />
                 <div id="result-number"></div>
                 <div id="confidence-number"></div>
+                <div id="invalid-score-text">
+                    One or more subtests produced no duration.<br />
+                    Please check your <a href="./instructions.html" target="_blank">browser settings</a> and re-run the benchmark.<br />
+                </div>
                 <div class="buttons">
                     <div class="button-row">
                         <a class="button" href="#details" id="show-details" title="Show detailed results data.">Details</a>
@@ -78,13 +82,13 @@
                     <h1 class="section-header">Detailed Results</h1>
                     <div class="section-content all-metric-results">
                         <div class="aggregated-metric-result">
-                            <h2>Geomean</h2>
+                            <h2>Aggregate Metric</h2>
                             <div id="geomean-chart"></div>
-                            <h2>Tests</h2>
+                            <h2>Test Metrics Overview</h2>
                             <div id="tests-chart"></div>
                         </div>
                         <br />
-                        <h2>Detailed Metrics</h2>
+                        <h2>Test Metrics Details</h2>
                         <div id="metrics-results"></div>
                     </div>
                     <div class="buttons section-footer">

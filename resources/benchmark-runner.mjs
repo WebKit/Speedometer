@@ -24,6 +24,10 @@ class Page {
         this._frame = frame;
     }
 
+    getLocalStorage() {
+        return this._frame.contentWindow.localStorage;
+    }
+
     layout() {
         const body = this._frame.contentDocument.body.getBoundingClientRect();
         this.layout.e = document.elementFromPoint((body.width / 2) | 0, (body.height / 2) | 0);
@@ -339,17 +343,29 @@ export class BenchmarkRunner {
         if (this._client?.willStartFirstIteration)
             await this._client.willStartFirstIteration(iterationCount);
 
+        try {
+            await this._runMultipleIterations();
+        } catch (error) {
+            console.error(error);
+            if (this._client?.handleError) {
+                await this._client.handleError(error);
+                return;
+            }
+        }
+
+        if (this._client?.didFinishLastIteration)
+            await this._client.didFinishLastIteration(this._metrics);
+    }
+
+    async _runMultipleIterations() {
         const iterationStartLabel = "iteration-start";
         const iterationEndLabel = "iteration-end";
-        for (let i = 0; i < iterationCount; i++) {
+        for (let i = 0; i < this._iterationCount; i++) {
             performance.mark(iterationStartLabel);
             await this.runAllSuites();
             performance.mark(iterationEndLabel);
             performance.measure(`iteration-${i}`, iterationStartLabel, iterationEndLabel);
         }
-
-        if (this._client?.didFinishLastIteration)
-            await this._client.didFinishLastIteration(this._metrics);
     }
 
     _removeFrame() {
@@ -418,11 +434,14 @@ export class BenchmarkRunner {
         }
     }
 
-
     async _runSuites(suites) {
-        for (const suite of suites) {
-            if (!suite.disabled)
-                await this.runSuite(suite);
+        try {
+            for (const suite of suites) {
+                if (!suite.disabled)
+                    await this.runSuite(suite);
+            }
+        } finally {
+            await this._finishRunAllSuites();
         }
     }
 
@@ -438,19 +457,21 @@ export class BenchmarkRunner {
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
     }
 
-
     async runSuite(suite) {
         await this._prepareSuite(suite);
         await this._runSuite(suite);
     }
 
     async _prepareSuite(suite) {
-        const suitePrepareStartLabel = `suite-${suite.name}-prepare-start`;
-        const suitePrepareEndLabel = `suite-${suite.name}-prepare-end`;
+        const suiteName = suite.name;
+        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
+        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
+
         performance.mark(suitePrepareStartLabel);
         await this._loadFrame(suite);
         await suite.prepare(this._page);
         performance.mark(suitePrepareEndLabel);
+
         performance.measure(`suite-${suite.name}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
     }
 
@@ -459,11 +480,24 @@ export class BenchmarkRunner {
             const frame = this._page._frame;
             frame.onload = () => resolve();
             frame.onerror = () => reject();
-            frame.src = `resources/${suite.url}`;
+            frame.src = suite.url;
         });
     }
 
+    async _finishRunAllSuites() {
+        const finalizeStartLabel = "runner-finalize-start";
+        const finalizeEndLabel = "runner-finalize-end";
+
+        performance.mark(finalizeStartLabel);
+        // Remove frame to clear the view for displaying the results.
+        this._removeFrame();
+        await this._finalize();
+        performance.mark(finalizeEndLabel);
+        performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
+    }
+
     async _runSuite(suite) {
+        const suiteName = suite.name;
         const suiteStartLabel = `suite-${suite.name}-start`;
         const suiteEndLabel = `suite-${suite.name}-end`;
 
@@ -473,10 +507,19 @@ export class BenchmarkRunner {
         performance.mark(suiteEndLabel);
 
         performance.measure(`suite-${suite.name}`, suiteStartLabel, suiteEndLabel);
+        this._validateSuiteTotal(suiteName);
+    }
+
+    _validateSuiteTotal(suiteName) {
+        // When the test is fast and the precision is low (for example with Firefox'
+        // privacy.resistFingerprinting preference), it's possible that the measured
+        // total duration for an entire is 0.
+        const suiteTotal = this._measuredValues.tests[suiteName].total;
+        if (suiteTotal === 0)
+            throw new Error(`Got invalid 0-time total for suite ${suiteName}: ${suiteTotal}`);
     }
 
     async _runTestAndRecordResults(suite, test) {
-        /* eslint-disable-next-line no-async-promise-executor */
         if (this._client?.willRunTest)
             await this._client.willRunTest(suite, test);
 
@@ -597,9 +640,9 @@ export class BenchmarkRunner {
             // Prepare all iteration metrics so they are listed at the end of
             // of the _metrics object, before "Total" and "Score".
             for (let i = 0; i < this._iterationCount; i++)
-                iterationTotalMetric(i);
-            getMetric("Geomean");
-            getMetric("Score", "score");
+                iterationTotalMetric(i).description = `Test totals for iteration ${i}`;
+            getMetric("Geomean", "ms").description = "Geomean of test totals";
+            getMetric("Score", "score").description = "Scaled inverse of the Geomean";
         }
 
         const geomean = getMetric("Geomean");
