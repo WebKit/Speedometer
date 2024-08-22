@@ -470,16 +470,6 @@ export class BenchmarkRunner {
         performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
     }
 
-    async _loadFrame(suite) {
-        return new Promise((resolve, reject) => {
-            const frame = this._page._frame;
-            frame.onload = () => resolve();
-            frame.onerror = () => reject();
-            frame.src = suite.url;
-        });
-    }
-
-
     async _runSuite(suite) {
         const suiteName = suite.name;
         const suiteStartLabel = `suite-${suiteName}-start`;
@@ -501,6 +491,15 @@ export class BenchmarkRunner {
         const suiteTotal = this._measuredValues.tests[suiteName].total;
         if (suiteTotal === 0)
             throw new Error(`Got invalid 0-time total for suite ${suiteName}: ${suiteTotal}`);
+    }
+
+    async _loadFrame(suite) {
+        return new Promise((resolve, reject) => {
+            const frame = this._page._frame;
+            frame.onload = () => resolve();
+            frame.onerror = () => reject();
+            frame.src = suite.url;
+        });
     }
 
     async _runTestAndRecordResults(suite, test) {
