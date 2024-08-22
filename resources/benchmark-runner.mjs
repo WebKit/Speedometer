@@ -396,18 +396,6 @@ export class BenchmarkRunner {
         return frame;
     }
 
-    async runAllSuites() {
-        const suites = await this._prepareAllSuites();
-        try {
-            for (const suite of suites) {
-                if (!suite.disabled)
-                    await this.runSuite(suite);
-            }
-        } finally {
-            await this._finishRunAllSuites();
-        }
-    }
-
     async _prepareAllSuites() {
         this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
 
@@ -437,6 +425,18 @@ export class BenchmarkRunner {
             let tmp = suites[i];
             suites[i] = suites[j];
             suites[j] = tmp;
+        }
+    }
+
+    async runAllSuites() {
+        const suites = await this._prepareAllSuites();
+        try {
+            for (const suite of suites) {
+                if (!suite.disabled)
+                    await this.runSuite(suite);
+            }
+        } finally {
+            await this._finishRunAllSuites();
         }
     }
 
