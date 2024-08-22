@@ -19,43 +19,30 @@ function getParent(lookupStartNode, path) {
     return parent;
 }
 
-export function loadFrame({ frame, url }) {
-    return new Promise((resolve, reject) => {
-        frame.onload = () => {
-            resolve({ type: "load-frame", status: "success" });
-        };
-        frame.onerror = () => reject({ type: "load-frame", status: "error" });
-        frame.src = url;
-    });
-}
+export function startSubscription({ type, callback, once = false }) {
+    const stopSubscription = () => {
+        window.removeEventListener("message", handleMessage);
+    };
 
-export function postMessageSent({ type }) {
-    return new Promise((resolve) => {
-        // eslint-disable-next-line consistent-return
-        window.onmessage = (e) => {
-            if (e.data.type === type) {
-                window.onmessage = null;
-                return resolve(e.data);
-            }
-        };
-    });
-}
-
-export function startSubscription({ type, callback }) {
     const handleMessage = (e) => {
         if (e.data.type !== type)
             return;
 
-        callback?.(e);
-    };
+        if (once)
+            stopSubscription();
 
-    const stopSubscription = () => {
-        window.removeEventListener("message", handleMessage);
+        callback?.(e);
     };
 
     window.addEventListener("message", handleMessage);
 
     return { stopSubscription };
+}
+
+export function subscribeOnce({ type }) {
+    return new Promise((resolve) => {
+        startSubscription({ type, callback: (e) => resolve(e.data), once: true });
+    });
 }
 
 class Page {
@@ -403,7 +390,7 @@ export class BenchmarkRunner {
         const iterationEndLabel = "iteration-end";
         for (let i = 0; i < this._iterationCount; i++) {
             performance.mark(iterationStartLabel);
-            await this._runAllSuites();
+            await this.runAllSuites();
             performance.mark(iterationEndLabel);
             performance.measure(`iteration-${i}`, iterationStartLabel, iterationEndLabel);
         }
@@ -459,7 +446,7 @@ export class BenchmarkRunner {
         return suites;
     }
 
-    async _runAllSuites() {
+    async runAllSuites() {
         this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
 
         const suites = this._prepareRunner();
@@ -494,15 +481,17 @@ export class BenchmarkRunner {
     }
 
     async _runRemoteSuite(suite) {
-        const { stopSubscription } = startSubscription({ type: "step-complete", callback: async (e) => {
-            if (this._client?.didRunTest)
-                await this._client.didRunTest(e.data.name, e.data.test);
-        } });
+        const { stopSubscription } = startSubscription({ type: "step-complete", callback: async (e) => this._updateClient(e.data.name, e.data.test) });
         this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config.name, params: JSON.stringify(params) }, "*");
-        const response = await postMessageSent({ type: "suite-complete" });
+        const response = await subscribeOnce({ type: "suite-complete" });
         stopSubscription();
 
         this._measuredValues.tests[suite.name] = response.result;
+    }
+
+    async _updateClient(suite, test) {
+        if (this._client?.didRunTest)
+            await this._client.didRunTest(suite, test);
     }
 
     async _runSuite(suite) {
@@ -510,10 +499,8 @@ export class BenchmarkRunner {
         const suiteStartLabel = `suite-${suiteName}-start`;
         const suiteEndLabel = `suite-${suiteName}-end`;
 
-        const tests = suite.config ? this._page._frame.contentWindow.benchmarkTestManager.getSuiteByName(suite.config.name).tests : suite.tests;
-
         performance.mark(suiteStartLabel);
-        for (const test of tests)
+        for (const test of suite.tests)
             await this._runTestAndRecordResults(suite, test);
         performance.mark(suiteEndLabel);
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
@@ -528,6 +515,15 @@ export class BenchmarkRunner {
             throw new Error(`Got invalid 0-time total for suite ${suiteName}: ${suiteTotal}`);
     }
 
+    async _loadFrame(suite) {
+        return new Promise((resolve, reject) => {
+            const frame = this._page._frame;
+            frame.onload = () => resolve();
+            frame.onerror = () => reject();
+            frame.src = suite.url;
+        });
+    }
+
     async _prepareSuite(suite) {
         const suiteName = suite.name;
         const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
@@ -538,10 +534,11 @@ export class BenchmarkRunner {
 
         if (suite.config) {
             // waiting for the additional "app-ready" postMessage of the workload.
-            const response = await Promise.all([postMessageSent({ type: "app-ready" }), loadFrame({ frame: this._page._frame, url: `${suite.url}` }), suite.prepare(this._page)]);
+            const response = await Promise.all([subscribeOnce({ type: "app-ready" }), this._loadFrame(suite), suite.prepare(this._page)]);
             this._appId = response.find(value => value.type === "app-ready")?.appId;
         } else {
-            await Promise.all([loadFrame({ frame: this._page._frame, url: `${suite.url}` }), suite.prepare(this._page)]);
+            await this._loadFrame(suite);
+            await suite.prepare(this._page);
         }
 
         const prepareEndTime = performance.now();
@@ -618,8 +615,7 @@ export class BenchmarkRunner {
         suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
         suiteResults.total += total;
 
-        if (this._client?.didRunTest)
-            await this._client.didRunTest(suite, test);
+        await this._updateClient(suite, test);
     }
 
     async _finalize() {
