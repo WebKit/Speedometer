@@ -424,42 +424,44 @@ export class BenchmarkRunner {
         return frame;
     }
 
-    _prepareRunner() {
+    async _prepareAllSuites() {
+        this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
+
         const prepareStartLabel = "runner-prepare-start";
         const prepareEndLabel = "runner-prepare-end";
 
         performance.mark(prepareStartLabel);
-
         let suites = [...this._suites];
-        if (this._suiteOrderRandomNumberGenerator) {
-            // We just do a simple Fisher-Yates shuffle based on the repeated hash of the
-            // seed. This is not a high quality RNG, but it's plenty good enough.
-            for (let i = 0; i < suites.length - 1; i++) {
-                let j = i + (this._suiteOrderRandomNumberGenerator() % (suites.length - i));
-                let tmp = suites[i];
-                suites[i] = suites[j];
-                suites[j] = tmp;
-            }
-        }
+        if (this._suiteOrderRandomNumberGenerator)
+            this._shuffleSuites(suites);
+
         performance.mark(prepareEndLabel);
         performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
+
         return suites;
     }
 
-    async runAllSuites() {
-        this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
+    _shuffleSuites(suites) {
+        // We just do a simple Fisher-Yates shuffle based on the repeated hash of the
+        // seed. This is not a high quality RNG, but it's plenty good enough.
+        for (let i = 0; i < suites.length - 1; i++) {
+            let j = i + (this._suiteOrderRandomNumberGenerator() % (suites.length - i));
+            let tmp = suites[i];
+            suites[i] = suites[j];
+            suites[j] = tmp;
+        }
+    }
 
-        const suites = this._prepareRunner();
+    async runAllSuites() {
+        const suites = await this._prepareAllSuites();
 
         try {
             for (const suite of suites) {
                 if (!suite.disabled) {
                     await this._appendFrame();
                     this._page = new Page(this._frame);
-                    await this._prepareSuite(suite);
                     // eslint-disable-next-line no-unused-expressions
-                    suite.config ? await this._runRemoteSuite(suite) : await this._runSuite(suite);
-                    this._validateSuiteTotal(suite.name);
+                    suite.config ? await this.runRemoteSuite(suite) : await this.runSuite(suite);
                     this._removeFrame();
                 }
             }
@@ -480,6 +482,24 @@ export class BenchmarkRunner {
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
     }
 
+    async runRemoteSuite(suite) {
+        await this._prepareRemoteSuite(suite);
+        await this._runRemoteSuite(suite);
+    }
+
+    async _prepareRemoteSuite(suite) {
+        const suiteName = suite.name;
+        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
+        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
+
+        performance.mark(suitePrepareStartLabel);
+        const response = await Promise.all([subscribeOnce({ type: "app-ready" }), this._loadFrame(suite), suite.prepare(this._page)]);
+        this._appId = response.find(value => value.type === "app-ready")?.appId;
+        performance.mark(suitePrepareEndLabel);
+
+        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+    }
+
     async _runRemoteSuite(suite) {
         const { stopSubscription } = startSubscription({ type: "step-complete", callback: async (e) => this._updateClient(e.data.name, e.data.test) });
         this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config.name, params: JSON.stringify(params) }, "*");
@@ -487,11 +507,30 @@ export class BenchmarkRunner {
         stopSubscription();
 
         this._measuredValues.tests[suite.name] = response.result;
+        this._validateSuiteTotal(suite.name);
     }
 
     async _updateClient(suite, test) {
         if (this._client?.didRunTest)
             await this._client.didRunTest(suite, test);
+    }
+
+    async runSuite(suite) {
+        await this._prepareSuite(suite);
+        await this._runSuite(suite);
+    }
+
+    async _prepareSuite(suite) {
+        const suiteName = suite.name;
+        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
+        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
+
+        performance.mark(suitePrepareStartLabel);
+        await this._loadFrame(suite);
+        await suite.prepare(this._page);
+        performance.mark(suitePrepareEndLabel);
+
+        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
     }
 
     async _runSuite(suite) {
@@ -504,6 +543,7 @@ export class BenchmarkRunner {
             await this._runTestAndRecordResults(suite, test);
         performance.mark(suiteEndLabel);
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
+        this._validateSuiteTotal(suiteName);
     }
 
     _validateSuiteTotal(suiteName) {
@@ -522,33 +562,6 @@ export class BenchmarkRunner {
             frame.onerror = () => reject();
             frame.src = suite.url;
         });
-    }
-
-    async _prepareSuite(suite) {
-        const suiteName = suite.name;
-        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
-        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
-
-        performance.mark(suitePrepareStartLabel);
-        const prepareStartTime = performance.now();
-
-        if (suite.config) {
-            // waiting for the additional "app-ready" postMessage of the workload.
-            const response = await Promise.all([subscribeOnce({ type: "app-ready" }), this._loadFrame(suite), suite.prepare(this._page)]);
-            this._appId = response.find(value => value.type === "app-ready")?.appId;
-        } else {
-            await this._loadFrame(suite);
-            await suite.prepare(this._page);
-        }
-
-        const prepareEndTime = performance.now();
-        performance.mark(suitePrepareEndLabel);
-        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
-
-        if (params.measurePrepare) {
-            const prepareTime = prepareEndTime - prepareStartTime;
-            this._recordPrepareMetric(suite, prepareTime);
-        }
     }
 
     async _runTestAndRecordResults(suite, test) {
