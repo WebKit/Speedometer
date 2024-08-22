@@ -11,10 +11,12 @@ function TEST_FIXTURE(name) {
 const SUITES_FIXTURE = [
     {
         name: "Suite 1",
+        async prepare(page) { },
         tests: [TEST_FIXTURE("Test 1"), TEST_FIXTURE("Test 2"), TEST_FIXTURE("Test 3")],
     },
     {
         name: "Suite 2",
+        async prepare(page) { },
         tests: [TEST_FIXTURE("Test 1")],
     },
 ];
@@ -106,15 +108,23 @@ describe("BenchmarkRunner", () => {
     });
 
     describe("Suite", () => {
-        describe("_runAllSuites", () => {
-            let _runSuiteStub, _finalizeStub, _removeFrameStub;
+        describe("runAllSuites", () => {
+            let _runSuiteStub, _finalizeMetricsStub, _appendFrameStub, _removeFrameStub;
 
             before(async () => {
-                _runSuiteStub = stub(runner, "_runSuite").callsFake(() => null);
-                _finalizeStub = stub(runner, "_finalize").callsFake(() => null);
+                _runSuiteStub = stub(runner, "runSuite").callsFake(async () => null);
+                _finalizeMetricsStub = stub(runner, "_finalizeMetrics").callsFake(async () => null);
+                _appendFrameStub = stub(runner, "_appendFrame").callsFake(async () => null);
                 _removeFrameStub = stub(runner, "_removeFrame").callsFake(() => null);
+                for (const suite in runner.suites)
+                    spy(suite, "prepare");
 
-                await runner._runAllSuites();
+                await runner.runAllSuites();
+            });
+
+            it("should call prepare on all suites", () => {
+                for (const suite in runner.suites)
+                    suite.prepare.calledOnce();
             });
 
             it("should run all test suites", async () => {
@@ -122,30 +132,34 @@ describe("BenchmarkRunner", () => {
             });
 
             it("should remove the previous frame and then the current frame", () => {
+                assert.calledOnce(_appendFrameStub);
                 assert.calledTwice(_removeFrameStub);
             });
 
             it("should fire the function responsible for finalizing results", () => {
-                assert.calledOnce(_finalizeStub);
+                assert.calledOnce(_finalizeMetricsStub);
             });
         });
 
-        describe("_runSuite", () => {
-            let _prepareSuiteStub, _runTestAndRecordResultsStub, performanceMarkSpy;
+        describe("runSuite", () => {
+            let _prepareSuiteSpy, _loadFrameStub, _runTestAndRecordResultsStub, _suitePrepareSpy, performanceMarkSpy;
 
             const suite = SUITES_FIXTURE[0];
 
             before(async () => {
-                _prepareSuiteStub = stub(runner, "_prepareSuite").callsFake(() => null);
-
-                _runTestAndRecordResultsStub = stub(runner, "_runTestAndRecordResults").callsFake(() => null);
-
+                _prepareSuiteSpy = spy(runner, "_prepareSuite");
+                _loadFrameStub = stub(runner, "_loadFrame").callsFake(async () => null);
+                _runTestAndRecordResultsStub = stub(runner, "_runTestAndRecordResults").callsFake(async () => null);
                 performanceMarkSpy = spy(window.performance, "mark");
-                runner._runSuite(suite);
+                _suitePrepareSpy = spy(suite, "prepare");
+
+                runner.runSuite(suite);
             });
 
             it("should prepare the suite first", async () => {
-                assert.calledOnce(_prepareSuiteStub);
+                assert.calledOnce(_prepareSuiteSpy);
+                assert.calledOnce(_suitePrepareSpy);
+                assert.calledOnce(_loadFrameStub);
             });
 
             it("should run and record results for every test in suite", async () => {
