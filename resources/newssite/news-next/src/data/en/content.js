@@ -3238,6 +3238,7 @@ export const content = {
                         display: "grid-wrap",
                         content: [
                             {
+                                id: "0e4a3d8c-a290-4921-9067-0c6f06f318f6",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3254,6 +3255,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "b5487ca6-95b7-4dc9-a96b-127ba70c1601",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3270,6 +3272,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "6eb4edcf-6a84-4997-b053-f63bf6757f24",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3286,6 +3289,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "a0fd29d4-8eaa-470b-9f6e-5ee20680cba9",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3302,6 +3306,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "c46c8374-58d9-4e4d-b67c-2722031478d8",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3347,15 +3352,19 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "b1c84fd6-18ac-4043-83c6-d17da3be2838",
                                 content: "Sem fringilla ut morbi tincidunt augue interdum velit euismod.",
                             },
                             {
+                                id: "f817229a-1567-4892-955f-076d736c2e40",
                                 content: "Quisque sagittis purus sit amet. Ornare lectus sit amet est.",
                             },
                             {
+                                id: "44719b28-a2bb-49d1-8391-cd79e8cd74cf",
                                 content: "Placerat orci nulla pellentesque dignissim enim sit amet.",
                             },
                             {
+                                id: "9d4e196a-50a8-45b1-9d13-0594b4728ce9",
                                 content: "In fermentum et sollicitudin ac orci phasellus egestas tellus.",
                             },
                         ],
@@ -3368,6 +3377,7 @@ export const content = {
                         type: "preview",
                         content: [
                             {
+                                id: "ca84a215-8a32-4591-bb30-18935c91d919",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3377,6 +3387,7 @@ export const content = {
                                 title: "Nunc aliquet bibendum enim facilisis gravida neque. Nec feugiat in fermentum posuere urna. Molestie at elementum eu facilisis sed odio morbi. Scelerisque purus semper eget duis at tellus.",
                             },
                             {
+                                id: "6016d07f-159b-4bc2-91a1-0009502693e8",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3405,15 +3416,19 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "fad4a569-d337-4885-af2e-3da36e7444b3",
                                 content: "Molestie at elementum eu facilisis sed odio morbi.",
                             },
                             {
+                                id: "64208fee-49d3-4536-863c-7a03741acd62",
                                 content: "Sit amet nisl suscipit adipiscing bibendum est ultricies integer quis.",
                             },
                             {
+                                id: "f28139dc-e8b6-4d3b-86ad-8ef8ed5f6828",
                                 content: "Bibendum neque egestas congue quisque egestas diam in arcu.",
                             },
                             {
+                                id: "9e7e7929-ac40-4a14-bf41-467af7bc2bbc",
                                 content: "Tellus molestie nunc non blandit massa enim nec.",
                             },
                         ],
@@ -3441,15 +3456,19 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "9709aba3-dea5-4634-af0d-a0272373fc91",
                                 content: "Arcu vitae elementum curabitur vitae nunc sed velit.",
                             },
                             {
+                                id: "56b038d5-ae4d-4eb0-a24f-eadd6e933311",
                                 content: "Ornare suspendisse sed nisi lacus sed viverra tellus in.",
                             },
                             {
+                                id: "74f5f5fa-d5cf-4854-a52b-7d267ba01da6",
                                 content: "Vel fringilla est ullamcorper eget nulla.",
                             },
                             {
+                                id: "585db761-3e2b-4789-9e7f-3e8a3ab70aae",
                                 content: "Risus commodo viverra maecenas accumsan lacus vel facilisis volutpat est.",
                             },
                         ],
@@ -3471,15 +3490,19 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "b6d3d1d2-9ef8-48a2-8463-07eb4cd0757c",
                                 content: "Consectetur purus ut faucibus pulvinar elementum integer enim.",
                             },
                             {
+                                id: "53572fab-f3f1-4c47-ab93-b2896352265a",
                                 content: "Purus semper eget duis at. Tincidunt ornare massa eget egestas purus viverra accumsan.",
                             },
                             {
+                                id: "528626d6-5909-42a3-a4a1-b406ac06c673",
                                 content: "Amet massa vitae tortor condimentum lacinia quis vel.",
                             },
                             {
+                                id: "6d3ce580-c7a6-4bf7-b93a-e012e21f6037",
                                 content: "Tristique senectus et netus et malesuada.",
                             },
                         ],
@@ -3514,6 +3537,7 @@ export const content = {
                         type: "grid",
                         content: [
                             {
+                                id: "8879d7ec-ecde-4a40-b463-eaf0beb033db",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3528,6 +3552,7 @@ export const content = {
                                 },
                             },
                             {
+                                id: "ff8f1fca-f830-4450-a946-075f95f37569",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3542,6 +3567,7 @@ export const content = {
                                 },
                             },
                             {
+                                id: "ea8500ef-7130-40ef-bb35-a9e5fc6506b6",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3556,6 +3582,7 @@ export const content = {
                                 },
                             },
                             {
+                                id: "6481e63a-f2ab-42d3-9c99-cc22cebb3207",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3584,6 +3611,7 @@ export const content = {
                         type: "excerpt",
                         content: [
                             {
+                                id: "c691231f-64bb-4710-bfbf-f4e60fc71457",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3593,6 +3621,7 @@ export const content = {
                                 text: "Est ullamcorper eget nulla facilisi etiam dignissim. Est pellentesque elit ullamcorper dignissim cras. Velit euismod in pellentesque massa placerat duis ultricies.",
                             },
                             {
+                                id: "0c01ee2b-971a-427d-aa7c-02090f28b5d2",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3602,6 +3631,7 @@ export const content = {
                                 text: "Vitae suscipit tellus mauris a diam maecenas sed enim. Aenean sed adipiscing diam donec. Laoreet suspendisse interdum consectetur libero id faucibus nisl tincidunt.",
                             },
                             {
+                                id: "3917e92e-a5db-4c9f-8c2a-42c0bc8f39fe",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3619,6 +3649,7 @@ export const content = {
                         type: "excerpt",
                         content: [
                             {
+                                id: "7ef5a8ae-55ba-4c4e-b80d-ed02cc2a51db",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3628,6 +3659,7 @@ export const content = {
                                 text: "Platea dictumst quisque sagittis purus sit amet volutpat. Ante in nibh mauris cursus mattis molestie a iaculis.",
                             },
                             {
+                                id: "57870f0d-6a22-4648-b1fa-66bed5b14f51",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3637,6 +3669,7 @@ export const content = {
                                 text: "Quis hendrerit dolor magna eget est. Pellentesque pulvinar pellentesque habitant morbi tristique. Adipiscing commodo elit at imperdiet dui.",
                             },
                             {
+                                id: "7c362a1f-12d0-4aa4-9bf9-490ea6d0ff10",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3654,6 +3687,7 @@ export const content = {
                         type: "excerpt",
                         content: [
                             {
+                                id: "3c3f4a8c-3b1c-4095-8030-cf45219e5032",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3663,6 +3697,7 @@ export const content = {
                                 text: "Cursus sit amet dictum sit amet justo donec enim. Tempor id eu nisl nunc. Amet cursus sit amet dictum sit amet justo donec.",
                             },
                             {
+                                id: "2b882425-c070-46ec-87b8-4fbd5afdf105",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3672,6 +3707,7 @@ export const content = {
                                 text: "Enim diam vulputate ut pharetra sit amet aliquam. Tristique senectus et netus et malesuada.",
                             },
                             {
+                                id: "5ff98d91-9d27-4638-b093-35118ec4c4f0",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3696,48 +3732,63 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "db6b9420-b409-4cc8-8301-aebdd4a61546",
                                 content: "Eros donec ac odio tempor. Tortor pretium viverra suspendisse potenti nullam.",
                             },
                             {
+                                id: "8b43439d-58be-46b1-9e80-4ed4509ecb55",
                                 content: "Ut venenatis tellus in metus vulputate eu scelerisque.",
                             },
                             {
+                                id: "f20bc1e5-8744-4750-ac7f-8f8ad64a8726",
                                 content: "Id diam maecenas ultricies mi eget. Nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper sit.",
                             },
                             {
+                                id: "82ed67d9-e0d8-471b-8f7d-2d23d7122593",
                                 content: "Consectetur lorem donec massa sapien. Sed cras ornare arcu dui vivamus arcu felis.",
                             },
                             {
+                                id: "7b58754b-9115-4005-a4b5-3d0841f6918a",
                                 content: "Fames ac turpis egestas maecenas pharetra convallis posuere morbi.",
                             },
                             {
+                                id: "75ad2be4-2ae6-40b7-b99f-7760277897a3",
                                 content: "Consequat nisl vel pretium lectus quam id.",
                             },
                             {
+                                id: "d18452c7-823c-499e-b67e-490398fa1f54",
                                 content: "Tincidunt ornare massa eget egestas purus viverra accumsan in nisl.",
                             },
                             {
+                                id: "7e56b434-d474-4cc3-ac87-becc642e351c",
                                 content: "Sed euismod nisi porta lorem mollis aliquam ut.",
                             },
                             {
+                                id: "b0c333a5-7eb4-4142-9141-28cf317adaba",
                                 content: "Suspendisse sed nisi lacus sed viverra tellus in hac.",
                             },
                             {
+                                id: "1895e527-3dda-4280-8158-62f2214d30ec",
                                 content: "Aliquet risus feugiat in ante metus dictum at tempor.",
                             },
                             {
+                                id: "0198d35a-5253-4a93-9af8-22d2169b88d7",
                                 content: "Velit aliquet sagittis id consectetur purus ut faucibus.",
                             },
                             {
+                                id: "e4143447-b828-4b32-8d96-df8fd84763c0",
                                 content: "Libero volutpat sed cras ornare. Consectetur adipiscing elit duis tristique sollicitudin nibh sit amet.",
                             },
                             {
+                                id: "89e179d9-7127-4937-a022-f20b81357679",
                                 content: "Nibh nisl condimentum id venenatis a condimentum vitae. Fames ac turpis egestas maecenas pharetra.",
                             },
                             {
+                                id: "aff19a6f-a89e-4e4f-bd2c-5291dd95dc9b",
                                 content: "Massa sapien faucibus et molestie. Ac turpis egestas maecenas pharetra convallis posuere morbi leo urna.",
                             },
                             {
+                                id: "a9ce2ec0-2235-46ab-ade2-7fd808ca3de9",
                                 content: "Est pellentesque elit ullamcorper dignissim cras. Mi proin sed libero enim sed.",
                             },
                         ],
@@ -3749,6 +3800,7 @@ export const content = {
                         type: "preview",
                         content: [
                             {
+                                id: "cf0c05c6-a132-40af-b462-1928ed5299b1",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3758,6 +3810,7 @@ export const content = {
                                 title: "Nunc aliquet bibendum enim facilisis gravida neque. Nec feugiat in fermentum posuere urna. Molestie at elementum eu facilisis sed odio morbi. Scelerisque purus semper eget duis at tellus.",
                             },
                             {
+                                id: "e1d1d173-a259-4091-baea-60c3366fd879",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3767,6 +3820,7 @@ export const content = {
                                 title: "Eget dolor morbi non arcu risus quis. Non curabitur gravida arcu ac tortor dignissim.",
                             },
                             {
+                                id: "fbfdf20e-f6e3-404b-b7be-8d9c64d5f0cc",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3784,6 +3838,7 @@ export const content = {
                         type: "preview",
                         content: [
                             {
+                                id: "5e31f22f-30d5-4d88-97ce-9584a378911e",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3793,6 +3848,7 @@ export const content = {
                                 title: "Tellus in metus vulputate eu scelerisque felis imperdiet proin fermentum.",
                             },
                             {
+                                id: "55c34060-7e3d-40a8-9a31-20a15bbed649",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3802,6 +3858,7 @@ export const content = {
                                 title: "Adipiscing tristique risus nec feugiat in fermentum posuere vulputate eu scelerisque.",
                             },
                             {
+                                id: "8b96fd4c-1648-4a3c-96a5-c0ac52d02b60",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3825,6 +3882,7 @@ export const content = {
                         type: "grid",
                         content: [
                             {
+                                id: "c3bd82d1-a2d7-4f10-ac62-e3c6f8812b55",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3841,6 +3899,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "1405735c-c7e6-4531-ad8c-d4c158960c2e",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3865,6 +3924,7 @@ export const content = {
                         type: "grid",
                         content: [
                             {
+                                id: "d7f4ffb0-9dfe-45c5-85cf-bed1b25741bd",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3881,6 +3941,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "4ba86b88-39b7-44fd-bf9f-fc2bfc225281",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3911,6 +3972,7 @@ export const content = {
                         type: "excerpt",
                         content: [
                             {
+                                id: "75d1b551-a1cc-4548-aa28-f1d493c5925f",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3920,6 +3982,7 @@ export const content = {
                                 text: "Consequat ac felis donec et. Libero nunc consequat interdum varius sit amet mattis vulputate enim. Cursus euismod quis viverra nibh cras pulvinar mattis nunc. Nisi lacus sed viverra tellus in hac. Aliquam malesuada bibendum arcu vitae elementum curabitur.",
                             },
                             {
+                                id: "2d4876f9-45be-4aa9-8ac7-56232b55d649",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3929,6 +3992,7 @@ export const content = {
                                 text: "Neque gravida in fermentum et sollicitudin ac orci. Pretium aenean pharetra magna ac placerat vestibulum lectus mauris ultrices. Fermentum leo vel orci porta non pulvinar neque laoreet.",
                             },
                             {
+                                id: "a1e61b50-4106-4f68-9f35-822452c473bd",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3946,6 +4010,7 @@ export const content = {
                         type: "excerpt",
                         content: [
                             {
+                                id: "174f4a54-5f05-499b-8255-9dce7caccff3",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3955,6 +4020,7 @@ export const content = {
                                 text: "Aliquam eleifend mi in nulla posuere sollicitudin. Tempor nec feugiat nisl pretium fusce. Fermentum iaculis eu non diam phasellus vestibulum lorem. Scelerisque eleifend donec pretium vulputate sapien nec. Sit amet aliquam id diam maecenas ultricies mi.",
                             },
                             {
+                                id: "b5b69901-c646-4034-9f11-d54357ea745b",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3964,6 +4030,7 @@ export const content = {
                                 text: "Morbi leo urna molestie at elementum eu. Phasellus vestibulum lorem sed risus. Aliquet bibendum enim facilisis gravida neque. Aliquam sem et tortor consequat id porta. Interdum varius sit amet mattis vulputate enim nulla aliquet. Enim nulla aliquet porttitor lacus luctus accumsan tortor.",
                             },
                             {
+                                id: "9cd2a3f7-3723-4295-af72-fbbfa4a232d2",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3981,6 +4048,7 @@ export const content = {
                         type: "excerpt",
                         content: [
                             {
+                                id: "6c3745c6-3dc4-435f-b81a-8d2b06cc1ad2",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3990,6 +4058,7 @@ export const content = {
                                 text: "Risus viverra adipiscing at in tellus integer feugiat scelerisque. Porttitor eget dolor morbi non arcu risus quis varius quam. Consectetur adipiscing elit ut aliquam purus sit. Pulvinar mattis nunc sed blandit.",
                             },
                             {
+                                id: "32de17cf-8c35-4ad0-99e2-3328c80c296e",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -3999,6 +4068,7 @@ export const content = {
                                 text: "Non curabitur gravida arcu ac tortor dignissim. Purus in mollis nunc sed id semper risus in hendrerit. Vestibulum morbi blandit cursus risus. Pellentesque nec nam aliquam sem et tortor. Ac tortor dignissim convallis aenean et.",
                             },
                             {
+                                id: "bb64bf13-a35b-4dad-99bf-810f67772471",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -4032,15 +4102,19 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "a2341f46-19cf-4723-9568-d77b410ba8c4",
                                 content: "Dolor sed viverra ipsum nunc aliquet bibendum enim. Hendrerit dolor magna eget est lorem ipsum dolor.",
                             },
                             {
+                                id: "73423726-07db-4616-8c7d-17f68481245f",
                                 content: "At elementum eu facilisis sed odio morbi quis commodo odio. In massa tempor nec feugiat nisl.",
                             },
                             {
+                                id: "f897bb1f-53b8-4e47-a367-d78562e9ee93",
                                 content: "Est sit amet facilisis magna etiam tempor orci eu. Vulputate dignissim suspendisse in est ante in.",
                             },
                             {
+                                id: "bc5de5a0-d46c-43ce-bdec-5ef55c6cdeb2",
                                 content: "Tempor nec feugiat nisl pretium. Id velit ut tortor pretium viverra suspendisse potenti nullam.",
                             },
                         ],
@@ -4062,15 +4136,19 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "ffcb5b5e-a2c1-4066-b807-a62699df06b7",
                                 content: "Aliquam sem fringilla ut morbi tincidunt augue interdum. Enim eu turpis egestas pretium aenean pharetra magna ac.",
                             },
                             {
+                                id: "bd5a8aa1-fc84-4882-afdb-efa33d02fc12",
                                 content: "Amet porttitor eget dolor morbi non arcu risus quis varius. Ultricies tristique nulla aliquet enim tortor at auctor.",
                             },
                             {
+                                id: "f5badbd1-d614-44a0-85c9-7f1e6a5f1bcf",
                                 content: "Nisi lacus sed viverra tellus in hac habitasse platea. Interdum velit euismod in pellentesque.",
                             },
                             {
+                                id: "420e0800-ef7e-45ee-9bba-d7b44cef4b69",
                                 content: "Mattis ullamcorper velit sed ullamcorper morbi tincidunt ornare. Eu non diam phasellus vestibulum lorem sed risus.",
                             },
                         ],
@@ -4092,15 +4170,19 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "4611e3bf-0274-408d-a019-c6688e600dd8",
                                 content: "Viverra justo nec ultrices dui sapien eget. A scelerisque purus semper eget duis at tellus at.",
                             },
                             {
+                                id: "cfe0b6d6-ec48-4571-9bf2-97f26027f80f",
                                 content: "Non diam phasellus vestibulum lorem sed risus ultricies tristique. Ornare arcu dui vivamus arcu felis bibendum ut tristique et.",
                             },
                             {
+                                id: "a2415445-ab69-445b-9f27-b7b01e432302",
                                 content: "Quisque non tellus orci ac. At augue eget arcu dictum varius.",
                             },
                             {
+                                id: "08228c09-8678-4e3e-a256-8f528237c9d8",
                                 content: "Aenean sed adipiscing diam donec adipiscing tristique. Sagittis eu volutpat odio facilisis mauris.",
                             },
                         ],
@@ -4118,6 +4200,7 @@ export const content = {
                         type: "grid",
                         content: [
                             {
+                                id: "e9d797f7-36d7-4dbe-8d2a-d6eb8f15bc07",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -4134,6 +4217,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "6b9a85a6-120d-47d6-bc5d-e6d487aedf31",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -4158,6 +4242,7 @@ export const content = {
                         type: "grid",
                         content: [
                             {
+                                id: "9cb71ead-889b-492f-9b47-297ac6d97d96",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -4174,6 +4259,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "7564b782-691e-494e-9ad1-5de2a2330b17",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -4203,6 +4289,7 @@ export const content = {
                         type: "preview",
                         content: [
                             {
+                                id: "25841bbd-93a3-472b-860f-0b0af2fc8169",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -4219,6 +4306,7 @@ export const content = {
                         type: "preview",
                         content: [
                             {
+                                id: "69c42fe8-a06e-4891-ae22-491f04d0a971",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -4235,6 +4323,7 @@ export const content = {
                         type: "preview",
                         content: [
                             {
+                                id: "2342acef-0339-444d-a23c-a33654c91665",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -4251,6 +4340,7 @@ export const content = {
                         type: "preview",
                         content: [
                             {
+                                id: "3b57cdb4-8635-4be8-872e-f939538c9e56",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
