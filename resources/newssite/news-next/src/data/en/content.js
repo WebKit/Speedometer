@@ -26,6 +26,7 @@ export const content = {
                 name: "Breaking News",
                 articles: [
                     {
+                        id: "8a6ed5ec-89f3-42ad-b948-189d36f278c9",
                         class: "columns-3-narrow",
                         header: "Uncensored",
                         url: "#",
@@ -44,6 +45,7 @@ export const content = {
                             "Velit dignissim sodales ut eu. Sed tempus urna et pharetra. Porttitor rhoncus dolor purus non. Elementum curabitur vitae nunc sed velit dignissim sodales.\n\nPretium fusce id velit ut tortor pretium viverra suspendisse potenti. In nulla posuere sollicitudin aliquam ultrices sagittis orci. Aliquam sem fringilla ut morbi tincidunt augue interdum velit. Nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper. Nunc mi ipsum faucibus vitae aliquet.",
                     },
                     {
+                        id: "d204d10c-879e-4991-802c-25020077e0de",
                         class: "columns-3-wide",
                         header: "More top stories",
                         url: "#",
@@ -66,6 +68,7 @@ export const content = {
                             "Pulvinar etiam non quam lacus suspendisse faucibus interdum posuere. Arcu bibendum at varius vel pharetra vel turpis nunc. Eget dolor morbi non arcu risus quis varius. Ac odio tempor orci dapibus ultrices in.\n\nAmet tellus cras adipiscing enim eu turpis. Tortor pretium viverra suspendisse potenti nullam. Condimentum vitae sapien pellentesque habitant morbi. Ultrices in iaculis nunc sed augue lacus viverra vitae.",
                     },
                     {
+                        id: "e02d07e1-32e3-4ad1-b57c-b945f89d12d3",
                         class: "columns-3-narrow",
                         header: "Crime & justice",
                         url: "#",
@@ -90,27 +93,32 @@ export const content = {
                 name: "Latest News",
                 articles: [
                     {
+                        id: "7af9e63d-d803-477b-ba8f-539f5d7ed1fe",
                         class: "columns-3-balanced",
                         header: "Happening Now",
                         type: "articles-list",
                         content: [
                             {
+                                id: "45114281-a2ad-4ed8-bb47-80526e802eb1",
                                 title: "Lorem ipsum dolor sit amet.",
                                 content:
                                     "Molestie nunc non blandit massa enim nec. Ornare suspendisse sed nisi lacus sed viverra tellus in. Id consectetur purus ut faucibus. At auctor urna nunc id cursus metus. Eget aliquet nibh praesent tristique magna. Morbi tristique senectus et netus et malesuada fames.",
                             },
                             {
+                                id: "ee8b2a9f-a08b-495e-a4ba-21b3b42bf07d",
                                 title: "Consectetur adipiscing elit.",
                                 content:
                                     "Sit amet consectetur adipiscing elit ut aliquam purus sit. Consequat nisl vel pretium lectus quam. Sagittis id consectetur purus ut faucibus pulvinar elementum integer enim. Nec sagittis aliquam malesuada bibendum arcu.",
                             },
                             {
+                                id: "4a9d6914-983d-48ab-a7ed-d7ed1d877a6b",
                                 title: "Sed do eiusmod tempor incididunt.",
                                 content: "Pulvinar neque laoreet suspendisse interdum consectetur libero id faucibus nisl. Pulvinar elementum integer enim neque volutpat ac. Lorem donec massa sapien faucibus.",
                             },
                         ],
                     },
                     {
+                        id: "cb7942ac-5ac8-40d1-90fd-7853a0a10d16",
                         class: "columns-3-balanced",
                         header: "Noteworthy",
                         image: {
@@ -126,20 +134,25 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "b5f94d51-7e7c-4e1f-b55d-e99ba9e2398d",
                                 content: "Odio morbi quis commodo odio aenean sed adipiscing diam donec.",
                             },
                             {
+                                id: "6ce7f58f-429c-4835-a7fc-8f8bd1f3a12e",
                                 content: "Consequat semper viverra nam libero justo laoreet sit.",
                             },
                             {
+                                id: "021f9b0b-1666-4d15-a32b-42a464475cc0",
                                 content: "Risus ultricies tristique nulla aliquet enim tortor at auctor.",
                             },
                             {
+                                id: "bf40e93f-eea6-4f0a-8ad5-1e25cd3b69ab",
                                 content: "Diam vulputate ut pharetra sit amet aliquam id diam maecenas.",
                             },
                         ],
                     },
                     {
+                        id: "cd53f511-0251-4fb0-ae85-9ad228551dd6",
                         class: "columns-3-balanced",
                         header: "Around the Globe",
                         image: {
@@ -155,15 +168,19 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "7e405fe8-7abd-43b7-bbca-2ea2e7b0ac76",
                                 content: "Nibh mauris cursus mattis molestie. Varius vel pharetra vel turpis nunc eget lorem dolor.",
                             },
                             {
+                                id: "b9dad22b-d7b9-4ca2-9585-c8762a15de9c",
                                 content: "Turpis egestas maecenas pharetra convallis posuere morbi leo urna molestie.",
                             },
                             {
+                                id: "b87bd7d4-03b1-4107-accc-de86415f1de0",
                                 content: "Enim blandit volutpat maecenas volutpat blandit aliquam etiam erat.",
                             },
                             {
+                                id: "6c8c8717-7069-4f37-865a-e69c8c01a6ba",
                                 content: "Fermentum dui faucibus in ornare. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit.",
                             },
                         ],
@@ -175,10 +192,12 @@ export const content = {
                 name: "Latest Media",
                 articles: [
                     {
+                        id: "b419e5f0-1707-4c0e-85b3-48f26a70f91b",
                         class: "columns-1",
                         type: "grid",
                         content: [
                             {
+                                id: "a2ef309b-d8af-4621-9a33-883269394a96",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -193,6 +212,7 @@ export const content = {
                                 },
                             },
                             {
+                                id: "fb3262b1-6618-4d3d-998b-6072104beefa",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -207,6 +227,7 @@ export const content = {
                                 },
                             },
                             {
+                                id: "ed0edcac-b8f1-43d4-a0a3-fdee2812122e",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -221,6 +242,7 @@ export const content = {
                                 },
                             },
                             {
+                                id: "0b55ff73-13ca-43ae-9980-d02d01abd921",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -243,11 +265,13 @@ export const content = {
                 name: "Highlights",
                 articles: [
                     {
+                        id: "1519cdfe-bb32-4f0a-aad1-2f4bb87096a4",
                         class: "columns-wrap",
                         header: "Domestic Highlights",
                         type: "excerpt",
                         content: [
                             {
+                                id: "ff2abe6a-3418-473e-80c1-b262188e5554",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -257,6 +281,7 @@ export const content = {
                                 text: "At urna condimentum mattis pellentesque id nibh tortor id. Urna cursus eget nunc scelerisque viverra mauris in. Pretium vulputate sapien nec sagittis aliquam malesuada bibendum arcu.",
                             },
                             {
+                                id: "7ea12782-cf94-459d-b7ec-3be5d43175cf",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -266,6 +291,7 @@ export const content = {
                                 text: "Enim lobortis scelerisque fermentum dui faucibus in. Vitae semper quis lectus nulla at volutpat. In nisl nisi scelerisque eu ultrices vitae auctor.",
                             },
                             {
+                                id: "0af1cd6a-a044-43b4-8ec8-26b71a0a9ca4",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -277,11 +303,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "0b9b6f8c-0dde-4c2f-82dd-b777fa84881d",
                         class: "columns-wrap",
                         header: "Global Highlights",
                         type: "excerpt",
                         content: [
                             {
+                                id: "c69ff80d-44cf-463a-b3db-bc2f22e8993c",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -291,6 +319,7 @@ export const content = {
                                 text: "Augue eget arcu dictum varius duis at consectetur. Ornare arcu dui vivamus arcu felis bibendum ut. Magna eget est lorem ipsum dolor sit amet. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin.",
                             },
                             {
+                                id: "24cfa9e5-9a6c-4e00-980a-05a5d583e718",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -300,6 +329,7 @@ export const content = {
                                 text: "Leo urna molestie at elementum eu facilisis sed. Est lorem ipsum dolor sit amet consectetur adipiscing elit pellentesque.",
                             },
                             {
+                                id: "3bf00e72-8821-446d-8096-1d5d3ea5c8c9",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -311,11 +341,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8eed7659-370e-4a45-8977-b21eb88ab793",
                         class: "columns-wrap",
                         header: "Local Highlights",
                         type: "excerpt",
                         content: [
                             {
+                                id: "72522d42-30bf-42f0-ba21-5dbc080dfab1",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -325,6 +357,7 @@ export const content = {
                                 text: "Mattis ullamcorper velit sed ullamcorper. Orci ac auctor augue mauris augue neque. Condimentum mattis pellentesque id nibh tortor.",
                             },
                             {
+                                id: "bab8b49c-4e37-4cf8-8c52-714cb53daf5d",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -334,6 +367,7 @@ export const content = {
                                 text: "Fermentum odio eu feugiat pretium. Urna nec tincidunt praesent semper feugiat nibh sed. Adipiscing elit ut aliquam purus sit.",
                             },
                             {
+                                id: "eb3516e6-ad00-4d39-822c-acc4eab9befa",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -351,11 +385,13 @@ export const content = {
                 name: "Top Stories",
                 articles: [
                     {
+                        id: "4e01d65b-b4f0-4b43-8d28-2fb8f918071c",
                         class: "columns-1",
                         type: "grid",
                         display: "grid-wrap",
                         content: [
                             {
+                                id: "2923bc4a-fceb-45e7-bf92-f9e8f9d826ec",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -372,6 +408,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "9268157a-12cb-442f-9401-0d88d1846662",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -388,6 +425,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "5113935d-4ed6-4897-a49a-d730de47a973",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -404,6 +442,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "8dbd8d34-edb4-4583-9468-0009d55745c9",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -420,6 +459,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "ec4d93f4-83f7-4427-81fc-b6420d590718",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -444,61 +484,73 @@ export const content = {
                 name: "International",
                 articles: [
                     {
+                        id: "c5deda28-5da7-4641-80dd-e9859088c95d",
                         class: "columns-3-balanced",
                         header: "Europe",
                         type: "articles-list",
                         content: [
                             {
+                                id: "6a93436c-6c5b-44a7-938e-ebb1f2ee3c15",
                                 title: "Commodo elit at imperdiet dui accumsan sit amet. Habitasse platea dictumst vestibulum rhoncus.",
                                 content:
                                     "Orci ac auctor augue mauris augue neque gravida. Lectus magna fringilla urna porttitor rhoncus dolor purus non enim. Sagittis aliquam malesuada bibendum arcu vitae. Pellentesque habitant morbi tristique senectus et netus. Etiam erat velit scelerisque in dictum non consectetur a.",
                             },
                             {
+                                id: "283ea033-d01a-48a9-b584-635b0b3c8c30",
                                 title: "Suspendisse convallis efficitur felis ac mattis. Cras faucibus ultrices condimentum.",
                                 content:
                                     "Facilisis leo vel fringilla est. Turpis tincidunt id aliquet risus feugiat in ante metus. Viverra ipsum nunc aliquet bibendum enim facilisis. Tristique et egestas quis ipsum suspendisse ultrices gravida dictum. Tristique senectus et netus et malesuada fames ac turpis egestas.",
                             },
                             {
+                                id: "5670b9e0-4b99-48d5-8b31-525ae350de32",
                                 title: "Ornare suspendisse sed nisi lacus sed viverra tellus in.",
                                 content: "Dui vivamus arcu felis bibendum. Purus ut faucibus pulvinar elementum integer enim neque volutpat ac. Auctor eu augue ut lectus arcu bibendum. Diam volutpat commodo sed egestas egestas fringilla phasellus.",
                             },
                         ],
                     },
                     {
+                        id: "387033b0-e832-48b3-a3fe-f104075cf93a",
                         class: "columns-3-balanced",
                         header: "South America",
                         type: "articles-list",
                         content: [
                             {
+                                id: "ace185f1-1e8a-4db5-9266-95412f7b06ff",
                                 title: "Augue eget arcu dictum varius duis.",
                                 content: "Commodo ullamcorper a lacus vestibulum sed arcu non. Nullam ac tortor vitae purus faucibus ornare suspendisse sed. Id interdum velit laoreet id donec ultrices tincidunt arcu non.",
                             },
                             {
+                                id: "3a4170ea-bd6f-4de9-94e9-7f487d68e1eb",
                                 title: "Fringilla ut morbi tincidunt augue interdum velit euismod in pellentesque.",
                                 content:
                                     "Turpis egestas maecenas pharetra convallis posuere morbi leo. Odio pellentesque diam volutpat commodo. Ornare massa eget egestas purus viverra accumsan in nisl nisi. Tellus integer feugiat scelerisque varius morbi enim nunc. Erat velit scelerisque in dictum non consectetur.",
                             },
                             {
+                                id: "b5b51051-9b1c-496b-8390-432802b4e1e7",
                                 title: "Mi bibendum neque egestas congue quisque.",
                                 content: "Sapien eget mi proin sed libero. Adipiscing elit duis tristique sollicitudin nibh sit. Faucibus scelerisque eleifend donec pretium. Ac tortor dignissim convallis aenean et tortor at risus.",
                             },
                         ],
                     },
                     {
+                        id: "06fa8c40-6678-483b-bbb5-a8f73822d1e1",
                         class: "columns-3-balanced",
                         header: "Asia",
                         type: "articles-list",
                         content: [
                             {
+                                id: "3654e18a-e633-4774-899a-7517b2ff28c7",
                                 title: "Sodales ut etiam sit amet nisl purus in. Enim sed faucibus turpis in eu mi bibendum neque.",
                                 content: "Tortor id aliquet lectus proin. Pulvinar elementum integer enim neque volutpat ac tincidunt. Auctor eu augue ut lectus arcu bibendum at varius. Congue mauris rhoncus aenean vel elit scelerisque mauris.",
                             },
                             {
+                                id: "3461de32-20f7-4787-b31c-4c1b08b9e02b",
                                 title: "haretra convallis posuere morbi leo urna.",
                                 content:
                                     "Egestas diam in arcu cursus euismod quis. Ac turpis egestas integer eget aliquet nibh praesent tristique magna. Molestie at elementum eu facilisis sed odio morbi quis. Lectus arcu bibendum at varius. Eros in cursus turpis massa tincidunt dui.",
                             },
                             {
+                                id: "3fe9e8db-160b-4a2d-b586-33cce8f4c3fa",
                                 title: "At varius vel pharetra vel turpis nunc eget lorem dolor. ",
                                 content: "Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Lacus sed viverra tellus in. Sed nisi lacus sed viverra tellus in. Venenatis cras sed felis eget velit aliquet sagittis id consectetur.",
                             },
@@ -511,6 +563,7 @@ export const content = {
                 name: "Featured",
                 articles: [
                     {
+                        id: "f0704a5e-cf35-4c2b-afc1-c07325577554",
                         class: "columns-3-balanced",
                         header: "Washington",
                         image: {
@@ -527,32 +580,39 @@ export const content = {
                         display: "bullets",
                         content: [
                             {
+                                id: "e82d88ff-6406-4f82-8d8a-3c0939cda3ba",
                                 content: "Vulputate dignissim suspendisse in est ante.",
                                 url: "#",
                             },
                             {
+                                id: "0dc64ba7-dc5b-4cb4-b729-fbee531ae382",
                                 content: "Blandit turpis cursus in hac habitasse platea dictumst.",
                                 url: "#",
                             },
                             {
+                                id: "8a54f7e2-3aec-4e91-a029-9b9fe2a9bf07",
                                 content: "Sed nisi lacus sed viverra tellus in hac.",
                                 url: "#",
                             },
                             {
+                                id: "337cf7d7-0cbf-4a6f-ba8d-f5ab56f542af",
                                 content: "Euismod in pellentesque massa placerat duis ultricies lacus sed.",
                                 url: "#",
                             },
                             {
+                                id: "b93dfad8-0ad4-4825-bdf2-b9a6c77ed21a",
                                 content: "Quam lacus suspendisse faucibus interdum posuere.",
                                 url: "#",
                             },
                             {
+                                id: "28b3b72d-55c5-4f42-b51b-c6c5fffc506d",
                                 content: "Sit amet mattis vulputate enim nulla aliquet porttitor lacus.",
                                 url: "#",
                             },
                         ],
                     },
                     {
+                        id: "9f57970b-05f9-45c2-9e3c-ab0f66ce47f3",
                         class: "columns-3-balanced",
                         header: "New York",
                         image: {
@@ -569,32 +629,39 @@ export const content = {
                         display: "bullets",
                         content: [
                             {
+                                id: "36576fce-6f70-4b2f-b635-d586a51b3a9b",
                                 content: "Id semper risus in hendrerit gravida rutrum quisque non.",
                                 url: "#",
                             },
                             {
+                                id: "efd66d67-6a81-46be-b682-6dfa7b5895df",
                                 content: "Sit amet est placerat in egestas erat imperdiet sed euismod.",
                                 url: "#",
                             },
                             {
+                                id: "1390fee3-5d9b-468c-8d95-9c04943a3561",
                                 content: "Aliquam malesuada bibendum arcu vitae elementum curabitur vitae nunc.",
                                 url: "#",
                             },
                             {
+                                id: "a2f63129-54de-4003-8070-42dbba2c1bfd",
                                 content: "get gravida cum sociis natoque. Bibendum ut tristique et egestas.",
                                 url: "#",
                             },
                             {
+                                id: "9eec6eb8-c67e-4b57-8e7e-fe4a71dbae2b",
                                 content: "Mauris cursus mattis molestie a iaculis at erat.",
                                 url: "#",
                             },
                             {
+                                id: "677e1086-aef8-4561-8ecb-af75a7c82f6f",
                                 content: "Sit amet massa vitae tortor condimentum lacinia.",
                                 url: "#",
                             },
                         ],
                     },
                     {
+                        id: "bda30bf1-8032-4bfa-b17d-07571a7251f7",
                         class: "columns-3-balanced",
                         header: "Los Angeles",
                         image: {
@@ -611,26 +678,32 @@ export const content = {
                         display: "bullets",
                         content: [
                             {
+                                id: "51427dca-f312-4cc7-b7b2-719bf4c5cd8a",
                                 content: "Mattis enim ut tellus elementum sagittis.",
                                 url: "#",
                             },
                             {
+                                id: "6f3ae21d-312b-4065-8af1-04719f6d3160",
                                 content: "Sit amet venenatis urna cursus eget nunc scelerisque viverra mauris.",
                                 url: "#",
                             },
                             {
+                                id: "352dec10-0863-4244-a60b-002e40022c94",
                                 content: "Mi bibendum neque egestas congue quisque egestas.",
                                 url: "#",
                             },
                             {
+                                id: "e31c2cc9-5f99-4a01-84cf-587dcf47be7e",
                                 content: "Nunc scelerisque viverra mauris in aliquam.",
                                 url: "#",
                             },
                             {
+                                id: "9c041d54-ea0b-4a63-877b-a793f1b84297",
                                 content: "Egestas erat imperdiet sed euismod nisi porta lorem mollis aliquam.",
                                 url: "#",
                             },
                             {
+                                id: "a31a24a9-708a-4227-9038-bd14a0a7c7b1",
                                 content: "Phasellus egestas tellus rutrum tellus pellentesque eu tincidunt tortor aliquam.",
                                 url: "#",
                             },
@@ -643,11 +716,13 @@ export const content = {
                 name: "Underscored",
                 articles: [
                     {
+                        id: "affd2923-97de-4410-9258-bce3e4a19b87",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
                         content: [
                             {
+                                id: "92946ccb-022d-4319-be94-49e476c31077",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -664,6 +739,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "419ea32d-d12e-4c2b-9a14-fee91ba7ee7f",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -682,11 +758,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a196957d-d9fa-400a-a94c-dca3f6815700",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
                         content: [
                             {
+                                id: "4e31cef9-8787-437c-ae06-9e5654f540d9",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -703,6 +781,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "292cc517-c2d8-4941-acf3-bfe9a33cea58",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -727,11 +806,13 @@ export const content = {
                 name: "Happening Now",
                 articles: [
                     {
+                        id: "f07e6f59-5962-4410-b1a1-493770fa85c6",
                         class: "columns-wrap",
                         header: "Political",
                         type: "excerpt",
                         content: [
                             {
+                                id: "501331da-4f36-4a63-8e37-78fbc84d7485",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -741,6 +822,7 @@ export const content = {
                                 text: "Cras semper auctor neque vitae tempus quam pellentesque. Consequat ac felis donec et odio pellentesque. Eu consequat ac felis donec et odio pellentesque diam volutpat. Suscipit tellus mauris a diam maecenas sed enim ut sem.",
                             },
                             {
+                                id: "72c9a293-beba-4604-8a5b-ae6ec5dbdcf0",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -750,6 +832,7 @@ export const content = {
                                 text: "Sed faucibus turpis in eu mi bibendum neque. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi. In iaculis nunc sed augue lacus viverra. Pellentesque nec nam aliquam sem et. Tellus mauris a diam maecenas sed.",
                             },
                             {
+                                id: "505495bc-4141-4277-aba5-08cecdb0f52c",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -761,11 +844,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "3c3b206d-1b03-4fcc-9469-25b2caa64622",
                         class: "columns-wrap",
                         header: "Health",
                         type: "excerpt",
                         content: [
                             {
+                                id: "ce276359-8308-4af0-8d6f-c9141503f972",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -775,6 +860,7 @@ export const content = {
                                 text: "Vitae tortor condimentum lacinia quis. Nisl nisi scelerisque eu ultrices vitae. Id velit ut tortor pretium viverra suspendisse potenti nullam. Viverra accumsan in nisl nisi scelerisque eu ultrices vitae.",
                             },
                             {
+                                id: "e3a10fed-2a09-4821-aad0-b8af9f906769",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -784,6 +870,7 @@ export const content = {
                                 text: "Ullamcorper malesuada proin libero nunc consequat. Imperdiet sed euismod nisi porta. Arcu cursus vitae congue mauris rhoncus aenean vel. Enim nunc faucibus a pellentesque. Gravida in fermentum et sollicitudin ac orci phasellus.",
                             },
                             {
+                                id: "3676e79b-88d4-454c-ae72-32e3f38b869f",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -795,11 +882,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "19a7a320-69b7-4ac6-b2b1-17206ccc8e67",
                         class: "columns-wrap",
                         header: "Business",
                         type: "excerpt",
                         content: [
                             {
+                                id: "8431d24b-4967-4434-b165-18af09cbfe81",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -809,6 +898,7 @@ export const content = {
                                 text: "Integer enim neque volutpat ac. Feugiat sed lectus vestibulum mattis. Ullamcorper malesuada proin libero nunc consequat interdum varius sit amet. Mattis molestie a iaculis at erat pellentesque. Adipiscing elit duis tristique sollicitudin.",
                             },
                             {
+                                id: "50fa2776-bff8-42c7-a0ea-883cf40e66cf",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -818,6 +908,7 @@ export const content = {
                                 text: "Dignissim sodales ut eu sem integer. Mauris cursus mattis molestie a iaculis at erat. Tempus quam pellentesque nec nam aliquam sem et tortor. Id diam vel quam elementum pulvinar etiam non quam.",
                             },
                             {
+                                id: "f9099723-cd63-4158-906e-d9bf33904156",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -835,11 +926,13 @@ export const content = {
                 name: "Hot Topics",
                 articles: [
                     {
+                        id: "514e6188-22a4-4d01-ac19-342df74680e7",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
                         content: [
                             {
+                                id: "79d06fe0-30a7-41b8-b318-1aca53454296",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -856,6 +949,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "6c9f3533-ab33-4099-a38c-f2841d7ca278",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -874,11 +968,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "df35d241-7b4e-41af-b4a8-aa5ac86a2625",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
                         content: [
                             {
+                                id: "16d97cdf-e13a-4470-8d7b-70ef8a0d6542",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -895,6 +991,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "26c3b788-742a-4b7a-824e-91db371e5083",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -919,10 +1016,12 @@ export const content = {
                 name: "Paid Content",
                 articles: [
                     {
+                        id: "694bbfce-f1c9-4e10-95bc-a89023d5e1ea",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
                             {
+                                id: "39a82f01-b2fc-4740-a5ca-f1ada041100a",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -932,6 +1031,7 @@ export const content = {
                                 title: "Nunc aliquet bibendum enim facilisis gravida neque. Nec feugiat in fermentum posuere urna. Molestie at elementum eu facilisis sed odio morbi. Scelerisque purus semper eget duis at tellus.",
                             },
                             {
+                                id: "8a50960e-fbde-4705-bc6a-76865f78ec50",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -943,10 +1043,12 @@ export const content = {
                         ],
                     },
                     {
+                        id: "6e110ab5-5d43-411b-a64e-3dae38960a60",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
                             {
+                                id: "9728082f-7e27-4366-8bf4-dbd74f13daf8",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -956,6 +1058,7 @@ export const content = {
                                 title: "Quam lacus suspendisse faucibus interdum. In pellentesque massa placerat duis ultricies lacus sed. Convallis a cras semper auctor neque vitae tempus quam. Ut pharetra sit amet aliquam id diam.",
                             },
                             {
+                                id: "216eaa21-8a0f-4baf-8dc3-103391d77002",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -967,10 +1070,12 @@ export const content = {
                         ],
                     },
                     {
+                        id: "e72adfa5-f82e-42b3-a0c6-c43f0c3f9393",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
                             {
+                                id: "848a8767-90da-4ff1-a2b1-293def11434f",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -980,6 +1085,7 @@ export const content = {
                                 title: "Non tellus orci ac auctor augue mauris augue neque gravida. Nulla facilisi nullam vehicula ipsum a arcu cursus vitae. Quam nulla porttitor massa id neque aliquam vestibulum morbi. Diam quis enim lobortis scelerisque.",
                             },
                             {
+                                id: "f9c3995e-c12d-47ef-89e6-efb535d7678a",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -991,10 +1097,12 @@ export const content = {
                         ],
                     },
                     {
+                        id: "96bc6b53-c533-4970-adb7-8dae30da76cc",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
                             {
+                                id: "15d8615d-52c0-4aa5-a0d0-2eb20c6c0675",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -1004,6 +1112,7 @@ export const content = {
                                 title: "It amet porttitor eget dolor morbi non. Sed lectus vestibulum mattis ullamcorper. Laoreet id donec ultrices tincidunt arcu non. Quam adipiscing vitae proin sagittis.",
                             },
                             {
+                                id: "75a08ef8-8177-4047-bb40-3448c0169cd9",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "Placeholder",
@@ -1032,6 +1141,7 @@ export const content = {
                 name: "World News",
                 articles: [
                     {
+                        id: "31b24534-29f6-469f-8ce3-ff774997ef8a",
                         class: "columns-3-wide",
                         header: "Happening Today",
                         url: "#",
@@ -1054,6 +1164,7 @@ export const content = {
                             "Iaculis urna id volutpat lacus. Dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Dictum varius duis at consectetur lorem donec. At tellus at urna condimentum mattis pellentesque id. Consectetur lorem donec massa sapien faucibus et molestie ac. Risus at ultrices mi tempus.",
                     },
                     {
+                        id: "06f7b876-6120-4273-8850-f60f817940f0",
                         class: "columns-3-narrow",
                         header: "Trending",
                         url: "#",
@@ -1072,6 +1183,7 @@ export const content = {
                             "Id neque aliquam vestibulum morbi blandit cursus risus at ultrices. Arcu dui vivamus arcu felis bibendum ut tristique et. Justo donec enim diam vulputate ut.\n\nPellentesque elit ullamcorper dignissim cras tincidunt lobortis feugiat vivamus at. Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Convallis tellus id interdum velit laoreet id.",
                     },
                     {
+                        id: "e9f3877f-a2a6-41fb-898b-9acb0fdedc19",
                         class: "columns-3-narrow",
                         header: "Weather",
                         url: "#",
@@ -1105,6 +1217,7 @@ export const content = {
                 name: "Around the Nation",
                 articles: [
                     {
+                        id: "4e19c383-aff6-45de-b874-008c58a9667f",
                         class: "columns-3-balanced",
                         header: "Latest",
                         image: {
@@ -1134,6 +1247,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "53c3567d-6073-41e8-87ca-f76a282c38f9",
                         class: "columns-3-balanced",
                         header: "Business",
                         image: {
@@ -1160,6 +1274,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "79344d21-3a1f-4531-87b7-971d0a01e959",
                         class: "columns-3-balanced",
                         header: "Politics",
                         image: {
@@ -1195,6 +1310,7 @@ export const content = {
                 name: "Roundup",
                 articles: [
                     {
+                        id: "660d5f2a-0977-423b-a585-dbd0f58695e4",
                         class: "columns-wrap",
                         header: "Washington",
                         type: "excerpt",
@@ -1229,6 +1345,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "c88e0e0d-e323-4d4e-a0fb-b72c3fda9df8",
                         class: "columns-wrap",
                         header: "East Coast",
                         type: "excerpt",
@@ -1263,6 +1380,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a2267128-dd86-4a98-8903-0a887d49104e",
                         class: "columns-wrap",
                         header: "West Coast",
                         type: "excerpt",
@@ -1303,6 +1421,7 @@ export const content = {
                 name: "Crime & Justice",
                 articles: [
                     {
+                        id: "bc92acd8-0cbb-42e6-88dc-7589e92eb218",
                         class: "columns-3-balanced",
                         header: "Supreme Court",
                         type: "articles-list",
@@ -1325,6 +1444,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "190711e5-6bc8-4b26-920a-b6edd74a0847",
                         class: "columns-3-balanced",
                         header: "Local Law",
                         type: "articles-list",
@@ -1346,6 +1466,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "0233b0b6-69f1-4c51-81cd-b849e435f2c1",
                         class: "columns-3-balanced",
                         header: "Opinion",
                         type: "articles-list",
@@ -1374,6 +1495,7 @@ export const content = {
                 name: "Around the US",
                 articles: [
                     {
+                        id: "90e08554-f9b4-4606-8e36-55de40b39f9f",
                         class: "columns-3-balanced",
                         header: "Latest",
                         image: {
@@ -1403,6 +1525,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "9c6014cf-a577-4611-a2ce-97f2b4afc322",
                         class: "columns-3-balanced",
                         header: "Business",
                         image: {
@@ -1429,6 +1552,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "48cabfe4-6408-488f-b942-8d59d35163f7",
                         class: "columns-3-balanced",
                         header: "Politics",
                         image: {
@@ -1464,6 +1588,7 @@ export const content = {
                 name: "Latest Media",
                 articles: [
                     {
+                        id: "92371ddb-b2cf-43e2-8590-bda1440c7025",
                         class: "columns-1",
                         type: "grid",
                         content: [
@@ -1532,6 +1657,7 @@ export const content = {
                 name: "Business",
                 articles: [
                     {
+                        id: "8e2a8c79-f1dc-4e6c-8542-04684ae08bce",
                         class: "columns-3-balanced",
                         header: "Local",
                         type: "articles-list",
@@ -1554,6 +1680,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "5acb5684-4b99-44ff-9668-2e5daec9133c",
                         class: "columns-3-balanced",
                         header: "Global",
                         type: "articles-list",
@@ -1576,6 +1703,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "fd9fce73-e286-450f-8fcf-7b988b968f3b",
                         class: "columns-3-balanced",
                         header: "Quarterly",
                         type: "articles-list",
@@ -1604,6 +1732,7 @@ export const content = {
                 name: "Underscored",
                 articles: [
                     {
+                        id: "f7640582-e9b6-4d47-b396-95515aa0a840",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -1643,6 +1772,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "3f4c33ce-8628-46d1-b416-37b0fc218c74",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -1688,6 +1818,7 @@ export const content = {
                 name: "State by state",
                 articles: [
                     {
+                        id: "88c59d52-03e2-47cc-82a0-f0d9df4a88db",
                         class: "columns-wrap",
                         header: "California",
                         type: "excerpt",
@@ -1722,6 +1853,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f28c0060-72db-4588-8b38-9f1b2a01a3ac",
                         class: "columns-wrap",
                         header: "New York",
                         type: "excerpt",
@@ -1756,6 +1888,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "bc567ef4-d017-4679-8d7b-c822dd49a3dc",
                         class: "columns-wrap",
                         header: "Washington",
                         type: "excerpt",
@@ -1796,6 +1929,7 @@ export const content = {
                 name: "Hot Topics",
                 articles: [
                     {
+                        id: "4a2d747f-a853-4452-82bf-504b5f79a7fe",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -1835,6 +1969,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "c897ed90-26b7-4f9d-9c2c-7eb37270a317",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -1880,6 +2015,7 @@ export const content = {
                 name: "Paid Content",
                 articles: [
                     {
+                        id: "3acc4e4e-2720-4d9a-aa3e-ec820f6b4f00",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -1895,6 +2031,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "ca777be8-b675-4dc0-817f-972a72129394",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -1910,6 +2047,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "cb0c2767-4955-4cc6-ae13-5c44a958b36f",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -1925,6 +2063,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "efe39446-2154-4279-9d1d-66d27db034ac",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -1953,6 +2092,7 @@ export const content = {
                 name: "Global trends",
                 articles: [
                     {
+                        id: "4da73fa5-c64a-43d8-873f-af7024fbae8c",
                         class: "columns-3-balanced",
                         header: "Africa",
                         url: "#",
@@ -1971,6 +2111,7 @@ export const content = {
                             "Quam viverra orci sagittis eu volutpat odio facilisis mauris sit. Magna fringilla urna porttitor rhoncus dolor purus non enim praesent. Pellentesque sit amet porttitor eget dolor morbi non arcu risus. Dictum varius duis at consectetur. Ut porttitor leo a diam sollicitudin tempor id eu nisl.",
                     },
                     {
+                        id: "44d8807b-f06e-480f-8410-c5573127b527",
                         class: "columns-3-balanced",
                         header: "China",
                         url: "#",
@@ -1989,6 +2130,7 @@ export const content = {
                             "Auctor urna nunc id cursus metus aliquam. Amet commodo nulla facilisi nullam. Blandit massa enim nec dui nunc mattis enim ut. Et netus et malesuada fames ac turpis. Pellentesque habitant morbi tristique senectus et netus et malesuada. Habitant morbi tristique senectus et netus et malesuada fames ace.",
                     },
                     {
+                        id: "56478e74-f501-45a5-b9db-5a41b049f32b",
                         class: "columns-3-balanced",
                         header: "Russia",
                         url: "#",
@@ -2025,6 +2167,7 @@ export const content = {
                 name: "Around the world",
                 articles: [
                     {
+                        id: "22156cfb-5b44-4c70-adcc-8c560bb88bba",
                         class: "columns-3-balanced",
                         header: "Europe",
                         image: {
@@ -2042,6 +2185,7 @@ export const content = {
                             "Metus vulputate eu scelerisque felis imperdiet proin fermentum leo vel. Nisi scelerisque eu ultrices vitae auctor eu. Risus pretium quam vulputate dignissim suspendisse. Pulvinar neque laoreet suspendisse interdum. Mauris cursus mattis molestie a iaculis at erat.",
                     },
                     {
+                        id: "0e6692ed-3268-4442-a52d-16c37c16c5e2",
                         class: "columns-3-balanced",
                         header: "Middle East",
                         image: {
@@ -2059,6 +2203,7 @@ export const content = {
                             "Suspendisse interdum consectetur libero id faucibus nisl tincidunt eget nullam. Cursus vitae congue mauris rhoncus aenean vel elit scelerisque mauris. Quam vulputate dignissim suspendisse in est ante in nibh mauris.",
                     },
                     {
+                        id: "c9cd0674-b0de-4f53-9015-a97b57cf91d6",
                         class: "columns-3-balanced",
                         header: "Asia",
                         image: {
@@ -2094,6 +2239,7 @@ export const content = {
                 name: "Latest Media",
                 articles: [
                     {
+                        id: "2c78e953-89f7-4a41-a852-6937b647674a",
                         class: "columns-1",
                         type: "grid",
                         content: [
@@ -2162,6 +2308,7 @@ export const content = {
                 name: "Today",
                 articles: [
                     {
+                        id: "b4f53c23-c475-4359-9b73-84b5f193695e",
                         class: "columns-3-wide",
                         header: "Unrest",
                         url: "#",
@@ -2196,6 +2343,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8e24c654-824d-4b80-add0-e6a69926e2e1",
                         class: "columns-3-narrow",
                         header: "Happening now",
                         url: "#",
@@ -2231,6 +2379,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "b838d62e-fc9b-4c7f-808b-dfe42ba8207b",
                         class: "columns-3-narrow",
                         header: "Noteworthy",
                         url: "#",
@@ -2272,6 +2421,7 @@ export const content = {
                 name: "Featured",
                 articles: [
                     {
+                        id: "333174c6-e4f4-4376-b0ff-38d31161b9db",
                         class: "columns-3-balanced",
                         header: "European Union",
                         image: {
@@ -2298,6 +2448,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "28fd8202-0588-42a2-bb92-54c534521b23",
                         class: "columns-3-balanced",
                         header: "Britain",
                         image: {
@@ -2315,6 +2466,7 @@ export const content = {
                             "Gravida rutrum quisque non tellus orci ac auctor augue mauris. Enim ut sem viverra aliquet eget. Sit amet volutpat consequat mauris nunc congue nisi vitae.\n\nPraesent tristique magna sit amet purus gravida quis blandit turpis. Commodo odio aenean sed adipiscing diam donec adipiscing tristique risus. Quam quisque id diam vel quam elementum.",
                     },
                     {
+                        id: "bcb67523-c31c-44ae-b9a1-a2b3b0cc5793",
                         class: "columns-3-balanced",
                         header: "Latin America",
                         image: {
@@ -2363,6 +2515,7 @@ export const content = {
                 name: "International",
                 articles: [
                     {
+                        id: "bcdb2555-6ea9-48cc-b99e-7c496e95b54a",
                         class: "columns-wrap",
                         header: "United Nations",
                         type: "excerpt",
@@ -2397,6 +2550,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "db9bc4e6-b7d8-4cbd-b9a6-17bc5c50b8b1",
                         class: "columns-wrap",
                         header: "European Union",
                         type: "excerpt",
@@ -2431,6 +2585,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a4208fe3-e9b4-46f6-af7e-ff04522ccc9c",
                         class: "columns-wrap",
                         header: "Global Crisis",
                         type: "excerpt",
@@ -2471,6 +2626,7 @@ export const content = {
                 name: "Global Impact",
                 articles: [
                     {
+                        id: "48ae1b0c-4f0c-47f8-ab31-4ec18aaaf24c",
                         class: "columns-3-balanced",
                         header: "Weather",
                         image: {
@@ -2500,6 +2656,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "71a55a05-6c7a-432e-8d8f-dc55746911e6",
                         class: "columns-3-balanced",
                         header: "Business",
                         image: {
@@ -2529,6 +2686,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f44f022b-f57e-4d6d-84bc-904dfad9686a",
                         class: "columns-3-balanced",
                         header: "Politics",
                         image: {
@@ -2564,6 +2722,7 @@ export const content = {
                 name: "Underscored",
                 articles: [
                     {
+                        id: "060bbae5-655f-4ed6-ae0f-8afdb2056ecf",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -2603,6 +2762,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "b4ef9c47-027a-4870-8413-b83366e1ce21",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -2648,6 +2808,7 @@ export const content = {
                 name: "Global Issues",
                 articles: [
                     {
+                        id: "f189aeb3-f002-4cf4-929e-1957c1e049a9",
                         class: "columns-wrap",
                         header: "Rising Crime",
                         type: "excerpt",
@@ -2682,6 +2843,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "ddf4293b-3356-4ec4-b349-75d29690623e",
                         class: "columns-wrap",
                         header: "Health concerns",
                         type: "excerpt",
@@ -2716,6 +2878,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "9b501227-b127-49b2-80d6-33945e5ea16c",
                         class: "columns-wrap",
                         header: "Economy",
                         type: "excerpt",
@@ -2756,6 +2919,7 @@ export const content = {
                 name: "Hot Topics",
                 articles: [
                     {
+                        id: "2ecc66a8-422a-4ec1-8523-b2b3b6bd95d1",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -2795,6 +2959,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "e97c9e59-bce0-408e-8151-644b4c51fa24",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -2840,6 +3005,7 @@ export const content = {
                 name: "Paid Content",
                 articles: [
                     {
+                        id: "6f02bb8e-b794-403e-8417-6efaf23f7d4f",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -2855,6 +3021,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "c1ab91c2-8a27-4b86-b862-f2cb98d99636",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -2870,6 +3037,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "ea11fca8-afd0-4aab-b106-047aab8ca678",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -2885,6 +3053,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "44a282f4-379a-41bd-bccb-5d7a16aa8d98",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -2913,6 +3082,7 @@ export const content = {
                 name: "What Really Matters",
                 articles: [
                     {
+                        id: "5fed924d-8356-4d2e-bf06-ba58866f4cd0",
                         class: "columns-1",
                         type: "grid",
                         display: "grid-wrap",
@@ -3006,6 +3176,7 @@ export const content = {
                 name: "Today",
                 articles: [
                     {
+                        id: "88787560-ed1b-43d5-a57c-bac38c8af902",
                         class: "columns-3-wide",
                         header: "Campaign News",
                         url: "#",
@@ -3040,6 +3211,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8eeaee25-a813-430f-9f1e-00ac72d6e0f9",
                         class: "columns-3-narrow",
                         header: "Elections",
                         url: "#",
@@ -3066,6 +3238,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f56f95e8-6db3-4fb3-9797-be9e6e8713d1",
                         class: "columns-3-narrow",
                         header: "Local Government",
                         url: "#",
@@ -3102,6 +3275,7 @@ export const content = {
                 name: "Latest Headlines",
                 articles: [
                     {
+                        id: "a497dc76-3124-4e34-a562-393b3ed0a2d0",
                         class: "columns-3-balanced",
                         header: "Analysis",
                         image: {
@@ -3131,6 +3305,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "3b2ff2f5-1aa4-471d-afe4-4134e7239b3a",
                         class: "columns-3-balanced",
                         header: "Facts First",
                         image: {
@@ -3160,6 +3335,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "d3f0d391-b7ad-4421-a6d2-7d004a21d6d9",
                         class: "columns-3-balanced",
                         header: "More Politics News",
                         image: {
@@ -3183,6 +3359,7 @@ export const content = {
                 name: "Latest Media",
                 articles: [
                     {
+                        id: "db2737cd-27a6-479d-a387-ad8009ede603",
                         class: "columns-1",
                         type: "grid",
                         content: [
@@ -3251,6 +3428,7 @@ export const content = {
                 name: "Election",
                 articles: [
                     {
+                        id: "29de4b05-b033-4382-9b05-cd4ad886f497",
                         class: "columns-wrap",
                         header: "Democrats",
                         type: "excerpt",
@@ -3285,6 +3463,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "54a12e98-d00c-455d-b806-98594181ce1e",
                         class: "columns-wrap",
                         header: "Republicans",
                         type: "excerpt",
@@ -3319,6 +3498,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8ad5e658-cfe7-42d1-8e28-764010c5b34f",
                         class: "columns-wrap",
                         header: "Liberals",
                         type: "excerpt",
@@ -3359,6 +3539,7 @@ export const content = {
                 name: "More political News",
                 articles: [
                     {
+                        id: "ba31d7b5-0a2b-421d-880b-83cbf0503a45",
                         class: "columns-3-wide",
                         header: "More News",
                         url: "#",
@@ -3412,6 +3593,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "1900eb3e-e44a-481b-abe7-d82aafb5a4ed",
                         class: "columns-3-narrow",
                         url: "#",
                         type: "preview",
@@ -3446,6 +3628,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "212ae8c8-9689-4c4c-b75c-6af97924c561",
                         class: "columns-3-narrow",
                         url: "#",
                         type: "preview",
@@ -3486,6 +3669,7 @@ export const content = {
                 name: "Underscored",
                 articles: [
                     {
+                        id: "78fb02c4-4a19-4c24-a504-fb029810730e",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -3525,6 +3709,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "c215acac-4b82-4696-a5d7-a33f322c45f3",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -3570,6 +3755,7 @@ export const content = {
                 name: "Trending",
                 articles: [
                     {
+                        id: "40fc21b9-2db4-47e2-96ef-2d95e79a9df3",
                         class: "columns-wrap",
                         header: "New Legislations",
                         type: "excerpt",
@@ -3604,6 +3790,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "9f10b36d-0666-479c-a234-a7ab95f9737d",
                         class: "columns-wrap",
                         header: "Latest Polls",
                         type: "excerpt",
@@ -3638,6 +3825,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "d86ca00e-4e84-48ac-8c95-118d7c9a2e44",
                         class: "columns-wrap",
                         header: "Who's gaining votes",
                         type: "excerpt",
@@ -3678,6 +3866,7 @@ export const content = {
                 name: "Around the World",
                 articles: [
                     {
+                        id: "d7923d94-7cd8-418a-865e-2b90faf6f830",
                         class: "columns-3-balanced",
                         header: "Britain",
                         image: {
@@ -3707,6 +3896,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f87a7154-8143-4c09-8afe-96f965e00089",
                         class: "columns-3-balanced",
                         header: "Italy",
                         image: {
@@ -3736,6 +3926,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "14d07dfb-3587-4411-b4ce-33ba171152f4",
                         class: "columns-3-balanced",
                         header: "Poland",
                         image: {
@@ -3771,6 +3962,7 @@ export const content = {
                 name: "Hot Topics",
                 articles: [
                     {
+                        id: "df191197-ddb0-4c59-978c-560e60e62e0a",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -3810,6 +4002,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "2ba63655-af94-4da2-a4da-e7464aa070e8",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -3855,6 +4048,7 @@ export const content = {
                 name: "Paid Content",
                 articles: [
                     {
+                        id: "a97faeaa-1309-44ec-a9a8-dda2db1ad5f3",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -3870,6 +4064,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "52472e25-5e61-4bef-9aca-ac86f936d811",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -3885,6 +4080,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a16c0da8-7dea-4cb3-af0e-0c0123bf20d3",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -3900,6 +4096,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "3e7d37b7-af0e-4f69-a0fd-8d0f64d2e0ba",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -3928,6 +4125,7 @@ export const content = {
                 name: "Latest trends",
                 articles: [
                     {
+                        id: "addec243-95e5-4aae-8261-c6b82b928293",
                         class: "columns-3-wide",
                         header: "Investing",
                         url: "#",
@@ -3950,6 +4148,7 @@ export const content = {
                             "Consequat mauris nunc congue nisi vitae. Felis imperdiet proin fermentum leo vel orci porta. Facilisis gravida neque convallis a cras semper. Risus quis varius quam quisque id diam vel quam. Egestas quis ipsum suspendisse ultrices gravida. Nisl nisi scelerisque eu ultrices vitae auctor.\n\nViverra vitae congue eu consequat ac felis. Vestibulum rhoncus est pellentesque elit ullamcorper. Donec massa sapien faucibus et. Vehicula ipsum a arcu cursus vitae congue mauris rhoncus. Quis ipsum suspendisse ultrices gravida. Vel facilisis volutpat est velit egestas dui id ornare arcu. Commodo ullamcorper a lacus vestibulum.",
                     },
                     {
+                        id: "4d5bbeee-9e05-4f95-b6bf-af41b145e4e3",
                         class: "columns-3-narrow",
                         header: "Media",
                         url: "#",
@@ -3968,6 +4167,7 @@ export const content = {
                             "Nisi quis eleifend quam adipiscing vitae proin. Nunc sed velit dignissim sodales ut. Turpis nunc eget lorem dolor sed. Enim nulla aliquet porttitor lacus. Consequat ac felis donec et. Aliquam sem fringilla ut morbi tincidunt augue interdum velit. Arcu vitae elementum curabitur vitae nunc sed velit dignissim.",
                     },
                     {
+                        id: "a788ad50-9e3a-461e-be18-828fbce1dbd9",
                         class: "columns-3-narrow",
                         header: "Insights",
                         url: "#",
@@ -3992,6 +4192,7 @@ export const content = {
                 name: "Market Watch",
                 articles: [
                     {
+                        id: "ed902471-e96d-462b-bc88-01c7e22d5fa0",
                         class: "columns-3-balanced",
                         header: "Trending",
                         image: {
@@ -4009,6 +4210,7 @@ export const content = {
                             "Dolor magna eget est lorem. Nibh sit amet commodo nulla facilisi nullam. Etiam non quam lacus suspendisse faucibus interdum. Posuere sollicitudin aliquam ultrices sagittis orci. Massa enim nec dui nunc mattis enim ut tellus. Congue mauris rhoncus aenean vel. Egestas integer eget aliquet nibh praesent tristique.",
                     },
                     {
+                        id: "31a8663a-d035-4b62-adeb-195a1c60e831",
                         class: "columns-3-balanced",
                         header: "Tech",
                         image: {
@@ -4026,6 +4228,7 @@ export const content = {
                             "Praesent elementum facilisis leo vel fringilla est ullamcorper. Scelerisque viverra mauris in aliquam sem fringilla. Donec ac odio tempor orci. Eu augue ut lectus arcu. Diam sollicitudin tempor id eu nisl nunc mi ipsum.",
                     },
                     {
+                        id: "bf9491d2-ffcc-4ed3-a3a4-2cfda792f06b",
                         class: "columns-3-balanced",
                         header: "Success",
                         image: {
@@ -4049,6 +4252,7 @@ export const content = {
                 name: "Economy Today",
                 articles: [
                     {
+                        id: "95d5859b-44d0-452b-adba-52af428c9b8e",
                         class: "columns-wrap",
                         header: "Global Impact",
                         type: "excerpt",
@@ -4083,6 +4287,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f89eb533-713d-4ece-9998-c29672199357",
                         class: "columns-wrap",
                         header: "Outlook",
                         type: "excerpt",
@@ -4117,6 +4322,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "eb628ced-8e49-4cc7-a4b6-2531bc5f7b30",
                         class: "columns-wrap",
                         header: "Financial Freedom",
                         type: "excerpt",
@@ -4157,6 +4363,7 @@ export const content = {
                 name: "Must Read",
                 articles: [
                     {
+                        id: "b77172cc-4e49-40ca-9235-eb2f5f865804",
                         class: "columns-1",
                         type: "grid",
                         display: "grid-wrap",
@@ -4234,6 +4441,7 @@ export const content = {
                 name: "Educational",
                 articles: [
                     {
+                        id: "4187d9c9-e176-4b0a-8bee-03f4f3be418a",
                         class: "columns-3-balanced",
                         header: "Business 101",
                         image: {
@@ -4251,6 +4459,7 @@ export const content = {
                             "incidunt dui ut ornare lectus sit. Quis varius quam quisque id diam. Adipiscing diam donec adipiscing tristique risus nec feugiat in. Cursus sit amet dictum sit. Lacinia quis vel eros donec ac odio. Accumsan tortor posuere ac ut consequat semper. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing. Integer malesuada nunc vel risus commodo viverra. Arcu risus quis varius quam quisque id diam vel quam.\n\nEnim neque volutpat ac tincidunt vitae semper quis lectus nulla. Eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque. Sed tempus urna et pharetra pharetra massa.",
                     },
                     {
+                        id: "c519abd4-bb39-4b35-b3fb-130713f8f27b",
                         class: "columns-3-balanced",
                         header: "Startup",
                         image: {
@@ -4268,6 +4477,7 @@ export const content = {
                             "Potenti nullam ac tortor vitae purus faucibus. Vulputate mi sit amet mauris. Elit pellentesque habitant morbi tristique senectus. In pellentesque massa placerat duis ultricies. Cras fermentum odio eu feugiat pretium nibh ipsum. Ornare quam viverra orci sagittis eu. Commodo sed egestas egestas fringilla phasellus faucibus scelerisque eleifend. Non diam phasellus vestibulum lorem sed risus. Metus vulputate eu scelerisque felis imperdiet.\n\nMagna ac placerat vestibulum lectus mauris. Lobortis feugiat vivamus at augue eget. Facilisis volutpat est velit egestas dui id ornare arcu odio.",
                     },
                     {
+                        id: "a7b41785-e2d9-4afa-a161-5edcffce77a8",
                         class: "columns-3-balanced",
                         header: "Make profit",
                         image: {
@@ -4291,6 +4501,7 @@ export const content = {
                 name: "Underscored",
                 articles: [
                     {
+                        id: "4e229873-04c6-410a-a433-18178fa4aad5",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -4330,6 +4541,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "1760d2cf-9530-4c27-9943-ec0525b5dd4f",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -4375,6 +4587,7 @@ export const content = {
                 name: "Investing 101",
                 articles: [
                     {
+                        id: "d3b35a69-8fa6-49b6-a86f-a451e15430f0",
                         class: "columns-3-balanced",
                         header: "Manage your assets",
                         type: "articles-list",
@@ -4397,6 +4610,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "27a697e9-74a9-459c-9cd2-d479d65ac2f7",
                         class: "columns-3-balanced",
                         header: "What to watch",
                         type: "articles-list",
@@ -4419,6 +4633,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "cff3dc12-6773-4f70-a22d-ff1bc100c818",
                         class: "columns-3-balanced",
                         header: "Did you know?",
                         type: "articles-list",
@@ -4447,6 +4662,7 @@ export const content = {
                 name: "Stock market",
                 articles: [
                     {
+                        id: "49e01dcc-39fd-482d-b0c1-31918f791041",
                         class: "columns-wrap",
                         header: "Dow Jones",
                         type: "excerpt",
@@ -4481,6 +4697,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "084674ba-b34b-4841-8674-e29bfd3633fa",
                         class: "columns-wrap",
                         header: "S&P 500",
                         type: "excerpt",
@@ -4515,6 +4732,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "d287a7b5-305f-4e6f-81c7-3a6f1e833a5a",
                         class: "columns-wrap",
                         header: "Day Trading",
                         type: "excerpt",
@@ -4555,6 +4773,7 @@ export const content = {
                 name: "Impact",
                 articles: [
                     {
+                        id: "f87f6f06-2480-48b1-abf0-17c97fa92d27",
                         class: "columns-3-balanced",
                         header: "Oil crisis",
                         type: "articles-list",
@@ -4577,6 +4796,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8d0c8045-a260-47ec-9f28-1098d994da86",
                         class: "columns-3-balanced",
                         header: "Tech Markets",
                         type: "articles-list",
@@ -4599,6 +4819,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "9144e1b3-46b1-4c71-b26d-6f4cf74e7444",
                         class: "columns-3-balanced",
                         header: "Declining Markets",
                         type: "articles-list",
@@ -4626,6 +4847,7 @@ export const content = {
                 name: "Hot Topics",
                 articles: [
                     {
+                        id: "1e60235c-0198-4448-9267-f3f86542d7dc",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -4665,6 +4887,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "46e89da3-b39c-43a7-9178-efeeb91e973d",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -4710,6 +4933,7 @@ export const content = {
                 name: "Paid Content",
                 articles: [
                     {
+                        id: "d6c99f00-e45b-4da3-abb8-2a0a3bd27cc7",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -4734,6 +4958,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "2b905eee-c666-4704-9658-1e0757b02253",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -4758,6 +4983,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "1acc8fc3-74bb-46b0-8d67-bee9bfb7667a",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -4782,6 +5008,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a005c941-9e4b-4219-88df-d6a553b3c237",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -4819,6 +5046,7 @@ export const content = {
                 name: "A deeper look",
                 articles: [
                     {
+                        id: "7c4b6a7e-1f91-4e43-b099-a72aea0fa6c7",
                         class: "columns-3-wide",
                         header: "Latest Facts",
                         url: "#",
@@ -4840,6 +5068,7 @@ export const content = {
                             "Lorem ipsum dolor sit amet consectetur. Ridiculus mus mauris vitae ultricies leo. Volutpat ac tincidunt vitae semper quis. In est ante in nibh. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Scelerisque eu ultrices vitae auctor eu augue.",
                     },
                     {
+                        id: "0d292bbd-e6da-499b-8008-652d51e3b26d",
                         class: "columns-3-narrow",
                         header: "Top of our mind",
                         url: "#",
@@ -4857,6 +5086,7 @@ export const content = {
                         content: "Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Pharetra vel turpis nunc eget lorem. Morbi tincidunt augue interdum velit euismod in pellentesque massa placerat.",
                     },
                     {
+                        id: "75c1fa44-8c39-48a0-9db7-b30c0ffc6606",
                         class: "columns-3-narrow",
                         header: "Editor Report",
                         url: "#",
@@ -4881,6 +5111,7 @@ export const content = {
                 name: "Top Issues",
                 articles: [
                     {
+                        id: "68c63699-7843-4f2c-8893-3cd0043ce6c7",
                         class: "columns-3-balanced",
                         header: "Thoughts",
                         image: {
@@ -4910,6 +5141,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f293245c-cbdc-4538-8ca8-0181ba5709a0",
                         class: "columns-3-balanced",
                         header: "Social commentary",
                         image: {
@@ -4939,6 +5171,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "0f38830e-3f1d-43ee-9f24-dc3f1422e9d7",
                         class: "columns-3-balanced",
                         header: "Special Projects",
                         image: {
@@ -4962,6 +5195,7 @@ export const content = {
                 name: "Trending",
                 articles: [
                     {
+                        id: "7ca7daac-f4d0-4a57-a396-b8bb485796b4",
                         class: "columns-wrap",
                         header: "Around the world",
                         type: "excerpt",
@@ -4996,6 +5230,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "89639a03-5c46-45c1-ad54-ba8548521eea",
                         class: "columns-wrap",
                         header: "Support",
                         type: "excerpt",
@@ -5030,6 +5265,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "b4c36ecf-7d2f-4715-842c-a1fe99c0475e",
                         class: "columns-wrap",
                         header: "Know More",
                         type: "excerpt",
@@ -5070,6 +5306,7 @@ export const content = {
                 name: "Think about it",
                 articles: [
                     {
+                        id: "a1034d17-1add-49f8-b258-27de86bea9e4",
                         class: "columns-3-balanced",
                         header: "Mental Health",
                         image: {
@@ -5104,6 +5341,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "c344dac6-35bf-44af-9c55-ae5ca7ab7f41",
                         class: "columns-3-balanced",
                         header: "Better life",
                         image: {
@@ -5138,6 +5376,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a1724b6d-085c-4467-b413-e3332a4a4af6",
                         class: "columns-3-balanced",
                         header: "The right choice",
                         image: {
@@ -5178,6 +5417,7 @@ export const content = {
                 name: "Latest Media",
                 articles: [
                     {
+                        id: "c3ed8428-cf45-4f9d-86d1-391bd9e9ad80",
                         class: "columns-1",
                         type: "grid",
                         content: [
@@ -5246,6 +5486,7 @@ export const content = {
                 name: "In case you missed it",
                 articles: [
                     {
+                        id: "9ecce31e-6d76-44c4-a518-b881b6877724",
                         class: "columns-3-balanced",
                         header: "Critical thoughts",
                         image: {
@@ -5275,6 +5516,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f80bc40c-0c9c-4567-8b79-fd29ef77659b",
                         class: "columns-3-balanced",
                         header: "Critical Thinking",
                         image: {
@@ -5304,6 +5546,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "1bb6984e-a18f-47b7-9bbb-6888b74b58da",
                         class: "columns-3-balanced",
                         header: "Critical Actions",
                         image: {
@@ -5339,6 +5582,7 @@ export const content = {
                 name: "Environmental Issues",
                 articles: [
                     {
+                        id: "d55b5489-7ed3-4215-9e45-ef5ae8072210",
                         class: "columns-3-balanced",
                         header: "Global Warming",
                         type: "articles-list",
@@ -5361,6 +5605,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "dcb3d636-542f-49ea-aaa0-e829fc87ab3d",
                         class: "columns-3-balanced",
                         header: "Recycling",
                         type: "articles-list",
@@ -5382,6 +5627,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "500a214a-8186-49bf-96f0-38e42014460b",
                         class: "columns-3-balanced",
                         header: "New researches",
                         type: "articles-list",
@@ -5410,6 +5656,7 @@ export const content = {
                 name: "Underscored",
                 articles: [
                     {
+                        id: "8096212a-bfab-494b-b4d9-a04c2bd80b17",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -5449,6 +5696,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8945566e-82d2-419c-8ec5-750294e2aaf4",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -5494,6 +5742,7 @@ export const content = {
                 name: "What matters most",
                 articles: [
                     {
+                        id: "2fe9dc69-e459-46d6-8b9b-8bce7c60f694",
                         class: "columns-wrap",
                         header: "Discussion",
                         type: "excerpt",
@@ -5528,6 +5777,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "fa068dc1-0a5c-459a-9e38-7fb8cd9d5fa5",
                         class: "columns-wrap",
                         header: "Is it worth it?",
                         type: "excerpt",
@@ -5562,6 +5812,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "31082ef2-8a41-4ea5-9c40-3d87ff73ad5f",
                         class: "columns-wrap",
                         header: "Just do it",
                         type: "excerpt",
@@ -5602,6 +5853,7 @@ export const content = {
                 name: "Hot Topics",
                 articles: [
                     {
+                        id: "20b1f11f-8da5-4614-82b9-80c15aed568c",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -5641,6 +5893,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "662f09bf-45ab-445f-a096-cede68c5dab8",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -5686,6 +5939,7 @@ export const content = {
                 name: "Paid Content",
                 articles: [
                     {
+                        id: "c7f1b2e8-3e7e-4cea-b8fd-97da6aaa217a",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -5701,6 +5955,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f047187b-7651-45f5-8e13-362d82b59e91",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -5716,6 +5971,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "fc748387-cfdb-4659-bf00-14984869c3f4",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -5731,6 +5987,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "ad88b542-6ac0-4525-b6be-581cb2b67762",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -5759,6 +6016,7 @@ export const content = {
                 name: "Trending",
                 articles: [
                     {
+                        id: "b5d84dfb-d80f-4ba1-ab4e-c33e255b3157",
                         class: "columns-3-balanced",
                         header: "Mindfulness",
                         url: "#",
@@ -5789,6 +6047,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a1822776-68b2-4d24-95e2-917756de0c12",
                         class: "columns-3-balanced",
                         header: "Latest research",
                         url: "#",
@@ -5819,6 +6078,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "0a522480-9f37-43e3-bbf2-c5398450a921",
                         class: "columns-3-balanced",
                         header: "Healthy Senior",
                         url: "#",
@@ -5855,6 +6115,7 @@ export const content = {
                 name: "Latest Facts",
                 articles: [
                     {
+                        id: "db2abfd6-b4d4-4237-850a-7f34de938739",
                         class: "columns-3-balanced",
                         header: "More Life, But Better",
                         image: {
@@ -5881,6 +6142,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8cfeff8c-94cb-4eca-b5e2-b4214b761705",
                         class: "columns-3-balanced",
                         header: "In case you missed it",
                         image: {
@@ -5898,6 +6160,7 @@ export const content = {
                             "Lectus proin nibh nisl condimentum id venenatis a condimentum vitae. Tincidunt praesent semper feugiat nibh sed pulvinar proin.\n\nQuis ipsum suspendisse ultrices gravida dictum fusce. Id donec ultrices tincidunt arcu non. Pellentesque habitant morbi tristique senectus et netus et malesuada fames.",
                     },
                     {
+                        id: "ae3f3c45-b7fe-4729-8374-f3ba8d11eeff",
                         class: "columns-3-balanced",
                         header: "Space and science",
                         image: {
@@ -5938,6 +6201,7 @@ export const content = {
                 name: "Medical Breakthroughs",
                 articles: [
                     {
+                        id: "2afaf4ee-4d1c-4f54-a970-bc8222cc3090",
                         class: "columns-3-wide",
                         header: "Surgical Inventions",
                         url: "#",
@@ -5960,6 +6224,7 @@ export const content = {
                             "Ut eu sem integer vitae justo eget. Ut aliquam purus sit amet luctus. Sit amet mauris commodo quis imperdiet massa tincidunt. Tellus rutrum tellus pellentesque eu tincidunt tortor aliquam nulla facilisi. Turpis nunc eget lorem dolor sed. Ultrices in iaculis nunc sed augue lacus. Quam elementum pulvinar etiam non. Urna cursus eget nunc scelerisque. Nisl purus in mollis nunc sed.",
                     },
                     {
+                        id: "7213a42c-c2eb-486a-bb2e-b59f6667fb4a",
                         class: "columns-3-narrow",
                         header: "Medicare",
                         url: "#",
@@ -5978,6 +6243,7 @@ export const content = {
                             "Lacus sed viverra tellus in hac habitasse. Sapien faucibus et molestie ac feugiat sed lectus. Pretium aenean pharetra magna ac. Volutpat odio facilisis mauris sit amet massa vitae tortor condimentum. Pellentesque massa placerat duis ultricies lacus sed turpis tincidunt id.\n\nParturient montes nascetur ridiculus mus mauris. Ultrices eros in cursus turpis. Bibendum at varius vel pharetra vel turpis. Luctus venenatis lectus magna fringilla urna porttitor rhoncus dolor.",
                     },
                     {
+                        id: "9323f56f-d3b3-4b86-bd4c-014392b62272",
                         class: "columns-3-narrow",
                         header: "Medication",
                         url: "#",
@@ -6002,6 +6268,7 @@ export const content = {
                 name: "Latest Videos",
                 articles: [
                     {
+                        id: "c1f811ca-284b-4e7b-9bfb-bb5a7c72211d",
                         class: "columns-1",
                         type: "grid",
                         content: [
@@ -6070,6 +6337,7 @@ export const content = {
                 name: "Educational",
                 articles: [
                     {
+                        id: "c2dc8f88-8a0a-4a3f-aadd-a5f83e291081",
                         class: "columns-1",
                         type: "grid",
                         display: "grid-wrap",
@@ -6163,6 +6431,7 @@ export const content = {
                 name: "Fitness",
                 articles: [
                     {
+                        id: "4e6716eb-0430-49b0-9d95-352333d760a0",
                         class: "columns-wrap",
                         header: "Burn your calories",
                         type: "excerpt",
@@ -6197,6 +6466,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "056698a8-0ac8-4342-9e67-25993d574866",
                         class: "columns-wrap",
                         header: "Gym favorites",
                         type: "excerpt",
@@ -6231,6 +6501,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "389c5495-b37c-423f-8950-a1845317e41c",
                         class: "columns-wrap",
                         header: "Pilates",
                         type: "excerpt",
@@ -6271,6 +6542,7 @@ export const content = {
                 name: "Guides",
                 articles: [
                     {
+                        id: "9a1282a2-e227-4d96-8f3e-99c580f2939a",
                         class: "columns-3-balanced",
                         header: "Health after 50",
                         type: "articles-list",
@@ -6293,6 +6565,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "7b268ec3-8ac2-42fc-ab0f-ac650d2493f1",
                         class: "columns-3-balanced",
                         header: "Healthy Heart",
                         type: "articles-list",
@@ -6315,6 +6588,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f3907983-9885-4211-8878-0f85750bbaa7",
                         class: "columns-3-balanced",
                         header: "Healthy Digestive",
                         type: "articles-list",
@@ -6343,6 +6617,7 @@ export const content = {
                 name: "Underscored",
                 articles: [
                     {
+                        id: "851b619c-0d4b-478a-8991-d39394660b96",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -6382,6 +6657,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "1080c9e5-4d40-4b28-9398-c03c9f94c74e",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -6427,6 +6703,7 @@ export const content = {
                 name: "What to eat",
                 articles: [
                     {
+                        id: "8ed51654-db6a-4826-bd1c-25213bc4200b",
                         class: "columns-wrap",
                         header: "Low carbs",
                         type: "excerpt",
@@ -6461,6 +6738,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "692a6213-1024-4d3e-8e6d-34aed2bb3616",
                         class: "columns-wrap",
                         header: "Vegetarian",
                         type: "excerpt",
@@ -6495,6 +6773,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f264a46c-4e7e-4c9f-bf04-d4ed1fa6639a",
                         class: "columns-wrap",
                         header: "Breakfast",
                         type: "excerpt",
@@ -6535,6 +6814,7 @@ export const content = {
                 name: "Hot Topics",
                 articles: [
                     {
+                        id: "dde55759-06c6-46bc-9f16-bed37ae3d77f",
                         class: "columns-2-balanced",
                         header: "This First",
                         type: "grid",
@@ -6574,6 +6854,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "17f26d05-24ef-4a12-80b0-611a43449aae",
                         class: "columns-2-balanced",
                         header: "This Second",
                         type: "grid",
@@ -6619,6 +6900,7 @@ export const content = {
                 name: "Paid Content",
                 articles: [
                     {
+                        id: "cbaac182-d046-43ee-b6d7-41a382e959ad",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -6634,6 +6916,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "ae883d3e-ef62-4f6e-ac2d-5555ca35f11a",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -6649,6 +6932,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "d8f20994-0098-4367-bc3a-131faa8f768d",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -6664,6 +6948,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "51f4b351-5916-4422-b661-61b65b911ee5",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [

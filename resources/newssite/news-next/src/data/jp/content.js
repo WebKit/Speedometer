@@ -26,6 +26,7 @@ export const content = {
                 name: "ニュース速報",
                 articles: [
                     {
+                        id: "8a6ed5ec-89f3-42ad-b948-189d36f278c9",
                         class: "columns-3-narrow",
                         header: "無修正",
                         url: "#",
@@ -44,6 +45,7 @@ export const content = {
                             "サッカーとしてサッカーのメンバーをお願いします。しかし、時間は都市と震えです。チリの非ポートティターの範囲。今の生活の要素ですが、屋外サッカーのメンバー。臨床矢印には注意が払われていません。\n\n最新のサラダのエコロジーサッカー開発者プロパガンダは時々望んでいます。今、ターゲットに、私の喉の寿命バナナまたは。さて、私の非常に喉の人生のバナナ。は、補給の学部開発者栄養を強化しました。開発者の著者である整数。開発者の著者ですが、Vulputateは私の愛する人です。病気のようなサラダ生態学の漫画モーリス。必須の滅菌ポットランニングは、今すぐチョコレートが必要です。",
                     },
                     {
+                        id: "d204d10c-879e-4991-802c-25020077e0de",
                         class: "columns-3-wide",
                         header: "より多くのトップストーリー",
                         url: "#",
@@ -66,6 +68,7 @@ export const content = {
                             "プッシュは、時々セットアップされるマッサージジョーのパッチにすぎません。チャンピオンシップは、さまざまなものや震え、またはチケットで飲みます。並んでいる賢い病気や笑顔の弧が必要です。臨床プロテインバスケットボールでの憎しみ。\n\n人生の人生のチャンピオンですが、今では彼はサッカーのメンバーを望んでいます。ストレスバスケットボールの妊娠は、臨床に投資するための臨床的です。明日からのブラビダまたはバレーは常にauctorです。サッカーの抗酸化物質ですが、サッカーは利便性を嫌います.",
                     },
                     {
+                        id: "e02d07e1-32e3-4ad1-b57c-b945f89d12d3",
                         class: "columns-3-narrow",
                         header: "犯罪と正義",
                         url: "#",
@@ -90,20 +93,24 @@ export const content = {
                 name: "最新ニュース",
                 articles: [
                     {
+                        id: "7af9e63d-d803-477b-ba8f-539f5d7ed1fe",
                         class: "columns-3-balanced",
                         header: "今起こってる",
                         type: "articles-list",
                         content: [
                             {
+                                id: "45114281-a2ad-4ed8-bb47-80526e802eb1",
                                 title: "ロレム非常にニンジン.",
                                 content:
                                     "従業員は今では座りません。しかし、サッカーのプール、しかし湖であるが漫画が入っている場合。これが喉の主な唐辛子です。しかし、恐怖を起こしているポットの著者。現在ののふもとにある。サッカーは悲しい老人とネトゥスとマレスアダの飢er。",
                             },
                             {
+                                id: "ee8b2a9f-a08b-495e-a4ba-21b3b42bf07d",
                                 title: "強化された監視手順.",
                                 content: "いくつかの唐辛子を手に入れるための主流の補給学部開発者。選択されたレシピプレーヤーまたは価格。トマト唐辛子が喉のバレーボール要素に綴られた矢印。マレスアダの一部の矢はアルコールを飲むこともありません。",
                             },
                             {
+                                id: "4a9d6914-983d-48ab-a7ed-d7ed1d877a6b",
                                 title: "しかし、私は事件の時にイニコッドでやっています.",
                                 content:
                                     "プルまたはラリートマッサージは、無料のIDスロートプレーヤーを強化することがあります。飲み物は、ですが、Miを履行する超整形整数です。明日サッカーアークドゥイライブアルコールフットボール。機能的な現在、ロボルティスの喉がたくさんあります。開発者の資金調達は、妊娠する必要があります。",
@@ -111,6 +118,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "cb7942ac-5ac8-40d1-90fd-7853a0a10d16",
                         class: "columns-3-balanced",
                         header: "注目に値します",
                         image: {
@@ -126,20 +134,25 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "b5f94d51-7e7c-4e1f-b55d-e99ba9e2398d",
                                 content: "私はジャスミンが嫌いなサッカーが嫌いですが、学部の直径まで。",
                             },
                             {
+                                id: "6ce7f58f-429c-4835-a7fc-8f8bd1f3a12e",
                                 content: "レシピは常に無料で引っ張ってください。著者の温度のためにバナナはありません。",
                             },
                             {
+                                id: "021f9b0b-1666-4d15-a32b-42a464475cc0",
                                 content: "たとえば、サッカーのugいの喉。たくさんの楽しみがない限り、何もありません",
                             },
                             {
+                                id: "bf40e93f-eea6-4f0a-8ad5-1e25cd3b69ab",
                                 content: "人生は栄養や一部のサラダよりも時です。臨床フットボールカートンエレメント楽しいテレビでさえも.",
                             },
                         ],
                     },
                     {
+                        id: "cd53f511-0251-4fb0-ae85-9ad228551dd6",
                         class: "columns-3-balanced",
                         header: "世界中に",
                         image: {
@@ -155,15 +168,19 @@ export const content = {
                         type: "list",
                         content: [
                             {
+                                id: "7e405fe8-7abd-43b7-bbca-2ea2e7b0ac76",
                                 content: "ニブ・モーリスレーサーマティスの従業員。さまざまな震えまたはターピスがロアムの痛みが必要になりました。",
                             },
                             {
+                                id: "b9dad22b-d7b9-4ca2-9585-c8762a15de9c",
                                 content: "をキャンセルします。それはマクロ価格を取得してください。アースペレンテスクのサッカー開発者はゼロを温める.",
                             },
                             {
+                                id: "b87bd7d4-03b1-4107-accc-de86415f1de0",
                                 content: "週末の座りの週末にはしばらくしてください。",
                             },
                             {
+                                id: "6c8c8717-7069-4f37-865a-e69c8c01a6ba",
                                 content: "サッカーのジョーのトラブルシューティング。このコースでは、は栄養開発者です。",
                             },
                         ],
@@ -175,10 +192,12 @@ export const content = {
                 name: "最新のメディア",
                 articles: [
                     {
+                        id: "b419e5f0-1707-4c0e-85b3-48f26a70f91b",
                         class: "columns-1",
                         type: "grid",
                         content: [
                             {
+                                id: "a2ef309b-d8af-4621-9a33-883269394a96",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -193,6 +212,7 @@ export const content = {
                                 },
                             },
                             {
+                                id: "fb3262b1-6618-4d3d-998b-6072104beefa",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -207,6 +227,7 @@ export const content = {
                                 },
                             },
                             {
+                                id: "ed0edcac-b8f1-43d4-a0a3-fdee2812122e",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -221,6 +242,7 @@ export const content = {
                                 },
                             },
                             {
+                                id: "0b55ff73-13ca-43ae-9980-d02d01abd921",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -243,11 +265,13 @@ export const content = {
                 name: "ハイライト",
                 articles: [
                     {
+                        id: "1519cdfe-bb32-4f0a-aad1-2f4bb87096a4",
                         class: "columns-wrap",
                         header: "国内のハイライト",
                         type: "excerpt",
                         content: [
                             {
+                                id: "ff2abe6a-3418-473e-80c1-b262188e5554",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -257,6 +281,7 @@ export const content = {
                                 text: "ニスルまたはライオンではなくベッドの価格。アルコールを就寝するプロパガンダ。メキシコの妊娠中の男性を縁します。臨床チリのバスケットボールの矢は常に宿題が必要です。現在のタンクは、多くの妊娠中の男性にとって重要です。ドライバーもあまりいません。妊娠は、投資または臨床栄養の臨床的です。コンビニエンスゼロ。アークランニングパフォーマンスのバニーの直径。",
                             },
                             {
+                                id: "7ea12782-cf94-459d-b7ec-3be5d43175cf",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -266,6 +291,7 @@ export const content = {
                                 text: "喉のカートンチョコレートウォームアップの場合。人生は常に週末に選ばれた人です。チョコレートフットボールバスケットボールのキャリア著者を除いて選手で。",
                             },
                             {
+                                id: "0af1cd6a-a044-43b4-8ec8-26b71a0a9ca4",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -277,11 +303,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "0b9b6f8c-0dde-4c2f-82dd-b777fa84881d",
                         class: "columns-wrap",
                         header: "グローバルハイライト",
                         type: "excerpt",
                         content: [
                             {
+                                id: "c69ff80d-44cf-463a-b3db-bc2f22e8993c",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -291,6 +319,7 @@ export const content = {
                                 text: "プロパガンダは、メインでさまざまな宿題をする必要があります。DUIのアルコールに弓をすごい、飲み物を引き起こします。ほとんどの場合、顧客のニンジンが必要です。は現在バレーボールサピエンであり、の履歴書を予約しました。",
                             },
                             {
+                                id: "24cfa9e5-9a6c-4e00-980a-05a5d583e718",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -300,6 +329,7 @@ export const content = {
                                 text: "ベッドのナムプッシュホームワークバレーテルスID。醜いバニーですが、時間はです。チョコレートチョコレートチョコレートチョコレートファイナンスライオン。マクロID調査が選択されました。各矢印の唐辛子の通りを少しずつ循環します。ライフサスシピットテラスモーリスは直径です。",
                             },
                             {
+                                id: "3bf00e72-8821-446d-8096-1d5d3ea5c8c9",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -311,11 +341,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8eed7659-370e-4a45-8977-b21eb88ab793",
                         class: "columns-wrap",
                         header: "ローカルハイライト",
                         type: "excerpt",
                         content: [
                             {
+                                id: "72522d42-30bf-42f0-ba21-5dbc080dfab1",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -325,6 +357,7 @@ export const content = {
                                 text: "今は無料の週末に座ってください。笑い、サッカーの必要はありません。開発者プロパガンダタンパク質のパフォーマンス。週末には、恐怖の紫色で滅菌された領域としての直径があります。来たのはバニーに投資するために重要です。モーリスランニングの前でサッカーマッサージ。",
                             },
                             {
+                                id: "bab8b49c-4e37-4cf8-8c52-714cb53daf5d",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -334,6 +367,7 @@ export const content = {
                                 text: "しかし醜い。明日、しかし、サッカーはメインチリである屋外バナナの矢を必要としています。明日、しかしサッカーにはゲームが必要です。必須のミネアポリスの学部開発者栄養。笑い声を上げる学部生。しかし、笑顔は温度のためにバナナを悲しみません。バスケットボール開発者はメンバーではなく、。",
                             },
                             {
+                                id: "eb3516e6-ad00-4d39-822c-acc4eab9befa",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -351,11 +385,13 @@ export const content = {
                 name: "トップストーリー",
                 articles: [
                     {
+                        id: "4e01d65b-b4f0-4b43-8d28-2fb8f918071c",
                         class: "columns-1",
                         type: "grid",
                         display: "grid-wrap",
                         content: [
                             {
+                                id: "2923bc4a-fceb-45e7-bf92-f9e8f9d826ec",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -372,6 +408,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "9268157a-12cb-442f-9401-0d88d1846662",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -388,6 +425,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "5113935d-4ed6-4897-a49a-d730de47a973",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -404,6 +442,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "8dbd8d34-edb4-4583-9468-0009d55745c9",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -420,6 +459,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "ec4d93f4-83f7-4427-81fc-b6420d590718",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -444,62 +484,74 @@ export const content = {
                 name: "国際的",
                 articles: [
                     {
+                        id: "c5deda28-5da7-4641-80dd-e9859088c95d",
                         class: "columns-3-balanced",
                         header: "ヨーロッパ",
                         type: "articles-list",
                         content: [
                             {
+                                id: "6a93436c-6c5b-44a7-938e-ebb1f2ee3c15",
                                 title: "レイヤーのニンジンに融資している開発者をお願いします。ストリートディクタムの製造範囲の種類。",
                                 content:
                                     "Orciとプロパガンダまたは妊娠の著者。キュラビトゥールは大規模な一時停止ですが、鍋の大きな生態学的な痛みではありません。アルコールの弓の矢印。栄養居住者のサッカー悲しい老人とネタス。また、声明にチョコレートを持っているか、強化された.",
                             },
                             {
+                                id: "283ea033-d01a-48a9-b584-635b0b3c8c30",
                                 title: "ストレスバレーは、引き金と不動産になります。明日の喉のバスケットボールソース。",
                                 content:
                                     "またはEcological。醜い開発者ID調査は、恐怖の前でEUを笑顔にします。Viverra自体は現在、抗酸化物質のためにバナナを飲みます。非常に素晴らしいバスケットボールの妊娠しているタムと執行。晴れた老人とマレスアダの飢えと醜いニーズ。",
                             },
                             {
+                                id: "5670b9e0-4b99-48d5-8b31-525ae350de32",
                                 title: "しかし、サッカーのプール、しかし湖であるが漫画が入っている場合。",
                                 content: "DUIライブアルコールトリガードリンク。パキスタン全体または週末のバレーボール要素の喉から。サッカーのプロパガンダの著者は、アルコール飲料を寝かせます。ダイアムウィークエンドの利便性ですが、執行執行生態学的.",
                             },
                         ],
                     },
                     {
+                        id: "387033b0-e832-48b3-a3fe-f104075cf93a",
                         class: "columns-3-balanced",
                         header: "南アメリカ",
                         type: "articles-list",
                         content: [
                             {
+                                id: "ace185f1-1e8a-4db5-9266-95412f7b06ff",
                                 title: "プロパガンダの必要性は、さまざまな宿題です。",
                                 content: "プールを耐えてくださいが、パッチではありません。マクロチリテイストフットボール。それは時々、バスケットボールのかしいアルコールの願いです。",
                             },
                             {
+                                id: "3a4170ea-bd6f-4de9-94e9-7f487d68e1eb",
                                 title: "サッカー開発者としての生態学的なプロパガンダタンパク質の子供たち。",
                                 content:
                                     "ライオンの病気を設定する醜い執行子供の直径の週末の利便性が嫌いです。痛みの質量は、プレイヤーの唐辛子漫画層を執行する必要があります。今のところ、チョコレートチョコレートバリエッドサッカーの伯爵。声明の屋外チョコレートまたは強化されたものでした。",
                             },
                             {
+                                id: "b5b51051-9b1c-496b-8390-432802b4e1e7",
                                 title: "はそれぞれを飲むか欲しいです。",
                                 content: "Sapienには電子レンジが必要ですが、無料です。重要な開発者の宿題。支払われたサッカーサーマル電話。マクロジャスミンと温度ですが、笑顔。",
                             },
                         ],
                     },
                     {
+                        id: "06fa8c40-6678-483b-bbb5-a8f73822d1e1",
                         class: "columns-3-balanced",
                         header: "アジア",
                         type: "articles-list",
                         content: [
                             {
+                                id: "3654e18a-e633-4774-899a-7517b2ff28c7",
                                 title: "メンバーはあなたのプレイヤーチリでもあります。たとえば、サッカーの醜い人の喉、私の飲み物、そして",
                                 content:
                                     "DUI層のニンジンの資金調達において、ファシリシ病はありません。ロボルティスEUはプロパガンダに住んでいます。このコースでは、上記の製造範囲の通り。しかし、地球、ウルナソースの不動産ニブ温度で。ニブの前でのサッカーマッサージが始まります。",
                             },
                             {
+                                id: "3461de32-20f7-4787-b31c-4c1b08b9e02b",
                                 title: "デートライオンポットを設定するためのハレトラバレー。",
                                 content:
                                     "ランニングパフォーマンスメールの。そして、醜い執行整数はバナナ・ニーブ・プレゼントが悲しい偉大なものを必要としています。要素フットボールの抗酸化物質での痴漢ですが、病気が嫌いです。さまざまなアルコールドリンクでのチャンピオンシップ。醜い大量開発者を実行するピーナッツ。",
                             },
                             {
+                                id: "3fe9e8db-160b-4a2d-b586-33cce8f4c3fa",
                                 title: "さまざまなまたは震えまたはターピスでは、ロアムの痛みが必要になりました.",
                                 content:
                                     "ビューロースマートビッグケミカルロレム。サッカー明日開発者カートンEU。ライフマクロソースラシニアまたはエロスが嫌いになるまで。ニブの前でサッカーマッサージ。また、屋外チョコレートが強化されていませんでした。大量のヒントまでメインロレムで。しかし、カブトムシのニンジン。",
@@ -513,6 +565,7 @@ export const content = {
                 name: "特徴",
                 articles: [
                     {
+                        id: "f0704a5e-cf35-4c2b-afc1-c07325577554",
                         class: "columns-3-balanced",
                         header: "ワシントン",
                         image: {
@@ -529,32 +582,39 @@ export const content = {
                         display: "bullets",
                         content: [
                             {
+                                id: "e82d88ff-6406-4f82-8d8a-3c0939cda3ba",
                                 content: "正面にサッカーマッサージを添加します。",
                                 url: "#",
                             },
                             {
+                                id: "0dc64ba7-dc5b-4cb4-b729-fbee531ae382",
                                 content: "この十分の道路で醜い走りを設定します。",
                                 url: "#",
                             },
                             {
+                                id: "8a54f7e2-3aec-4e91-a029-9b9fe2a9bf07",
                                 content: "は、妊娠したアークとマクロサッカーバレーのチャットではありません。",
                                 url: "#",
                             },
                             {
+                                id: "337cf7d7-0cbf-4a6f-ba8d-f5ab56f542af",
                                 content: "チリは今ソフトですが、それはいつも笑顔です。 ",
                                 url: "#",
                             },
                             {
+                                id: "b93dfad8-0ad4-4825-bdf2-b9a6c77ed21a",
                                 content: "タンクの入り口をセットアップする方法.",
                                 url: "#",
                             },
                             {
+                                id: "28b3b72d-55c5-4f42-b51b-c6c5fffc506d",
                                 content: "バナナの航空会社のストレスがないため、たくさんの紫色がたくさんあります。",
                                 url: "#",
                             },
                         ],
                     },
                     {
+                        id: "9f57970b-05f9-45c2-9e3c-ab0f66ce47f3",
                         class: "columns-3-balanced",
                         header: "ニューヨーク",
                         image: {
@@ -571,32 +631,39 @@ export const content = {
                         display: "bullets",
                         content: [
                             {
+                                id: "36576fce-6f70-4b2f-b635-d586a51b3a9b",
                                 content: "それは常に局の妊娠中の化粧の笑顔です。誰もがそうではありません。",
                                 url: "#",
                             },
                             {
+                                id: "efd66d67-6a81-46be-b682-6dfa7b5895df",
                                 content: "法執行機関に投資することは、資金調達でしたが、パフォーマンスでした。",
                                 url: "#",
                             },
                             {
+                                id: "1390fee3-5d9b-468c-8d95-9c04943a3561",
                                 content: "一部のは今、アルコールライフエレメントチャットライフを飲んでいます。",
                                 url: "#",
                             },
                             {
+                                id: "a2f63129-54de-4003-8070-42dbba2c1bfd",
                                 content: "gそして彼のパートナーを妊娠しています。タンクとバニーとして飲む。",
                                 url: "#",
                             },
                             {
+                                id: "9eec6eb8-c67e-4b57-8e7e-fe4a71dbae2b",
                                 content: "はマティステレビをターゲットにしています。",
                                 url: "#",
                             },
                             {
+                                id: "677e1086-aef8-4561-8ecb-af75a7c82f6f",
                                 content: "多くのライフマクロソーススカート。",
                                 url: "#",
                             },
                         ],
                     },
                     {
+                        id: "bda30bf1-8032-4bfa-b17d-07571a7251f7",
                         class: "columns-3-balanced",
                         header: "天使たち",
                         image: {
@@ -613,26 +680,32 @@ export const content = {
                         display: "bullets",
                         content: [
                             {
+                                id: "51427dca-f312-4cc7-b7b2-719bf4c5cd8a",
                                 content: "マティスは、要素の矢印をからかうことです。",
                                 url: "#",
                             },
                             {
+                                id: "6f3ae21d-312b-4065-8af1-04719f6d3160",
                                 content: "ニンジンの滅菌ポットランニングは、チョコレート漫画のモーリスになりました。",
                                 url: "#",
                             },
                             {
+                                id: "352dec10-0863-4244-a60b-002e40022c94",
                                 content: "Miは、それぞれの貧困を飲むか、パスポートを執行します。",
                                 url: "#",
                             },
                             {
+                                id: "e31c2cc9-5f99-4a01-84cf-587dcf47be7e",
                                 content: "今、チョコレート漫画モーリス。",
                                 url: "#",
                             },
                             {
+                                id: "9c041d54-ea0b-4a63-877b-a793f1b84297",
                                 content: "資金調達ですが、パフォーマンスが必要ですが、ゲートウェイロアムは柔らかくなります。",
                                 url: "#",
                             },
                             {
+                                id: "a31a24a9-708a-4227-9038-bd14a0a7c7b1",
                                 content: "整数または週末のバレーボール要素の喉に.",
                                 url: "#",
                             },
@@ -645,11 +718,13 @@ export const content = {
                 name: "強調されています",
                 articles: [
                     {
+                        id: "affd2923-97de-4410-9258-bce3e4a19b87",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
                         content: [
                             {
+                                id: "92946ccb-022d-4319-be94-49e476c31077",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -666,6 +741,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "419ea32d-d12e-4c2b-9a14-fee91ba7ee7f",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -684,11 +760,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a196957d-d9fa-400a-a94c-dca3f6815700",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
                         content: [
                             {
+                                id: "4e31cef9-8787-437c-ae06-9e5654f540d9",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -705,6 +783,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "292cc517-c2d8-4941-acf3-bfe9a33cea58",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -729,11 +808,13 @@ export const content = {
                 name: "今起こってる",
                 articles: [
                     {
+                        id: "f07e6f59-5962-4410-b1a1-493770fa85c6",
                         class: "columns-wrap",
                         header: "政治的",
                         type: "excerpt",
                         content: [
                             {
+                                id: "501331da-4f36-4a63-8e37-78fbc84d7485",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -743,6 +824,7 @@ export const content = {
                                 text: "明日は常に子供の頃の著者または生涯です。あなたがあなたの子供を憎むまでレシピとトリガー。私があなたの子供の直径の週末を嫌うまで、サッカーの写真とサッカー。地域のモーリスに直径を伝える可能性がありますが、の場合。",
                             },
                             {
+                                id: "72c9a293-beba-4604-8a5b-ae6ec5dbdcf0",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -752,6 +834,7 @@ export const content = {
                                 text: "しかし、サッカー、私の飲み物、そしてugいの喉はそうです。ソース栄養の居住者であるソースが病気の栄養供給の居住者であるソース。ターゲットを絞ったが、プロパガンダ車が引っ張っている。一部のサラダや。アース・モーリスは直径のメーセナスですが。",
                             },
                             {
+                                id: "505495bc-4141-4277-aba5-08cecdb0f52c",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -763,11 +846,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "3c3b206d-1b03-4fcc-9469-25b2caa64622",
                         class: "columns-wrap",
                         header: "健康",
                         type: "excerpt",
                         content: [
                             {
+                                id: "ce276359-8308-4af0-8d6f-c9141503f972",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -777,6 +862,7 @@ export const content = {
                                 text: "ライフマクロソーススカートメール。NISLしかし、チョコレートフットボールバスケットボールライフ。それは、多くのサラダの漫画マッサージのマクロ価格を確保してください。チョコレートフットボールのバスケットボールライフを除く選手の漫画層。",
                             },
                             {
+                                id: "e3a10fed-2a09-4821-aad0-b8af9f906769",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -786,6 +872,7 @@ export const content = {
                                 text: "マイクロ波無料レシピ。資金調達ですが、パフォーマンスはドアだけです。人生のコースのチャンピオンシップ、ジャスミンの最大の範囲。今のところ、子供たちからの喉。ウォームアップとケアと臨床の専門家で妊娠しています。",
                             },
                             {
+                                id: "3676e79b-88d4-454c-ae72-32e3f38b869f",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -797,11 +884,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "19a7a320-69b7-4ac6-b2b1-17206ccc8e67",
                         class: "columns-wrap",
                         header: "仕事",
                         type: "excerpt",
                         content: [
                             {
+                                id: "8431d24b-4967-4434-b165-18af09cbfe81",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -811,6 +900,7 @@ export const content = {
                                 text: "整数は週末ではありません。しかし、選択された製造ロット。マイクロ波無料撮影写真は、時々異質なニンジンになります。マティステレビ栄養をターゲットにした。重要な開発者宿題タンクダイビング.",
                             },
                             {
+                                id: "50fa2776-bff8-42c7-a0ea-883cf40e66cf",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -820,6 +910,7 @@ export const content = {
                                 text: "サッカーサラダなどのサッカーメンバー。はマティステレビをターゲットにしています。栄養として、またはサラダと温度の時間。この直径またはバレーボールの要素も同様ではありません。",
                             },
                             {
+                                id: "f9099723-cd63-4158-906e-d9bf33904156",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -837,11 +928,13 @@ export const content = {
                 name: "ホットな話題",
                 articles: [
                     {
+                        id: "514e6188-22a4-4d01-ac19-342df74680e7",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
                         content: [
                             {
+                                id: "79d06fe0-30a7-41b8-b318-1aca53454296",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -858,6 +951,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "6c9f3533-ab33-4099-a38c-f2841d7ca278",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -876,11 +970,13 @@ export const content = {
                         ],
                     },
                     {
+                        id: "df35d241-7b4e-41af-b4a8-aa5ac86a2625",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
                         content: [
                             {
+                                id: "16d97cdf-e13a-4470-8d7b-70ef8a0d6542",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -897,6 +993,7 @@ export const content = {
                                 url: "#",
                             },
                             {
+                                id: "26c3b788-742a-4b7a-824e-91db371e5083",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -921,10 +1018,12 @@ export const content = {
                 name: "有料コンテンツ",
                 articles: [
                     {
+                        id: "694bbfce-f1c9-4e10-95bc-a89023d5e1ea",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
                             {
+                                id: "39a82f01-b2fc-4740-a5ca-f1ada041100a",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -934,6 +1033,7 @@ export const content = {
                                 title: "今、バナナは妊娠抗酸化物質のために飲みます。酵母のFeugiatは鍋に置かれませんでした。要素フットボールの抗酸化物質での痴漢ですが、病気が嫌いです。チョコレートチリは常にパッケージで宿題が必要です。",
                             },
                             {
+                                id: "8a50960e-fbde-4705-bc6a-76865f78ec50",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -945,10 +1045,12 @@ export const content = {
                         ],
                     },
                     {
+                        id: "6e110ab5-5d43-411b-a64e-3dae38960a60",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
                             {
+                                id: "9728082f-7e27-4366-8bf4-dbd74f13daf8",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -958,6 +1060,7 @@ export const content = {
                                 title: "マッサージジョーのパッチよりも。はまだプールです。明日の谷は常に著者または人生の時代です。震えるには、いくつかのID径がたくさんあります。",
                             },
                             {
+                                id: "216eaa21-8a0f-4baf-8dc3-103391d77002",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -969,10 +1072,12 @@ export const content = {
                         ],
                     },
                     {
+                        id: "e72adfa5-f82e-42b3-a0c6-c43f0c3f9393",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
                             {
+                                id: "848a8767-90da-4ff1-a2b1-293def11434f",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -982,6 +1087,7 @@ export const content = {
                                 title: "オルシ地域とプロパガンダ・モーリス・アウグーの著者も妊娠していません。自体は、アルコールコースからのものではありません。航空会社の大量IDやサッカーの一部がいかない方法。カートンチョコレートである人。",
                             },
                             {
+                                id: "f9c3995e-c12d-47ef-89e6-efb535d7678a",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -993,10 +1099,12 @@ export const content = {
                         ],
                     },
                     {
+                        id: "96bc6b53-c533-4970-adb7-8dae30da76cc",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
                             {
+                                id: "15d8615d-52c0-4aa5-a0d0-2eb20c6c0675",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -1006,6 +1114,7 @@ export const content = {
                                 title: "警察はマティスの臨床または開発者でした。谷の端にある恐怖の利便性。サラダ製造の場合、酵母、私または範囲質量。",
                             },
                             {
+                                id: "75a08ef8-8177-4047-bb40-3448c0169cd9",
                                 image: {
                                     src: "placeholder_light.jpg",
                                     alt: "プレースホルダー",
@@ -1034,6 +1143,7 @@ export const content = {
                 name: "世界のニュース",
                 articles: [
                     {
+                        id: "31b24534-29f6-469f-8ce3-ff774997ef8a",
                         class: "columns-3-wide",
                         header: "今日起こっています",
                         url: "#",
@@ -1056,6 +1166,7 @@ export const content = {
                             "フットボールポットIDキャリー。さまざまな栄養開発者。メインロレムでさまざまな宿題をするまで。しかし、ウルナソース不動産栄養の地球。ミネアポリス・ロレムは大規模なサピエンの喉と従業員まで。私の時間のバスケットボールでの笑い。",
                     },
                     {
+                        id: "06f7b876-6120-4273-8850-f60f817940f0",
                         class: "columns-3-narrow",
                         header: "トレンド",
                         url: "#",
@@ -1074,6 +1185,7 @@ export const content = {
                             "それは、バスケットボールで笑いを走らせる特定の製造サッカーではありません。チャンピオンシップDUIライブアルコールトリガードリンクはタンクとして飲みます。直径牛肉まで.\n\nデッキを卒業するための大量開発者. ソースマティス栄養IDニブ温度。 資金調達層のデュオ開発者は、なし。しかし、要素サッカーの抗酸化物質は誰の病気を嫌いますか。",
                     },
                     {
+                        id: "e9f3877f-a2a6-41fb-898b-9acb0fdedc19",
                         class: "columns-3-narrow",
                         header: "天気",
                         url: "#",
@@ -1107,6 +1219,7 @@ export const content = {
                 name: "全国の周り",
                 articles: [
                     {
+                        id: "4e19c383-aff6-45de-b874-008c58a9667f",
                         class: "columns-3-balanced",
                         header: "最新",
                         image: {
@@ -1136,6 +1249,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "53c3567d-6073-41e8-87ca-f76a282c38f9",
                         class: "columns-3-balanced",
                         header: "仕事",
                         image: {
@@ -1162,6 +1276,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "79344d21-3a1f-4531-87b7-971d0a01e959",
                         class: "columns-3-balanced",
                         header: "政治",
                         image: {
@@ -1197,6 +1312,7 @@ export const content = {
                 name: "切り上げする",
                 articles: [
                     {
+                        id: "660d5f2a-0977-423b-a585-dbd0f58695e4",
                         class: "columns-wrap",
                         header: "ワシントン",
                         type: "excerpt",
@@ -1231,6 +1347,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "c88e0e0d-e323-4d4e-a0fb-b72c3fda9df8",
                         class: "columns-wrap",
                         header: "東海岸",
                         type: "excerpt",
@@ -1265,6 +1382,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a2267128-dd86-4a98-8903-0a887d49104e",
                         class: "columns-wrap",
                         header: "西海岸",
                         type: "excerpt",
@@ -1305,6 +1423,7 @@ export const content = {
                 name: "犯罪と正義",
                 articles: [
                     {
+                        id: "bc92acd8-0cbb-42e6-88dc-7589e92eb218",
                         class: "columns-3-balanced",
                         header: "最高裁判所",
                         type: "articles-list",
@@ -1326,6 +1445,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "190711e5-6bc8-4b26-920a-b6edd74a0847",
                         class: "columns-3-balanced",
                         header: "地方法",
                         type: "articles-list",
@@ -1347,6 +1467,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "0233b0b6-69f1-4c51-81cd-b849e435f2c1",
                         class: "columns-3-balanced",
                         header: "意見",
                         type: "articles-list",
@@ -1374,6 +1495,7 @@ export const content = {
                 name: "米国周辺",
                 articles: [
                     {
+                        id: "90e08554-f9b4-4606-8e36-55de40b39f9f",
                         class: "columns-3-balanced",
                         header: "最新",
                         image: {
@@ -1403,6 +1525,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "9c6014cf-a577-4611-a2ce-97f2b4afc322",
                         class: "columns-3-balanced",
                         header: "仕事",
                         image: {
@@ -1429,6 +1552,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "48cabfe4-6408-488f-b942-8d59d35163f7",
                         class: "columns-3-balanced",
                         header: "政治",
                         image: {
@@ -1464,6 +1588,7 @@ export const content = {
                 name: "最新のメディア",
                 articles: [
                     {
+                        id: "92371ddb-b2cf-43e2-8590-bda1440c7025",
                         class: "columns-1",
                         type: "grid",
                         content: [
@@ -1532,6 +1657,7 @@ export const content = {
                 name: "仕事",
                 articles: [
                     {
+                        id: "8e2a8c79-f1dc-4e6c-8542-04684ae08bce",
                         class: "columns-3-balanced",
                         header: "地元",
                         type: "articles-list",
@@ -1554,6 +1680,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "5acb5684-4b99-44ff-9668-2e5daec9133c",
                         class: "columns-3-balanced",
                         header: "グローバル",
                         type: "articles-list",
@@ -1575,6 +1702,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "fd9fce73-e286-450f-8fcf-7b988b968f3b",
                         class: "columns-3-balanced",
                         header: "四半期",
                         type: "articles-list",
@@ -1603,6 +1731,7 @@ export const content = {
                 name: "強調されています",
                 articles: [
                     {
+                        id: "f7640582-e9b6-4d47-b396-95515aa0a840",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -1642,6 +1771,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "3f4c33ce-8628-46d1-b416-37b0fc218c74",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -1687,6 +1817,7 @@ export const content = {
                 name: "州ごと",
                 articles: [
                     {
+                        id: "88c59d52-03e2-47cc-82a0-f0d9df4a88db",
                         class: "columns-wrap",
                         header: "カリフォルニア",
                         type: "excerpt",
@@ -1721,6 +1852,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f28c0060-72db-4588-8b38-9f1b2a01a3ac",
                         class: "columns-wrap",
                         header: "ニューヨーク",
                         type: "excerpt",
@@ -1755,6 +1887,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "bc567ef4-d017-4679-8d7b-c822dd49a3dc",
                         class: "columns-wrap",
                         header: "ワシントン",
                         type: "excerpt",
@@ -1795,6 +1928,7 @@ export const content = {
                 name: "ホットな話題",
                 articles: [
                     {
+                        id: "4a2d747f-a853-4452-82bf-504b5f79a7fe",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -1834,6 +1968,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "c897ed90-26b7-4f9d-9c2c-7eb37270a317",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -1879,6 +2014,7 @@ export const content = {
                 name: "有料コンテンツ",
                 articles: [
                     {
+                        id: "3acc4e4e-2720-4d9a-aa3e-ec820f6b4f00",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -1894,6 +2030,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "ca777be8-b675-4dc0-817f-972a72129394",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -1909,6 +2046,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "cb0c2767-4955-4cc6-ae13-5c44a958b36f",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -1924,6 +2062,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "efe39446-2154-4279-9d1d-66d27db034ac",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -1952,6 +2091,7 @@ export const content = {
                 name: "グローバルな傾向",
                 articles: [
                     {
+                        id: "4da73fa5-c64a-43d8-873f-af7024fbae8c",
                         class: "columns-3-balanced",
                         header: "アフリカ",
                         url: "#",
@@ -1970,6 +2110,7 @@ export const content = {
                             "が走っている前のストレス。光線と壮大なモンテを引っ張るとき. スマートチリの素晴らしいエコロジカルポット航空会社の範囲は存在しません。栄養ニンジン革新的な化学サッカーのデートまたはアルコールの笑顔。メインではさまざまな宿題でした。革新的なライオンには、サッカー選手が直径のケアタイムに\n\nしかし、栄養学部の利便性。SEMおよびマクロ写真IDゲートニブ。時間が欲しいのですが、笑い。サッカー開発者のプロパガンダは、時々ウィッシュパフォーマンスです。バレーボール要素を味わうチリ。残念ながら、臨床タンパク質への時間が嫌いです。今、不動産は、生命の矢の地域要素とです。",
                     },
                     {
+                        id: "44d8807b-f06e-480f-8410-c5573127b527",
                         class: "columns-3-balanced",
                         header: "中国",
                         url: "#",
@@ -1988,6 +2129,7 @@ export const content = {
                             "今ポットの著者、それは一部の恐怖のコースです。必須の利便性facilisiリレーなし。No duiのためにミサを設定して、そのための不動産になります。そして、マレスアダの飢えと醜い。栄養居住者サッカー悲しいオールドとネタスとマレスアダ。サッカーの悲しい老人とネトゥスとマレスアダ飢erのドレッシング。\n\n 子供たちがニンジンの革新的な化学サッカーからの喉。たとえば、サッカーの醜い人の喉、私の飲み物、そしてアースペレンテスクのサッカーのかしいマクロ明日は発展していません。",
                     },
                     {
+                        id: "56478e74-f501-45a5-b9db-5a41b049f32b",
                         class: "columns-3-balanced",
                         header: "ロシア",
                         url: "#",
@@ -2024,6 +2166,7 @@ export const content = {
                 name: "世界中で",
                 articles: [
                     {
+                        id: "22156cfb-5b44-4c70-adcc-8c560bb88bba",
                         class: "columns-3-balanced",
                         header: "ヨーロッパ",
                         image: {
@@ -2041,6 +2184,7 @@ export const content = {
                             "必須は、ニンジン療法がそうなるまで言った。必須の利便性移民車両アルコール。バレーボールの要素以上のものもそうではありません。今、プロパガンダ車はヴィタエローンをプルしていますージが時々マッサージされます。はマティステレビをターゲットにしています。\n\nしかし、笑顔ですが、それはそのままで履行性の憎しみです。しかし選択された製造業はたくさんの願いを捧げます。モーリス・モーリスのテレビがあります。",
                     },
                     {
+                        id: "0e6692ed-3268-4442-a52d-16c37c16c5e2",
                         class: "columns-3-balanced",
                         header: "中東",
                         image: {
@@ -2058,6 +2202,7 @@ export const content = {
                             "ストレスの強化された無料の喉のプレーヤー開発者は。モーリスレンジジャスミンまたは開発者サーマルマウリスを実行しているローン。ニブの前でサッカーマッサージをどのように掲載するか。\n\n簡単なライオンまたは生態学的なullamCorper。栄養または一部のサラダよりも。",
                     },
                     {
+                        id: "c9cd0674-b0de-4f53-9015-a97b57cf91d6",
                         class: "columns-3-balanced",
                         header: "アジア",
                         image: {
@@ -2093,6 +2238,7 @@ export const content = {
                 name: "最新のメディア",
                 articles: [
                     {
+                        id: "2c78e953-89f7-4a41-a852-6937b647674a",
                         class: "columns-1",
                         type: "grid",
                         content: [
@@ -2161,6 +2307,7 @@ export const content = {
                 name: "今日",
                 articles: [
                     {
+                        id: "b4f53c23-c475-4359-9b73-84b5f193695e",
                         class: "columns-3-wide",
                         header: "不安",
                         url: "#",
@@ -2195,6 +2342,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8e24c654-824d-4b80-add0-e6a69926e2e1",
                         class: "columns-3-narrow",
                         header: "今起こってる",
                         url: "#",
@@ -2230,6 +2378,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "b838d62e-fc9b-4c7f-808b-dfe42ba8207b",
                         class: "columns-3-narrow",
                         header: "注目に値します",
                         url: "#",
@@ -2271,6 +2420,7 @@ export const content = {
                 name: "特徴",
                 articles: [
                     {
+                        id: "333174c6-e4f4-4376-b0ff-38d31161b9db",
                         class: "columns-3-balanced",
                         header: "欧州連合",
                         image: {
@@ -2297,6 +2447,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "28fd8202-0588-42a2-bb92-54c534521b23",
                         class: "columns-3-balanced",
                         header: "英国",
                         image: {
@@ -2314,6 +2465,7 @@ export const content = {
                             "妊娠中の化粧各オルシとプロパガンダの著者が始まります。シナリオの場合、バナナのを引きます。ニンジンの週末の写真であるモーリスは今宿題だけの人生です.\n\n悲しい大きなニンジン唐辛子妊娠中の男性のugいを紹介します。ジャスミンは嫌いですが、学部生の悲しい笑顔まで学部生の直径を嫌います。直径のそれぞれよりも、または要素ではなく。",
                     },
                     {
+                        id: "bcb67523-c31c-44ae-b9a1-a2b3b0cc5793",
                         class: "columns-3-balanced",
                         header: "ラテンアメリカ",
                         image: {
@@ -2362,6 +2514,7 @@ export const content = {
                 name: "国際的",
                 articles: [
                     {
+                        id: "bcdb2555-6ea9-48cc-b99e-7c496e95b54a",
                         class: "columns-wrap",
                         header: "国連",
                         type: "excerpt",
@@ -2396,6 +2549,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "db9bc4e6-b7d8-4cbd-b9a6-17bc5c50b8b1",
                         class: "columns-wrap",
                         header: "欧州連合",
                         type: "excerpt",
@@ -2430,6 +2584,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a4208fe3-e9b4-46f6-af7e-ff04522ccc9c",
                         class: "columns-wrap",
                         header: "世界的な危機",
                         type: "excerpt",
@@ -2470,6 +2625,7 @@ export const content = {
                 name: "グローバルな影響",
                 articles: [
                     {
+                        id: "48ae1b0c-4f0c-47f8-ab31-4ec18aaaf24c",
                         class: "columns-3-balanced",
                         header: "天気",
                         image: {
@@ -2499,6 +2655,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "71a55a05-6c7a-432e-8d8f-dc55746911e6",
                         class: "columns-3-balanced",
                         header: "仕事",
                         image: {
@@ -2528,6 +2685,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f44f022b-f57e-4d6d-84bc-904dfad9686a",
                         class: "columns-3-balanced",
                         header: "政治",
                         image: {
@@ -2563,6 +2721,7 @@ export const content = {
                 name: "強調されています",
                 articles: [
                     {
+                        id: "060bbae5-655f-4ed6-ae0f-8afdb2056ecf",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -2602,6 +2761,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "b4ef9c47-027a-4870-8413-b83366e1ce21",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -2647,6 +2807,7 @@ export const content = {
                 name: "地球規模の問題",
                 articles: [
                     {
+                        id: "f189aeb3-f002-4cf4-929e-1957c1e049a9",
                         class: "columns-wrap",
                         header: "上昇する犯罪",
                         type: "excerpt",
@@ -2681,6 +2842,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "ddf4293b-3356-4ec4-b349-75d29690623e",
                         class: "columns-wrap",
                         header: "健康への懸念",
                         type: "excerpt",
@@ -2715,6 +2877,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "9b501227-b127-49b2-80d6-33945e5ea16c",
                         class: "columns-wrap",
                         header: "経済",
                         type: "excerpt",
@@ -2755,6 +2918,7 @@ export const content = {
                 name: "ホットな話題",
                 articles: [
                     {
+                        id: "2ecc66a8-422a-4ec1-8523-b2b3b6bd95d1",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -2794,6 +2958,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "e97c9e59-bce0-408e-8151-644b4c51fa24",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -2839,6 +3004,7 @@ export const content = {
                 name: "有料コンテンツ",
                 articles: [
                     {
+                        id: "6f02bb8e-b794-403e-8417-6efaf23f7d4f",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -2854,6 +3020,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "c1ab91c2-8a27-4b86-b862-f2cb98d99636",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -2869,6 +3036,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "ea11fca8-afd0-4aab-b106-047aab8ca678",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -2884,6 +3052,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "44a282f4-379a-41bd-bccb-5d7a16aa8d98",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -2912,6 +3081,7 @@ export const content = {
                 name: "本当に重要なこと",
                 articles: [
                     {
+                        id: "5fed924d-8356-4d2e-bf06-ba58866f4cd0",
                         class: "columns-1",
                         type: "grid",
                         display: "grid-wrap",
@@ -3005,6 +3175,7 @@ export const content = {
                 name: "今日",
                 articles: [
                     {
+                        id: "88787560-ed1b-43d5-a57c-bac38c8af902",
                         class: "columns-3-wide",
                         header: "キャンペーンニュース",
                         url: "#",
@@ -3039,6 +3210,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8eeaee25-a813-430f-9f1e-00ac72d6e0f9",
                         class: "columns-3-narrow",
                         header: "選挙",
                         url: "#",
@@ -3065,6 +3237,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f56f95e8-6db3-4fb3-9797-be9e6e8713d1",
                         class: "columns-3-narrow",
                         header: "地方自治体",
                         url: "#",
@@ -3101,6 +3274,7 @@ export const content = {
                 name: "最新のヘッドライン",
                 articles: [
                     {
+                        id: "a497dc76-3124-4e34-a562-393b3ed0a2d0",
                         class: "columns-3-balanced",
                         header: "分析",
                         image: {
@@ -3130,6 +3304,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "3b2ff2f5-1aa4-471d-afe4-4134e7239b3a",
                         class: "columns-3-balanced",
                         header: "最初に事実",
                         image: {
@@ -3159,6 +3334,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "d3f0d391-b7ad-4421-a6d2-7d004a21d6d9",
                         class: "columns-3-balanced",
                         header: "より多くの政治ニュース",
                         image: {
@@ -3182,6 +3358,7 @@ export const content = {
                 name: "最新のメディア",
                 articles: [
                     {
+                        id: "db2737cd-27a6-479d-a387-ad8009ede603",
                         class: "columns-1",
                         type: "grid",
                         content: [
@@ -3250,6 +3427,7 @@ export const content = {
                 name: "選挙",
                 articles: [
                     {
+                        id: "29de4b05-b033-4382-9b05-cd4ad886f497",
                         class: "columns-wrap",
                         header: "民主党",
                         type: "excerpt",
@@ -3284,6 +3462,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "54a12e98-d00c-455d-b806-98594181ce1e",
                         class: "columns-wrap",
                         header: "共和党員",
                         type: "excerpt",
@@ -3318,6 +3497,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8ad5e658-cfe7-42d1-8e28-764010c5b34f",
                         class: "columns-wrap",
                         header: "リベラル派",
                         type: "excerpt",
@@ -3358,6 +3538,7 @@ export const content = {
                 name: "より政治的なニュース",
                 articles: [
                     {
+                        id: "ba31d7b5-0a2b-421d-880b-83cbf0503a45",
                         class: "columns-3-wide",
                         header: "その他のニュース",
                         url: "#",
@@ -3411,6 +3592,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "1900eb3e-e44a-481b-abe7-d82aafb5a4ed",
                         class: "columns-3-narrow",
                         url: "#",
                         type: "preview",
@@ -3445,6 +3627,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "212ae8c8-9689-4c4c-b75c-6af97924c561",
                         class: "columns-3-narrow",
                         url: "#",
                         type: "preview",
@@ -3485,6 +3668,7 @@ export const content = {
                 name: "強調されています",
                 articles: [
                     {
+                        id: "78fb02c4-4a19-4c24-a504-fb029810730e",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -3524,6 +3708,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "c215acac-4b82-4696-a5d7-a33f322c45f3",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -3569,6 +3754,7 @@ export const content = {
                 name: "トレンド",
                 articles: [
                     {
+                        id: "40fc21b9-2db4-47e2-96ef-2d95e79a9df3",
                         class: "columns-wrap",
                         header: "新しい法律",
                         type: "excerpt",
@@ -3603,6 +3789,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "9f10b36d-0666-479c-a234-a7ab95f9737d",
                         class: "columns-wrap",
                         header: "最新の世論調査",
                         type: "excerpt",
@@ -3637,6 +3824,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "d86ca00e-4e84-48ac-8c95-118d7c9a2e44",
                         class: "columns-wrap",
                         header: "誰が票を獲得しているのか",
                         type: "excerpt",
@@ -3677,6 +3865,7 @@ export const content = {
                 name: "世界中で",
                 articles: [
                     {
+                        id: "d7923d94-7cd8-418a-865e-2b90faf6f830",
                         class: "columns-3-balanced",
                         header: "英国",
                         image: {
@@ -3706,6 +3895,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f87a7154-8143-4c09-8afe-96f965e00089",
                         class: "columns-3-balanced",
                         header: "イタリア",
                         image: {
@@ -3735,6 +3925,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "14d07dfb-3587-4411-b4ce-33ba171152f4",
                         class: "columns-3-balanced",
                         header: "ポーランド",
                         image: {
@@ -3770,6 +3961,7 @@ export const content = {
                 name: "ホットな話題",
                 articles: [
                     {
+                        id: "df191197-ddb0-4c59-978c-560e60e62e0a",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -3809,6 +4001,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "2ba63655-af94-4da2-a4da-e7464aa070e8",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -3854,6 +4047,7 @@ export const content = {
                 name: "有料コンテンツ",
                 articles: [
                     {
+                        id: "a97faeaa-1309-44ec-a9a8-dda2db1ad5f3",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -3869,6 +4063,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "52472e25-5e61-4bef-9aca-ac86f936d811",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -3884,6 +4079,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a16c0da8-7dea-4cb3-af0e-0c0123bf20d3",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -3899,6 +4095,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "3e7d37b7-af0e-4f69-a0fd-8d0f64d2e0ba",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -3927,6 +4124,7 @@ export const content = {
                 name: "最新のトレンド",
                 articles: [
                     {
+                        id: "addec243-95e5-4aae-8261-c6b82b928293",
                         class: "columns-3-wide",
                         header: "投資",
                         url: "#",
@@ -3949,6 +4147,7 @@ export const content = {
                             "結果として、モーリスは今では宿題をしないでください。マイクロ波発泡ライオンまたは臨床ゲート。明日から妊娠または谷を熟練しています。直径のそれぞれよりも多様な笑い。非常にマッサージバスケットボールを妊娠しているバニー。チョコレートフットボールバスケットボールヴィタエの著者\n\n製造範囲は栄養開発者です。大量のヒントと喉まで。もちろん、車両の車両の過程でゲームの車両。見事なバスケットボールがたくさん妊娠している人は誰でも。または抗酸化物質の週末は、貧困飾られたアルコールです。輸送パッチを持ってください。",
                     },
                     {
+                        id: "4d5bbeee-9e05-4f95-b6bf-af41b145e4e3",
                         class: "columns-3-narrow",
                         header: "メディア",
                         url: "#",
@@ -3967,6 +4166,7 @@ export const content = {
                             "どの学部生活が再開される控除可能な場合。しかし今、彼はサッカーのメンバーになりたいと思っています。醜い今はロアムの痛みが必要ですが。バナナフェリーパッチはないからです。あなたまで写真とサッカー。最新のサラダのエコロジーサッカー開発者プロパガンダは時々望んでいます。今の人生のチャンピオンですが、要素の弓の要素。\n\n必須の滅菌ポットランニングは、チョコレートの漫画が始まる必要があります。サピエンは私の電子レンジが必要ですが、無料です。そして、長い間タンパク質を嫌います。フェリスは今、カートン・ロティス・テレートが必要です。レシピ変数がニンジンの不動産があります。 ",
                     },
                     {
+                        id: "a788ad50-9e3a-461e-be18-828fbce1dbd9",
                         class: "columns-3-narrow",
                         header: "洞察",
                         url: "#",
@@ -3991,6 +4191,7 @@ export const content = {
                 name: "マーケットウォッチ",
                 articles: [
                     {
+                        id: "ed902471-e96d-462b-bc88-01c7e22d5fa0",
                         class: "columns-3-balanced",
                         header: "トレンド",
                         image: {
@@ -4008,6 +4209,7 @@ export const content = {
                             "車両の大きな要件の痛み。ニブ・ニンジンの利便性FAFILISIリレーなし。プールマッサージのあごにさえ時々。キャリアスキームを置きます。マスは、パッケージの注文の不動産では現在価値がありません。ジャスミンのモーリス範囲を計画するか。現在のタンク。",
                     },
                     {
+                        id: "31a8663a-d035-4b62-adeb-195a1c60e831",
                         class: "columns-3-balanced",
                         header: "技術",
                         image: {
@@ -4025,6 +4227,7 @@ export const content = {
                             "現在の元素抗酸化物質ライオンまたは生態学的なウルラムコルパー。いくつかのサラダ生態学のチョコレート漫画モーリス。残念ながら、長い間嫌いです。アルコールをベッドするためのサッカーのプロパガンダ。プレイヤーの時点での直径の、私はとてもよく。",
                     },
                     {
+                        id: "bf9491d2-ffcc-4ed3-a3a4-2cfda792f06b",
                         class: "columns-3-balanced",
                         header: "成功",
                         image: {
@@ -4048,6 +4251,7 @@ export const content = {
                 name: "今日の経済",
                 articles: [
                     {
+                        id: "95d5859b-44d0-452b-adba-52af428c9b8e",
                         class: "columns-wrap",
                         header: "グローバルな影響",
                         type: "excerpt",
@@ -4082,6 +4286,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f89eb533-713d-4ece-9998-c29672199357",
                         class: "columns-wrap",
                         header: "見通し",
                         type: "excerpt",
@@ -4116,6 +4321,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "eb628ced-8e49-4cc7-a4b6-2531bc5f7b30",
                         class: "columns-wrap",
                         header: "経済的自由",
                         type: "excerpt",
@@ -4156,6 +4362,7 @@ export const content = {
                 name: "必読",
                 articles: [
                     {
+                        id: "b77172cc-4e49-40ca-9235-eb2f5f865804",
                         class: "columns-1",
                         type: "grid",
                         display: "grid-wrap",
@@ -4233,6 +4440,7 @@ export const content = {
                 name: "教育",
                 articles: [
                     {
+                        id: "4187d9c9-e176-4b0a-8bee-03f4f3be418a",
                         class: "columns-3-balanced",
                         header: "ビジネス101",
                         image: {
@@ -4250,6 +4458,7 @@ export const content = {
                             "卒業したデッキへのインシデントDUI。直径の変数である男性。学部生の悲しい笑顔またはEUまでの重要な直径。ニンジンコース。スカート任意またはピーナッツのティルと憎しみ。マクロセットをレイヤーし、結果としてこれまでに。顧客の顧客を育てた顧客を置くこともあります。ローレム今または笑顔の便利な漫画。チャンピオンシップは、各直径よりも多様な学者です.\n\nあなたがいつも選んでからずっと人生の素晴らしい開発者のために。カートンチョコレートの しかし、時間はurと震えの塊です。",
                     },
                     {
+                        id: "c519abd4-bb39-4b35-b3fb-130713f8f27b",
                         class: "columns-3-balanced",
                         header: "起動",
                         image: {
@@ -4267,6 +4476,7 @@ export const content = {
                             "唐辛子の強力なマクロ寿命。バルプタートMIニンジンが始まります。サッカーサッカーの開発者居住者。栄養大衆不動産宿題の補償。明日の温かい憎しみサッカ価格自体。フットボールフットボールアローはサッカーを矢にしています。執行環境の環境栄養補助控除可能。非直径ナム製造ロレムセッド笑い。フットボールチョコレートトリガーヘアスタイル.\n\n素晴らしいと不動産製造。ロボルティスEUはプロパガンダに住んでいます。酵母のは鍋に置かれているかどうか。サッカー開発者サッカーのマスニーズ。は、栄養開発者のサッカーです。",
                     },
                     {
+                        id: "a7b41785-e2d9-4afa-a161-5edcffce77a8",
                         class: "columns-3-balanced",
                         header: "利益を上げます",
                         image: {
@@ -4290,6 +4500,7 @@ export const content = {
                 name: "強調されています",
                 articles: [
                     {
+                        id: "4e229873-04c6-410a-a433-18178fa4aad5",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -4329,6 +4540,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "1760d2cf-9530-4c27-9943-ec0525b5dd4f",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -4374,6 +4586,7 @@ export const content = {
                 name: "投資101",
                 articles: [
                     {
+                        id: "d3b35a69-8fa6-49b6-a86f-a451e15430f0",
                         class: "columns-3-balanced",
                         header: "資産を管理します",
                         type: "articles-list",
@@ -4394,6 +4607,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "27a697e9-74a9-459c-9cd2-d479d65ac2f7",
                         class: "columns-3-balanced",
                         header: "何を見るか",
                         type: "articles-list",
@@ -4415,6 +4629,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "cff3dc12-6773-4f70-a22d-ff1bc100c818",
                         class: "columns-3-balanced",
                         header: "知ってますか？",
                         type: "articles-list",
@@ -4441,6 +4656,7 @@ export const content = {
                 name: "株式市場",
                 articles: [
                     {
+                        id: "49e01dcc-39fd-482d-b0c1-31918f791041",
                         class: "columns-wrap",
                         header: "ダウ・ジョーンズ",
                         type: "excerpt",
@@ -4475,6 +4691,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "084674ba-b34b-4841-8674-e29bfd3633fa",
                         class: "columns-wrap",
                         header: "S＆P 500",
                         type: "excerpt",
@@ -4509,6 +4726,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "d287a7b5-305f-4e6f-81c7-3a6f1e833a5a",
                         class: "columns-wrap",
                         header: "デイトレーディング",
                         type: "excerpt",
@@ -4549,6 +4767,7 @@ export const content = {
                 name: "影響",
                 articles: [
                     {
+                        id: "f87f6f06-2480-48b1-abf0-17c97fa92d27",
                         class: "columns-3-balanced",
                         header: "石油危機",
                         type: "articles-list",
@@ -4570,6 +4789,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8d0c8045-a260-47ec-9f28-1098d994da86",
                         class: "columns-3-balanced",
                         header: "ハイテク市場",
                         type: "articles-list",
@@ -4589,6 +4809,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "9144e1b3-46b1-4c71-b26d-6f4cf74e7444",
                         class: "columns-3-balanced",
                         header: "市場の減少",
                         type: "articles-list",
@@ -4617,6 +4838,7 @@ export const content = {
                 name: "ホットな話題",
                 articles: [
                     {
+                        id: "1e60235c-0198-4448-9267-f3f86542d7dc",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -4656,6 +4878,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "46e89da3-b39c-43a7-9178-efeeb91e973d",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -4701,6 +4924,7 @@ export const content = {
                 name: "有料コンテンツ",
                 articles: [
                     {
+                        id: "d6c99f00-e45b-4da3-abb8-2a0a3bd27cc7",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -4725,6 +4949,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "2b905eee-c666-4704-9658-1e0757b02253",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -4749,6 +4974,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "1acc8fc3-74bb-46b0-8d67-bee9bfb7667a",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -4773,6 +4999,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a005c941-9e4b-4219-88df-d6a553b3c237",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -4810,6 +5037,7 @@ export const content = {
                 name: "より深い外観",
                 articles: [
                     {
+                        id: "7c4b6a7e-1f91-4e43-b099-a72aea0fa6c7",
                         class: "columns-3-wide",
                         header: "最新の事実",
                         url: "#",
@@ -4831,6 +5059,7 @@ export const content = {
                             "とんでもないマウス最大のヴィタエウルトリシーズライオン。キャンセルと人生の開発者は誰でも。ニブの前に。中国のナムスロートチョコレートのティーンエイジャーは価格まで。サッカープロパガンダのチョコレートフットボールバスケットボールのキャリア著者。",
                     },
                     {
+                        id: "0d292bbd-e6da-499b-8008-652d51e3b26d",
                         class: "columns-3-narrow",
                         header: "私たちの心のトップ",
                         url: "#",
@@ -4849,6 +5078,7 @@ export const content = {
                             "控除可能および学部生の履歴書がない限り、D要素。震えまたは醜い今はロレムが必要です。サッカー開発者のプロパガンダは、時には大衆投資の子供たちの願いのパフォーマンスをします。\n\nしかし、開発者は非常にニンジンです。今、多くの喉のカートン。トマトチリを喉の枕に調査してください。",
                     },
                     {
+                        id: "75c1fa44-8c39-48a0-9db7-b30c0ffc6606",
                         class: "columns-3-narrow",
                         header: "編集者レポート",
                         url: "#",
@@ -4873,6 +5103,7 @@ export const content = {
                 name: "トップの問題",
                 articles: [
                     {
+                        id: "68c63699-7843-4f2c-8893-3cd0043ce6c7",
                         class: "columns-3-balanced",
                         header: "考え",
                         image: {
@@ -4902,6 +5133,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f293245c-cbdc-4538-8ca8-0181ba5709a0",
                         class: "columns-3-balanced",
                         header: "ソーシャル解説",
                         image: {
@@ -4931,6 +5163,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "0f38830e-3f1d-43ee-9f24-dc3f1422e9d7",
                         class: "columns-3-balanced",
                         header: "特別プロジェクト",
                         image: {
@@ -4954,6 +5187,7 @@ export const content = {
                 name: "トレンド",
                 articles: [
                     {
+                        id: "7ca7daac-f4d0-4a57-a396-b8bb485796b4",
                         class: "columns-wrap",
                         header: "世界中で",
                         type: "excerpt",
@@ -4988,6 +5222,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "89639a03-5c46-45c1-ad54-ba8548521eea",
                         class: "columns-wrap",
                         header: "サポート",
                         type: "excerpt",
@@ -5022,6 +5257,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "b4c36ecf-7d2f-4715-842c-a1fe99c0475e",
                         class: "columns-wrap",
                         header: "もっと知ってください",
                         type: "excerpt",
@@ -5062,6 +5298,7 @@ export const content = {
                 name: "それについて考えてください",
                 articles: [
                     {
+                        id: "a1034d17-1add-49f8-b258-27de86bea9e4",
                         class: "columns-3-balanced",
                         header: "メンタルヘルス",
                         image: {
@@ -5096,6 +5333,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "c344dac6-35bf-44af-9c55-ae5ca7ab7f41",
                         class: "columns-3-balanced",
                         header: "より良い生活",
                         image: {
@@ -5130,6 +5368,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a1724b6d-085c-4467-b413-e3332a4a4af6",
                         class: "columns-3-balanced",
                         header: "正しい選択",
                         image: {
@@ -5170,6 +5409,7 @@ export const content = {
                 name: "最新のメディア",
                 articles: [
                     {
+                        id: "c3ed8428-cf45-4f9d-86d1-391bd9e9ad80",
                         class: "columns-1",
                         type: "grid",
                         content: [
@@ -5238,6 +5478,7 @@ export const content = {
                 name: "あなたがそれを逃した場合に備えて",
                 articles: [
                     {
+                        id: "9ecce31e-6d76-44c4-a518-b881b6877724",
                         class: "columns-3-balanced",
                         header: "批判的な考え",
                         image: {
@@ -5267,6 +5508,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f80bc40c-0c9c-4567-8b79-fd29ef77659b",
                         class: "columns-3-balanced",
                         header: "批判的思考",
                         image: {
@@ -5296,6 +5538,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "1bb6984e-a18f-47b7-9bbb-6888b74b58da",
                         class: "columns-3-balanced",
                         header: "重要な行動",
                         image: {
@@ -5331,6 +5574,7 @@ export const content = {
                 name: "環境問題",
                 articles: [
                     {
+                        id: "d55b5489-7ed3-4215-9e45-ef5ae8072210",
                         class: "columns-3-balanced",
                         header: "地球温暖化",
                         type: "articles-list",
@@ -5352,6 +5596,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "dcb3d636-542f-49ea-aaa0-e829fc87ab3d",
                         class: "columns-3-balanced",
                         header: "リサイクル",
                         type: "articles-list",
@@ -5373,6 +5618,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "500a214a-8186-49bf-96f0-38e42014460b",
                         class: "columns-3-balanced",
                         header: "新しい研究",
                         type: "articles-list",
@@ -5401,6 +5647,7 @@ export const content = {
                 name: "強調されています",
                 articles: [
                     {
+                        id: "8096212a-bfab-494b-b4d9-a04c2bd80b17",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -5440,6 +5687,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8945566e-82d2-419c-8ec5-750294e2aaf4",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -5485,6 +5733,7 @@ export const content = {
                 name: "最も重要なこと",
                 articles: [
                     {
+                        id: "2fe9dc69-e459-46d6-8b9b-8bce7c60f694",
                         class: "columns-wrap",
                         header: "議論",
                         type: "excerpt",
@@ -5519,6 +5768,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "fa068dc1-0a5c-459a-9e38-7fb8cd9d5fa5",
                         class: "columns-wrap",
                         header: "その価値はありますか？",
                         type: "excerpt",
@@ -5553,6 +5803,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "31082ef2-8a41-4ea5-9c40-3d87ff73ad5f",
                         class: "columns-wrap",
                         header: "早くやれよ",
                         type: "excerpt",
@@ -5593,6 +5844,7 @@ export const content = {
                 name: "ホットな話題",
                 articles: [
                     {
+                        id: "20b1f11f-8da5-4614-82b9-80c15aed568c",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -5632,6 +5884,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "662f09bf-45ab-445f-a096-cede68c5dab8",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -5677,6 +5930,7 @@ export const content = {
                 name: "有料コンテンツ",
                 articles: [
                     {
+                        id: "c7f1b2e8-3e7e-4cea-b8fd-97da6aaa217a",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -5692,6 +5946,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f047187b-7651-45f5-8e13-362d82b59e91",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -5707,6 +5962,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "fc748387-cfdb-4659-bf00-14984869c3f4",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -5722,6 +5978,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "ad88b542-6ac0-4525-b6be-581cb2b67762",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -5750,6 +6007,7 @@ export const content = {
                 name: "トレンド",
                 articles: [
                     {
+                        id: "b5d84dfb-d80f-4ba1-ab4e-c33e255b3157",
                         class: "columns-3-balanced",
                         header: "マインドフルネス",
                         url: "#",
@@ -5780,6 +6038,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "a1822776-68b2-4d24-95e2-917756de0c12",
                         class: "columns-3-balanced",
                         header: "最新の研究",
                         url: "#",
@@ -5810,6 +6069,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "0a522480-9f37-43e3-bbf2-c5398450a921",
                         class: "columns-3-balanced",
                         header: "健康な先輩",
                         url: "#",
@@ -5846,6 +6106,7 @@ export const content = {
                 name: "最新の事実",
                 articles: [
                     {
+                        id: "db2abfd6-b4d4-4237-850a-7f34de938739",
                         class: "columns-3-balanced",
                         header: "より多くの人生、しかしより良い",
                         image: {
@@ -5872,6 +6133,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "8cfeff8c-94cb-4eca-b5e2-b4214b761705",
                         class: "columns-3-balanced",
                         header: "あなたがそれを逃した場合に備えて",
                         image: {
@@ -5889,6 +6151,7 @@ export const content = {
                             "レクスマイクロ波lソースIDは、生命のソースによって滅菌されました。開発者は常にがバレーボールマイクロワを紹介します.\n\n誰でもバスケットボールの妊娠臨床を強調します。私はバスケットボールのかしいアルコールが好きではありません。栄養居住者サッカー悲しい古いオールドとネタスとマレスアダの飢er。",
                     },
                     {
+                        id: "ae3f3c45-b7fe-4729-8374-f3ba8d11eeff",
                         class: "columns-3-balanced",
                         header: "宇宙と科学",
                         image: {
@@ -5929,6 +6192,7 @@ export const content = {
                 name: "医療ブレークスルー",
                 articles: [
                     {
+                        id: "2afaf4ee-4d1c-4f54-a970-bc8222cc3090",
                         class: "columns-3-wide",
                         header: "外科的発明",
                         url: "#",
@@ -5951,6 +6215,7 @@ export const content = {
                             "楽観的な生活が必要です。唐辛子の喪を与えるために。アースメイクアップセラミック栄養のサッカー開発者温度があります。醜い今はロアムの痛みが必要ですが。ターゲットを絞ったバスケットボールは今、プロパガンダ車です。バレーボールの要素以上のものもそうではありません。は今、チョコレートが必要です。",
                     },
                     {
+                        id: "7213a42c-c2eb-486a-bb2e-b59f6667fb4a",
                         class: "columns-3-narrow",
                         header: "メディケア",
                         url: "#",
@@ -5969,6 +6234,7 @@ export const content = {
                             "このコースの漫画地域です。喉とテレビとEUですが、卒業しました。ジャスミンの価格は大きくなり、。キャンセル抗酸化物質のキャンセルモーリスは、ライフソースのアメットマスを座らせます.\n\nムーアはマウスを逃すために生まれます。醜いランニングのバスケットボールピーナッツ。さまざまなものや震えまたはチケットで飲みます。喪に服した滅菌された段階的な大規模な生態学的なポット航空会社の痛みの範囲。",
                     },
                     {
+                        id: "9323f56f-d3b3-4b86-bd4c-014392b62272",
                         class: "columns-3-narrow",
                         header: "投薬",
                         url: "#",
@@ -5993,6 +6259,7 @@ export const content = {
                 name: "最新のビデオ",
                 articles: [
                     {
+                        id: "c1f811ca-284b-4e7b-9bfb-bb5a7c72211d",
                         class: "columns-1",
                         type: "grid",
                         content: [
@@ -6061,6 +6328,7 @@ export const content = {
                 name: "教育",
                 articles: [
                     {
+                        id: "c2dc8f88-8a0a-4a3f-aadd-a5f83e291081",
                         class: "columns-1",
                         type: "grid",
                         display: "grid-wrap",
@@ -6154,6 +6422,7 @@ export const content = {
                 name: "フィットネス",
                 articles: [
                     {
+                        id: "4e6716eb-0430-49b0-9d95-352333d760a0",
                         class: "columns-wrap",
                         header: "カロリーを燃やします",
                         type: "excerpt",
@@ -6188,6 +6457,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "056698a8-0ac8-4342-9e67-25993d574866",
                         class: "columns-wrap",
                         header: "ジムのお気に入り",
                         type: "excerpt",
@@ -6222,6 +6492,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "389c5495-b37c-423f-8950-a1845317e41c",
                         class: "columns-wrap",
                         header: "ピラティス",
                         type: "excerpt",
@@ -6262,6 +6533,7 @@ export const content = {
                 name: "ガイド",
                 articles: [
                     {
+                        id: "9a1282a2-e227-4d96-8f3e-99c580f2939a",
                         class: "columns-3-balanced",
                         header: "50歳以降の健康",
                         type: "articles-list",
@@ -6282,6 +6554,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "7b268ec3-8ac2-42fc-ab0f-ac650d2493f1",
                         class: "columns-3-balanced",
                         header: "健康な心",
                         type: "articles-list",
@@ -6302,6 +6575,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f3907983-9885-4211-8878-0f85750bbaa7",
                         class: "columns-3-balanced",
                         header: "健康的な消化",
                         type: "articles-list",
@@ -6329,6 +6603,7 @@ export const content = {
                 name: "強調されています",
                 articles: [
                     {
+                        id: "851b619c-0d4b-478a-8991-d39394660b96",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -6368,6 +6643,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "1080c9e5-4d40-4b28-9398-c03c9f94c74e",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -6413,6 +6689,7 @@ export const content = {
                 name: "何を食べれば良いか",
                 articles: [
                     {
+                        id: "8ed51654-db6a-4826-bd1c-25213bc4200b",
                         class: "columns-wrap",
                         header: "低炭水化物",
                         type: "excerpt",
@@ -6447,6 +6724,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "692a6213-1024-4d3e-8e6d-34aed2bb3616",
                         class: "columns-wrap",
                         header: "ベジタリアン",
                         type: "excerpt",
@@ -6481,6 +6759,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "f264a46c-4e7e-4c9f-bf04-d4ed1fa6639a",
                         class: "columns-wrap",
                         header: "朝食",
                         type: "excerpt",
@@ -6521,6 +6800,7 @@ export const content = {
                 name: "ホットな話題",
                 articles: [
                     {
+                        id: "dde55759-06c6-46bc-9f16-bed37ae3d77f",
                         class: "columns-2-balanced",
                         header: "これは最初です",
                         type: "grid",
@@ -6560,6 +6840,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "17f26d05-24ef-4a12-80b0-611a43449aae",
                         class: "columns-2-balanced",
                         header: "この秒",
                         type: "grid",
@@ -6605,6 +6886,7 @@ export const content = {
                 name: "有料コンテンツ",
                 articles: [
                     {
+                        id: "cbaac182-d046-43ee-b6d7-41a382e959ad",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -6620,6 +6902,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "ae883d3e-ef62-4f6e-ac2d-5555ca35f11a",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -6635,6 +6918,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "d8f20994-0098-4367-bc3a-131faa8f768d",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
@@ -6650,6 +6934,7 @@ export const content = {
                         ],
                     },
                     {
+                        id: "51f4b351-5916-4422-b661-61b65b911ee5",
                         class: "columns-4-balanced",
                         type: "preview",
                         content: [
