@@ -5347,7 +5347,7 @@ export const content = {
                         header: "Latest Facts",
                         url: "#",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/milad-fakurian-58Z17lnVS4U-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -5369,7 +5369,7 @@ export const content = {
                         header: "Top of our mind",
                         url: "#",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/no-revisions-UhpAf0ySwuk-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -5387,7 +5387,7 @@ export const content = {
                         header: "Editor Report",
                         url: "#",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/national-cancer-institute-YvvFRJgWShM-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -5411,7 +5411,7 @@ export const content = {
                         class: "columns-3-balanced",
                         header: "Thoughts",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/rebe-pascual-SACRQSof7Qw-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -5445,7 +5445,7 @@ export const content = {
                         class: "columns-3-balanced",
                         header: "Social commentary",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/fanga-studio-bOfCOy3_4wU-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -5479,7 +5479,7 @@ export const content = {
                         class: "columns-3-balanced",
                         header: "Special Projects",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/jakob-dalbjorn-cuKJre3nyYc-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -5507,7 +5507,7 @@ export const content = {
                             {
                                 id: "8b9fef9b-1387-432b-9f0a-a4fbe8525c39",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/dibakar-roy-K9JwokzSvrc-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5517,7 +5517,7 @@ export const content = {
                             {
                                 id: "dbbbe43b-354b-458e-832a-1a1de4e4a68c",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/anatol-rurac-NeSj0i6HLak-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5527,7 +5527,7 @@ export const content = {
                             {
                                 id: "4d5f3465-3649-40d0-a15e-28b4c6c7a333",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/anatol-rurac-b5t2lqeCGfA-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5545,7 +5545,7 @@ export const content = {
                             {
                                 id: "ac384e2a-611f-4910-8c89-2922238dff84",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/neil-thomas-SIU1Glk6v5k-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5555,7 +5555,7 @@ export const content = {
                             {
                                 id: "c5622af2-af36-4d93-9fab-5fed3226f48c",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/jon-tyson-ne2mqMgER8Y-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5565,7 +5565,7 @@ export const content = {
                             {
                                 id: "1e5314da-3b79-4da7-a845-d3c27c37ba70",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/nonresident-nizUHtSIrKM-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5583,7 +5583,7 @@ export const content = {
                             {
                                 id: "af1969b9-e8de-4e1f-84b5-353ea124a6b0",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/alev-takil-fYyYz38bUkQ-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5593,7 +5593,7 @@ export const content = {
                             {
                                 id: "ba3d22b7-a6e8-4f6e-a97a-ac179e4c44de",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/bermix-studio-yUnSMBogWNI-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5603,7 +5603,7 @@ export const content = {
                             {
                                 id: "3724b29a-64a3-4426-9354-7f6026d5ce30",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/pierre-bamin-lM4_Nmcj4Xk-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5623,7 +5623,7 @@ export const content = {
                         class: "columns-3-balanced",
                         header: "Mental Health",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/matthew-ball-3wW2fBjptQo-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -5662,7 +5662,7 @@ export const content = {
                         class: "columns-3-balanced",
                         header: "Better life",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/peter-conlan-LEgwEaBVGMo-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -5701,7 +5701,7 @@ export const content = {
                         class: "columns-3-balanced",
                         header: "The right choice",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/vladislav-babienko-KTpSVEcU0XU-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -5749,7 +5749,7 @@ export const content = {
                             {
                                 id: "ce8185af-104d-4d9c-910b-8b96bcd6cf26",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/daniel-staple-N320vzTBviA-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5764,7 +5764,7 @@ export const content = {
                             {
                                 id: "e3af13d9-da0e-4068-9e92-ca09bb0d9eea",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/clem-onojeghuo-DoA2duXyzRM-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5779,7 +5779,7 @@ export const content = {
                             {
                                 id: "2c4f8f8c-cbe4-4a3f-9306-5142eea5a43d",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/egor-myznik-GFHKMW6KiJ0-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5794,7 +5794,7 @@ export const content = {
                             {
                                 id: "de921ec9-3c73-4008-a124-d30477ffc0b7",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/trung-thanh-LgdDeuBcgIY-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -5819,7 +5819,7 @@ export const content = {
                         class: "columns-3-balanced",
                         header: "Critical thoughts",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/tingey-injury-law-firm-9SKhDFnw4c4-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -5853,7 +5853,7 @@ export const content = {
                         class: "columns-3-balanced",
                         header: "Critical Thinking",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/tachina-lee--wjk_SSqCE4-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -5887,7 +5887,7 @@ export const content = {
                         class: "columns-3-balanced",
                         header: "Critical Actions",
                         image: {
-                            src: "placeholder_light.jpg",
+                            src: "assets/images/etienne-girardet-RqOyRtYGhLg-unsplash_1280x720.webp",
                             alt: "Placeholder",
                             width: "1280",
                             height: "720",
@@ -6014,7 +6014,7 @@ export const content = {
                             {
                                 id: "05d58548-eec8-4806-8935-a50a72d863cb",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/alexander-kirov-YhDJXJjmxUQ-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6031,7 +6031,7 @@ export const content = {
                             {
                                 id: "d825b148-633e-46f6-9f25-5d2b1b42d926",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/paola-chaaya-QrbuLFT6ypw-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6056,7 +6056,7 @@ export const content = {
                             {
                                 id: "35ef50c4-f574-484f-bf93-0f9eb004b18b",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/sean-lee-hDqRQmcjM3s-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6073,7 +6073,7 @@ export const content = {
                             {
                                 id: "3d2cb1ef-f74b-4eac-b237-c9ac0a0e94d4",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/nathan-dumlao-laCrvNG3F_I-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6104,7 +6104,7 @@ export const content = {
                             {
                                 id: "e015fd9b-c112-4aec-895b-463080039812",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/tatjana-petkevica-iad-dMBDdoo-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6114,7 +6114,7 @@ export const content = {
                             {
                                 id: "e3910d58-0e1f-4ee1-872b-8bd39ec70833",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/nathan-cima-TQuq2OtLBNU-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6124,7 +6124,7 @@ export const content = {
                             {
                                 id: "89525746-2a5c-426b-950f-8b8e7a0e77eb",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/artur-voznenko-rwPIQQPz1ew-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6142,7 +6142,7 @@ export const content = {
                             {
                                 id: "91eb5eba-6ce6-4376-b8a9-874a8e759285",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/zac-gudakov-wwqZ8CM21gg-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6152,7 +6152,7 @@ export const content = {
                             {
                                 id: "daedcebf-d529-4dc6-9215-ca7b83bc288f",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/pat-whelen-68OkRwuOeyQ-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6162,7 +6162,7 @@ export const content = {
                             {
                                 id: "1bd419c1-0664-4b54-963b-fda397fecbf0",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/tania-mousinho-YlpfE9uCakE-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6180,7 +6180,7 @@ export const content = {
                             {
                                 id: "90217b1a-7e75-4b34-aed5-6be1b2b8c016",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/maksym-kaharlytskyi-Y0z9MyDsrU0-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6190,7 +6190,7 @@ export const content = {
                             {
                                 id: "61b9356e-2ea7-4770-81b5-a6af21721fec",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/maja-kochanowska-EiJQdDI_t_Y-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6200,7 +6200,7 @@ export const content = {
                             {
                                 id: "401e246d-ffda-4c74-897f-1889de7ffeb1",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/patti-black-FnV-PjAYHCI-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6224,7 +6224,7 @@ export const content = {
                             {
                                 id: "106eea44-16f1-403d-b075-4baa5e5998e0",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/rio-lecatompessy-cfDURuQKABk-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6241,7 +6241,7 @@ export const content = {
                             {
                                 id: "952c96cc-a882-4100-b9c5-21572c70abef",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/declan-sun-misAHv6YWkI-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6266,7 +6266,7 @@ export const content = {
                             {
                                 id: "406e421a-7044-4256-964b-9decfcf6958d",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/astronaud23-ox3t0m3PUqA-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6283,7 +6283,7 @@ export const content = {
                             {
                                 id: "f16fc9bc-ac9e-492b-b9fa-9512181bd45e",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/markus-spiske-lUc5pRFB25s-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6313,7 +6313,7 @@ export const content = {
                             {
                                 id: "1f2b0751-1d26-420c-a4ab-dfe8189afa55",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/sabri-tuzcu-kxR3hh0IRHU-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6330,7 +6330,7 @@ export const content = {
                             {
                                 id: "61856b32-0a27-4767-a624-9292b797d463",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/cardmapr-nl-s8F8yglbpjo-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6347,7 +6347,7 @@ export const content = {
                             {
                                 id: "64853755-7212-46ff-b036-eb078a15e975",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/leon-seibert-Xs3al4NpIFQ-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
@@ -6364,7 +6364,7 @@ export const content = {
                             {
                                 id: "809a6cab-ccb0-4270-9555-948eff9e7291",
                                 image: {
-                                    src: "placeholder_light.jpg",
+                                    src: "assets/images/sheelah-brennan-UOfERQF_pr4-unsplash_1280x720.webp",
                                     alt: "Placeholder",
                                     width: "1280",
                                     height: "720",
