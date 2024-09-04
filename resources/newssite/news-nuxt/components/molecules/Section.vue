@@ -17,6 +17,6 @@ export default {
         <h2>{{ section.name }}</h2>
     </div>
     <section :class="styles.row">
-        <Article v-for="(article) in section.articles" :key="article.id" :article="article" />
+        <Article v-for="article in section.articles" :key="article.id" :article="article" />
     </section>
 </template>
