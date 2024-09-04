@@ -3,7 +3,6 @@ import Article from "@/components/article/article";
 import styles from "news-site-css/dist/layout.module.css";
 
 export default function Section({ section }) {
-
     return (
         <>
             {section.name
@@ -13,7 +12,7 @@ export default function Section({ section }) {
                 : null}
             <section className={styles.row}>
                 {section.articles.map((article, index) =>
-                    <Article key={article.id} article={article}/>
+                    <Article key={article.id} article={article} />
                 )}
             </section>
         </>
