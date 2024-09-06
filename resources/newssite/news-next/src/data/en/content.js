@@ -33,8 +33,8 @@ export const content = {
                         image: {
                             src: "assets/images/isai-ramos-Sp70YIWtuM8-unsplash_336.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "336",
+                            height: "189",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -52,8 +52,8 @@ export const content = {
                         image: {
                             src: "assets/images/nasa-dCgbRAQmTQA-unsplash_684.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "684",
+                            height: "385",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -75,8 +75,8 @@ export const content = {
                         image: {
                             src: "assets/images/jordhan-madec-AD5ylD2T0UY-unsplash_336.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "336",
+                            height: "189",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -124,8 +124,8 @@ export const content = {
                         image: {
                             src: "assets/images/peter-lawrence-rXZa4ufjoGw-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -158,8 +158,8 @@ export const content = {
                         image: {
                             src: "assets/images/rufinochka-XonjCOZZN_w-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -201,8 +201,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/steven-van-bTPP3jBnOb8-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -216,8 +216,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/markus-spiske-WUehAgqO5hE-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -231,8 +231,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/david-everett-strickler-igCBFrMd11I-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -246,8 +246,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/marco-oriolesi-wqLGlhjr6Og-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -275,8 +275,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/samuel-schroth-hyPt63Df3Dw-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "At urna condimentum mattis pellentesque id nibh tortor id. Urna cursus eget nunc scelerisque viverra mauris in. Pretium vulputate sapien nec sagittis aliquam malesuada bibendum arcu.",
                             },
@@ -285,8 +285,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/denys-nevozhai-7nrsVjvALnA-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Enim lobortis scelerisque fermentum dui faucibus in. Vitae semper quis lectus nulla at volutpat. In nisl nisi scelerisque eu ultrices vitae auctor.",
                             },
@@ -295,8 +295,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mattia-bericchia-xkD79yf4tb8-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Lorem donec massa sapien faucibus et molestie ac feugiat. Quis varius quam quisque id diam vel. Ut tristique et egestas quis ipsum suspendisse. Fermentum posuere urna nec tincidunt praesent semper feugiat.",
                             },
@@ -313,8 +313,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/maximilian-bungart-nwqfl_HtJjk-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Augue eget arcu dictum varius duis at consectetur. Ornare arcu dui vivamus arcu felis bibendum ut. Magna eget est lorem ipsum dolor sit amet. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin.",
                             },
@@ -323,8 +323,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/gaku-suyama-VyiLZUcdJv0-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Leo urna molestie at elementum eu facilisis sed. Est lorem ipsum dolor sit amet consectetur adipiscing elit pellentesque.",
                             },
@@ -333,8 +333,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/paul-bill-HLuPjCa6IYw-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Nisi scelerisque eu ultrices vitae auctor. Quis risus sed vulputate odio. Pellentesque sit amet porttitor eget dolor morbi non. Nullam eget felis eget nunc lobortis mattis aliquam.",
                             },
@@ -351,8 +351,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/maarten-van-den-heuvel-gZXx8lKAb7Y-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Mattis ullamcorper velit sed ullamcorper. Orci ac auctor augue mauris augue neque. Condimentum mattis pellentesque id nibh tortor.",
                             },
@@ -361,8 +361,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/quino-al-KydWCDJe9s0-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Fermentum odio eu feugiat pretium. Urna nec tincidunt praesent semper feugiat nibh sed. Adipiscing elit ut aliquam purus sit.",
                             },
@@ -371,8 +371,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mathurin-napoly-matnapo-pIJ34ZrZEEw-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Vitae tempus quam pellentesque nec nam aliquam sem et. Fringilla urna porttitor rhoncus dolor purus non enim praesent elementum. Congue nisi vitae suscipit tellus mauris a diam maecenas. Quis varius quam quisque id diam.",
                             },
@@ -395,8 +395,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/andrew-solok-LbckXdUVOlY-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -412,8 +412,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/hassan-kibwana-fmXLB_uHIh4-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -429,8 +429,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/craig-manners-LvJCFOW3Ma8-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -446,8 +446,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/albert-stoynov-fEdf0fig3os-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -463,8 +463,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ehimetalor-akhere-unuabona-yS0uBoF4xDo-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -569,8 +569,8 @@ export const content = {
                         image: {
                             src: "assets/images/heidi-kaden-L_U4jhwZ6hY-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -618,8 +618,8 @@ export const content = {
                         image: {
                             src: "assets/images/hannah-busing-0V6DmTuJaIk-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -667,8 +667,8 @@ export const content = {
                         image: {
                             src: "assets/images/martin-jernberg-jVNWCFwdjZU-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -726,8 +726,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/kevin-wang-t7vEVxwGGm0-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -743,8 +743,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/claudio-schwarz-3cWxxW2ggKE-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -768,8 +768,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/braden-collum-9HI8UJMSdZA-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -785,8 +785,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/geoff-scott-8lUTnkZXZSA-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -816,8 +816,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jonathan-simcoe-S9J1HqoL9ns-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Cras semper auctor neque vitae tempus quam pellentesque. Consequat ac felis donec et odio pellentesque. Eu consequat ac felis donec et odio pellentesque diam volutpat. Suscipit tellus mauris a diam maecenas sed enim ut sem.",
                             },
@@ -826,8 +826,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/markus-spiske-p2Xor4Lbrrk-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Sed faucibus turpis in eu mi bibendum neque. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi. In iaculis nunc sed augue lacus viverra. Pellentesque nec nam aliquam sem et. Tellus mauris a diam maecenas sed.",
                             },
@@ -836,8 +836,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/marius-oprea-ySA9uj7zSmw-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Mattis vulputate enim nulla aliquet. Ac tortor dignissim convallis aenean. Nulla posuere sollicitudin aliquam ultrices sagittis orci a scelerisque. Consequat ac felis donec et odio pellentesque diam. Lorem ipsum dolor sit amet consectetur adipiscing.",
                             },
@@ -854,8 +854,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jannis-brandt-mmsQUgMLqUo-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Vitae tortor condimentum lacinia quis. Nisl nisi scelerisque eu ultrices vitae. Id velit ut tortor pretium viverra suspendisse potenti nullam. Viverra accumsan in nisl nisi scelerisque eu ultrices vitae.",
                             },
@@ -864,8 +864,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/martha-dominguez-de-gouveia-k-NnVZ-z26w-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Ullamcorper malesuada proin libero nunc consequat. Imperdiet sed euismod nisi porta. Arcu cursus vitae congue mauris rhoncus aenean vel. Enim nunc faucibus a pellentesque. Gravida in fermentum et sollicitudin ac orci phasellus.",
                             },
@@ -874,8 +874,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/freestocks-nss2eRzQwgw-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Morbi tristique senectus et netus et malesuada fames. Sit amet cursus sit amet dictum sit. Sagittis vitae et leo duis ut diam quam. Non consectetur a erat nam at lectus. Massa massa ultricies mi quis hendrerit dolor magna eget est.",
                             },
@@ -892,8 +892,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/little-plant-TZw891-oMio-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Integer enim neque volutpat ac. Feugiat sed lectus vestibulum mattis. Ullamcorper malesuada proin libero nunc consequat interdum varius sit amet. Mattis molestie a iaculis at erat pellentesque. Adipiscing elit duis tristique sollicitudin.",
                             },
@@ -902,8 +902,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/allan-wadsworth-Lp78NT-mf9o-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Dignissim sodales ut eu sem integer. Mauris cursus mattis molestie a iaculis at erat. Tempus quam pellentesque nec nam aliquam sem et tortor. Id diam vel quam elementum pulvinar etiam non quam.",
                             },
@@ -912,8 +912,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ant-rozetsky-SLIFI67jv5k-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Massa vitae tortor condimentum lacinia quis vel eros. Platea dictumst vestibulum rhoncus est pellentesque. Sollicitudin tempor id eu nisl nunc mi ipsum faucibus vitae. Sed risus ultricies tristique nulla aliquet. Magna sit amet purus gravida quis blandit turpis cursus in.",
                             },
@@ -936,8 +936,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/alexandre-debieve-FO7JIlwjOtU-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -953,8 +953,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/thisisengineering-ZPeXrWxOjRQ-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -978,8 +978,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/isaw-company-Oqv_bQbZgS8-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -995,8 +995,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/aditya-chinchure-ZhQCZjr9fHo-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -1025,8 +1025,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/tamara-bellis-IwVRO3TLjLc-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Nunc aliquet bibendum enim facilisis gravida neque. Nec feugiat in fermentum posuere urna. Molestie at elementum eu facilisis sed odio morbi. Scelerisque purus semper eget duis at tellus.",
                             },
@@ -1035,8 +1035,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/david-lezcano-NfZiOJzZgcg-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Eget dolor morbi non arcu risus quis. Non curabitur gravida arcu ac tortor dignissim.",
                             },
@@ -1052,8 +1052,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/heidi-fin-2TLREZi7BUg-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Quam lacus suspendisse faucibus interdum. In pellentesque massa placerat duis ultricies lacus sed. Convallis a cras semper auctor neque vitae tempus quam. Ut pharetra sit amet aliquam id diam.",
                             },
@@ -1062,8 +1062,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/joshua-rawson-harris-YNaSz-E7Qss-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam. Eu feugiat pretium nibh ipsum consequat.",
                             },
@@ -1079,8 +1079,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/arturo-rey-5yP83RhaFGA-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Non tellus orci ac auctor augue mauris augue neque gravida. Nulla facilisi nullam vehicula ipsum a arcu cursus vitae. Quam nulla porttitor massa id neque aliquam vestibulum morbi. Diam quis enim lobortis scelerisque.",
                             },
@@ -1089,8 +1089,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/clem-onojeghuo-RLJnH4Mt9A0-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Haretra diam sit amet nisl suscipit adipiscing bibendum est ultricies. Senectus et netus et malesuada fames.",
                             },
@@ -1106,8 +1106,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ashim-d-silva-ZmgJiztRHXE-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "It amet porttitor eget dolor morbi non. Sed lectus vestibulum mattis ullamcorper. Laoreet id donec ultrices tincidunt arcu non. Quam adipiscing vitae proin sagittis.",
                             },
@@ -1116,8 +1116,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/toa-heftiba--abWByT3yg4-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Mollis aliquam ut porttitor leo a diam. Nunc aliquet bibendum enim facilisis gravida neque convallis.",
                             },
@@ -1148,8 +1148,8 @@ export const content = {
                         image: {
                             src: "assets/images/todd-trapani-vS54KomBEJU-unsplash_684.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "684",
+                            height: "385",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -1171,8 +1171,8 @@ export const content = {
                         image: {
                             src: "assets/images/mufid-majnun-tJJIGh703I4-unsplash_336.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "336",
+                            height: "189",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -1190,8 +1190,8 @@ export const content = {
                         image: {
                             src: "assets/images/noaa--urO88VoCRE-unsplash_336.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "336",
+                            height: "189",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -1226,8 +1226,8 @@ export const content = {
                         image: {
                             src: "assets/images/fons-heijnsbroek-vBfEZdpEr-E-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -1260,8 +1260,8 @@ export const content = {
                         image: {
                             src: "assets/images/bram-naus-oqnVnI5ixHg-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -1290,8 +1290,8 @@ export const content = {
                         image: {
                             src: "assets/images/hansjorg-keller-CQqyv5uldW4-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -1334,8 +1334,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/unseen-histories-4kYkKW8v8rY-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Nisl nisi scelerisque eu ultrices vitae. Consectetur adipiscing elit duis tristique sollicitudin. Ornare suspendisse sed nisi lacus. Justo eget magna fermentum iaculis.",
                             },
@@ -1344,8 +1344,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ian-hutchinson-P8rgDtEFn7s-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Tellus integer feugiat scelerisque varius morbi enim. Ut tristique et egestas quis.",
                             },
@@ -1354,8 +1354,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/koshu-kunii-ADLj1cyFfV8-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Nulla malesuada pellentesque elit eget gravida cum sociis natoque penatibus.",
                             },
@@ -1372,8 +1372,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/matthew-landers-v8UgmRa6UDg-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Pharetra et ultrices neque ornare aenean euismod elementum nisi. Ipsum dolor sit amet consectetur adipiscing elit ut.",
                             },
@@ -1382,8 +1382,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/c-j-1GHqOftzYo0-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Quam vulputate dignissim suspendisse in est. Vestibulum mattis ullamcorper velit sed.",
                             },
@@ -1392,8 +1392,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jacob-licht-8nA_iHrxHIo-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Habitant morbi tristique senectus et netus et. Ullamcorper sit amet risus nullam eget felis.",
                             },
@@ -1410,8 +1410,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/maria-lysenko-tZvkSuBleso-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Bibendum enim facilisis gravida neque convallis a cras. Semper feugiat nibh sed pulvinar proin gravida hendrerit.",
                             },
@@ -1420,8 +1420,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/peter-thomas-17EJD0QdKFI-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Vel facilisis volutpat est velit. Odio ut sem nulla pharetra diam sit amet nisl.",
                             },
@@ -1430,8 +1430,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/xan-griffin-QxNkzEjB180-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Risus nec feugiat in fermentum posuere urna nec. Massa tincidunt nunc pulvinar sapien.",
                             },
@@ -1533,8 +1533,8 @@ export const content = {
                         image: {
                             src: "assets/images/chloe-taranto-x2zyAOmVNtM-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -1567,8 +1567,8 @@ export const content = {
                         image: {
                             src: "assets/images/razvan-chisu-Ua-agENjmI4-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -1597,8 +1597,8 @@ export const content = {
                         image: {
                             src: "assets/images/colin-lloyd-2ULmNrj44QY-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -1640,8 +1640,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/dominic-hampton-_8aRumOixtI-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -1655,8 +1655,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/sam-mcghee-4siwRamtFAk-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -1670,8 +1670,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/adam-whitlock-I9j8Rk-JYFM-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -1685,8 +1685,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/leah-hetteberg-kTVN2l0ZUv8-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -1798,8 +1798,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/dillon-kydd-2keCPb73aQY-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -1815,8 +1815,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/aaron-huber-G7sE2S4Lab4-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -1840,8 +1840,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mesut-kaya-eOcyhe5-9sQ-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -1857,8 +1857,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/diego-jimenez-A-NVHPka9Rk-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -1888,8 +1888,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/craig-melville-_JKymnZ1Uc4-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Et tortor at risus viverra adipiscing at. Leo urna molestie at elementum eu facilisis sed. Adipiscing tristique risus nec feugiat in fermentum posuere urna.",
                             },
@@ -1898,8 +1898,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/robert-bye-EILw-nEK46k-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Luctus venenatis lectus magna fringilla. Condimentum mattis pellentesque id nibh tortor id. Rhoncus aenean vel elit scelerisque mauris pellentesque.",
                             },
@@ -1908,8 +1908,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/sapan-patel-gmgWd0CgWQI-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Feugiat scelerisque varius morbi enim nunc. Amet consectetur adipiscing elit ut aliquam purus sit amet luctus. Orci a scelerisque purus semper eget duis at tellus at.",
                             },
@@ -1926,8 +1926,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/prince-abban-0OUHhvNIbYc-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Vitae sapien pellentesque habitant morbi tristique. Quisque id diam vel quam elementum pulvinar etiam non. Hendrerit gravida rutrum quisque non tellus orci.",
                             },
@@ -1936,8 +1936,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/quick-ps-sW41y3lETZk-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Rhoncus dolor purus non enim praesent. Massa enim nec dui nunc mattis. Odio eu feugiat pretium nibh ipsum consequat. Bibendum enim facilisis gravida neque convallis a cras.",
                             },
@@ -1946,8 +1946,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/lorenzo-moschi-N7ypjB7HKIk-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Cursus euismod quis viverra nibh. Facilisis mauris sit amet massa. Eget mauris pharetra et ultrices. Vitae turpis massa sed elementum tempus egestas sed. Semper viverra nam libero justo.",
                             },
@@ -1964,8 +1964,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/koshu-kunii-v9ferChkC9A-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Iaculis nunc sed augue lacus viverra. Sed libero enim sed faucibus turpis in. Massa tincidunt dui ut ornare. Adipiscing bibendum est ultricies integer quis auctor elit.",
                             },
@@ -1974,8 +1974,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/angela-loria-hFc0JEKD4Cc-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Aliquet nec ullamcorper sit amet risus nullam eget felis eget. Tortor dignissim convallis aenean et tortor at risus. Dolor sed viverra ipsum nunc.",
                             },
@@ -1984,8 +1984,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/harold-mendoza-6xafY_AE1LM-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "In cursus turpis massa tincidunt dui ut ornare. Lacus vestibulum sed arcu non odio euismod lacinia at. Mi ipsum faucibus vitae aliquet nec. Commodo sed egestas egestas fringilla phasellus faucibus scelerisque eleifend.",
                             },
@@ -2008,8 +2008,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/libre-leung-9O0Sp22DF0I-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -2025,8 +2025,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/pascal-bullan-M8sQPAfhPdk-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -2050,8 +2050,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/brooke-lark-HjWzkqW1dgI-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -2067,8 +2067,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/matthias-heil-lDOEwat_MPs-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -2097,8 +2097,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/tadeusz-lakota-Tb38UzCvKCY-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Mi tempus imperdiet nulla malesuada pellentesque elit eget gravida cum. Nec tincidunt praesent semper feugiat nibh sed pulvinar proin.",
                             },
@@ -2114,8 +2114,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/leisara-studio-EzzW1oNek-I-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Sed cras ornare arcu dui vivamus arcu. Blandit aliquam etiam erat velit scelerisque in. Nisl rhoncus mattis rhoncus urna neque viverra.",
                             },
@@ -2131,8 +2131,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/tamanna-rumee-lpGm415q9JA-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Nunc sed id semper risus in hendrerit gravida rutrum. Ac felis donec et odio pellentesque diam volutpat commodo sed.",
                             },
@@ -2148,8 +2148,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/clark-street-mercantile-P3pI6xzovu0-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Semper quis lectus nulla at volutpat diam ut venenatis tellus. Felis eget nunc lobortis mattis aliquam faucibus purus in massa. Et malesuada fames ac turpis.",
                             },
@@ -2176,8 +2176,8 @@ export const content = {
                         image: {
                             src: "assets/images/will-shirley-xRKcHoCOA4Y-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2195,8 +2195,8 @@ export const content = {
                         image: {
                             src: "assets/images/nuno-alberto-MykFFC5zolE-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2214,8 +2214,8 @@ export const content = {
                         image: {
                             src: "assets/images/nikita-karimov-lvJZhHOIJJ4-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2254,8 +2254,8 @@ export const content = {
                         image: {
                             src: "assets/images/azhar-j-t2hgHV1R7_g-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2272,8 +2272,8 @@ export const content = {
                         image: {
                             src: "assets/images/adrian-dascal-myAz-buELXs-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2290,8 +2290,8 @@ export const content = {
                         image: {
                             src: "assets/images/mike-enerio-7ryPpZK1qV8-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2333,8 +2333,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/greg-rakozy-oMpAz-DN-9I-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -2348,8 +2348,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/annie-spratt-KiOHnBkLQQU-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -2363,8 +2363,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/noaa-Led9c1SSNFo-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -2378,8 +2378,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/paul-hanaoka-s0XabTAKvak-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -2404,8 +2404,8 @@ export const content = {
                         image: {
                             src: "assets/images/venti-views-KElJx4R4Py8-unsplash_684.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "684",
+                            height: "385",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2447,8 +2447,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/koshu-kunii-cWEGNQqcImk-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Semper auctor neque vitae tempus quam pellentesque nec nam aliquam.",
                             },
@@ -2457,8 +2457,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/kenny-K72n3BHgHCg-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Viverra maecenas accumsan lacus vel facilisis volutpat.",
                             },
@@ -2467,8 +2467,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/kitthitorn-chaiyuthapoom-TOH_gw5dd20-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Orci sagittis eu volutpat odio facilisis mauris sit.",
                             },
@@ -2486,8 +2486,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/olga-guryanova-tMFeatBSS4s-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Nunc aliquet bibendum enim facilisis gravida neque convallis a.",
                             },
@@ -2496,8 +2496,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jed-owen-ajZibDGpPew-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Ut diam quam nulla porttitor massa id neque aliquam vestibulum.",
                             },
@@ -2506,8 +2506,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/noaa-FY3vXNBl1v4-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Magna fermentum iaculis eu non diam phasellus vestibulum lorem.",
                             },
@@ -2526,8 +2526,8 @@ export const content = {
                         image: {
                             src: "assets/images/christian-lue-8Yw6tsB8tnc-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2556,8 +2556,8 @@ export const content = {
                         image: {
                             src: "assets/images/ian-taylor-kAWTCt7p7rs-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2574,8 +2574,8 @@ export const content = {
                         image: {
                             src: "assets/images/axp-photography-v6pAkO31d50-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2633,8 +2633,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ilyass-seddoug-06w8RxgSzF0-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Morbi quis commodo odio aenean sed adipiscing diam. Congue mauris rhoncus aenean vel elit scelerisque mauris pellentesque. Justo nec ultrices dui sapien.",
                             },
@@ -2643,8 +2643,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mathias-reding-yfXhqAW5X0c-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Nibh nisl condimentum id venenatis a condimentum. Id diam maecenas ultricies mi eget mauris pharetra et ultrices. Faucibus turpis in eu mi bibendum neque egestas. Et malesuada fames ac turpis egestas sed tempus urna et.",
                             },
@@ -2653,8 +2653,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/matthew-tenbruggencate-0HJWobhGhJs-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Ut etiam sit amet nisl purus in mollis nunc sed. Pellentesque adipiscing commodo elit at imperdiet dui. Ac tortor vitae purus faucibus ornare suspendisse sed nisi lacus. Enim facilisis gravida neque convallis.",
                             },
@@ -2671,8 +2671,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/markus-spiske-wIUxLHndcLw-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Donec massa sapien faucibus et molestie. Fermentum iaculis eu non diam. Donec pretium vulputate sapien nec sagittis. Placerat duis ultricies lacus sed. Pretium lectus quam id leo in vitae turpis massa.",
                             },
@@ -2681,8 +2681,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jakub-zerdzicki-VnTR3XFwxWs-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Luctus accumsan tortor posuere ac ut. Convallis posuere morbi leo urna molestie at elementum. Nisi est sit amet facilisis magna etiam tempor orci eu.",
                             },
@@ -2691,8 +2691,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/guillaume-perigois-HL4LEIyGEYU-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Purus in massa tempor nec feugiat nisl pretium fusce. Fermentum odio eu feugiat pretium nibh ipsum consequat nisl vel. Vestibulum sed arcu non odio euismod lacinia at quis.",
                             },
@@ -2709,8 +2709,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mika-baumeister-jXPQY1em3Ew-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "ristique senectus et netus et malesuada. Orci phasellus egestas tellus rutrum tellus pellentesque eu tincidunt. Varius quam quisque id diam vel quam elementum pulvinar. Quis imperdiet massa tincidunt nunc pulvinar sapien et ligula.",
                             },
@@ -2719,8 +2719,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/chris-leboutillier-c7RWVGL8lPA-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Cras ornare arcu dui vivamus arcu felis bibendum ut. Volutpat blandit aliquam etiam erat velit scelerisque in dictum. Pharetra magna ac placerat vestibulum lectus.",
                             },
@@ -2729,8 +2729,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mulyadi-JeCNRxGLSp4-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Leo integer malesuada nunc vel. Porttitor lacus luctus accumsan tortor posuere ac ut consequat. Ultrices eros in cursus turpis massa tincidunt dui ut. Eleifend mi in nulla posuere sollicitudin.",
                             },
@@ -2749,8 +2749,8 @@ export const content = {
                         image: {
                             src: "assets/images/noaa-I323ZqSkkn8-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2783,8 +2783,8 @@ export const content = {
                         image: {
                             src: "assets/images/david-vives-Nzbkev7SQTg-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2817,8 +2817,8 @@ export const content = {
                         image: {
                             src: "assets/images/kelli-dougal-vbiQ_7vwfrs-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -2861,8 +2861,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/luis-cortes-QrPDA15pRkM-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -2878,8 +2878,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/juli-kosolapova-4PE3X9eKsu4-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -2903,8 +2903,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/olga-guryanova-ft7vJxwl2RY-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -2920,8 +2920,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/christian-tenguan-P3gfVKhz8d0-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -2951,8 +2951,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/martin-podsiad-wrdtA9lew9E-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Phasellus faucibus scelerisque eleifend donec pretium. Tellus molestie nunc non blandit. Sed sed risus pretium quam vulputate dignissim suspendisse.",
                             },
@@ -2961,8 +2961,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/valtteri-laukkanen-9u9Pc0t9vKM-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "In vitae turpis massa sed. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit. Egestas pretium aenean pharetra magna ac placerat vestibulum.",
                             },
@@ -2971,8 +2971,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/alec-favale-dLctr-PqFys-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Morbi tempus iaculis urna id volutpat lacus laoreet non. Dignissim convallis aenean et tortor at risus viverra adipiscing at. Nibh tortor id aliquet lectus proin nibh nisl.",
                             },
@@ -2989,8 +2989,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ani-kolleshi-7jjnJ-QA9fY-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Id diam maecenas ultricies mi eget mauris pharetra. Aliquam sem fringilla ut morbi tincidunt augue interdum. Accumsan sit amet nulla facilisi morbi tempus iaculis.",
                             },
@@ -2999,8 +2999,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/piron-guillaume-U4FyCp3-KzY-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "In fermentum posuere urna nec tincidunt praesent semper feugiat nibh. Dolor sit amet consectetur adipiscing elit pellentesque habitant. Eget dolor morbi non arcu risus quis varius quam quisque.",
                             },
@@ -3009,8 +3009,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/hush-naidoo-jade-photography-ZCO_5Y29s8k-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Commodo sed egestas egestas fringilla phasellus faucibus. Lectus urna duis convallis convallis. Sit amet tellus cras adipiscing enim eu turpis egestas.",
                             },
@@ -3027,8 +3027,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ibrahim-rifath-OApHds2yEGQ-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Ante in nibh mauris cursus mattis molestie. Vestibulum sed arcu non odio euismod lacinia at quis. Consequat semper viverra nam libero justo laoreet.",
                             },
@@ -3037,8 +3037,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mika-baumeister-bGZZBDvh8s4-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Nunc non blandit massa enim nec dui nunc. Lobortis feugiat vivamus at augue eget arcu. Tempor commodo ullamcorper a lacus. Malesuada bibendum arcu vitae elementum curabitur vitae.",
                             },
@@ -3047,8 +3047,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/shubham-dhage-tT6GNIFkZv4-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "In nulla posuere sollicitudin aliquam ultrices sagittis orci a. Sem fringilla ut morbi tincidunt augue interdum. Arcu felis bibendum ut tristique et egestas. Praesent elementum facilisis leo vel fringilla est ullamcorper.",
                             },
@@ -3071,8 +3071,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/dino-reichmuth-A5rCN8626Ck-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -3088,8 +3088,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ross-parmly-rf6ywHVkrlY-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -3113,8 +3113,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/caglar-oskay-d0Be8Vs9XRk-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -3130,8 +3130,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/oguzhan-edman-ZWPkHLRu3_4-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -3160,8 +3160,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jakub-zerdzicki-qcRGVZNZ5js-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Et sollicitudin ac orci phasellus. Massa placerat duis ultricies lacus sed turpis tincidunt id.",
                             },
@@ -3177,8 +3177,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/arnel-hasanovic-MNd-Rka1o0Q-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Neque volutpat ac tincidunt vitae semper. Nunc pulvinar sapien et ligula. Quam pellentesque nec nam aliquam sem et tortor consequat.",
                             },
@@ -3194,8 +3194,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ilaria-de-bona-RuFfpBsaRY0-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Velit euismod in pellentesque massa placerat duis ultricies. Nulla aliquet enim tortor at auctor. Vitae et leo duis ut diam quam nulla porttitor massa.",
                             },
@@ -3211,8 +3211,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/k8-uYf_C34PAao-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Eros in cursus turpis massa tincidunt dui ut ornare lectus. Pulvinar neque laoreet suspendisse interdum consectetur libero id faucibus nisl.",
                             },
@@ -3242,8 +3242,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/emmanuel-ikwuegbu-ceawFbpA-14-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -3259,8 +3259,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mr-cup-fabien-barral-Mwuod2cm8g4-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -3276,8 +3276,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/colin-lloyd-uaM_Ijy_joY-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -3293,8 +3293,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/sara-cottle-bGjtWs8sXT0-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -3310,8 +3310,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/elimende-inagella-7OxV_qDiGRI-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -3338,8 +3338,8 @@ export const content = {
                         image: {
                             src: "assets/images/alexander-grey-8lnbXtxFGZw-unsplash_684.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "684",
+                            height: "385",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -3381,8 +3381,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/red-dot-Q98X_JVRGS0-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Nunc aliquet bibendum enim facilisis gravida neque. Nec feugiat in fermentum posuere urna. Molestie at elementum eu facilisis sed odio morbi. Scelerisque purus semper eget duis at tellus.",
                             },
@@ -3391,8 +3391,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/parker-johnson-v0OWc_skg0g-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Eget dolor morbi non arcu risus quis. Non curabitur gravida arcu ac tortor dignissim.",
                             },
@@ -3406,8 +3406,8 @@ export const content = {
                         image: {
                             src: "assets/images/valery-tenevoy-c0VbjkPEfmM-unsplash_336.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "336",
+                            height: "189",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -3446,8 +3446,8 @@ export const content = {
                         image: {
                             src: "assets/images/scott-graham-OQMZwNd3ThU-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -3480,8 +3480,8 @@ export const content = {
                         image: {
                             src: "assets/images/campaign-creators-pypeCEaJeZY-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -3514,8 +3514,8 @@ export const content = {
                         image: {
                             src: "assets/images/priscilla-du-preez-GgtxccOjIXE-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -3541,8 +3541,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ruben-valenzuela-JEp9cl5jfZA-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -3556,8 +3556,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/gregory-hayes-h5cd51KXmRQ-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -3571,8 +3571,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/alan-rodriguez-qrD-g7oc9is-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -3586,8 +3586,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/redd-f-N9CYH-H_gBE-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -3615,8 +3615,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/dyana-wing-so-Og16Foo-pd8-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Est ullamcorper eget nulla facilisi etiam dignissim. Est pellentesque elit ullamcorper dignissim cras. Velit euismod in pellentesque massa placerat duis ultricies.",
                             },
@@ -3625,8 +3625,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/colin-lloyd-NKS5gg7rWGw-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Vitae suscipit tellus mauris a diam maecenas sed enim. Aenean sed adipiscing diam donec. Laoreet suspendisse interdum consectetur libero id faucibus nisl tincidunt.",
                             },
@@ -3635,8 +3635,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jon-tyson-0BLE1xp5HBQ-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Mattis enim ut tellus elementum sagittis vitae et. Massa sapien faucibus et molestie.",
                             },
@@ -3653,8 +3653,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/clay-banks-BY-R0UNRE7w-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Platea dictumst quisque sagittis purus sit amet volutpat. Ante in nibh mauris cursus mattis molestie a iaculis.",
                             },
@@ -3663,8 +3663,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/kelly-sikkema-A-lovieAmjA-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Quis hendrerit dolor magna eget est. Pellentesque pulvinar pellentesque habitant morbi tristique. Adipiscing commodo elit at imperdiet dui.",
                             },
@@ -3673,8 +3673,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/chad-stembridge-sEHrIPpkKQY-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Donec pretium vulputate sapien nec sagittis aliquam. Cras adipiscing enim eu turpis egestas pretium aenean.",
                             },
@@ -3691,8 +3691,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/derick-mckinney-muhK4oeYJiU-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Cursus sit amet dictum sit amet justo donec enim. Tempor id eu nisl nunc. Amet cursus sit amet dictum sit amet justo donec.",
                             },
@@ -3701,8 +3701,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/marek-studzinski-9U9I-eVx9nI-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Enim diam vulputate ut pharetra sit amet aliquam. Tristique senectus et netus et malesuada.",
                             },
@@ -3711,8 +3711,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/2h-media-lPcQhLP-b4I-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Eu turpis egestas pretium aenean. Auctor elit sed vulputate mi sit amet. In nibh mauris cursus mattis molestie.",
                             },
@@ -3804,8 +3804,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/vanilla-bear-films-JEwNQerg3Hs-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Nunc aliquet bibendum enim facilisis gravida neque. Nec feugiat in fermentum posuere urna. Molestie at elementum eu facilisis sed odio morbi. Scelerisque purus semper eget duis at tellus.",
                             },
@@ -3814,8 +3814,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/dani-navarro-6CnGzrLwM28-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Eget dolor morbi non arcu risus quis. Non curabitur gravida arcu ac tortor dignissim.",
                             },
@@ -3824,8 +3824,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/wan-san-yip-ID1yWa1Wpx0-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Eget dolor morbi non arcu risus quis. Non curabitur gravida arcu ac tortor dignissim.",
                             },
@@ -3842,8 +3842,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/david-beale--lQR8yeDzek-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Tellus in metus vulputate eu scelerisque felis imperdiet proin fermentum.",
                             },
@@ -3852,8 +3852,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/arnaud-jaegers-IBWJsMObnnU-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Adipiscing tristique risus nec feugiat in fermentum posuere vulputate eu scelerisque.",
                             },
@@ -3862,8 +3862,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/kevin-rajaram-qhixFFO8EWQ-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Potenti nullam ac tortor vitae purus. Adipiscing diam donec adipiscing tristique risus nec feugiat in fermentum.",
                             },
@@ -3886,8 +3886,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/kyle-glenn-gcw_WWu_uBQ-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -3903,8 +3903,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/toa-heftiba-4xe-yVFJCvw-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -3928,8 +3928,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/harri-kuokkanen-SEtUeWL8bIQ-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -3945,8 +3945,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ednilson-cardoso-dos-santos-haiooWA_weo-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -3976,8 +3976,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/markus-spiske-7PMGUqYQpYc-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Consequat ac felis donec et. Libero nunc consequat interdum varius sit amet mattis vulputate enim. Cursus euismod quis viverra nibh cras pulvinar mattis nunc. Nisi lacus sed viverra tellus in hac. Aliquam malesuada bibendum arcu vitae elementum curabitur.",
                             },
@@ -3986,8 +3986,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/viktor-talashuk-05HLFQu8bFw-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Neque gravida in fermentum et sollicitudin ac orci. Pretium aenean pharetra magna ac placerat vestibulum lectus mauris ultrices. Fermentum leo vel orci porta non pulvinar neque laoreet.",
                             },
@@ -3996,8 +3996,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/anastassia-anufrieva-ecHGTPfjNfA-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Egestas diam in arcu cursus. Aliquam eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis. Augue ut lectus arcu bibendum at varius vel pharetra.",
                             },
@@ -4014,8 +4014,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/bianca-ackermann-qr0-lKAOZSk-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Aliquam eleifend mi in nulla posuere sollicitudin. Tempor nec feugiat nisl pretium fusce. Fermentum iaculis eu non diam phasellus vestibulum lorem. Scelerisque eleifend donec pretium vulputate sapien nec. Sit amet aliquam id diam maecenas ultricies mi.",
                             },
@@ -4024,8 +4024,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/phil-hearing-bu27Y0xg7dk-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Morbi leo urna molestie at elementum eu. Phasellus vestibulum lorem sed risus. Aliquet bibendum enim facilisis gravida neque. Aliquam sem et tortor consequat id porta. Interdum varius sit amet mattis vulputate enim nulla aliquet. Enim nulla aliquet porttitor lacus luctus accumsan tortor.",
                             },
@@ -4034,8 +4034,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mika-baumeister-Hm4zYX-BDxk-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Molestie nunc non blandit massa. Adipiscing diam donec adipiscing tristique risus nec feugiat in. Odio morbi quis commodo odio aenean sed adipiscing diam donec. Felis eget velit aliquet sagittis id consectetur purus ut. Odio ut enim blandit volutpat maecenas.",
                             },
@@ -4052,8 +4052,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/wesley-tingey-7BkCRNwh_V0-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Risus viverra adipiscing at in tellus integer feugiat scelerisque. Porttitor eget dolor morbi non arcu risus quis varius quam. Consectetur adipiscing elit ut aliquam purus sit. Pulvinar mattis nunc sed blandit.",
                             },
@@ -4062,8 +4062,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/miguel-bruna-TzVN0xQhWaQ-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Non curabitur gravida arcu ac tortor dignissim. Purus in mollis nunc sed id semper risus in hendrerit. Vestibulum morbi blandit cursus risus. Pellentesque nec nam aliquam sem et tortor. Ac tortor dignissim convallis aenean et.",
                             },
@@ -4072,8 +4072,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/clay-banks-cisdc-344vo-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Ullamcorper a lacus vestibulum sed arcu non. Pharetra sit amet aliquam id diam. Viverra vitae congue eu consequat ac felis donec. Amet massa vitae tortor condimentum lacinia quis vel eros.",
                             },
@@ -4092,8 +4092,8 @@ export const content = {
                         image: {
                             src: "assets/images/marc-olivier-jodoin-_eclsGKsUdo-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4126,8 +4126,8 @@ export const content = {
                         image: {
                             src: "assets/images/sandip-roy-4hgTlYb9jzg-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4160,8 +4160,8 @@ export const content = {
                         image: {
                             src: "assets/images/maksym-harbar-okn8ZIjPMxI-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4204,8 +4204,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ronda-darby-HbMLSB-uhQY-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -4221,8 +4221,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/dominic-bieri-vXRt4rFr4hI-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -4246,8 +4246,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/inaki-del-olmo-NIJuEQw0RKg-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -4263,8 +4263,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/matt-popovich-7mqsZsE6FaU-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -4293,8 +4293,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/maksim-larin-tecILYzVAzg-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Duis at consectetur lorem donec massa.",
                             },
@@ -4310,8 +4310,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/evie-calder-97CO-A4P0GQ-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Eget mi proin sed libero enim sed. Proin libero nunc consequat interdum varius.",
                             },
@@ -4327,8 +4327,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/domino-studio-164_6wVEHfI-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Porta nibh venenatis cras sed felisDolor sit amet consectetur adipiscing elit ut aliquam purus sit.",
                             },
@@ -4344,8 +4344,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/pat-taylor-12V36G17IbQ-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Nisl vel pretium lectus quam id leo in vitae. Ultrices neque ornare aenean euismod elementum nisi quis eleifend quam. Eget nullam non nisi est sit. Aliquet enim tortor at auctor urna.",
                             },
@@ -4372,8 +4372,8 @@ export const content = {
                         image: {
                             src: "assets/images/truckrun-XBWF6_TEsFM-unsplash_684.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "684",
+                            height: "385",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4395,8 +4395,8 @@ export const content = {
                         image: {
                             src: "assets/images/glenn-carstens-peters-npxXWgQ33ZQ-unsplash_336.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "336",
+                            height: "189",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4414,8 +4414,8 @@ export const content = {
                         image: {
                             src: "assets/images/kenny-eliason-4N3iHYmqy_E-unsplash_336.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "336",
+                            height: "189",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4438,8 +4438,8 @@ export const content = {
                         image: {
                             src: "assets/images/anne-nygard-tcJ6sJTtTWI-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4456,8 +4456,8 @@ export const content = {
                         image: {
                             src: "assets/images/maxim-hopman-IayKLkmz6g0-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4474,8 +4474,8 @@ export const content = {
                         image: {
                             src: "assets/images/alex-hudson-7AgqAZbogOQ-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4502,8 +4502,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/chris-leboutillier-TUJud0AWAPI-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Bibendum arcu vitae elementum curabitur vitae nunc sed. Ipsum faucibus vitae aliquet nec ullamcorper sit. Blandit libero volutpat sed cras ornare arcu dui. Maecenas sed enim ut sem viverra aliquet.",
                             },
@@ -4512,8 +4512,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/nasa-Q1p7bh3SHj8-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Arcu risus quis varius quam quisque id diam vel quam. Sed risus pretium quam vulputate dignissim suspendisse in. Amet aliquam id diam maecenas ultricies mi. Egestas dui id ornare arcu odio.",
                             },
@@ -4522,8 +4522,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/markus-spiske-Nph1oyRsHm4-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "At risus viverra adipiscing at in tellus. Morbi tempus iaculis urna id volutpat lacus laoreet non. Eu volutpat odio facilisis mauris sit amet. Leo urna molestie at elementum eu facilisis sed.",
                             },
@@ -4540,8 +4540,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/denys-nevozhai-z0nVqfrOqWA-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Ut etiam sit amet nisl purus in mollis nunc sed. Eget mauris pharetra et ultrices neque ornare aenean. Magna sit amet purus gravida quis blandit turpis.",
                             },
@@ -4550,8 +4550,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/taylor-grote-UiVe5QvOhao-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Eu nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper. Viverra aliquet eget sit amet tellus cras. Consequat id porta nibh venenatis. Ac felis donec et odio pellentesque diam volutpat commodo sed.",
                             },
@@ -4560,8 +4560,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/linkedin-sales-solutions--AXDunSs-n4-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Montes nascetur ridiculus mus mauris vitae ultricies leo integer. Habitasse platea dictumst vestibulum rhoncus est pellentesque elit.",
                             },
@@ -4578,8 +4578,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/tierra-mallorca-rgJ1J8SDEAY-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis mauris sit amet massa vitae tortor condimentum lacinia.",
                             },
@@ -4588,8 +4588,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/stephen-phillips-hostreviews-co-uk-em37kS8WJJQ-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Ipsum nunc aliquet bibendum enim facilisis gravida neque convallis. At in tellus integer feugiat scelerisque varius morbi enim. Nisi vitae suscipit tellus mauris a.",
                             },
@@ -4598,8 +4598,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/roberto-junior-4fsCBcZt9H8-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Diam sollicitudin tempor id eu nisl nunc mi ipsum faucibus. In pellentesque massa placerat duis ultricies lacus sed.",
                             },
@@ -4622,8 +4622,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/carl-nenzen-loven-c-pc2mP7hTs-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -4639,8 +4639,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/devi-puspita-amartha-yahya-7ln0pST_O8M-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -4656,8 +4656,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/bernd-dittrich-Xk1IfNnEhRA-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -4673,8 +4673,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/crystal-kwok-xD5SWy7hMbw-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -4700,8 +4700,8 @@ export const content = {
                         image: {
                             src: "assets/images/austin-distel-rxpThOwuVgE-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4718,8 +4718,8 @@ export const content = {
                         image: {
                             src: "assets/images/memento-media-XhYq-5KnxSk-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4736,8 +4736,8 @@ export const content = {
                         image: {
                             src: "assets/images/austin-distel-97HfVpyNR1M-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -4764,8 +4764,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/bruce-mars-xj8qrWvuOEs-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -4781,8 +4781,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ryan-plomp-TT6Hep-JzrU-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -4806,8 +4806,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/robert-bye-xHUZuSwVJg4-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -4823,8 +4823,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jay-clark-P3sLerH3UmM-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -4938,8 +4938,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/annie-spratt-IT6aov1ScW0-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Pretium fusce id velit ut tortor pretium viverra suspendisse potenti. Nisi scelerisque eu ultrices vitae auctor eu. Amet massa vitae tortor condimentum lacinia quis vel. In arcu cursus euismod quis.",
                             },
@@ -4948,8 +4948,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/tech-daily-vxTWpu14zeM-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Tempus urna et pharetra pharetra massa massa ultricies mi. Vestibulum lorem sed risus ultricies tristique nulla aliquet enim. Sit amet luctus venenatis lectus magna fringilla urna.",
                             },
@@ -4958,8 +4958,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/markus-spiske-jgOkEjVw-KM-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Viverra adipiscing at in tellus integer feugiat scelerisque varius morbi. Massa tempor nec feugiat nisl pretium fusce id. Elit ut aliquam purus sit amet luctus.",
                             },
@@ -4976,8 +4976,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/boris-stefanik-q49CgyIrLes-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Risus quis varius quam quisque id diam vel quam. Risus at ultrices mi tempus imperdiet nulla malesuada. Aliquet enim tortor at auctor urna. Sapien et ligula ullamcorper malesuada proin libero. Nunc sed augue lacus viverra vitae congue.",
                             },
@@ -4986,8 +4986,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/m-ZzOa5G8hSPI-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Quisque id diam vel quam elementum pulvinar etiam non. Lacus laoreet non curabitur gravida arcu ac tortor dignissim convallis. Ac ut consequat semper viverra nam libero justo.",
                             },
@@ -4996,8 +4996,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/matthew-henry-0Ol8Sa2n21c-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Pulvinar etiam non quam lacus suspendisse faucibus interdum posuere lorem. Enim facilisis gravida neque convallis. Quis blandit turpis cursus in hac habitasse platea.",
                             },
@@ -5014,8 +5014,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/dylan-calluy-j9q18vvHitg-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Pellentesque pulvinar pellentesque habitant morbi tristique senectus et netus et. Sed enim ut sem viverra aliquet eget. Porttitor lacus luctus accumsan tortor. Sit amet justo donec enim diam.",
                             },
@@ -5024,8 +5024,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/yucel-moran-4ndj0pATzeM-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Nibh sit amet commodo nulla facilisi nullam vehicula. Lectus mauris ultrices eros in cursus turpis massa. Egestas fringilla phasellus faucibus scelerisque eleifend donec pretium. Sed adipiscing diam donec adipiscing tristique risus nec feugiat in.",
                             },
@@ -5034,8 +5034,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/stefan-stefancik-pzA7QWNCIYg-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Consectetur lorem donec massa sapien faucibus. Aliquet porttitor lacus luctus accumsan tortor. Pharetra pharetra massa massa ultricies mi. Aliquam id diam maecenas ultricies mi eget mauris pharetra. Rhoncus urna neque viverra justo nec ultrices dui sapien eget.",
                             },
@@ -5141,8 +5141,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/alice-pasqual-Olki5QpHxts-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -5158,8 +5158,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/lukasz-radziejewski-cg4MzL_eSvU-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -5183,8 +5183,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/microsoft-365-f1zQuagWCTA-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -5200,8 +5200,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/emran-yousof-k8ZbMQWbx34-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -5230,8 +5230,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/junko-nakase-Q-72wa9-7Dg-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Facilisis magna etiam tempor orci eu lobortis elementum nibh tellus. Morbi enim nunc faucibus a pellentesque sit amet porttitor eget.",
                             },
@@ -5240,8 +5240,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/heather-ford-5gkYsrH_ebY-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Cursus vitae congue mauris rhoncus aenean vel elit. Ultrices neque ornare aenean euismod elementum nisi. Aliquet risus feugiat in ante metus dictum at tempor commodo.",
                             },
@@ -5257,8 +5257,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/metin-ozer-hShrr0WvrQs-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Sit amet aliquam id diam maecenas ultricies. Magna sit amet purus gravida quis blandit. Risus nullam eget felis eget nunc. Ac felis donec et odio pellentesque diam volutpat commodo sed.",
                             },
@@ -5267,8 +5267,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mac-blades-jpgJSBQtw5U-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Purus faucibus ornare suspendisse sed nisi lacus. Malesuada nunc vel risus commodo. Pretium fusce id velit ut tortor pretium viverra suspendisse potenti.",
                             },
@@ -5284,8 +5284,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/keagan-henman-xPJYL0l5Ii8-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Aliquam malesuada bibendum arcu vitae elementum curabitur. A pellentesque sit amet porttitor eget dolor morbi non.",
                             },
@@ -5294,8 +5294,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/erik-mclean-ByjIzFupcHo-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Tortor at auctor urna nunc id cursus metus aliquam. Facilisis magna etiam tempor orci. Eu nisl nunc mi ipsum faucibus vitae aliquet.",
                             },
@@ -5311,8 +5311,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ixography-05Q_XPF_YKs-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Cursus mattis molestie a iaculis at. Nullam eget felis eget nunc. Tortor id aliquet lectus proin nibh nisl condimentum id.",
                             },
@@ -5321,8 +5321,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/harley-davidson-fFbUdx80oCc-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "arius morbi enim nunc faucibus a pellentesque sit amet porttitor. Blandit libero volutpat sed cras. Sed viverra ipsum nunc aliquet bibendum.",
                             },
@@ -5349,8 +5349,8 @@ export const content = {
                         image: {
                             src: "assets/images/milad-fakurian-58Z17lnVS4U-unsplash_684.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "684",
+                            height: "385",
                         },
                         meta: {
                             tag: {
@@ -5371,8 +5371,8 @@ export const content = {
                         image: {
                             src: "assets/images/no-revisions-UhpAf0ySwuk-unsplash_336.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "336",
+                            height: "189",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -5389,8 +5389,8 @@ export const content = {
                         image: {
                             src: "assets/images/national-cancer-institute-YvvFRJgWShM-unsplash_336.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "336",
+                            height: "189",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -5413,8 +5413,8 @@ export const content = {
                         image: {
                             src: "assets/images/rebe-pascual-SACRQSof7Qw-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -5447,8 +5447,8 @@ export const content = {
                         image: {
                             src: "assets/images/fanga-studio-bOfCOy3_4wU-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -5481,8 +5481,8 @@ export const content = {
                         image: {
                             src: "assets/images/jakob-dalbjorn-cuKJre3nyYc-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -5509,8 +5509,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/dibakar-roy-K9JwokzSvrc-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Egestas congue quisque egestas diam in arcu. Sollicitudin tempor id eu nisl nunc mi.",
                             },
@@ -5519,8 +5519,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/anatol-rurac-NeSj0i6HLak-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "A condimentum vitae sapien pellentesque habitant morbi tristique senectus. Neque laoreet suspendisse interdum consectetur.",
                             },
@@ -5529,8 +5529,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/anatol-rurac-b5t2lqeCGfA-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Dui vivamus arcu felis bibendum. Sit amet purus gravida quis blandit turpis cursus in.",
                             },
@@ -5547,8 +5547,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/neil-thomas-SIU1Glk6v5k-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Malesuada fames ac turpis egestas integer eget. Ante metus dictum at tempor commodo ullamcorper. Ipsum dolor sit amet consectetur.",
                             },
@@ -5557,8 +5557,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jon-tyson-ne2mqMgER8Y-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Dictumst quisque sagittis purus sit amet. Cras fermentum odio eu feugiat pretium. Pretium aenean pharetra magna ac placerat vestibulum lectus.",
                             },
@@ -5567,8 +5567,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/nonresident-nizUHtSIrKM-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Et odio pellentesque diam volutpat commodo sed egestas egestas. Sagittis aliquam malesuada bibendum arcu vitae elementum curabitur.",
                             },
@@ -5585,8 +5585,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/alev-takil-fYyYz38bUkQ-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Nullam eget felis eget nunc. Fames ac turpis egestas integer eget aliquet nibh praesent tristique.",
                             },
@@ -5595,8 +5595,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/bermix-studio-yUnSMBogWNI-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Massa ultricies mi quis hendrerit dolor magna eget est.",
                             },
@@ -5605,8 +5605,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/pierre-bamin-lM4_Nmcj4Xk-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Ut tellus elementum sagittis vitae et leo duis ut. Purus ut faucibus pulvinar elementum integer enim.",
                             },
@@ -5625,8 +5625,8 @@ export const content = {
                         image: {
                             src: "assets/images/matthew-ball-3wW2fBjptQo-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -5664,8 +5664,8 @@ export const content = {
                         image: {
                             src: "assets/images/peter-conlan-LEgwEaBVGMo-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -5703,8 +5703,8 @@ export const content = {
                         image: {
                             src: "assets/images/vladislav-babienko-KTpSVEcU0XU-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -5751,8 +5751,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/daniel-staple-N320vzTBviA-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -5766,8 +5766,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/clem-onojeghuo-DoA2duXyzRM-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -5781,8 +5781,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/egor-myznik-GFHKMW6KiJ0-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -5796,8 +5796,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/trung-thanh-LgdDeuBcgIY-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -5821,8 +5821,8 @@ export const content = {
                         image: {
                             src: "assets/images/tingey-injury-law-firm-9SKhDFnw4c4-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -5855,8 +5855,8 @@ export const content = {
                         image: {
                             src: "assets/images/tachina-lee--wjk_SSqCE4-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -5889,8 +5889,8 @@ export const content = {
                         image: {
                             src: "assets/images/etienne-girardet-RqOyRtYGhLg-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -6016,8 +6016,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/alexander-kirov-YhDJXJjmxUQ-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -6033,8 +6033,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/paola-chaaya-QrbuLFT6ypw-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -6058,8 +6058,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/sean-lee-hDqRQmcjM3s-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -6075,8 +6075,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/nathan-dumlao-laCrvNG3F_I-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -6106,8 +6106,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/tatjana-petkevica-iad-dMBDdoo-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Nibh sed pulvinar proin gravida hendrerit lectus. Habitasse platea dictumst quisque sagittis purus sit amet. Mi sit amet mauris commodo quis.",
                             },
@@ -6116,8 +6116,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/nathan-cima-TQuq2OtLBNU-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Nascetur ridiculus mus mauris vitae ultricies leo integer malesuada. Arcu non odio euismod lacinia. Ac turpis egestas sed tempus urna.",
                             },
@@ -6126,8 +6126,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/artur-voznenko-rwPIQQPz1ew-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Lectus sit amet est placerat in. Auctor augue mauris augue neque gravida in fermentum. Duis convallis convallis tellus id interdum.",
                             },
@@ -6144,8 +6144,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/zac-gudakov-wwqZ8CM21gg-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Venenatis tellus in metus vulputate eu scelerisque felis. Orci phasellus egestas tellus rutrum tellus pellentesque eu. Id leo in vitae turpis massa sed elementum.",
                             },
@@ -6154,8 +6154,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/pat-whelen-68OkRwuOeyQ-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Feugiat vivamus at augue eget arcu dictum varius duis at. Ultrices mi tempus imperdiet nulla malesuada pellentesque elit eget.",
                             },
@@ -6164,8 +6164,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/tania-mousinho-YlpfE9uCakE-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Eget sit amet tellus cras adipiscing enim eu. Dictum at tempor commodo ullamcorper a lacus. Lectus proin nibh nisl condimentum id venenatis a condimentum vitae.",
                             },
@@ -6182,8 +6182,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/maksym-kaharlytskyi-Y0z9MyDsrU0-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Mattis rhoncus urna neque viverra. Hendrerit gravida rutrum quisque non tellus orci ac. Ut venenatis tellus in metus.",
                             },
@@ -6192,8 +6192,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/maja-kochanowska-EiJQdDI_t_Y-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Enim ut tellus elementum sagittis vitae et leo duis. Dictumst quisque sagittis purus sit amet volutpat consequat.",
                             },
@@ -6202,8 +6202,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/patti-black-FnV-PjAYHCI-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "urus ut faucibus pulvinar elementum integer enim neque. Commodo sed egestas egestas fringilla phasellus faucibus scelerisque.",
                             },
@@ -6226,8 +6226,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/rio-lecatompessy-cfDURuQKABk-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -6243,8 +6243,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/declan-sun-misAHv6YWkI-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -6268,8 +6268,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/astronaud23-ox3t0m3PUqA-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -6285,8 +6285,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/markus-spiske-lUc5pRFB25s-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -6315,8 +6315,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/sabri-tuzcu-kxR3hh0IRHU-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Nulla facilisi nullam vehicula ipsum. Sit amet tellus cras adipiscing enim eu turpis egestas pretium. Diam phasellus vestibulum lorem sed risus ultricies.",
                             },
@@ -6332,8 +6332,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/cardmapr-nl-s8F8yglbpjo-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Dictum fusce ut placerat orci nulla. Quis ipsum suspendisse ultrices gravida dictum fusce ut placerat.",
                             },
@@ -6349,8 +6349,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/leon-seibert-Xs3al4NpIFQ-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Sed cras ornare arcu dui vivamus. Eget nunc lobortis mattis aliquam faucibus purus in. Nulla facilisi nullam vehicula ipsum a. Sed faucibus turpis in eu mi bibendum.",
                             },
@@ -6366,8 +6366,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/sheelah-brennan-UOfERQF_pr4-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Mauris nunc congue nisi vitae suscipit tellus. Auctor augue mauris augue neque gravida in. Phasellus vestibulum lorem sed risus ultricies.",
                             },
@@ -6394,8 +6394,8 @@ export const content = {
                         image: {
                             src: "assets/images/benjamin-child-rOn57CBgyMo-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -6429,8 +6429,8 @@ export const content = {
                         image: {
                             src: "assets/images/louis-reed-pwcKF7L4-no-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -6464,8 +6464,8 @@ export const content = {
                         image: {
                             src: "assets/images/esther-ann-glpYh1cWf0o-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -6504,8 +6504,8 @@ export const content = {
                         image: {
                             src: "assets/images/melissa-askew-8n00CqwnqO8-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -6534,8 +6534,8 @@ export const content = {
                         image: {
                             src: "assets/images/marcelo-leal-6pcGTJDuf6M-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -6552,8 +6552,8 @@ export const content = {
                         image: {
                             src: "assets/images/nasa-cIX5TlQ_FgM-unsplash_448.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "448",
+                            height: "252",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -6598,8 +6598,8 @@ export const content = {
                         image: {
                             src: "assets/images/national-cancer-institute-A2CK97sS0ns-unsplash_684.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "684",
+                            height: "385",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -6621,8 +6621,8 @@ export const content = {
                         image: {
                             src: "assets/images/national-cancer-institute-NFvdKIhxYlU-unsplash_336.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "336",
+                            height: "189",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -6640,8 +6640,8 @@ export const content = {
                         image: {
                             src: "assets/images/myriam-zilles-KltoLK6Mk-g-unsplash_336.jpg",
                             alt: "Placeholder",
-                            width: "1280",
-                            height: "720",
+                            width: "336",
+                            height: "189",
                         },
                         meta: {
                             captions: "Photo taken by someone.",
@@ -6667,8 +6667,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mufid-majnun-J12RfFH-2ZE-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -6682,8 +6682,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/irwan-rbDE93-0hHs-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -6697,8 +6697,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/hyttalo-souza-a1p0Z7RSkL8-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -6712,8 +6712,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jaron-nix-7wWRXewYCH4-unsplash_684.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "684",
+                                    height: "385",
                                 },
                                 meta: {
                                     tag: {
@@ -6741,8 +6741,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/bruno-nascimento-PHIgYUGQPvU-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -6758,8 +6758,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/brooke-lark-lcZ9NxhOSlo-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -6775,8 +6775,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/kelly-sikkema-WIYtZU3PxsI-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -6792,8 +6792,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/robina-weermeijer-Pw9aFhc92P8-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -6809,8 +6809,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/sj-objio-8hHxO3iYuU0-unsplash_448.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "448",
+                                    height: "252",
                                 },
                                 meta: {
                                     tag: {
@@ -6840,8 +6840,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/scott-webb-U5kQvbQWoG0-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Dictumst quisque sagittis purus sit amet volutpat consequat. At imperdiet dui accumsan sit amet nulla facilisi. Felis bibendum ut tristique et egestas. Mus mauris vitae ultricies leo integer malesuada. Adipiscing at in tellus integer feugiat.",
                             },
@@ -6850,8 +6850,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/sven-mieke-Lx_GDv7VA9M-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Morbi non arcu risus quis varius quam quisque id. Enim nulla aliquet porttitor lacus luctus. Quis imperdiet massa tincidunt nunc pulvinar sapien et ligula ullamcorper. Tempor id eu nisl nunc mi ipsum faucibus vitae aliquet. Consequat semper viverra nam libero justo laoreet sit.",
                             },
@@ -6860,8 +6860,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/geert-pieters-NbpUM86Jo8Y-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Suscipit adipiscing bibendum est ultricies integer quis auctor elit. Gravida quis blandit turpis cursus in hac habitasse platea. Maecenas ultricies mi eget mauris pharetra et ultrices. Massa sed elementum tempus egestas sed.",
                             },
@@ -6878,8 +6878,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/boxed-water-is-better-y-TpYAlcBYM-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Nulla facilisi nullam vehicula ipsum a arcu cursus. Et ultrices neque ornare aenean euismod elementum nisi quis. Velit euismod in pellentesque massa. In fermentum posuere urna nec tincidunt praesent semper.",
                             },
@@ -6888,8 +6888,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jonathan-borba-lrQPTQs7nQQ-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Sit amet consectetur adipiscing elit duis tristique sollicitudin. Ante metus dictum at tempor commodo ullamcorper. Tincidunt eget nullam non nisi est sit. Platea dictumst quisque sagittis purus sit amet volutpat consequat.",
                             },
@@ -6898,8 +6898,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mr-lee-f4RBYsY2hxA-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Sed vulputate odio ut enim blandit volutpat maecenas. Risus viverra adipiscing at in. Fusce id velit ut tortor pretium viverra. Sem nulla pharetra diam sit amet nisl. Posuere urna nec tincidunt praesent semper feugiat nibh.",
                             },
@@ -6916,8 +6916,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ahmet-kurt-WviyUzOg4RU-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Massa massa ultricies mi quis hendrerit dolor magna. Cursus vitae congue mauris rhoncus aenean vel elit scelerisque. Vestibulum lorem sed risus ultricies tristique. Egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate.",
                             },
@@ -6926,8 +6926,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/stan-georgiev-pvNxRUq7O7U-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Massa enim nec dui nunc mattis enim ut tellus elementum. Eros in cursus turpis massa tincidunt dui. Sit amet consectetur adipiscing elit ut aliquam purus sit amet. Eget nullam non nisi est sit amet facilisis magna.",
                             },
@@ -6936,8 +6936,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/ahmet-kurt-5BGg2L5nhlU-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "enenatis tellus in metus vulputate eu scelerisque felis imperdiet proin. In eu mi bibendum neque egestas congue quisque egestas. Bibendum est ultricies integer quis auctor elit. Ipsum nunc aliquet bibendum enim facilisis. Magna fringilla urna porttitor rhoncus dolor purus non enim praesent.",
                             },
@@ -7044,8 +7044,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/drew-hays-tGYrlchfObE-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -7061,8 +7061,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/hush-naidoo-jade-photography-Zp7ebyti3MU-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -7086,8 +7086,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/mathurin-napoly-matnapo-ejWJ3a92FEs-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -7103,8 +7103,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/national-cancer-institute-KrsoedfRAf4-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -7134,8 +7134,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/kenny-eliason-5ddH9Y2accI-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Nec feugiat in fermentum posuere urna. Odio ut sem nulla pharetra. Est ultricies integer quis auctor elit sed. Dignissim cras tincidunt lobortis feugiat vivamus at augue eget.",
                             },
@@ -7144,8 +7144,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/brigitte-tohm-iIupxcq-yH4-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Egestas sed tempus urna et. Lorem ipsum dolor sit amet consectetur adipiscing elit pellentesque habitant.",
                             },
@@ -7154,8 +7154,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/brooke-lark-oaz0raysASk-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Sapien pellentesque habitant morbi tristique senectus et netus et malesuada. Dictum non consectetur a erat. Duis ut diam quam nulla porttitor.",
                             },
@@ -7172,8 +7172,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/christina-rumpf-gUU4MF87Ipw-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Sed viverra tellus in hac habitasse platea dictumst vestibulum. Nisi est sit amet facilisis magna etiam.",
                             },
@@ -7182,8 +7182,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/nathan-dumlao-bRdRUUtbxO0-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Convallis a cras semper auctor neque vitae tempus. Cursus risus at ultrices mi tempus imperdiet nulla.",
                             },
@@ -7192,8 +7192,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/maddi-bazzocco-qKbHvzXb85A-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Ut faucibus pulvinar elementum integer enim neque volutpat. Netus et malesuada fames ac turpis egestas sed tempus urna.",
                             },
@@ -7210,8 +7210,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/brooke-lark-IDTEXXXfS44-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Eget mauris pharetra et ultrices. In ante metus dictum at tempor commodo ullamcorper a. Ut sem nulla pharetra diam sit.",
                             },
@@ -7220,8 +7220,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/joseph-gonzalez-QaGDmf5tMiE-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Lacus sed turpis tincidunt id aliquet risus. Nulla facilisi etiam dignissim diam quis enim. Non curabitur gravida arcu ac tortor dignissim convallis aenean.",
                             },
@@ -7230,8 +7230,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/brooke-lark-GJMlSBS0FhU-unsplash_150.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "150",
+                                    height: "84",
                                 },
                                 text: "Aliquam etiam erat velit scelerisque in dictum non. Pretium fusce id velit ut tortor pretium viverra.",
                             },
@@ -7254,8 +7254,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/national-cancer-institute-cw2Zn2ZQ9YQ-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -7271,8 +7271,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/national-cancer-institute-GcrSgHDrniY-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -7296,8 +7296,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/national-cancer-institute-SMxzEaidR20-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -7313,8 +7313,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/national-cancer-institute-L7en7Lb-Ovc-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 meta: {
                                     tag: {
@@ -7343,8 +7343,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/dom-hill-nimElTcTNyY-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Eu sem integer vitae justo eget magna fermentum iaculis. Aenean pharetra magna ac placerat vestibulum lectus. Amet commodo nulla facilisi nullam.",
                             },
@@ -7360,8 +7360,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/sarah-dorweiler-gUPiTDBdRe4-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Nullam vehicula ipsum a arcu cursus vitae congue. Enim ut tellus elementum sagittis vitae et leo duis. Nulla malesuada pellentesque elit eget.",
                             },
@@ -7377,8 +7377,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/icons8-team-k5fUTay0ghw-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Est velit egestas dui id ornare arcu odio. Urna nunc id cursus metus. Pellentesque adipiscing commodo elit at imperdiet dui accumsan sit. At ultrices mi tempus imperdiet nulla malesuada pellentesque elit.",
                             },
@@ -7394,8 +7394,8 @@ export const content = {
                                 image: {
                                     src: "assets/images/jessica-weiller-So4eFi-d1nc-unsplash_336.jpg",
                                     alt: "Placeholder",
-                                    width: "1280",
-                                    height: "720",
+                                    width: "336",
+                                    height: "189",
                                 },
                                 title: "Erat imperdiet sed euismod nisi porta. Nullam ac tortor vitae purus faucibus ornare. Feugiat nisl pretium fusce id. Massa enim nec dui nunc mattis enim ut tellus elementum.",
                             },
