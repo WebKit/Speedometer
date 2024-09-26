@@ -119,7 +119,7 @@ describe("BenchmarkRunner", () => {
                 _removeFrameStub = stub(runner, "_removeFrame").callsFake(() => null);
                 for (const suite of runner._suites)
                     spy(suite, "prepare");
-
+                expect(runner._suites).not.to.have.length(0);
                 await runner.runAllSuites();
             });
 
