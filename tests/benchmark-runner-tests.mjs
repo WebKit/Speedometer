@@ -109,11 +109,12 @@ describe("BenchmarkRunner", () => {
 
     describe("Suite", () => {
         describe("runAllSuites", () => {
-            let _runSuiteStub, _finalizeStub, _appendFrameStub, _removeFrameStub;
+            let _runSuiteStub, _finalizeStub, _loadFrameStub,  _appendFrameStub, _removeFrameStub;
 
             before(async () => {
                 _runSuiteStub = stub(runner, "_runSuite").callsFake(async () => null);
                 _finalizeStub = stub(runner, "_finalize").callsFake(async () => null);
+                _loadFrameStub = stub(runner, "_loadFrame").callsFake(async () => null);
                 _appendFrameStub = stub(runner, "_appendFrame").callsFake(async () => null);
                 _removeFrameStub = stub(runner, "_removeFrame").callsFake(() => null);
                 for (const suite of runner._suites)
@@ -123,8 +124,12 @@ describe("BenchmarkRunner", () => {
             });
 
             it("should call prepare on all suites", () => {
-                for (const suite of runner._suites)
+                let suitesPrepareCount = 0;
+                for (const suite of runner._suites) {
+                    suitesPrepareCount += 1;
                     assert.calledOnce(suite.prepare);
+                }
+                expect(suitesPrepareCount).equal(2);
             });
 
             it("should run all test suites", async () => {
@@ -132,6 +137,7 @@ describe("BenchmarkRunner", () => {
             });
 
             it("should remove the previous frame and then the current frame", () => {
+                assert.calledTwice(_loadFrameStub);
                 assert.calledOnce(_appendFrameStub);
                 assert.calledTwice(_removeFrameStub);
             });
