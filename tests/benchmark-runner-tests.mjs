@@ -112,19 +112,19 @@ describe("BenchmarkRunner", () => {
             let _runSuiteStub, _finalizeStub, _appendFrameStub, _removeFrameStub;
 
             before(async () => {
-                _runSuiteStub = stub(runner, "runSuite").callsFake(async () => null);
+                _runSuiteStub = stub(runner, "_runSuite").callsFake(async () => null);
                 _finalizeStub = stub(runner, "_finalize").callsFake(async () => null);
                 _appendFrameStub = stub(runner, "_appendFrame").callsFake(async () => null);
                 _removeFrameStub = stub(runner, "_removeFrame").callsFake(() => null);
-                for (const suite in runner.suites)
+                for (const suite of runner._suites)
                     spy(suite, "prepare");
 
                 await runner.runAllSuites();
             });
 
             it("should call prepare on all suites", () => {
-                for (const suite in runner.suites)
-                    suite.prepare.calledOnce();
+                for (const suite of runner._suites)
+                    assert.calledOnce(suite.prepare);
             });
 
             it("should run all test suites", async () => {

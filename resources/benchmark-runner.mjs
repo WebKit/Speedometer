@@ -421,8 +421,8 @@ export class BenchmarkRunner {
         // We just do a simple Fisher-Yates shuffle based on the repeated hash of the
         // seed. This is not a high quality RNG, but it's plenty good enough.
         for (let i = 0; i < suites.length - 1; i++) {
-            let j = i + (this._suiteOrderRandomNumberGenerator() % (suites.length - i));
-            let tmp = suites[i];
+            const j = i + (this._suiteOrderRandomNumberGenerator() % (suites.length - i));
+            const tmp = suites[i];
             suites[i] = suites[j];
             suites[j] = tmp;
         }
