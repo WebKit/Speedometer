@@ -24,4 +24,4 @@ The test simulates a real-world user flow by loading a number of popular editor 
 
 The app was created with `npm create vite@latest editors`, and can be previewed with `npm run dev`. In order to update the files run in the harness you have to use `npm run build` which will recreate the `dist/` directory.
 
-The built test can be loaded within the harness using i.e. http://localhost:7000/?suite=Editor-CodeMirror&startAutomatically=true, or the static versions at http://localhost:7000/resources/editors/dist/.
+The built test can be loaded within the harness using i.e. http://localhost:8900/?suite=Editor-CodeMirror&startAutomatically=true, or the static versions at http://localhost:7000/resources/editors/dist/.

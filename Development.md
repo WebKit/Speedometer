@@ -25,9 +25,9 @@ In your working directory, open terminal and paste the following commands:
 
 1. In your terminal run:
     ```sh
-        npm run dev
+        PORT=8900 npm run dev # Passing the env var PORT is optional
     ```
-2. Open your browser of choice and navigate to [http://127.0.0.1:7000](http://127.0.0.1:7000)
+2. Open your browser of choice and navigate to [http://127.0.0.1:8900](http://127.0.0.1:8900)
 
 ## Local Server
 
