@@ -109,7 +109,7 @@ describe("BenchmarkRunner", () => {
 
     describe("Suite", () => {
         describe("runAllSuites", () => {
-            let _runSuiteStub, _finalizeStub, _loadFrameStub,  _appendFrameStub, _removeFrameStub;
+            let _runSuiteStub, _finalizeStub, _loadFrameStub, _appendFrameStub, _removeFrameStub;
 
             before(async () => {
                 _runSuiteStub = stub(runner, "_runSuite").callsFake(async () => null);
