@@ -129,7 +129,7 @@ describe("BenchmarkRunner", () => {
                     suitesPrepareCount += 1;
                     assert.calledOnce(suite.prepare);
                 }
-                expect(suitesPrepareCount).equal(2);
+                expect(suitesPrepareCount).equal(SUITES_FIXTURE.length);
             });
 
             it("should run all test suites", async () => {
