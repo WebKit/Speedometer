@@ -317,7 +317,7 @@ class TimerTestInvoker extends TestInvoker {
     }
 }
 
-class BaseRAFTestInvoker extends TestInvoker {
+class RAFTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
             if (params.waitBeforeSync)
@@ -326,9 +326,7 @@ class BaseRAFTestInvoker extends TestInvoker {
                 this._scheduleCallbacks(resolve);
         });
     }
-}
 
-class RAFTestInvoker extends BaseRAFTestInvoker {
     _scheduleCallbacks(resolve) {
         requestAnimationFrame(() => this._syncCallback());
         requestAnimationFrame(() => {
