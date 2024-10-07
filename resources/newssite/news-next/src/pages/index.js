@@ -26,7 +26,7 @@ export default function App() {
                     </Routes>
                 </Router>
             </DataContextProvider>
-            <Script src="./benchmark-connector.min.js" strategy="lazyOnload"/>
+            <Script src="./benchmark-connector.min.js" strategy="lazyOnload" />
         </>
     );
 }
