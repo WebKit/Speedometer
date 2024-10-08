@@ -432,7 +432,7 @@ export class BenchmarkRunner {
         let suites = [...this._suites];
         if (this._suiteOrderRandomNumberGenerator) {
             // We just do a simple Fisher-Yates shuffle based on the repeated hash of the
-        // seed. This is not a high quality RNG, but it's plenty good enough.
+            // seed. This is not a high quality RNG, but it's plenty good enough.
             for (let i = 0; i < suites.length - 1; i++) {
                 let j = i + (this._suiteOrderRandomNumberGenerator() % (suites.length - i));
                 let tmp = suites[i];
