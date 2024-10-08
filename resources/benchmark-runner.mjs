@@ -430,21 +430,24 @@ export class BenchmarkRunner {
 
         performance.mark(prepareStartLabel);
         let suites = [...this._suites];
-        if (this._suiteOrderRandomNumberGenerator) {
-            // We just do a simple Fisher-Yates shuffle based on the repeated hash of the
-            // seed. This is not a high quality RNG, but it's plenty good enough.
-            for (let i = 0; i < suites.length - 1; i++) {
-                let j = i + (this._suiteOrderRandomNumberGenerator() % (suites.length - i));
-                let tmp = suites[i];
-                suites[i] = suites[j];
-                suites[j] = tmp;
-            }
-        }
+        if (this._suiteOrderRandomNumberGenerator)
+            this._shuffleSuites(suites);
 
         performance.mark(prepareEndLabel);
         performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
 
         return suites;
+    }
+
+    _shuffleSuites(suites) {
+        // We just do a simple Fisher-Yates shuffle based on the repeated hash of the
+        // seed. This is not a high quality RNG, but it's plenty good enough.
+        for (let i = 0; i < suites.length - 1; i++) {
+            const j = i + (this._suiteOrderRandomNumberGenerator() % (suites.length - i));
+            const tmp = suites[i];
+            suites[i] = suites[j];
+            suites[j] = tmp;
+        }
     }
 
     async runAllSuites() {
