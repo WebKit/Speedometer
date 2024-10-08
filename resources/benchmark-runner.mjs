@@ -558,7 +558,7 @@ export class BenchmarkRunner {
             const frame = this._page._frame;
             frame.onload = () => resolve();
             frame.onerror = () => reject();
-            frame.src = suite.url;
+            frame.src = `${suite.url}?${params.toSearchParams()}`;
         });
     }
 

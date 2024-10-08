@@ -855,7 +855,7 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Next",
-    url: "resources/newssite/news-next/dist/index.html#/home",
+    url: "resources/newssite/news-next/dist/index.html",
     tags: ["newssite", "language"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
@@ -896,7 +896,7 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-PostMessage",
-    url: "resources/newssite/news-next/dist/",
+    url: "resources/newssite/news-next/dist/index.html",
     tags: ["experimental", "newssite", "language"],
     disabled: true,
     async prepare() {},
