@@ -36,14 +36,4 @@ window.benchmarkTestManager = new BenchmarkTestManager(window.name, [
             forceLayout();
         }),
     ]),
-    new BenchmarkTestSuite("Dropdown", [
-        new BenchmarkTestStep("Toggle-More-Dropdown", () => {
-            getElement("#navbar-dropdown-toggle").click();
-            forceLayout();
-        }),
-        new BenchmarkTestStep("Toggle-More-Dropdown", () => {
-            getElement("#navbar-dropdown-toggle").click();
-            forceLayout();
-        }),
-    ]),
 ]);

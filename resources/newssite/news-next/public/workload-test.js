@@ -35,15 +35,5 @@ window.benchmarkTestManager = new BenchmarkTestManager(window.name, [
             getElement("#navbar-navlist-politics-link").click();
             forceLayout();
         }),
-    ]),
-    new BenchmarkTestSuite("Dropdown", [
-        new BenchmarkTestStep("Toggle-More-Dropdown", () => {
-            getElement("#navbar-dropdown-toggle").click();
-            forceLayout();
-        }),
-        new BenchmarkTestStep("Toggle-More-Dropdown", () => {
-            getElement("#navbar-dropdown-toggle").click();
-            forceLayout();
-        }),
-    ]),
+    ])
 ]);

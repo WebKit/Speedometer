@@ -492,7 +492,7 @@ export class BenchmarkRunner {
 
         performance.mark(suitePrepareStartLabel);
         const response = await Promise.all([subscribeOnce({ type: "app-ready" }), this._loadFrame(suite), suite.prepare(this._page)]);
-        this._appId = response.find((value) => value.type === "app-ready")?.appId;
+        this._appId = response[0]?.appId;
         performance.mark(suitePrepareEndLabel);
 
         performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
