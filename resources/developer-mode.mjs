@@ -279,7 +279,7 @@ function updateURL() {
         }
     }
 
-    if (params.measurementMethod !== defaultParams.measurementMethod)
+    if (params.measurementMethod !== "raf")
         url.searchParams.set("measurementMethod", "timer");
     else
         url.searchParams.delete("measurementMethod");
