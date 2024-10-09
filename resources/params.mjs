@@ -25,6 +25,10 @@ class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    // Param to tweak the relative complexity of all suites.
+    // The default is 1.0, and for suites supporting this param, the duration
+    // roughly scales wit the complexity.
+    complexity = 1.0;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -35,8 +39,15 @@ class Params {
         }
     }
 
-    _parseInt(value, errorMessage) {
+    _parseNumber(value, errorMessage) {
         const number = Number(value);
+        if (!Number.isFinite(number) && errorMessage)
+            throw new Error(`Invalid ${errorMessage} param: '${value}', expected Number.`);
+        return number;
+    }
+
+    _parseInt(value, errorMessage) {
+        const number = this._parseNumber(value);
         if (!Number.isInteger(number) && errorMessage)
             throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
         return parseInt(number);
@@ -120,6 +131,13 @@ class Params {
                     throw new Error(`Invalid shuffle seed: '${this.shuffleSeed}', must be either 'off', 'generate' or an integer.`);
             }
             searchParams.delete("shuffleSeed");
+        }
+
+        if (searchParams.has("complexity")) {
+            this.complexity = this._parseNumber(searchParams.get("complexity"));
+            if (this.complexity <= 0)
+                throw new Error(`Invalid complexity value: ${this.complexity}, must be > 0.0`);
+            searchParams.delete("complexity");
         }
 
         const unused = Array.from(searchParams.keys());
