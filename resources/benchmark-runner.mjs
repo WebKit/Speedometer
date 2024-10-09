@@ -19,34 +19,6 @@ function getParent(lookupStartNode, path) {
     return parent;
 }
 
-export function startSubscription({ type, callback, once = false }) {
-    const stopSubscription = () => {
-        window.removeEventListener("message", handleMessage);
-    };
-
-    const handleMessage = (e) => {
-        if (e.data.type !== type)
-            return;
-
-        if (once)
-            stopSubscription();
-
-        callback?.(e);
-    };
-
-    window.addEventListener("message", handleMessage);
-
-    return { stopSubscription };
-}
-
-export function subscribeOnce({ type }) {
-    return new Promise((resolve) => {
-        startSubscription({ type, callback(e) {
-            resolve(e.data);
-        }, once: true });
-    });
-}
-
 class Page {
     constructor(frame) {
         this._frame = frame;
@@ -483,8 +455,11 @@ export class BenchmarkRunner {
     }
 
     async runRemoteSuite(suite) {
+        this.postMessageCallbacks = new Map();
+        window.addEventListener("message", this._handlePostMessage);
         await this._prepareRemoteSuite(suite);
         await this._runRemoteSuite(suite);
+        window.removeEventListener("message", this._handlePostMessage);
     }
 
     async _prepareRemoteSuite(suite) {
@@ -493,18 +468,23 @@ export class BenchmarkRunner {
         const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
 
         performance.mark(suitePrepareStartLabel);
-        const response = await Promise.all([subscribeOnce({ type: "app-ready" }), this._loadFrame(suite), suite.prepare(this._page)]);
-        this._appId = response[0]?.appId;
+
+        const promise = this._subscribeOnce({ type: "app-ready" });
+        await this._loadFrame(suite);
+        const response = await promise;
+        await suite.prepare(this._page);
+
+        this._appId = response?.appId;
         performance.mark(suitePrepareEndLabel);
 
         performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
     }
 
     async _runRemoteSuite(suite) {
-        const { stopSubscription } = startSubscription({ type: "step-complete", callback: async (e) => this._updateClient(e.data.name, e.data.test) });
+        this._startSubscription({ type: "step-complete", callback: async (e) => this._updateClient(e.data.name, e.data.test) });
         this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config?.name || "default" }, "*");
-        const response = await subscribeOnce({ type: "suite-complete" });
-        stopSubscription();
+        const response = await this._subscribeOnce({ type: "suite-complete" });
+        this._stopSubscription({ type: "step-complete" });
 
         this._measuredValues.tests[suite.name] = response.result;
         this._validateSuiteTotal(suite.name);
@@ -699,5 +679,33 @@ export class BenchmarkRunner {
 
         for (const metric of Object.values(this._metrics))
             metric.computeAggregatedMetrics();
+    }
+
+    _handlePostMessage = (e) => {
+        if (this.postMessageCallbacks.has(e.data.type))
+            this.postMessageCallbacks.get(e.data.type)(e);
+    };
+
+    _startSubscription({ type, callback }) {
+        if (this.postMessageCallbacks.has(type))
+            throw new Error("Callback exists already");
+
+        this.postMessageCallbacks.set(type, callback);
+    }
+
+    _stopSubscription({ type }) {
+        if (!this.postMessageCallbacks.has(type))
+            throw new Error("Callback does not exist");
+
+        this.postMessageCallbacks.delete(type);
+    }
+
+    _subscribeOnce({ type }) {
+        return new Promise((resolve) => {
+            this._startSubscription({ type, callback: (e) => {
+                this._stopSubscription({ type });
+                resolve(e.data);
+            } });
+        });
     }
 }
