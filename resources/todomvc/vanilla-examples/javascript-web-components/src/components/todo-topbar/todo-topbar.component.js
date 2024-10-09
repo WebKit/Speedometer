@@ -41,7 +41,8 @@ class TodoTopbar extends HTMLElement {
     }
 
     addItem(event) {
-        if (!event.target.value.length) return;
+        if (!event.target.value.length)
+            return;
 
         this.dispatchEvent(
             new CustomEvent("add-item", {
@@ -95,10 +96,12 @@ class TodoTopbar extends HTMLElement {
     }
 
     attributeChangedCallback(property, oldValue, newValue) {
-        if (oldValue === newValue) return;
+        if (oldValue === newValue)
+            return;
         this[property] = newValue;
 
-        if (this.isConnected) this.updateDisplay();
+        if (this.isConnected)
+            this.updateDisplay();
     }
 
     connectedCallback() {

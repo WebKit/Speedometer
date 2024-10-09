@@ -16,12 +16,15 @@ Suites.enable = function (names, tags) {
     if (names?.length) {
         const lowerCaseNames = names.map((each) => each.toLowerCase());
         this.forEach((suite) => {
-            if (lowerCaseNames.includes(suite.name.toLowerCase())) suite.disabled = false;
-            else suite.disabled = true;
+            if (lowerCaseNames.includes(suite.name.toLowerCase()))
+                suite.disabled = false;
+            else
+                suite.disabled = true;
         });
     } else if (tags?.length) {
         tags.forEach((tag) => {
-            if (!Tags.has(tag)) console.error(`Unknown Suites tag: "${tag}"`);
+            if (!Tags.has(tag))
+                console.error(`Unknown Suites tag: "${tag}"`);
         });
         const tagsSet = new Set(tags);
         this.forEach((suite) => {
@@ -33,7 +36,8 @@ Suites.enable = function (names, tags) {
             suite.disabled = !("default" in suite.tags);
         });
     }
-    if (this.some((suite) => !suite.disabled)) return;
+    if (this.some((suite) => !suite.disabled))
+        return;
     let message, debugInfo;
     if (names?.length) {
         message = `Suites "${names}" does not match any Suite. No tests to run.`;
@@ -72,11 +76,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -133,11 +139,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -161,11 +169,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -190,11 +200,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -218,11 +230,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -314,11 +328,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -342,11 +358,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -369,11 +387,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -397,11 +417,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -426,11 +448,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -456,11 +480,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -485,11 +511,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -513,11 +541,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -541,11 +571,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -570,11 +602,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -597,10 +631,12 @@ Suites.push({
             }
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
-            for (let i = 1; i <= numberOfItemsToAdd; i++) page.querySelector(`li:nth-child(${i}) .toggle`).click();
+            for (let i = 1; i <= numberOfItemsToAdd; i++)
+                page.querySelector(`li:nth-child(${i}) .toggle`).click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) page.querySelector(".destroy").click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                page.querySelector(".destroy").click();
         }),
     ],
 });
@@ -624,10 +660,12 @@ Suites.push({
             }
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
-            for (let i = 1; i <= numberOfItemsToAdd; i++) page.querySelector(`li:nth-child(${i}) .toggle`).click();
+            for (let i = 1; i <= numberOfItemsToAdd; i++)
+                page.querySelector(`li:nth-child(${i}) .toggle`).click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) page.querySelector(".destroy").click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                page.querySelector(".destroy").click();
         }),
     ],
 });
@@ -651,11 +689,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -678,11 +718,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -706,11 +748,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -733,11 +777,13 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const checkboxes = page.querySelectorAll(".toggle");
-            for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
+            for (let i = 0; i < numberOfItemsToAdd; i++)
+                checkboxes[i].click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {
             const deleteButtons = page.querySelectorAll(".destroy");
-            for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
+            for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                deleteButtons[i].click();
         }),
     ],
 });
@@ -992,7 +1038,8 @@ Suites.push({
             const coords = (i) => ({ clientX: x + i * 10, clientY: y + i * 2, bubbles: true, cancelable: true });
             for (let i = 0; i < 5; i++) {
                 cursor.dispatchEvent("mousedown", coords(0), MouseEvent);
-                for (let j = 0; j < 10; j++) cursor.dispatchEvent("mousemove", coords(j), MouseEvent);
+                for (let j = 0; j < 10; j++)
+                    cursor.dispatchEvent("mousemove", coords(j), MouseEvent);
                 cursor.dispatchEvent("mouseup", coords(10), MouseEvent);
             }
         }),
@@ -1007,7 +1054,8 @@ Suites.push({
                 bubbles: true,
                 cancelable: true,
             };
-            for (let i = 0; i < 15; i++) cursor.dispatchEvent("wheel", event, WheelEvent);
+            for (let i = 0; i < 15; i++)
+                cursor.dispatchEvent("wheel", event, WheelEvent);
         }),
     ],
 });
@@ -1055,10 +1103,14 @@ Suites.push({
 
 Object.freeze(Suites);
 Suites.forEach((suite) => {
-    if (!suite.tags) suite.tags = [];
-    if (suite.url.startsWith("experimental/")) suite.tags.unshift("all", "experimental");
-    else if (suite.disabled) suite.tags.unshift("all");
-    else suite.tags.unshift("all", "default");
+    if (!suite.tags)
+        suite.tags = [];
+    if (suite.url.startsWith("experimental/"))
+        suite.tags.unshift("all", "experimental");
+    else if (suite.disabled)
+        suite.tags.unshift("all");
+    else
+        suite.tags.unshift("all", "default");
     Object.freeze(suite.tags);
     Object.freeze(suite.steps);
 });

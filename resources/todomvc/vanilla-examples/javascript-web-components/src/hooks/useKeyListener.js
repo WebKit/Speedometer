@@ -3,7 +3,8 @@ export function useKeyListener(props) {
 
     function handleEvent(event) {
         Object.keys(callbacks).forEach((key) => {
-            if (event.key === key) callbacks[key](event);
+            if (event.key === key)
+                callbacks[key](event);
         });
     }
 

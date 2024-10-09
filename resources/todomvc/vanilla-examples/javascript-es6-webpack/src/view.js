@@ -12,7 +12,8 @@ const _setFilter = (currentPage) => {
 const _elementComplete = (id, completed) => {
     const listItem = qs(`[data-id="${id}"]`);
 
-    if (!listItem) return;
+    if (!listItem)
+        return;
 
     listItem.className = completed ? "completed" : "";
 
@@ -23,7 +24,8 @@ const _elementComplete = (id, completed) => {
 const _editItem = (id, title) => {
     const listItem = qs(`[data-id="${id}"]`);
 
-    if (!listItem) return;
+    if (!listItem)
+        return;
 
     listItem.className = `${listItem.className} editing`;
 
@@ -38,7 +40,8 @@ const _editItem = (id, title) => {
 const _editItemDone = (id, title) => {
     const listItem = qs(`[data-id="${id}"]`);
 
-    if (!listItem) return;
+    if (!listItem)
+        return;
 
     const input = qs("input.edit", listItem);
     listItem.removeChild(input);
@@ -58,7 +61,8 @@ const _itemId = (element) => {
 const _removeItem = (id, list) => {
     const elem = qs(`[data-id="${id}"]`);
 
-    if (elem) list.removeChild(elem);
+    if (elem)
+        list.removeChild(elem);
 };
 
 /**
@@ -164,7 +168,8 @@ export default class View {
                     }
                 });
                 $delegate(this.$todoList, "li .edit", "keypress", function (e) {
-                    if (e.keyCode === ENTER_KEY) e.target.blur();
+                    if (e.keyCode === ENTER_KEY)
+                        e.target.blur();
                 });
                 break;
             case "itemEditCancel":

@@ -139,16 +139,16 @@ export class TodoItem extends LitElement {
     ];
 
     @property()
-    todoId = "";
+        todoId = "";
 
     @property()
-    text = "";
+        text = "";
 
     @property({ type: Boolean })
-    completed = false;
+        completed = false;
 
     @state()
-    isEditing: boolean = false;
+        isEditing: boolean = false;
 
     override render() {
         const itemClassList = {
@@ -189,7 +189,8 @@ export class TodoItem extends LitElement {
     }
 
     #captureEscape(e: KeyboardEvent) {
-        if (e.key === "escape") this.#abortEdit(e);
+        if (e.key === "escape")
+            this.#abortEdit(e);
     }
 
     #abortEdit(e: Event) {

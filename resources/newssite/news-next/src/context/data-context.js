@@ -28,7 +28,8 @@ export const DataContextProvider = ({ children }) => {
 export const useDataContext = () => {
     const dataContext = useContext(DataContext);
 
-    if (!dataContext) throw new Error("A DataProvider must be rendered before using useDataContext");
+    if (!dataContext)
+        throw new Error("A DataProvider must be rendered before using useDataContext");
 
     return dataContext;
 };

@@ -42,7 +42,8 @@ const copy = async (src, dest) => {
 };
 
 const copyFilesToMove = async (files) => {
-    for (let i = 0; i < files.length; i++) await copy(files[i].src, `${targetDirectory}/${files[i].dest}`);
+    for (let i = 0; i < files.length; i++)
+        await copy(files[i].src, `${targetDirectory}/${files[i].dest}`);
 };
 
 const updateImports = async ({ file, src, dest }) => {
@@ -60,18 +61,21 @@ const build = async () => {
 
     // copy src folder
     await fs.cp(sourceDirectory, targetDirectory, { recursive: true }, (err) => {
-        if (err) console.error(err);
+        if (err)
+            console.error(err);
     });
 
     // copy files to Move
-    for (const key in filesToMove) copyFilesToMove(filesToMove[key]);
+    for (const key in filesToMove)
+        copyFilesToMove(filesToMove[key]);
 
     // read html file
     let contents = await fs.readFile(`${rootDirectory}/${htmlFile}`, "utf8");
 
     // remove base paths from files to move
     const filesToMoveForIndex = filesToMove.index;
-    for (let i = 0; i < filesToMoveForIndex.length; i++) contents = contents.replace(filesToMoveForIndex[i].src, filesToMoveForIndex[i].dest);
+    for (let i = 0; i < filesToMoveForIndex.length; i++)
+        contents = contents.replace(filesToMoveForIndex[i].src, filesToMoveForIndex[i].dest);
 
     // remove basePath from source directory
     const basePath = `${sourceDirectory.split("/")[1]}/`;

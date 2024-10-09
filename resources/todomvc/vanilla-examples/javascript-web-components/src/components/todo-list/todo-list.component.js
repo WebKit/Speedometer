@@ -52,7 +52,8 @@ class TodoList extends HTMLElement {
 
     removeCompletedItems() {
         this.#elements = this.#elements.filter((element) => {
-            if (element.itemcompleted === "true") element.removeItem();
+            if (element.itemcompleted === "true")
+                element.removeItem();
 
             return element.itemcompleted === "false";
         });
@@ -60,14 +61,18 @@ class TodoList extends HTMLElement {
 
     toggleItems(completed) {
         this.#elements.forEach((element) => {
-            if (completed && element.itemcompleted === "false") element.toggleInput.click();
-            else if (!completed && element.itemcompleted === "true") element.toggleInput.click();
+            if (completed && element.itemcompleted === "false")
+                element.toggleInput.click();
+            else if (!completed && element.itemcompleted === "true")
+                element.toggleInput.click();
         });
     }
 
     updateStyles() {
-        if (parseInt(this["total-items"]) !== 0) this.listNode.style.display = "block";
-        else this.listNode.style.display = "none";
+        if (parseInt(this["total-items"]) !== 0)
+            this.listNode.style.display = "block";
+        else
+            this.listNode.style.display = "none";
     }
 
     updateView(element) {
@@ -91,7 +96,8 @@ class TodoList extends HTMLElement {
             case "toggle-item":
             case "add-item":
                 this.#elements.forEach((element) => {
-                    if (element.itemid === id) this.updateView(element);
+                    if (element.itemid === id)
+                        this.updateView(element);
                 });
                 break;
             case "remove-item":
@@ -106,9 +112,11 @@ class TodoList extends HTMLElement {
     }
 
     attributeChangedCallback(property, oldValue, newValue) {
-        if (oldValue === newValue) return;
+        if (oldValue === newValue)
+            return;
         this[property] = newValue;
-        if (this.isConnected) this.updateStyles();
+        if (this.isConnected)
+            this.updateStyles();
     }
 
     connectedCallback() {

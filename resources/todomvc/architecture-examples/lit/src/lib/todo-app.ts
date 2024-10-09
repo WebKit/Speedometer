@@ -86,8 +86,8 @@ export class TodoApp extends LitElement {
             </main>
             <todo-footer
                 class="${classMap({
-                    hidden: this.todoList.all.length === 0,
-                })}"
+        hidden: this.todoList.all.length === 0,
+    })}"
                 .todoList=${this.todoList}
             ></todo-footer>
         </section>`;
