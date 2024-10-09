@@ -454,121 +454,18 @@ export class BenchmarkRunner {
     }
 
     async runSuite(suite) {
-        await this._prepareSuite(suite);
-        await this._runSuite(suite);
+        // FIXME: Encapsulate more state in the SuiteRunner.
+        // FIXME: Return and use measured values from SuiteRunner.
+        await new SuiteRunner(this, this._measuredValues, this._frame, this._page, this._client, suite).run();
     }
 
-    async _prepareSuite(suite) {
-        const suiteName = suite.name;
-        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
-        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
-
-        performance.mark(suitePrepareStartLabel);
-        await this._loadFrame(suite);
-        await suite.prepare(this._page);
-        performance.mark(suitePrepareEndLabel);
-
-        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
-    }
-
-    async _runSuite(suite) {
-        const suiteName = suite.name;
-        const suiteStartLabel = `suite-${suiteName}-start`;
-        const suiteEndLabel = `suite-${suiteName}-end`;
-
-        performance.mark(suiteStartLabel);
-        for (const test of suite.tests)
-            await this._runTestAndRecordResults(suite, test);
-        performance.mark(suiteEndLabel);
-
-        performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
-        this._validateSuiteTotal(suiteName);
-    }
-
-    _validateSuiteTotal(suiteName) {
-        // When the test is fast and the precision is low (for example with Firefox'
-        // privacy.resistFingerprinting preference), it's possible that the measured
-        // total duration for an entire is 0.
-        const suiteTotal = this._measuredValues.tests[suiteName].total;
-        if (suiteTotal === 0)
-            throw new Error(`Got invalid 0-time total for suite ${suiteName}: ${suiteTotal}`);
-    }
-
-    async _loadFrame(suite) {
+    async loadFrame(suite) {
         return new Promise((resolve, reject) => {
             const frame = this._page._frame;
             frame.onload = () => resolve();
             frame.onerror = () => reject();
             frame.src = suite.url;
         });
-    }
-
-    async _runTestAndRecordResults(suite, test) {
-        if (this._client?.willRunTest)
-            await this._client.willRunTest(suite, test);
-
-        // Prepare all mark labels outside the measuring loop.
-        const startLabel = `${suite.name}.${test.name}-start`;
-        const syncEndLabel = `${suite.name}.${test.name}-sync-end`;
-        const asyncStartLabel = `${suite.name}.${test.name}-async-start`;
-        const asyncEndLabel = `${suite.name}.${test.name}-async-end`;
-
-        let syncTime;
-        let asyncStartTime;
-        let asyncTime;
-        const runSync = () => {
-            if (params.warmupBeforeSync) {
-                performance.mark("warmup-start");
-                const startTime = performance.now();
-                // Infinite loop for the specified ms.
-                while (performance.now() - startTime < params.warmupBeforeSync)
-                    continue;
-                performance.mark("warmup-end");
-            }
-            performance.mark(startLabel);
-            const syncStartTime = performance.now();
-            test.run(this._page);
-            const syncEndTime = performance.now();
-            performance.mark(syncEndLabel);
-
-            syncTime = syncEndTime - syncStartTime;
-
-            performance.mark(asyncStartLabel);
-            asyncStartTime = performance.now();
-        };
-        const measureAsync = () => {
-            // Some browsers don't immediately update the layout for paint.
-            // Force the layout here to ensure we're measuring the layout time.
-            const height = this._frame.contentDocument.body.getBoundingClientRect().height;
-            const asyncEndTime = performance.now();
-            asyncTime = asyncEndTime - asyncStartTime;
-            this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
-            performance.mark(asyncEndLabel);
-            if (params.warmupBeforeSync)
-                performance.measure("warmup", "warmup-start", "warmup-end");
-            performance.measure(`${suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
-            performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
-        };
-        const report = () => this._recordTestResults(suite, test, syncTime, asyncTime);
-        const invokerClass = params.measurementMethod === "raf" ? RAFTestInvoker : TimerTestInvoker;
-        const invoker = new invokerClass(runSync, measureAsync, report);
-
-        return invoker.start();
-    }
-
-    async _recordTestResults(suite, test, syncTime, asyncTime) {
-        // Skip reporting updates for the warmup suite.
-        if (suite === WarmupSuite)
-            return;
-
-        const suiteResults = this._measuredValues.tests[suite.name] || { tests: {}, total: 0 };
-        const total = syncTime + asyncTime;
-        this._measuredValues.tests[suite.name] = suiteResults;
-        suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
-        suiteResults.total += total;
-
-        if (this._client?.didRunTest)
-            await this._client.didRunTest(suite, test);
     }
 
     async _finalize() {
@@ -639,5 +536,129 @@ export class BenchmarkRunner {
 
         for (const metric of Object.values(this._metrics))
             metric.computeAggregatedMetrics();
+    }
+}
+
+// FIXME: Create AsyncSuiteRunner subclass.
+// FIXME: Create RemoteSuiteRunner subclass.
+class SuiteRunner {
+    constructor(runner, measuredValues, frame, page, client, suite) {
+        this._runner = runner;
+        // FIXME: Create SuiteRunner-local measuredValues.
+        this._measuredValues = measuredValues;
+        this._frame = frame;
+        this._page = page;
+        this._client = client;
+        this._suite = suite;
+    }
+
+    async run() {
+        await this._prepareSuite();
+        await this._runSuite();
+    }
+
+    async _prepareSuite() {
+        const suiteName = this._suite.name;
+        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
+        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
+
+        performance.mark(suitePrepareStartLabel);
+        await this._runner.loadFrame(this._suite);
+        await this._suite.prepare(this._page);
+        performance.mark(suitePrepareEndLabel);
+
+        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+    }
+
+    async _runSuite(suite) {
+        const suiteName = this._suite.name;
+        const suiteStartLabel = `suite-${suiteName}-start`;
+        const suiteEndLabel = `suite-${suiteName}-end`;
+
+        performance.mark(suiteStartLabel);
+        for (const test of this._suite.tests)
+            await this._runTestAndRecordResults(test);
+        performance.mark(suiteEndLabel);
+
+        performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
+        this._validateSuiteTotal(suiteName);
+    }
+
+    async _runTestAndRecordResults(test) {
+        if (this._client?.willRunTest)
+            await this._client.willRunTest(this._suite, test);
+
+        // Prepare all mark labels outside the measuring loop.
+        const startLabel = `${this._suite.name}.${test.name}-start`;
+        const syncEndLabel = `${this._suite.name}.${test.name}-sync-end`;
+        const asyncStartLabel = `${this._suite.name}.${test.name}-async-start`;
+        const asyncEndLabel = `${this._suite.name}.${test.name}-async-end`;
+
+        let syncTime;
+        let asyncStartTime;
+        let asyncTime;
+        const runSync = () => {
+            if (params.warmupBeforeSync) {
+                performance.mark("warmup-start");
+                const startTime = performance.now();
+                // Infinite loop for the specified ms.
+                while (performance.now() - startTime < params.warmupBeforeSync)
+                    continue;
+                performance.mark("warmup-end");
+            }
+            performance.mark(startLabel);
+            const syncStartTime = performance.now();
+            test.run(this._page);
+            const syncEndTime = performance.now();
+            performance.mark(syncEndLabel);
+
+            syncTime = syncEndTime - syncStartTime;
+
+            performance.mark(asyncStartLabel);
+            asyncStartTime = performance.now();
+        };
+        const measureAsync = () => {
+            // Some browsers don't immediately update the layout for paint.
+            // Force the layout here to ensure we're measuring the layout time.
+            const height = this._frame.contentDocument.body.getBoundingClientRect().height;
+            const asyncEndTime = performance.now();
+            asyncTime = asyncEndTime - asyncStartTime;
+            this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
+            performance.mark(asyncEndLabel);
+            if (params.warmupBeforeSync)
+                performance.measure("warmup", "warmup-start", "warmup-end");
+            performance.measure(`${this._suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
+            performance.measure(`${this._suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
+        };
+        const report = () => this._recordTestResults(test, syncTime, asyncTime);
+        const invokerClass = params.measurementMethod === "raf" ? RAFTestInvoker : TimerTestInvoker;
+        const invoker = new invokerClass(runSync, measureAsync, report);
+
+        return invoker.start();
+    }
+
+    async _recordTestResults(test, syncTime, asyncTime) {
+        // Skip reporting updates for the warmup suite.
+        if (this._suite === WarmupSuite)
+            return;
+
+        const suiteResults = this._measuredValues.tests[this._suite.name] || { tests: {}, total: 0 };
+        const total = syncTime + asyncTime;
+        this._measuredValues.tests[this._suite.name] = suiteResults;
+        suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
+        suiteResults.total += total;
+
+        if (this._client?.didRunTest)
+            await this._client.didRunTest(this._suite, test);
+    }
+
+    _validateSuiteTotal() {
+        // When the test is fast and the precision is low (for example with Firefox'
+        // privacy.resistFingerprinting preference), it's possible that the measured
+        // total duration for an entire is 0.
+        const suiteName = this._suite.name;
+        const suiteTotal = this._measuredValues.tests[suiteName].total;
+        if (suiteTotal === 0)
+            throw new Error(`Got invalid 0-time total for suite ${suiteName}: ${suiteTotal}`);
     }
 }
