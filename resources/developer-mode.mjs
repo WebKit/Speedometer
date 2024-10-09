@@ -269,7 +269,7 @@ function updateURL() {
     }
 
     if (params.measurementMethod !== defaultParams.measurementMethod)
-        url.searchParams.set("measurementMethod", "timer");
+        url.searchParams.set("measurementMethod", params.measurementMethod);
     else
         url.searchParams.delete("measurementMethod");
 
