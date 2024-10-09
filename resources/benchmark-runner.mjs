@@ -456,7 +456,8 @@ export class BenchmarkRunner {
     async runSuite(suite) {
         // FIXME: Encapsulate more state in the SuiteRunner.
         // FIXME: Return and use measured values from SuiteRunner.
-        await new SuiteRunner(this, this._measuredValues, this._frame, this._page, this._client, suite).run();
+        const suiteRunner = new SuiteRunner(this, this._measuredValues, this._frame, this._page, this._client, suite);
+        await suiteRunner.run();
     }
 
     async loadFrame(suite) {
@@ -595,7 +596,8 @@ class SuiteRunner {
     }
 
     async _loadFrame(suite) {
-        this._runner.loadFrame(suite);
+        // FIXME: use BenchmarkRunner method directly.
+        await this._runner.loadFrame(suite);
     }
 
     async _runTestAndRecordResults(suite, test) {
