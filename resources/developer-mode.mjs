@@ -255,7 +255,7 @@ function updateURL() {
             else
                 commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
         }
-        if (commonTags.size) {
+        if (selectedSuites.length > 1 && commonTags.size) {
             const tags = [...commonTags][0];
             if (tags === "default")
                 url.searchParams.delete("tags");
@@ -268,7 +268,7 @@ function updateURL() {
         }
     }
 
-    if (params.measurementMethod !== "raf")
+    if (params.measurementMethod !== defaultParams.measurementMethod)
         url.searchParams.set("measurementMethod", "timer");
     else
         url.searchParams.delete("measurementMethod");
