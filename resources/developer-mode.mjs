@@ -268,13 +268,8 @@ function updateURL() {
         }
     }
 
-    if (params.measurementMethod !== defaultParams.measurementMethod)
-        url.searchParams.set("measurementMethod", params.measurementMethod);
-    else
-        url.searchParams.delete("measurementMethod");
-
-    const boolParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync"];
-    for (const paramKey of boolParamKeys) {
+    const defaultParamKeys = ["measurementMethod", "iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync"];
+    for (const paramKey of defaultParamKeys) {
         if (params[paramKey] !== defaultParams[paramKey])
             url.searchParams.set(paramKey, params[paramKey]);
         else
