@@ -41,7 +41,9 @@ export function startSubscription({ type, callback, once = false }) {
 
 export function subscribeOnce({ type }) {
     return new Promise((resolve) => {
-        startSubscription({ type, callback: (e) => resolve(e.data), once: true });
+        startSubscription({ type, callback(e) {
+            resolve(e.data);
+        }, once: true });
     });
 }
 
