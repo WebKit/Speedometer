@@ -11,8 +11,7 @@ class InteractiveBenchmarkRunner extends BenchmarkRunner {
     constructor(suites, iterationCount) {
         super(suites);
         this._client = this._createClient();
-        if (!Number.isInteger(iterationCount) || iterationCount <= 0)
-            throw Error("iterationCount must be a positive integer.");
+        if (!Number.isInteger(iterationCount) || iterationCount <= 0) throw Error("iterationCount must be a positive integer.");
         this._iterationCount = iterationCount;
     }
 
@@ -27,11 +26,9 @@ class InteractiveBenchmarkRunner extends BenchmarkRunner {
     }
 
     _start() {
-        if (this._isRunning)
-            throw Error("Runner was not stopped before starting;");
+        if (this._isRunning) throw Error("Runner was not stopped before starting;");
         this._isRunning = true;
-        if (this._isStepping)
-            this._stepPromise = this._newStepPromise();
+        if (this._isStepping) this._stepPromise = this._newStepPromise();
     }
 
     _step() {
@@ -59,8 +56,7 @@ class InteractiveBenchmarkRunner extends BenchmarkRunner {
         const classList = test.anchor.classList;
         classList.remove("running");
         classList.add("ran");
-        if (this._isStepping)
-            await this._stepPromise;
+        if (this._isStepping) await this._stepPromise;
     }
 
     _iterationDone(measuredValues) {
@@ -69,8 +65,7 @@ class InteractiveBenchmarkRunner extends BenchmarkRunner {
             let suiteResults = measuredValues.tests[suiteName];
             for (const testName in suiteResults.tests) {
                 let testResults = suiteResults.tests[testName];
-                for (const subtestName in testResults.tests)
-                    results += `${suiteName} : ${testName} : ${subtestName}: ${testResults.tests[subtestName]} ms\n`;
+                for (const subtestName in testResults.tests) results += `${suiteName} : ${testName} : ${subtestName}: ${testResults.tests[subtestName]} ms\n`;
             }
             results += `${suiteName} : ${suiteResults.total} ms\n`;
         }
@@ -79,8 +74,7 @@ class InteractiveBenchmarkRunner extends BenchmarkRunner {
         results += `Total : ${measuredValues.total} ms\n`;
         results += `Score : ${measuredValues.score} rpm\n`;
 
-        if (!results)
-            return;
+        if (!results) return;
 
         const pre = document.createElement("pre");
         document.body.appendChild(pre);
@@ -93,10 +87,8 @@ class InteractiveBenchmarkRunner extends BenchmarkRunner {
 
     runStep() {
         this._isStepping = true;
-        if (!this._isRunning)
-            this.runMultipleIterations(this._iterationCount);
-        else
-            this._step();
+        if (!this._isRunning) this.runMultipleIterations(this._iterationCount);
+        else this._step();
     }
 
     runSuites() {
@@ -196,18 +188,15 @@ function createUIForSuites(suites, onStep, onRunSuites) {
 }
 
 function startTest() {
-    if (params.suites.length > 0 || params.tags.length > 0)
-        Suites.enable(params.suites, params.tags);
+    if (params.suites.length > 0 || params.tags.length > 0) Suites.enable(params.suites, params.tags);
 
     const interactiveRunner = new window.BenchmarkRunner(Suites, params.iterationCount);
-    if (!(interactiveRunner instanceof InteractiveBenchmarkRunner))
-        throw Error("window.BenchmarkRunner must be a subclass of InteractiveBenchmarkRunner");
+    if (!(interactiveRunner instanceof InteractiveBenchmarkRunner)) throw Error("window.BenchmarkRunner must be a subclass of InteractiveBenchmarkRunner");
 
     // Don't call step while step is already executing.
     document.body.appendChild(createUIForSuites(Suites, interactiveRunner.runStep.bind(interactiveRunner), interactiveRunner.runSuites.bind(interactiveRunner)));
 
-    if (params.startAutomatically)
-        document.getElementById("runSuites").click();
+    if (params.startAutomatically) document.getElementById("runSuites").click();
 }
 
 window.addEventListener("load", startTest);

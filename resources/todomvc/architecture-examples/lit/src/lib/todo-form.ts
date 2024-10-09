@@ -36,7 +36,7 @@ export class TodoForm extends LitElement {
 
     @updateOnEvent("change")
     @property({ attribute: false })
-        todoList?: Todos;
+    todoList?: Todos;
 
     override render() {
         return html`<input @change=${this.#onChange} @keydown=${this.#onKeydown} class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" />`;
@@ -46,15 +46,13 @@ export class TodoForm extends LitElement {
 
     #onChange() {
         const { value } = this.newTodoInput;
-        if (value.length > 0)
-            this.dispatchEvent(new AddTodoEvent(value));
+        if (value.length > 0) this.dispatchEvent(new AddTodoEvent(value));
 
         this.newTodoInput.value = "";
     }
 
     #onKeydown(e: KeyboardEvent) {
-        if (e.key === "Enter")
-            this.#onChange();
+        if (e.key === "Enter") this.#onChange();
     }
 }
 

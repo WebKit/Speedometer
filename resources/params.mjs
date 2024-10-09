@@ -27,8 +27,7 @@ class Params {
     shuffleSeed = "off";
 
     constructor(searchParams = undefined) {
-        if (searchParams)
-            this._copyFromSearchParams(searchParams);
+        if (searchParams) this._copyFromSearchParams(searchParams);
         if (!this.developerMode) {
             Object.freeze(this.viewport);
             Object.freeze(this);
@@ -37,8 +36,7 @@ class Params {
 
     _parseInt(value, errorMessage) {
         const number = Number(value);
-        if (!Number.isInteger(number) && errorMessage)
-            throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
+        if (!Number.isInteger(number) && errorMessage) throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
         return parseInt(number);
     }
 
@@ -48,32 +46,27 @@ class Params {
             const [width, height] = viewportParam.split("x");
             this.viewport.width = this._parseInt(width, "viewport.width");
             this.viewport.height = this._parseInt(height, "viewport.height");
-            if (this.viewport.width < 800 || this.viewport.height < 600)
-                throw new Error(`Invalid viewport param: ${viewportParam}`);
+            if (this.viewport.width < 800 || this.viewport.height < 600) throw new Error(`Invalid viewport param: ${viewportParam}`);
             searchParams.delete("viewport");
         }
         this.startAutomatically = searchParams.has("startAutomatically");
         searchParams.delete("startAutomatically");
         if (searchParams.has("iterationCount")) {
             this.iterationCount = this._parseInt(searchParams.get("iterationCount"), "iterationCount");
-            if (this.iterationCount < 1)
-                throw new Error(`Invalid iterationCount param: '${this.iterationCount}', must be > 1.`);
+            if (this.iterationCount < 1) throw new Error(`Invalid iterationCount param: '${this.iterationCount}', must be > 1.`);
             searchParams.delete("iterationCount");
         }
         if (searchParams.has("suite") || searchParams.has("suites")) {
-            if (searchParams.has("suite") && searchParams.has("suites"))
-                throw new Error("Params 'suite' and 'suites' can not be used together.");
+            if (searchParams.has("suite") && searchParams.has("suites")) throw new Error("Params 'suite' and 'suites' can not be used together.");
             const value = searchParams.get("suite") || searchParams.get("suites");
             this.suites = value.split(",");
-            if (this.suites.length === 0)
-                throw new Error("No suites selected");
+            if (this.suites.length === 0) throw new Error("No suites selected");
             searchParams.delete("suite");
             searchParams.delete("suites");
         }
 
         if (searchParams.has("tags")) {
-            if (this.suites.length)
-                throw new Error("'suites' and 'tags' cannot be used together.");
+            if (this.suites.length) throw new Error("'suites' and 'tags' cannot be used together.");
             this.tags = searchParams.get("tags").split(",");
             searchParams.delete("tags");
         }
@@ -88,22 +81,19 @@ class Params {
 
         if (searchParams.has("waitBeforeSync")) {
             this.waitBeforeSync = this._parseInt(searchParams.get("waitBeforeSync"), "waitBeforeSync");
-            if (this.waitBeforeSync < 0)
-                throw new Error(`Invalid waitBeforeSync param: '${this.waitBeforeSync}', must be >= 0.`);
+            if (this.waitBeforeSync < 0) throw new Error(`Invalid waitBeforeSync param: '${this.waitBeforeSync}', must be >= 0.`);
             searchParams.delete("waitBeforeSync");
         }
 
         if (searchParams.has("warmupBeforeSync")) {
             this.warmupBeforeSync = this._parseInt(searchParams.get("warmupBeforeSync"), "warmupBeforeSync");
-            if (this.warmupBeforeSync < 0)
-                throw new Error(`Invalid warmupBeforeSync param: '${this.warmupBeforeSync}', must be >= 0.`);
+            if (this.warmupBeforeSync < 0) throw new Error(`Invalid warmupBeforeSync param: '${this.warmupBeforeSync}', must be >= 0.`);
             searchParams.delete("warmupBeforeSync");
         }
 
         if (searchParams.has("measurementMethod")) {
             this.measurementMethod = searchParams.get("measurementMethod");
-            if (this.measurementMethod !== "timer" && this.measurementMethod !== "raf")
-                throw new Error(`Invalid measurement method: '${this.measurementMethod}', must be either 'raf' or 'timer'.`);
+            if (this.measurementMethod !== "timer" && this.measurementMethod !== "raf") throw new Error(`Invalid measurement method: '${this.measurementMethod}', must be either 'raf' or 'timer'.`);
             searchParams.delete("measurementMethod");
         }
 
@@ -116,15 +106,13 @@ class Params {
                 } else {
                     this.shuffleSeed = parseInt(this.shuffleSeed);
                 }
-                if (!Number.isInteger(this.shuffleSeed))
-                    throw new Error(`Invalid shuffle seed: '${this.shuffleSeed}', must be either 'off', 'generate' or an integer.`);
+                if (!Number.isInteger(this.shuffleSeed)) throw new Error(`Invalid shuffle seed: '${this.shuffleSeed}', must be either 'off', 'generate' or an integer.`);
             }
             searchParams.delete("shuffleSeed");
         }
 
         const unused = Array.from(searchParams.keys());
-        if (unused.length > 0)
-            console.error("Got unused search params", unused);
+        if (unused.length > 0) console.error("Got unused search params", unused);
     }
 
     toSearchParams() {

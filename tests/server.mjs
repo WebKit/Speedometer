@@ -19,13 +19,11 @@ const STATIC_PATH = path.join(process.cwd(), "./");
 const toBool = [() => true, () => false];
 
 export default function serve(port) {
-    if (!port)
-        throw new Error("Port is required");
+    if (!port) throw new Error("Port is required");
 
     const prepareFile = async (url) => {
         const paths = [STATIC_PATH, url];
-        if (url.endsWith("/"))
-            paths.push("index.html");
+        if (url.endsWith("/")) paths.push("index.html");
         const filePath = path.join(...paths);
         const pathTraversal = !filePath.startsWith(STATIC_PATH);
         const exists = await fs.promises.access(filePath).then(...toBool);

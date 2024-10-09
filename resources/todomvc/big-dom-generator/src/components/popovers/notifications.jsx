@@ -36,7 +36,7 @@ export const NotificationsPopOver = () => {
         },
     ];
 
-    const listItems = notifications.map((notification, index) =>
+    const listItems = notifications.map((notification, index) => (
         <li className={classnames({ completed: notification.checked })} data-priority={notification.priority} key={index}>
             <div className={classnames("spectrum-Checkbox", "spectrum-Checkbox--sizeS")}>
                 <input type="checkbox" className="spectrum-Checkbox-input" id={`checkbox-${index}`} defaultChecked={notification.checked} />
@@ -47,7 +47,7 @@ export const NotificationsPopOver = () => {
                 <label className="spectrum-Checkbox-label">{notification.age}</label>
             </div>
         </li>
-    );
+    ));
 
     return (
         <div className={classnames("spectrum-Popover", "spectrum-Popover--bottom-right")}>

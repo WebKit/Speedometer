@@ -26,19 +26,16 @@ const $delegate = (target, selector, type, handler) => {
         const potentialElements = qsa(selector, target);
         const hasMatch = Array.prototype.indexOf.call(potentialElements, targetElement) >= 0;
 
-        if (hasMatch)
-            handler.call(targetElement, event);
+        if (hasMatch) handler.call(targetElement, event);
     }
 };
 
 // Find the element's parent with the given tag name:
 // $parent(qs('a'), 'div');
 const $parent = (element, tagName) => {
-    if (!element.parentNode)
-        return undefined;
+    if (!element.parentNode) return undefined;
 
-    if (element.parentNode.tagName.toLowerCase() === tagName.toLowerCase())
-        return element.parentNode;
+    if (element.parentNode.tagName.toLowerCase() === tagName.toLowerCase()) return element.parentNode;
 
     return $parent(element.parentNode, tagName);
 };
@@ -49,8 +46,7 @@ const $parent = (element, tagName) => {
 // x ~== [1,3]
 const remove = (array, thing) => {
     const index = array.indexOf(thing);
-    if (index === -1)
-        return array;
+    if (index === -1) return array;
 
     return array.splice(index, 1);
 };
