@@ -456,10 +456,11 @@ export class BenchmarkRunner {
 
     async runRemoteSuite(suite) {
         this.postMessageCallbacks = new Map();
-        window.addEventListener("message", this._handlePostMessage);
+        const handler = this._handlePostMessage.bind(this);
+        window.addEventListener("message", handler);
         await this._prepareRemoteSuite(suite);
         await this._runRemoteSuite(suite);
-        window.removeEventListener("message", this._handlePostMessage);
+        window.removeEventListener("message", handler);
     }
 
     async _prepareRemoteSuite(suite) {
@@ -681,10 +682,10 @@ export class BenchmarkRunner {
             metric.computeAggregatedMetrics();
     }
 
-    _handlePostMessage = (e) => {
+    _handlePostMessage(e) {
         if (this.postMessageCallbacks.has(e.data.type))
             this.postMessageCallbacks.get(e.data.type)(e);
-    };
+    }
 
     _startSubscription({ type, callback }) {
         if (this.postMessageCallbacks.has(type))
