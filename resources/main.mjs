@@ -23,12 +23,12 @@ class MainBenchmarkClient {
         this._showSection(window.location.hash);
     }
 
-    start() {
-        if (this._startBenchmark())
+    async start() {
+        if (await this._startBenchmark())
             this._showSection("#running");
     }
 
-    _startBenchmark() {
+    async _startBenchmark() {
         if (this._isRunning)
             return false;
 
