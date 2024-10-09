@@ -901,7 +901,7 @@ Suites.push({
     disabled: true,
     async prepare() {},
     config: {
-        name: "Navigation",
+        // name: "default", // optional param to target non-default tests locally
         steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
     },
 });

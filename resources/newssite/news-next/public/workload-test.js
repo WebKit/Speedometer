@@ -1,7 +1,7 @@
 import { BenchmarkTestStep, BenchmarkTestSuite, BenchmarkTestManager, forceLayout, getElement } from "./workload-testing-utils.min.js";
 
 window.benchmarkTestManager = new BenchmarkTestManager(window.name, [
-    new BenchmarkTestSuite("Navigation", [
+    new BenchmarkTestSuite("default", [
         new BenchmarkTestStep("Navigate-to-US-page", () => {
             for (let i = 0; i < 25; i++) {
                 getElement("#navbar-dropdown-toggle").click();

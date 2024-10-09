@@ -500,7 +500,7 @@ export class BenchmarkRunner {
 
     async _runRemoteSuite(suite) {
         const { stopSubscription } = startSubscription({ type: "step-complete", callback: async (e) => this._updateClient(e.data.name, e.data.test) });
-        this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config.name }, "*");
+        this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config?.name || "default" }, "*");
         const response = await subscribeOnce({ type: "suite-complete" });
         stopSubscription();
 
