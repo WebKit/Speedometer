@@ -297,7 +297,6 @@ function updateURL() {
     else
         url.searchParams.delete("complexity");
 
-
     // Only push state if changed
     url.search = decodeURIComponent(url.search);
     if (url.href !== window.location.href)
