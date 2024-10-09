@@ -437,7 +437,7 @@ export class BenchmarkRunner {
             }
 
         } finally {
-            // await this._finishRunAllSuites();
+            await this._finishRunAllSuites();
         }
     }
 
