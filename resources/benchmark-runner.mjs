@@ -403,10 +403,6 @@ export class BenchmarkRunner {
         const prepareEndLabel = "runner-prepare-end";
 
         performance.mark(prepareStartLabel);
-        this._removeFrame();
-        await this._appendFrame();
-        this._page = new Page(this._frame);
-
         let suites = [...this._suites];
         if (this._suiteOrderRandomNumberGenerator)
             this._shuffleSuites(suites);
@@ -432,8 +428,13 @@ export class BenchmarkRunner {
         const suites = await this._prepareAllSuites();
         try {
             for (const suite of suites) {
-                if (!suite.disabled)
-                    await this.runSuite(suite);
+                if (!suite.disabled) {
+                    await this._appendFrame();
+                    this._page = new Page(this._frame);
+                    // eslint-disable-next-line no-unused-expressions
+                    suite.config ? await this.runRemoteSuite(suite) : await this.runSuite(suite);
+                    this._removeFrame();
+                }
             }
 
         } finally {
