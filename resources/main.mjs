@@ -17,6 +17,8 @@ class MainBenchmarkClient {
     _hasResults = false;
     _developerModeContainer = null;
     _metrics = Object.create(null);
+    _steppingPromise = null;
+    _steppingResolver = null;
 
     constructor() {
         window.addEventListener("DOMContentLoaded", () => this.prepareUI());
@@ -24,8 +26,38 @@ class MainBenchmarkClient {
     }
 
     start() {
-        if (this._startBenchmark())
+        if (this._isStepping())
+            this._clearStepping();
+        else if (this._startBenchmark())
             this._showSection("#running");
+    }
+
+    step() {
+        const currentSteppingResolver = this._steppingResolver;
+        this._steppingPromise = new Promise((resolve) => {
+            this._steppingResolver = resolve;
+        });
+        if (this._isStepping())
+            currentSteppingResolver();
+        if (!this._isRunning) {
+            this._startBenchmark();
+            this._showSection("#running");
+        }
+    }
+
+    _clearStepping() {
+        this._steppingResolver();
+        this._steppingPromise = null;
+        this._steppingResolver = null;
+    }
+
+    async _awaitNextStep(suite, test) {
+        console.log(`Next Step: ${suite.name} ${test.name}`, { suite, test });
+        await this._steppingPromise;
+    }
+
+    _isStepping() {
+        return this._steppingResolver !== null;
     }
 
     _startBenchmark() {
@@ -44,8 +76,8 @@ class MainBenchmarkClient {
 
             return false;
         }
-
-        this._developerModeContainer?.remove();
+        if (!this._isStepping())
+            this._developerModeContainer?.remove();
         this._progressCompleted = document.getElementById("progress-completed");
         if (params.iterationCount < 50) {
             const progressNode = document.getElementById("progress");
@@ -81,9 +113,11 @@ class MainBenchmarkClient {
         frame.style.transform = "translate(-50%, -50%)";
     }
 
-    willRunTest(suite, test) {
+    async willRunTest(suite, test) {
         document.getElementById("info-label").textContent = suite.name;
         document.getElementById("info-progress").textContent = `${this._finishedTestCount} / ${this.stepCount}`;
+        if (this._steppingPromise)
+            await this._awaitNextStep(suite, test);
     }
 
     didRunTest() {
