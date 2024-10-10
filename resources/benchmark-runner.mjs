@@ -431,8 +431,7 @@ export class BenchmarkRunner {
                 if (!suite.disabled) {
                     await this._appendFrame();
                     this._page = new Page(this._frame);
-                    // eslint-disable-next-line no-unused-expressions
-                    suite.config ? await this.runRemoteSuite(suite) : await this.runSuite(suite);
+                    await this.runSuite(suite);
                     this._removeFrame();
                 }
             }
