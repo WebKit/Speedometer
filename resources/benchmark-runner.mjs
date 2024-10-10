@@ -435,7 +435,6 @@ export class BenchmarkRunner {
                     this._removeFrame();
                 }
             }
-
         } finally {
             await this._finishRunAllSuites();
         }
