@@ -533,7 +533,7 @@ export class BenchmarkRunner {
 
 // FIXME: Create AsyncSuiteRunner subclass.
 // FIXME: Create RemoteSuiteRunner subclass.
-class SuiteRunner {
+export class SuiteRunner {
     constructor(measuredValues, frame, page, client, suite) {
         // FIXME: Create SuiteRunner-local measuredValues.
         this._measuredValues = measuredValues;
