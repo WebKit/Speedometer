@@ -1,4 +1,4 @@
-import { BenchmarkRunner } from "../resources/benchmark-runner.mjs";
+import { BenchmarkRunner, SuiteRunner } from "../resources/benchmark-runner.mjs";
 import { defaultParams } from "../resources/params.mjs";
 
 function TEST_FIXTURE(name) {
@@ -112,9 +112,9 @@ describe("BenchmarkRunner", () => {
             let _runSuiteStub, _finalizeStub, _loadFrameStub, _appendFrameStub, _removeFrameStub;
 
             before(async () => {
-                _runSuiteStub = stub(runner, "_runSuite").callsFake(async () => null);
+                _runSuiteStub = stub(SuiteRunner.prototype, "_runSuite").callsFake(async () => null);
                 _finalizeStub = stub(runner, "_finalize").callsFake(async () => null);
-                _loadFrameStub = stub(runner, "_loadFrame").callsFake(async () => null);
+                _loadFrameStub = stub(SuiteRunner.prototype, "_loadFrame").callsFake(async () => null);
                 _appendFrameStub = stub(runner, "_appendFrame").callsFake(async () => null);
                 _removeFrameStub = stub(runner, "_removeFrame").callsFake(() => null);
                 for (const suite of runner._suites)
@@ -148,18 +148,19 @@ describe("BenchmarkRunner", () => {
         });
 
         describe("runSuite", () => {
-            let _prepareSuiteSpy, _loadFrameStub, _runTestAndRecordResultsStub, _suitePrepareSpy, performanceMarkSpy;
+            let _prepareSuiteSpy, _loadFrameStub, _runTestAndRecordResultsStub, _validateSuiteTotalStub, _suitePrepareSpy, performanceMarkSpy;
 
             const suite = SUITES_FIXTURE[0];
 
             before(async () => {
-                _prepareSuiteSpy = spy(runner, "_prepareSuite");
-                _loadFrameStub = stub(runner, "_loadFrame").callsFake(async () => null);
-                _runTestAndRecordResultsStub = stub(runner, "_runTestAndRecordResults").callsFake(async () => null);
+                _prepareSuiteSpy = spy(SuiteRunner.prototype, "_prepareSuite");
+                _loadFrameStub = stub(SuiteRunner.prototype, "_loadFrame").callsFake(async () => null);
+                _runTestAndRecordResultsStub = stub(SuiteRunner.prototype, "_runTestAndRecordResults").callsFake(async () => null);
+                _validateSuiteTotalStub = stub(SuiteRunner.prototype, "_validateSuiteTotal").callsFake(async () => null);
                 performanceMarkSpy = spy(window.performance, "mark");
                 _suitePrepareSpy = spy(suite, "prepare");
 
-                runner.runSuite(suite);
+                await runner.runSuite(suite);
             });
 
             it("should prepare the suite first", async () => {
@@ -170,6 +171,7 @@ describe("BenchmarkRunner", () => {
 
             it("should run and record results for every test in suite", async () => {
                 assert.calledThrice(_runTestAndRecordResultsStub);
+                assert.calledOnce(_validateSuiteTotalStub);
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-prepare-start");
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-prepare-end");
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-start");
@@ -188,7 +190,8 @@ describe("BenchmarkRunner", () => {
             before(async () => {
                 await runner._appendFrame();
                 performanceMarkSpy = spy(window.performance, "mark");
-                await runner._runTestAndRecordResults(suite, suite.tests[0]);
+                const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, runner._suite);
+                await suiteRunner._runTestAndRecordResults(suite, suite.tests[0]);
             });
 
             it("should run client pre and post hooks if present", () => {
@@ -222,7 +225,8 @@ describe("BenchmarkRunner", () => {
                     stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd);
 
                     // instantiate recorded test results
-                    await runner._runTestAndRecordResults(suite, suite.tests[0]);
+                    const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, runner._suite);
+                    await suiteRunner._runTestAndRecordResults(suite, suite.tests[0]);
 
                     await runner._finalize();
                 });
