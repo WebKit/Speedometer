@@ -2,7 +2,7 @@ import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
-import { params } from "./params.mjs";
+import { defaultParams, params } from "./params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
 // FIXME(camillobruni): Add base class
@@ -210,6 +210,7 @@ class MainBenchmarkClient {
     }
 
     _populateDetailedResults(metrics) {
+        this._populateNonStandardParams();
         const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
@@ -255,6 +256,34 @@ class MainBenchmarkClient {
         const csvLink = document.getElementById("download-csv");
         csvLink.href = URL.createObjectURL(new Blob([csvData], { type: "text/csv" }));
         csvLink.setAttribute("download", `${filePrefix}.csv`);
+    }
+
+    _populateNonStandardParams() {
+        if (params === defaultParams)
+            return;
+        const paramsDiff = [];
+        const usedSearchparams = params.toSearchParams();
+        const defaultSearchParams = defaultParams.toSearchParams();
+        for (const [key, value] of usedSearchparams.entries()) {
+            const defaultValue = defaultSearchParams.get(key);
+            if (value !== defaultValue)
+                paramsDiff.push({ key, value, defaultValue });
+        }
+        if (paramsDiff.length === 0)
+            return;
+        let body = "";
+        for (const { key, value, defaultValue } of paramsDiff)
+            body += `<tr><th>${key}</th><th>${value}</th><th>${defaultValue}</th></tr>`;
+        const table = document.getElementById("non-standard-params-table");
+        table.innerHTML = `<thead>
+                                <tr>
+                                <th>Param</th>
+                                <th>Value</th>
+                                <th>Default</th>
+                                </tr>
+                            </thead>
+                            <tbody>${body}</tbody>`;
+        document.querySelector(".non-standard-params").style.display = "block";
     }
 
     prepareUI() {

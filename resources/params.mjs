@@ -148,18 +148,20 @@ class Params {
     toSearchParams() {
         const rawParams = { ...this };
         rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`;
-        return new URLSearchParams(rawParams).toString();
+        return new URLSearchParams(rawParams);
     }
 }
 
 export const defaultParams = new Params();
 
-const searchParams = new URLSearchParams(window.location.search);
-let maybeCustomParams = new Params();
-try {
-    maybeCustomParams = new Params(searchParams);
-} catch (e) {
-    console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
-    alert(`Invalid URL Param: ${e}`);
+let maybeCustomParams = defaultParams;
+if (window.location.search) {
+    const searchParams = new URLSearchParams(window.location.search);
+    try {
+        maybeCustomParams = new Params(searchParams);
+    } catch (e) {
+        console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
+        alert(`Invalid URL Param: ${e}`);
+    }
 }
 export const params = maybeCustomParams;
