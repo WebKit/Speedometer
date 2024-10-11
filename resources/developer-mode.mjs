@@ -273,18 +273,13 @@ function updateURL() {
         }
     }
 
-    const defaultParamKeys = ["measurementMethod", "iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync"];
+    const defaultParamKeys = ["measurementMethod", "iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "complexity"];
     for (const paramKey of defaultParamKeys) {
         if (params[paramKey] !== defaultParams[paramKey])
             url.searchParams.set(paramKey, params[paramKey]);
         else
             url.searchParams.delete(paramKey);
     }
-
-    if (params.complexity !== defaultParams.complexity)
-        url.searchParams.set("complexity", params.complexity);
-    else
-        url.searchParams.delete("complexity");
 
     // Only push state if changed
     url.search = decodeURIComponent(url.search);
