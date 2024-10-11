@@ -71,7 +71,7 @@ Suites.push({
         page.getLocalStorage().getItem("javascript-es5");
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -104,7 +104,7 @@ Suites.push({
         await page.waitForElement("todo-app");
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -140,7 +140,7 @@ Suites.push({
         (await page.waitForElement(".new-todo")).focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -173,7 +173,7 @@ Suites.push({
         (await page.waitForElement(".new-todo")).focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -207,7 +207,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -240,7 +240,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -272,7 +272,7 @@ Suites.push({
         await page.waitForElement("todo-app");
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -309,7 +309,7 @@ Suites.push({
         await page.waitForElement("todo-app");
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -347,7 +347,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -380,7 +380,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -413,7 +413,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -446,7 +446,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -479,7 +479,7 @@ Suites.push({
         newTodo.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -514,7 +514,7 @@ Suites.push({
         newTodo.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -548,7 +548,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -581,7 +581,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -614,7 +614,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -648,7 +648,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -682,7 +682,7 @@ Suites.push({
         newTodo.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -714,7 +714,7 @@ Suites.push({
         newTodo.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -745,7 +745,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -777,7 +777,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -810,7 +810,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -842,7 +842,7 @@ Suites.push({
         element.focus();
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -874,7 +874,7 @@ Suites.push({
         await page.waitForElement("todo-app");
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo", ["todo-app", "todo-form"]);
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -909,7 +909,7 @@ Suites.push({
         await page.waitForElement("todo-app");
     },
     tests: [
-        new BenchmarkTestStep(`Adding${defaultNumberOfItemsToAdd}Items`, (page) => {
+        new BenchmarkTestStep("AddingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
             const newTodo = page.querySelector(".new-todo", ["todo-app", "todo-form"]);
             for (let i = 0; i < numberOfItemsToAdd; i++) {
