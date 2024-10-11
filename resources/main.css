@@ -10,6 +10,7 @@
     --text-width: 650px;
     --metrics-line-height: 25px;
     --scrollbar-width: 10px;
+    --developer-mode-settings-height: 280px;
 }
 
 body {
@@ -212,36 +213,38 @@ button,
 }
 
 .developer-mode {
+    /* max-height: max(90vh, var(--viewport-height)); */
     border-radius: 10px;
-    padding: 1rem;
+    padding: 1rem 1rem 0 1rem;
     background: #602525;
     border: 3px solid rgba(255, 255, 255, 0.5);
     position: fixed;
     left: 10px;
     top: 10px;
-    display: flex;
-    flex-direction: column;
 }
 
 .developer-mode summary {
     user-select: none;
     cursor: pointer;
     padding: 1rem;
-    margin: -1rem;
+    margin: -1rem -1rem 0 -1rem;
 }
 
 .developer-mode-content {
-    flex: 1;
-    max-height: 80vh;
-    overflow: auto;
+    padding-bottom: 1rem;
+}
+
+.developer-mode .suites {
+    max-height: calc(100vh - var(--developer-mode-settings-height));
     margin-right: calc(0px - var(--scrollbar-width));
     padding-right: var(--scrollbar-width);
+    overflow: auto;
 }
 
 .developer-mode-content ol {
     list-style: none;
     padding: 0;
-    margin: 1em 0 0.5em 0;
+    margin: 0 0 0.5em 0;
 }
 .developer-mode-content .button-bar {
     display: flex;
