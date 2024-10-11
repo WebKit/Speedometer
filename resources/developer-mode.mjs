@@ -223,12 +223,12 @@ function createUIForSuites() {
 
 function createUIForRun() {
     const stepTestButton = document.createElement("button");
-    stepTestButton.textContent = "Step Test ⏯";
+    stepTestButton.textContent = "Step Test \u23EF";
     stepTestButton.onclick = (event) => {
         globalThis.benchmarkClient.step();
     };
     const startTestButton = document.createElement("button");
-    startTestButton.textContent = "Start Test ⏵";
+    startTestButton.textContent = "Start Test \u23F5";
     startTestButton.onclick = (event) => {
         globalThis.benchmarkClient.start();
     };

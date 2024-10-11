@@ -46,9 +46,10 @@ class MainBenchmarkClient {
     }
 
     _clearStepping() {
-        this._steppingResolver();
+        const currentSteppingResolver = this._steppingResolver;
         this._steppingPromise = null;
         this._steppingResolver = null;
+        currentSteppingResolver();
     }
 
     async _awaitNextStep(suite, test) {
