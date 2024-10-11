@@ -222,14 +222,20 @@ function createUIForSuites() {
 }
 
 function createUIForRun() {
-    let button = document.createElement("button");
-    button.textContent = "Start Test";
-    button.onclick = (event) => {
+    const stepTestButton = document.createElement("button");
+    stepTestButton.textContent = "Step Test \u23EF";
+    stepTestButton.onclick = (event) => {
+        globalThis.benchmarkClient.step();
+    };
+    const startTestButton = document.createElement("button");
+    startTestButton.textContent = "Start Test \u23F5";
+    startTestButton.onclick = (event) => {
         globalThis.benchmarkClient.start();
     };
-    let buttons = document.createElement("div");
+    const buttons = document.createElement("div");
     buttons.className = "button-bar";
-    buttons.appendChild(button);
+    buttons.appendChild(stepTestButton);
+    buttons.appendChild(startTestButton);
     return buttons;
 }
 
