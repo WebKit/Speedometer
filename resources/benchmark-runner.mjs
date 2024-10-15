@@ -428,10 +428,14 @@ export class BenchmarkRunner {
         const suites = await this._prepareAllSuites();
         try {
             for (const suite of suites) {
-                if (!suite.disabled) {
+                if (suite.disabled)
+                    continue;
+
+                try {
                     await this._appendFrame();
                     this._page = new Page(this._frame);
                     await this.runSuite(suite);
+                } finally {
                     this._removeFrame();
                 }
             }
@@ -445,8 +449,6 @@ export class BenchmarkRunner {
         const finalizeEndLabel = "runner-finalize-end";
 
         performance.mark(finalizeStartLabel);
-        // Remove frame to clear the view for displaying the results.
-        this._removeFrame();
         await this._finalize();
         performance.mark(finalizeEndLabel);
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
