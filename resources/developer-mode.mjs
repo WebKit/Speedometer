@@ -128,13 +128,15 @@ function createTimeRangeUI(labelText, initialValue, unit = "ms", min = 0, max = 
 function createUIForSuites() {
     const control = document.createElement("nav");
     control.className = "suites";
-    const ol = document.createElement("ol");
     const checkboxes = [];
     const setSuiteEnabled = (suiteIndex, enabled) => {
         Suites[suiteIndex].disabled = !enabled;
         checkboxes[suiteIndex].checked = enabled;
     };
 
+    control.appendChild(createSuitesGlobalSelectButtons(setSuiteEnabled));
+
+    const ol = document.createElement("ol");
     for (const suite of Suites) {
         const li = document.createElement("li");
         const checkbox = document.createElement("input");
@@ -164,7 +166,12 @@ function createUIForSuites() {
         ol.appendChild(li);
     }
     control.appendChild(ol);
-    let buttons = control.appendChild(document.createElement("div"));
+    control.appendChild(createSuitesTagsButton(setSuiteEnabled));
+    return control;
+}
+
+function createSuitesGlobalSelectButtons(setSuiteEnabled) {
+    const buttons = document.createElement("div");
     buttons.className = "button-bar";
 
     let button = document.createElement("button");
@@ -186,18 +193,24 @@ function createUIForSuites() {
         updateURL();
     };
     buttons.appendChild(button);
+    return buttons;
+}
 
+function createSuitesTagsButton(setSuiteEnabled) {
+    let tags = document.createElement("div");
+    let buttons = tags.appendChild(document.createElement("div"));
+    buttons.className = "button-bar";
     let i = 0;
     const kTagsPerLine = 3;
     for (const tag of Tags) {
         if (tag === "all")
             continue;
         if (!(i % kTagsPerLine)) {
-            buttons = control.appendChild(document.createElement("div"));
+            buttons = tags.appendChild(document.createElement("div"));
             buttons.className = "button-bar";
         }
         i++;
-        button = document.createElement("button");
+        const button = document.createElement("button");
         button.className = "tag";
         button.textContent = `#${tag}`;
         button.dataTag = tag;
@@ -217,8 +230,7 @@ function createUIForSuites() {
         };
         buttons.appendChild(button);
     }
-
-    return control;
+    return tags;
 }
 
 function createUIForRun() {
