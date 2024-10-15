@@ -138,7 +138,7 @@ describe("BenchmarkRunner", () => {
 
             it("should remove the previous frame and then the current frame", () => {
                 assert.calledTwice(_loadFrameStub);
-                assert.calledOnce(_appendFrameStub);
+                assert.calledTwice(_appendFrameStub);
                 assert.calledTwice(_removeFrameStub);
             });
 

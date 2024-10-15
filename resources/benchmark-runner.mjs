@@ -403,10 +403,6 @@ export class BenchmarkRunner {
         const prepareEndLabel = "runner-prepare-end";
 
         performance.mark(prepareStartLabel);
-        this._removeFrame();
-        await this._appendFrame();
-        this._page = new Page(this._frame);
-
         let suites = [...this._suites];
         if (this._suiteOrderRandomNumberGenerator)
             this._shuffleSuites(suites);
@@ -432,10 +428,17 @@ export class BenchmarkRunner {
         const suites = await this._prepareAllSuites();
         try {
             for (const suite of suites) {
-                if (!suite.disabled)
-                    await this.runSuite(suite);
-            }
+                if (suite.disabled)
+                    continue;
 
+                try {
+                    await this._appendFrame();
+                    this._page = new Page(this._frame);
+                    await this.runSuite(suite);
+                } finally {
+                    this._removeFrame();
+                }
+            }
         } finally {
             await this._finishRunAllSuites();
         }
@@ -446,8 +449,6 @@ export class BenchmarkRunner {
         const finalizeEndLabel = "runner-finalize-end";
 
         performance.mark(finalizeStartLabel);
-        // Remove frame to clear the view for displaying the results.
-        this._removeFrame();
         await this._finalize();
         performance.mark(finalizeEndLabel);
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
