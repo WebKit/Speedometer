@@ -454,8 +454,99 @@ export class BenchmarkRunner {
     }
 
     async runSuite(suite) {
-        await this._prepareSuite(suite);
-        await this._runSuite(suite);
+        // FIXME: Encapsulate more state in the SuiteRunner.
+        // FIXME: Return and use measured values from SuiteRunner.
+        const suiteRunner = new SuiteRunner(this._measuredValues, this._frame, this._page, this._client, suite);
+        await suiteRunner.run();
+    }
+
+    async _finalize() {
+        this._appendIterationMetrics();
+        if (this._client?.didRunSuites) {
+            let product = 1;
+            const values = [];
+            for (const suiteName in this._measuredValues.tests) {
+                const suiteTotal = this._measuredValues.tests[suiteName].total;
+                product *= suiteTotal;
+                values.push(suiteTotal);
+            }
+
+            values.sort((a, b) => a - b); // Avoid the loss of significance for the sum.
+            const total = values.reduce((a, b) => a + b);
+            const geomean = Math.pow(product, 1 / values.length);
+
+            this._measuredValues.total = total;
+            this._measuredValues.mean = total / values.length;
+            this._measuredValues.geomean = geomean;
+            this._measuredValues.score = geomeanToScore(geomean);
+            await this._client.didRunSuites(this._measuredValues);
+        }
+    }
+
+    _appendIterationMetrics() {
+        const getMetric = (name, unit = "ms") => this._metrics[name] || (this._metrics[name] = new Metric(name, unit));
+        const iterationTotalMetric = (i) => {
+            if (i >= params.iterationCount)
+                throw new Error(`Requested iteration=${i} does not exist.`);
+            return getMetric(`Iteration-${i}-Total`);
+        };
+
+        const collectSubMetrics = (prefix, items, parent) => {
+            for (let name in items) {
+                const results = items[name];
+                const metric = getMetric(prefix + name);
+                metric.add(results.total ?? results);
+                if (metric.parent !== parent)
+                    parent.addChild(metric);
+                if (results.tests)
+                    collectSubMetrics(`${metric.name}${Metric.separator}`, results.tests, metric);
+            }
+        };
+        const initializeMetrics = this._metrics === null;
+        if (initializeMetrics)
+            this._metrics = { __proto__: null };
+
+        const iterationResults = this._measuredValues.tests;
+        collectSubMetrics("", iterationResults);
+
+        if (initializeMetrics) {
+            // Prepare all iteration metrics so they are listed at the end of
+            // of the _metrics object, before "Total" and "Score".
+            for (let i = 0; i < this._iterationCount; i++)
+                iterationTotalMetric(i).description = `Test totals for iteration ${i}`;
+            getMetric("Geomean", "ms").description = "Geomean of test totals";
+            getMetric("Score", "score").description = "Scaled inverse of the Geomean";
+        }
+
+        const geomean = getMetric("Geomean");
+        const iterationTotal = iterationTotalMetric(geomean.length);
+        for (const results of Object.values(iterationResults))
+            iterationTotal.add(results.total);
+        iterationTotal.computeAggregatedMetrics();
+        geomean.add(iterationTotal.geomean);
+        getMetric("Score").add(geomeanToScore(iterationTotal.geomean));
+
+        for (const metric of Object.values(this._metrics))
+            metric.computeAggregatedMetrics();
+    }
+}
+
+// FIXME: Create AsyncSuiteRunner subclass.
+// FIXME: Create RemoteSuiteRunner subclass.
+export class SuiteRunner {
+    constructor(measuredValues, frame, page, client, suite) {
+        // FIXME: Create SuiteRunner-local measuredValues.
+        this._measuredValues = measuredValues;
+        this._frame = frame;
+        this._page = page;
+        this._client = client;
+        this._suite = suite;
+    }
+
+    async run() {
+        // FIXME: use this._suite in all SuiteRunner methods directly.
+        await this._prepareSuite(this._suite);
+        await this._runSuite(this._suite);
     }
 
     async _prepareSuite(suite) {
@@ -569,75 +660,5 @@ export class BenchmarkRunner {
 
         if (this._client?.didRunTest)
             await this._client.didRunTest(suite, test);
-    }
-
-    async _finalize() {
-        this._appendIterationMetrics();
-        if (this._client?.didRunSuites) {
-            let product = 1;
-            const values = [];
-            for (const suiteName in this._measuredValues.tests) {
-                const suiteTotal = this._measuredValues.tests[suiteName].total;
-                product *= suiteTotal;
-                values.push(suiteTotal);
-            }
-
-            values.sort((a, b) => a - b); // Avoid the loss of significance for the sum.
-            const total = values.reduce((a, b) => a + b);
-            const geomean = Math.pow(product, 1 / values.length);
-
-            this._measuredValues.total = total;
-            this._measuredValues.mean = total / values.length;
-            this._measuredValues.geomean = geomean;
-            this._measuredValues.score = geomeanToScore(geomean);
-            await this._client.didRunSuites(this._measuredValues);
-        }
-    }
-
-    _appendIterationMetrics() {
-        const getMetric = (name, unit = "ms") => this._metrics[name] || (this._metrics[name] = new Metric(name, unit));
-        const iterationTotalMetric = (i) => {
-            if (i >= params.iterationCount)
-                throw new Error(`Requested iteration=${i} does not exist.`);
-            return getMetric(`Iteration-${i}-Total`);
-        };
-
-        const collectSubMetrics = (prefix, items, parent) => {
-            for (let name in items) {
-                const results = items[name];
-                const metric = getMetric(prefix + name);
-                metric.add(results.total ?? results);
-                if (metric.parent !== parent)
-                    parent.addChild(metric);
-                if (results.tests)
-                    collectSubMetrics(`${metric.name}${Metric.separator}`, results.tests, metric);
-            }
-        };
-        const initializeMetrics = this._metrics === null;
-        if (initializeMetrics)
-            this._metrics = { __proto__: null };
-
-        const iterationResults = this._measuredValues.tests;
-        collectSubMetrics("", iterationResults);
-
-        if (initializeMetrics) {
-            // Prepare all iteration metrics so they are listed at the end of
-            // of the _metrics object, before "Total" and "Score".
-            for (let i = 0; i < this._iterationCount; i++)
-                iterationTotalMetric(i).description = `Test totals for iteration ${i}`;
-            getMetric("Geomean", "ms").description = "Geomean of test totals";
-            getMetric("Score", "score").description = "Scaled inverse of the Geomean";
-        }
-
-        const geomean = getMetric("Geomean");
-        const iterationTotal = iterationTotalMetric(geomean.length);
-        for (const results of Object.values(iterationResults))
-            iterationTotal.add(results.total);
-        iterationTotal.computeAggregatedMetrics();
-        geomean.add(iterationTotal.geomean);
-        getMetric("Score").add(geomeanToScore(iterationTotal.geomean));
-
-        for (const metric of Object.values(this._metrics))
-            metric.computeAggregatedMetrics();
     }
 }
