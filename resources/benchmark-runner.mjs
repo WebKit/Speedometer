@@ -435,8 +435,7 @@ export class BenchmarkRunner {
                 try {
                     await this._appendFrame();
                     this._page = new Page(this._frame);
-                    // eslint-disable-next-line no-unused-expressions
-                    suite.config ? await this.runRemoteSuite(suite) : await this.runSuite(suite);
+                    await this.runSuite(suite);
                 } finally {
                     this._removeFrame();
                 }
@@ -456,52 +455,11 @@ export class BenchmarkRunner {
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
     }
 
-    async runRemoteSuite(suite) {
-        this.postMessageCallbacks = new Map();
-        const handler = this._handlePostMessage.bind(this);
-        window.addEventListener("message", handler);
-        await this._prepareRemoteSuite(suite);
-        await this._runRemoteSuite(suite);
-        window.removeEventListener("message", handler);
-    }
-
-    async _prepareRemoteSuite(suite) {
-        const suiteName = suite.name;
-        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
-        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
-
-        performance.mark(suitePrepareStartLabel);
-
-        const promise = this._subscribeOnce({ type: "app-ready" });
-        await this._loadFrame(suite);
-        const response = await promise;
-        await suite.prepare(this._page);
-
-        this._appId = response?.appId;
-        performance.mark(suitePrepareEndLabel);
-
-        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
-    }
-
-    async _runRemoteSuite(suite) {
-        this._startSubscription({ type: "step-complete", callback: async (e) => this._updateClient(e.data.name, e.data.test) });
-        this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config?.name || "default" }, "*");
-        const response = await this._subscribeOnce({ type: "suite-complete" });
-        this._stopSubscription({ type: "step-complete" });
-
-        this._measuredValues.tests[suite.name] = response.result;
-        this._validateSuiteTotal(suite.name);
-    }
-
-    async _updateClient(suite, test) {
-        if (this._client?.didRunTest)
-            await this._client.didRunTest(suite, test);
-    }
-
     async runSuite(suite) {
         // FIXME: Encapsulate more state in the SuiteRunner.
         // FIXME: Return and use measured values from SuiteRunner.
-        const suiteRunner = new SuiteRunner(this._measuredValues, this._frame, this._page, this._client, suite);
+        const runnerClass = suite.config ? RemoteSuiteRunner : SuiteRunner;
+        const suiteRunner = new runnerClass(this._measuredValues, this._frame, this._page, this._client, suite);
         await suiteRunner.run();
     }
 
@@ -704,6 +662,59 @@ export class SuiteRunner {
 
         await this._updateClient(suite, test);
     }
+
+    async _updateClient(suite, test) {
+        if (this._client?.didRunTest)
+            await this._client.didRunTest(suite, test);
+    }
+}
+
+export class RemoteSuiteRunner extends SuiteRunner {
+    async run() {
+        this.postMessageCallbacks = new Map();
+        const handler = this._handlePostMessage.bind(this);
+        window.addEventListener("message", handler);
+
+        // FIXME: use this._suite in all SuiteRunner methods directly.
+        await this._prepareSuite(this._suite);
+        await this._runSuite(this._suite);
+
+        window.removeEventListener("message", handler);
+    }
+
+    async _prepareSuite(suite) {
+        const suiteName = suite.name;
+        const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
+        const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
+
+        performance.mark(suitePrepareStartLabel);
+
+        // Wait for the app-ready message from the workload.
+        const promise = this._subscribeOnce({ type: "app-ready" });
+        await this._loadFrame(suite);
+        const response = await promise;
+        await suite.prepare(this._page);
+        // Capture appId to pass along with messages.
+        this._appId = response?.appId;
+
+        performance.mark(suitePrepareEndLabel);
+
+        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+    }
+
+    async _runSuite(suite) {
+        // Update progress bar with each completed step.
+        this._startSubscription({ type: "step-complete", callback: async (e) => this._updateClient(e.data.name, e.data.test) });
+        // Ask workload to run its own tests.
+        this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config?.name || "default" }, "*");
+        // Capture metrics from the completed tests.
+        const response = await this._subscribeOnce({ type: "suite-complete" });
+        this._stopSubscription({ type: "step-complete" });
+
+        this._measuredValues.tests[suite.name] = response.result;
+        this._validateSuiteTotal(suite.name);
+    }
+
     _handlePostMessage(e) {
         if (this.postMessageCallbacks.has(e.data.type))
             this.postMessageCallbacks.get(e.data.type)(e);
