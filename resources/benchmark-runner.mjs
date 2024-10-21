@@ -426,7 +426,6 @@ export class BenchmarkRunner {
 
     async runAllSuites() {
         const suites = await this._prepareAllSuites();
-
         try {
             for (const suite of suites) {
                 if (suite.disabled)
