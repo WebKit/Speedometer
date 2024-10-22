@@ -458,7 +458,7 @@ export class BenchmarkRunner {
     async runSuite(suite) {
         // FIXME: Encapsulate more state in the SuiteRunner.
         // FIXME: Return and use measured values from SuiteRunner.
-        const runnerClass = SUITE_RUNNER_CLASSES[suite.type ?? "default"];
+        const runnerClass = SUITE_RUNNER_LOOKUP[suite.type ?? "default"];
         const suiteRunner = new runnerClass(this._measuredValues, this._frame, this._page, this._client, suite);
         await suiteRunner.run();
     }
@@ -745,7 +745,12 @@ export class RemoteSuiteRunner extends SuiteRunner {
     }
 }
 
-const SUITE_RUNNER_CLASSES = {
-    "remote": RemoteSuiteRunner,
-    "default": SuiteRunner
+// FIXME: implement async steps
+class AsyncSuiteRunner extends SuiteRunner {}
+
+const SUITE_RUNNER_LOOKUP = {
+    __proto__: null,
+    default: SuiteRunner,
+    async: AsyncSuiteRunner,
+    remote: RemoteSuiteRunner,
 };
