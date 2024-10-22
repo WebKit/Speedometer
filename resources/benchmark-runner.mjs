@@ -267,10 +267,11 @@ const WarmupSuite = {
 };
 
 class TestInvoker {
-    constructor(syncCallback, asyncCallback, reportCallback) {
+    constructor(syncCallback, asyncCallback, reportCallback, params) {
         this._syncCallback = syncCallback;
         this._asyncCallback = asyncCallback;
         this._reportCallback = reportCallback;
+        this._params = params;
     }
 }
 
@@ -286,7 +287,7 @@ class TimerTestInvoker extends TestInvoker {
                         resolve();
                     });
                 }, 0);
-            }, params.waitBeforeSync);
+            }, this._params.waitBeforeSync);
         });
     }
 }
@@ -294,8 +295,8 @@ class TimerTestInvoker extends TestInvoker {
 class RAFTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
-            if (params.waitBeforeSync)
-                setTimeout(() => this._scheduleCallbacks(resolve), params.waitBeforeSync);
+            if (this._params.waitBeforeSync)
+                setTimeout(() => this._scheduleCallbacks(resolve), this._params.waitBeforeSync);
             else
                 this._scheduleCallbacks(resolve);
         });
@@ -644,7 +645,7 @@ export class SuiteRunner {
         };
         const report = () => this._recordTestResults(suite, test, syncTime, asyncTime);
         const invokerClass = params.measurementMethod === "raf" ? RAFTestInvoker : TimerTestInvoker;
-        const invoker = new invokerClass(runSync, measureAsync, report);
+        const invoker = new invokerClass(runSync, measureAsync, report, params);
 
         return invoker.start();
     }
