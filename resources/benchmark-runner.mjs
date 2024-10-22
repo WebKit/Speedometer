@@ -316,6 +316,12 @@ class RAFTestInvoker extends TestInvoker {
     }
 }
 
+const TEST_INVOKER_LOOKUP = {
+    __proto__: null,
+    timer: TimerTestInvoker,
+    raf: RAFTestInvoker,
+};
+
 // https://stackoverflow.com/a/47593316
 function seededHashRandomNumberGenerator(a) {
     return function () {
@@ -534,8 +540,6 @@ export class BenchmarkRunner {
     }
 }
 
-// FIXME: Create AsyncSuiteRunner subclass.
-// FIXME: Create RemoteSuiteRunner subclass.
 export class SuiteRunner {
     constructor(measuredValues, frame, page, client, suite) {
         // FIXME: Create SuiteRunner-local measuredValues.
@@ -644,7 +648,7 @@ export class SuiteRunner {
             performance.measure(`${suite.name}.${test.name}-async`, asyncStartLabel, asyncEndLabel);
         };
         const report = () => this._recordTestResults(suite, test, syncTime, asyncTime);
-        const invokerClass = params.measurementMethod === "raf" ? RAFTestInvoker : TimerTestInvoker;
+        const invokerClass = TEST_INVOKER_LOOKUP[params.measurementMethod];
         const invoker = new invokerClass(runSync, measureAsync, report, params);
 
         return invoker.start();
@@ -745,12 +749,8 @@ export class RemoteSuiteRunner extends SuiteRunner {
     }
 }
 
-// FIXME: implement async steps
-class AsyncSuiteRunner extends SuiteRunner {}
-
 const SUITE_RUNNER_LOOKUP = {
     __proto__: null,
     default: SuiteRunner,
-    async: AsyncSuiteRunner,
     remote: RemoteSuiteRunner,
 };
