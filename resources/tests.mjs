@@ -900,6 +900,7 @@ Suites.push({
     tags: ["experimental", "newssite", "language"],
     disabled: true,
     async prepare() {},
+    type: "remote",
     config: {
         // name: "default", // optional param to target non-default tests locally
         steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
