@@ -25,6 +25,8 @@ class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    // Measure more detailed debug metrics.
+    debugMetrics = false;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -80,11 +82,10 @@ class Params {
 
         this.developerMode = searchParams.has("developerMode");
         searchParams.delete("developerMode");
-
-        if (searchParams.has("useWarmupSuite")) {
-            this.useWarmupSuite = true;
-            searchParams.delete("useWarmupSuite");
-        }
+        this.useWarmupSuite = searchParams.has("useWarmupSuite");
+        searchParams.delete("useWarmupSuite");
+        this.debugMetrics = searchParams.has("debugMetrics");
+        searchParams.delete("debugMetrics");
 
         if (searchParams.has("waitBeforeSync")) {
             this.waitBeforeSync = this._parseInt(searchParams.get("waitBeforeSync"), "waitBeforeSync");
