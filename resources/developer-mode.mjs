@@ -22,6 +22,7 @@ export function createDeveloperModeContainer() {
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
     settings.append(createUIForSyncStepDelay());
+    settings.append(createUIForComplexity());
 
     content.append(document.createElement("hr"));
     content.append(settings);
@@ -101,11 +102,21 @@ function createUIForSyncStepDelay() {
     return label;
 }
 
-function createTimeRangeUI(labelText, initialValue, unit = "ms", min = 0, max = 1000) {
+function createUIForComplexity() {
+    const { range, label } = createTimeRangeUI("Relative complexity", params.complexity, "x", 0, 10, 0.01);
+    range.onchange = () => {
+        params.complexity = Number(range.value);
+        updateURL();
+    };
+    return label;
+}
+
+function createTimeRangeUI(labelText, initialValue, unit = "ms", min = 0, max = 1000, step = 1) {
     const range = document.createElement("input");
     range.type = "range";
     range.min = min;
     range.max = max;
+    range.step = step;
     range.value = initialValue;
 
     const rangeValueAndUnit = document.createElement("span");
@@ -280,7 +291,7 @@ function updateURL() {
         }
     }
 
-    const defaultParamKeys = ["measurementMethod", "iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync"];
+    const defaultParamKeys = ["measurementMethod", "iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "complexity"];
     for (const paramKey of defaultParamKeys) {
         if (params[paramKey] !== defaultParams[paramKey])
             url.searchParams.set(paramKey, params[paramKey]);
