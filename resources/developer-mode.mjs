@@ -42,7 +42,7 @@ function span(text) {
 }
 
 function createUIForMeasurementMethod() {
-    const {checkbox, label} = createCheckboxUI("rAF timing", params.measurementMethod === "raf");
+    const { checkbox, label } = createCheckboxUI("rAF timing", params.measurementMethod === "raf");
     checkbox.onchange = () => {
         params.measurementMethod = checkbox.checked ? "raf" : "timer";
         updateURL();
@@ -51,7 +51,7 @@ function createUIForMeasurementMethod() {
 }
 
 function createUIForWarmupSuite() {
-    const {checkbox, label} = createCheckboxUI("Use Warmup Suite", params.useWarmupSuite);
+    const { checkbox, label } = createCheckboxUI("Use Warmup Suite", params.useWarmupSuite);
     checkbox.onchange = () => {
         params.useWarmupSuite = checkbox.checked;
         updateURL();
@@ -60,7 +60,7 @@ function createUIForWarmupSuite() {
 }
 
 function createUIForDebugMetrics() {
-    const {checkbox, label} = createCheckboxUI("Measure Debug Metrics", params.debugMetrics);
+    const { checkbox, label } = createCheckboxUI("Measure Debug Metrics", params.debugMetrics);
     checkbox.onchange = () => {
         params.debugMetrics = checkbox.checked;
         updateURL();
@@ -76,7 +76,7 @@ function createCheckboxUI(labelValue, initialValue) {
     const label = document.createElement("label");
     label.append(checkbox, " ", span(labelValue));
 
-    return {checkbox, label};
+    return { checkbox, label };
 }
 
 function createUIForIterationCount() {
