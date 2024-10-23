@@ -19,6 +19,7 @@ export function createDeveloperModeContainer() {
     settings.className = "settings";
     settings.append(createUIForIterationCount());
     settings.append(createUIForMeasurementMethod());
+    settings.append(createUIForDebugMetrics());
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
     settings.append(createUIForSyncStepDelay());
@@ -41,37 +42,41 @@ function span(text) {
 }
 
 function createUIForMeasurementMethod() {
-    let check = document.createElement("input");
-    check.type = "checkbox";
-    check.id = "measurement-method";
-    check.checked = params.measurementMethod === "raf";
-
-    check.onchange = () => {
-        params.measurementMethod = check.checked ? "raf" : "timer";
+    const {checkbox, label} = createCheckboxUI("rAF timing", params.measurementMethod === "raf");
+    checkbox.onchange = () => {
+        params.measurementMethod = checkbox.checked ? "raf" : "timer";
         updateURL();
     };
-
-    let label = document.createElement("label");
-    label.append(check, " ", span("rAF timing"));
-
     return label;
 }
 
 function createUIForWarmupSuite() {
-    let check = document.createElement("input");
-    check.type = "checkbox";
-    check.id = "warmup-suite";
-    check.checked = !!params.useWarmupSuite;
-
-    check.onchange = () => {
-        params.useWarmupSuite = check.checked;
+    const {checkbox, label} = createCheckboxUI("Use Warmup Suite", params.useWarmupSuite);
+    checkbox.onchange = () => {
+        params.useWarmupSuite = checkbox.checked;
         updateURL();
     };
-
-    let label = document.createElement("label");
-    label.append(check, " ", span("Use Warmup Suite"));
-
     return label;
+}
+
+function createUIForDebugMetrics() {
+    const {checkbox, label} = createCheckboxUI("Measure Debug Metrics", params.debugMetrics);
+    checkbox.onchange = () => {
+        params.debugMetrics = checkbox.checked;
+        updateURL();
+    };
+    return label;
+}
+
+function createCheckboxUI(labelValue, initialValue) {
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = !!initialValue;
+
+    const label = document.createElement("label");
+    label.append(checkbox, " ", span(labelValue));
+
+    return {checkbox, label};
 }
 
 function createUIForIterationCount() {
@@ -280,7 +285,7 @@ function updateURL() {
         }
     }
 
-    const defaultParamKeys = ["measurementMethod", "iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync"];
+    const defaultParamKeys = ["measurementMethod", "iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "debugMetrics"];
     for (const paramKey of defaultParamKeys) {
         if (params[paramKey] !== defaultParams[paramKey])
             url.searchParams.set(paramKey, params[paramKey]);

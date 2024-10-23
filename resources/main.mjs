@@ -248,8 +248,9 @@ class MainBenchmarkClient {
         const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
-        document.getElementById("geomean-chart").innerHTML = renderMetricView({
-            metrics: [metrics.Geomean],
+        const aggregateMetrics = [metrics.Geomean];
+        document.getElementById("aggregate-chart").innerHTML = renderMetricView({
+            metrics: aggregateMetrics,
             width: plotWidth,
             trackHeight,
             renderChildren: false,
