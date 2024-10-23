@@ -543,11 +543,10 @@ export class BenchmarkRunner {
 export class SuiteRunner {
     constructor(measuredValues, frame, page, client, suite) {
         // FIXME: Create SuiteRunner-local measuredValues.
-        this._measuredValues = measuredValues;
-        this._suiteResults = this._measuredValues.tests[suite.name];
+        this._suiteResults = measuredValues.tests[suite.name];
         if (!this._suiteResults) {
             this._suiteResults = { tests: {}, total: 0 };
-            this._measuredValues.tests[suite.name] = this._suiteResults;
+            measuredValues.tests[suite.name] = this._suiteResults;
         }
         this._frame = frame;
         this._page = page;
