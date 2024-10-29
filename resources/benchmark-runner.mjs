@@ -315,6 +315,12 @@ class RAFTestInvoker extends TestInvoker {
     }
 }
 
+const TEST_INVOKER_LOOKUP = {
+    __proto__: null,
+    timer: TimerTestInvoker,
+    raf: RAFTestInvoker,
+};
+
 // https://stackoverflow.com/a/47593316
 function seededHashRandomNumberGenerator(a) {
     return function () {
@@ -645,8 +651,9 @@ export class SuiteRunner {
             performance.measure(`${suiteName}.${testName}-sync`, startLabel, syncEndLabel);
             performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
         };
+
         const report = () => this._recordTestResults(test, syncTime, asyncTime);
-        const invokerClass = params.measurementMethod === "raf" ? RAFTestInvoker : TimerTestInvoker;
+        const invokerClass = TEST_INVOKER_LOOKUP[params.measurementMethod];
         const invoker = new invokerClass(runSync, measureAsync, report);
 
         return invoker.start();
