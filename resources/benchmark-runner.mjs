@@ -463,7 +463,8 @@ export class BenchmarkRunner {
     async runSuite(suite) {
         // FIXME: Encapsulate more state in the SuiteRunner.
         // FIXME: Return and use measured values from SuiteRunner.
-        const suiteRunner = new SuiteRunner(this._measuredValues, this._frame, this._page, this._client, suite);
+        const runnerClass = SUITE_RUNNER_LOOKUP[suite.type ?? "default"];
+        const suiteRunner = new runnerClass(this._measuredValues, this._frame, this._page, this._client, suite);
         await suiteRunner.run();
     }
 
@@ -674,3 +675,69 @@ export class SuiteRunner {
             await this._client.didRunTest(this._suite, test);
     }
 }
+
+export class AsyncSuiteRunner extends SuiteRunner {
+    async _runTestAndRecordResults(test) {
+        if (this._client?.willRunTest)
+            await this._client.willRunTest(this._suite, test);
+
+        // Prepare all mark labels outside the measuring loop.
+        const suiteName = this._suite.name;
+        const testName = test.name;
+        const startLabel = `${suiteName}.${testName}-start`;
+        const syncEndLabel = `${suiteName}.${testName}-sync-end`;
+        const asyncStartLabel = `${suiteName}.${testName}-async-start`;
+        const asyncEndLabel = `${suiteName}.${testName}-async-end`;
+
+        let syncTime;
+        let asyncStartTime;
+        let asyncTime;
+        const runSync = async () => {
+            if (params.warmupBeforeSync) {
+                performance.mark("warmup-start");
+                const startTime = performance.now();
+                // Infinite loop for the specified ms.
+                while (performance.now() - startTime < params.warmupBeforeSync)
+                    continue;
+                performance.mark("warmup-end");
+            }
+            performance.mark(startLabel);
+            const syncStartTime = performance.now();
+            await test.run(this._page);
+            const syncEndTime = performance.now();
+            performance.mark(syncEndLabel);
+
+            syncTime = syncEndTime - syncStartTime;
+
+            performance.mark(asyncStartLabel);
+            asyncStartTime = performance.now();
+        };
+        const measureAsync = () => {
+            // Some browsers don't immediately update the layout for paint.
+            // Force the layout here to ensure we're measuring the layout time.
+            const height = this._frame.contentDocument.body.getBoundingClientRect().height;
+            const asyncEndTime = performance.now();
+            asyncTime = asyncEndTime - asyncStartTime;
+            this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
+            performance.mark(asyncEndLabel);
+            if (params.warmupBeforeSync)
+                performance.measure("warmup", "warmup-start", "warmup-end");
+            const suiteName = this._suite.name;
+            const testName = test.name;
+            performance.measure(`${suiteName}.${testName}-sync`, startLabel, syncEndLabel);
+            performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
+        };
+
+        const report = () => this._recordTestResults(test, syncTime, asyncTime);
+        const invokerClass = TEST_INVOKER_LOOKUP[params.measurementMethod];
+        const invoker = new invokerClass(runSync, measureAsync, report);
+
+        return invoker.start();
+    }
+}
+
+const SUITE_RUNNER_LOOKUP = {
+    __proto__: null,
+    default: SuiteRunner,
+    async: AsyncSuiteRunner,
+};
