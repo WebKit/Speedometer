@@ -291,7 +291,24 @@ class TimerTestInvoker extends TestInvoker {
     }
 }
 
-class RAFTestInvoker extends TestInvoker {
+class AsyncTimerTestInvoker extends TestInvoker {
+    start() {
+        return new Promise((resolve) => {
+            setTimeout(async () => {
+                await this._syncCallback();
+                setTimeout(() => {
+                    this._asyncCallback();
+                    requestAnimationFrame(async () => {
+                        await this._reportCallback();
+                        resolve();
+                    });
+                }, 0);
+            }, params.waitBeforeSync);
+        });
+    }
+}
+
+class BaseRAFTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
             if (params.waitBeforeSync)
@@ -300,7 +317,9 @@ class RAFTestInvoker extends TestInvoker {
                 this._scheduleCallbacks(resolve);
         });
     }
+}
 
+class RAFTestInvoker extends BaseRAFTestInvoker {
     _scheduleCallbacks(resolve) {
         requestAnimationFrame(() => this._syncCallback());
         requestAnimationFrame(() => {
@@ -315,10 +334,33 @@ class RAFTestInvoker extends TestInvoker {
     }
 }
 
+class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
+    _scheduleCallbacks(resolve) {
+        requestAnimationFrame(async () => {
+            await this._syncCallback();
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    this._asyncCallback();
+                    setTimeout(async () => {
+                        await this._reportCallback();
+                        resolve();
+                    }, 0);
+                }, 0);
+            });
+        });
+    }
+}
+
 const TEST_INVOKER_LOOKUP = {
     __proto__: null,
     timer: TimerTestInvoker,
     raf: RAFTestInvoker,
+};
+
+const ASYNC_TEST_INVOKER_LOOKUP = {
+    __proto__: null,
+    timer: AsyncTimerTestInvoker,
+    raf: AsyncRAFTestInvoker,
 };
 
 // https://stackoverflow.com/a/47593316
@@ -729,7 +771,7 @@ export class AsyncSuiteRunner extends SuiteRunner {
         };
 
         const report = () => this._recordTestResults(test, syncTime, asyncTime);
-        const invokerClass = TEST_INVOKER_LOOKUP[params.measurementMethod];
+        const invokerClass = ASYNC_TEST_INVOKER_LOOKUP[params.measurementMethod];
         const invoker = new invokerClass(runSync, measureAsync, report);
 
         return invoker.start();
