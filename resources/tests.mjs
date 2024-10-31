@@ -957,8 +957,7 @@ Suites.push({
             page.querySelector("#navbar-navlist-us-link").click();
             page.layout();
 
-            const sleep = (ms) => new Promise(resolve => setTimeout(() => resolve(), ms));
-            await sleep(500);
+            await ((ms) => new Promise(resolve => setTimeout(() => resolve(), ms)))(500);
         }),
         new BenchmarkTestStep("NavigateToWorld", async (page) => {
             for (let i = 0; i < 25; i++) {
@@ -970,8 +969,7 @@ Suites.push({
             page.querySelector("#navbar-navlist-world-link").click();
             page.layout();
 
-            const sleep = (ms) => new Promise(resolve => setTimeout(() => resolve(), ms));
-            await sleep(500);
+            await ((ms) => new Promise(resolve => setTimeout(() => resolve(), ms)))(500);
         }),
         new BenchmarkTestStep("NavigateToPolitics", async (page) => {
             for (let i = 0; i < 25; i++) {
@@ -983,79 +981,7 @@ Suites.push({
             page.querySelector("#navbar-navlist-politics-link").click();
             page.layout();
 
-            const sleep = (ms) => new Promise(resolve => setTimeout(() => resolve(), ms));
-            await sleep(500);
-        }),
-    ],
-});
-
-Suites.push({
-    name: "NewsSite-Next-Event",
-    url: "resources/newssite/news-next/dist/index.html#/home",
-    tags: ["experimental", "newssite", "language"],
-    type: "async",
-    disabled: true,
-    async prepare(page) {
-        await page.waitForElement("#navbar-dropdown-toggle");
-    },
-    tests: [
-        new BenchmarkTestStep("NavigateToUS", async (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
-            page.querySelector("#navbar-navlist-us-link").click();
-            page.layout();
-
-            return new Promise((resolve) => {
-                const handler = (event) => {
-                    page._frame.contentWindow.removeEventListener("route-change-complete", handler);
-                    resolve(event);
-                };
-
-                page._frame.contentWindow.addEventListener("route-change-complete", handler);
-            });
-
-        }),
-        new BenchmarkTestStep("NavigateToWorld", async (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
-            page.querySelector("#navbar-navlist-world-link").click();
-            page.layout();
-
-            return new Promise((resolve) => {
-                const handler = (event) => {
-                    page._frame.contentWindow.removeEventListener("route-change-complete", handler);
-                    resolve(event);
-                };
-
-                page._frame.contentWindow.addEventListener("route-change-complete", handler);
-            });
-        }),
-        new BenchmarkTestStep("NavigateToPolitics", async (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
-            page.querySelector("#navbar-navlist-politics-link").click();
-            page.layout();
-
-            return new Promise((resolve) => {
-                const handler = (event) => {
-                    page._frame.contentWindow.removeEventListener("route-change-complete", handler);
-                    resolve(event);
-                };
-
-                page._frame.contentWindow.addEventListener("route-change-complete", handler);
-            });
+            await ((ms) => new Promise(resolve => setTimeout(() => resolve(), ms)))(500);
         }),
     ],
 });
