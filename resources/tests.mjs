@@ -957,7 +957,7 @@ Suites.push({
             page.querySelector("#navbar-navlist-us-link").click();
             page.layout();
 
-            await ((ms) => new Promise(resolve => setTimeout(() => resolve(), ms)))(500);
+            await ((ms) => new Promise((resolve) => setTimeout(() => resolve(), ms)))(500);
         }),
         new BenchmarkTestStep("NavigateToWorld", async (page) => {
             for (let i = 0; i < 25; i++) {
@@ -969,7 +969,7 @@ Suites.push({
             page.querySelector("#navbar-navlist-world-link").click();
             page.layout();
 
-            await ((ms) => new Promise(resolve => setTimeout(() => resolve(), ms)))(500);
+            await ((ms) => new Promise((resolve) => setTimeout(() => resolve(), ms)))(500);
         }),
         new BenchmarkTestStep("NavigateToPolitics", async (page) => {
             for (let i = 0; i < 25; i++) {
@@ -981,7 +981,7 @@ Suites.push({
             page.querySelector("#navbar-navlist-politics-link").click();
             page.layout();
 
-            await ((ms) => new Promise(resolve => setTimeout(() => resolve(), ms)))(500);
+            await ((ms) => new Promise((resolve) => setTimeout(() => resolve(), ms)))(500);
         }),
     ],
 });
