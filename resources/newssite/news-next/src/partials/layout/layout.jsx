@@ -16,6 +16,7 @@ export default function Layout({ children, id }) {
     const [showMessage, setShowMessage] = useState(false);
     const { content, links } = useDataContext();
 
+    // enable dom.requestIdleCallback.enabled flag in Safari Preview
     useEffect(() => {
         // polyfill
         const requestIdleCallback = window.requestIdleCallback
