@@ -17,6 +17,30 @@ export default function Layout({ children, id }) {
     const { content, links } = useDataContext();
 
     useEffect(() => {
+        // polyfill
+        const requestIdleCallback = window.requestIdleCallback
+            = window.requestIdleCallback
+            || function (cb) {
+                const start = Date.now();
+                const timeoutId = window.setTimeout(function () {
+                    cb({
+                        didTimeout: false,
+                        timeRemaining() {
+                            return Math.max(0, 50 - (Date.now() - start));
+                        }
+                    });
+                }, 1);
+
+                return timeoutId;
+            };
+
+        const url = location.hash;
+        requestIdleCallback(() => {
+            window.dispatchEvent(new CustomEvent("route-change-complete", { detail: { url } }));
+        });
+    }, [location.hash]);
+
+    useEffect(() => {
         setShowMessage(content[id].message);
     }, [id]);
 
