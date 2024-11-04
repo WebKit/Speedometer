@@ -656,7 +656,7 @@ export class SuiteRunner {
             performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
         };
 
-        const report = () => this._recordTestResults(suite, test, syncTime, asyncTime);
+        const report = () => this._recordTestResults(test, syncTime, asyncTime);
         const invokerClass = TEST_INVOKER_LOOKUP[params.measurementMethod];
         const invoker = new invokerClass(runSync, measureAsync, report);
 
