@@ -543,6 +543,11 @@ export class BenchmarkRunner {
 export class SuiteRunner {
     constructor(measuredValues, frame, page, client, suite) {
         // FIXME: Create SuiteRunner-local measuredValues.
+        this._suiteResults = measuredValues.tests[suite.name];
+        if (!this._suiteResults) {
+            this._suiteResults = { tests: {}, total: 0 };
+            measuredValues.tests[suite.name] = this._suiteResults;
+        }
         this._measuredValues = measuredValues;
         this._frame = frame;
         this._page = page;
@@ -579,17 +584,16 @@ export class SuiteRunner {
         performance.mark(suiteEndLabel);
 
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
-        this._validateSuiteTotal(suiteName);
+        this._validateSuiteTotal();
     }
 
     _validateSuiteTotal() {
         // When the test is fast and the precision is low (for example with Firefox'
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
-        const suiteName = this._suite.name;
-        const suiteTotal = this._measuredValues.tests[suiteName].total;
+        const suiteTotal = this._suiteResults.total;
         if (suiteTotal === 0)
-            throw new Error(`Got invalid 0-time total for suite ${suiteName}: ${suiteTotal}`);
+            throw new Error(`Got invalid 0-time total for suite ${this._suite.name}: ${suiteTotal}`);
     }
 
     async _loadFrame() {
@@ -663,12 +667,10 @@ export class SuiteRunner {
         // Skip reporting updates for the warmup suite.
         if (this._suite === WarmupSuite)
             return;
-        const suiteName = this._suite.name;
-        const suiteResults = this._measuredValues.tests[suiteName] || { tests: {}, total: 0 };
+
         const total = syncTime + asyncTime;
-        this._measuredValues.tests[suiteName] = suiteResults;
-        suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
-        suiteResults.total += total;
+        this._suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
+        this._suiteResults.total += total;
 
         if (this._client?.didRunTest)
             await this._client.didRunTest(this._suite, test);
