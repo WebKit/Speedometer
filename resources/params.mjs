@@ -43,88 +43,107 @@ class Params {
     }
 
     _copyFromSearchParams(searchParams) {
-        if (searchParams.has("viewport")) {
-            const viewportParam = searchParams.get("viewport");
-            const [width, height] = viewportParam.split("x");
-            this.viewport.width = this._parseInt(width, "viewport.width");
-            this.viewport.height = this._parseInt(height, "viewport.height");
-            if (this.viewport.width < 800 || this.viewport.height < 600)
-                throw new Error(`Invalid viewport param: ${viewportParam}`);
-            searchParams.delete("viewport");
-        }
-        this.startAutomatically = searchParams.has("startAutomatically");
-        searchParams.delete("startAutomatically");
-        if (searchParams.has("iterationCount")) {
-            this.iterationCount = this._parseInt(searchParams.get("iterationCount"), "iterationCount");
-            if (this.iterationCount < 1)
-                throw new Error(`Invalid iterationCount param: '${this.iterationCount}', must be > 1.`);
-            searchParams.delete("iterationCount");
-        }
-        if (searchParams.has("suite") || searchParams.has("suites")) {
-            if (searchParams.has("suite") && searchParams.has("suites"))
-                throw new Error("Params 'suite' and 'suites' can not be used together.");
-            const value = searchParams.get("suite") || searchParams.get("suites");
-            this.suites = value.split(",");
-            if (this.suites.length === 0)
-                throw new Error("No suites selected");
-            searchParams.delete("suite");
-            searchParams.delete("suites");
-        }
-
-        if (searchParams.has("tags")) {
-            if (this.suites.length)
-                throw new Error("'suites' and 'tags' cannot be used together.");
-            this.tags = searchParams.get("tags").split(",");
-            searchParams.delete("tags");
-        }
-
-        this.developerMode = searchParams.has("developerMode");
-        searchParams.delete("developerMode");
-
-        if (searchParams.has("useWarmupSuite")) {
-            this.useWarmupSuite = true;
-            searchParams.delete("useWarmupSuite");
-        }
-
-        if (searchParams.has("waitBeforeSync")) {
-            this.waitBeforeSync = this._parseInt(searchParams.get("waitBeforeSync"), "waitBeforeSync");
-            if (this.waitBeforeSync < 0)
-                throw new Error(`Invalid waitBeforeSync param: '${this.waitBeforeSync}', must be >= 0.`);
-            searchParams.delete("waitBeforeSync");
-        }
-
-        if (searchParams.has("warmupBeforeSync")) {
-            this.warmupBeforeSync = this._parseInt(searchParams.get("warmupBeforeSync"), "warmupBeforeSync");
-            if (this.warmupBeforeSync < 0)
-                throw new Error(`Invalid warmupBeforeSync param: '${this.warmupBeforeSync}', must be >= 0.`);
-            searchParams.delete("warmupBeforeSync");
-        }
-
-        if (searchParams.has("measurementMethod")) {
-            this.measurementMethod = searchParams.get("measurementMethod");
-            if (this.measurementMethod !== "timer" && this.measurementMethod !== "raf")
-                throw new Error(`Invalid measurement method: '${this.measurementMethod}', must be either 'raf' or 'timer'.`);
-            searchParams.delete("measurementMethod");
-        }
-
-        if (searchParams.has("shuffleSeed")) {
-            this.shuffleSeed = searchParams.get("shuffleSeed");
-            if (this.shuffleSeed !== "off") {
-                if (this.shuffleSeed === "generate") {
-                    this.shuffleSeed = Math.floor((Math.random() * 1) << 16);
-                    console.log(`Generated a random suite order seed: ${this.shuffleSeed}`);
-                } else {
-                    this.shuffleSeed = parseInt(this.shuffleSeed);
-                }
-                if (!Number.isInteger(this.shuffleSeed))
-                    throw new Error(`Invalid shuffle seed: '${this.shuffleSeed}', must be either 'off', 'generate' or an integer.`);
-            }
-            searchParams.delete("shuffleSeed");
-        }
+        this.viewport = this._parseViewport(searchParams);
+        this.startAutomatically = this._parseBooleanParam(searchParams, "startAutomatically");
+        this.iterationCount = this._parseIntParam(searchParams, "iterationCount", 1);
+        this.suites = this._parseSuites(searchParams);
+        this.tags = this._parseTags(searchParams);
+        this.developerMode = this._parseBooleanParam(searchParams, "developerMode");
+        this.useWarmupSuite = this._parseBooleanParam(searchParams, "useWarmupSuite");
+        this.waitBeforeSync = this._parseIntParam(searchParams, "waitBeforeSync", 0);
+        this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
+        this.measurementMethod = this._parseMeasurementMethod(searchParams);
+        this.shuffleSeed = this._parseShuffleSeed(searchParams);
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
             console.error("Got unused search params", unused);
+    }
+
+    _parseBooleanParam(searchParams, paramKey) {
+        if (!searchParams.has(paramKey))
+            return false;
+        searchParams.delete(paramKey);
+        return true;
+    }
+
+    _parseIntParam(searchParams, paramKey, minValue) {
+        if (!searchParams.has(paramKey))
+            return defaultParams[paramKey];
+
+        const parsedValue = this._parseInt(searchParams.get(paramKey), "waitBeforeSync");
+        if (parsedValue < minValue)
+            throw new Error(`Invalid ${paramKey} param: '${parsedValue}', value must be >= ${minValue}.`);
+        searchParams.delete(paramKey);
+        return parsedValue;
+    }
+
+    _parseViewport(searchParams) {
+        if (!searchParams.has("viewport"))
+            return defaultParams.viewport;
+        const viewportParam = searchParams.get("viewport");
+        const [width, height] = viewportParam.split("x");
+        const viewport = {
+            width: this._parseInt(width, "viewport.width"),
+            height: this._parseInt(height, "viewport.height"),
+        };
+        if (this.viewport.width < 800 || this.viewport.height < 600)
+            throw new Error(`Invalid viewport param: ${viewportParam}`);
+        searchParams.delete("viewport");
+        return viewport;
+    }
+
+    _parseSuites(searchParams) {
+        if (searchParams.has("suite") || searchParams.has("suites")) {
+            if (searchParams.has("suite") && searchParams.has("suites"))
+                throw new Error("Params 'suite' and 'suites' can not be used together.");
+            const value = searchParams.get("suite") || searchParams.get("suites");
+            const suites = value.split(",");
+            if (suites.length === 0)
+                throw new Error("No suites selected");
+            searchParams.delete("suite");
+            searchParams.delete("suites");
+            return suites;
+        }
+        return defaultParams.suites;
+    }
+
+    _parseTags() {
+        if (!searchParams.has("tags"))
+            return defaultParams.tags;
+        if (this.suites.length)
+            throw new Error("'suites' and 'tags' cannot be used together.");
+        const tags = searchParams.get("tags").split(",");
+        searchParams.delete("tags");
+        return tags;
+    }
+
+    _parseMeasurementMethod(searchParams) {
+        if (!searchParams.has("measurementMethod"))
+            return defaultParams.measurementMethod;
+        const measurementMethod = searchParams.get("measurementMethod");
+        if (measurementMethod !== "timer" && measurementMethod !== "raf")
+            throw new Error(`Invalid measurement method: '${measurementMethod}', must be either 'raf' or 'timer'.`);
+        searchParams.delete("measurementMethod");
+        return measurementMethod;
+    }
+
+    _parseShuffleSeed(searchParams) {
+        if (!searchParams.has("shuffleSeed"))
+            return defaultParams.shuffleSeed;
+        let shuffleSeed = searchParams.get("shuffleSeed");
+        if (shuffleSeed !== "off") {
+            if (shuffleSeed === "generate") {
+                shuffleSeed = Math.floor((Math.random() * 1) << 16);
+                console.log(`Generated a random suite order seed: ${shuffleSeed}`);
+            } else {
+                shuffleSeed = parseInt(shuffleSeed);
+            }
+            if (!Number.isInteger(shuffleSeed))
+                throw new Error(`Invalid shuffle seed: '${shuffleSeed}', must be either 'off', 'generate' or an integer.`);
+        }
+        searchParams.delete("shuffleSeed");
+        return shuffleSeed;
     }
 
     toSearchParams() {
