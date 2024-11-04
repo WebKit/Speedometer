@@ -567,7 +567,7 @@ export class SuiteRunner {
 
         performance.mark(suitePrepareStartLabel);
         await this._loadFrame();
-        await suite.prepare(this._page);
+        await this._suite.prepare(this._page);
         performance.mark(suitePrepareEndLabel);
 
         performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
@@ -605,9 +605,9 @@ export class SuiteRunner {
         });
     }
 
-    async _runTestAndRecordResults(suite, test) {
+    async _runTestAndRecordResults(test) {
         if (this._client?.willRunTest)
-            await this._client.willRunTest(suite, test);
+            await this._client.willRunTest(this._suite, test);
 
         // Prepare all mark labels outside the measuring loop.
         const suiteName = this._suite.name;
@@ -655,6 +655,7 @@ export class SuiteRunner {
             performance.measure(`${suiteName}.${testName}-sync`, startLabel, syncEndLabel);
             performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
         };
+
         const report = () => this._recordTestResults(suite, test, syncTime, asyncTime);
         const invokerClass = TEST_INVOKER_LOOKUP[params.measurementMethod];
         const invoker = new invokerClass(runSync, measureAsync, report);
