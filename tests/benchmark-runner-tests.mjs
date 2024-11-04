@@ -188,6 +188,7 @@ describe("BenchmarkRunner", () => {
             const suite = SUITES_FIXTURE[0];
 
             before(async () => {
+                runner._suite = suite;
                 await runner._appendFrame();
                 performanceMarkSpy = spy(window.performance, "mark");
                 const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite);
