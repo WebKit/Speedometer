@@ -192,7 +192,7 @@ describe("BenchmarkRunner", () => {
                 await runner._appendFrame();
                 performanceMarkSpy = spy(window.performance, "mark");
                 const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite);
-                await suiteRunner._runTestAndRecordResults(suite.tests[0]);
+                await suiteRunner._runTestAndRecordResults(suite, suite.tests[0]);
             });
 
             it("should run client pre and post hooks if present", () => {
@@ -227,7 +227,7 @@ describe("BenchmarkRunner", () => {
 
                     // instantiate recorded test results
                     const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite);
-                    await suiteRunner._runTestAndRecordResults(suite.tests[0]);
+                    await suiteRunner._runTestAndRecordResults(suite, suite.tests[0]);
 
                     await runner._finalize();
                 });
