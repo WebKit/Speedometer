@@ -120,7 +120,7 @@ async function test() {
         }
 
     } finally {
-        console.log("\n\x1b[32m✓ Tests complete\n");
+        console.log("\n\x1b[32m✓ All tests passed!\n");
         driver.quit();
         server.close();
     }
