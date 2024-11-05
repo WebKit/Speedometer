@@ -4,6 +4,7 @@ import serve from "./server.mjs";
 import { Builder, Capabilities } from "selenium-webdriver";
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
+import assert from "assert";
 
 const optionDefinitions = [
     { name: "browser", type: String, description: "Set the browser to test, choices are [safari, firefox, chrome]. By default the $BROWSER env variable is used." },
@@ -34,12 +35,10 @@ function printHelp(message = "") {
 
 const options = commandLineArgs(optionDefinitions);
 
-if ("help" in options)
-    printHelp();
+if ("help" in options) printHelp();
 
 const BROWSER = options?.browser;
-if (!BROWSER)
-    printHelp("No browser specified, use $BROWSER or --browser");
+if (!BROWSER) printHelp("No browser specified, use $BROWSER or --browser");
 
 let capabilities;
 switch (BROWSER) {
@@ -112,12 +111,13 @@ async function test() {
         });
 
         printTree(result.suite);
-        if (result.stats.failures > 0) {
-            console.error("\n\x1b[31m✖ Not all tests passed!\n");
-            process.exit(1);
-        }
+
+        console.log("\nChecking for passed tests...");
+        assert(result.stats.passes > 0);
+        console.log("Checking for failed tests...");
+        assert(result.stats.failures === 0);
     } finally {
-        console.log("\n\x1b[32m✓ All tests passed!\n");
+        console.log("\nTests complete!");
         driver.quit();
         server.close();
     }

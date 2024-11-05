@@ -164,7 +164,7 @@ describe("BenchmarkRunner", () => {
             });
 
             it("should prepare the suite first", async () => {
-                assert.calledOnce(_prepareSuiteSpy);
+                assert.calledTwice(_prepareSuiteSpy);
                 assert.calledOnce(_suitePrepareSpy);
                 assert.calledOnce(_loadFrameStub);
             });
