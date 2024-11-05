@@ -671,12 +671,12 @@ export class SuiteRunner {
         this._suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
         this._suiteResults.total += total;
 
-        await this._updateClient(suite, test);
+        await this._updateClient(test);
     }
 
-    async _updateClient(suite, test) {
+    async _updateClient(test, suite = this._suite) {
         if (this._client?.didRunTest)
-            await this._client.didRunTest(this._suite, test);
+            await this._client.didRunTest(suite, test);
     }
 }
 
@@ -687,14 +687,14 @@ export class RemoteSuiteRunner extends SuiteRunner {
         window.addEventListener("message", handler);
 
         // FIXME: use this._suite in all SuiteRunner methods directly.
-        await this._prepareSuite(this._suite);
-        await this._runSuite(this._suite);
+        await this._prepareSuite();
+        await this._runSuite();
 
         window.removeEventListener("message", handler);
     }
 
-    async _prepareSuite(suite) {
-        const suiteName = suite.name;
+    async _prepareSuite() {
+        const suiteName = this._suite.name;
         const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
         const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
 
@@ -702,9 +702,9 @@ export class RemoteSuiteRunner extends SuiteRunner {
 
         // Wait for the app-ready message from the workload.
         const promise = this._subscribeOnce({ type: "app-ready" });
-        await this._loadFrame(suite);
+        await this._loadFrame(this._suite);
         const response = await promise;
-        await suite.prepare(this._page);
+        await this._suite.prepare(this._page);
         // Capture appId to pass along with messages.
         this._appId = response?.appId;
 
@@ -713,17 +713,19 @@ export class RemoteSuiteRunner extends SuiteRunner {
         performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
     }
 
-    async _runSuite(suite) {
+    async _runSuite() {
         // Update progress bar with each completed step.
-        this._startSubscription({ type: "step-complete", callback: async (e) => this._updateClient(e.data.name, e.data.test) });
+        this._startSubscription({ type: "step-complete", callback: async (e) => this._updateClient(e.data.test, e.data.name) });
         // Ask workload to run its own tests.
-        this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: suite.config?.name || "default" }, "*");
+        this._frame.contentWindow.postMessage({ id: this._appId, key: "benchmark-connector", type: "benchmark-suite", name: this._suite.config?.name || "default" }, "*");
         // Capture metrics from the completed tests.
         const response = await this._subscribeOnce({ type: "suite-complete" });
         this._stopSubscription({ type: "step-complete" });
 
-        this._measuredValues.tests[suite.name] = response.result;
-        this._validateSuiteTotal(suite.name);
+        this._suiteResults.tests = response.result.tests;
+        this._suiteResults.total += response.result.total;
+
+        this._validateSuiteTotal();
     }
 
     _handlePostMessage(e) {
@@ -747,10 +749,13 @@ export class RemoteSuiteRunner extends SuiteRunner {
 
     _subscribeOnce({ type }) {
         return new Promise((resolve) => {
-            this._startSubscription({ type, callback: (e) => {
-                this._stopSubscription({ type });
-                resolve(e.data);
-            } });
+            this._startSubscription({
+                type,
+                callback: (e) => {
+                    this._stopSubscription({ type });
+                    resolve(e.data);
+                },
+            });
         });
     }
 }

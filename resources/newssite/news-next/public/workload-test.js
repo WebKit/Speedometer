@@ -35,5 +35,5 @@ window.benchmarkTestManager = new BenchmarkTestManager(window.name, [
             getElement("#navbar-navlist-politics-link").click();
             forceLayout();
         }),
-    ])
+    ]),
 ]);
