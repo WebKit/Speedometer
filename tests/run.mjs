@@ -4,7 +4,6 @@ import serve from "./server.mjs";
 import { Builder, Capabilities } from "selenium-webdriver";
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
-import assert from "assert";
 
 const optionDefinitions = [
     { name: "browser", type: String, description: "Set the browser to test, choices are [safari, firefox, chrome]. By default the $BROWSER env variable is used." },
@@ -76,9 +75,9 @@ function printTree(node) {
     for (const test of node.tests) {
         console.group();
         if (test.state === "passed") {
-            console.log("\x1b[32m✓", `\x1b[30m${ test.title}`);
+            console.log("\x1b[32m✓", `\x1b[30m${test.title}`);
         } else {
-            console.log("\x1b[31m✖", `\x1b[30m${ test.title}`);
+            console.log("\x1b[31m✖", `\x1b[30m${test.title}`);
             console.group();
             console.log(`\x1b[31m${test.error.name}: ${test.error.message}`);
             console.groupEnd();
@@ -113,11 +112,10 @@ async function test() {
         });
 
         printTree(result.suite);
-        if (result.stats.failures > 0){
+        if (result.stats.failures > 0) {
             console.error("\n\x1b[31m✖ Not all tests passed!\n");
             process.exit(1);
         }
-
     } finally {
         console.log("\n\x1b[32m✓ All tests passed!\n");
         driver.quit();
