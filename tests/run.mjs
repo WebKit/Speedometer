@@ -112,7 +112,6 @@ async function test() {
             window.dispatchEvent(event);
         });
 
-        // console.log("stats", result.stats);
         printTree(result.suite);
         if (result.stats.failures > 0){
             console.error("\n\x1b[31m✖ Not all tests passed!\n");
