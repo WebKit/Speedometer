@@ -76,9 +76,9 @@ function printTree(node) {
     for (const test of node.tests) {
         console.group();
         if (test.state === "passed") {
-            console.log("\x1b[32m✓", `\x1b[30m${test.title}`);
+            console.log("\x1b[32m✓", `\x1b[0m${test.title}`);
         } else {
-            console.log("\x1b[31m✖", `\x1b[30m${test.title}`);
+            console.log("\x1b[31m✖", `\x1b[0m${test.title}`);
             console.group();
             console.log(`\x1b[31m${test.error.name}: ${test.error.message}`);
             console.groupEnd();
