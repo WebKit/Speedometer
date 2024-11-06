@@ -30,12 +30,45 @@
         <script src="../resources/benchmark-runner.mjs" type="module"></script>
         <script src="benchmark-runner-tests.mjs" type="module"></script>
         <script type="module">
-            const runner = mocha.run();
-            runner.on("end", function () {
-                const event = new Event("complete");
-                window.dispatchEvent(event);
-            });
-            window.mochaResults = runner;
+            function startTest() {
+                const runner = mocha.run();
+                window.mochaResults = runner;
+
+                function createReport(node) {
+                    const tree = {
+                        tests: [],
+                        suites: [],
+                        id: node.id,
+                        title: node.title,
+                        root: node.root,
+                    };
+
+                    for (const test of node.tests) {
+                        tree.tests.push({
+                            id: test.id,
+                            title: test.title,
+                            state: test.state,
+                            error: {
+                                name: test?.err?.name,
+                                message: test?.err?.message,
+                            },
+                        });
+                    }
+
+                    for (const suite of node.suites) {
+                        tree.suites.push(createReport(suite));
+                    }
+
+                    return tree;
+                }
+
+                runner.on("end", function () {
+                    window.suite = createReport(runner.suite);
+                    const event = new Event("test-complete");
+                    window.dispatchEvent(event);
+                });
+            }
+            window.addEventListener("start-test", startTest);
         </script>
     </body>
 </html>
