@@ -23,7 +23,6 @@ export const DataContextProvider = ({ children }) => {
     const selected = Object.create(null);
     Object.keys(content).forEach((key) => {
         const { sections } = content[key];
-
         const selectedSections = [];
         let index = 0;
 
