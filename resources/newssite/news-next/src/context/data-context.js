@@ -29,8 +29,6 @@ export const DataContextProvider = ({ children }) => {
 
         for (let i = 0; i < sections.length; i++) {
             selectedSections.push({ ...sections[index] });
-            const numCopy = Math.floor(i / sections.length);
-            selectedSections[i].id = `${sections[index].id}-${numCopy}`;
 
             const { articles } = selectedSections[i];
             for (let j = 0; j < articles.length; j++) {
