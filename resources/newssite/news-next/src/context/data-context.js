@@ -21,7 +21,7 @@ export const DataContextProvider = ({ children }) => {
     const { content } = dataSource[lang];
 
     const selected = Object.create(null);
-    Object.keys(content).forEach(key => {
+    Object.keys(content).forEach((key) => {
         const { sections } = content[key];
 
         const selectedSections = [];
@@ -40,6 +40,7 @@ export const DataContextProvider = ({ children }) => {
                     for (let k = 0; k < content.length; k++)
                         content[k].id = uuidv4();
                 }
+
             }
 
             index = (index + 1) % sections.length;
@@ -47,7 +48,7 @@ export const DataContextProvider = ({ children }) => {
 
         selected[key] = {
             ...content[key],
-            sections: selectedSections
+            sections: selectedSections,
         };
     });
 
@@ -55,7 +56,7 @@ export const DataContextProvider = ({ children }) => {
         lang,
         dir,
         ...dataSource[lang],
-        content: selected
+        content: selected,
     };
 
     return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

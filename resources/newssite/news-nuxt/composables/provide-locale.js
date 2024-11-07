@@ -21,7 +21,7 @@ export function provideLocale() {
     const { content } = dataSource[lang];
 
     const selected = Object.create(null);
-    Object.keys(content).forEach(key => {
+    Object.keys(content).forEach((key) => {
         const { sections } = content[key];
 
         const selectedSections = [];
@@ -37,8 +37,7 @@ export function provideLocale() {
                 articles[j].id = uuidv4();
                 const { content } = articles[j];
                 if (Array.isArray(content)) {
-                    for (let k = 0; k < content.length; k++)
-                        content[k].id = uuidv4();
+                    for (let k = 0; k < content.length; k++) content[k].id = uuidv4();
                 }
             }
 
@@ -47,7 +46,7 @@ export function provideLocale() {
 
         selected[key] = {
             ...content[key],
-            sections: selectedSections
+            sections: selectedSections,
         };
     });
 
@@ -55,7 +54,7 @@ export function provideLocale() {
         lang,
         dir,
         ...dataSource[lang],
-        content: selected
+        content: selected,
     };
 
     provide("data", value);
