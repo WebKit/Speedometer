@@ -10,7 +10,7 @@ export default function ArticleImage({ image, imageClass, meta }) {
 
     return (
         <>
-            <div className={imageClass}>
+            <div className={imageClass} style={{ width: "auto" }}>
                 <Image className={styles["article-image"]} src={`./${image.src}`} width={image.width} height={image.height} alt={image.alt} />
                 <ArticleTag tag={meta?.tag} />
             </div>
