@@ -1,5 +1,6 @@
 import { Metric } from "./metric.mjs";
 import { params } from "./params.mjs";
+import { TEST_INVOKER_LOOKUP } from "./test-invoker.mjs";
 
 const performance = globalThis.performance;
 
@@ -264,61 +265,6 @@ const WarmupSuite = {
             item.dispatchEvent("wheel", wheelEventOptions, WheelEvent);
         }),
     ],
-};
-
-class TestInvoker {
-    constructor(syncCallback, asyncCallback, reportCallback) {
-        this._syncCallback = syncCallback;
-        this._asyncCallback = asyncCallback;
-        this._reportCallback = reportCallback;
-    }
-}
-
-class TimerTestInvoker extends TestInvoker {
-    start() {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                this._syncCallback();
-                setTimeout(() => {
-                    this._asyncCallback();
-                    requestAnimationFrame(async () => {
-                        await this._reportCallback();
-                        resolve();
-                    });
-                }, 0);
-            }, params.waitBeforeSync);
-        });
-    }
-}
-
-class RAFTestInvoker extends TestInvoker {
-    start() {
-        return new Promise((resolve) => {
-            if (params.waitBeforeSync)
-                setTimeout(() => this._scheduleCallbacks(resolve), params.waitBeforeSync);
-            else
-                this._scheduleCallbacks(resolve);
-        });
-    }
-
-    _scheduleCallbacks(resolve) {
-        requestAnimationFrame(() => this._syncCallback());
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                this._asyncCallback();
-                setTimeout(async () => {
-                    await this._reportCallback();
-                    resolve();
-                }, 0);
-            }, 0);
-        });
-    }
-}
-
-const TEST_INVOKER_LOOKUP = {
-    __proto__: null,
-    timer: TimerTestInvoker,
-    raf: RAFTestInvoker,
 };
 
 // https://stackoverflow.com/a/47593316
@@ -658,7 +604,7 @@ export class SuiteRunner {
 
         const report = () => this._recordTestResults(test, syncTime, asyncTime);
         const invokerClass = TEST_INVOKER_LOOKUP[params.measurementMethod];
-        const invoker = new invokerClass(runSync, measureAsync, report);
+        const invoker = new invokerClass(runSync, measureAsync, report, params);
 
         return invoker.start();
     }
