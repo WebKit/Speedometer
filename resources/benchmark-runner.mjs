@@ -1,5 +1,6 @@
 import { Metric } from "./metric.mjs";
 import { params } from "./params.mjs";
+import { TEST_INVOKER_LOOKUP, ASYNC_TEST_INVOKER_LOOKUP } from "./test-invoker.mjs";
 
 const performance = globalThis.performance;
 
@@ -266,103 +267,6 @@ const WarmupSuite = {
     ],
 };
 
-class TestInvoker {
-    constructor(syncCallback, asyncCallback, reportCallback) {
-        this._syncCallback = syncCallback;
-        this._asyncCallback = asyncCallback;
-        this._reportCallback = reportCallback;
-    }
-}
-
-class TimerTestInvoker extends TestInvoker {
-    start() {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                this._syncCallback();
-                setTimeout(() => {
-                    this._asyncCallback();
-                    requestAnimationFrame(async () => {
-                        await this._reportCallback();
-                        resolve();
-                    });
-                }, 0);
-            }, params.waitBeforeSync);
-        });
-    }
-}
-
-class AsyncTimerTestInvoker extends TestInvoker {
-    start() {
-        return new Promise((resolve) => {
-            setTimeout(async () => {
-                await this._syncCallback();
-                setTimeout(() => {
-                    this._asyncCallback();
-                    requestAnimationFrame(async () => {
-                        await this._reportCallback();
-                        resolve();
-                    });
-                }, 0);
-            }, params.waitBeforeSync);
-        });
-    }
-}
-
-class BaseRAFTestInvoker extends TestInvoker {
-    start() {
-        return new Promise((resolve) => {
-            if (params.waitBeforeSync)
-                setTimeout(() => this._scheduleCallbacks(resolve), params.waitBeforeSync);
-            else
-                this._scheduleCallbacks(resolve);
-        });
-    }
-}
-
-class RAFTestInvoker extends BaseRAFTestInvoker {
-    _scheduleCallbacks(resolve) {
-        requestAnimationFrame(() => this._syncCallback());
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                this._asyncCallback();
-                setTimeout(async () => {
-                    await this._reportCallback();
-                    resolve();
-                }, 0);
-            }, 0);
-        });
-    }
-}
-
-class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
-    _scheduleCallbacks(resolve) {
-        requestAnimationFrame(async () => {
-            await this._syncCallback();
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    this._asyncCallback();
-                    setTimeout(async () => {
-                        await this._reportCallback();
-                        resolve();
-                    }, 0);
-                }, 0);
-            });
-        });
-    }
-}
-
-const TEST_INVOKER_LOOKUP = {
-    __proto__: null,
-    timer: TimerTestInvoker,
-    raf: RAFTestInvoker,
-};
-
-const ASYNC_TEST_INVOKER_LOOKUP = {
-    __proto__: null,
-    timer: AsyncTimerTestInvoker,
-    raf: AsyncRAFTestInvoker,
-};
-
 // https://stackoverflow.com/a/47593316
 function seededHashRandomNumberGenerator(a) {
     return function () {
@@ -586,6 +490,11 @@ export class BenchmarkRunner {
 export class SuiteRunner {
     constructor(measuredValues, frame, page, client, suite) {
         // FIXME: Create SuiteRunner-local measuredValues.
+        this._suiteResults = measuredValues.tests[suite.name];
+        if (!this._suiteResults) {
+            this._suiteResults = { tests: {}, total: 0 };
+            measuredValues.tests[suite.name] = this._suiteResults;
+        }
         this._measuredValues = measuredValues;
         this._frame = frame;
         this._page = page;
@@ -622,17 +531,16 @@ export class SuiteRunner {
         performance.mark(suiteEndLabel);
 
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
-        this._validateSuiteTotal(suiteName);
+        this._validateSuiteTotal();
     }
 
     _validateSuiteTotal() {
         // When the test is fast and the precision is low (for example with Firefox'
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
-        const suiteName = this._suite.name;
-        const suiteTotal = this._measuredValues.tests[suiteName].total;
+        const suiteTotal = this._suiteResults.total;
         if (suiteTotal === 0)
-            throw new Error(`Got invalid 0-time total for suite ${suiteName}: ${suiteTotal}`);
+            throw new Error(`Got invalid 0-time total for suite ${this._suite.name}: ${suiteTotal}`);
     }
 
     async _loadFrame() {
@@ -697,7 +605,7 @@ export class SuiteRunner {
 
         const report = () => this._recordTestResults(test, syncTime, asyncTime);
         const invokerClass = TEST_INVOKER_LOOKUP[params.measurementMethod];
-        const invoker = new invokerClass(runSync, measureAsync, report);
+        const invoker = new invokerClass(runSync, measureAsync, report, params);
 
         return invoker.start();
     }
@@ -706,12 +614,10 @@ export class SuiteRunner {
         // Skip reporting updates for the warmup suite.
         if (this._suite === WarmupSuite)
             return;
-        const suiteName = this._suite.name;
-        const suiteResults = this._measuredValues.tests[suiteName] || { tests: {}, total: 0 };
+
         const total = syncTime + asyncTime;
-        this._measuredValues.tests[suiteName] = suiteResults;
-        suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
-        suiteResults.total += total;
+        this._suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
+        this._suiteResults.total += total;
 
         if (this._client?.didRunTest)
             await this._client.didRunTest(this._suite, test);
