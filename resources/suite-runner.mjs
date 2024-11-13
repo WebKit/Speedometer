@@ -114,8 +114,6 @@ export class SuiteRunner {
             performance.mark(asyncEndLabel);
             if (this._params.warmupBeforeSync)
                 performance.measure("warmup", "warmup-start", "warmup-end");
-            const suiteName = this._suite.name;
-            const testName = test.name;
             performance.measure(`${suiteName}.${testName}-sync`, startLabel, syncEndLabel);
             performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
         };
