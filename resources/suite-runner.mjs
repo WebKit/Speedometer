@@ -3,7 +3,7 @@ import { WarmupSuite } from "./benchmark-runner.mjs";
 
 // FIXME: Create AsyncSuiteRunner subclass.
 // FIXME: Create RemoteSuiteRunner subclass.
-export class SuiteRunner {
+class SuiteRunner {
     constructor(measuredValues, frame, page, client, suite, params) {
         // FIXME: Create SuiteRunner-local measuredValues.
         this._suiteResults = measuredValues.tests[suite.name];
