@@ -678,7 +678,7 @@ export class AsyncSuiteRunner extends SuiteRunner {
 
         const report = () => this._recordTestResults(test, syncTime, asyncTime);
         const invokerClass = ASYNC_TEST_INVOKER_LOOKUP[params.measurementMethod];
-        const invoker = new invokerClass(runSync, measureAsync, report);
+        const invoker = new invokerClass(runSync, measureAsync, report, params);
 
         return invoker.start();
     }
