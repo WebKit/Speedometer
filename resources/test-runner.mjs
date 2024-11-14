@@ -6,6 +6,7 @@ export class TestRunner {
         this._test = test;
         this._params = params;
         this._callback = callback;
+
         this._page = page;
         this._frame = frame;
     }
