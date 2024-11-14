@@ -5,8 +5,8 @@ export default function Document() {
     return (
         <Html lang="en">
             <Head>
-                <Script src="./workload-testing-utils.min.js" strategy="beforeInteractive" type="module" async />
-                <Script src="./workload-test.js" strategy="beforeInteractive" type="module" async />
+                <Script src="./workload-testing-utils.mjs" strategy="beforeInteractive" type="module" async />
+                <Script src="./workload-test.mjs" strategy="beforeInteractive" type="module" async />
             </Head>
             <body>
                 <Main />

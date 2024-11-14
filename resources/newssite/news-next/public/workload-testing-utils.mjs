@@ -134,11 +134,11 @@ export class BenchmarkTestSuite {
 }
 
 /**
- * BenchmarkTestManager
+ * BenchmarkSuitesManager
  *
  * A collection of test suites for a single workload.
  */
-export class BenchmarkTestManager {
+export class BenchmarkSuitesManager {
     constructor(name, suites) {
         this.name = name;
         this.suites = suites;
