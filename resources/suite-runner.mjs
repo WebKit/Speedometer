@@ -62,7 +62,7 @@ class SuiteRunner {
 
     async _loadFrame() {
         return new Promise((resolve, reject) => {
-            const frame = this._page._frame;
+            const frame = this._frame;
             frame.onload = () => resolve();
             frame.onerror = () => reject();
             frame.src = this._suite.url;
