@@ -1,6 +1,89 @@
 import { TEST_INVOKER_LOOKUP } from "./test-invoker.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
 
+export const runTest = async({ suite, test, params, callback, page, frame }) => {
+    const runWarmupSuite = ({ params }) => {
+        if (params.warmupBeforeSync) {
+            performance.mark("warmup-start");
+            const startTime = performance.now();
+            // Infinite loop for the specified ms.
+            while (performance.now() - startTime < params.warmupBeforeSync)
+                continue;
+            performance.mark("warmup-end");
+        }
+    };
+
+    const measureSyncTime = ({ test, syncStartLabel, syncEndLabel, page }) => {
+        performance.mark(syncStartLabel);
+        const syncStartTime = performance.now();
+        test.run(page);
+        const syncEndTime = performance.now();
+        performance.mark(syncEndLabel);
+
+        const syncTime = syncEndTime - syncStartTime;
+        return syncTime;
+    };
+
+    const initAsyncTime = ({ asyncStartLabel }) => {
+        performance.mark(asyncStartLabel);
+
+        const asyncStartTime = performance.now();
+        return asyncStartTime;
+    };
+
+    const measureAsyncTime = ({ asyncStartTime, asyncEndLabel }) => {
+        const asyncEndTime = performance.now();
+        performance.mark(asyncEndLabel);
+
+        const asyncTime = asyncEndTime - asyncStartTime;
+        return asyncTime;
+    };
+
+    const measureTestPerformance = ({ suiteName, testName, syncStartLabel, syncEndLabel, asyncStartLabel, asyncEndLabel, params }) => {
+        if (params.warmupBeforeSync)
+            performance.measure("warmup", "warmup-start", "warmup-end");
+        performance.measure(`${suiteName}.${testName}-sync`, syncStartLabel, syncEndLabel);
+        performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
+    };
+
+    const forceLayout = ({ frame }) => {
+        const bodyReference = frame ? frame.contentDocument.body : document.body;
+        const windowReference = frame ? frame.contentWindow : window;
+        // Some browsers don't immediately update the layout for paint.
+        // Force the layout here to ensure we're measuring the layout time.
+        const height = bodyReference.getBoundingClientRect().height;
+        windowReference._unusedHeightValue = height; // Prevent dead code elimination.
+    };
+
+    // Prepare all mark labels outside the measuring loop.
+    const suiteName = suite.name;
+    const testName = test.name;
+    const syncStartLabel = `${suiteName}.${testName}-start`;
+    const syncEndLabel = `${suiteName}.${testName}-sync-end`;
+    const asyncStartLabel = `${suiteName}.${testName}-async-start`;
+    const asyncEndLabel = `${suiteName}.${testName}-async-end`;
+
+    let syncTime;
+    let asyncStartTime;
+    let asyncTime;
+    const runSync = () => {
+        runWarmupSuite({ params });
+        syncTime = measureSyncTime({ test, syncStartLabel, syncEndLabel, page });
+        asyncStartTime = initAsyncTime({ asyncStartLabel });
+    };
+    const measureAsync = () => {
+        forceLayout({ frame });
+        asyncTime = measureAsyncTime({ asyncStartTime, asyncEndLabel });
+        measureTestPerformance({ suiteName, testName, syncStartLabel, syncEndLabel, asyncStartLabel, asyncEndLabel, params });
+    };
+
+    const report = () => callback(test, syncTime, asyncTime);
+    const invokerClass = TEST_INVOKER_LOOKUP[params.measurementMethod];
+    const invoker = new invokerClass(runSync, measureAsync, report, params);
+
+    return invoker.start();
+};
+
 // FIXME: Create AsyncSuiteRunner subclass.
 // FIXME: Create RemoteSuiteRunner subclass.
 class SuiteRunner {
@@ -43,8 +126,12 @@ class SuiteRunner {
         const suiteEndLabel = `suite-${suiteName}-end`;
 
         performance.mark(suiteStartLabel);
-        for (const test of this._suite.tests)
-            await this._runTest(test);
+        for (const test of this._suite.tests) {
+            if (this._client?.willRunTest)
+                await this._client.willRunTest(this._suite, test);
+
+            await runTest({ suite: this._suite, test, params: this._params, callback: this._recordTestResults, page: this._page, frame: this._frame });
+        }
         performance.mark(suiteEndLabel);
 
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
@@ -69,91 +156,7 @@ class SuiteRunner {
         });
     }
 
-    _runWarmupSuite() {
-        if (this._params.warmupBeforeSync) {
-            performance.mark("warmup-start");
-            const startTime = performance.now();
-            // Infinite loop for the specified ms.
-            while (performance.now() - startTime < this._params.warmupBeforeSync)
-                continue;
-            performance.mark("warmup-end");
-        }
-    }
-
-    _measureSyncTime({ test, syncStartLabel, syncEndLabel }) {
-        performance.mark(syncStartLabel);
-        const syncStartTime = performance.now();
-        test.run(this._page);
-        const syncEndTime = performance.now();
-        performance.mark(syncEndLabel);
-
-        const syncTime = syncEndTime - syncStartTime;
-        return syncTime;
-    }
-
-    _initAsyncTime({ asyncStartLabel }) {
-        performance.mark(asyncStartLabel);
-
-        const asyncStartTime = performance.now();
-        return asyncStartTime;
-    }
-
-    _measureAsyncTime({ asyncStartTime, asyncEndLabel }) {
-        const asyncEndTime = performance.now();
-        performance.mark(asyncEndLabel);
-
-        const asyncTime = asyncEndTime - asyncStartTime;
-        return asyncTime;
-    }
-
-    _measureTestPerformance({ suiteName, testName, syncStartLabel, syncEndLabel, asyncStartLabel, asyncEndLabel }) {
-        if (this._params.warmupBeforeSync)
-            performance.measure("warmup", "warmup-start", "warmup-end");
-        performance.measure(`${suiteName}.${testName}-sync`, syncStartLabel, syncEndLabel);
-        performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
-    }
-
-    _forceLayout() {
-        // Some browsers don't immediately update the layout for paint.
-        // Force the layout here to ensure we're measuring the layout time.
-        const height = this._frame.contentDocument.body.getBoundingClientRect().height;
-        this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
-    }
-
-    async _runTest(test) {
-        if (this._client?.willRunTest)
-            await this._client.willRunTest(this._suite, test);
-
-        // Prepare all mark labels outside the measuring loop.
-        const suiteName = this._suite.name;
-        const testName = test.name;
-        const syncStartLabel = `${suiteName}.${testName}-start`;
-        const syncEndLabel = `${suiteName}.${testName}-sync-end`;
-        const asyncStartLabel = `${suiteName}.${testName}-async-start`;
-        const asyncEndLabel = `${suiteName}.${testName}-async-end`;
-
-        let syncTime;
-        let asyncStartTime;
-        let asyncTime;
-        const runSync = () => {
-            this._runWarmupSuite();
-            syncTime = this._measureSyncTime({ test, syncStartLabel, syncEndLabel });
-            asyncStartTime = this._initAsyncTime({ asyncStartLabel });
-        };
-        const measureAsync = () => {
-            this._forceLayout();
-            asyncTime = this._measureAsyncTime({ asyncStartTime, asyncEndLabel });
-            this._measureTestPerformance({ suiteName, testName, syncStartLabel, syncEndLabel, asyncStartLabel, asyncEndLabel });
-        };
-
-        const report = () => this._recordTestResults(test, syncTime, asyncTime);
-        const invokerClass = TEST_INVOKER_LOOKUP[this._params.measurementMethod];
-        const invoker = new invokerClass(runSync, measureAsync, report, this._params);
-
-        return invoker.start();
-    }
-
-    async _recordTestResults(test, syncTime, asyncTime) {
+    _recordTestResults = async(test, syncTime, asyncTime) => {
         // Skip reporting updates for the warmup suite.
         if (this._suite === WarmupSuite)
             return;
@@ -164,7 +167,7 @@ class SuiteRunner {
 
         if (this._client?.didRunTest)
             await this._client.didRunTest(this._suite, test);
-    }
+    };
 }
 
 // FIXME: implement remote steps
