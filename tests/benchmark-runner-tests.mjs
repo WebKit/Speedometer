@@ -235,7 +235,7 @@ describe("BenchmarkRunner", () => {
                     stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd);
 
                     // instantiate recorded test results
-                    const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite, params );
+                    const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite, params);
                     await suiteRunner._runSuite();
 
                     await runner._finalize();
