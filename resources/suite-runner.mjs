@@ -69,6 +69,57 @@ class SuiteRunner {
         });
     }
 
+    _runWarmupSuite() {
+        if (this._params.warmupBeforeSync) {
+            performance.mark("warmup-start");
+            const startTime = performance.now();
+            // Infinite loop for the specified ms.
+            while (performance.now() - startTime < this._params.warmupBeforeSync)
+                continue;
+            performance.mark("warmup-end");
+        }
+    }
+
+    _measureSyncTime({ test, syncStartLabel, syncEndLabel }) {
+        performance.mark(syncStartLabel);
+        const syncStartTime = performance.now();
+        test.run(this._page);
+        const syncEndTime = performance.now();
+        performance.mark(syncEndLabel);
+
+        const syncTime = syncEndTime - syncStartTime;
+        return syncTime;
+    }
+
+    _initAsyncTime({ asyncStartLabel }) {
+        performance.mark(asyncStartLabel);
+
+        const asyncStartTime = performance.now();
+        return asyncStartTime;
+    }
+
+    _measureAsyncTime({ asyncStartTime, asyncEndLabel }) {
+        const asyncEndTime = performance.now();
+        performance.mark(asyncEndLabel);
+
+        const asyncTime = asyncEndTime - asyncStartTime;
+        return asyncTime;
+    }
+
+    _measureTestPerformance({ suiteName, testName, syncStartLabel, syncEndLabel, asyncStartLabel, asyncEndLabel }) {
+        if (this._params.warmupBeforeSync)
+            performance.measure("warmup", "warmup-start", "warmup-end");
+        performance.measure(`${suiteName}.${testName}-sync`, syncStartLabel, syncEndLabel);
+        performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
+    }
+
+    _forceLayout() {
+        // Some browsers don't immediately update the layout for paint.
+        // Force the layout here to ensure we're measuring the layout time.
+        const height = this._frame.contentDocument.body.getBoundingClientRect().height;
+        this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
+    }
+
     async _runTest(test) {
         if (this._client?.willRunTest)
             await this._client.willRunTest(this._suite, test);
@@ -76,7 +127,7 @@ class SuiteRunner {
         // Prepare all mark labels outside the measuring loop.
         const suiteName = this._suite.name;
         const testName = test.name;
-        const startLabel = `${suiteName}.${testName}-start`;
+        const syncStartLabel = `${suiteName}.${testName}-start`;
         const syncEndLabel = `${suiteName}.${testName}-sync-end`;
         const asyncStartLabel = `${suiteName}.${testName}-async-start`;
         const asyncEndLabel = `${suiteName}.${testName}-async-end`;
@@ -85,37 +136,14 @@ class SuiteRunner {
         let asyncStartTime;
         let asyncTime;
         const runSync = () => {
-            if (this._params.warmupBeforeSync) {
-                performance.mark("warmup-start");
-                const startTime = performance.now();
-                // Infinite loop for the specified ms.
-                while (performance.now() - startTime < this._params.warmupBeforeSync)
-                    continue;
-                performance.mark("warmup-end");
-            }
-            performance.mark(startLabel);
-            const syncStartTime = performance.now();
-            test.run(this._page);
-            const syncEndTime = performance.now();
-            performance.mark(syncEndLabel);
-
-            syncTime = syncEndTime - syncStartTime;
-
-            performance.mark(asyncStartLabel);
-            asyncStartTime = performance.now();
+            this._runWarmupSuite();
+            syncTime = this._measureSyncTime({ test, syncStartLabel, syncEndLabel });
+            asyncStartTime = this._initAsyncTime({ asyncStartLabel });
         };
         const measureAsync = () => {
-            // Some browsers don't immediately update the layout for paint.
-            // Force the layout here to ensure we're measuring the layout time.
-            const height = this._frame.contentDocument.body.getBoundingClientRect().height;
-            const asyncEndTime = performance.now();
-            asyncTime = asyncEndTime - asyncStartTime;
-            this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
-            performance.mark(asyncEndLabel);
-            if (this._params.warmupBeforeSync)
-                performance.measure("warmup", "warmup-start", "warmup-end");
-            performance.measure(`${suiteName}.${testName}-sync`, startLabel, syncEndLabel);
-            performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
+            this._forceLayout();
+            asyncTime = this._measureAsyncTime({ asyncStartTime, asyncEndLabel });
+            this._measureTestPerformance({ suiteName, testName, syncStartLabel, syncEndLabel, asyncStartLabel, asyncEndLabel });
         };
 
         const report = () => this._recordTestResults(test, syncTime, asyncTime);
