@@ -4,19 +4,25 @@ import { WarmupSuite } from "./benchmark-runner.mjs";
 // FIXME: Create AsyncSuiteRunner subclass.
 // FIXME: Create RemoteSuiteRunner subclass.
 export class SuiteRunner {
-    constructor(measuredValues, frame, page, client, suite, params) {
+    #suiteResults;
+    #frame;
+    #page;
+    #client;
+    #suite;
+    #params;
+
+    constructor(frame, page, params, suite, client, measuredValues) {
         // FIXME: Create SuiteRunner-local measuredValues.
-        this._suiteResults = measuredValues.tests[suite.name];
-        if (!this._suiteResults) {
-            this._suiteResults = { tests: {}, total: 0 };
-            measuredValues.tests[suite.name] = this._suiteResults;
+        this.#suiteResults = measuredValues.tests[suite.name];
+        if (!this.#suiteResults) {
+            this.#suiteResults = { tests: {}, total: 0 };
+            measuredValues.tests[suite.name] = this.#suiteResults;
         }
-        this._measuredValues = measuredValues;
-        this._frame = frame;
-        this._page = page;
-        this._client = client;
-        this._suite = suite;
-        this._params = params;
+        this.#frame = frame;
+        this.#page = page;
+        this.#client = client;
+        this.#suite = suite;
+        this.#params = params;
     }
 
     async run() {
@@ -25,29 +31,29 @@ export class SuiteRunner {
     }
 
     async _prepareSuite() {
-        const suiteName = this._suite.name;
+        const suiteName = this.#suite.name;
         const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
         const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
 
         performance.mark(suitePrepareStartLabel);
         await this._loadFrame();
-        await this._suite.prepare(this._page);
+        await this.#suite.prepare(this.#page);
         performance.mark(suitePrepareEndLabel);
 
         performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
     }
 
     async _runSuite() {
-        const suiteName = this._suite.name;
+        const suiteName = this.#suite.name;
         const suiteStartLabel = `suite-${suiteName}-start`;
         const suiteEndLabel = `suite-${suiteName}-end`;
 
         performance.mark(suiteStartLabel);
-        for (const test of this._suite.tests) {
-            if (this._client?.willRunTest)
-                await this._client.willRunTest(this._suite, test);
+        for (const test of this.#suite.tests) {
+            if (this.#client?.willRunTest)
+                await this.#client.willRunTest(this.#suite, test);
 
-            const testRunner = new TestRunner(this._suite, test, this._params, this._recordTestResults, this._page, this._frame);
+            const testRunner = new TestRunner(this.#frame, this.#page, this.#params, this.#suite, test, this._recordTestResults);
             await testRunner.runTest();
         }
         performance.mark(suiteEndLabel);
@@ -60,31 +66,31 @@ export class SuiteRunner {
         // When the test is fast and the precision is low (for example with Firefox'
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
-        const suiteTotal = this._suiteResults.total;
+        const suiteTotal = this.#suiteResults.total;
         if (suiteTotal === 0)
-            throw new Error(`Got invalid 0-time total for suite ${this._suite.name}: ${suiteTotal}`);
+            throw new Error(`Got invalid 0-time total for suite ${this.#suite.name}: ${suiteTotal}`);
     }
 
     async _loadFrame() {
         return new Promise((resolve, reject) => {
-            const frame = this._frame;
+            const frame = this.#frame;
             frame.onload = () => resolve();
             frame.onerror = () => reject();
-            frame.src = this._suite.url;
+            frame.src = this.#suite.url;
         });
     }
 
     _recordTestResults = async (test, syncTime, asyncTime) => {
         // Skip reporting updates for the warmup suite.
-        if (this._suite === WarmupSuite)
+        if (this.#suite === WarmupSuite)
             return;
 
         const total = syncTime + asyncTime;
-        this._suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
-        this._suiteResults.total += total;
+        this.#suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
+        this.#suiteResults.total += total;
 
-        if (this._client?.didRunTest)
-            await this._client.didRunTest(this._suite, test);
+        if (this.#client?.didRunTest)
+            await this.#client.didRunTest(this.#suite, test);
     };
 }
 

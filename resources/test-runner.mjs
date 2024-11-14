@@ -1,20 +1,27 @@
 import { TEST_INVOKER_LOOKUP } from "./test-invoker.mjs";
 
 export class TestRunner {
-    constructor(suite, test, params, callback, page, frame) {
-        this._suite = suite;
-        this._test = test;
-        this._params = params;
-        this._callback = callback;
+    #frame;
+    #page;
+    #callback;
+    #suite;
+    #test;
+    #params;
 
-        this._page = page;
-        this._frame = frame;
+    constructor(frame, page, params, suite, test, callback) {
+        this.#suite = suite;
+        this.#test = test;
+        this.#params = params;
+        this.#callback = callback;
+
+        this.#page = page;
+        this.#frame = frame;
     }
 
     async runTest() {
         // Prepare all mark labels outside the measuring loop.
-        const suiteName = this._suite.name;
-        const testName = this._test.name;
+        const suiteName = this.#suite.name;
+        const testName = this.#test.name;
         const syncStartLabel = `${suiteName}.${testName}-start`;
         const syncEndLabel = `${suiteName}.${testName}-sync-end`;
         const asyncStartLabel = `${suiteName}.${testName}-async-start`;
@@ -24,7 +31,7 @@ export class TestRunner {
         let asyncStartTime;
         let asyncTime;
         const runSync = () => {
-            this._runWarmupSuite();
+            this._runWarmup();
             syncTime = this._measureSyncTime(syncStartLabel, syncEndLabel);
             asyncStartTime = this._initAsyncTime(asyncStartLabel);
         };
@@ -34,19 +41,19 @@ export class TestRunner {
             this._measureTestPerformance(suiteName, testName, syncStartLabel, syncEndLabel, asyncStartLabel, asyncEndLabel);
         };
 
-        const report = () => this._callback(this._test, syncTime, asyncTime);
-        const invokerClass = TEST_INVOKER_LOOKUP[this._params.measurementMethod];
-        const invoker = new invokerClass(runSync, measureAsync, report, this._params);
+        const report = () => this.#callback(this.#test, syncTime, asyncTime);
+        const invokerClass = TEST_INVOKER_LOOKUP[this.#params.measurementMethod];
+        const invoker = new invokerClass(runSync, measureAsync, report, this.#params);
 
         return invoker.start();
     }
 
-    _runWarmupSuite() {
-        if (this._params.warmupBeforeSync) {
+    _runWarmup() {
+        if (this.#params.warmupBeforeSync) {
             performance.mark("warmup-start");
             const startTime = performance.now();
             // Infinite loop for the specified ms.
-            while (performance.now() - startTime < this._params.warmupBeforeSync)
+            while (performance.now() - startTime < this.#params.warmupBeforeSync)
                 continue;
             performance.mark("warmup-end");
         }
@@ -55,7 +62,7 @@ export class TestRunner {
     _measureSyncTime(syncStartLabel, syncEndLabel) {
         performance.mark(syncStartLabel);
         const syncStartTime = performance.now();
-        this._test.run(this._page);
+        this.#test.run(this.#page);
         const syncEndTime = performance.now();
         performance.mark(syncEndLabel);
 
@@ -79,15 +86,15 @@ export class TestRunner {
     }
 
     _measureTestPerformance(suiteName, testName, syncStartLabel, syncEndLabel, asyncStartLabel, asyncEndLabel, params) {
-        if (this._params.warmupBeforeSync)
+        if (this.#params.warmupBeforeSync)
             performance.measure("warmup", "warmup-start", "warmup-end");
         performance.measure(`${suiteName}.${testName}-sync`, syncStartLabel, syncEndLabel);
         performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
     }
 
     _forceLayout() {
-        const bodyReference = this._frame ? this._frame.contentDocument.body : document.body;
-        const windowReference = this._frame ? this._frame.contentWindow : window;
+        const bodyReference = this.#frame ? this.#frame.contentDocument.body : document.body;
+        const windowReference = this.#frame ? this.#frame.contentWindow : window;
         // Some browsers don't immediately update the layout for paint.
         // Force the layout here to ensure we're measuring the layout time.
         const height = bodyReference.getBoundingClientRect().height;
