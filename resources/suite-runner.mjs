@@ -44,7 +44,7 @@ class SuiteRunner {
 
         performance.mark(suiteStartLabel);
         for (const test of this._suite.tests)
-            await this._runTestAndRecordResults(test);
+            await this._runTest(test);
         performance.mark(suiteEndLabel);
 
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
@@ -69,7 +69,7 @@ class SuiteRunner {
         });
     }
 
-    async _runTestAndRecordResults(test) {
+    async _runTest(test) {
         if (this._client?.willRunTest)
             await this._client.willRunTest(this._suite, test);
 
