@@ -194,7 +194,7 @@ describe("BenchmarkRunner", () => {
                 runner._suite = suite;
                 await runner._appendFrame();
                 performanceMarkSpy = spy(window.performance, "mark");
-                const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite, params);
+                const suiteRunner = new SuiteRunner(runner._frame, runner._page, params, suite, runner._client, runner._measuredValues);
                 await suiteRunner._runSuite();
             });
 
@@ -235,7 +235,7 @@ describe("BenchmarkRunner", () => {
                     stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd);
 
                     // instantiate recorded test results
-                    const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite, params);
+                    const suiteRunner = new SuiteRunner(runner._frame, runner._page, params, suite, runner._client, runner._measuredValues);
                     await suiteRunner._runSuite();
 
                     await runner._finalize();
