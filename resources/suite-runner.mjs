@@ -207,12 +207,8 @@ export class RemoteSuiteRunner extends SuiteRunner {
     }
 }
 
-// FIXME: implement remote steps
-class AsyncSuiteRunner extends SuiteRunner {}
-
 export const SUITE_RUNNER_LOOKUP = {
     __proto__: null,
     default: SuiteRunner,
-    async: AsyncSuiteRunner,
     remote: RemoteSuiteRunner,
 };
