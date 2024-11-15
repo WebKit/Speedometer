@@ -23,6 +23,30 @@ export class SuiteRunner {
         this.#params = params;
     }
 
+    get frame() {
+        return this.#frame;
+    }
+
+    get page() {
+        return this.#page;
+    }
+
+    get params() {
+        return this.#params;
+    }
+
+    get suite() {
+        return this.#suite;
+    }
+
+    get client() {
+        return this.#client;
+    }
+
+    get suiteResults() {
+        return this.#suiteResults;
+    }
+
     async run() {
         await this._prepareSuite();
         await this._runSuite();
@@ -130,7 +154,7 @@ export class RemoteSuiteRunner extends SuiteRunner {
         const promise = this._subscribeOnce({ type: "app-ready" });
         await this._loadFrame(this.suite);
         const response = await promise;
-        await this._suite.prepare(this.page);
+        await this.suite.prepare(this.page);
         // Capture appId to pass along with messages.
         this.appId = response?.appId;
 
@@ -148,8 +172,8 @@ export class RemoteSuiteRunner extends SuiteRunner {
         const response = await this._subscribeOnce({ type: "suite-complete" });
         this._stopSubscription({ type: "step-complete" });
 
-        this._suiteResults.tests = response.result.tests;
-        this._suiteResults.total += response.result.total;
+        this.suiteResults.tests = response.result.tests;
+        this.suiteResults.total += response.result.total;
 
         this._validateSuiteTotal();
     }
