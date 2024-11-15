@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    h1 {
+        @apply text-lg;
+    }
+    :is(h2, h3) {
+        @apply text-base;
+    }
+    :is(h1, h2, h3, h4) {
+        @apply text-gray-700;
+        @apply font-bold;
+    }
+}
+
+@layer utilities {
+    .content-auto {
+        content-visibility: auto;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none; /* Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+}
