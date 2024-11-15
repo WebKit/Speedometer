@@ -52,7 +52,7 @@ export class SuiteRunner {
             if (this.#client?.willRunTest)
                 await this.#client.willRunTest(this.#suite, test);
 
-            const testRunnerClass = TEST_RUNNER_LOOKUP[suite.type ?? "default"];
+            const testRunnerClass = TEST_RUNNER_LOOKUP[this.#suite.type ?? "default"];
             const testRunner = new testRunnerClass(this.#frame, this.#page, this.#params, this.#suite, test, this._recordTestResults);
             await testRunner.runTest();
         }
