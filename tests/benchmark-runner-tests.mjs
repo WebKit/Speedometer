@@ -1,4 +1,6 @@
-import { BenchmarkRunner, SuiteRunner } from "../resources/benchmark-runner.mjs";
+import { BenchmarkRunner } from "../resources/benchmark-runner.mjs";
+import { SuiteRunner } from "../resources/suite-runner.mjs";
+import { TestRunner } from "../resources/test-runner.mjs";
 import { defaultParams } from "../resources/params.mjs";
 
 function TEST_FIXTURE(name) {
@@ -148,14 +150,14 @@ describe("BenchmarkRunner", () => {
         });
 
         describe("runSuite", () => {
-            let _prepareSuiteSpy, _loadFrameStub, _runTestAndRecordResultsStub, _validateSuiteTotalStub, _suitePrepareSpy, performanceMarkSpy;
+            let _prepareSuiteSpy, _loadFrameStub, _runTestStub, _validateSuiteTotalStub, _suitePrepareSpy, performanceMarkSpy;
 
             const suite = SUITES_FIXTURE[0];
 
             before(async () => {
                 _prepareSuiteSpy = spy(SuiteRunner.prototype, "_prepareSuite");
                 _loadFrameStub = stub(SuiteRunner.prototype, "_loadFrame").callsFake(async () => null);
-                _runTestAndRecordResultsStub = stub(SuiteRunner.prototype, "_runTestAndRecordResults").callsFake(async () => null);
+                _runTestStub = stub(TestRunner.prototype, "runTest").callsFake(async () => null);
                 _validateSuiteTotalStub = stub(SuiteRunner.prototype, "_validateSuiteTotal").callsFake(async () => null);
                 performanceMarkSpy = spy(window.performance, "mark");
                 _suitePrepareSpy = spy(suite, "prepare");
@@ -170,7 +172,7 @@ describe("BenchmarkRunner", () => {
             });
 
             it("should run and record results for every test in suite", async () => {
-                assert.calledThrice(_runTestAndRecordResultsStub);
+                assert.calledThrice(_runTestStub);
                 assert.calledOnce(_validateSuiteTotalStub);
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-prepare-start");
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-prepare-end");
@@ -186,13 +188,14 @@ describe("BenchmarkRunner", () => {
             let performanceMarkSpy;
 
             const suite = SUITES_FIXTURE[0];
+            const params = { measurementMethod: "raf" };
 
             before(async () => {
                 runner._suite = suite;
                 await runner._appendFrame();
                 performanceMarkSpy = spy(window.performance, "mark");
-                const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite);
-                await suiteRunner._runTestAndRecordResults(suite.tests[0]);
+                const suiteRunner = new SuiteRunner(runner._frame, runner._page, params, suite, runner._client, runner._measuredValues);
+                await suiteRunner._runSuite();
             });
 
             it("should run client pre and post hooks if present", () => {
@@ -205,7 +208,11 @@ describe("BenchmarkRunner", () => {
                 assert.calledWith(performanceMarkSpy, "Suite 1.Test 1-sync-end");
                 assert.calledWith(performanceMarkSpy, "Suite 1.Test 1-async-start");
                 assert.calledWith(performanceMarkSpy, "Suite 1.Test 1-async-end");
-                expect(performanceMarkSpy.callCount).to.equal(4);
+
+                // SuiteRunner adds 2 marks.
+                // Suite used here contains 3 tests.
+                // Each Testrunner adds 4 marks.
+                expect(performanceMarkSpy.callCount).to.equal(14);
             });
         });
 
@@ -218,6 +225,8 @@ describe("BenchmarkRunner", () => {
                 const asyncStart = 12000;
                 const asyncEnd = 13000;
 
+                const params = { measurementMethod: "raf" };
+
                 before(async () => {
                     stub(runner, "_measuredValues").value({
                         tests: {},
@@ -226,8 +235,8 @@ describe("BenchmarkRunner", () => {
                     stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd);
 
                     // instantiate recorded test results
-                    const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite);
-                    await suiteRunner._runTestAndRecordResults(suite.tests[0]);
+                    const suiteRunner = new SuiteRunner(runner._frame, runner._page, params, suite, runner._client, runner._measuredValues);
+                    await suiteRunner._runSuite();
 
                     await runner._finalize();
                 });
