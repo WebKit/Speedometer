@@ -85,7 +85,7 @@ window.onmessage = async (event) => {
             // eslint-disable-next-line no-case-declarations
             const params = getParams(window.location.search);
             // eslint-disable-next-line no-case-declarations
-            const { result } = await window.benchmarkSuitesManager.getSuiteByName(event.data.name).runAndRecord({ params, onProgress: (test) => sendMessage({ type: "step-complete", status: "success", appId, name, test }) });
+            const { result } = await window.benchmarkSuitesManager.getSuiteByName(event.data.name).runAndRecord(params, (test) => sendMessage({ type: "step-complete", status: "success", appId, name, test }));
             sendMessage({ type: "suite-complete", status: "success", appId, result });
             break;
     }

@@ -26,7 +26,7 @@ export default function App() {
                     </Routes>
                 </Router>
             </DataContextProvider>
-            <Script src="./benchmark-connector.mjs" onReady={() => window.initWorkload()}/>
+            <Script src="./benchmark-connector.mjs" onReady={() => window.initWorkload()} />
         </>
     );
 }

@@ -151,7 +151,7 @@ export class RemoteSuiteRunner extends SuiteRunner {
         performance.mark(suitePrepareStartLabel);
 
         // Wait for the app-ready message from the workload.
-        const promise = this._subscribeOnce({ type: "app-ready" });
+        const promise = this._subscribeOnce("app-ready");
         await this._loadFrame(this.suite);
         const response = await promise;
         await this.suite.prepare(this.page);
@@ -165,12 +165,12 @@ export class RemoteSuiteRunner extends SuiteRunner {
 
     async _runSuite() {
         // Update progress bar with each completed step.
-        this._startSubscription({ type: "step-complete", callback: async (e) => this._updateClient(e.data.test, e.data.name) });
+        this._startSubscription("step-complete", async (e) => this._updateClient(e.data.test, e.data.name));
         // Ask workload to run its own tests.
         this.frame.contentWindow.postMessage({ id: this.appId, key: "benchmark-connector", type: "benchmark-suite", name: this.suite.config?.name || "default" }, "*");
         // Capture metrics from the completed tests.
-        const response = await this._subscribeOnce({ type: "suite-complete" });
-        this._stopSubscription({ type: "step-complete" });
+        const response = await this._subscribeOnce("suite-complete");
+        this._stopSubscription("step-complete");
 
         this.suiteResults.tests = response.result.tests;
         this.suiteResults.total += response.result.total;
@@ -183,28 +183,25 @@ export class RemoteSuiteRunner extends SuiteRunner {
             this.postMessageCallbacks.get(e.data.type)(e);
     }
 
-    _startSubscription({ type, callback }) {
+    _startSubscription(type, callback) {
         if (this.postMessageCallbacks.has(type))
             throw new Error("Callback exists already");
 
         this.postMessageCallbacks.set(type, callback);
     }
 
-    _stopSubscription({ type }) {
+    _stopSubscription(type) {
         if (!this.postMessageCallbacks.has(type))
             throw new Error("Callback does not exist");
 
         this.postMessageCallbacks.delete(type);
     }
 
-    _subscribeOnce({ type }) {
+    _subscribeOnce(type) {
         return new Promise((resolve) => {
-            this._startSubscription({
-                type,
-                callback: (e) => {
-                    this._stopSubscription({ type });
-                    resolve(e.data);
-                },
+            this._startSubscription(type, (e) => {
+                this._stopSubscription(type);
+                resolve(e.data);
             });
         });
     }
