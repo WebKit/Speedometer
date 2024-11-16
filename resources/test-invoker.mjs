@@ -37,13 +37,34 @@ export class RAFTestInvoker extends TestInvoker {
     _scheduleCallbacks(resolve) {
         requestAnimationFrame(() => this._syncCallback());
         requestAnimationFrame(() => {
-            setTimeout(() => {
+            let gotTimer = false;
+            let gotMessage = false;
+
+            const tryTriggerAsyncCallback = () => {
+                if (!gotTimer || !gotMessage)
+                    return;
+
                 this._asyncCallback();
                 setTimeout(async () => {
                     await this._reportCallback();
                     resolve();
                 }, 0);
-            }, 0);
+            };
+
+            setTimeout(() => {
+                gotTimer = true;
+                tryTriggerAsyncCallback();
+            });
+
+            const mc = new MessageChannel();
+            mc.port1.onmessage = () => {
+                mc.port1.close();
+                mc.port2.close();
+
+                gotMessage = true;
+                tryTriggerAsyncCallback();
+            };
+            mc.port2.postMessage("speedometer");
         });
     }
 }
