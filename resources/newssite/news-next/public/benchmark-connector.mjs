@@ -91,11 +91,6 @@ window.onmessage = async (event) => {
     }
 };
 
-/* requestAnimationFrame(() => {
-    sendMessage({ type: "app-ready", status: "success", appId });
-    console.log(`Hello, benchmark connector for ${appId} is ready!`);
-}); */
-
 window.initWorkload = () => {
     sendMessage({ type: "app-ready", status: "success", appId });
     console.log(`Hello, benchmark connector for ${appId} is ready!`);
