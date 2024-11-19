@@ -37,7 +37,7 @@ async function copyFile(src, dest) {
  *
  */
 async function prepare() {
-    const moduleDirectory = process.env.MODULE ?? "../../";
+    const moduleDirectory = process.env.MODULE ?? "node_modules/";
     const hostDirectory = process.env.HOST ?? "public/";
     const filesString = process.env.FILES ?? "test-invoker.mjs,test-runner.mjs";
 
