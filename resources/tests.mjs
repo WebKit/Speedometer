@@ -862,32 +862,44 @@ Suites.push({
     },
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-navlist-opinion-link").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-us-link").click();
             page.layout();
         }),
         new BenchmarkTestStep("NavigateToWorld", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-navlist-opinion-link").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-world-link").click();
             page.layout();
         }),
         new BenchmarkTestStep("NavigateToPolitics", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-navlist-opinion-link").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-politics-link").click();
             page.layout();
         }),
@@ -915,32 +927,44 @@ Suites.push({
     },
     tests: [
         new BenchmarkTestStep("NavigateToUS", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-navlist-opinion-link").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-us-link").click();
             page.layout();
         }),
         new BenchmarkTestStep("NavigateToWorld", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-navlist-opinion-link").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-world-link").click();
             page.layout();
         }),
         new BenchmarkTestStep("NavigateToPolitics", (page) => {
-            for (let i = 0; i < 25; i++) {
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-                page.querySelector("#navbar-dropdown-toggle").click();
-                page.layout();
-            }
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-navlist-opinion-link").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
+            page.querySelector("#navbar-dropdown-toggle").click();
+            page.layout();
             page.querySelector("#navbar-navlist-politics-link").click();
             page.layout();
         }),
