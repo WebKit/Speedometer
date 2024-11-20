@@ -71,15 +71,35 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
     _scheduleCallbacks(resolve) {
         requestAnimationFrame(async () => {
             await this._syncCallback();
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    this._asyncCallback();
-                    setTimeout(async () => {
-                        await this._reportCallback();
-                        resolve();
-                    }, 0);
+
+            let gotTimer = false;
+            let gotMessage = false;
+
+            const tryTriggerAsyncCallback = () => {
+                if (!gotTimer || !gotMessage)
+                    return;
+
+                this._asyncCallback();
+                setTimeout(async () => {
+                    await this._reportCallback();
+                    resolve();
                 }, 0);
+            };
+
+            setTimeout(() => {
+                gotTimer = true;
+                tryTriggerAsyncCallback();
             });
+
+            const mc = new MessageChannel();
+            mc.port1.onmessage = () => {
+                mc.port1.close();
+                mc.port2.close();
+
+                gotMessage = true;
+                tryTriggerAsyncCallback();
+            };
+            mc.port2.postMessage("speedometer");
         });
     }
 }
