@@ -125,6 +125,7 @@ Suites.push({
     name: "TodoMVC-JavaScript-ES5",
     url: "resources/todomvc/vanilla-examples/javascript-es5/dist/index.html",
     tags: ["todomvc"],
+    type: "async",
     async prepare(page) {
         (await page.waitForElement(".new-todo")).focus();
     },
@@ -215,6 +216,7 @@ Suites.push({
     name: "TodoMVC-JavaScript-ES6-Webpack-Complex-DOM",
     url: "resources/todomvc/vanilla-examples/javascript-es6-webpack-complex/dist/index.html",
     tags: ["todomvc", "complex", "complex-default"],
+    type: "async",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -245,6 +247,7 @@ Suites.push({
     name: "TodoMVC-WebComponents",
     url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
     tags: ["todomvc", "webcomponents"],
+    type: "async",
     async prepare(page) {
         await page.waitForElement("todo-app");
     },
@@ -343,6 +346,7 @@ Suites.push({
     name: "TodoMVC-React-Complex-DOM",
     url: "resources/todomvc/architecture-examples/react-complex/dist/index.html#/home",
     tags: ["todomvc", "complex", "complex-default"],
+    type: "async",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -373,6 +377,7 @@ Suites.push({
     name: "TodoMVC-React-Redux",
     url: "resources/todomvc/architecture-examples/react-redux/dist/index.html",
     tags: ["todomvc"],
+    type: "async",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -432,6 +437,7 @@ Suites.push({
     name: "TodoMVC-Backbone",
     url: "resources/todomvc/architecture-examples/backbone/dist/index.html",
     tags: ["todomvc"],
+    type: "async",
     async prepare(page) {
         await page.waitForElement("#appIsReady");
         const newTodo = page.querySelector(".new-todo");
@@ -526,6 +532,7 @@ Suites.push({
     name: "TodoMVC-Angular-Complex-DOM",
     url: "resources/todomvc/architecture-examples/angular-complex/dist/index.html",
     tags: ["todomvc", "complex", "complex-default"],
+    type: "async",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -556,6 +563,7 @@ Suites.push({
     name: "TodoMVC-Vue",
     url: "resources/todomvc/architecture-examples/vue/dist/index.html",
     tags: ["todomvc"],
+    type: "async",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -617,6 +625,7 @@ Suites.push({
     name: "TodoMVC-jQuery",
     url: "resources/todomvc/architecture-examples/jquery/dist/index.html",
     tags: ["todomvc"],
+    type: "async",
     async prepare(page) {
         await page.waitForElement("#appIsReady");
         const newTodo = page.getElementById("new-todo");
@@ -704,6 +713,7 @@ Suites.push({
     name: "TodoMVC-Preact-Complex-DOM",
     url: "resources/todomvc/architecture-examples/preact-complex/dist/index.html#/home",
     tags: ["todomvc", "complex", "complex-default"],
+    type: "async",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -763,6 +773,7 @@ Suites.push({
     name: "TodoMVC-Svelte-Complex-DOM",
     url: "resources/todomvc/architecture-examples/svelte-complex/dist/index.html",
     tags: ["todomvc", "complex", "complex-default"],
+    type: "async",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -825,6 +836,7 @@ Suites.push({
     name: "TodoMVC-Lit-Complex-DOM",
     url: "resources/todomvc/architecture-examples/lit-complex/dist/index.html",
     tags: ["todomvc", "webcomponents", "complex", "complex-default"],
+    type: "async",
     async prepare(page) {
         await page.waitForElement("todo-app");
     },
@@ -857,11 +869,12 @@ Suites.push({
     name: "NewsSite-Next",
     url: "resources/newssite/news-next/dist/index.html#/home",
     tags: ["newssite", "language"],
+    type: "async",
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
     tests: [
-        new BenchmarkTestStep("NavigateToUS", (page) => {
+        new BenchmarkTestStep("NavigateToUS", async (page) => {
             for (let i = 0; i < 25; i++) {
                 page.querySelector("#navbar-dropdown-toggle").click();
                 page.layout();
@@ -871,7 +884,7 @@ Suites.push({
             page.querySelector("#navbar-navlist-us-link").click();
             page.layout();
         }),
-        new BenchmarkTestStep("NavigateToWorld", (page) => {
+        new BenchmarkTestStep("NavigateToWorld", async (page) => {
             for (let i = 0; i < 25; i++) {
                 page.querySelector("#navbar-dropdown-toggle").click();
                 page.layout();
@@ -881,7 +894,7 @@ Suites.push({
             page.querySelector("#navbar-navlist-world-link").click();
             page.layout();
         }),
-        new BenchmarkTestStep("NavigateToPolitics", (page) => {
+        new BenchmarkTestStep("NavigateToPolitics", async (page) => {
             for (let i = 0; i < 25; i++) {
                 page.querySelector("#navbar-dropdown-toggle").click();
                 page.layout();
@@ -898,6 +911,7 @@ Suites.push({
     name: "NewsSite-Nuxt",
     url: "resources/newssite/news-nuxt/dist/index.html",
     tags: ["newssite"],
+    type: "async",
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
@@ -939,6 +953,7 @@ Suites.push({
     name: "Editor-CodeMirror",
     url: "resources/editors/dist/codemirror.html",
     tags: ["editor"],
+    type: "async",
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Long", (page) => {
@@ -958,6 +973,7 @@ Suites.push({
     name: "Editor-TipTap",
     url: "resources/editors/dist/tiptap.html",
     tags: ["editor"],
+    type: "async",
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Long", (page) => {
@@ -977,6 +993,7 @@ Suites.push({
     name: "Charts-observable-plot",
     url: "resources/charts/dist/observable-plot.html",
     tags: ["chart"],
+    type: "async",
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Stacked by 6", (page) => {
@@ -1004,6 +1021,7 @@ Suites.push({
     name: "Charts-chartjs",
     url: "resources/charts/dist/chartjs.html",
     tags: ["chart"],
+    type: "async",
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Draw scatter", (page) => {
@@ -1024,6 +1042,7 @@ Suites.push({
     name: "React-Stockcharts-SVG",
     url: "resources/react-stockcharts/build/index.html?type=svg",
     tags: ["chart", "svg"],
+    type: "async",
     async prepare(page) {
         await page.waitForElement("#render");
     },
@@ -1064,6 +1083,7 @@ Suites.push({
     name: "Perf-Dashboard",
     url: "resources/perf.webkit.org/public/v3/#/charts/?since=1678991819934&paneList=((55-1974-null-null-(5-2.5-500)))",
     tags: ["chart", "webcomponents"],
+    type: "async",
     async prepare(page) {
         await page.waitForElement("#app-is-ready");
         page.call("startTest");
