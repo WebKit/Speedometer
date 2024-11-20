@@ -108,3 +108,7 @@ The root component that composes all other components to build the app interface
 ## Data Sources
 
 The app uses static data files located in the `src/data/` directory:
+
+## Icons
+
+The icons used in this project are from [Heroicons](https://github.com/tailwindlabs/heroicons/blob/master/LICENSE).
