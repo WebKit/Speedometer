@@ -1,7 +1,7 @@
 import { BenchmarkTestStep, BenchmarkTestSuite, BenchmarkSuitesManager, forceLayout, getElement } from "speedometer-utils/workload-testing-utils.mjs";
 
-export function initWorkload() {
-    window.benchmarkSuitesManager = new BenchmarkSuitesManager(window.name, [
+export function getBenchmarkSuitesManager() {
+    return new BenchmarkSuitesManager(window.name, [
         new BenchmarkTestSuite("default", [
             new BenchmarkTestStep("Navigate-to-US-page", () => {
                 for (let i = 0; i < 25; i++) {

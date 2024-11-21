@@ -184,7 +184,7 @@ function getParams(value) {
  * The appId is build by appending name-version
  * It's used as an additional safe-guard to ensure the correct app responds to a message.
  *************************************************************************/
-export function connectToBenchmark(name, version) {
+export function connectToBenchmark(benchmarkSuitesManager, name, version) {
     const appId = name && version ? `${name}-${version}` : -1;
 
     function sendMessage(message) {
@@ -201,7 +201,7 @@ export function connectToBenchmark(name, version) {
                 // eslint-disable-next-line no-case-declarations
                 const params = getParams(window.location.search);
                 // eslint-disable-next-line no-case-declarations
-                const { result } = await window.benchmarkSuitesManager.getSuiteByName(event.data.name).runAndRecord(params, (test) => sendMessage({ type: "step-complete", status: "success", appId, name, test }));
+                const { result } = await benchmarkSuitesManager.getSuiteByName(event.data.name).runAndRecord(params, (test) => sendMessage({ type: "step-complete", status: "success", appId, name, test }));
                 sendMessage({ type: "suite-complete", status: "success", appId, result });
                 break;
         }

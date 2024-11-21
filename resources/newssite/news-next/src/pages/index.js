@@ -4,12 +4,11 @@ import Page from "@/partials/page/page";
 import Head from "next/head";
 import { DataContextProvider } from "@/context/data-context";
 import { connectToBenchmark } from "speedometer-utils/workload-testing-utils.mjs";
-import { initWorkload } from "@/workload-test.mjs";
+import { getBenchmarkSuitesManager } from "@/workload-test.mjs";
 
 export default function App() {
     useLayoutEffect(() => {
-        initWorkload();
-        connectToBenchmark("news-next", 1);
+        connectToBenchmark(getBenchmarkSuitesManager(), "news-next", 1);
     }, []);
 
     return (
