@@ -1,6 +1,6 @@
 import { BenchmarkRunner } from "../resources/benchmark-runner.mjs";
 import { SuiteRunner } from "../resources/suite-runner.mjs";
-import { TestRunner } from "../resources/test-runner.mjs";
+import { TestRunner } from "../resources/shared/test-runner.mjs";
 import { defaultParams } from "../resources/params.mjs";
 
 function TEST_FIXTURE(name) {
