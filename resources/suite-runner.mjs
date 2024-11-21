@@ -1,4 +1,4 @@
-import { TestRunner } from "./test-runner.mjs";
+import { TestRunner } from "./shared/test-runner.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
 
 export class SuiteRunner {

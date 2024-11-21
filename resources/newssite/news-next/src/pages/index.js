@@ -1,11 +1,17 @@
-import React from "react";
+import { useLayoutEffect } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Page from "@/partials/page/page";
 import Head from "next/head";
 import { DataContextProvider } from "@/context/data-context";
-import Script from "next/script";
+import { connectToBenchmark } from "speedometer-utils/workload-testing-utils.mjs";
+import { initWorkload } from "@/workload-test.mjs";
 
 export default function App() {
+    useLayoutEffect(() => {
+        initWorkload();
+        connectToBenchmark("news-next", 1);
+    }, []);
+
     return (
         <>
             <Head>
@@ -26,7 +32,6 @@ export default function App() {
                     </Routes>
                 </Router>
             </DataContextProvider>
-            <Script src="./benchmark-connector.mjs" onReady={() => window.initWorkload()} />
         </>
     );
 }

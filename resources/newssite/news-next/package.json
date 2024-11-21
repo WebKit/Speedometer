@@ -3,9 +3,8 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "prepare": "node scripts/prepare.js",
-        "dev": "npm run prepare && next dev",
-        "build": "npm run prepare && next build",
+        "dev": "next dev",
+        "build": "next build",
         "start": "next start",
         "lint": "next lint",
         "serve": "http-server ./dist -p 7002 -c-1 --cors"
@@ -21,8 +20,7 @@
         "react-dom": "18.2.0",
         "react-router-dom": "^6.11.1",
         "react-router-hash-link": "^2.4.3",
-        "test-invoker.mjs": "../../test-invoker.mjs",
-        "test-runner.mjs": "../../test-runner.mjs",
+        "speedometer-utils": "../../shared",
         "uuid": "^9.0.0"
     }
 }
