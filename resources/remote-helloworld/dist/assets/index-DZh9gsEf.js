@@ -1,6 +1,9 @@
+var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
 };
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 var __accessCheck = (obj, member, msg) => member.has(obj) || __typeError("Cannot " + msg);
 var __privateGet = (obj, member, getter) => (__accessCheck(obj, member, "read from private field"), getter ? getter.call(obj) : member.get(obj));
 var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot add the same private member more than once") : member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
@@ -16,11 +19,11 @@ function setupCounter(element) {
   setCounter(0);
 }
 class TestInvoker {
-  constructor(syncCallback, asyncCallback, reportCallback, params) {
+  constructor(syncCallback, asyncCallback, reportCallback, params2) {
     this._syncCallback = syncCallback;
     this._asyncCallback = asyncCallback;
     this._reportCallback = reportCallback;
-    this._params = params;
+    this._params = params2;
   }
 }
 class TimerTestInvoker extends TestInvoker {
@@ -42,8 +45,10 @@ class TimerTestInvoker extends TestInvoker {
 class RAFTestInvoker extends TestInvoker {
   start() {
     return new Promise((resolve) => {
-      if (this._params.waitBeforeSync) setTimeout(() => this._scheduleCallbacks(resolve), this._params.waitBeforeSync);
-      else this._scheduleCallbacks(resolve);
+      if (this._params.waitBeforeSync)
+        setTimeout(() => this._scheduleCallbacks(resolve), this._params.waitBeforeSync);
+      else
+        this._scheduleCallbacks(resolve);
     });
   }
   _scheduleCallbacks(resolve) {
@@ -65,7 +70,7 @@ const TEST_INVOKER_LOOKUP = {
   raf: RAFTestInvoker
 };
 class TestRunner {
-  constructor(frame, page, params, suite, test, callback) {
+  constructor(frame, page, params2, suite, test, callback) {
     __privateAdd(this, _frame);
     __privateAdd(this, _page);
     __privateAdd(this, _params);
@@ -74,7 +79,7 @@ class TestRunner {
     __privateAdd(this, _callback);
     __privateSet(this, _suite, suite);
     __privateSet(this, _test, test);
-    __privateSet(this, _params, params);
+    __privateSet(this, _params, params2);
     __privateSet(this, _callback, callback);
     __privateSet(this, _page, page);
     __privateSet(this, _frame, frame);
@@ -93,7 +98,8 @@ class TestRunner {
       if (__privateGet(this, _params).warmupBeforeSync) {
         performance.mark("warmup-start");
         const startTime = performance.now();
-        while (performance.now() - startTime < __privateGet(this, _params).warmupBeforeSync) continue;
+        while (performance.now() - startTime < __privateGet(this, _params).warmupBeforeSync)
+          continue;
         performance.mark("warmup-end");
       }
       performance.mark(syncStartLabel);
@@ -113,7 +119,8 @@ class TestRunner {
       const asyncEndTime = performance.now();
       performance.mark(asyncEndLabel);
       asyncTime = asyncEndTime - asyncStartTime;
-      if (__privateGet(this, _params).warmupBeforeSync) performance.measure("warmup", "warmup-start", "warmup-end");
+      if (__privateGet(this, _params).warmupBeforeSync)
+        performance.measure("warmup", "warmup-start", "warmup-end");
       performance.measure(`${suiteName}.${testName}-sync`, syncStartLabel, syncEndLabel);
       performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
     };
@@ -129,13 +136,169 @@ _params = new WeakMap();
 _suite = new WeakMap();
 _test = new WeakMap();
 _callback = new WeakMap();
+class Params {
+  constructor(searchParams2 = void 0) {
+    __publicField(this, "viewport", {
+      width: 800,
+      height: 600
+    });
+    // Enable a detailed developer menu to change the current Params.
+    __publicField(this, "developerMode", false);
+    __publicField(this, "startAutomatically", false);
+    __publicField(this, "iterationCount", 10);
+    __publicField(this, "suites", []);
+    // A list of tags to filter suites
+    __publicField(this, "tags", []);
+    // Toggle running a dummy suite once before the normal test suites.
+    __publicField(this, "useWarmupSuite", false);
+    // Change how a test measurement is triggered and async time is measured:
+    // "timer": The classic (as in Speedometer 2.x) way using setTimeout
+    // "raf":   Using rAF callbacks, both for triggering the sync part and for measuring async time.
+    __publicField(this, "measurementMethod", "raf");
+    // or "timer"
+    // Wait time before the sync step in ms.
+    __publicField(this, "waitBeforeSync", 0);
+    // Warmup time before the sync step in ms.
+    __publicField(this, "warmupBeforeSync", 0);
+    // Seed for shuffling the execution order of suites.
+    // "off": do not shuffle
+    // "generate": generate a random seed
+    // <integer>: use the provided integer as a seed
+    __publicField(this, "shuffleSeed", "off");
+    if (searchParams2)
+      this._copyFromSearchParams(searchParams2);
+    if (!this.developerMode) {
+      Object.freeze(this.viewport);
+      Object.freeze(this);
+    }
+  }
+  _parseInt(value, errorMessage) {
+    const number = Number(value);
+    if (!Number.isInteger(number) && errorMessage)
+      throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
+    return parseInt(number);
+  }
+  _copyFromSearchParams(searchParams2) {
+    this.viewport = this._parseViewport(searchParams2);
+    this.startAutomatically = this._parseBooleanParam(searchParams2, "startAutomatically");
+    this.iterationCount = this._parseIntParam(searchParams2, "iterationCount", 1);
+    this.suites = this._parseSuites(searchParams2);
+    this.tags = this._parseTags(searchParams2);
+    this.developerMode = this._parseBooleanParam(searchParams2, "developerMode");
+    this.useWarmupSuite = this._parseBooleanParam(searchParams2, "useWarmupSuite");
+    this.waitBeforeSync = this._parseIntParam(searchParams2, "waitBeforeSync", 0);
+    this.warmupBeforeSync = this._parseIntParam(searchParams2, "warmupBeforeSync", 0);
+    this.measurementMethod = this._parseMeasurementMethod(searchParams2);
+    this.shuffleSeed = this._parseShuffleSeed(searchParams2);
+    const unused = Array.from(searchParams2.keys());
+    if (unused.length > 0)
+      console.error("Got unused search params", unused);
+  }
+  _parseBooleanParam(searchParams2, paramKey) {
+    if (!searchParams2.has(paramKey))
+      return false;
+    searchParams2.delete(paramKey);
+    return true;
+  }
+  _parseIntParam(searchParams2, paramKey, minValue) {
+    if (!searchParams2.has(paramKey))
+      return defaultParams[paramKey];
+    const parsedValue = this._parseInt(searchParams2.get(paramKey), "waitBeforeSync");
+    if (parsedValue < minValue)
+      throw new Error(`Invalid ${paramKey} param: '${parsedValue}', value must be >= ${minValue}.`);
+    searchParams2.delete(paramKey);
+    return parsedValue;
+  }
+  _parseViewport(searchParams2) {
+    if (!searchParams2.has("viewport"))
+      return defaultParams.viewport;
+    const viewportParam = searchParams2.get("viewport");
+    const [width, height] = viewportParam.split("x");
+    const viewport = {
+      width: this._parseInt(width, "viewport.width"),
+      height: this._parseInt(height, "viewport.height")
+    };
+    if (this.viewport.width < 800 || this.viewport.height < 600)
+      throw new Error(`Invalid viewport param: ${viewportParam}`);
+    searchParams2.delete("viewport");
+    return viewport;
+  }
+  _parseSuites(searchParams2) {
+    if (searchParams2.has("suite") || searchParams2.has("suites")) {
+      if (searchParams2.has("suite") && searchParams2.has("suites"))
+        throw new Error("Params 'suite' and 'suites' can not be used together.");
+      const value = searchParams2.get("suite") || searchParams2.get("suites");
+      const suites = value.split(",");
+      if (suites.length === 0)
+        throw new Error("No suites selected");
+      searchParams2.delete("suite");
+      searchParams2.delete("suites");
+      return suites;
+    }
+    return defaultParams.suites;
+  }
+  _parseTags() {
+    if (!searchParams.has("tags"))
+      return defaultParams.tags;
+    if (this.suites.length)
+      throw new Error("'suites' and 'tags' cannot be used together.");
+    const tags = searchParams.get("tags").split(",");
+    searchParams.delete("tags");
+    return tags;
+  }
+  _parseMeasurementMethod(searchParams2) {
+    if (!searchParams2.has("measurementMethod"))
+      return defaultParams.measurementMethod;
+    const measurementMethod = searchParams2.get("measurementMethod");
+    if (measurementMethod !== "timer" && measurementMethod !== "raf")
+      throw new Error(`Invalid measurement method: '${measurementMethod}', must be either 'raf' or 'timer'.`);
+    searchParams2.delete("measurementMethod");
+    return measurementMethod;
+  }
+  _parseShuffleSeed(searchParams2) {
+    if (!searchParams2.has("shuffleSeed"))
+      return defaultParams.shuffleSeed;
+    let shuffleSeed = searchParams2.get("shuffleSeed");
+    if (shuffleSeed !== "off") {
+      if (shuffleSeed === "generate") {
+        shuffleSeed = Math.floor(Math.random() * 1 << 16);
+        console.log(`Generated a random suite order seed: ${shuffleSeed}`);
+      } else {
+        shuffleSeed = parseInt(shuffleSeed);
+      }
+      if (!Number.isInteger(shuffleSeed))
+        throw new Error(`Invalid shuffle seed: '${shuffleSeed}', must be either 'off', 'generate' or an integer.`);
+    }
+    searchParams2.delete("shuffleSeed");
+    return shuffleSeed;
+  }
+  toSearchParams(forRemote = false) {
+    const rawParams = { ...this };
+    rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`;
+    if (forRemote) {
+      delete rawParams["suites"];
+      delete rawParams["tags"];
+    }
+    return new URLSearchParams(rawParams).toString();
+  }
+}
+const defaultParams = new Params();
+const searchParams = new URLSearchParams(window.location.search);
+let maybeCustomParams = new Params();
+try {
+  maybeCustomParams = new Params(searchParams);
+} catch (e) {
+  console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
+  alert(`Invalid URL Param: ${e}`);
+}
+const params = maybeCustomParams;
 class BenchmarkTestStep {
   constructor(name, run) {
     this.name = name;
     this.run = run;
   }
-  async runAndRecord(params, suite, test, callback) {
-    const testRunner = new TestRunner(null, null, params, suite, test, callback);
+  async runAndRecord(params2, suite, test, callback) {
+    const testRunner = new TestRunner(null, null, params2, suite, test, callback);
     const result = await testRunner.runTest();
     return result;
   }
@@ -153,7 +316,7 @@ class BenchmarkTestSuite {
     };
     return results;
   }
-  async runAndRecord(params, onProgress) {
+  async runAndRecord(params2, onProgress) {
     const measuredValues = {
       tests: {},
       total: 0
@@ -162,7 +325,7 @@ class BenchmarkTestSuite {
     const suiteEndLabel = `suite-${this.name}-end`;
     performance.mark(suiteStartLabel);
     for (const test of this.tests) {
-      const result = await test.runAndRecord(params, this, test, this.record);
+      const result = await test.runAndRecord(params2, this, test, this.record);
       measuredValues.tests[test.name] = result;
       measuredValues.total += result.total;
       onProgress == null ? void 0 : onProgress(test.name);
@@ -185,41 +348,6 @@ class BenchmarkSuitesManager {
   getSuiteByName(name) {
     return this.suites.find((suite) => suite.name === name);
   }
-}
-function isBoolean(value) {
-  if (value === "true" || value === "false")
-    return true;
-  return false;
-}
-function isNumber(value) {
-  const number = Number(value);
-  return Number.isInteger(number);
-}
-function convertToBoolean(value) {
-  if (value === "true")
-    return true;
-  if (value === "false")
-    return false;
-  return value;
-}
-function convertToNumber(value) {
-  return Number(value);
-}
-function getConvertedValue(value) {
-  if (isBoolean(value))
-    return convertToBoolean(value);
-  if (isNumber(value))
-    return convertToNumber(value);
-  return value;
-}
-function getParams(value) {
-  const params = /* @__PURE__ */ Object.create(null);
-  const searchParams = new URLSearchParams(value);
-  for (const entry of searchParams.entries()) {
-    const [key, value2] = entry;
-    params[key] = getConvertedValue(value2);
-  }
-  return Object.freeze(params);
 }
 function getParent(lookupStartNode, path) {
   lookupStartNode = lookupStartNode.shadowRoot ?? lookupStartNode;
@@ -248,7 +376,6 @@ function connectFromRemote(name, version) {
       return;
     switch (event.data.type) {
       case "benchmark-suite":
-        const params = getParams(window.location.search);
         const { result } = await window.benchmarkSuitesManager.getSuiteByName(event.data.name).runAndRecord(params, (test) => sendMessage({ type: "step-complete", status: "success", appId, name, test }));
         sendMessage({ type: "suite-complete", status: "success", appId, result });
         break;
@@ -285,4 +412,4 @@ document.querySelector("#app").innerHTML = `
 `;
 setupCounter(document.querySelector("#counter"));
 connectFromRemote("remote-hello-world", 1);
-//# sourceMappingURL=index-Dev1YoUL.js.map
+//# sourceMappingURL=index-DZh9gsEf.js.map

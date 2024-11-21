@@ -146,9 +146,14 @@ class Params {
         return shuffleSeed;
     }
 
-    toSearchParams() {
+    toSearchParams(forRemote = false) {
         const rawParams = { ...this };
         rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`;
+
+        if (forRemote) {
+            delete rawParams["suites"];
+            delete rawParams["tags"];
+        }
         return new URLSearchParams(rawParams).toString();
     }
 }
