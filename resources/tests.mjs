@@ -1101,6 +1101,19 @@ Suites.push({
     ],
 });
 
+Suites.push({
+    name: "Remote-Helloworld",
+    url: "resources/remote-helloworld/dist/index.html",
+    tags: ["experimental"],
+    disabled: true,
+    async prepare() {},
+    type: "remote",
+    config: {
+        // name: "default", // optional param to target non-default tests locally
+        steps: 3, // manual step for the progress display on the bottom: this is the number of BenchmarkSteps in a BenchmarkSuite.
+    },
+});
+
 Object.freeze(Suites);
 Suites.forEach((suite) => {
     if (!suite.tags)
