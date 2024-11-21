@@ -1,5 +1,5 @@
 /*
-    Note: This will eventually come from a separate package and should be minified.
+  This is loaded by the remote test page and provides utilities & client-side communication with the test runner.
 */
 
 import { TestRunner } from "./test-runner.mjs";

@@ -167,7 +167,6 @@ export class RemoteSuiteRunner extends SuiteRunner {
         // Update progress bar with each completed step.
         this._startSubscription("step-complete", async (e) => this._updateClient(e.data.test, e.data.name));
         // Ask workload to run its own tests.
-        console.log("Posting message");
         this.frame.contentWindow.postMessage({ id: this.appId, key: "benchmark-connector", type: "benchmark-suite", name: this.suite.config?.name || "default" }, "*");
         // Capture metrics from the completed tests.
         const response = await this._subscribeOnce("suite-complete");
@@ -180,7 +179,6 @@ export class RemoteSuiteRunner extends SuiteRunner {
     }
 
     _handlePostMessage(e) {
-        console.log("Handling post message", e);
         if (this.postMessageCallbacks.has(e.data.type))
             this.postMessageCallbacks.get(e.data.type)(e);
     }
