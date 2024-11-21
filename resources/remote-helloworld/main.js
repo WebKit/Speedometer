@@ -1,4 +1,4 @@
-import "./style.css";
+
 import { setupCounter } from "./counter.js";
 import { BenchmarkTestStep, BenchmarkTestSuite, BenchmarkSuitesManager, forceLayout, getElement, connectFromRemote } from "speedometer/resources/workload-testing-utils.mjs";
 
@@ -21,13 +21,10 @@ window.benchmarkSuitesManager = new BenchmarkSuitesManager(window.name, [
 
 document.querySelector("#app").innerHTML = `
   <div>
-    <h1>Hello Vite!</h1>
+    <h1>Remote Workload - Hello World</h1>
     <div class="card">
       <button id="counter" type="button"></button>
     </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
   </div>
 `;
 
