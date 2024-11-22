@@ -1,7 +1,3 @@
-/*
-    Note: This will eventually come from a separate package and should be minified.
-*/
-
 import { TestRunner } from "./test-runner.mjs";
 
 /**
@@ -120,61 +116,6 @@ export function forceLayout() {
 }
 
 /** **********************************************************************
- * Params
- *
- * All params are now forwarded from the benchmark to the workload, via its url.
- * To ensure we're handling any used params the same way as the benchmark,
- * we are converting the values to their native type.
- *************************************************************************/
-function isBoolean(value) {
-    if (value === "true" || value === "false")
-        return true;
-
-    return false;
-}
-
-function isNumber(value) {
-    const number = Number(value);
-    return Number.isInteger(number);
-}
-
-function convertToBoolean(value) {
-    if (value === "true")
-        return true;
-
-    if (value === "false")
-        return false;
-
-    return value;
-}
-
-function convertToNumber(value) {
-    return Number(value);
-}
-
-function getConvertedValue(value) {
-    if (isBoolean(value))
-        return convertToBoolean(value);
-
-    if (isNumber(value))
-        return convertToNumber(value);
-
-    return value;
-}
-
-function getParams(value) {
-    const params = Object.create(null);
-    const searchParams = new URLSearchParams(value);
-
-    for (const entry of searchParams.entries()) {
-        const [key, value] = entry;
-        params[key] = getConvertedValue(value);
-    }
-
-    return Object.freeze(params);
-}
-
-/** **********************************************************************
  * Benchmark Connector
  *
  * postMessage is used to communicate between app and benchmark.
@@ -199,7 +140,7 @@ export function connectToBenchmark(benchmarkSuitesManager, name, version) {
         switch (event.data.type) {
             case "benchmark-suite":
                 // eslint-disable-next-line no-case-declarations
-                const params = getParams(window.location.search);
+                const { params } = await import("./params.mjs");
                 // eslint-disable-next-line no-case-declarations
                 const { result } = await benchmarkSuitesManager.getSuiteByName(event.data.name).runAndRecord(params, (test) => sendMessage({ type: "step-complete", status: "success", appId, name, test }));
                 sendMessage({ type: "suite-complete", status: "success", appId, result });
