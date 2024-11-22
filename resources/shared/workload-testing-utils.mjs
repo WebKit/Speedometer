@@ -1,4 +1,5 @@
 import { TestRunner } from "./test-runner.mjs";
+import { Params } from "./params.mjs";
 
 /**
  * BenchmarkTestStep
@@ -140,7 +141,7 @@ export function connectToBenchmark(benchmarkSuitesManager, name, version) {
         switch (event.data.type) {
             case "benchmark-suite":
                 // eslint-disable-next-line no-case-declarations
-                const { params } = await import("./params.mjs");
+                const params = new Params(new URLSearchParams(window.location.search));
                 // eslint-disable-next-line no-case-declarations
                 const { result } = await benchmarkSuitesManager.getSuiteByName(event.data.name).runAndRecord(params, (test) => sendMessage({ type: "step-complete", status: "success", appId, name, test }));
                 sendMessage({ type: "suite-complete", status: "success", appId, result });

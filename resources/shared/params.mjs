@@ -1,4 +1,4 @@
-class Params {
+export class Params {
     viewport = {
         width: 800,
         height: 600,
@@ -160,12 +160,11 @@ class Params {
 
 export const defaultParams = new Params();
 
-const searchParams = new URLSearchParams(window.location.search);
+const searchParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : undefined);
 let maybeCustomParams = new Params();
 try {
     maybeCustomParams = new Params(searchParams);
 } catch (e) {
     console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
-    alert(`Invalid URL Param: ${e}`);
 }
 export const params = maybeCustomParams;
