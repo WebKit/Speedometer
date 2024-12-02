@@ -177,7 +177,7 @@ export class RemoteSuiteRunner extends SuiteRunner {
 
         this.suiteResults.tests = {
             ...this.suiteResults.tests,
-            ...response.result.tests
+            ...response.result.tests,
         };
 
         this.suiteResults.total += response.result.total;
