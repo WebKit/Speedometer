@@ -108,8 +108,9 @@ async function test() {
                     }),
                 { once: true }
             );
-            window.addEventListener("test-ready", () => {
-                window.dispatchEvent(new Event("start-test"));
+            document.addEventListener("readystatechange", () => {
+                if (document.readyState === "complete")
+                    window.dispatchEvent(new Event("start-test"));
             });
         });
 
