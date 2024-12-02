@@ -68,13 +68,11 @@
                 });
             }
 
-            let runnerReady = false;
-            let domReady = false;
             function checkIn(type) {
-                if (type === "runner") runnerReady = true;
-                else domReady = true;
+                if (type === "runner") window.runnerReady = true;
+                else window.domReady = true;
 
-                if (runnerReady && domReady) startTest();
+                if (window.runnerReady && window.domReady) startTest();
             }
 
             window.addEventListener("start-test", () => checkIn("runner"));
