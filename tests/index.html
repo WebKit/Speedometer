@@ -74,9 +74,9 @@
 
             window.addEventListener("start-test", () => checkIn("runner"));
             document.addEventListener("readystatechange", () => {
-                if(document.readyState === "complete") {
+                if (document.readyState === "complete") {
                     window.domReady = true;
-                    checkIn("dom")
+                    checkIn("dom");
                 }
             });
         </script>
