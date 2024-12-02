@@ -108,6 +108,7 @@ async function test() {
                 { once: true }
             );
             window.dispatchEvent(new Event("start-test"));
+            window.runnerReady = true;
         });
 
         printTree(result.suite);
