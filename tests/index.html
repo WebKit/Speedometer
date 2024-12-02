@@ -71,17 +71,14 @@
             let runnerReady = false;
             let domReady = false;
             function checkIn(type) {
-                if (type === "runner")
-                    runnerReady = true;
-                else
-                    domReady = true;
+                if (type === "runner") runnerReady = true;
+                else domReady = true;
 
-                if (runnerReady && domReady)
-                    startTest();
+                if (runnerReady && domReady) startTest();
             }
 
             window.addEventListener("start-test", () => checkIn("runner"));
-            document.addEventListener('readystatechange', () => checkIn("dom"));
+            document.addEventListener("readystatechange", () => checkIn("dom"));
         </script>
     </body>
 </html>
