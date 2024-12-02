@@ -120,7 +120,7 @@ export function forceLayout() {
  * Benchmark Connector
  *
  * postMessage is used to communicate between app and benchmark.
- * When the app os ready, an 'app-ready' message is sent to signal that the app can receive instructions.
+ * When the app is ready, an 'app-ready' message is sent to signal that the app can receive instructions.
  *
  * A prepare script within the apps appends window.name and window.version from the package.json file.
  * The appId is build by appending name-version
