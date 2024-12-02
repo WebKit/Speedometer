@@ -69,14 +69,16 @@
             }
 
             function checkIn(type) {
-                if (type === "runner") window.runnerReady = true;
-                else window.domReady = true;
-
                 if (window.runnerReady && window.domReady) startTest();
             }
 
             window.addEventListener("start-test", () => checkIn("runner"));
-            document.addEventListener("readystatechange", () => checkIn("dom"));
+            document.addEventListener("readystatechange", () => {
+                if(document.readyState === "complete") {
+                    window.domReady = true;
+                    checkIn("dom")
+                }
+            });
         </script>
     </body>
 </html>

@@ -107,8 +107,8 @@ async function test() {
                     }),
                 { once: true }
             );
-            window.dispatchEvent(new Event("start-test"));
             window.runnerReady = true;
+            window.dispatchEvent(new Event("start-test"));
         });
 
         printTree(result.suite);
