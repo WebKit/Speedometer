@@ -108,7 +108,9 @@ async function test() {
                     }),
                 { once: true }
             );
-            setTimeout(() => window.dispatchEvent(new Event("start-test")), 100);
+            window.addEventListener("test-ready", () => {
+                window.dispatchEvent(new Event("start-test"));
+            });
         });
 
         printTree(result.suite);

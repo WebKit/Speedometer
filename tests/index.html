@@ -64,11 +64,12 @@
 
                 runner.on("end", function () {
                     window.suite = createReport(runner.suite);
-                    const event = new Event("test-complete");
-                    window.dispatchEvent(event);
+                    window.dispatchEvent(new Event("test-complete"));
                 });
             }
+
             window.addEventListener("start-test", startTest);
+            window.dispatchEvent(new Event("test-ready"));
         </script>
     </body>
 </html>
