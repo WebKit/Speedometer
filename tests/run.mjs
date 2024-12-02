@@ -95,7 +95,6 @@ function printTree(node) {
 
 async function test() {
     driver = await new Builder().withCapabilities(capabilities).build();
-    await driver.manage().setTimeouts({ script: 10000 });
 
     try {
         await driver.get(`http://localhost:${PORT}/tests/index.html`);
@@ -109,8 +108,7 @@ async function test() {
                     }),
                 { once: true }
             );
-            const event = new Event("start-test");
-            window.dispatchEvent(event);
+            setTimeout(() => window.dispatchEvent(new Event("start-test")), 100);
         });
 
         printTree(result.suite);
