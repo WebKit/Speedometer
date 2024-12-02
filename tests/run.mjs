@@ -95,7 +95,6 @@ function printTree(node) {
 
 async function test() {
     driver = await new Builder().withCapabilities(capabilities).build();
-
     try {
         await driver.get(`http://localhost:${PORT}/tests/index.html`);
         const result = await driver.executeAsyncScript(function (callback) {
@@ -108,10 +107,7 @@ async function test() {
                     }),
                 { once: true }
             );
-            document.addEventListener("readystatechange", () => {
-                if (document.readyState === "complete")
-                    window.dispatchEvent(new Event("start-test"));
-            });
+            window.dispatchEvent(new Event("start-test"));
         });
 
         printTree(result.suite);
