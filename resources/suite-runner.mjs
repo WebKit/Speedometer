@@ -98,6 +98,7 @@ export class SuiteRunner {
             const frame = this.#frame;
             frame.onload = () => resolve();
             frame.onerror = () => reject();
+            // Passing in 'true' to the 'toSearchParams' method, to filter params for the workload.
             frame.src = `${this.#suite.url}?${this.#params.toSearchParams(true)}`;
         });
     }

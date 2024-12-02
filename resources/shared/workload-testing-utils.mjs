@@ -128,6 +128,9 @@ export function forceLayout() {
  *************************************************************************/
 
 export function connectToBenchmark(benchmarkSuitesManager, name, version) {
+    if (!name || !version)
+        console.warn("No name or version supplied, to create a unique appId");
+
     const appId = name && version ? `${name}-${version}` : -1;
 
     function sendMessage(message) {
@@ -148,6 +151,8 @@ export function connectToBenchmark(benchmarkSuitesManager, name, version) {
                 sendMessage({ type: "suite-complete", status: "success", appId, result });
                 disconnect();
                 break;
+            default:
+                console.error(`Message data type not supported: ${event.data.type}`);
         }
     }
 
