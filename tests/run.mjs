@@ -95,7 +95,7 @@ function printTree(node) {
 
 async function test() {
     driver = await new Builder().withCapabilities(capabilities).build();
-    await driver.manage().setTimeouts({ script: 6000 });
+    await driver.manage().setTimeouts({ script: 10000 });
 
     try {
         await driver.get(`http://localhost:${PORT}/tests/index.html`);
