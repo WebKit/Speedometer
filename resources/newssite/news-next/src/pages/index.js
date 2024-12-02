@@ -7,8 +7,11 @@ import { connectToBenchmark } from "speedometer-utils/workload-testing-utils.mjs
 import { getBenchmarkSuitesManager } from "@/workload-test.mjs";
 
 export default function App() {
+    // Using 'useLayoutEffect' here, since this will connect the workload after all DOM mutations happened.
+    // This ensures that all elemetns are in the DOM, prior to signaling to the Benchmark that the workload is ready to run a test suite.
     useLayoutEffect(() => {
-        connectToBenchmark(getBenchmarkSuitesManager(), "news-next", 1);
+        const disconnect = connectToBenchmark(getBenchmarkSuitesManager(), "news-next", 1);
+        return disconnect;
     }, []);
 
     return (

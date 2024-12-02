@@ -137,10 +137,12 @@ export class RemoteSuiteRunner extends SuiteRunner {
         window.addEventListener("message", handler);
 
         // FIXME: use this._suite in all SuiteRunner methods directly.
-        await this._prepareSuite();
-        await this._runSuite();
-
-        window.removeEventListener("message", handler);
+        try {
+            await this._prepareSuite();
+            await this._runSuite();
+        } finally {
+            window.removeEventListener("message", handler);
+        }
     }
 
     async _prepareSuite() {
@@ -151,9 +153,9 @@ export class RemoteSuiteRunner extends SuiteRunner {
         performance.mark(suitePrepareStartLabel);
 
         // Wait for the app-ready message from the workload.
-        const promise = this._subscribeOnce("app-ready");
+        const appReadyPromise = this._subscribeOnce("app-ready");
         await this._loadFrame(this.suite);
-        const response = await promise;
+        const response = await appReadyPromise;
         await this.suite.prepare(this.page);
         // Capture appId to pass along with messages.
         this.appId = response?.appId;
@@ -172,7 +174,11 @@ export class RemoteSuiteRunner extends SuiteRunner {
         const response = await this._subscribeOnce("suite-complete");
         this._stopSubscription("step-complete");
 
-        this.suiteResults.tests = response.result.tests;
+        this.suiteResults.tests = {
+            ...this.suiteResults.tests,
+            ...response.result.tests
+        };
+
         this.suiteResults.total += response.result.total;
 
         this._validateSuiteTotal();

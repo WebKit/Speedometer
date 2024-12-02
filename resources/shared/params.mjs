@@ -150,10 +150,13 @@ export class Params {
         const rawParams = { ...this };
         rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`;
 
+        // Only returning params that are useful for the workload.
+        // Both, 'suites' and 'tags', are specific to the debug menu.
         if (forRemote) {
             delete rawParams["suites"];
             delete rawParams["tags"];
         }
+
         return new URLSearchParams(rawParams).toString();
     }
 }
