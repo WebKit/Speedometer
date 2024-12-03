@@ -25,21 +25,21 @@ export function provideLocale() {
         const { sections } = content[key];
 
         const selectedSections = [];
-        let index = 0;
 
         for (let i = 0; i < sections.length; i++) {
-            selectedSections.push({ ...sections[index] });
+            const selectedSection = { ...sections[i] };
+            selectedSections.push(selectedSection);
 
             const { articles } = selectedSections[i];
             for (let j = 0; j < articles.length; j++) {
                 articles[j].id = uuidv4();
                 const { content } = articles[j];
                 if (Array.isArray(content)) {
-                    for (let k = 0; k < content.length; k++) content[k].id = uuidv4();
+                    for (let k = 0; k < content.length; k++)
+                        content[k].id = uuidv4();
                 }
-            }
 
-            index = (index + 1) % sections.length;
+            }
         }
 
         selected[key] = {
