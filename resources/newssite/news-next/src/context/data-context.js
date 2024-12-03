@@ -24,10 +24,10 @@ export const DataContextProvider = ({ children }) => {
     Object.keys(content).forEach((key) => {
         const { sections } = content[key];
         const selectedSections = [];
-        let index = 0;
 
         for (let i = 0; i < sections.length; i++) {
-            selectedSections.push({ ...sections[index] });
+            const selectedSection = { ...sections[i] };
+            selectedSections.push(selectedSection);
 
             const { articles } = selectedSections[i];
             for (let j = 0; j < articles.length; j++) {
@@ -39,8 +39,6 @@ export const DataContextProvider = ({ children }) => {
                 }
 
             }
-
-            index = (index + 1) % sections.length;
         }
 
         selected[key] = {
