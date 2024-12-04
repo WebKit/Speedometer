@@ -99,10 +99,13 @@ async function test() {
         await driver.get(`http://localhost:${PORT}/tests/index.html`);
 
         await driver.executeAsyncScript((callback) => {
-            window.addEventListener("benchmark-ready", () => callback());
-
             if (window.benchmarkReady)
                 callback();
+
+            window.addEventListener("benchmark-ready", function handleBenchmarkReady() {
+                window.removeEventListener("benchmark-ready", handleBenchmarkReady);
+                callback();
+            });
         });
 
         const result = await driver.executeAsyncScript(function (callback) {
