@@ -68,27 +68,9 @@
                 });
             }
 
-            /**
-             * checkIn
-             *
-             * This function uses two global flags to ensure that both, the runner and the html page, are ready to run the tests.
-             *
-             * In certain scenarios, the runner may dispatch the 'start-test' event before the HTML page has the opportunity to add its listener.
-             * To prevent the HTML page from waiting indefinitely and never initiating its tests, the runner proactively sets a global flag to true.
-             * This ensures that even if the 'start-test' event precedes the listener's addition, the necessary check-in process occurs, enabling the tests to proceed as expected.
-             *
-             **/
-            function checkIn() {
-                if (window.runnerReady && window.domReady) startTest();
-            }
-
-            window.addEventListener("start-test", () => checkIn());
-            document.addEventListener("readystatechange", () => {
-                if (document.readyState === "complete") {
-                    window.domReady = true;
-                    checkIn();
-                }
-            });
+            window.addEventListener("start-test", () => startTest());
+            window.benchmarkReady = true;
+            window.dispatchEvent(new Event("benchmark-ready"));
         </script>
     </body>
 </html>
