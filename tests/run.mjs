@@ -99,7 +99,7 @@ async function test() {
         await driver.get(`http://localhost:${PORT}/tests/index.html`);
 
         await driver.executeAsyncScript((callback) => {
-            window.addEventListener("benchmark-ready", callback);
+            window.addEventListener("benchmark-ready", () => callback());
 
             if (window.benchmarkReady)
                 callback();
@@ -115,14 +115,7 @@ async function test() {
                     }),
                 { once: true }
             );
-
-            window.addEventListener("benchmark-ready", function handleBenchmarkReady() {
-                window.dispatchEvent(new Event("start-test"));
-                window.removeEventListener("benchmark-ready", handleBenchmarkReady);
-            });
-
-            if (window.benchmarkReady)
-                window.dispatchEvent(new Event("start-test"));
+            window.dispatchEvent(new Event("start-test"));
         });
 
         printTree(result.suite);
