@@ -101,7 +101,7 @@ async function test() {
         await driver.executeAsyncScript((callback) => {
             window.addEventListener("benchmark-ready", callback);
 
-            if (window?.benchmarkReady)
+            if (window.benchmarkReady)
                 callback();
         });
 
@@ -115,7 +115,14 @@ async function test() {
                     }),
                 { once: true }
             );
-            window.dispatchEvent(new Event("start-test"));
+
+            window.addEventListener("benchmark-ready", function handleBenchmarkReady() {
+                window.dispatchEvent(new Event("start-test"));
+                window.removeEventListener("benchmark-ready", handleBenchmarkReady);
+            });
+
+            if (window.benchmarkReady)
+                window.dispatchEvent(new Event("start-test"));
         });
 
         printTree(result.suite);
