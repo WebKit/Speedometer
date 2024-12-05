@@ -20,31 +20,31 @@ export function provideLocale() {
 
     const { content } = dataSource[lang];
 
-    const selected = Object.create(null);
+    // Generate unique IDs for all articles, and their content items where appropriate.
+    const contentWithIds = Object.create(null);
     Object.keys(content).forEach((key) => {
         const { sections } = content[key];
 
-        const selectedSections = [];
-
-        for (let i = 0; i < sections.length; i++) {
-            const selectedSection = { ...sections[i] };
-            selectedSections.push(selectedSection);
-
-            const { articles } = selectedSections[i];
-            for (let j = 0; j < articles.length; j++) {
-                articles[j].id = uuidv4();
-                const { content } = articles[j];
-                if (Array.isArray(content)) {
-                    for (let k = 0; k < content.length; k++)
-                        content[k].id = uuidv4();
+        const currentSections = sections.map((section) => {
+            const currentSection = { ...section };
+            currentSection.articles = section.articles.map((article) => {
+                const currentArticle = { ...article };
+                currentArticle.id = uuidv4();
+                if (Array.isArray(article.content)) {
+                    currentArticle.content = article.content.map((item) => {
+                        const currentItem = { ...item };
+                        currentItem.id = uuidv4();
+                        return currentItem;
+                    });
                 }
+                return currentArticle;
+            });
+            return currentSection;
+        });
 
-            }
-        }
-
-        selected[key] = {
+        contentWithIds[key] = {
             ...content[key],
-            sections: selectedSections,
+            sections: currentSections,
         };
     });
 
@@ -52,7 +52,7 @@ export function provideLocale() {
         lang,
         dir,
         ...dataSource[lang],
-        content: selected,
+        content: contentWithIds,
     };
 
     provide("data", value);
