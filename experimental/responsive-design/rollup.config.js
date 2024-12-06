@@ -3,6 +3,7 @@ import terser from "@rollup/plugin-terser";
 import copy from "rollup-plugin-copy";
 import css from "rollup-plugin-import-css";
 import html from "@rollup/plugin-html";
+import summary from "rollup-plugin-summary";
 import path from "path";
 import fs from "fs";
 
@@ -19,12 +20,6 @@ export default {
     plugins: [
         resolve(),
         css(),
-        copy({
-            targets: [
-                { src: "index.html", dest: "dist/" },
-                { src: "public/", dest: "dist/" },
-            ],
-        }),
         html({
             template: () => {
                 const imagesDir = path.resolve("public", "images");
@@ -50,6 +45,13 @@ export default {
                 return iframeContent;
             },
             fileName: "iframe.html",
+        }),
+        summary(),
+        copy({
+            targets: [
+                { src: "index.html", dest: "dist/" },
+                { src: "public/", dest: "dist/" },
+            ],
         }),
     ],
 };
