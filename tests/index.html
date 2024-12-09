@@ -68,7 +68,7 @@
                 });
             }
 
-            window.addEventListener("start-test", () => startTest());
+            window.addEventListener("start-test", () => startTest(), { once: true });
             window.benchmarkReady = true;
             window.dispatchEvent(new Event("benchmark-ready"));
         </script>
