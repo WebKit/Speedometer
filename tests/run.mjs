@@ -102,10 +102,7 @@ async function test() {
             if (window.benchmarkReady)
                 callback();
 
-            window.addEventListener("benchmark-ready", function handleBenchmarkReady() {
-                window.removeEventListener("benchmark-ready", handleBenchmarkReady);
-                callback();
-            });
+            window.addEventListener("benchmark-ready", () => callback(), { once: true });
         });
 
         const result = await driver.executeAsyncScript(function (callback) {
