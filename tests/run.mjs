@@ -95,9 +95,16 @@ function printTree(node) {
 
 async function test() {
     driver = await new Builder().withCapabilities(capabilities).build();
-
     try {
         await driver.get(`http://localhost:${PORT}/tests/index.html`);
+
+        await driver.executeAsyncScript((callback) => {
+            if (window.benchmarkReady)
+                callback();
+
+            window.addEventListener("benchmark-ready", () => callback(), { once: true });
+        });
+
         const result = await driver.executeAsyncScript(function (callback) {
             window.addEventListener(
                 "test-complete",
@@ -108,8 +115,7 @@ async function test() {
                     }),
                 { once: true }
             );
-            const event = new Event("start-test");
-            window.dispatchEvent(event);
+            window.dispatchEvent(new Event("start-test"));
         });
 
         printTree(result.suite);

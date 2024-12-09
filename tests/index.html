@@ -64,11 +64,13 @@
 
                 runner.on("end", function () {
                     window.suite = createReport(runner.suite);
-                    const event = new Event("test-complete");
-                    window.dispatchEvent(event);
+                    window.dispatchEvent(new Event("test-complete"));
                 });
             }
-            window.addEventListener("start-test", startTest);
+
+            window.addEventListener("start-test", () => startTest(), { once: true });
+            window.benchmarkReady = true;
+            window.dispatchEvent(new Event("benchmark-ready"));
         </script>
     </body>
 </html>
