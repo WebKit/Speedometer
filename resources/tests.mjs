@@ -1101,6 +1101,72 @@ Suites.push({
     ],
 });
 
+Suites.push({
+    name: "Responsive-Design",
+    url: "experimental/responsive-design/dist/index.html",
+    tags: ["responsive-design", "webcomponents", "experimental"],
+    async prepare(page) {
+        (await page.waitForElement("#content-iframe")).focus();
+    },
+    tests: [
+        new BenchmarkTestStep("LoadChatAndExpandRecipes", (page) => {
+            const iframeElement = page.querySelector("#content-iframe", [], true);
+            const resumePreviousChatBtn = iframeElement.querySelectorInShadowRoot("#resume-previous-chat-btn", ["cooking-app", "chat-window"]);
+            resumePreviousChatBtn.click();
+            page.layout();
+
+            // Expand recipes
+            const showMoreBtn = iframeElement.querySelectorAllInShadowRoot(".show-more-btn", ["cooking-app", "main-content", "recipe-grid"]);
+            for (const btn of showMoreBtn) {
+                btn.click();
+                page.layout();
+            }
+        }),
+        new BenchmarkTestStep("ReduceWidthIn5Steps", (page) => {
+            const iframeElement = page.querySelector("#content-iframe");
+            const widths = [768, 704, 640, 560, 480];
+
+            widths.forEach((width) => {
+                iframeElement.setWidth(`${width}px`);
+                page.layout();
+            });
+        }),
+        new BenchmarkTestStep("ScrollToChatAndSendMessages", (page) => {
+            const iframeElement = page.querySelector("#content-iframe", [], true);
+
+            // Collapse recipes
+            const showMoreBtn = iframeElement.querySelectorAllInShadowRoot(".show-more-btn", ["cooking-app", "main-content", "recipe-grid"]);
+            for (const btn of showMoreBtn) {
+                btn.click();
+                page.layout();
+            }
+
+            const element = iframeElement.querySelectorInShadowRoot("#chat-window", ["cooking-app", "chat-window"]);
+            element.scrollIntoView();
+            page.layout();
+
+            const messagesToBeSent = ["Please generate an image of Tomato Soup.", "Try again, but make the soup look thicker.", "Try again, but make the soup served in a rustic bowl and include a sprinkle of fresh herbs on top."];
+
+            const chatInput = iframeElement.querySelectorInShadowRoot("#chat-input", ["cooking-app", "chat-window"]);
+            for (const message of messagesToBeSent) {
+                chatInput.setValue(message);
+                chatInput.dispatchEvent("input");
+                chatInput.enter("keydown");
+                page.layout();
+            }
+        }),
+        new BenchmarkTestStep("IncreaseWidthIn5Steps", (page) => {
+            const iframeElement = page.querySelector("#content-iframe");
+            const widths = [560, 640, 704, 768, 800];
+
+            widths.forEach((width) => {
+                iframeElement.setWidth(`${width}px`);
+                page.layout();
+            });
+        }),
+    ],
+});
+
 Object.freeze(Suites);
 Suites.forEach((suite) => {
     if (!suite.tags)
