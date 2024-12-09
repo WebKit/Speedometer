@@ -15,8 +15,8 @@ export class TimerTestInvoker extends TestInvoker {
                 setTimeout(() => {
                     this._asyncCallback();
                     requestAnimationFrame(async () => {
-                        await this._reportCallback();
-                        resolve();
+                        const result = await this._reportCallback();
+                        resolve(result);
                     });
                 }, 0);
             }, this._params.waitBeforeSync);
@@ -40,8 +40,8 @@ export class RAFTestInvoker extends TestInvoker {
             setTimeout(() => {
                 this._asyncCallback();
                 setTimeout(async () => {
-                    await this._reportCallback();
-                    resolve();
+                    const result = await this._reportCallback();
+                    resolve(result);
                 }, 0);
             }, 0);
         });

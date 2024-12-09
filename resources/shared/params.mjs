@@ -1,4 +1,4 @@
-class Params {
+export class Params {
     viewport = {
         width: 800,
         height: 600,
@@ -146,21 +146,28 @@ class Params {
         return shuffleSeed;
     }
 
-    toSearchParams() {
+    toSearchParams(forRemote = false) {
         const rawParams = { ...this };
         rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`;
+
+        // Only returning params that are useful for the workload.
+        // Both, 'suites' and 'tags', are specific to the debug menu.
+        if (forRemote) {
+            delete rawParams["suites"];
+            delete rawParams["tags"];
+        }
+
         return new URLSearchParams(rawParams).toString();
     }
 }
 
 export const defaultParams = new Params();
 
-const searchParams = new URLSearchParams(window.location.search);
+const searchParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : undefined);
 let maybeCustomParams = new Params();
 try {
     maybeCustomParams = new Params(searchParams);
 } catch (e) {
     console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
-    alert(`Invalid URL Param: ${e}`);
 }
 export const params = maybeCustomParams;
