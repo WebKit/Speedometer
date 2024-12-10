@@ -194,16 +194,8 @@ describe("BenchmarkRunner", () => {
                 runner._suite = suite;
                 await runner._appendFrame();
                 performanceMarkSpy = spy(window.performance, "mark");
-<<<<<<< HEAD
-                const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite);
-                await suiteRunner._runTestAndRecordResults(suite, suite.tests[0]);
-||||||| 617c7310
-                const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite);
-                await suiteRunner._runTestAndRecordResults(suite.tests[0]);
-=======
                 const suiteRunner = new SuiteRunner(runner._frame, runner._page, params, suite, runner._client, runner._measuredValues);
                 await suiteRunner._runSuite();
->>>>>>> main
             });
 
             it("should run client pre and post hooks if present", () => {
@@ -243,16 +235,8 @@ describe("BenchmarkRunner", () => {
                     stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd);
 
                     // instantiate recorded test results
-<<<<<<< HEAD
-                    const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite);
-                    await suiteRunner._runTestAndRecordResults(suite, suite.tests[0]);
-||||||| 617c7310
-                    const suiteRunner = new SuiteRunner(runner._measuredValues, runner._frame, runner._page, runner._client, suite);
-                    await suiteRunner._runTestAndRecordResults(suite.tests[0]);
-=======
                     const suiteRunner = new SuiteRunner(runner._frame, runner._page, params, suite, runner._client, runner._measuredValues);
                     await suiteRunner._runSuite();
->>>>>>> main
 
                     await runner._finalize();
                 });
