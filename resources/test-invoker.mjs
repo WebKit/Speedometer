@@ -69,23 +69,28 @@ class RAFTestInvoker extends BaseRAFTestInvoker {
 
 class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
     _scheduleCallbacks(resolve) {
+        let gotTimer = false;
+        let gotMessage = false;
+        let gotPromise = false;
+
+        const tryTriggerAsyncCallback = () => {
+            if (!gotTimer || !gotMessage || !gotPromise)
+                return;
+
+            this._asyncCallback();
+            setTimeout(async () => {
+                await this._reportCallback();
+                resolve();
+            }, 0);
+        };
+
         requestAnimationFrame(async () => {
             await this._syncCallback();
+            gotPromise = true;
+            tryTriggerAsyncCallback();
+        });
 
-            let gotTimer = false;
-            let gotMessage = false;
-
-            const tryTriggerAsyncCallback = () => {
-                if (!gotTimer || !gotMessage)
-                    return;
-
-                this._asyncCallback();
-                setTimeout(async () => {
-                    await this._reportCallback();
-                    resolve();
-                }, 0);
-            };
-
+        requestAnimationFrame(() => {
             setTimeout(() => {
                 gotTimer = true;
                 tryTriggerAsyncCallback();
