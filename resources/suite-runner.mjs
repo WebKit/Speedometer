@@ -88,7 +88,9 @@ export class SuiteRunner {
         if (this.#suite === WarmupSuite)
             return;
 
-        const total = syncTime + asyncTime;
+        let total = syncTime + asyncTime;
+        if (this.#params.measurePrepare)
+            total += this.#prepareTime;
         this.#suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime, Prepare: this.#prepareTime }, total: total };
         this.#suiteResults.total += total;
 
