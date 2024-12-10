@@ -36,3 +36,7 @@ Add, commit and push changes to the working branch.
 
 The Speedometer test consists of navigating between the different pages of the news site.
 It includes interactions with the navigation drop-down menu to ensure state changes happen in between the page navigations.
+
+## Images license
+
+[Unsplash License](https://unsplash.com/license)

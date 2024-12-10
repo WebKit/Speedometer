@@ -49,6 +49,7 @@ function createUIForMeasurementMethod() {
 }
 
 function createUIForWarmupSuite() {
+<<<<<<< HEAD
     return createCheckboxUI("Use Warmup Suite", params.useWarmupSuite, (isChecked) => {
         params.useWarmupSuite = isChecked;
     });
@@ -58,6 +59,17 @@ function createUIForMeasurePrepare() {
         params.measurePrepare = isChecked;
     });
 }
+||||||| 617c7310
+    let check = document.createElement("input");
+    check.type = "checkbox";
+    check.id = "warmup-suite";
+    check.checked = !!params.useWarmupSuite;
+=======
+    return createCheckboxUI("Use Warmup Suite", params.useWarmupSuite, (isChecked) => {
+        params.useWarmupSuite = isChecked;
+    });
+}
+>>>>>>> main
 
 function createCheckboxUI(labelValue, initialValue, paramsUpdateCallback) {
     const checkbox = document.createElement("input");
