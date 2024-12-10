@@ -10,6 +10,7 @@ export class SuiteRunner {
     #suite;
     #client;
     #suiteResults;
+    #prepareTime
 
     constructor(frame, page, params, suite, client, measuredValues) {
         // FIXME: Create SuiteRunner-local measuredValues.
@@ -23,6 +24,7 @@ export class SuiteRunner {
         this.#client = client;
         this.#suite = suite;
         this.#params = params;
+        this.#prepareTime = 0;
     }
 
     async run() {
@@ -40,7 +42,8 @@ export class SuiteRunner {
         await this.#suite.prepare(this.#page);
         performance.mark(suitePrepareEndLabel);
 
-        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+        const entry = performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+        this.#prepareTime = entry.duration;
     }
 
     async _runSuite() {
@@ -85,8 +88,10 @@ export class SuiteRunner {
         if (this.#suite === WarmupSuite)
             return;
 
-        const total = syncTime + asyncTime;
-        this.#suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
+        let total = syncTime + asyncTime;
+        if (this.#params.measurePrepare)
+            total += this.#prepareTime;
+        this.#suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime, Prepare: this.#prepareTime }, total: total };
         this.#suiteResults.total += total;
 
         if (this.#client?.didRunTest)

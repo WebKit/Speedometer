@@ -19,6 +19,7 @@ export function createDeveloperModeContainer() {
     settings.className = "settings";
     settings.append(createUIForIterationCount());
     settings.append(createUIForMeasurementMethod());
+    settings.append(createUIForMeasurePrepare());
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
     settings.append(createUIForSyncStepDelay());
@@ -49,6 +50,11 @@ function createUIForMeasurementMethod() {
 function createUIForWarmupSuite() {
     return createCheckboxUI("Use Warmup Suite", params.useWarmupSuite, (isChecked) => {
         params.useWarmupSuite = isChecked;
+    });
+}
+function createUIForMeasurePrepare() {
+    return createCheckboxUI("Measure Prepare", params.measurePrepare, (isChecked) => {
+        params.measurePrepare = isChecked;
     });
 }
 
@@ -262,7 +268,7 @@ function updateURL() {
         }
     }
 
-    const defaultParamKeys = ["measurementMethod", "iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync"];
+    const defaultParamKeys = ["measurementMethod", "iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "measurePrepare"];
     for (const paramKey of defaultParamKeys) {
         if (params[paramKey] !== defaultParams[paramKey])
             url.searchParams.set(paramKey, params[paramKey]);
