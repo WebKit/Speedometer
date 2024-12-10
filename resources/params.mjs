@@ -25,6 +25,10 @@ class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    // Param to tweak the relative complexity of all suites.
+    // The default is 1.0, and for suites supporting this param, the duration
+    // roughly scales wit the complexity.
+    complexity = 1.0;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -35,8 +39,15 @@ class Params {
         }
     }
 
-    _parseInt(value, errorMessage) {
+    _parseNumber(value, errorMessage) {
         const number = Number(value);
+        if (!Number.isFinite(number) && errorMessage)
+            throw new Error(`Invalid ${errorMessage} param: '${value}', expected Number.`);
+        return number;
+    }
+
+    _parseInt(value, errorMessage) {
+        const number = this._parseNumber(value);
         if (!Number.isInteger(number) && errorMessage)
             throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
         return parseInt(number);
@@ -54,6 +65,13 @@ class Params {
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
+
+        if (searchParams.has("complexity")) {
+            this.complexity = this._parseNumber(searchParams.get("complexity"));
+            if (this.complexity <= 0)
+                throw new Error(`Invalid complexity value: ${this.complexity}, must be > 0.0`);
+            searchParams.delete("complexity");
+        }
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -108,7 +126,7 @@ class Params {
         return defaultParams.suites;
     }
 
-    _parseTags() {
+    _parseTags(searchParams) {
         if (!searchParams.has("tags"))
             return defaultParams.tags;
         if (this.suites.length)
@@ -149,18 +167,20 @@ class Params {
     toSearchParams() {
         const rawParams = { ...this };
         rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`;
-        return new URLSearchParams(rawParams).toString();
+        return new URLSearchParams(rawParams);
     }
 }
 
 export const defaultParams = new Params();
 
-const searchParams = new URLSearchParams(window.location.search);
-let maybeCustomParams = new Params();
-try {
-    maybeCustomParams = new Params(searchParams);
-} catch (e) {
-    console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
-    alert(`Invalid URL Param: ${e}`);
+let maybeCustomParams = defaultParams;
+if (window.location.search) {
+    const searchParams = new URLSearchParams(window.location.search);
+    try {
+        maybeCustomParams = new Params(searchParams);
+    } catch (e) {
+        console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
+        alert(`Invalid URL Param: ${e}`);
+    }
 }
 export const params = maybeCustomParams;
