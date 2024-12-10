@@ -69,28 +69,48 @@ function createCheckboxUI(labelValue, initialValue, paramsUpdateCallback) {
 }
 
 function createUIForIterationCount() {
-    return createTimeRangeUI("Iterations: ", "iterationCount", "#", 1, 200);
+    return createLinearRangeUI("Iterations: ", "iterationCount", "#", 1, 200);
 }
 
 function createUIForWarmupBeforeSync() {
-    return createTimeRangeUI("Warmup time: ", "warmupBeforeSync");
+    return createLinearRangeUI("Warmup time: ", "warmupBeforeSync");
 }
 
 function createUIForSyncStepDelay() {
-    return createTimeRangeUI("Sync step delay: ", "waitBeforeSync");
+    return createLinearRangeUI("Sync step delay: ", "waitBeforeSync");
 }
 
 function createUIForComplexity() {
-    return createTimeRangeUI("Relative complexity: ", "complexity", "x", 0, 10, 0.01);
+    return createExpRangeUI("Relative complexity: ", "complexity", "x", 0.01, 100, 0.01);
 }
 
-function createTimeRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000, step = 1) {
-    const range = document.createElement("input");
-    range.type = "range";
+function createLinearRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000, step = 1) {
+    const linearMap = (value) => value;
+    const { range, label } = createTimeRangeUI(labelText, paramKey, unit, linearMap, 0);
     range.min = min;
     range.max = max;
     range.step = step;
     range.value = params[paramKey];
+    return label;
+}
+
+function createExpRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000, step = 1) {
+    const defaultValue = defaultParams[paramKey];
+    const initialValue = params[paramKey];
+    const b = defaultValue - 1;
+    const a = -Math.log(min - b);
+    const logMap = (value) => Math.round((Math.exp(value * a) + b) / step) * step;
+    const { range, label } = createTimeRangeUI(labelText, paramKey, unit, logMap, 2);
+    range.min = -1;
+    range.max = Math.log(max - b) / a;
+    range.step = 0.01;
+    range.value = Math.log(initialValue - b) / a;
+    return label;
+}
+
+function createTimeRangeUI(labelText, paramKey, unit = "ms", map, decimals) {
+    const range = document.createElement("input");
+    range.type = "range";
 
     const rangeValueAndUnit = document.createElement("span");
     rangeValueAndUnit.className = "range-label-data";
@@ -103,14 +123,14 @@ function createTimeRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000
     label.append(span(labelText), range, rangeValueAndUnit);
 
     range.oninput = () => {
-        rangeValue.textContent = range.value;
+        rangeValue.textContent = map(Number(range.value)).toFixed(decimals);
     };
     range.onchange = () => {
-        params[paramKey] = parseInt(range.value);
+        params[paramKey] = map(Number(range.value));
         updateURL();
     };
 
-    return label;
+    return { range, label };
 }
 
 function createUIForSuites() {
