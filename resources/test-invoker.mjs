@@ -24,7 +24,24 @@ export class TimerTestInvoker extends TestInvoker {
     }
 }
 
-export class RAFTestInvoker extends TestInvoker {
+class AsyncTimerTestInvoker extends TestInvoker {
+    start() {
+        return new Promise((resolve) => {
+            setTimeout(async () => {
+                await this._syncCallback();
+                setTimeout(() => {
+                    this._asyncCallback();
+                    requestAnimationFrame(async () => {
+                        await this._reportCallback();
+                        resolve();
+                    });
+                }, 0);
+            }, this._params.waitBeforeSync);
+        });
+    }
+}
+
+class BaseRAFTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
             if (this._params.waitBeforeSync)
@@ -33,7 +50,9 @@ export class RAFTestInvoker extends TestInvoker {
                 this._scheduleCallbacks(resolve);
         });
     }
+}
 
+class RAFTestInvoker extends BaseRAFTestInvoker {
     _scheduleCallbacks(resolve) {
         requestAnimationFrame(() => this._syncCallback());
         requestAnimationFrame(() => {
@@ -48,8 +67,56 @@ export class RAFTestInvoker extends TestInvoker {
     }
 }
 
+class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
+    _scheduleCallbacks(resolve) {
+        let gotTimer = false;
+        let gotMessage = false;
+        let gotPromise = false;
+
+        const tryTriggerAsyncCallback = () => {
+            if (!gotTimer || !gotMessage || !gotPromise)
+                return;
+
+            this._asyncCallback();
+            setTimeout(async () => {
+                await this._reportCallback();
+                resolve();
+            }, 0);
+        };
+
+        requestAnimationFrame(async () => {
+            await this._syncCallback();
+            gotPromise = true;
+            tryTriggerAsyncCallback();
+        });
+
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                gotTimer = true;
+                tryTriggerAsyncCallback();
+            });
+
+            const mc = new MessageChannel();
+            mc.port1.onmessage = () => {
+                mc.port1.close();
+                mc.port2.close();
+
+                gotMessage = true;
+                tryTriggerAsyncCallback();
+            };
+            mc.port2.postMessage("speedometer");
+        });
+    }
+}
+
 export const TEST_INVOKER_LOOKUP = {
     __proto__: null,
     timer: TimerTestInvoker,
     raf: RAFTestInvoker,
+};
+
+export const ASYNC_TEST_INVOKER_LOOKUP = {
+    __proto__: null,
+    timer: AsyncTimerTestInvoker,
+    raf: AsyncRAFTestInvoker,
 };
