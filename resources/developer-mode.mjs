@@ -42,88 +42,61 @@ function span(text) {
 }
 
 function createUIForMeasurementMethod() {
-    let check = document.createElement("input");
-    check.type = "checkbox";
-    check.id = "measurement-method";
-    check.checked = params.measurementMethod === "raf";
-
-    check.onchange = () => {
-        params.measurementMethod = check.checked ? "raf" : "timer";
-        updateURL();
-    };
-
-    let label = document.createElement("label");
-    label.append(check, " ", span("rAF timing"));
-
-    return label;
+    return createCheckboxUI("rAF timing", params.measurementMethod === "raf", (isChecked) => {
+        params.measurementMethod = isChecked ? "raf" : "timer";
+    });
 }
 
 function createUIForWarmupSuite() {
-    let check = document.createElement("input");
-    check.type = "checkbox";
-    check.id = "warmup-suite";
-    check.checked = !!params.useWarmupSuite;
+    return createCheckboxUI("Use Warmup Suite", params.useWarmupSuite, (isChecked) => {
+        params.useWarmupSuite = isChecked;
+    });
+}
 
-    check.onchange = () => {
-        params.useWarmupSuite = check.checked;
+function createCheckboxUI(labelValue, initialValue, paramsUpdateCallback) {
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = !!initialValue;
+    checkbox.onchange = () => {
+        paramsUpdateCallback(checkbox.checked);
         updateURL();
     };
 
-    let label = document.createElement("label");
-    label.append(check, " ", span("Use Warmup Suite"));
+    const label = document.createElement("label");
+    label.append(checkbox, " ", span(labelValue));
 
     return label;
 }
 
 function createUIForIterationCount() {
-    const { range, label } = createTimeRangeUI("Iterations: ", params.iterationCount, "#", 1, 200);
-    range.onchange = () => {
-        params.iterationCount = parseInt(range.value);
-        updateURL();
-    };
-    return label;
+    return createTimeRangeUI("Iterations: ", "iterationCount", "#", 1, 200);
 }
 
 function createUIForWarmupBeforeSync() {
-    const { range, label } = createTimeRangeUI("Warmup time: ", params.warmupBeforeSync);
-    range.onchange = () => {
-        params.warmupBeforeSync = parseInt(range.value);
-        updateURL();
-    };
-    return label;
+    return createTimeRangeUI("Warmup time: ", "warmupBeforeSync");
 }
 
 function createUIForSyncStepDelay() {
-    const { range, label } = createTimeRangeUI("Sync step delay: ", params.waitBeforeSync);
-    range.onchange = () => {
-        params.waitBeforeSync = parseInt(range.value);
-        updateURL();
-    };
-    return label;
+    return createTimeRangeUI("Sync step delay: ", "waitBeforeSync");
 }
 
 function createUIForComplexity() {
-    const { range, label } = createTimeRangeUI("Relative complexity", params.complexity, "x", 0, 10, 0.01);
-    range.onchange = () => {
-        params.complexity = Number(range.value);
-        updateURL();
-    };
-    return label;
+    return createTimeRangeUI("Relative complexity: ", "complexity", "x", 0, 10, 0.01);
 }
 
-function createTimeRangeUI(labelText, initialValue, unit = "ms", min = 0, max = 1000, step = 1) {
+function createTimeRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000, step = 1) {
     const range = document.createElement("input");
     range.type = "range";
     range.min = min;
     range.max = max;
     range.step = step;
-    range.value = initialValue;
+    range.value = params[paramKey];
 
     const rangeValueAndUnit = document.createElement("span");
     rangeValueAndUnit.className = "range-label-data";
 
     const rangeValue = document.createElement("span");
-    rangeValue.textContent = initialValue;
+    rangeValue.textContent = params[paramKey];
     rangeValueAndUnit.append(rangeValue, " ", unit);
 
     const label = document.createElement("label");
@@ -132,8 +105,12 @@ function createTimeRangeUI(labelText, initialValue, unit = "ms", min = 0, max = 
     range.oninput = () => {
         rangeValue.textContent = range.value;
     };
+    range.onchange = () => {
+        params[paramKey] = parseInt(range.value);
+        updateURL();
+    };
 
-    return { range, label };
+    return label;
 }
 
 function createUIForSuites() {
