@@ -68,6 +68,7 @@ class RAFTestInvoker extends BaseRAFTestInvoker {
 }
 
 class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
+    static mc = new MessageChannel();
     _scheduleCallbacks(resolve) {
         let gotTimer = false;
         let gotMessage = false;
@@ -96,15 +97,16 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
                 tryTriggerAsyncCallback();
             });
 
-            const mc = new MessageChannel();
-            mc.port1.onmessage = () => {
-                mc.port1.close();
-                mc.port2.close();
-
-                gotMessage = true;
-                tryTriggerAsyncCallback();
-            };
-            mc.port2.postMessage("speedometer");
+            AsyncRAFTestInvoker.mc.port1.addEventListener(
+                "message",
+                function () {
+                    gotMessage = true;
+                    tryTriggerAsyncCallback();
+                },
+                { once: true }
+            );
+            AsyncRAFTestInvoker.mc.port1.start();
+            AsyncRAFTestInvoker.mc.port2.postMessage("speedometer");
         });
     }
 }
