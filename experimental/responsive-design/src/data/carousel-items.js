@@ -47,4 +47,20 @@ export const carouselItems = [
         image: "./public/images/chocolate-chip-cookies.webp",
         alt: "Chocolate Chip Cookies",
     },
+    {
+        image: "./public/images/vegan-burger.webp",
+        alt: "Vegan Burger",
+    },
+    {
+        image: "./public/images/sushi-platter.webp",
+        alt: "Sushi Platter",
+    },
+    {
+        image: "./public/images/ramen-noodles.webp",
+        alt: "Ramen Noodles",
+    },
+    {
+        image: "./public/images/fruit-salad.webp",
+        alt: "Fruit Salad",
+    },
 ];

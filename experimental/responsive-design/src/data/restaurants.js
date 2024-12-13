@@ -11,4 +11,8 @@ export const restaurants = [
     { title: "Feast Fiesta", distance: "2.2", rating: "4.6" },
     { title: "Gastronomy Galore", distance: "1.7", rating: "4.7" },
     { title: "Cuisine Corner", distance: "2.4", rating: "4.8" },
+    { title: "Bistro Bonanza", distance: "1.9", rating: "4.5" },
+    { title: "Palate Pleasures", distance: "2.6", rating: "4.6" },
+    { title: "Gourmet Garden", distance: "1.3", rating: "4.7" },
+    { title: "Savor Station", distance: "2.7", rating: "4.8" },
 ];

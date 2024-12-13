@@ -28,16 +28,8 @@ class RecipeGrid extends LightDOMLitElement {
         return this.recipes.map(
             (recipe, index) => html`
                 <recipe-card
-                    class="${this._expandedCardIndices.includes(index) ? "col-span-3 lg:col-span-3" : ""} relative row-span-6 mt-1 grid grid-rows-subgrid gap-0 rounded-lg bg-white text-left shadow-md hover:scale-105 hover:shadow-lg"
-                    .text="${recipe.text}"
-                    .description="${recipe.description}"
-                    .time="${recipe.time}"
-                    .calories="${recipe.calories}"
-                    .servingSize="${recipe.servingSize}"
-                    .image="${recipe.image}"
-                    .tags="${recipe.tags}"
-                    .ingredients="${recipe.ingredients}"
-                    .steps="${recipe.steps}"
+                    class="${this._expandedCardIndices.includes(index) ? "col-span-2 lg:col-span-2" : ""} relative row-span-6 mt-1 grid grid-rows-subgrid gap-0 rounded-lg bg-white text-left shadow-md hover:shadow-lg"
+                    .recipe="${recipe}"
                     data-index="${index}"
                 ></recipe-card>
             `
@@ -45,7 +37,7 @@ class RecipeGrid extends LightDOMLitElement {
     }
 
     render() {
-        return html` <div class="grid grid-cols-2 gap-4 py-2 pl-2 pr-4 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4" @toggle-expand="${this._handleToggleExpand}">${this._getRecipeCardsTemplate()}</div> `;
+        return html` <div class="grid grid-cols-2 gap-5 py-2 pl-2 pr-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xl:gap-6" @toggle-expand="${this._handleToggleExpand}">${this._getRecipeCardsTemplate()}</div> `;
     }
 }
 

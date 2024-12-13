@@ -1115,6 +1115,15 @@ Suites.push({
             resumePreviousChatBtn.click();
             page.layout();
 
+            // Navigate through the restaurants
+            const nextRestaurantBtn = iframeElement.querySelectorInShadowRoot("#next-restaurant-btn", ["cooking-app", "information-window"]);
+            const restaurantCards = iframeElement.querySelectorAllInShadowRoot("restaurant-card", ["cooking-app", "information-window"]);
+            const numOfRestaurantCards = restaurantCards.length - 1; // since 1 is already visible
+            for (let i = 0; i < numOfRestaurantCards; i++) {
+                nextRestaurantBtn.click();
+                page.layout();
+            }
+
             // Expand recipes
             const showMoreBtn = iframeElement.querySelectorAllInShadowRoot(".show-more-btn", ["cooking-app", "main-content", "recipe-grid"]);
             for (const btn of showMoreBtn) {
@@ -1133,6 +1142,15 @@ Suites.push({
         }),
         new BenchmarkTestStep("ScrollToChatAndSendMessages", (page) => {
             const iframeElement = page.querySelector("#content-iframe", [], true);
+
+            // Navigate through the carousel items
+            const nextItemBtn = iframeElement.querySelectorInShadowRoot("#next-item-carousel-btn", ["cooking-app", "main-content", "recipe-carousel"]);
+            const recipeCarouselItems = iframeElement.querySelectorAllInShadowRoot(".carousel-item", ["cooking-app", "main-content", "recipe-carousel"]);
+            const numOfCarouselItems = recipeCarouselItems.length - 3; // since 3 are already visible
+            for (let i = 0; i < numOfCarouselItems; i++) {
+                nextItemBtn.click();
+                page.layout();
+            }
 
             // Collapse recipes
             const showMoreBtn = iframeElement.querySelectorAllInShadowRoot(".show-more-btn", ["cooking-app", "main-content", "recipe-grid"]);

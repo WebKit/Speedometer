@@ -41,7 +41,7 @@ export class CookingApp extends LitElement {
                 <video-grid class="sm:col-span-2"></video-grid>
                 <article-grid class="sm:col-span-2"></article-grid>
                 <chef-tips class="sm:col-span-2"></chef-tips>
-                <newsletter-signup class="p-4 sm:col-span-2"></newsletter-signup>
+                <newsletter-signup class="flex justify-center p-4 sm:col-span-2"></newsletter-signup>
             </div>
         `;
     }

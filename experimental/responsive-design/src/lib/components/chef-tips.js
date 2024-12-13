@@ -28,7 +28,7 @@ class ChefTips extends LightDOMLitElement {
         return html`
             <div class="p-4">
                 <section-heading title="Chef's Tips"></section-heading>
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">${this._getChefTipsTemplate()}</div>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:gap-6">${this._getChefTipsTemplate()}</div>
             </div>
         `;
     }

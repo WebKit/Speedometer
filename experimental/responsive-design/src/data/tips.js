@@ -9,4 +9,9 @@ export const chefTips = [
     { quote: "Let your meat rest before slicing to retain its juices.", author: "Chef Avery Martinez" },
     { quote: "Use the right pan for the job to achieve the best results.", author: "Chef Cameron White" },
     { quote: "Don't overcrowd the pan to ensure even cooking.", author: "Chef Jordan Taylor" },
+    { quote: "Prep all your ingredients before you start cooking to stay organized.", author: "Chef Sydney Clark" },
+    { quote: "Use fresh herbs to add a burst of flavor to your dishes.", author: "Chef Peyton Brooks" },
+    { quote: "Invest in good quality cookware for better performance.", author: "Chef Quinn Parker" },
+    { quote: "Season your food at every stage of cooking for depth of flavor.", author: "Chef Reese Morgan" },
+    { quote: "Learn to balance flavors like sweet, salty, sour, and bitter.", author: "Chef Taylor Bailey" },
 ];

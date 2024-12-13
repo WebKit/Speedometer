@@ -13,28 +13,29 @@ export class AppRibbon extends LightDOMLitElement {
         super();
         this.buttons = ribbonButtons;
         this.visibleButtons = this.buttons;
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-        this.resizeObserver = new ResizeObserver((entries) => {
+        this._resizeObserver = new ResizeObserver((entries) => {
             for (const entry of entries) {
-                const width = entry.contentRect.width;
-                this._updateVisibleButtons(width);
+                if (entry.contentBoxSize && entry.contentBoxSize[0])
+                    this._updateVisibleButtons(entry.contentBoxSize[0].inlineSize);
+                else
+                    this._updateVisibleButtons(entry.contentRect.width);
             }
         });
-        this.resizeObserver.observe(this);
+    }
+
+    firstUpdated() {
+        this._resizeObserver.observe(this);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        if (this.resizeObserver)
-            this.resizeObserver.disconnect();
+        if (this._resizeObserver)
+            this._resizeObserver.disconnect();
     }
 
     _updateVisibleButtons(width) {
         const breakpoints = [
-            { minWidth: 1120, buttons: 12 },
+            { minWidth: 1134, buttons: 12 },
             { minWidth: 1069, buttons: 11 },
             { minWidth: 985, buttons: 10 },
             { minWidth: 905, buttons: 9 },
@@ -42,11 +43,12 @@ export class AppRibbon extends LightDOMLitElement {
             { minWidth: 735, buttons: 7 },
             { minWidth: 660, buttons: 6 },
             { minWidth: 540, buttons: 5 },
-            { minWidth: 497, buttons: 4 },
+            { minWidth: 440, buttons: 4 },
+            { minWidth: 318, buttons: 3 },
         ];
 
         const breakpoint = breakpoints.find((bp) => width >= bp.minWidth);
-        this.visibleButtons = breakpoint ? this.buttons.slice(0, breakpoint.buttons) : this.buttons.slice(0, 3);
+        this.visibleButtons = breakpoint ? this.buttons.slice(0, breakpoint.buttons) : this.buttons.slice(0, 2);
         this.requestUpdate();
     }
 

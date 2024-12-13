@@ -35,4 +35,24 @@ export const videos = [
         text: "Caesar Salad Preparation",
         description: "How to prepare a fresh and crunchy Caesar salad.",
     },
+    {
+        text: "Perfecting French Toast",
+        description: "Tips and tricks for making the perfect French toast.",
+    },
+    {
+        text: "How to Make Sushi",
+        description: "A beginner's guide to making sushi at home.",
+    },
+    {
+        text: "Classic Beef Stew Recipe",
+        description: "How to make a hearty and delicious beef stew.",
+    },
+    {
+        text: "Vegan Chocolate Mousse",
+        description: "A simple recipe for a rich and creamy vegan chocolate mousse.",
+    },
+    {
+        text: "Homemade Ice Cream",
+        description: "Learn how to make creamy homemade ice cream with various flavors.",
+    },
 ];

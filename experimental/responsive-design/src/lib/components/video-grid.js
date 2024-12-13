@@ -24,7 +24,7 @@ class VideoGrid extends LightDOMLitElement {
         return html`
             <div class="flex flex-col p-2">
                 <section-heading title="Videos" subtitle="Watch and learn from our collection of cooking videos."></section-heading>
-                <div class="content-auto grid grid-cols-1 gap-6 p-4 lg:grid-cols-2">${this._getVideoCardsTemplate()}</div>
+                <div class="content-auto grid grid-cols-1 gap-6 p-4 lg:grid-cols-2 xl:gap-7">${this._getVideoCardsTemplate()}</div>
             </div>
         `;
     }
