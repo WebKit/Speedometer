@@ -24,7 +24,7 @@ export class TestRunner {
         const testName = this.#test.name;
         const syncStartLabel = `${suiteName}.${testName}-start`;
         const syncEndLabel = `${suiteName}.${testName}-sync-end`;
-        const asyncStartLabel = `${suiteName}.${testName}-async-start`;
+        const asyncStartLabel = syncEndLabel;
         const asyncEndLabel = `${suiteName}.${testName}-async-end`;
 
         let syncTime;
@@ -47,9 +47,7 @@ export class TestRunner {
             performance.mark(syncEndLabel);
 
             syncTime = syncEndTime - syncStartTime;
-
-            performance.mark(asyncStartLabel);
-            asyncStartTime = performance.now();
+            asyncStartTime = syncEndTime;
         };
         const measureAsync = () => {
             const bodyReference = this.#frame ? this.#frame.contentDocument.body : document.body;
