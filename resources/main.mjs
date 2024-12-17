@@ -2,7 +2,7 @@ import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
-import { params } from "./params.mjs";
+import { params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
 // FIXME(camillobruni): Add base class
@@ -93,10 +93,8 @@ class MainBenchmarkClient {
         this._isRunning = true;
 
         const enabledSuites = Suites.filter((suite) => !suite.disabled);
-        const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => {
-            return testsCount + suite.tests.length;
-        }, 0);
-        this.stepCount = params.iterationCount * totalSubtestsCount;
+        const totalSuitesCount = enabledSuites.length;
+        this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
         const runner = new BenchmarkRunner(Suites, this);
@@ -121,7 +119,7 @@ class MainBenchmarkClient {
             await this._awaitNextStep(suite, test);
     }
 
-    didRunTest() {
+    didFinishSuite() {
         this._finishedTestCount++;
         this._progressCompleted.value = this._finishedTestCount;
     }

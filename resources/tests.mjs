@@ -867,7 +867,7 @@ Suites.push({
 
 Suites.push({
     name: "NewsSite-Next",
-    url: "resources/newssite/news-next/dist/index.html#/home",
+    url: "resources/newssite/news-next/dist/index.html",
     tags: ["newssite", "language"],
     type: "async",
     async prepare(page) {
@@ -905,6 +905,18 @@ Suites.push({
             page.layout();
         }),
     ],
+});
+
+Suites.push({
+    name: "NewsSite-PostMessage",
+    url: "resources/newssite/news-next/dist/index.html",
+    tags: ["experimental", "newssite", "language"],
+    disabled: true,
+    async prepare() {},
+    type: "remote",
+    /* config: {
+        name: "default", // optional param to target non-default tests locally
+    }, */
 });
 
 Suites.push({

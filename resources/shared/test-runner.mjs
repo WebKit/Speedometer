@@ -163,12 +163,9 @@ export class AsyncTestRunner extends TestRunner {
     }
 }
 
-// FIXME: implement remote steps
-class RemoteTestRunner extends TestRunner {}
-
 export const TEST_RUNNER_LOOKUP = {
     __proto__: null,
     default: TestRunner,
     async: AsyncTestRunner,
-    remote: RemoteTestRunner,
+    remote: TestRunner,
 };

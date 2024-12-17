@@ -1,4 +1,4 @@
-class Params {
+export class Params {
     viewport = {
         width: 800,
         height: 600,
@@ -108,7 +108,7 @@ class Params {
         return defaultParams.suites;
     }
 
-    _parseTags() {
+    _parseTags(searchParams) {
         if (!searchParams.has("tags"))
             return defaultParams.tags;
         if (this.suites.length)
@@ -146,21 +146,34 @@ class Params {
         return shuffleSeed;
     }
 
+    toSearchParamsObject() {
+        const rawParams = { __proto__: null };
+        for (const [key, value] of Object.entries(this)) {
+            if (value === defaultParams[key])
+                continue;
+            rawParams[key] = value;
+        }
+
+        // Either suites or params can be used at the same time.
+        if (rawParams.suites?.length && rawParams.tags?.length)
+            delete rawParams.suites;
+        rawParams.viewport = `${this.viewport.width}x${this.viewport.height}`;
+
+        return new URLSearchParams(rawParams);
+    }
+
     toSearchParams() {
-        const rawParams = { ...this };
-        rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`;
-        return new URLSearchParams(rawParams).toString();
+        return this.toSearchParamsObject().toString();
     }
 }
 
 export const defaultParams = new Params();
 
-const searchParams = new URLSearchParams(window.location.search);
+const searchParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : undefined);
 let maybeCustomParams = new Params();
 try {
     maybeCustomParams = new Params(searchParams);
 } catch (e) {
     console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
-    alert(`Invalid URL Param: ${e}`);
 }
 export const params = maybeCustomParams;
