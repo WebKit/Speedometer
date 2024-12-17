@@ -1,4 +1,5 @@
-import { BenchmarkStep, BenchmarkSuite, forceLayout, getElement } from "speedometer-utils/workload-testing-utils.mjs";
+import { BenchmarkStep, BenchmarkSuite } from "speedometer-utils/benchmark.mjs";
+import { forceLayout, getElement } from "speedometer-utils/helpers.mjs";
 
 const suites = {
     default: new BenchmarkSuite("default", [
