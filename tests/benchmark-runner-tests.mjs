@@ -179,6 +179,7 @@ describe("BenchmarkRunner", () => {
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-start");
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-end");
                 expect(performanceMarkSpy.callCount).to.equal(4);
+                assert.calledOnce(runner._client.didFinishSuite);
             });
         });
     });
@@ -200,7 +201,6 @@ describe("BenchmarkRunner", () => {
 
             it("should run client pre and post hooks if present", () => {
                 assert.calledWith(runner._client.willRunTest, suite, suite.tests[0]);
-                assert.calledWith(runner._client.didFinishSuite, suite, suite.tests[0]);
             });
 
             it("should write performance marks at the start and end of the test with the correct test name", () => {
