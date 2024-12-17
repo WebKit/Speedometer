@@ -25,7 +25,7 @@ const SUITES_FIXTURE = [
 
 const CLIENT_FIXTURE = {
     willRunTest: sinon.stub(),
-    didRunTest: sinon.stub(),
+    didFinishSuite: sinon.stub(),
     didRunSuites: sinon.stub(),
 };
 
@@ -200,7 +200,7 @@ describe("BenchmarkRunner", () => {
 
             it("should run client pre and post hooks if present", () => {
                 assert.calledWith(runner._client.willRunTest, suite, suite.tests[0]);
-                assert.calledWith(runner._client.didRunTest, suite, suite.tests[0]);
+                assert.calledWith(runner._client.didFinishSuite, suite, suite.tests[0]);
             });
 
             it("should write performance marks at the start and end of the test with the correct test name", () => {

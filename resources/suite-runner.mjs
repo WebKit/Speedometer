@@ -82,8 +82,7 @@ export class SuiteRunner {
 
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
         this._validateSuiteTotal();
-        if (this.#client?.didFinishSuite)
-            await this.#client.didFinishSuite(this.#suite);
+        await this._updateClient();
     }
 
     _validateSuiteTotal() {
@@ -112,13 +111,11 @@ export class SuiteRunner {
         const total = syncTime + asyncTime;
         this.#suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
         this.#suiteResults.total += total;
-
-        await this._updateClient(test);
     };
 
-    async _updateClient(test, suite = this.#suite) {
-        if (this.#client?.didRunTest)
-            await this.#client.didRunTest(suite, test);
+    async _updateClient(suite = this.#suite) {
+        if (this.#client?.didFinishSuite)
+            await this.#client.didFinishSuite(suite);
     }
 }
 
@@ -168,13 +165,10 @@ export class RemoteSuiteRunner extends SuiteRunner {
     }
 
     async _runSuite() {
-        // Update progress bar with each completed step.
-        this._startSubscription("step-complete", async (e) => this._updateClient(e.data.test, e.data.name));
         // Ask workload to run its own tests.
         this.frame.contentWindow.postMessage({ id: this.appId, key: "benchmark-connector", type: "benchmark-suite", name: this.suite.config?.name || "default" }, "*");
         // Capture metrics from the completed tests.
         const response = await this._subscribeOnce("suite-complete");
-        this._stopSubscription("step-complete");
 
         this.suiteResults.tests = {
             ...this.suiteResults.tests,
@@ -184,6 +178,7 @@ export class RemoteSuiteRunner extends SuiteRunner {
         this.suiteResults.total += response.result.total;
 
         this._validateSuiteTotal();
+        await this._updateClient();
     }
 
     _handlePostMessage(event) {
