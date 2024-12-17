@@ -94,7 +94,7 @@ class MainBenchmarkClient {
 
         const enabledSuites = Suites.filter((suite) => !suite.disabled);
         const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => {
-            return testsCount + (suite.tests?.length ?? suite.config?.steps);
+            return testsCount + suite.tests.length;
         }, 0);
         this.stepCount = params.iterationCount * totalSubtestsCount;
         this._progressCompleted.max = this.stepCount;
