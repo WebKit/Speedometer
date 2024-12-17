@@ -4,13 +4,13 @@ import Page from "@/partials/page/page";
 import Head from "next/head";
 import { DataContextProvider } from "@/context/data-context";
 import { BenchmarkConnector } from "speedometer-utils/workload-testing-utils.mjs";
-import { getBenchmarkSuitesManager } from "@/workload-test.mjs";
+import suites from "@/workload-test.mjs";
 
 export default function App() {
     // Using 'useLayoutEffect' here, since this will connect the workload after all DOM mutations happened.
     // This ensures that all elemetns are in the DOM, prior to signaling to the Benchmark that the workload is ready to run a test suite.
     useEffect(() => {
-        const benchmarkConnector = new BenchmarkConnector(getBenchmarkSuitesManager(), "news-next", 1);
+        const benchmarkConnector = new BenchmarkConnector(suites, "news-next", 1);
         benchmarkConnector.connect();
 
         return () => benchmarkConnector.disconnect();

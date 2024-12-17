@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { TestRunner } from "./test-runner.mjs";
 import { Params } from "./params.mjs";
 
@@ -69,22 +70,6 @@ export class BenchmarkSuite {
     }
 }
 
-/**
- * BenchmarkSuitesManager
- *
- * A collection of test suites for a single workload.
- */
-export class BenchmarkSuitesManager {
-    constructor(name, suites) {
-        this.name = name;
-        this.suites = suites;
-    }
-
-    getSuiteByName(name) {
-        return this.suites.find((suite) => suite.name === name);
-    }
-}
-
 /** **********************************************************************
  * BenchmarkConnector
  *
@@ -96,8 +81,8 @@ export class BenchmarkSuitesManager {
  * It's used as an additional safe-guard to ensure the correct app responds to a message.
  *************************************************************************/
 export class BenchmarkConnector {
-    constructor(benchmarkSuitesManager, name, version) {
-        this.benchmarkSuitesManager = benchmarkSuitesManager;
+    constructor(suites, name, version) {
+        this.suites = suites;
         this.name = name;
         this.version = version;
 
@@ -114,10 +99,11 @@ export class BenchmarkConnector {
 
         switch (event.data.type) {
             case "benchmark-suite":
-                // eslint-disable-next-line no-case-declarations
                 const params = new Params(new URLSearchParams(window.location.search));
-                // eslint-disable-next-line no-case-declarations
-                const { result } = await this.benchmarkSuitesManager.getSuiteByName(event.data.name).runAndRecord(params, (test) => this.sendMessage({ type: "step-complete", status: "success", appId: this.appId, name: this.name, test }));
+                const suite = this.suites[event.data.name];
+                if (!suite)
+                    console.error(`Suite with the name of "${event.data.name}" not found!`);
+                const { result } = await suite.runAndRecord(params, (test) => this.sendMessage({ type: "step-complete", status: "success", appId: this.appId, name: this.name, test }));
                 this.sendMessage({ type: "suite-complete", status: "success", appId: this.appId, result });
                 this.disconnect();
                 break;
