@@ -1,7 +1,6 @@
-import { TEST_RUNNER_LOOKUP } from "./test-runner.mjs";
+import { TEST_RUNNER_LOOKUP } from "./shared/test-runner.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
 
-// FIXME: Create RemoteSuiteRunner subclass.
 export class SuiteRunner {
     #frame;
     #page;
