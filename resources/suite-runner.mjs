@@ -1,7 +1,6 @@
-import { TestRunner } from "./test-runner.mjs";
+import { TEST_RUNNER_LOOKUP } from "./test-runner.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
 
-// FIXME: Create AsyncSuiteRunner subclass.
 // FIXME: Create RemoteSuiteRunner subclass.
 export class SuiteRunner {
     #frame;
@@ -53,7 +52,8 @@ export class SuiteRunner {
             if (this.#client?.willRunTest)
                 await this.#client.willRunTest(this.#suite, test);
 
-            const testRunner = new TestRunner(this.#frame, this.#page, this.#params, this.#suite, test, this._recordTestResults);
+            const testRunnerClass = TEST_RUNNER_LOOKUP[this.#suite.type ?? "default"];
+            const testRunner = new testRunnerClass(this.#frame, this.#page, this.#params, this.#suite, test, this._recordTestResults);
             await testRunner.runTest();
         }
         performance.mark(suiteEndLabel);
@@ -102,5 +102,6 @@ class RemoteSuiteRunner extends SuiteRunner {}
 export const SUITE_RUNNER_LOOKUP = {
     __proto__: null,
     default: SuiteRunner,
+    async: SuiteRunner,
     remote: RemoteSuiteRunner,
 };
