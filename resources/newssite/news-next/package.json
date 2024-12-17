@@ -20,6 +20,7 @@
         "react-dom": "18.2.0",
         "react-router-dom": "^6.11.1",
         "react-router-hash-link": "^2.4.3",
+        "speedometer-utils": "../../shared",
         "uuid": "^9.0.0"
     }
 }

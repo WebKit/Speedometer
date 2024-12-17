@@ -1,7 +1,7 @@
 import { BenchmarkRunner } from "../resources/benchmark-runner.mjs";
 import { SuiteRunner } from "../resources/suite-runner.mjs";
-import { TestRunner } from "../resources/test-runner.mjs";
-import { defaultParams } from "../resources/params.mjs";
+import { TestRunner } from "../resources/shared/test-runner.mjs";
+import { defaultParams } from "../resources/shared/params.mjs";
 
 function TEST_FIXTURE(name) {
     return {
@@ -25,7 +25,7 @@ const SUITES_FIXTURE = [
 
 const CLIENT_FIXTURE = {
     willRunTest: sinon.stub(),
-    didRunTest: sinon.stub(),
+    didFinishSuite: sinon.stub(),
     didRunSuites: sinon.stub(),
 };
 
@@ -179,6 +179,7 @@ describe("BenchmarkRunner", () => {
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-start");
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-end");
                 expect(performanceMarkSpy.callCount).to.equal(4);
+                assert.calledOnce(runner._client.didFinishSuite);
             });
         });
     });
@@ -200,7 +201,6 @@ describe("BenchmarkRunner", () => {
 
             it("should run client pre and post hooks if present", () => {
                 assert.calledWith(runner._client.willRunTest, suite, suite.tests[0]);
-                assert.calledWith(runner._client.didRunTest, suite, suite.tests[0]);
             });
 
             it("should write performance marks at the start and end of the test with the correct test name", () => {

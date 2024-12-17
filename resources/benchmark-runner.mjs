@@ -1,5 +1,5 @@
 import { Metric } from "./metric.mjs";
-import { params } from "./params.mjs";
+import { params } from "./shared/params.mjs";
 import { SUITE_RUNNER_LOOKUP } from "./suite-runner.mjs";
 
 const performance = globalThis.performance;
