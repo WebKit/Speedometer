@@ -3,15 +3,17 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Page from "@/partials/page/page";
 import Head from "next/head";
 import { DataContextProvider } from "@/context/data-context";
-import { connectToBenchmark } from "speedometer-utils/workload-testing-utils.mjs";
+import { BenchmarkConnector } from "speedometer-utils/workload-testing-utils.mjs";
 import { getBenchmarkSuitesManager } from "@/workload-test.mjs";
 
 export default function App() {
     // Using 'useLayoutEffect' here, since this will connect the workload after all DOM mutations happened.
     // This ensures that all elemetns are in the DOM, prior to signaling to the Benchmark that the workload is ready to run a test suite.
     useEffect(() => {
-        const disconnect = connectToBenchmark(getBenchmarkSuitesManager(), "news-next", 1);
-        return disconnect;
+        const benchmarkConnector = new BenchmarkConnector(getBenchmarkSuitesManager(), "news-next", 1);
+        benchmarkConnector.connect();
+
+        return () => benchmarkConnector.disconnect();
     }, []);
 
     return (

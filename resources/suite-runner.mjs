@@ -185,9 +185,10 @@ export class RemoteSuiteRunner extends SuiteRunner {
         this._validateSuiteTotal();
     }
 
-    _handlePostMessage(e) {
-        if (this.postMessageCallbacks.has(e.data.type))
-            this.postMessageCallbacks.get(e.data.type)(e);
+    _handlePostMessage(event) {
+        const callback = this.postMessageCallbacks.get(event.data.type);
+        if (callback)
+            callback(event);
     }
 
     _startSubscription(type, callback) {

@@ -1,9 +1,9 @@
-import { BenchmarkTestStep, BenchmarkTestSuite, BenchmarkSuitesManager, forceLayout, getElement } from "speedometer-utils/workload-testing-utils.mjs";
+import { BenchmarkStep, BenchmarkSuite, BenchmarkSuitesManager, forceLayout, getElement } from "speedometer-utils/workload-testing-utils.mjs";
 
 export function getBenchmarkSuitesManager() {
     return new BenchmarkSuitesManager(window.name, [
-        new BenchmarkTestSuite("default", [
-            new BenchmarkTestStep("Navigate-to-US-page", () => {
+        new BenchmarkSuite("default", [
+            new BenchmarkStep("Navigate-to-US-page", () => {
                 for (let i = 0; i < 25; i++) {
                     getElement("#navbar-dropdown-toggle").click();
                     forceLayout();
@@ -14,7 +14,7 @@ export function getBenchmarkSuitesManager() {
                 getElement("#navbar-navlist-us-link").click();
                 forceLayout();
             }),
-            new BenchmarkTestStep("Navigate-to-World-page", () => {
+            new BenchmarkStep("Navigate-to-World-page", () => {
                 for (let i = 0; i < 25; i++) {
                     getElement("#navbar-dropdown-toggle").click();
                     forceLayout();
@@ -25,7 +25,7 @@ export function getBenchmarkSuitesManager() {
                 getElement("#navbar-navlist-world-link").click();
                 forceLayout();
             }),
-            new BenchmarkTestStep("Navigate-to-Politics-page", () => {
+            new BenchmarkStep("Navigate-to-Politics-page", () => {
                 for (let i = 0; i < 25; i++) {
                     getElement("#navbar-dropdown-toggle").click();
                     forceLayout();
