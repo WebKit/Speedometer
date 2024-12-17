@@ -82,6 +82,8 @@ export class SuiteRunner {
 
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
         this._validateSuiteTotal();
+        if (this.#client?.didFinishSuite)
+            await this.#client.didFinishSuite(this.#suite);
     }
 
     _validateSuiteTotal() {
