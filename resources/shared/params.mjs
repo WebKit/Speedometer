@@ -108,7 +108,7 @@ export class Params {
         return defaultParams.suites;
     }
 
-    _parseTags() {
+    _parseTags(searchParams) {
         if (!searchParams.has("tags"))
             return defaultParams.tags;
         if (this.suites.length)
@@ -146,18 +146,24 @@ export class Params {
         return shuffleSeed;
     }
 
-    toSearchParams(forRemote = false) {
-        const rawParams = { ...this };
-        rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`;
-
-        // Only returning params that are useful for the workload.
-        // Both, 'suites' and 'tags', are specific to the debug menu.
-        if (forRemote) {
-            delete rawParams["suites"];
-            delete rawParams["tags"];
+    toSearchParamsObject() {
+        const rawParams = { __proto__: null };
+        for (const [key, value] of Object.entries(this)) {
+            if (value === defaultParams[key])
+                continue;
+            rawParams[key] = value;
         }
 
-        return new URLSearchParams(rawParams).toString();
+        // Either suites or params can be used at the same time.
+        if (rawParams.suites?.length && rawParams.tags?.length)
+            delete rawParams.suites;
+        rawParams.viewport = `${this.viewport.width}x${this.viewport.height}`;
+
+        return new URLSearchParams(rawParams);
+    }
+
+    toSearchParams() {
+        return this.toSearchParamsObject().toString();
     }
 }
 
