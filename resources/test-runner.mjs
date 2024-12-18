@@ -43,8 +43,7 @@ export class TestRunner {
             performance.mark(syncStartLabel);
             const syncStartTime = performance.now();
             this.#test.run(this.#page);
-            const syncEndTime = performance.now();
-            performance.mark(syncEndLabel);
+            const syncEndTime = performance.mark(syncEndLabel).startTime;
 
             syncTime = syncEndTime - syncStartTime;
             asyncStartTime = syncEndTime;
