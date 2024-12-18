@@ -25,35 +25,19 @@ export class TestRunner {
         return this.#test;
     }
 
-    get syncStartLabel() {
-        return `${this.#suite.name}.${this.#test.name}-start`;
-    }
-
-    get syncEndLabel() {
-        return `${this.#suite.name}.${this.#test.name}-sync-end`;
-    }
-
-    get asyncStartLabel() {
-        return `${this.#suite.name}.${this.#test.name}-async-start`;
-    }
-
-    get asyncEndLabel() {
-        return `${this.#suite.name}.${this.#test.name}-async-end`;
-    }
-
-    get syncLabel() {
-        return `${this.#suite.name}.${this.#test.name}-sync`;
-    }
-
-    get asyncLabel() {
-        return `${this.#suite.name}.${this.#test.name}-async`;
-    }
-
     _runSyncStep(test, page) {
         test.run(page);
     }
 
     async runTest() {
+        // Prepare all mark labels outside the measuring loop.
+        const suiteName = this.#suite.name;
+        const testName = this.#test.name;
+        const syncStartLabel = `${suiteName}.${testName}-start`;
+        const syncEndLabel = `${suiteName}.${testName}-sync-end`;
+        const asyncStartLabel = `${suiteName}.${testName}-async-start`;
+        const asyncEndLabel = `${suiteName}.${testName}-async-end`;
+
         let syncTime;
         let asyncStartTime;
         let asyncTime;
@@ -67,15 +51,15 @@ export class TestRunner {
                     continue;
                 performance.mark("warmup-end");
             }
-            performance.mark(this.syncStartLabel);
+            performance.mark(syncStartLabel);
             const syncStartTime = performance.now();
             await this._runSyncStep(this.test, this.page);
             const syncEndTime = performance.now();
-            performance.mark(this.syncEndLabel);
+            performance.mark(syncEndLabel);
 
             syncTime = syncEndTime - syncStartTime;
 
-            performance.mark(this.asyncStartLabel);
+            performance.mark(asyncStartLabel);
             asyncStartTime = performance.now();
         };
         const measureAsync = () => {
@@ -87,14 +71,14 @@ export class TestRunner {
             windowReference._unusedHeightValue = height; // Prevent dead code elimination.
 
             const asyncEndTime = performance.now();
-            performance.mark(this.asyncEndLabel);
+            performance.mark(asyncEndLabel);
 
             asyncTime = asyncEndTime - asyncStartTime;
 
             if (this.#params.warmupBeforeSync)
                 performance.measure("warmup", "warmup-start", "warmup-end");
-            performance.measure(this.syncLabel, this.syncStartLabel, this.syncEndLabel);
-            performance.measure(this.asyncLabel, this.asyncStartLabel, this.asyncEndLabel);
+            performance.measure(`${suiteName}.${testName}-sync`, syncStartLabel, syncEndLabel);
+            performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
         };
 
         const report = () => this.#callback(this.#test, syncTime, asyncTime);
