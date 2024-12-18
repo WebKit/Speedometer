@@ -26,27 +26,27 @@ export class TestRunner {
     }
 
     get syncStartLabel() {
-        return `${this.#suite}.${this.#test}-start`;
+        return `${this.#suite.name}.${this.#test.name}-start`;
     }
 
     get syncEndLabel() {
-        return `${this.#suite}.${this.#test}-sync-end`;
+        return `${this.#suite.name}.${this.#test.name}-sync-end`;
     }
 
     get asyncStartLabel() {
-        return `${this.#suite}.${this.#test}-async-start`;
+        return `${this.#suite.name}.${this.#test.name}-async-start`;
     }
 
     get asyncEndLabel() {
-        return `${this.#suite}.${this.#test}-async-end`;
+        return `${this.#suite.name}.${this.#test.name}-async-end`;
     }
 
     get syncLabel() {
-        return `${this.#suite}.${this.#test}-sync`;
+        return `${this.#suite.name}.${this.#test.name}-sync`;
     }
 
     get asyncLabel() {
-        return `${this.#suite}.${this.#test}-async`;
+        return `${this.#suite.name}.${this.#test.name}-async`;
     }
 
     _runSyncStep(test, page) {
