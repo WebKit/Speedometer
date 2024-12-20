@@ -15,7 +15,7 @@ export class Params {
     // Change how a test measurement is triggered and async time is measured:
     // "timer": The classic (as in Speedometer 2.x) way using setTimeout
     // "raf":   Using rAF callbacks, both for triggering the sync part and for measuring async time.
-    measurementMethod = "raf"; // or "timer"
+    measurementMethod = "raf";
     // Wait time before the sync step in ms.
     waitBeforeSync = 0;
     // Warmup time before the sync step in ms.
@@ -122,8 +122,8 @@ export class Params {
         if (!searchParams.has("measurementMethod"))
             return defaultParams.measurementMethod;
         const measurementMethod = searchParams.get("measurementMethod");
-        if (measurementMethod !== "timer" && measurementMethod !== "raf")
-            throw new Error(`Invalid measurement method: '${measurementMethod}', must be either 'raf' or 'timer'.`);
+        if (measurementMethod !== "raf")
+            throw new Error(`Invalid measurement method: '${measurementMethod}', must be 'raf'.`);
         searchParams.delete("measurementMethod");
         return measurementMethod;
     }

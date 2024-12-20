@@ -7,40 +7,6 @@ class TestInvoker {
     }
 }
 
-export class TimerTestInvoker extends TestInvoker {
-    start() {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                this._syncCallback();
-                setTimeout(() => {
-                    this._asyncCallback();
-                    requestAnimationFrame(async () => {
-                        const result = await this._reportCallback();
-                        resolve(result);
-                    });
-                }, 0);
-            }, this._params.waitBeforeSync);
-        });
-    }
-}
-
-class AsyncTimerTestInvoker extends TestInvoker {
-    start() {
-        return new Promise((resolve) => {
-            setTimeout(async () => {
-                await this._syncCallback();
-                setTimeout(() => {
-                    this._asyncCallback();
-                    requestAnimationFrame(async () => {
-                        await this._reportCallback();
-                        resolve();
-                    });
-                }, 0);
-            }, this._params.waitBeforeSync);
-        });
-    }
-}
-
 class BaseRAFTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
@@ -113,12 +79,10 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
 
 export const TEST_INVOKER_LOOKUP = {
     __proto__: null,
-    timer: TimerTestInvoker,
     raf: RAFTestInvoker,
 };
 
 export const ASYNC_TEST_INVOKER_LOOKUP = {
     __proto__: null,
-    timer: AsyncTimerTestInvoker,
     raf: AsyncRAFTestInvoker,
 };
