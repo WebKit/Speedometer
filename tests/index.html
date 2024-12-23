@@ -9,10 +9,14 @@
                 margin: 8px;
             }
         </style>
-
         <script src="../node_modules/mocha/mocha.js"></script>
         <script src="../node_modules/expect.js/index.js"></script>
         <script src="../node_modules/sinon/pkg/sinon.js"></script>
+        <script src="../resources/benchmark-runner.mjs" type="module"></script>
+    </head>
+
+    <body>
+        <div id="mocha"></div>
         <script type="module">
             mocha.setup({
                 ui: "bdd",
@@ -22,14 +26,9 @@
                     },
                 },
             });
-        </script>
-    </head>
 
-    <body>
-        <div id="mocha"></div>
-        <script src="../resources/benchmark-runner.mjs" type="module"></script>
-        <script src="benchmark-runner-tests.mjs" type="module"></script>
-        <script type="module">
+            await import("./benchmark-runner-tests.mjs")
+
             globalThis.testResults = undefined;
             globalThis.testRunner = mocha.run();
 
