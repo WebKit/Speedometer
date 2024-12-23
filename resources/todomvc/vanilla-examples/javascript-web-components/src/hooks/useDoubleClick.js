@@ -11,8 +11,7 @@ export function useDoubleClick(fn, delay) {
     return function (...args) {
         const now = new Date().getTime();
         const difference = now - last;
-        if (difference < delay && difference > 0)
-            fn.apply(this, args);
+        if (difference < delay && difference > 0) fn.apply(this, args);
 
         last = now;
     };

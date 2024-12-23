@@ -27,10 +27,8 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo, index }) {
     }
 
     function handleKeyDown(e) {
-        if (e.key === "Escape")
-            setEditing(false);
-        else if (e.key === "Enter")
-            handleSubmit(e);
+        if (e.key === "Escape") setEditing(false);
+        else if (e.key === "Enter") handleSubmit(e);
     }
 
     function handleDoubleClick() {
@@ -53,14 +51,14 @@ export default function TodoItem({ onSave, onRemove, onToggle, todo, index }) {
                 <label onDblClick={handleDoubleClick}>{todo.title}</label>
                 <button class="destroy" onClick={handleRemove} />
             </div>
-            {editing
-                ? <div class="input-container">
+            {editing ? (
+                <div class="input-container">
                     <input class="edit" id="edit-todo-input" ref={inputRef} onBlur={handleSubmit} onKeyDown={handleKeyDown} defaultValue={todo.title} />
                     <label class="visually-hidden" htmlFor="edit-todo-input">
                         Edit Todo Input{" "}
                     </label>
                 </div>
-                : null}
+            ) : null}
         </li>
     );
 }

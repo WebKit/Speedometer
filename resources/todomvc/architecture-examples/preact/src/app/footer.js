@@ -25,11 +25,11 @@ export default function TodoFooter({ todos, route, onClearCompleted }) {
                     </a>
                 </li>
             </ul>
-            {completedTodoCount > 0
-                && <button class="clear-completed" onClick={onClearCompleted}>
+            {completedTodoCount > 0 && (
+                <button class="clear-completed" onClick={onClearCompleted}>
                     Clear completed
                 </button>
-            }
+            )}
         </footer>
     );
 }

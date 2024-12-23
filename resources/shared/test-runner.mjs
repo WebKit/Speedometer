@@ -36,8 +36,7 @@ export class TestRunner {
                 performance.mark("warmup-start");
                 const startTime = performance.now();
                 // Infinite loop for the specified ms.
-                while (performance.now() - startTime < this.#params.warmupBeforeSync)
-                    continue;
+                while (performance.now() - startTime < this.#params.warmupBeforeSync) continue;
                 performance.mark("warmup-end");
             }
             performance.mark(syncStartLabel);
@@ -64,8 +63,7 @@ export class TestRunner {
 
             asyncTime = asyncEndTime - asyncStartTime;
 
-            if (this.#params.warmupBeforeSync)
-                performance.measure("warmup", "warmup-start", "warmup-end");
+            if (this.#params.warmupBeforeSync) performance.measure("warmup", "warmup-start", "warmup-end");
             performance.measure(`${suiteName}.${testName}-sync`, syncStartLabel, syncEndLabel);
             performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
         };

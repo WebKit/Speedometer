@@ -47,16 +47,13 @@ export class TodoItemComponent implements AfterViewChecked {
 
     updateTodo() {
         const title = this.titleFormControl.getRawValue()?.trimEnd();
-        if (!title)
-            this.deleteEvent.emit(this.todo);
-        else
-            this.todo.title = title;
+        if (!title) this.deleteEvent.emit(this.todo);
+        else this.todo.title = title;
 
         this.isEditing = false;
     }
 
     ngAfterViewChecked(): void {
-        if (this.isEditing)
-            this.inputRef?.nativeElement.focus();
+        if (this.isEditing) this.inputRef?.nativeElement.focus();
     }
 }

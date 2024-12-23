@@ -34,10 +34,8 @@ export default function (element, value) {
         format(on) {
             // https://codemirror.net/examples/config/
             // https://discuss.codemirror.net/t/cm6-dynamically-switching-syntax-theme-w-reconfigure/2858/6
-            if (on && extensions.length === 2)
-                extensions.push(lang);
-            else if (!on && extensions.length === 3)
-                extensions.pop();
+            if (on && extensions.length === 2) extensions.push(lang);
+            else if (!on && extensions.length === 3) extensions.pop();
 
             view.dispatch({
                 effects: StateEffect.reconfigure.of(extensions),

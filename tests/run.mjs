@@ -35,12 +35,10 @@ function printHelp(message = "") {
 
 const options = commandLineArgs(optionDefinitions);
 
-if ("help" in options)
-    printHelp();
+if ("help" in options) printHelp();
 
 const BROWSER = options?.browser;
-if (!BROWSER)
-    printHelp("No browser specified, use $BROWSER or --browser");
+if (!BROWSER) printHelp("No browser specified, use $BROWSER or --browser");
 
 let capabilities;
 switch (BROWSER) {
@@ -99,8 +97,7 @@ async function test() {
         await driver.get(`http://localhost:${PORT}/tests/index.html`);
 
         await driver.executeAsyncScript((callback) => {
-            if (window.benchmarkReady)
-                callback();
+            if (window.benchmarkReady) callback();
 
             window.addEventListener("benchmark-ready", () => callback(), { once: true });
         });

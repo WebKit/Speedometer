@@ -31,8 +31,7 @@ async function readAndReplace(fileName) {
         return replacements.get(matched);
     });
 
-    if (contents !== sanitized)
-        await fs.writeFile(fileName, sanitized);
+    if (contents !== sanitized) await fs.writeFile(fileName, sanitized);
 }
 
 async function sanitize() {

@@ -138,6 +138,15 @@
                             </tbody>
                         </table>
                         <p>
+                            Each step consists of the following phases:
+                            <dl>
+                                <dt>Sync:</dt>
+                                <dd>Time spent in synchronous JS execution.</dd>
+                                <dt>Async:</dt>
+                                <dd>Time spent in asynchronous JS like Promise or setTimeout tasks scheduled by the sync-step.</dd>
+                            </dl>
+                        </p>
+                        <p>
                             The final benchmark score is calculated based of the inverse of <a href="https://en.wikipedia.org/wiki/Geometric_mean">geomean</a> of all tests. We average the score over multiple iterations with the
                             <a href="https://en.wikipedia.org/wiki/Arithmetic_mean">arithmetic mean</a>. By using the geomean to combine the test durations we maintain the invariant that relative improvements are favoured equally amongst all tests,
                             even though they can have vastly different durations.
