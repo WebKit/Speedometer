@@ -24,7 +24,6 @@ export class TestRunner {
         const testName = this.#test.name;
         const syncStartLabel = `${suiteName}.${testName}-start`;
         const syncEndLabel = `${suiteName}.${testName}-sync-end`;
-        const asyncStartLabel = syncEndLabel;
         const asyncEndLabel = `${suiteName}.${testName}-async-end`;
 
         let syncTime;
@@ -64,7 +63,7 @@ export class TestRunner {
             if (this.#params.warmupBeforeSync)
                 performance.measure("warmup", "warmup-start", "warmup-end");
             performance.measure(`${suiteName}.${testName}-sync`, syncStartLabel, syncEndLabel);
-            performance.measure(`${suiteName}.${testName}-async`, asyncStartLabel, asyncEndLabel);
+            performance.measure(`${suiteName}.${testName}-async`, syncEndLabel, asyncEndLabel);
         };
 
         const report = () => this.#callback(this.#test, syncTime, asyncTime);
