@@ -496,6 +496,40 @@ section#instructions .section-content > * {
     flex-direction: column;
 }
 
+section#details h1 {
+    margin-bottom: 10px;
+}
+
+section#details .non-standard-params {
+    display: none;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+section#details .non-standard-params h2 {
+    color: var(--highlight);
+}
+
+#non-standard-params-table {
+    border-collapse: collapse;
+    text-align: left;
+    display: inline-block;
+}
+#non-standard-params-table tr {
+    padding: 2px;
+}
+
+#non-standard-params-table thead th {
+    border-bottom: 1px solid var(--foreground);
+    padding: 0.1em 0.2em;
+}
+
+#non-standard-params-table tbody th {
+    font-weight: normal;
+    text-align: left;
+    padding: 0.1em 0.2em;
+}
+
 section#details .all-metric-results {
     flex: auto;
     overflow-y: auto;
@@ -511,10 +545,6 @@ section#details .arithmetic-mean {
 section#details .arithmetic-mean > label {
     font-weight: bold;
     margin-right: 10px;
-}
-
-section#details h1 {
-    margin-bottom: 10px;
 }
 
 section#details .metric {
