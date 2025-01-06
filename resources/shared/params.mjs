@@ -35,15 +35,8 @@ export class Params {
         }
     }
 
-    _parseNumber(value, errorMessage) {
-        const number = Number(value);
-        if (!Number.isFinite(number) && errorMessage)
-            throw new Error(`Invalid ${errorMessage} param: '${value}', expected Number.`);
-        return number;
-    }
-
     _parseInt(value, errorMessage) {
-        const number = this._parseNumber(value);
+        const number = Number(value);
         if (!Number.isInteger(number) && errorMessage)
             throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
         return parseInt(number);
