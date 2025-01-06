@@ -198,7 +198,6 @@ if (window?.location?.search) {
         maybeCustomParams = new Params(searchParams);
     } catch (e) {
         console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
-        alert(`Invalid URL Param: ${e}`);
     }
 }
 export const params = maybeCustomParams;
