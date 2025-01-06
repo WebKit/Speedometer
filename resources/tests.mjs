@@ -1,6 +1,6 @@
 import { BenchmarkTestStep } from "./benchmark-runner.mjs";
 import { todos } from "./translations.mjs";
-import { params } from "./params.mjs";
+import { params } from "./shared/params.mjs";
 
 const defaultNumberOfItemsToAdd = 100;
 const defaultLanguage = "en";
@@ -724,7 +724,7 @@ Suites.push({
         }),
         new BenchmarkTestStep("CompletingAllItems", (page) => {
             const numberOfItemsToAdd = getNumberOfItemsToAdd();
-            for (let i = 1; i <= numberOfItemsToAdd(); i++)
+            for (let i = 1; i <= numberOfItemsToAdd; i++)
                 page.querySelector(`li:nth-child(${i}) .toggle`).click();
         }),
         new BenchmarkTestStep("DeletingAllItems", (page) => {

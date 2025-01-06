@@ -164,10 +164,14 @@ export class Params {
         return shuffleSeed;
     }
 
-    toSearchParamsObject() {
+    toCompleteSearchParamsObject() {
+        return this.toSearchParamsObject(false);
+    }
+
+    toSearchParamsObject(filter = true) {
         const rawParams = { __proto__: null };
         for (const [key, value] of Object.entries(this)) {
-            if (value === defaultParams[key])
+            if (filter && value === defaultParams[key])
                 continue;
             rawParams[key] = value;
         }

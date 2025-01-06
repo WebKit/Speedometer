@@ -295,8 +295,8 @@ class MainBenchmarkClient {
         if (params === defaultParams)
             return;
         const paramsDiff = [];
-        const usedSearchparams = params.toSearchParams();
-        const defaultSearchParams = defaultParams.toSearchParams();
+        const usedSearchparams = params.toSearchParamsObject();
+        const defaultSearchParams = defaultParams.toCompleteSearchParamsObject(false);
         for (const [key, value] of usedSearchparams.entries()) {
             const defaultValue = defaultSearchParams.get(key);
             if (value !== defaultValue)
