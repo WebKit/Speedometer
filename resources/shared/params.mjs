@@ -1,4 +1,4 @@
-class Params {
+export class Params {
     viewport = {
         width: 800,
         height: 600,
@@ -15,7 +15,7 @@ class Params {
     // Change how a test measurement is triggered and async time is measured:
     // "timer": The classic (as in Speedometer 2.x) way using setTimeout
     // "raf":   Using rAF callbacks, both for triggering the sync part and for measuring async time.
-    measurementMethod = "raf"; // or "timer"
+    measurementMethod = "raf";
     // Wait time before the sync step in ms.
     waitBeforeSync = 0;
     // Warmup time before the sync step in ms.
@@ -140,8 +140,8 @@ class Params {
         if (!searchParams.has("measurementMethod"))
             return defaultParams.measurementMethod;
         const measurementMethod = searchParams.get("measurementMethod");
-        if (measurementMethod !== "timer" && measurementMethod !== "raf")
-            throw new Error(`Invalid measurement method: '${measurementMethod}', must be either 'raf' or 'timer'.`);
+        if (measurementMethod !== "raf")
+            throw new Error(`Invalid measurement method: '${measurementMethod}', must be 'raf'.`);
         searchParams.delete("measurementMethod");
         return measurementMethod;
     }
@@ -164,17 +164,31 @@ class Params {
         return shuffleSeed;
     }
 
-    toSearchParams() {
-        const rawParams = { ...this };
-        rawParams["viewport"] = `${this.viewport.width}x${this.viewport.height}`;
+    toSearchParamsObject() {
+        const rawParams = { __proto__: null };
+        for (const [key, value] of Object.entries(this)) {
+            if (value === defaultParams[key])
+                continue;
+            rawParams[key] = value;
+        }
+
+        // Either suites or params can be used at the same time.
+        if (rawParams.suites?.length && rawParams.tags?.length)
+            delete rawParams.suites;
+        rawParams.viewport = `${this.viewport.width}x${this.viewport.height}`;
+
         return new URLSearchParams(rawParams);
+    }
+
+    toSearchParams() {
+        return this.toSearchParamsObject().toString();
     }
 }
 
 export const defaultParams = new Params();
 
 let maybeCustomParams = defaultParams;
-if (window.location.search) {
+if (window?.location?.search) {
     const searchParams = new URLSearchParams(window.location.search);
     try {
         maybeCustomParams = new Params(searchParams);
