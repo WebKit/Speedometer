@@ -25,10 +25,6 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
-    // Param to tweak the relative complexity of all suites.
-    // The default is 1.0, and for suites supporting this param, the duration
-    // roughly scales wit the complexity.
-    complexity = 1.0;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -65,13 +61,6 @@ export class Params {
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
-
-        if (searchParams.has("complexity")) {
-            this.complexity = this._parseNumber(searchParams.get("complexity"));
-            if (this.complexity <= 0)
-                throw new Error(`Invalid complexity value: ${this.complexity}, must be > 0.0`);
-            searchParams.delete("complexity");
-        }
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -192,8 +181,8 @@ export class Params {
 export const defaultParams = new Params();
 
 let maybeCustomParams = defaultParams;
-if (window?.location?.search) {
-    const searchParams = new URLSearchParams(window.location.search);
+if (globalThis?.location?.search) {
+    const searchParams = new URLSearchParams(globalThis.location.search);
     try {
         maybeCustomParams = new Params(searchParams);
     } catch (e) {
