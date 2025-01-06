@@ -10,8 +10,10 @@ class TestInvoker {
 export class RAFTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
-            if (this._params.waitBeforeSync) setTimeout(() => this._scheduleCallbacks(resolve), this._params.waitBeforeSync);
-            else this._scheduleCallbacks(resolve);
+            if (this._params.waitBeforeSync)
+                setTimeout(() => this._scheduleCallbacks(resolve), this._params.waitBeforeSync);
+            else
+                this._scheduleCallbacks(resolve);
         });
     }
 

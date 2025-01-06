@@ -27,7 +27,8 @@ export class Params {
     shuffleSeed = "off";
 
     constructor(searchParams = undefined) {
-        if (searchParams) this._copyFromSearchParams(searchParams);
+        if (searchParams)
+            this._copyFromSearchParams(searchParams);
         if (!this.developerMode) {
             Object.freeze(this.viewport);
             Object.freeze(this);
@@ -36,7 +37,8 @@ export class Params {
 
     _parseInt(value, errorMessage) {
         const number = Number(value);
-        if (!Number.isInteger(number) && errorMessage) throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
+        if (!Number.isInteger(number) && errorMessage)
+            throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
         return parseInt(number);
     }
 
@@ -54,43 +56,51 @@ export class Params {
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
 
         const unused = Array.from(searchParams.keys());
-        if (unused.length > 0) console.error("Got unused search params", unused);
+        if (unused.length > 0)
+            console.error("Got unused search params", unused);
     }
 
     _parseBooleanParam(searchParams, paramKey) {
-        if (!searchParams.has(paramKey)) return false;
+        if (!searchParams.has(paramKey))
+            return false;
         searchParams.delete(paramKey);
         return true;
     }
 
     _parseIntParam(searchParams, paramKey, minValue) {
-        if (!searchParams.has(paramKey)) return defaultParams[paramKey];
+        if (!searchParams.has(paramKey))
+            return defaultParams[paramKey];
 
         const parsedValue = this._parseInt(searchParams.get(paramKey), "waitBeforeSync");
-        if (parsedValue < minValue) throw new Error(`Invalid ${paramKey} param: '${parsedValue}', value must be >= ${minValue}.`);
+        if (parsedValue < minValue)
+            throw new Error(`Invalid ${paramKey} param: '${parsedValue}', value must be >= ${minValue}.`);
         searchParams.delete(paramKey);
         return parsedValue;
     }
 
     _parseViewport(searchParams) {
-        if (!searchParams.has("viewport")) return defaultParams.viewport;
+        if (!searchParams.has("viewport"))
+            return defaultParams.viewport;
         const viewportParam = searchParams.get("viewport");
         const [width, height] = viewportParam.split("x");
         const viewport = {
             width: this._parseInt(width, "viewport.width"),
             height: this._parseInt(height, "viewport.height"),
         };
-        if (this.viewport.width < 800 || this.viewport.height < 600) throw new Error(`Invalid viewport param: ${viewportParam}`);
+        if (this.viewport.width < 800 || this.viewport.height < 600)
+            throw new Error(`Invalid viewport param: ${viewportParam}`);
         searchParams.delete("viewport");
         return viewport;
     }
 
     _parseSuites(searchParams) {
         if (searchParams.has("suite") || searchParams.has("suites")) {
-            if (searchParams.has("suite") && searchParams.has("suites")) throw new Error("Params 'suite' and 'suites' can not be used together.");
+            if (searchParams.has("suite") && searchParams.has("suites"))
+                throw new Error("Params 'suite' and 'suites' can not be used together.");
             const value = searchParams.get("suite") || searchParams.get("suites");
             const suites = value.split(",");
-            if (suites.length === 0) throw new Error("No suites selected");
+            if (suites.length === 0)
+                throw new Error("No suites selected");
             searchParams.delete("suite");
             searchParams.delete("suites");
             return suites;
@@ -99,23 +109,28 @@ export class Params {
     }
 
     _parseTags(searchParams) {
-        if (!searchParams.has("tags")) return defaultParams.tags;
-        if (this.suites.length) throw new Error("'suites' and 'tags' cannot be used together.");
+        if (!searchParams.has("tags"))
+            return defaultParams.tags;
+        if (this.suites.length)
+            throw new Error("'suites' and 'tags' cannot be used together.");
         const tags = searchParams.get("tags").split(",");
         searchParams.delete("tags");
         return tags;
     }
 
     _parseMeasurementMethod(searchParams) {
-        if (!searchParams.has("measurementMethod")) return defaultParams.measurementMethod;
+        if (!searchParams.has("measurementMethod"))
+            return defaultParams.measurementMethod;
         const measurementMethod = searchParams.get("measurementMethod");
-        if (measurementMethod !== "raf") throw new Error(`Invalid measurement method: '${measurementMethod}', must be 'raf'.`);
+        if (measurementMethod !== "raf")
+            throw new Error(`Invalid measurement method: '${measurementMethod}', must be 'raf'.`);
         searchParams.delete("measurementMethod");
         return measurementMethod;
     }
 
     _parseShuffleSeed(searchParams) {
-        if (!searchParams.has("shuffleSeed")) return defaultParams.shuffleSeed;
+        if (!searchParams.has("shuffleSeed"))
+            return defaultParams.shuffleSeed;
         let shuffleSeed = searchParams.get("shuffleSeed");
         if (shuffleSeed !== "off") {
             if (shuffleSeed === "generate") {
@@ -124,7 +139,8 @@ export class Params {
             } else {
                 shuffleSeed = parseInt(shuffleSeed);
             }
-            if (!Number.isInteger(shuffleSeed)) throw new Error(`Invalid shuffle seed: '${shuffleSeed}', must be either 'off', 'generate' or an integer.`);
+            if (!Number.isInteger(shuffleSeed))
+                throw new Error(`Invalid shuffle seed: '${shuffleSeed}', must be either 'off', 'generate' or an integer.`);
         }
         searchParams.delete("shuffleSeed");
         return shuffleSeed;
@@ -133,12 +149,14 @@ export class Params {
     toSearchParamsObject() {
         const rawParams = { __proto__: null };
         for (const [key, value] of Object.entries(this)) {
-            if (value === defaultParams[key]) continue;
+            if (value === defaultParams[key])
+                continue;
             rawParams[key] = value;
         }
 
         // Either suites or params can be used at the same time.
-        if (rawParams.suites?.length && rawParams.tags?.length) delete rawParams.suites;
+        if (rawParams.suites?.length && rawParams.tags?.length)
+            delete rawParams.suites;
         rawParams.viewport = `${this.viewport.width}x${this.viewport.height}`;
 
         return new URLSearchParams(rawParams);

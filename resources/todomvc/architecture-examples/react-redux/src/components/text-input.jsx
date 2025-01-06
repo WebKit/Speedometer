@@ -19,7 +19,8 @@ export default class TextInput extends Component {
         const text = e.target.value.trim();
         if (e.key === "Enter") {
             this.props.onSave(text);
-            if (this.props.newTodo) this.setState({ text: "" });
+            if (this.props.newTodo)
+                this.setState({ text: "" });
         }
     };
 
@@ -30,7 +31,8 @@ export default class TextInput extends Component {
     handleBlur = (e) => {
         // If this input is used in the Header, call onSave to create a new todo.
 
-        if (!this.props.newTodo) this.props.onSave(e.target.value);
+        if (!this.props.newTodo)
+            this.props.onSave(e.target.value);
     };
 
     render() {
