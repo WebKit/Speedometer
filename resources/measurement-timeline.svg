@@ -29,12 +29,14 @@
         border-radius: 2px;
         color: var(--background);
         background-color: var(--foreground);
+        font-weight: bold;
     }
 
     .unmeasured {
         padding: 0 2px 0 2px;
         border-radius: 2px;
         border-style: dashed !important;
+        font-style: italic;
     }
 
     td.hidden {
