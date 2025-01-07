@@ -55,7 +55,7 @@ export class BenchmarkSuite {
             const result = await test.runAndRecord(params, this, test, this.record);
             measuredValues.tests[test.name] = result;
             measuredValues.total += result.total;
-            measuredValues.totalPrepare += result.onProgress?.(test.name);
+            onProgress?.(test.name);
         }
 
         performance.mark(suiteEndLabel);
