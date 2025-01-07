@@ -9,10 +9,14 @@
                 margin: 8px;
             }
         </style>
-
         <script src="../node_modules/mocha/mocha.js"></script>
         <script src="../node_modules/expect.js/index.js"></script>
         <script src="../node_modules/sinon/pkg/sinon.js"></script>
+        <script src="../resources/benchmark-runner.mjs" type="module"></script>
+    </head>
+
+    <body>
+        <div id="mocha"></div>
         <script type="module">
             mocha.setup({
                 ui: "bdd",
@@ -22,55 +26,44 @@
                     },
                 },
             });
-        </script>
-    </head>
 
-    <body>
-        <div id="mocha"></div>
-        <script src="../resources/benchmark-runner.mjs" type="module"></script>
-        <script src="benchmark-runner-tests.mjs" type="module"></script>
-        <script type="module">
-            function startTest() {
-                const runner = mocha.run();
-                window.mochaResults = runner;
+            await import("./benchmark-runner-tests.mjs");
 
-                function createReport(node) {
-                    const tree = {
-                        tests: [],
-                        suites: [],
-                        id: node.id,
-                        title: node.title,
-                        root: node.root,
-                    };
+            globalThis.testResults = undefined;
+            globalThis.testRunner = mocha.run();
 
-                    for (const test of node.tests) {
-                        tree.tests.push({
-                            id: test.id,
-                            title: test.title,
-                            state: test.state,
-                            error: {
-                                name: test?.err?.name,
-                                message: test?.err?.message,
-                            },
-                        });
-                    }
+            function createReport(node) {
+                const tree = {
+                    tests: [],
+                    suites: [],
+                    id: node.id,
+                    title: node.title,
+                    root: node.root,
+                };
 
-                    for (const suite of node.suites) {
-                        tree.suites.push(createReport(suite));
-                    }
-
-                    return tree;
+                for (const test of node.tests) {
+                    tree.tests.push({
+                        id: test.id,
+                        title: test.title,
+                        state: test.state,
+                        error: {
+                            name: test?.err?.name,
+                            message: test?.err?.message,
+                        },
+                    });
                 }
 
-                runner.on("end", function () {
-                    window.suite = createReport(runner.suite);
-                    window.dispatchEvent(new Event("test-complete"));
-                });
+                for (const suite of node.suites) {
+                    tree.suites.push(createReport(suite));
+                }
+
+                return tree;
             }
 
-            window.addEventListener("start-test", () => startTest(), { once: true });
-            window.benchmarkReady = true;
-            window.dispatchEvent(new Event("benchmark-ready"));
+            globalThis.testRunner.on("end", () => {
+                globalThis.testResults = createReport(globalThis.testRunner.suite);
+                globalThis.dispatchEvent(new Event("test-complete"));
+            });
         </script>
     </body>
 </html>
