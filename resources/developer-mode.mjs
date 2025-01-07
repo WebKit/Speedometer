@@ -1,4 +1,4 @@
-import { Suites, Tags } from "./tests.mjs";
+import { Suites, Tags, handleComplexityChange } from "./tests.mjs";
 import { params, defaultParams } from "./shared/params.mjs";
 
 export function createDeveloperModeContainer() {
@@ -52,7 +52,7 @@ function createCheckboxUI(labelValue, initialValue, paramsUpdateCallback) {
     checkbox.checked = !!initialValue;
     checkbox.onchange = () => {
         paramsUpdateCallback(checkbox.checked);
-        updateURL();
+        handleParamsChange();
     };
 
     const label = document.createElement("label");
@@ -120,7 +120,7 @@ function createTimeRangeUI(labelText, paramKey, unit = "ms", map, decimals) {
     };
     range.onchange = () => {
         params[paramKey] = map(Number(range.value));
-        updateURL();
+        handleParamsChange();
     };
 
     return { range, label };
@@ -146,7 +146,7 @@ function createUIForSuites() {
         checkbox.checked = !suite.disabled;
         checkbox.onchange = () => {
             suite.disabled = !checkbox.checked;
-            updateURL();
+            handleParamsChange();
         };
         checkboxes.push(checkbox);
 
@@ -181,7 +181,7 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
         for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
             setSuiteEnabled(suiteIndex, true);
 
-        updateURL();
+        handleParamsChange();
     };
     buttons.appendChild(button);
 
@@ -191,7 +191,7 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
         for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
             setSuiteEnabled(suiteIndex, false);
 
-        updateURL();
+        handleParamsChange();
     };
     buttons.appendChild(button);
     return buttons;
@@ -227,7 +227,7 @@ function createSuitesTagsButton(setSuiteEnabled) {
                     continue;
                 setSuiteEnabled(suiteIndex, enabled);
             }
-            updateURL();
+            handleParamsChange();
         };
         buttons.appendChild(button);
     }
@@ -250,6 +250,11 @@ function createUIForRun() {
     buttons.appendChild(stepTestButton);
     buttons.appendChild(startTestButton);
     return buttons;
+}
+
+function handleParamsChange() {
+    updateURL();
+    handleComplexityChange();
 }
 
 function updateURL() {
