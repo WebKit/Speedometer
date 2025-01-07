@@ -1,10 +1,9 @@
-#! /usr/bin/env node
-/* eslint-disable-next-line  no-unused-vars */
-import serve from "./server.mjs";
-import { Builder, Capabilities } from "selenium-webdriver";
-import commandLineArgs from "command-line-args";
+
 import commandLineUsage from "command-line-usage";
-import assert from "assert";
+import commandLineArgs from "command-line-args";
+import serve from "./server.mjs";
+
+import { Builder, Capabilities } from "selenium-webdriver";
 
 const optionDefinitions = [
     { name: "browser", type: String, description: "Set the browser to test, choices are [safari, firefox, chrome]. By default the $BROWSER env variable is used." },
@@ -65,63 +64,9 @@ switch (BROWSER) {
     }
 }
 
-const PORT = options.port;
+export const PORT = options.port;
 const server = serve(PORT);
-
-let driver;
-
-function printTree(node) {
-    console.log(node.title);
-
-    for (const test of node.tests) {
-        console.group();
-        if (test.state === "passed") {
-            console.log("\x1b[32m✓", `\x1b[0m${test.title}`);
-        } else {
-            console.log("\x1b[31m✖", `\x1b[0m${test.title}`);
-            console.group();
-            console.log(`\x1b[31m${test.error.name}: ${test.error.message}`);
-            console.groupEnd();
-        }
-        console.groupEnd();
-    }
-
-    for (const suite of node.suites) {
-        console.group();
-        printTree(suite);
-        console.groupEnd();
-    }
-}
-
-async function test() {
-    driver = await new Builder().withCapabilities(capabilities).build();
-    try {
-        await driver.get(`http://localhost:${PORT}/tests/index.html`);
-
-        const { testResults, stats } = await driver.executeAsyncScript(function (callback) {
-            const returnResults = () =>
-                callback({
-                    stats: globalThis.testRunner.stats,
-                    testResults: globalThis.testResults,
-                });
-            if (window.testResults)
-                returnResults();
-            else
-                window.addEventListener("test-complete", returnResults, { once: true });
-        });
-
-        printTree(testResults);
-
-        console.log("\nChecking for passed tests...");
-        assert(stats.passes > 0);
-        console.log("Checking for failed tests...");
-        assert(stats.failures === 0);
-    } finally {
-        console.log("\nTests complete!");
-        driver.quit();
-        server.close();
-    }
-}
+export let driver;
 
 process.on("unhandledRejection", (err) => {
     console.error(err);
@@ -131,5 +76,12 @@ process.once("uncaughtException", (err) => {
     console.error(err);
     process.exit(1);
 });
+process.on("exit", () => stop());
 
-setImmediate(test);
+driver = await new Builder().withCapabilities(capabilities).build();
+
+export function stop() {
+    server.close();
+    if (driver)
+        driver.close();
+}

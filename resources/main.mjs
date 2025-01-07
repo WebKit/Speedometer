@@ -23,6 +23,7 @@ class MainBenchmarkClient {
     constructor() {
         window.addEventListener("DOMContentLoaded", () => this.prepareUI());
         this._showSection(window.location.hash);
+        globalThis.dispatchEvent(new Event("SpeedometerReady"));
     }
 
     start() {
@@ -150,6 +151,7 @@ class MainBenchmarkClient {
             this.showResultsDetails();
         else
             this.showResultsSummary();
+        globalThis.dispatchEvent(new Event("SpeedometerDone"));
     }
 
     handleError(error) {

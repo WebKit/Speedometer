@@ -16,6 +16,7 @@ const MIME_TYPES = {
 };
 
 const STATIC_PATH = path.join(process.cwd(), "./");
+console.log(STATIC_PATH);
 const toBool = [() => true, () => false];
 
 export default function serve(port) {
@@ -23,8 +24,8 @@ export default function serve(port) {
         throw new Error("Port is required");
 
     const prepareFile = async (url) => {
-        const paths = [STATIC_PATH, url];
-        if (url.endsWith("/"))
+        const paths = [STATIC_PATH, url.pathname];
+        if (url.pathname.endsWith("/"))
             paths.push("index.html");
         const filePath = path.join(...paths);
         const pathTraversal = !filePath.startsWith(STATIC_PATH);
@@ -38,7 +39,8 @@ export default function serve(port) {
 
     const server = http
         .createServer(async (req, res) => {
-            const file = await prepareFile(req.url);
+            const url = new URL(`http://${process.env.HOST ?? "localhost"}${req.url}`);
+            const file = await prepareFile(url);
             const statusCode = file.found ? 200 : 404;
             const mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
             res.writeHead(statusCode, { "Content-Type": mimeType });
