@@ -3,7 +3,7 @@
   <style>
     :root {
         --foreground: rgb(235, 235, 235);
-        --background: rgb(0, 0, 0);
+        --background: rgb(46, 51, 55);
     }
 
     math {

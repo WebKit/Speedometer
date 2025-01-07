@@ -33,4 +33,5 @@ Each step consists of the following phases:
 </dl>
 
 <img  src="./resources/score.svg" />
+
 The final benchmark score is calculated based of the inverse of [geomean](https://en.wikipedia.org/wiki/Geometric_mean) of all tests. We average the score over multiple iterations with the [arithmetic mean](https://en.wikipedia.org/wiki/Arithmetic_mean). By using the geomean to combine the test durations we maintain the invariant that relative improvements are favoured equally amongst all tests, even though they can have vastly different durations.
