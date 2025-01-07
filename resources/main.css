@@ -137,6 +137,10 @@ li {
     line-height: 21px;
 }
 
+li + li {
+    margin-top: 21px;
+}
+
 li + ul > li {
     margin-top: 0;
 }
@@ -829,43 +833,4 @@ section#about .note {
 .chart .white {
     color: #fff;
     stroke: #fff;
-}
-
-.score-math,
-.score-math mtable {
-    margin: 0px auto;
-    display: table;
-}
-
-.score-math mtr mtd {
-    text-align: left;
-    padding-top: 1em;
-}
-
-#about .timeline th {
-    text-align: left;
-}
-
-#about .timeline td {
-    white-space: nowrap;
-    border: 1px solid var(--foreground);
-    border-radius: 2px;
-    padding: 0 2px 0 2px;
-}
-
-#about .measured {
-    padding: 0 2px 0 2px;
-    border-radius: 2px;
-    color: var(--background);
-    background-color: var(--foreground);
-}
-
-#about .unmeasured {
-    padding: 0 2px 0 2px;
-    border-radius: 2px;
-    border-style: dashed !important;
-}
-
-#about .timeline td.hidden {
-    border: none;
 }
