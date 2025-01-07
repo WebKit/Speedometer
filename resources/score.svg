@@ -4,9 +4,6 @@
     :root {
         --foreground: rgb(235, 235, 235);
         --background: rgb(46, 51, 55);
-    }
-
-    math {
         background-color: var(--background);
         color: var(--foreground);
     }
@@ -22,8 +19,8 @@
     }
   </style>
   <foreignObject width="100%" height="100%">
-      <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <mtable displaystyle="true">
+      <math xmlns="http://www.w3.org/1998/Math/MathML" width="100%" height="100%" >
+        <mtable displaystyle="true" >
             <mtr>
                 <mtd>
                     <mrow>
