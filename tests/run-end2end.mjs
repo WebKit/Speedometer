@@ -35,7 +35,6 @@ function validateMetric(name, metric) {
     assert(metric.mean >= 0);
 }
 
-
 async function testIterations() {
     const metrics = await testPage("index.html?iterationCount=3");
     Suites.forEach((suite) => {
@@ -60,14 +59,7 @@ async function testAll() {
 }
 
 async function testDeveloperMode() {
-    const params = [
-        "developerMode",
-        "iterationCount=1",
-        "warmupBeforeSync=2",
-        "waitBeforeSync=2",
-        "shuffleSeed=123",
-        "suites=Perf-Dashboard"
-    ];
+    const params = ["developerMode", "iterationCount=1", "warmupBeforeSync=2", "waitBeforeSync=2", "shuffleSeed=123", "suites=Perf-Dashboard"];
     const metrics = await testPage(`index.html?${params.join("&")}`);
     Suites.forEach((suite) => {
         if (suite.name === "Perf-Dashboard") {

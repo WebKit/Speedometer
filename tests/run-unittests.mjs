@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 /* eslint-disable-next-line  no-unused-vars */
 import assert from "assert";
-import { driver, PORT, stop} from "./helper.mjs";
+import { driver, PORT, stop } from "./helper.mjs";
 
 function printTree(node) {
     console.log(node.title);

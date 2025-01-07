@@ -1,4 +1,3 @@
-
 import commandLineUsage from "command-line-usage";
 import commandLineArgs from "command-line-args";
 import serve from "./server.mjs";
