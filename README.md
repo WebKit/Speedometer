@@ -15,15 +15,15 @@ benchmark, actual users should benefit. In order to achieve this, it should:
     browser by visiting a normal web page. It should run relatively quickly, while providing
     enough test coverage to be reflective of the real-world Web.
 
-
 # Score and Test Measurement
 
-Each test can contain several steps who contributed to the test duration. Note that the prepare step of a test is *unmeasured* and thus does not contribute to the score. All following test
+Each test can contain several steps who contributed to the test duration. Note that the prepare step of a test is _unmeasured_ and thus does not contribute to the score. All following test
 steps are **measured** and summed up in the test step time.
 
 <img  src="./resources/measurement-timeline.svg" />
 
 Each step consists of the following phases:
+
 <dl>
     <dt>Sync:</dt>
     <dd>Time spent in synchronous JS execution.</dd>
