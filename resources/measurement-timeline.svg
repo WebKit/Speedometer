@@ -1,14 +1,16 @@
 
-<svg fill="none" viewBox="0 0 600 150" width="600" height="150" xmlns="http://www.w3.org/2000/svg">
+<svg fill="none" viewBox="0 0 800 150" width="800" height="150" xmlns="http://www.w3.org/2000/svg">
   <style>
     :root {
         --foreground: rgb(235, 235, 235);
-        --background: rgb(46, 51, 55);
+        --background: rgb(0, 0, 0);
     }
 
     table {
+        font-family: "system-ui";
         background-color: var(--background);
         color: var(--foreground);
+        padding: 1em;
     }
 
     th {

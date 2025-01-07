@@ -3,19 +3,22 @@
   <style>
     :root {
         --foreground: rgb(235, 235, 235);
-        --background: rgb(46, 51, 55);
+        --background: rgb(0, 0, 0);
+    }
+
+    math {
+        background-color: var(--background);
+        color: var(--foreground);
     }
 
     mtable {
-        background-color: var(--background);
-        color: var(--foreground);
-        margin: 0px auto;
         display: table;
+        margin: 1em;
     }
 
     mtr mtd {
         text-align: left;
-        padding-top: 1em;
+        padding-bottom: 1em;
     }
   </style>
   <foreignObject width="100%" height="100%">
