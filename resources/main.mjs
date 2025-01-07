@@ -306,18 +306,15 @@ class MainBenchmarkClient {
         }
         if (paramsDiff.length === 0)
             return;
-        let body = "";
-        for (const { key, value, defaultValue } of paramsDiff)
-            body += `<tr><th>${key}</th><th>${value}</th><th>${defaultValue}</th></tr>`;
+        const body = document.createElement("tbody");
+        for (const { key, value, defaultValue } of paramsDiff) {
+            const row = body.insertRow(-1);
+            row.insertCell().textContent = key;
+            row.insertCell().textContent = value;
+            row.insertCell().textContent = defaultValue;
+        }
         const table = document.getElementById("non-standard-params-table");
-        table.innerHTML = `<thead>
-                                <tr>
-                                <th>Param</th>
-                                <th>Value</th>
-                                <th>Default</th>
-                                </tr>
-                            </thead>
-                            <tbody>${body}</tbody>`;
+        table.replaceChild(body, table.tBodies[0]);
         document.querySelector(".non-standard-params").style.display = "block";
     }
 
