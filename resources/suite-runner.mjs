@@ -8,7 +8,7 @@ export class SuiteRunner {
     #suite;
     #client;
     #suiteResults;
-    #prepareTime
+    #prepareTime = 0;
 
     constructor(frame, page, params, suite, client, measuredValues) {
         // FIXME: Create SuiteRunner-local measuredValues.
@@ -22,7 +22,6 @@ export class SuiteRunner {
         this.#client = client;
         this.#suite = suite;
         this.#params = params;
-        this.#prepareTime = 0;
     }
 
     get frame() {

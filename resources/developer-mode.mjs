@@ -45,6 +45,8 @@ function createUIForWarmupSuite() {
         params.useWarmupSuite = isChecked;
     });
 }
+
+
 function createUIForMeasurePrepare() {
     return createCheckboxUI("Measure Prepare", params.measurePrepare, (isChecked) => {
         params.measurePrepare = isChecked;

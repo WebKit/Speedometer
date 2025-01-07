@@ -470,6 +470,8 @@ export class BenchmarkRunner {
                 iterationTotalMetric(i).description = `Test totals for iteration ${i}`;
             getMetric("Geomean", "ms").description = "Geomean of test totals";
             getMetric("Score", "score").description = "Scaled inverse of the Geomean";
+            if (params.measurePrepare)
+                getMetric("Prepare", "ms").description = "Geomean of workload prepare times";
         }
 
         const geomean = getMetric("Geomean");
@@ -480,7 +482,19 @@ export class BenchmarkRunner {
         geomean.add(iterationTotal.geomean);
         getMetric("Score").add(geomeanToScore(iterationTotal.geomean));
 
+        if (params.measurePrepare) {
+            const iterationPrepare = new Metric("tmp");
+            for (const results of Object.values(iterationResults))
+                iterationPrepare.add(results.totalPrepare);
+            const prepare = getMetric("Prepare");
+            prepare.add(iterationPrepare.geomean);
+        }
+
         for (const metric of Object.values(this._metrics))
             metric.computeAggregatedMetrics();
+    }
+
+    _initializeMetrics() {
+
     }
 }

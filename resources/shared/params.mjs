@@ -25,7 +25,7 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
-    // Measure more detailed debug metrics.
+    // Measure more workload prepare time.
     measurePrepare = false;
 
     constructor(searchParams = undefined) {
