@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 
@@ -16,7 +16,7 @@ export default function Layout({ children, id }) {
     const [showMessage, setShowMessage] = useState(false);
     const { content, links } = useDataContext();
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         setShowMessage(content[id].message);
     }, [id]);
 
