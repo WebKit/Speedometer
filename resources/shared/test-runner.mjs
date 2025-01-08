@@ -1,4 +1,4 @@
-import { TEST_INVOKER_LOOKUP } from "./test-invoker.mjs";
+import { TEST_INVOKER_LOOKUP, ASYNC_TEST_INVOKER_LOOKUP } from "./test-invoker.mjs";
 
 export class TestRunner {
     #frame;
@@ -13,9 +13,20 @@ export class TestRunner {
         this.#test = test;
         this.#params = params;
         this.#callback = callback;
-
         this.#page = page;
         this.#frame = frame;
+    }
+
+    get page() {
+        return this.#page;
+    }
+
+    get test() {
+        return this.#test;
+    }
+
+    _runSyncStep(test, page) {
+        test.run(page);
     }
 
     async runTest() {
@@ -30,7 +41,7 @@ export class TestRunner {
         let asyncStartTime;
         let asyncTime;
 
-        const runSync = () => {
+        const runSync = async () => {
             if (this.#params.warmupBeforeSync) {
                 performance.mark("warmup-start");
                 const startTime = performance.now();
@@ -41,7 +52,7 @@ export class TestRunner {
             }
             performance.mark(syncStartLabel);
             const syncStartTime = performance.now();
-            this.#test.run(this.#page);
+            await this._runSyncStep(this.test, this.page);
             const mark = performance.mark(syncEndLabel);
             const syncEndTime = mark.startTime;
 
@@ -68,9 +79,22 @@ export class TestRunner {
         };
 
         const report = () => this.#callback(this.#test, syncTime, asyncTime);
-        const invokerClass = TEST_INVOKER_LOOKUP[this.#params.measurementMethod];
+        const invokerClass = this.#suite.type === "async" ? ASYNC_TEST_INVOKER_LOOKUP[this.#params.measurementMethod] : TEST_INVOKER_LOOKUP[this.#params.measurementMethod];
         const invoker = new invokerClass(runSync, measureAsync, report, this.#params);
 
         return invoker.start();
     }
 }
+
+export class AsyncTestRunner extends TestRunner {
+    async _runSyncStep(test, page) {
+        await test.run(page);
+    }
+}
+
+export const TEST_RUNNER_LOOKUP = {
+    __proto__: null,
+    default: TestRunner,
+    async: AsyncTestRunner,
+    remote: TestRunner,
+};

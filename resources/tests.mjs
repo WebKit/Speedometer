@@ -343,6 +343,7 @@ Suites.push({
     name: "TodoMVC-React-Complex-DOM",
     url: "resources/todomvc/architecture-examples/react-complex/dist/index.html#/home",
     tags: ["todomvc", "complex", "complex-default"],
+    type: "async",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -373,6 +374,7 @@ Suites.push({
     name: "TodoMVC-React-Redux",
     url: "resources/todomvc/architecture-examples/react-redux/dist/index.html",
     tags: ["todomvc"],
+    type: "async",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -704,6 +706,7 @@ Suites.push({
     name: "TodoMVC-Preact-Complex-DOM",
     url: "resources/todomvc/architecture-examples/preact-complex/dist/index.html#/home",
     tags: ["todomvc", "complex", "complex-default"],
+    type: "async",
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -857,6 +860,7 @@ Suites.push({
     name: "NewsSite-Next",
     url: "resources/newssite/news-next/dist/index.html",
     tags: ["newssite", "language"],
+    type: "async",
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
@@ -1036,6 +1040,7 @@ Suites.push({
     name: "React-Stockcharts-SVG",
     url: "resources/react-stockcharts/build/index.html?type=svg",
     tags: ["chart", "svg"],
+    type: "async",
     async prepare(page) {
         await page.waitForElement("#render");
     },

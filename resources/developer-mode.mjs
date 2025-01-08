@@ -21,6 +21,7 @@ export function createDeveloperModeContainer() {
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
     settings.append(createUIForSyncStepDelay());
+    settings.append(createUIForAsyncSteps());
 
     content.append(document.createElement("hr"));
     content.append(settings);
@@ -42,6 +43,12 @@ function span(text) {
 function createUIForWarmupSuite() {
     return createCheckboxUI("Use Warmup Suite", params.useWarmupSuite, (isChecked) => {
         params.useWarmupSuite = isChecked;
+    });
+}
+
+function createUIForAsyncSteps() {
+    return createCheckboxUI("Use Async Steps", params.useAsyncSteps, (isChecked) => {
+        params.useAsyncSteps = isChecked;
     });
 }
 
@@ -255,7 +262,7 @@ function updateURL() {
         }
     }
 
-    const defaultParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync"];
+    const defaultParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "useAsyncSteps"];
     for (const paramKey of defaultParamKeys) {
         if (params[paramKey] !== defaultParams[paramKey])
             url.searchParams.set(paramKey, params[paramKey]);
