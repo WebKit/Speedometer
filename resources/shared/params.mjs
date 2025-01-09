@@ -192,8 +192,8 @@ export class Params {
 export const defaultParams = new Params();
 
 let maybeCustomParams = defaultParams;
-if (window?.location?.search) {
-    const searchParams = new URLSearchParams(window.location.search);
+if (globalThis?.location?.search) {
+    const searchParams = new URLSearchParams(globalThis.location.search);
     try {
         maybeCustomParams = new Params(searchParams);
     } catch (e) {
