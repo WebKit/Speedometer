@@ -308,7 +308,7 @@ class MainBenchmarkClient {
             return;
         const body = document.createElement("tbody");
         for (const { key, value, defaultValue } of paramsDiff) {
-            const row = body.insertRow(-1);
+            const row = body.insertRow();
             row.insertCell().textContent = key;
             row.insertCell().textContent = value;
             row.insertCell().textContent = defaultValue;
