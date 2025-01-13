@@ -1,0 +1,88 @@
+
+<svg fill="none" viewBox="0 0 780 140" width="780" height="140" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+        --foreground: rgb(235, 235, 235);
+        --background: rgb(46, 51, 55);
+        font-family: "system-ui";
+        background-color: var(--background);
+        color: var(--foreground);
+    }
+
+    table {
+        padding: 1em;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    td {
+        white-space: nowrap;
+        border: 1px solid var(--foreground);
+        border-radius: 2px;
+        padding: 0 2px 0 2px;
+    }
+
+    .measured {
+        padding: 0 2px 0 2px;
+        border-radius: 2px;
+        color: var(--background);
+        background-color: var(--foreground);
+        font-weight: bold;
+    }
+
+    .unmeasured {
+        padding: 0 2px 0 2px;
+        border-radius: 2px;
+        border-style: dashed !important;
+        font-style: italic;
+    }
+
+    td.hidden {
+        border: none;
+    }
+  </style>
+  <foreignObject width="100%" height="100%">
+     <table xmlns="http://www.w3.org/1999/xhtml" width="100%">
+        <tbody>
+            <tr>
+                <th>Iteration:</th>
+                <td colspan="9">Iteration 1</td>
+                <td>...</td>
+                <td colspan="3">Iteration N</td>
+            </tr>
+            <tr>
+                <th>Test:</th>
+                <td colspan="6">TodoMVC-JavaScript-ES5</td>
+                <td>...</td>
+                <td colspan="2">Perf-Dashboard</td>
+                <td class="hidden"></td>
+                <td colspan="2">TodoMVC-...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <th>Steps:</th>
+                <td class="unmeasured">Prepare</td>
+                <td colspan="2" class="measured">Adding</td>
+                <td colspan="2" class="measured">Completing</td>
+                <td class="measured">...</td>
+                <td class="hidden"></td>
+                <td class="unmeasured">Prepare</td>
+                <td class="measured">...</td>
+                <td class="hidden"></td>
+                <td class="unmeasured">Prepare</td>
+                <td class="measured">...</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td class="hidden"></td>
+                <td class="measured">Sync</td>
+                <td class="measured">Async</td>
+                <td class="measured">Sync</td>
+                <td class="measured">Async</td>
+            </tr>
+        </tbody>
+    </table>
+  </foreignObject>
+</svg>
