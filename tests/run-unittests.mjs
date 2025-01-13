@@ -8,7 +8,7 @@ This script runs the unittests located in tests/unittests/*
 through the mocha web interface located at tests/index.html
 `.trim();
 
-const { driver, PORT, stop } = testSetup(HELP);
+const { driver, PORT, stop } = await testSetup(HELP);
 
 async function test() {
     try {
