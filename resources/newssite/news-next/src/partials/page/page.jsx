@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 
 import Layout from "@/partials/layout/layout";
@@ -10,10 +10,6 @@ import { useDataContext } from "@/context/data-context";
 export default function Page({ id }) {
     const { content } = useDataContext();
     const [showPortal, setShowPortal] = useState(content[id].notification);
-
-    useLayoutEffect(() => {
-        setShowPortal(content[id].notification);
-    }, [id]);
 
     function closePortal() {
         setShowPortal(false);

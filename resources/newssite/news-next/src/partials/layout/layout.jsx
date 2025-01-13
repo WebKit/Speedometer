@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 
@@ -18,10 +18,6 @@ export default function Layout({ children, id }) {
 
     const pageRef = useRef(null);
     const { pathname } = useLocation();
-
-    useLayoutEffect(() => {
-        setShowMessage(content[id].message);
-    }, [id]);
 
     useEffect(() => {
         pageRef?.current?.scrollTo({ top: 0, left: 0, behavior: "instant" });
