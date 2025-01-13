@@ -1,24 +1,51 @@
 #! /usr/bin/env node
-/* eslint-disable-next-line  no-unused-vars */
+
 import assert from "assert";
-import { driver, PORT, stop } from "./helper.mjs";
+import testSetup from "./helper.mjs";
 
 import { Suites } from "../resources/tests.mjs";
+
+const HELP = `
+This script runs end2end tests by invoking the benchmark via the main
+Speedometer page in /index.html.
+`.trim();
+
+const { driver, PORT, stop } = await testSetup(HELP);
 
 async function testPage(url) {
     console.log(`Testing: ${url}`);
     await driver.get(`http://localhost:${PORT}/${url}`);
+
     await driver.executeAsyncScript((callback) => {
         if (globalThis.benchmarkClient)
             callback();
         else
-            window.addEventListener("SpeedometerReady", () => callback(), { once: true });
+            globalThis.addEventListener("SpeedometerReady", () => callback(), { once: true });
     });
+
     console.log("    - Awaiting Benchmark");
-    const metrics = await driver.executeAsyncScript((callback) => {
-        window.addEventListener("SpeedometerDone", () => callback(globalThis.benchmarkClient.metrics));
+    const { error, metrics } = await driver.executeAsyncScript((callback) => {
+        globalThis.addEventListener("SpeedometerDone", () => callback({ metrics: globalThis.benchmarkClient.metrics }), { once: true });
+        // Install error handlers to report page errors back to selenium.
+        globalThis.addEventListener("error", (message, source, lineno, colno, error) =>
+            callback({
+                error: { message, source, lineno, colno, error },
+            })
+        );
+        globalThis.addEventListener("unhandledrejection", (e) => {
+            callback({
+                error: {
+                    message: e.reason.toString(),
+                    stack: e.reason?.stack,
+                },
+            });
+        });
         globalThis.benchmarkClient.start();
     });
+
+    if (error)
+        throw new Error(error.message + (error?.stack ?? ""));
+
     validateMetrics(metrics);
     return metrics;
 }
@@ -36,15 +63,18 @@ function validateMetric(name, metric) {
 }
 
 async function testIterations() {
-    const metrics = await testPage("index.html?iterationCount=3");
+    const iterationCount = 2;
+    const metrics = await testPage(`index.html?iterationCount=${iterationCount}`);
     Suites.forEach((suite) => {
         if (!suite.disabled) {
             const metric = metrics[suite.name];
-            assert(metric.values.length === 3);
+            assert(metric.values.length === iterationCount);
+        } else {
+            assert(!(suite.name in metrics));
         }
     });
-    assert(metrics.Geomean.values.length === 3);
-    assert(metrics.Score.values.length === 3);
+    assert(metrics.Geomean.values.length === iterationCount);
+    assert(metrics.Score.values.length === iterationCount);
 }
 
 async function testAll() {

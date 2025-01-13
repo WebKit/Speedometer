@@ -1,7 +1,42 @@
 #! /usr/bin/env node
-/* eslint-disable-next-line  no-unused-vars */
+
 import assert from "assert";
-import { driver, PORT, stop } from "./helper.mjs";
+import testSetup from "./helper.mjs";
+
+const HELP = `
+This script runs the unittests located in tests/unittests/*
+through the mocha web interface located at tests/index.html
+`.trim();
+
+const { driver, PORT, stop } = testSetup(HELP);
+
+async function test() {
+    try {
+        await driver.get(`http://localhost:${PORT}/tests/index.html`);
+
+        const { testResults, stats } = await driver.executeAsyncScript(function (callback) {
+            const returnResults = () =>
+                callback({
+                    stats: globalThis.testRunner.stats,
+                    testResults: globalThis.testResults,
+                });
+            if (window.testResults)
+                returnResults();
+            else
+                globalThis.addEventListener("test-complete", returnResults, { once: true });
+        });
+
+        printTree(testResults);
+
+        console.log("\nChecking for passed tests...");
+        assert(stats.passes > 0);
+        console.log("Checking for failed tests...");
+        assert(stats.failures === 0);
+    } finally {
+        console.log("\nTests complete!");
+        stop();
+    }
+}
 
 function printTree(node) {
     console.log(node.title);
@@ -23,34 +58,6 @@ function printTree(node) {
         console.group();
         printTree(suite);
         console.groupEnd();
-    }
-}
-
-async function test() {
-    try {
-        await driver.get(`http://localhost:${PORT}/tests/index.html`);
-
-        const { testResults, stats } = await driver.executeAsyncScript(function (callback) {
-            const returnResults = () =>
-                callback({
-                    stats: globalThis.testRunner.stats,
-                    testResults: globalThis.testResults,
-                });
-            if (window.testResults)
-                returnResults();
-            else
-                window.addEventListener("test-complete", returnResults, { once: true });
-        });
-
-        printTree(testResults);
-
-        console.log("\nChecking for passed tests...");
-        assert(stats.passes > 0);
-        console.log("Checking for failed tests...");
-        assert(stats.failures === 0);
-    } finally {
-        console.log("\nTests complete!");
-        stop();
     }
 }
 

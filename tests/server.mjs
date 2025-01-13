@@ -16,7 +16,6 @@ const MIME_TYPES = {
 };
 
 const STATIC_PATH = path.join(process.cwd(), "./");
-console.log(STATIC_PATH);
 const toBool = [() => true, () => false];
 
 export default function serve(port) {
@@ -39,7 +38,7 @@ export default function serve(port) {
 
     const server = http
         .createServer(async (req, res) => {
-            const url = new URL(`http://${process.env.HOST ?? "localhost"}${req.url}`);
+            const url = new URL(`http://localhost${req.url}`);
             const file = await prepareFile(url);
             const statusCode = file.found ? 200 : 404;
             const mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
