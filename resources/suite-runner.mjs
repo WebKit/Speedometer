@@ -14,7 +14,7 @@ export class SuiteRunner {
         // FIXME: Create SuiteRunner-local measuredValues.
         this.#suiteResults = measuredValues.tests[suite.name];
         if (!this.#suiteResults) {
-            this.#suiteResults = { tests: {}, total: 0 };
+            this.#suiteResults = { tests: {}, prepare: 0, total: 0 };
             measuredValues.tests[suite.name] = this.#suiteResults;
         }
         this.#frame = frame;
@@ -83,17 +83,19 @@ export class SuiteRunner {
         performance.mark(suiteEndLabel);
 
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
-        this._validateSuiteTotal();
+        this._validateSuiteResults();
         await this._updateClient();
     }
 
-    _validateSuiteTotal() {
+    _validateSuiteResults() {
         // When the test is fast and the precision is low (for example with Firefox'
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
-        const suiteTotal = this.#suiteResults.total;
+        const { suiteTotal, suitePrepare } = this.#suiteResults.total;
         if (suiteTotal === 0)
             throw new Error(`Got invalid 0-time total for suite ${this.#suite.name}: ${suiteTotal}`);
+        if (this.#params.measurePrepare && suitePrepare === 0)
+            throw new Error(`Got invalid 0-time prepare time for suite ${this.#suite.name}: ${suitePrepare}`);
     }
 
     async _loadFrame() {
@@ -111,10 +113,12 @@ export class SuiteRunner {
             return;
 
         let total = syncTime + asyncTime;
-        if (this.#params.measurePrepare)
-            total += this.#prepareTime;
-        this.#suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime, Prepare: this.#prepareTime }, total: total };
-        this.#suiteResults.total += total;
+        this.#suiteResults.tests[test.name] = {
+            tests: { Sync: syncTime, Async: asyncTime},
+            total: total
+        };
+        this.#suiteResults.prepare = this.#prepareTime;
+        this.#suiteResults.total = total;
     };
 
     async _updateClient(suite = this.#suite) {
@@ -125,6 +129,7 @@ export class SuiteRunner {
 
 export class RemoteSuiteRunner extends SuiteRunner {
     #appId;
+    #prepareTime;
 
     get appId() {
         return this.#appId;
@@ -165,7 +170,8 @@ export class RemoteSuiteRunner extends SuiteRunner {
 
         performance.mark(suitePrepareEndLabel);
 
-        performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+        const entry = performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
+        this.#prepareTime = entry.duration;
     }
 
     async _runSuite() {
@@ -179,9 +185,10 @@ export class RemoteSuiteRunner extends SuiteRunner {
             ...response.result.tests,
         };
 
-        this.suiteResults.total += response.result.total;
+        this.suiteResults.prepare = this.#prepareTime;
+        this.suiteResults.total = response.result.total;
 
-        this._validateSuiteTotal();
+        this._validateSuiteResults();
         await this._updateClient();
     }
 

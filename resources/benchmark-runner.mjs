@@ -439,10 +439,10 @@ export class BenchmarkRunner {
 
     _appendIterationMetrics() {
         const getMetric = (name, unit = "ms") => this._metrics[name] || (this._metrics[name] = new Metric(name, unit));
-        const iterationTotalMetric = (i) => {
+        const iterationMetric = (i, name) => {
             if (i >= params.iterationCount)
                 throw new Error(`Requested iteration=${i} does not exist.`);
-            return getMetric(`Iteration-${i}-Total`);
+            return getMetric(`Iteration-${i}-${name}`);
         };
 
         const collectSubMetrics = (prefix, items, parent) => {
@@ -467,7 +467,7 @@ export class BenchmarkRunner {
             // Prepare all iteration metrics so they are listed at the end of
             // of the _metrics object, before "Total" and "Score".
             for (let i = 0; i < this._iterationCount; i++)
-                iterationTotalMetric(i).description = `Test totals for iteration ${i}`;
+                iterationMetric(i, "Total").description = `Test totals for iteration ${i}`;
             getMetric("Geomean", "ms").description = "Geomean of test totals";
             getMetric("Score", "score").description = "Scaled inverse of the Geomean";
             if (params.measurePrepare)
@@ -475,7 +475,8 @@ export class BenchmarkRunner {
         }
 
         const geomean = getMetric("Geomean");
-        const iterationTotal = iterationTotalMetric(geomean.length);
+        const iteration = geomean.length;
+        const iterationTotal = iterationMetric(iteration, "Total");
         for (const results of Object.values(iterationResults))
             iterationTotal.add(results.total);
         iterationTotal.computeAggregatedMetrics();
@@ -483,9 +484,10 @@ export class BenchmarkRunner {
         getMetric("Score").add(geomeanToScore(iterationTotal.geomean));
 
         if (params.measurePrepare) {
-            const iterationPrepare = new Metric("tmp");
+            const iterationPrepare = iterationMetric(iteration, "Prepare");
             for (const results of Object.values(iterationResults))
-                iterationPrepare.add(results.totalPrepare);
+                iterationPrepare.add(results.prepare);
+            iterationPrepare.computeAggregatedMetrics();
             const prepare = getMetric("Prepare");
             prepare.add(iterationPrepare.geomean);
         }

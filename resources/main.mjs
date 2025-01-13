@@ -248,8 +248,8 @@ class MainBenchmarkClient {
         const plotWidth = (params.viewport.width - 120) / 2;
         const aggregateMetrics = [metrics.Geomean];
         if (params.measurePrepare) {
-            aggregateMetrics.append(metrics.Prepare);
-            console.log(metrics.Prepare)
+            aggregateMetrics.push(metrics.Prepare);
+            console.log(metrics.Prepare);
         }
         document.getElementById("aggregate-chart").innerHTML = renderMetricView({
             metrics: aggregateMetrics,
