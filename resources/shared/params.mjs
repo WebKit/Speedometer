@@ -149,10 +149,14 @@ export class Params {
         return shuffleSeed;
     }
 
-    toSearchParamsObject() {
+    toCompleteSearchParamsObject() {
+        return this.toSearchParamsObject(false);
+    }
+
+    toSearchParamsObject(filter = true) {
         const rawParams = { __proto__: null };
         for (const [key, value] of Object.entries(this)) {
-            if (value === defaultParams[key])
+            if (filter && value === defaultParams[key])
                 continue;
             rawParams[key] = value;
         }
@@ -172,11 +176,13 @@ export class Params {
 
 export const defaultParams = new Params();
 
-const searchParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : undefined);
-let maybeCustomParams = new Params();
-try {
-    maybeCustomParams = new Params(searchParams);
-} catch (e) {
-    console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
+let maybeCustomParams = defaultParams;
+if (globalThis?.location?.search) {
+    const searchParams = new URLSearchParams(globalThis.location.search);
+    try {
+        maybeCustomParams = new Params(searchParams);
+    } catch (e) {
+        console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
+    }
 }
 export const params = maybeCustomParams;
