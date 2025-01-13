@@ -138,7 +138,7 @@ describe("BenchmarkRunner", () => {
         });
 
         describe("runSuite", () => {
-            let _prepareSuiteSpy, _loadFrameStub, _runTestStub, _validateSuiteTotalStub, _suitePrepareSpy, performanceMarkSpy;
+            let _prepareSuiteSpy, _loadFrameStub, _runTestStub, _validateSuiteRessultsStub, _suitePrepareSpy, performanceMarkSpy;
 
             const suite = SUITES_FIXTURE[0];
 
@@ -146,7 +146,7 @@ describe("BenchmarkRunner", () => {
                 _prepareSuiteSpy = spy(SuiteRunner.prototype, "_prepareSuite");
                 _loadFrameStub = stub(SuiteRunner.prototype, "_loadFrame").callsFake(async () => null);
                 _runTestStub = stub(TestRunner.prototype, "runTest").callsFake(async () => null);
-                _validateSuiteTotalStub = stub(SuiteRunner.prototype, "_validateSuiteTotal").callsFake(async () => null);
+                _validateSuiteRessultsStub = stub(SuiteRunner.prototype, "_validateSuiteResults").callsFake(async () => null);
                 performanceMarkSpy = spy(window.performance, "mark");
                 _suitePrepareSpy = spy(suite, "prepare");
 
@@ -161,7 +161,7 @@ describe("BenchmarkRunner", () => {
 
             it("should run and record results for every test in suite", async () => {
                 assert.calledThrice(_runTestStub);
-                assert.calledOnce(_validateSuiteTotalStub);
+                assert.calledOnce(_validateSuiteRessultsStub);
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-prepare-start");
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-prepare-end");
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-start");

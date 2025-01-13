@@ -44,6 +44,7 @@ export class BenchmarkSuite {
     async runAndRecord(params, onProgress) {
         const measuredValues = {
             tests: {},
+            prepare: 0,
             total: 0,
         };
         const suiteStartLabel = `suite-${this.name}-start`;
