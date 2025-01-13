@@ -25,7 +25,14 @@ async function testPage(url) {
 
     console.log("    - Awaiting Benchmark");
     const { error, metrics } = await driver.executeAsyncScript((callback) => {
-        globalThis.addEventListener("SpeedometerDone", () => callback({ metrics: globalThis.benchmarkClient.metrics }), { once: true });
+        globalThis.addEventListener(
+            "SpeedometerDone",
+            () =>
+                callback({
+                    metrics: globalThis.benchmarkClient.metrics,
+                }),
+            { once: true }
+        );
         // Install error handlers to report page errors back to selenium.
         globalThis.addEventListener("error", (message, source, lineno, colno, error) =>
             callback({
