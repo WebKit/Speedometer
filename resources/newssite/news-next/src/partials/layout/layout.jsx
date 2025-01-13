@@ -14,7 +14,7 @@ import styles from "news-site-css/dist/layout.module.css";
 
 export default function Layout({ children, id }) {
     const { content, links } = useDataContext();
-    const [showMessage, setShowMessage] = useState(content[id].message);
+    const [showMessage, setShowMessage] = useState(Boolean(content[id].message));
 
     const pageRef = useRef(null);
     const { pathname } = useLocation();

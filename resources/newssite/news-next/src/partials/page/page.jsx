@@ -9,7 +9,7 @@ import { useDataContext } from "@/context/data-context";
 
 export default function Page({ id }) {
     const { content } = useDataContext();
-    const [showPortal, setShowPortal] = useState(content[id].notification);
+    const [showPortal, setShowPortal] = useState(Boolean(content[id].notification));
 
     function closePortal() {
         setShowPortal(false);
