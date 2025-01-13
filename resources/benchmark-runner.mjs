@@ -496,7 +496,5 @@ export class BenchmarkRunner {
             metric.computeAggregatedMetrics();
     }
 
-    _initializeMetrics() {
-
-    }
+    _initializeMetrics() {}
 }

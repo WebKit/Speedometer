@@ -114,8 +114,8 @@ export class SuiteRunner {
 
         let total = syncTime + asyncTime;
         this.#suiteResults.tests[test.name] = {
-            tests: { Sync: syncTime, Async: asyncTime},
-            total: total
+            tests: { Sync: syncTime, Async: asyncTime },
+            total: total,
         };
         this.#suiteResults.prepare = this.#prepareTime;
         this.#suiteResults.total = total;
