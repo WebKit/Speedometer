@@ -59,7 +59,6 @@ export class Params {
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
 
         const unused = Array.from(searchParams.keys());
-        console.log("unused", unused);
         if (unused.length > 0)
             console.error("Got unused search params", unused);
     }
