@@ -58,14 +58,16 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
         });
 
         requestAnimationFrame(() => {
-            setTimeout(() => {
+            setTimeout(async () => {
+                await Promise.resolve();
                 gotTimer = true;
                 tryTriggerAsyncCallback();
             });
 
             AsyncRAFTestInvoker.mc.port1.addEventListener(
                 "message",
-                function () {
+                async function () {
+                    await Promise.resolve();
                     gotMessage = true;
                     tryTriggerAsyncCallback();
                 },
