@@ -82,9 +82,5 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
 export const TEST_INVOKER_LOOKUP = {
     __proto__: null,
     raf: RAFTestInvoker,
-};
-
-export const ASYNC_TEST_INVOKER_LOOKUP = {
-    __proto__: null,
-    raf: AsyncRAFTestInvoker,
+    async: AsyncRAFTestInvoker,
 };

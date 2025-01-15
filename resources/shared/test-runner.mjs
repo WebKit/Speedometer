@@ -1,4 +1,4 @@
-import { TEST_INVOKER_LOOKUP, ASYNC_TEST_INVOKER_LOOKUP } from "./test-invoker.mjs";
+import { TEST_INVOKER_LOOKUP } from "./test-invoker.mjs";
 
 export class TestRunner {
     #frame;
@@ -7,14 +7,16 @@ export class TestRunner {
     #suite;
     #test;
     #callback;
+    #type;
 
-    constructor(frame, page, params, suite, test, callback) {
+    constructor(frame, page, params, suite, test, callback, type) {
         this.#suite = suite;
         this.#test = test;
         this.#params = params;
         this.#callback = callback;
         this.#page = page;
         this.#frame = frame;
+        this.#type = type;
     }
 
     get page() {
@@ -52,7 +54,12 @@ export class TestRunner {
             }
             performance.mark(syncStartLabel);
             const syncStartTime = performance.now();
-            await this._runSyncStep(this.test, this.page);
+
+            if (this.#type === "async")
+                await this._runSyncStep(this.test, this.page);
+            else
+                this._runSyncStep(this.test, this.page);
+
             const mark = performance.mark(syncEndLabel);
             const syncEndTime = mark.startTime;
 
@@ -79,7 +86,8 @@ export class TestRunner {
         };
 
         const report = () => this.#callback(this.#test, syncTime, asyncTime);
-        const invokerClass = this.#suite.type === "async" ? ASYNC_TEST_INVOKER_LOOKUP[this.#params.measurementMethod] : TEST_INVOKER_LOOKUP[this.#params.measurementMethod];
+        const invokerType = this.#suite.type === "async" || this.#params.useAsyncSteps ? "async" : this.#params.measurementMethod;
+        const invokerClass = TEST_INVOKER_LOOKUP[invokerType];
         const invoker = new invokerClass(runSync, measureAsync, report, this.#params);
 
         return invoker.start();
@@ -87,6 +95,10 @@ export class TestRunner {
 }
 
 export class AsyncTestRunner extends TestRunner {
+    constructor(frame, page, params, suite, test, callback, type) {
+        super(frame, page, params, suite, test, callback, type);
+    }
+
     async _runSyncStep(test, page) {
         await test.run(page);
     }

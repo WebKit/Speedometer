@@ -75,8 +75,9 @@ export class SuiteRunner {
             if (this.#client?.willRunTest)
                 await this.#client.willRunTest(this.#suite, test);
 
-            const testRunnerClass = TEST_RUNNER_LOOKUP[this.#suite.type ?? "default"];
-            const testRunner = new testRunnerClass(this.#frame, this.#page, this.#params, this.#suite, test, this._recordTestResults);
+            const testRunnerType = this.#suite.type ?? this.params.useAsyncSteps ? "async" : "default";
+            const testRunnerClass = TEST_RUNNER_LOOKUP[testRunnerType];
+            const testRunner = new testRunnerClass(this.#frame, this.#page, this.#params, this.#suite, test, this._recordTestResults, testRunnerType);
             await testRunner.runTest();
         }
         performance.mark(suiteEndLabel);
