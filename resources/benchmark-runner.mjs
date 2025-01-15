@@ -409,7 +409,8 @@ export class BenchmarkRunner {
     async runSuite(suite) {
         // FIXME: Encapsulate more state in the SuiteRunner.
         // FIXME: Return and use measured values from SuiteRunner.
-        const suiteRunnerClass = SUITE_RUNNER_LOOKUP[suite.type ?? "default"];
+        const type = suite.type ?? ((params.useAsyncSteps && "async") || "default");
+        const suiteRunnerClass = SUITE_RUNNER_LOOKUP[type];
         const suiteRunner = new suiteRunnerClass(this._frame, this._page, params, suite, this._client, this._measuredValues);
         await suiteRunner.run();
     }

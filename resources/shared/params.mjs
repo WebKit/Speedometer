@@ -12,6 +12,8 @@ export class Params {
     tags = [];
     // Toggle running a dummy suite once before the normal test suites.
     useWarmupSuite = false;
+    // toggle async type vs default raf type.
+    useAsyncSteps = false;
     // Change how a test measurement is triggered and async time is measured:
     // "timer": The classic (as in Speedometer 2.x) way using setTimeout
     // "raf":   Using rAF callbacks, both for triggering the sync part and for measuring async time.
@@ -50,6 +52,7 @@ export class Params {
         this.tags = this._parseTags(searchParams);
         this.developerMode = this._parseBooleanParam(searchParams, "developerMode");
         this.useWarmupSuite = this._parseBooleanParam(searchParams, "useWarmupSuite");
+        this.useAsyncSteps = this._parseBooleanParam(searchParams, "useAsyncSteps");
         this.waitBeforeSync = this._parseIntParam(searchParams, "waitBeforeSync", 0);
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
