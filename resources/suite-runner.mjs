@@ -1,4 +1,4 @@
-import { TestRunner } from "./shared/test-runner.mjs";
+import { TEST_RUNNER_LOOKUP } from "./shared/test-runner.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
 
 export class SuiteRunner {
@@ -75,7 +75,9 @@ export class SuiteRunner {
             if (this.#client?.willRunTest)
                 await this.#client.willRunTest(this.#suite, test);
 
-            const testRunner = new TestRunner(this.#frame, this.#page, this.#params, this.#suite, test, this._recordTestResults);
+            const testRunnerType = this.#suite.type ?? this.params.useAsyncSteps ? "async" : "default";
+            const testRunnerClass = TEST_RUNNER_LOOKUP[testRunnerType];
+            const testRunner = new testRunnerClass(this.#frame, this.#page, this.#params, this.#suite, test, this._recordTestResults, testRunnerType);
             await testRunner.runTest();
         }
         performance.mark(suiteEndLabel);
@@ -214,5 +216,6 @@ export class RemoteSuiteRunner extends SuiteRunner {
 export const SUITE_RUNNER_LOOKUP = {
     __proto__: null,
     default: SuiteRunner,
+    async: SuiteRunner,
     remote: RemoteSuiteRunner,
 };

@@ -7,7 +7,7 @@ class TestInvoker {
     }
 }
 
-export class RAFTestInvoker extends TestInvoker {
+class BaseRAFTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
             if (this._params.waitBeforeSync)
@@ -16,7 +16,9 @@ export class RAFTestInvoker extends TestInvoker {
                 this._scheduleCallbacks(resolve);
         });
     }
+}
 
+class RAFTestInvoker extends BaseRAFTestInvoker {
     _scheduleCallbacks(resolve) {
         requestAnimationFrame(() => this._syncCallback());
         requestAnimationFrame(() => {
@@ -31,7 +33,54 @@ export class RAFTestInvoker extends TestInvoker {
     }
 }
 
+class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
+    static mc = new MessageChannel();
+    _scheduleCallbacks(resolve) {
+        let gotTimer = false;
+        let gotMessage = false;
+        let gotPromise = false;
+
+        const tryTriggerAsyncCallback = () => {
+            if (!gotTimer || !gotMessage || !gotPromise)
+                return;
+
+            this._asyncCallback();
+            setTimeout(async () => {
+                await this._reportCallback();
+                resolve();
+            }, 0);
+        };
+
+        requestAnimationFrame(async () => {
+            await this._syncCallback();
+            gotPromise = true;
+            tryTriggerAsyncCallback();
+        });
+
+        requestAnimationFrame(() => {
+            setTimeout(async () => {
+                await Promise.resolve();
+                gotTimer = true;
+                tryTriggerAsyncCallback();
+            });
+
+            AsyncRAFTestInvoker.mc.port1.addEventListener(
+                "message",
+                async function () {
+                    await Promise.resolve();
+                    gotMessage = true;
+                    tryTriggerAsyncCallback();
+                },
+                { once: true }
+            );
+            AsyncRAFTestInvoker.mc.port1.start();
+            AsyncRAFTestInvoker.mc.port2.postMessage("speedometer");
+        });
+    }
+}
+
 export const TEST_INVOKER_LOOKUP = {
     __proto__: null,
     raf: RAFTestInvoker,
+    async: AsyncRAFTestInvoker,
 };
