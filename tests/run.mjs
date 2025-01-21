@@ -98,32 +98,24 @@ async function test() {
     try {
         await driver.get(`http://localhost:${PORT}/tests/index.html`);
 
-        await driver.executeAsyncScript((callback) => {
-            if (window.benchmarkReady)
-                callback();
-
-            window.addEventListener("benchmark-ready", () => callback(), { once: true });
+        const { testResults, stats } = await driver.executeAsyncScript(function (callback) {
+            const returnResults = () =>
+                callback({
+                    stats: globalThis.testRunner.stats,
+                    testResults: globalThis.testResults,
+                });
+            if (window.testResults)
+                returnResults();
+            else
+                window.addEventListener("test-complete", returnResults, { once: true });
         });
 
-        const result = await driver.executeAsyncScript(function (callback) {
-            window.addEventListener(
-                "test-complete",
-                () =>
-                    callback({
-                        stats: window.mochaResults.stats,
-                        suite: window.suite,
-                    }),
-                { once: true }
-            );
-            window.dispatchEvent(new Event("start-test"));
-        });
-
-        printTree(result.suite);
+        printTree(testResults);
 
         console.log("\nChecking for passed tests...");
-        assert(result.stats.passes > 0);
+        assert(stats.passes > 0);
         console.log("Checking for failed tests...");
-        assert(result.stats.failures === 0);
+        assert(stats.failures === 0);
     } finally {
         console.log("\nTests complete!");
         driver.quit();

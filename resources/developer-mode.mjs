@@ -1,5 +1,5 @@
 import { Suites, Tags } from "./tests.mjs";
-import { params, defaultParams } from "./params.mjs";
+import { params, defaultParams } from "./shared/params.mjs";
 
 export function createDeveloperModeContainer() {
     const container = document.createElement("div");
@@ -18,10 +18,10 @@ export function createDeveloperModeContainer() {
     const settings = document.createElement("div");
     settings.className = "settings";
     settings.append(createUIForIterationCount());
-    settings.append(createUIForMeasurementMethod());
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
     settings.append(createUIForSyncStepDelay());
+    settings.append(createUIForAsyncSteps());
 
     content.append(document.createElement("hr"));
     content.append(settings);
@@ -40,15 +40,15 @@ function span(text) {
     return span;
 }
 
-function createUIForMeasurementMethod() {
-    return createCheckboxUI("rAF timing", params.measurementMethod === "raf", (isChecked) => {
-        params.measurementMethod = isChecked ? "raf" : "timer";
-    });
-}
-
 function createUIForWarmupSuite() {
     return createCheckboxUI("Use Warmup Suite", params.useWarmupSuite, (isChecked) => {
         params.useWarmupSuite = isChecked;
+    });
+}
+
+function createUIForAsyncSteps() {
+    return createCheckboxUI("Use Async Steps", params.useAsyncSteps, (isChecked) => {
+        params.useAsyncSteps = isChecked;
     });
 }
 
@@ -262,7 +262,7 @@ function updateURL() {
         }
     }
 
-    const defaultParamKeys = ["measurementMethod", "iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync"];
+    const defaultParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "useAsyncSteps"];
     for (const paramKey of defaultParamKeys) {
         if (params[paramKey] !== defaultParams[paramKey])
             url.searchParams.set(paramKey, params[paramKey]);

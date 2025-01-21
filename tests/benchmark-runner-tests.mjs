@@ -1,7 +1,7 @@
 import { BenchmarkRunner } from "../resources/benchmark-runner.mjs";
 import { SuiteRunner } from "../resources/suite-runner.mjs";
-import { TestRunner } from "../resources/test-runner.mjs";
-import { defaultParams } from "../resources/params.mjs";
+import { TestRunner } from "../resources/shared/test-runner.mjs";
+import { defaultParams } from "../resources/shared/params.mjs";
 
 function TEST_FIXTURE(name) {
     return {
@@ -25,21 +25,9 @@ const SUITES_FIXTURE = [
 
 const CLIENT_FIXTURE = {
     willRunTest: sinon.stub(),
-    didRunTest: sinon.stub(),
+    didFinishSuite: sinon.stub(),
     didRunSuites: sinon.stub(),
 };
-
-function stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd) {
-    sinon
-        .stub(window.performance, "now")
-        .onFirstCall()
-        .returns(syncStart) // startTime (sync)
-        .onSecondCall()
-        .returns(syncEnd) // endTime (sync)
-        .onThirdCall()
-        .returns(asyncStart) // startTime (async)
-        .returns(asyncEnd); // endTime (async)
-}
 
 describe("BenchmarkRunner", () => {
     const { spy, stub, assert } = sinon;
@@ -179,6 +167,7 @@ describe("BenchmarkRunner", () => {
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-start");
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-end");
                 expect(performanceMarkSpy.callCount).to.equal(4);
+                assert.calledOnce(runner._client.didFinishSuite);
             });
         });
     });
@@ -200,19 +189,17 @@ describe("BenchmarkRunner", () => {
 
             it("should run client pre and post hooks if present", () => {
                 assert.calledWith(runner._client.willRunTest, suite, suite.tests[0]);
-                assert.calledWith(runner._client.didRunTest, suite, suite.tests[0]);
             });
 
             it("should write performance marks at the start and end of the test with the correct test name", () => {
                 assert.calledWith(performanceMarkSpy, "Suite 1.Test 1-start");
                 assert.calledWith(performanceMarkSpy, "Suite 1.Test 1-sync-end");
-                assert.calledWith(performanceMarkSpy, "Suite 1.Test 1-async-start");
                 assert.calledWith(performanceMarkSpy, "Suite 1.Test 1-async-end");
 
                 // SuiteRunner adds 2 marks.
                 // Suite used here contains 3 tests.
-                // Each Testrunner adds 4 marks.
-                expect(performanceMarkSpy.callCount).to.equal(14);
+                // Each TestRunner adds 3 marks.
+                expect(performanceMarkSpy.callCount).to.equal(11);
             });
         });
 
@@ -222,7 +209,6 @@ describe("BenchmarkRunner", () => {
 
                 const syncStart = 8000;
                 const syncEnd = 10000;
-                const asyncStart = 12000;
                 const asyncEnd = 13000;
 
                 const params = { measurementMethod: "raf" };
@@ -232,7 +218,13 @@ describe("BenchmarkRunner", () => {
                         tests: {},
                     });
 
-                    stubPerformanceNowCalls(syncStart, syncEnd, asyncStart, asyncEnd);
+                    const originalMark = window.performance.mark.bind(window.performance);
+                    const performanceMarkStub = sinon.stub(window.performance, "mark").withArgs(sinon.match.any).callThrough();
+                    const performanceNowStub = sinon.stub(window.performance, "now");
+
+                    performanceNowStub.onFirstCall().returns(syncStart);
+                    performanceMarkStub.onThirdCall().callsFake((markName) => originalMark(markName, { startTime: asyncEnd }));
+                    performanceNowStub.onSecondCall().returns(asyncEnd);
 
                     // instantiate recorded test results
                     const suiteRunner = new SuiteRunner(runner._frame, runner._page, params, suite, runner._client, runner._measuredValues);
@@ -243,7 +235,7 @@ describe("BenchmarkRunner", () => {
 
                 it("should calculate measured test values correctly", () => {
                     const syncTime = syncEnd - syncStart;
-                    const asyncTime = asyncEnd - asyncStart;
+                    const asyncTime = asyncEnd - syncEnd;
 
                     const total = syncTime + asyncTime;
                     const mean = total / suite.tests.length;

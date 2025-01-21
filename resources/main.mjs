@@ -2,7 +2,7 @@ import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
-import { params } from "./params.mjs";
+import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
 // FIXME(camillobruni): Add base class
@@ -93,10 +93,8 @@ class MainBenchmarkClient {
         this._isRunning = true;
 
         const enabledSuites = Suites.filter((suite) => !suite.disabled);
-        const totalSubtestsCount = enabledSuites.reduce((testsCount, suite) => {
-            return testsCount + suite.tests.length;
-        }, 0);
-        this.stepCount = params.iterationCount * totalSubtestsCount;
+        const totalSuitesCount = enabledSuites.length;
+        this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
         const runner = new BenchmarkRunner(Suites, this);
@@ -121,7 +119,7 @@ class MainBenchmarkClient {
             await this._awaitNextStep(suite, test);
     }
 
-    didRunTest() {
+    didFinishSuite() {
         this._finishedTestCount++;
         this._progressCompleted.value = this._finishedTestCount;
     }
@@ -245,6 +243,7 @@ class MainBenchmarkClient {
     }
 
     _populateDetailedResults(metrics) {
+        this._populateNonStandardParams();
         const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
@@ -290,6 +289,33 @@ class MainBenchmarkClient {
         const csvLink = document.getElementById("download-csv");
         csvLink.href = URL.createObjectURL(new Blob([csvData], { type: "text/csv" }));
         csvLink.setAttribute("download", `${filePrefix}.csv`);
+    }
+
+    _populateNonStandardParams() {
+        if (params === defaultParams)
+            return;
+        const paramsDiff = [];
+        const usedSearchparams = params.toSearchParamsObject();
+        const defaultSearchParams = defaultParams.toCompleteSearchParamsObject(false);
+        for (const [key, value] of usedSearchparams.entries()) {
+            if (key === "developerMode")
+                continue;
+            const defaultValue = defaultSearchParams.get(key);
+            if (value !== defaultValue)
+                paramsDiff.push({ key, value, defaultValue });
+        }
+        if (paramsDiff.length === 0)
+            return;
+        const body = document.createElement("tbody");
+        for (const { key, value, defaultValue } of paramsDiff) {
+            const row = body.insertRow();
+            row.insertCell().textContent = key;
+            row.insertCell().textContent = value;
+            row.insertCell().textContent = defaultValue;
+        }
+        const table = document.getElementById("non-standard-params-table");
+        table.replaceChild(body, table.tBodies[0]);
+        document.querySelector(".non-standard-params").style.display = "block";
     }
 
     prepareUI() {
