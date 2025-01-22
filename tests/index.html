@@ -27,7 +27,7 @@
                 },
             });
 
-            await import("./benchmark-runner-tests.mjs");
+            await import("./unittests/benchmark-runner.mjs");
 
             globalThis.testResults = undefined;
             globalThis.testRunner = mocha.run();
