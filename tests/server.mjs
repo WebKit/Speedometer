@@ -1,8 +1,9 @@
 // Simple server adapted from https://developer.mozilla.org/en-US/docs/Learn/Server-side/Node_server_without_framework:
 import * as path from "path";
 import commandLineArgs from "command-line-args";
-import esMain from 'es-main';
-import LocalWebServer from 'local-web-server'
+import esMain from "es-main";
+import LocalWebServer from "local-web-server";
+
 
 const ROOT_DIR = path.join(process.cwd(), "./");
 
@@ -12,9 +13,12 @@ export default async function serve(port) {
     const ws = await LocalWebServer.create({
         port: port,
         directory: ROOT_DIR,
+        corsOpenerPolicy: "same-origin",
+        corsEmbedderPolicy: "require-corp",
     });
- 
-    process.on("exit", () =>   ws.server.close());
+    console.log(`Server started on http://localhost:${port}`);
+
+    process.on("exit", () => ws.server.close());
 }
 
 function main() {
