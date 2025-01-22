@@ -17,8 +17,12 @@ export default async function serve(port) {
         corsEmbedderPolicy: "require-corp",
     });
     console.log(`Server started on http://localhost:${port}`);
-
     process.on("exit", () => ws.server.close());
+    return {
+        close() {
+            ws.server.close();
+        }
+    };
 }
 
 function main() {
