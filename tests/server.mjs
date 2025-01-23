@@ -1,4 +1,5 @@
-// Simple server adapted from https://developer.mozilla.org/en-US/docs/Learn/Server-side/Node_server_without_framework:
+// Simple server for local testing.
+
 import * as path from "path";
 import commandLineArgs from "command-line-args";
 import esMain from "es-main";
@@ -27,7 +28,7 @@ export default async function serve(port) {
 
 function main() {
     const optionDefinitions = [
-        { name: "port", type: Number, defaultValue: 8080, description: "Set the test-server port, The default value is 8010." },
+        { name: "port", type: Number, defaultValue: 8080, description: "Set the test-server port, The default value is 8080." },
     ];
     const options = commandLineArgs(optionDefinitions);
     serve(options.port);
