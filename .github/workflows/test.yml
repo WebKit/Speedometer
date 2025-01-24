@@ -57,3 +57,7 @@ jobs:
               run: |
                   echo "Running in $BROWSER"
                   npm run test:${{ matrix.browser }}
+            - name: Run end2end
+              run: |
+                  echo "Running in $BROWSER"
+                  npm run test-e2e:${{ matrix.browser }}
