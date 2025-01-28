@@ -3,7 +3,11 @@
 import * as path from "path";
 import commandLineArgs from "command-line-args";
 import esMain from "es-main";
-import LocalWebServer from "local-web-server";
+import LocalWebServer from "lws";
+import "lws-cors";
+import "lws-index";
+import "lws-log";
+import "lws-static";
 
 const ROOT_DIR = path.join(process.cwd(), "./");
 
@@ -16,6 +20,7 @@ export default async function serve(port) {
         corsOpenerPolicy: "same-origin",
         corsEmbedderPolicy: "require-corp",
         logFormat: "dev",
+        stack: ["lws-log", "lws-cors", "lws-static", "lws-index"],
     });
     await verifyStartup(ws, port);
 
