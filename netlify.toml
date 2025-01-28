@@ -1,0 +1,7 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    cross-origin-embedder-policy = "require-corp"
+    cross-origin-opener-policy = "same-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    x-content-type-options = "nosniff"
