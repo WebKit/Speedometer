@@ -3,7 +3,7 @@
     "version": "3.0.0-alpha",
     "description": "An open source repository for the Speedometer benchmark.",
     "engines": {
-        "node": ">=18.13.0",
+        "node": ">=22.0.0",
         "npm": ">=8.19.3"
     },
     "repository": {
