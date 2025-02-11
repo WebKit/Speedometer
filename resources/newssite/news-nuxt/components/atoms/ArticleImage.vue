@@ -16,7 +16,7 @@ export default {
 </script>
 
 <template>
-    <div v-if="image" :class="imageClass">
+    <div v-if="image" :class="imageClass" style="width: auto">
         <img :class="styles['article-image']" :src="image.src" :width="image.width" :height="image.height" :alt="image.alt" />
         <ArticleTag :tag="meta?.tag" />
     </div>
