@@ -106,7 +106,7 @@ main {
 .next {
     right: -22px;
     top: -117px;
-    color: var(--highlight)
+    color: var(--highlight);
 }
 
 h1 {
