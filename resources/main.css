@@ -251,6 +251,14 @@ button,
     gap: 3px;
 }
 
+.developer-mode-content .select-all::before {
+    content: "✔ ";
+}
+
+.developer-mode-content .unselect-all::after {
+    content: " ✘";
+}
+
 .developer-mode-content .settings label {
     width: 100%;
     display: flex;
