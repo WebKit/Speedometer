@@ -299,7 +299,6 @@ class WakeLock {
         } finally {
             this._wakeLockSentinel = undefined;
         }
-
     }
 }
 
