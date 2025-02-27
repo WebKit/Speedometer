@@ -321,6 +321,31 @@ function seededHashRandomNumberGenerator(a) {
     };
 }
 
+class WakeLock {
+    #wakeLockSentinel = undefined;
+    async request() {
+        if (!navigator.wakeLock)
+            return;
+        try {
+            this.#wakeLockSentinel = await navigator.wakeLock.request("screen");
+        } catch (err) {
+            console.error(`${err.name}, ${err.message}`);
+        }
+    }
+
+    async release() {
+        if (!this.#wakeLockSentinel)
+            return;
+        try {
+            await this.#wakeLockSentinel.release();
+        } catch (err) {
+            console.error(`${err.name}, ${err.message}`);
+        } finally {
+            this.#wakeLockSentinel = undefined;
+        }
+    }
+}
+
 export class BenchmarkRunner {
     constructor(suites, client) {
         this._suites = suites;
@@ -332,6 +357,7 @@ export class BenchmarkRunner {
         this._iterationCount = params.iterationCount;
         if (params.shuffleSeed !== "off")
             this._suiteOrderRandomNumberGenerator = seededHashRandomNumberGenerator(params.shuffleSeed);
+        this._wakeLock = new WakeLock();
     }
 
     async runMultipleIterations(iterationCount) {
@@ -394,6 +420,7 @@ export class BenchmarkRunner {
 
     async _runAllSuites() {
         this._measuredValues = { tests: {}, total: 0, mean: NaN, geomean: NaN, score: NaN };
+        await this._wakeLock.request();
 
         const prepareStartLabel = "runner-prepare-start";
         const prepareEndLabel = "runner-prepare-end";
@@ -438,6 +465,7 @@ export class BenchmarkRunner {
         await this._finalize();
         performance.mark(finalizeEndLabel);
         performance.measure("runner-finalize", finalizeStartLabel, finalizeEndLabel);
+        await this._wakeLock.release();
     }
 
     async _runSuite(suite) {
