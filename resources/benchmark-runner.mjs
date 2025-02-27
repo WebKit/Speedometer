@@ -278,26 +278,26 @@ function seededHashRandomNumberGenerator(a) {
 }
 
 class WakeLock {
-    _wakeLockSentinel = undefined;
+    #wakeLockSentinel = undefined;
     async request() {
         if (!navigator.wakeLock)
             return;
         try {
-            this._wakeLockSentinel = await navigator.wakeLock.request("screen");
+            this.#wakeLockSentinel = await navigator.wakeLock.request("screen");
         } catch (err) {
             console.error(`${err.name}, ${err.message}`);
         }
     }
 
     async release() {
-        if (!this._wakeLockSentinel)
+        if (!this.#wakeLockSentinel)
             return;
         try {
-            await this._wakeLockSentinel.release();
+            await this.#wakeLockSentinel.release();
         } catch (err) {
             console.error(`${err.name}, ${err.message}`);
         } finally {
-            this._wakeLockSentinel = undefined;
+            this.#wakeLockSentinel = undefined;
         }
     }
 }
