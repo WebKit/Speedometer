@@ -1,5 +1,5 @@
 
-<svg fill="none" viewBox="0 0 550 300" width="550" height="300" xmlns="http://www.w3.org/2000/svg">
+<svg fill="none" viewBox="0 0 550 440" width="550" height="440" xmlns="http://www.w3.org/2000/svg">
   <style>
     :root {
         --foreground: rgb(235, 235, 235);
@@ -16,6 +16,10 @@
     mtr mtd {
         text-align: left;
         padding-bottom: 1em;
+    }
+
+    .legend mtd {
+        padding-bottom: 0.2em;
     }
   </style>
   <foreignObject width="100%" height="100%">
@@ -191,6 +195,26 @@
                         </msub>
                     </mrow>
                 </mtd>
+            </mtr>
+            <mtr class="legend">
+                <mtd><mi>n</mi></mtd>
+                <mtd>= Number of Iterations (default = 10)</mtd>
+            </mtr>
+            <mtr class="legend">
+                <mtd><mi>i</mi></mtd>
+                <mtd>= Iteration Index</mtd>
+            </mtr>
+            <mtr class="legend">
+                <mtd><mi>m</mi></mtd>
+                <mtd>= Number of Suites</mtd>
+            </mtr>
+            <mtr class="legend">
+                <mtd><mi>j</mi></mtd>
+                <mtd>= Suite Index</mtd>
+            </mtr>
+            <mtr class="legend">
+                <mtd><mi>k</mi></mtd>
+                <mtd>= Test Index</mtd>
             </mtr>
         </mtable>
     </math>
