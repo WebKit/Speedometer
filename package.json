@@ -16,7 +16,6 @@
     "license": "SEE LICENSE IN LICENSE",
     "scripts": {
         "dev": "node tests/server.mjs",
-        "server": "node tests/server.mjs",
         "lint:check": "eslint **/*.{js,mjs,jsx,ts,tsx}",
         "lint:fix": "eslint \"**/*.{js,mjs,jsx,ts,tsx}\" --fix",
         "pretty:check": "prettier --check ./",
