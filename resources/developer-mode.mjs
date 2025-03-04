@@ -157,6 +157,7 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
     buttons.className = "button-bar";
 
     let button = document.createElement("button");
+    button.className = "select-all";
     button.textContent = "Select all";
     button.onclick = () => {
         for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
@@ -168,6 +169,7 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
 
     button = document.createElement("button");
     button.textContent = "Unselect all";
+    button.className = "unselect-all";
     button.onclick = () => {
         for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
             setSuiteEnabled(suiteIndex, false);
