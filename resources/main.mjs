@@ -2,13 +2,7 @@ import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
 import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
-<<<<<<< HEAD
-import { params } from "./params.mjs";
-||||||| parent of d6b5ffea (Display non-standard params on summary page (#469))
-import { params } from "./shared/params.mjs";
-=======
-import { defaultParams, params } from "./shared/params.mjs";
->>>>>>> d6b5ffea (Display non-standard params on summary page (#469))
+import { params, defaultParams } from "./params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
 // FIXME(camillobruni): Add base class
