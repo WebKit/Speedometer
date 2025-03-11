@@ -389,7 +389,7 @@ class MainBenchmarkClient {
     _updateDocumentTitle(hash) {
         const maybeSection = document.querySelector(hash);
         const sectionTitle = maybeSection?.getAttribute("data-title") ?? "";
-        document.title = `Speedometer 3 ${sectionTitle}`.trimEnd();
+        document.title = `Speedometer 3.1 ${sectionTitle}`.trimEnd();
     }
 
     _removeLocationHash() {
