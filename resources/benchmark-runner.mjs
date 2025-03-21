@@ -548,9 +548,9 @@ export class BenchmarkRunner {
             // Force the layout here to ensure we're measuring the layout time.
             const height = this._frame.contentDocument.body.getBoundingClientRect().height;
             const asyncEndTime = performance.now();
+            performance.mark(asyncEndLabel);
             asyncTime = asyncEndTime - asyncStartTime;
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
-            performance.mark(asyncEndLabel);
             if (params.warmupBeforeSync)
                 performance.measure("warmup", "warmup-start", "warmup-end");
             performance.measure(`${suite.name}.${test.name}-sync`, startLabel, syncEndLabel);
