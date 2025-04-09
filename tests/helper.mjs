@@ -65,7 +65,7 @@ export default async function testSetup(helpText) {
     capabilities.setLoggingPrefs(prefs);
 
     const PORT = options.port;
-    const server = serve(PORT);
+    const server = await serve(PORT);
     let driver;
 
     process.on("unhandledRejection", (err) => {
