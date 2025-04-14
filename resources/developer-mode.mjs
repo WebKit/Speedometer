@@ -127,7 +127,6 @@ function createUIForSuites() {
         checkbox.checked = !suite.disabled;
         checkbox.onchange = () => {
             suite.disabled = !checkbox.checked;
-            updateParamsSuitesAndTags();
             updateURL();
         };
         checkboxes.push(checkbox);
@@ -261,6 +260,8 @@ function updateParamsSuitesAndTags() {
 }
 
 function updateURL() {
+    updateParamsSuitesAndTags();
+
     const url = new URL(window.location.href);
 
     url.searchParams.delete("tags");
