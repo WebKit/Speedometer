@@ -127,6 +127,7 @@ function createUIForSuites() {
         checkbox.checked = !suite.disabled;
         checkbox.onchange = () => {
             suite.disabled = !checkbox.checked;
+            updateParamsSuitesAndTags();
             updateURL();
         };
         checkboxes.push(checkbox);
@@ -235,34 +236,44 @@ function createUIForRun() {
     return buttons;
 }
 
-function updateURL() {
-    const url = new URL(window.location.href);
+function updateParamsSuitesAndTags() {
+    params.suites = [];
+    params.tags = [];
 
     // If less than all suites are selected then change the URL "Suites" GET parameter
     // to comma separate only the selected
     const selectedSuites = Suites.filter((suite) => !suite.disabled);
+    if (!selectedSuites.length)
+        return;
+
+    // Try finding common tags that would result in the current suite selection.
+    let commonTags = new Set(selectedSuites[0].tags);
+    for (const suite of Suites) {
+        if (suite.disabled)
+            suite.tags.forEach((tag) => commonTags.delete(tag));
+        else
+            commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
+    }
+    if (selectedSuites.length > 1 && commonTags.size) {
+        const tags = [...commonTags];
+        if (tags[0] !== "default")
+            params.tags = tags;
+    } else {
+        params.suites = selectedSuites.map((suite) => suite.name);
+    }
+}
+
+function updateURL() {
+    const url = new URL(window.location.href);
 
     url.searchParams.delete("tags");
     url.searchParams.delete("suites");
     url.searchParams.delete("suite");
-    if (selectedSuites.length) {
-        // Try finding common tags that would result in the current suite selection.
-        let commonTags = new Set(selectedSuites[0].tags);
-        for (const suite of Suites) {
-            if (suite.disabled)
-                suite.tags.forEach((tag) => commonTags.delete(tag));
-            else
-                commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
-        }
-        if (selectedSuites.length > 1 && commonTags.size) {
-            const tags = [...commonTags][0];
-            if (tags !== "default")
-                url.searchParams.set("tags", tags);
-            url.searchParams.delete("suites");
-        } else {
-            url.searchParams.set("suites", selectedSuites.map((suite) => suite.name).join(","));
-        }
-    }
+
+    if (params.tags.length)
+        url.searchParams.set("tags", params.tags.join(","));
+    else if (params.suites.length)
+        url.searchParams.set("suites", params.suites.join(","));
 
     const defaultParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "useAsyncSteps"];
     for (const paramKey of defaultParamKeys) {
