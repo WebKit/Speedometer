@@ -51,7 +51,8 @@ class TodoApp extends HTMLElement {
 
     toggleItem(event) {
         this.#data.forEach((entry) => {
-            if (entry.id === event.detail.id) entry.completed = event.detail.completed;
+            if (entry.id === event.detail.id)
+                entry.completed = event.detail.completed;
         });
 
         this.update("toggle-item", event.detail.id);
@@ -59,7 +60,8 @@ class TodoApp extends HTMLElement {
 
     removeItem(event) {
         this.#data.forEach((entry, index) => {
-            if (entry.id === event.detail.id) this.#data.splice(index, 1);
+            if (entry.id === event.detail.id)
+                this.#data.splice(index, 1);
         });
 
         this.update("remove-item", event.detail.id);
@@ -67,7 +69,8 @@ class TodoApp extends HTMLElement {
 
     updateItem(event) {
         this.#data.forEach((entry) => {
-            if (entry.id === event.detail.id) entry.title = event.detail.title;
+            if (entry.id === event.detail.id)
+                entry.title = event.detail.title;
         });
 
         this.update("update-item", event.detail.id);

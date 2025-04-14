@@ -12,7 +12,8 @@ const getRoute = () => {
         .split("/")
         .pop();
 
-    if (!FILTERS[route]) route = "all";
+    if (!FILTERS[route])
+        route = "all";
 
     return route;
 };
@@ -63,12 +64,12 @@ export default function App() {
     return (
         <>
             <TodoHeader onKeyDown={handleKeyDown} />
-            {model.getTodos().length > 0 ? (
-                <>
+            {model.getTodos().length > 0
+                ? <>
                     <TodoMain todos={model.getTodos()} route={route} onChange={toggleAll} onToggle={model.toggleItem} onRemove={model.removeItem} onSave={model.updateItem} />
                     <TodoFooter todos={model.getTodos()} route={route} onClearCompleted={model.clearCompleted} />
                 </>
-            ) : null}
+                : null}
         </>
     );
 }

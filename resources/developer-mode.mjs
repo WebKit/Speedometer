@@ -137,8 +137,10 @@ function createUIForSuites() {
         label.onclick = (event) => {
             if (event?.ctrlKey || event?.metaKey) {
                 for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) {
-                    if (Suites[suiteIndex] !== suite) setSuiteEnabled(suiteIndex, false);
-                    else setSuiteEnabled(suiteIndex, true);
+                    if (Suites[suiteIndex] !== suite)
+                        setSuiteEnabled(suiteIndex, false);
+                    else
+                        setSuiteEnabled(suiteIndex, true);
                 }
             }
         };
@@ -158,7 +160,8 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
     button.className = "select-all";
     button.textContent = "Select all";
     button.onclick = () => {
-        for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) setSuiteEnabled(suiteIndex, true);
+        for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
+            setSuiteEnabled(suiteIndex, true);
 
         updateURL();
     };
@@ -168,7 +171,8 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
     button.textContent = "Unselect all";
     button.className = "unselect-all";
     button.onclick = () => {
-        for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) setSuiteEnabled(suiteIndex, false);
+        for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
+            setSuiteEnabled(suiteIndex, false);
 
         updateURL();
     };
@@ -183,7 +187,8 @@ function createSuitesTagsButton(setSuiteEnabled) {
     let i = 0;
     const kTagsPerLine = 3;
     for (const tag of Tags) {
-        if (tag === "all") continue;
+        if (tag === "all")
+            continue;
         if (!(i % kTagsPerLine)) {
             buttons = tags.appendChild(document.createElement("div"));
             buttons.className = "button-bar";
@@ -199,8 +204,10 @@ function createSuitesTagsButton(setSuiteEnabled) {
             const selectedTag = event.target.dataTag;
             for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) {
                 let enabled = Suites[suiteIndex].tags.includes(selectedTag);
-                if (invertSelection) enabled = !enabled;
-                if (extendSelection && !enabled) continue;
+                if (invertSelection)
+                    enabled = !enabled;
+                if (extendSelection && !enabled)
+                    continue;
                 setSuiteEnabled(suiteIndex, enabled);
             }
             updateURL();
@@ -242,12 +249,15 @@ function updateURL() {
         // Try finding common tags that would result in the current suite selection.
         let commonTags = new Set(selectedSuites[0].tags);
         for (const suite of Suites) {
-            if (suite.disabled) suite.tags.forEach((tag) => commonTags.delete(tag));
-            else commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
+            if (suite.disabled)
+                suite.tags.forEach((tag) => commonTags.delete(tag));
+            else
+                commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
         }
         if (selectedSuites.length > 1 && commonTags.size) {
             const tags = [...commonTags][0];
-            if (tags !== "default") url.searchParams.set("tags", tags);
+            if (tags !== "default")
+                url.searchParams.set("tags", tags);
             url.searchParams.delete("suites");
         } else {
             url.searchParams.set("suites", selectedSuites.map((suite) => suite.name).join(","));
@@ -256,11 +266,14 @@ function updateURL() {
 
     const defaultParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "useAsyncSteps"];
     for (const paramKey of defaultParamKeys) {
-        if (params[paramKey] !== defaultParams[paramKey]) url.searchParams.set(paramKey, params[paramKey]);
-        else url.searchParams.delete(paramKey);
+        if (params[paramKey] !== defaultParams[paramKey])
+            url.searchParams.set(paramKey, params[paramKey]);
+        else
+            url.searchParams.delete(paramKey);
     }
 
     // Only push state if changed
     url.search = decodeURIComponent(url.search);
-    if (url.href !== window.location.href) window.history.pushState({}, "", url);
+    if (url.href !== window.location.href)
+        window.history.pushState({}, "", url);
 }

@@ -86,20 +86,23 @@ export class BenchmarkConnector {
         this.name = name;
         this.version = version;
 
-        if (!name || !version) console.warn("No name or version supplied, to create a unique appId");
+        if (!name || !version)
+            console.warn("No name or version supplied, to create a unique appId");
 
         this.appId = name && version ? `${name}-${version}` : -1;
         this.onMessage = this.onMessage.bind(this);
     }
 
     async onMessage(event) {
-        if (event.data.id !== this.appId || event.data.key !== "benchmark-connector") return;
+        if (event.data.id !== this.appId || event.data.key !== "benchmark-connector")
+            return;
 
         switch (event.data.type) {
             case "benchmark-suite":
                 const params = new Params(new URLSearchParams(window.location.search));
                 const suite = this.suites[event.data.name];
-                if (!suite) console.error(`Suite with the name of "${event.data.name}" not found!`);
+                if (!suite)
+                    console.error(`Suite with the name of "${event.data.name}" not found!`);
                 const { result } = await suite.runAndRecord(params, (test) => this.sendMessage({ type: "step-complete", status: "success", appId: this.appId, name: this.name, test }));
                 this.sendMessage({ type: "suite-complete", status: "success", appId: this.appId, result });
                 this.disconnect();

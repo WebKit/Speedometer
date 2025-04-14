@@ -20,8 +20,10 @@ async function test() {
                     stats: globalThis.testRunner.stats,
                     testResults: globalThis.testResults,
                 });
-            if (window.testResults) returnResults();
-            else globalThis.addEventListener("test-complete", returnResults, { once: true });
+            if (window.testResults)
+                returnResults();
+            else
+                globalThis.addEventListener("test-complete", returnResults, { once: true });
         });
 
         printTree(testResults);

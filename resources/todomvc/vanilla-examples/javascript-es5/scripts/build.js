@@ -22,14 +22,16 @@ const build = async () => {
 
     // copy src folder
     await fs.cp(sourceDirectory, targetDirectory, { recursive: true }, (err) => {
-        if (err) console.error(err);
+        if (err)
+            console.error(err);
     });
 
     // copy html file
     await fs.copyFile(path.join(rootDirectory, htmlFile), path.join(targetDirectory, htmlFile));
 
     // copy files to move
-    for (let i = 0; i < filesToMove.length; i++) await copy(filesToMove[i], path.join(targetDirectory, path.basename(filesToMove[i])));
+    for (let i = 0; i < filesToMove.length; i++)
+        await copy(filesToMove[i], path.join(targetDirectory, path.basename(filesToMove[i])));
 
     // read html file
     let html = await fs.readFile(path.join(targetDirectory, htmlFile), "utf8");
