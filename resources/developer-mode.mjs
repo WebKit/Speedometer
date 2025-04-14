@@ -254,13 +254,10 @@ function updateParamsSuitesAndTags() {
         else
             commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
     }
-    if (selectedSuites.length > 1 && commonTags.size) {
-        const tags = [...commonTags];
-        if (tags[0] !== "default")
-            params.tags = tags;
-    } else {
+    if (selectedSuites.length > 1 && commonTags.size)
+        params.tags = commonTags.has("default") ? [] : [...commonTags];
+    else
         params.suites = selectedSuites.map((suite) => suite.name);
-    }
 }
 
 function updateURL() {
