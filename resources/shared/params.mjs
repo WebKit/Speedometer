@@ -154,7 +154,7 @@ export class Params {
     }
 
     toSearchParamsObject(filter = true) {
-        const rawParams = { __proto__: null };
+        const rawUrlParams = { __proto__: null };
         for (const [key, value] of Object.entries(this)) {
             // Handle composite values separately.
             if (key === "viewport" || key === "suites" || key === "tags")
@@ -162,18 +162,18 @@ export class Params {
             // Skip over default values.
             if (filter && value === defaultParams[key])
                 continue;
-            rawParams[key] = value;
+            rawUrlParams[key] = value;
         }
 
         if (this.viewport.width !== defaultParams.viewport.width || this.viewport.height !== defaultParams.viewport.height)
-            rawParams.viewport = `${this.viewport.width}x${this.viewport.height}`;
+            rawUrlParams.viewport = `${this.viewport.width}x${this.viewport.height}`;
 
         if (this.suites.length)
-            rawParams.suites = this.suites.join(",");
+            rawUrlParams.suites = this.suites.join(",");
         else if (this.tags.length)
-            rawParams.tags = this.tags.join(",");
+            rawUrlParams.tags = this.tags.join(",");
 
-        return new URLSearchParams(rawParams);
+        return new URLSearchParams(rawUrlParams);
     }
 
     toSearchParams() {
