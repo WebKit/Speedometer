@@ -14,8 +14,7 @@ export const useRouter = (callback) => {
     const handleChange = () => {
         current = document.location.hash;
         /* istanbul ignore else */
-        if (onChange)
-            onChange(document.location.hash);
+        if (onChange) onChange(document.location.hash);
     };
 
     /**

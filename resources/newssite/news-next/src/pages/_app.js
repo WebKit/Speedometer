@@ -10,8 +10,8 @@ import Script from "next/script";
 function App({ Component, pageProps }) {
     const [render, setRender] = useState(false);
     useEffect(() => setRender(true), []);
-    return render
-        ? <>
+    return render ? (
+        <>
             <Script id="raf-mock">{`// This hack allows to capture the work normally happening in a rAF. We
 // may be able to remove it if the runner improves.
 window.requestAnimationFrame = (cb) => window.setTimeout(cb, 0);
@@ -21,6 +21,6 @@ window.requestIdleCallback = undefined;
 window.cancelIdleCallback = undefined;`}</Script>
             <Component {...pageProps} />
         </>
-        : null;
+    ) : null;
 }
 export default App;

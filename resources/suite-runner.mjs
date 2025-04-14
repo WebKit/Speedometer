@@ -72,8 +72,7 @@ export class SuiteRunner {
 
         performance.mark(suiteStartLabel);
         for (const test of this.#suite.tests) {
-            if (this.#client?.willRunTest)
-                await this.#client.willRunTest(this.#suite, test);
+            if (this.#client?.willRunTest) await this.#client.willRunTest(this.#suite, test);
 
             const testRunnerType = this.#suite.type ?? this.params.useAsyncSteps ? "async" : "default";
             const testRunnerClass = TEST_RUNNER_LOOKUP[testRunnerType];
@@ -92,8 +91,7 @@ export class SuiteRunner {
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
         const suiteTotal = this.#suiteResults.total;
-        if (suiteTotal === 0)
-            throw new Error(`Got invalid 0-time total for suite ${this.#suite.name}: ${suiteTotal}`);
+        if (suiteTotal === 0) throw new Error(`Got invalid 0-time total for suite ${this.#suite.name}: ${suiteTotal}`);
     }
 
     async _loadFrame() {
@@ -107,8 +105,7 @@ export class SuiteRunner {
 
     _recordTestResults = async (test, syncTime, asyncTime) => {
         // Skip reporting updates for the warmup suite.
-        if (this.#suite === WarmupSuite)
-            return;
+        if (this.#suite === WarmupSuite) return;
 
         const total = syncTime + asyncTime;
         this.#suiteResults.tests[test.name] = { tests: { Sync: syncTime, Async: asyncTime }, total: total };
@@ -116,8 +113,7 @@ export class SuiteRunner {
     };
 
     async _updateClient(suite = this.#suite) {
-        if (this.#client?.didFinishSuite)
-            await this.#client.didFinishSuite(suite);
+        if (this.#client?.didFinishSuite) await this.#client.didFinishSuite(suite);
     }
 }
 
@@ -185,20 +181,17 @@ export class RemoteSuiteRunner extends SuiteRunner {
 
     _handlePostMessage(event) {
         const callback = this.postMessageCallbacks.get(event.data.type);
-        if (callback)
-            callback(event);
+        if (callback) callback(event);
     }
 
     _startSubscription(type, callback) {
-        if (this.postMessageCallbacks.has(type))
-            throw new Error("Callback exists already");
+        if (this.postMessageCallbacks.has(type)) throw new Error("Callback exists already");
 
         this.postMessageCallbacks.set(type, callback);
     }
 
     _stopSubscription(type) {
-        if (!this.postMessageCallbacks.has(type))
-            throw new Error("Callback does not exist");
+        if (!this.postMessageCallbacks.has(type)) throw new Error("Callback does not exist");
 
         this.postMessageCallbacks.delete(type);
     }
