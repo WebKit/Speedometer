@@ -156,8 +156,10 @@ export class Params {
     toSearchParamsObject(filter = true) {
         const rawParams = { __proto__: null };
         for (const [key, value] of Object.entries(this)) {
+            // Handle composite values separately.
             if (key === "viewport" || key === "suites" || key === "tags")
                 continue;
+            // Skip over default values.
             if (filter && value === defaultParams[key])
                 continue;
             rawParams[key] = value;
