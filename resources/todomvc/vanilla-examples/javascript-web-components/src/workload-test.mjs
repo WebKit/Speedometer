@@ -12,7 +12,7 @@ const suites = {
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 input.value = getTodoText(defaultLanguage, i);
                 input.dispatchEvent(new Event("input"));
-                input.dispatchEvent(new KeyboardEvent("keyup", { keyCode: 13, key: "Enter"}));
+                input.dispatchEvent(new KeyboardEvent("keyup", { keyCode: 13, key: "Enter" }));
             }
         }),
         new BenchmarkStep("Completing-items", () => {

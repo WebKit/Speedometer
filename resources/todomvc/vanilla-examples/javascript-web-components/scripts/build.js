@@ -82,7 +82,6 @@ async function updateImportsInFile({ file, src, dest }) {
 async function updateImports({ files, src, dest }) {
     for (const file of files)
         await updateImportsInFile({ file, src, dest });
-
 }
 
 const filesToMove = [
@@ -109,7 +108,7 @@ const importsToRename = [
     {
         src: "node_modules/todomvc-css/dist/",
         dest: "styles/",
-        files: ["./dist/index.html"]
+        files: ["./dist/index.html"],
     },
     {
         src: "../../../node_modules/todomvc-css/dist/",
@@ -125,16 +124,13 @@ const importsToRename = [
     {
         src: "/src/",
         dest: "./",
-        files: ["./dist/src/index.js"]
+        files: ["./dist/src/index.js"],
     },
     {
         src: "/node_modules/speedometer-utils/",
         dest: "./",
-        files: [
-            "./dist/src/index.js",
-            "./dist/src/workload-test.mjs"
-        ]
-    }
+        files: ["./dist/src/index.js", "./dist/src/workload-test.mjs"],
+    },
 ];
 
 const build = async () => {
@@ -148,7 +144,7 @@ const build = async () => {
     await copyFiles(filesToMove);
 
     // rename imports files
-    for (const entry of importsToRename){
+    for (const entry of importsToRename) {
         const { files, src, dest } = entry;
         await updateImports({ files, src, dest });
     }
