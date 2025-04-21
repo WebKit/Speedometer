@@ -724,3 +724,12 @@ export const defaultTodoText = {
     ru: "Кое-что сделать",
     emoji: "Something to do 😊",
 };
+
+export const numberOfItemsToAdd = 100;
+export const defaultLanguage = "en";
+
+export function getTodoText(lang = "en", index) {
+    const todosSelection = todos[lang];
+    const currentIndex = index % todosSelection.length;
+    return todosSelection[currentIndex];
+}

@@ -1,14 +1,5 @@
 import { BenchmarkTestStep } from "./benchmark-runner.mjs";
-import { todos } from "./translations.mjs";
-
-const numberOfItemsToAdd = 100;
-const defaultLanguage = "en";
-
-function getTodoText(lang, index) {
-    const todosSelection = todos[lang] ?? todos[defaultLanguage];
-    const currentIndex = index % todosSelection.length;
-    return todosSelection[currentIndex];
-}
+import { getTodoText, numberOfItemsToAdd, defaultLanguage } from "./shared/translations.mjs";
 
 export const Suites = [];
 
