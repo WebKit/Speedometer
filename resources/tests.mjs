@@ -266,6 +266,18 @@ Suites.push({
 });
 
 Suites.push({
+    name: "TodoMVC-WebComponents-PostMessage",
+    url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+    tags: ["experimental", "todomvc", "webcomponents"],
+    disabled: true,
+    async prepare() {},
+    type: "remote",
+    /* config: {
+        name: "default", // optional param to target non-default tests locally
+    }, */
+});
+
+Suites.push({
     name: "TodoMVC-WebComponents-Complex-DOM",
     url: "resources/todomvc/vanilla-examples/javascript-web-components-complex/dist/index.html",
     tags: ["todomvc", "webcomponents", "complex"],

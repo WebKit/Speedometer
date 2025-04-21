@@ -1,6 +1,6 @@
 import { BenchmarkStep, BenchmarkSuite } from "/node_modules/speedometer-utils/benchmark.mjs";
 import { getAllElements, getElement } from "/node_modules/speedometer-utils/helpers.mjs";
-import { getTodoText, numberOfItemsToAdd, defaultLanguage } from "/node_modules/speedometer-utils/todomvc.mjs";
+import { getTodoText, numberOfItemsToAdd, defaultLanguage } from "/node_modules/speedometer-utils/translations.mjs";
 
 export const appName = "todomvc-postmessage";
 export const appVersion = "1.0.0";

@@ -1,6 +1,6 @@
 import { BenchmarkStep, BenchmarkSuite } from "./benchmark.mjs";
 import { getAllElements, getElement } from "./helpers.mjs";
-import { getTodoText, numberOfItemsToAdd, defaultLanguage } from "./todomvc.mjs";
+import { getTodoText, numberOfItemsToAdd, defaultLanguage } from "./translations.mjs";
 
 export const appName = "todomvc-postmessage";
 export const appVersion = "1.0.0";
