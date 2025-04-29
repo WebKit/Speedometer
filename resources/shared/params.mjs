@@ -1,3 +1,6 @@
+
+export const LAYOUT_MODE = Object.freeze(["getBoundingClientRect", "elementFromPoint"]);
+
 export class Params {
     viewport = {
         width: 800,
@@ -27,6 +30,8 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    // Choices: ""
+    layoutMode = "getBoundingClientRect";
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -55,8 +60,9 @@ export class Params {
         this.useAsyncSteps = this._parseBooleanParam(searchParams, "useAsyncSteps");
         this.waitBeforeSync = this._parseIntParam(searchParams, "waitBeforeSync", 0);
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
-        this.measurementMethod = this._parseMeasurementMethod(searchParams);
+        this.measurementMethod = this._parseChoiceParam(searchParams, "measurementMethod", ["raf"]);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
+        this.layoutMode = this._parseChoiceParam(searchParams, "layoutMode", LAYOUT_MODE);
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -121,14 +127,14 @@ export class Params {
         return tags;
     }
 
-    _parseMeasurementMethod(searchParams) {
-        if (!searchParams.has("measurementMethod"))
-            return defaultParams.measurementMethod;
-        const measurementMethod = searchParams.get("measurementMethod");
-        if (measurementMethod !== "raf")
-            throw new Error(`Invalid measurement method: '${measurementMethod}', must be 'raf'.`);
-        searchParams.delete("measurementMethod");
-        return measurementMethod;
+    _parseChoiceParam(searchParams, paramKey, choices) {
+        if (!searchParams.has(paramKey))
+            return defaultParams[paramKey];
+        const value = searchParams.get(paramKey);
+        if (!choices.includes(value))
+            throw new Error(`Got invalid ${paramKey}: '${value}', choices are ${choices}`);
+        searchParams.delete(paramKey);
+        return value;
     }
 
     _parseShuffleSeed(searchParams) {
