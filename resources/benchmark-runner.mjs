@@ -23,6 +23,7 @@ function getParent(lookupStartNode, path) {
 class Page {
     constructor(frame) {
         this._frame = frame;
+        this._leakedLayout = {};
     }
 
     getLocalStorage() {
@@ -30,8 +31,13 @@ class Page {
     }
 
     layout() {
-        const body = this._frame.contentDocument.body.getBoundingClientRect();
-        this.layout.e = document.elementFromPoint((body.width / 2) | 0, (body.height / 2) | 0);
+        const body = this._frame ? this._frame.contentDocument.body : document.body;
+        const bodyRect = body.getBoundingClientRect();
+        if (params.layoutMode === "getBoundingClientRect")
+            this._leakedLayout.sum = bodyRect.width;
+        if (params.layoutMode === "elementFromPoint")
+            this._leakedLayout.element = document.elementFromPoint((bodyRect.width / 2) | 0, (bodyRect.height / 2) | 0);
+        return bodyRect;
     }
 
     async waitForElement(selector) {
