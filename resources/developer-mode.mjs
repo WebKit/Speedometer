@@ -1,5 +1,5 @@
 import { Suites, Tags } from "./tests.mjs";
-import { params, defaultParams, LAYOUT_MODE,} from "./shared/params.mjs";
+import { params, defaultParams, LAYOUT_MODE } from "./shared/params.mjs";
 
 export function createDeveloperModeContainer() {
     const container = document.createElement("div");
@@ -121,7 +121,7 @@ function createSelectUI(labelValue, initialValue, choices, paramsUpdateCallback)
         updateURL();
     };
 
-    choices.forEach(choice => {
+    choices.forEach((choice) => {
         const option = new Option(choice, choice);
         select.add(option);
     });

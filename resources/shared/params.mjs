@@ -1,4 +1,3 @@
-
 export const LAYOUT_MODE = Object.freeze(["getBoundingClientRect", "elementFromPoint"]);
 
 export class Params {
