@@ -64,7 +64,7 @@ async function copyFiles(files) {
  * @param {string} config.file - File to read from.
  */
 async function updateImportsInFile({ file, src, dest }) {
-    let contents = await fs.readFile(`${file}`, "utf8");
+    let contents = await fs.readFile(file, "utf8");
     contents = contents.replaceAll(src, dest);
     await fs.writeFile(`${file}`, contents);
 }
