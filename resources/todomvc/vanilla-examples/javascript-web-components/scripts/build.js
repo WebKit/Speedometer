@@ -50,7 +50,7 @@ async function copyFile(src, dest) {
  */
 async function copyFiles(files) {
     for (const file of files)
-        await copyFile(file.src, `${file.dest}`);
+        await copyFile(file.src, file.dest);
 }
 
 /**
