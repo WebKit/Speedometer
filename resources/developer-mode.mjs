@@ -254,7 +254,7 @@ function updateParamsSuitesAndTags() {
             commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
     }
     if (selectedSuites.length > 1 && commonTags.size)
-        params.tags = commonTags.has("default") ? [] : [...commonTags];
+        params.tags = [...commonTags];
     else
         params.suites = selectedSuites.map((suite) => suite.name);
 }
