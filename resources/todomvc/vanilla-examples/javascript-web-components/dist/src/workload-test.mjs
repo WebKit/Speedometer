@@ -1,6 +1,6 @@
-import { BenchmarkStep, BenchmarkSuite } from "./benchmark.mjs";
-import { getAllElements, getElement } from "./helpers.mjs";
-import { getTodoText, numberOfItemsToAdd, defaultLanguage } from "./translations.mjs";
+import { BenchmarkStep, BenchmarkSuite } from "./speedometer-utils/benchmark.mjs";
+import { getAllElements, getElement } from "./speedometer-utils/helpers.mjs";
+import { getTodoText, numberOfItemsToAdd, defaultLanguage } from "./speedometer-utils/translations.mjs";
 
 export const appName = "todomvc-postmessage";
 export const appVersion = "1.0.0";
@@ -12,7 +12,7 @@ const suites = {
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 input.value = getTodoText(defaultLanguage, i);
                 input.dispatchEvent(new Event("input"));
-                input.dispatchEvent(new KeyboardEvent("keyup", { keyCode: 13, key: "Enter"}));
+                input.dispatchEvent(new KeyboardEvent("keyup", { keyCode: 13, key: "Enter" }));
             }
         }),
         new BenchmarkStep("Completing-items", () => {

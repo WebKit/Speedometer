@@ -1,4 +1,4 @@
-import { BenchmarkConnector } from "./benchmark.mjs";
+import { BenchmarkConnector } from "./speedometer-utils/benchmark.mjs";
 import suites, { appName, appVersion } from "./workload-test.mjs";
 
 /*
