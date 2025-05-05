@@ -66,7 +66,7 @@ async function copyFiles(files) {
 async function updateImportsInFile({ file, src, dest }) {
     let contents = await fs.readFile(file, "utf8");
     contents = contents.replaceAll(src, dest);
-    await fs.writeFile(`${file}`, contents);
+    await fs.writeFile(file, contents);
 }
 
 /**
