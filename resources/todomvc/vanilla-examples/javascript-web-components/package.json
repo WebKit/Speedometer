@@ -17,6 +17,7 @@
     "license": "ISC",
     "dependencies": {
         "http-server": "^14.1.1",
-        "todomvc-css": "file:../../todomvc-css"
+        "todomvc-css": "file:../../todomvc-css",
+        "speedometer-utils": "../../../shared"
     }
 }
