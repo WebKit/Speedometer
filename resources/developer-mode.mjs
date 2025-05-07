@@ -1,5 +1,5 @@
 import { Suites, Tags } from "./tests.mjs";
-import { params, defaultParams, LAYOUT_MODES } from "./shared/params.mjs";
+import { params, LAYOUT_MODES } from "./shared/params.mjs";
 
 export function createDeveloperModeContainer() {
     const container = document.createElement("div");
