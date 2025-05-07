@@ -1,5 +1,5 @@
 import { Suites, Tags } from "./tests.mjs";
-import { params, defaultParams, LAYOUT_MODE } from "./shared/params.mjs";
+import { params, defaultParams, LAYOUT_MODES } from "./shared/params.mjs";
 
 export function createDeveloperModeContainer() {
     const container = document.createElement("div");
@@ -109,7 +109,7 @@ function createTimeRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000
 }
 
 function createUIForLayoutMode() {
-    return createSelectUI("Force layout mode", params.layoutMode, LAYOUT_MODE, (value) => {
+    return createSelectUI("Force layout mode", params.layoutMode, LAYOUT_MODES, (value) => {
         params.layoutMode = value;
     });
 }

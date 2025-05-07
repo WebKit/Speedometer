@@ -1,4 +1,4 @@
-export const LAYOUT_MODE = Object.freeze(["getBoundingClientRect", "elementFromPoint"]);
+export const LAYOUT_MODES = Object.freeze(["getBoundingClientRect", "elementFromPoint"]);
 
 export class Params {
     viewport = {
@@ -29,7 +29,7 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
-    // Choices: ""
+    // Choices: getBoundingClientRect or elementFromPoint
     layoutMode = "getBoundingClientRect";
 
     constructor(searchParams = undefined) {
@@ -59,9 +59,9 @@ export class Params {
         this.useAsyncSteps = this._parseBooleanParam(searchParams, "useAsyncSteps");
         this.waitBeforeSync = this._parseIntParam(searchParams, "waitBeforeSync", 0);
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
-        this.measurementMethod = this._parseChoiceParam(searchParams, "measurementMethod", ["raf"]);
+        this.measurementMethod = this._parseEnumParam(searchParams, "measurementMethod", ["raf"]);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
-        this.layoutMode = this._parseChoiceParam(searchParams, "layoutMode", LAYOUT_MODE);
+        this.layoutMode = this._parseEnumParam(searchParams, "layoutMode", LAYOUT_MODES);
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -126,12 +126,12 @@ export class Params {
         return tags;
     }
 
-    _parseChoiceParam(searchParams, paramKey, choices) {
+    _parseEnumParam(searchParams, paramKey, enumArray) {
         if (!searchParams.has(paramKey))
             return defaultParams[paramKey];
         const value = searchParams.get(paramKey);
-        if (!choices.includes(value))
-            throw new Error(`Got invalid ${paramKey}: '${value}', choices are ${choices}`);
+        if (!enumArray.includes(value))
+            throw new Error(`Got invalid ${paramKey}: '${value}', choices are ${enumArray}`);
         searchParams.delete(paramKey);
         return value;
     }

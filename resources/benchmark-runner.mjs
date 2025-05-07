@@ -1,5 +1,6 @@
 import { Metric } from "./metric.mjs";
 import { params } from "./shared/params.mjs";
+import { forceLayout } from "./shared/helpers.mjs";
 import { SUITE_RUNNER_LOOKUP } from "./suite-runner.mjs";
 
 const performance = globalThis.performance;
@@ -23,7 +24,6 @@ function getParent(lookupStartNode, path) {
 class Page {
     constructor(frame) {
         this._frame = frame;
-        this._leakedLayout = {};
     }
 
     getLocalStorage() {
@@ -32,12 +32,8 @@ class Page {
 
     layout() {
         const body = this._frame ? this._frame.contentDocument.body : document.body;
-        const bodyRect = body.getBoundingClientRect();
-        if (params.layoutMode === "getBoundingClientRect")
-            this._leakedLayout.sum = bodyRect.width;
-        if (params.layoutMode === "elementFromPoint")
-            this._leakedLayout.element = document.elementFromPoint((bodyRect.width / 2) | 0, (bodyRect.height / 2) | 0);
-        return bodyRect;
+        const value = forceLayout(body, params.layoutMode);
+        body._leakedLayoutValue = value; // Prevent dead code elimination.
     }
 
     async waitForElement(selector) {

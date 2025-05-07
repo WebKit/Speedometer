@@ -23,9 +23,11 @@ export function getAllElements(selector, path = [], lookupStartNode = document) 
     return elements;
 }
 
-export function forceLayout() {
-    // FIXME: sync implementation with Page.prototype.layout().
-    const rect = document.body.getBoundingClientRect();
-    const e = document.elementFromPoint((rect.width / 2) | 0, (rect.height / 2) | 0);
-    return e;
+export function forceLayout(body, layoutMode = "elementFromPoint") {
+    if (body !== undefined)
+        body = document.body;
+    const rect = body.getBoundingClientRect();
+    if (layoutMode === "elementFromPoint")
+        return document.elementFromPoint((rect.width / 2) | 0, (rect.height / 2) | 0);
+    return rect.height;
 }
