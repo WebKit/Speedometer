@@ -11,7 +11,7 @@ export class Params {
     iterationCount = 10;
     suites = [];
     // A list of tags to filter suites
-    tags = [];
+    tags = ["default"];
     // Toggle running a dummy suite once before the normal test suites.
     useWarmupSuite = false;
     // toggle async type vs default raf type.
@@ -173,10 +173,14 @@ export class Params {
         if (this.viewport.width !== defaultParams.viewport.width || this.viewport.height !== defaultParams.viewport.height)
             rawUrlParams.viewport = `${this.viewport.width}x${this.viewport.height}`;
 
-        if (this.suites.length)
+        if (this.suites.length) {
             rawUrlParams.suites = this.suites.join(",");
-        else if (this.tags.length)
-            rawUrlParams.tags = this.tags.join(",");
+        } else if (this.tags.length) {
+            if (!(this.tags.length === 1 && this.tags[0] === "default"))
+                rawUrlParams.tags = this.tags.join(",");
+        } else {
+            rawUrlParams.suites = "";
+        }
 
         return new URLSearchParams(rawUrlParams);
     }

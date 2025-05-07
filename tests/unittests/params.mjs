@@ -7,6 +7,7 @@ describe("Params", () => {
         });
         it("should be empty for empty Params", () => {
             const params = new Params();
+            expect(params.tags).to.eql(["default"]);
             expect(params.toSearchParams()).to.equal("");
         });
         it("should contain custom viewport", () => {
@@ -41,6 +42,14 @@ describe("Params", () => {
             );
             expect(params.toSearchParams()).to.equal("suites=Suite1");
         });
+        it("should ignore a single default tag", () => {
+            const params = new Params(
+                new URLSearchParams({
+                    tags: ["default"],
+                })
+            );
+            expect(params.toSearchParams()).to.equal("");
+        });
         it("should contain multiple single suite", () => {
             const params = new Params(
                 new URLSearchParams({
@@ -56,6 +65,14 @@ describe("Params", () => {
                 })
             );
             expect(params.toSearchParams()).to.equal("tags=tagB%2Ctag1%2CtagA");
+        });
+        it("should support no suites", () => {
+            const params = new Params(
+                new URLSearchParams({
+                    suites: "",
+                })
+            );
+            expect(params.toSearchParams()).to.equal("suites=");
         });
     });
 
