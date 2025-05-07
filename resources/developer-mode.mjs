@@ -289,47 +289,7 @@ function updateURL() {
     updateParamsSuitesAndTags();
 
     const url = new URL(window.location.href);
-<<<<<<< HEAD
-
-    url.searchParams.delete("tags");
-    url.searchParams.delete("suites");
-    url.searchParams.delete("suite");
-
-    if (params.tags.length)
-        url.searchParams.set("tags", params.tags.join(","));
-    else if (params.suites.length)
-        url.searchParams.set("suites", params.suites.join(","));
-
-    const defaultParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "useAsyncSteps", "layoutMode"];
-    for (const paramKey of defaultParamKeys) {
-        if (params[paramKey] !== defaultParams[paramKey])
-            url.searchParams.set(paramKey, params[paramKey]);
-        else
-            url.searchParams.delete(paramKey);
-    }
-
-||||||| dd661c03
-
-    url.searchParams.delete("tags");
-    url.searchParams.delete("suites");
-    url.searchParams.delete("suite");
-
-    if (params.tags.length)
-        url.searchParams.set("tags", params.tags.join(","));
-    else if (params.suites.length)
-        url.searchParams.set("suites", params.suites.join(","));
-
-    const defaultParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "useAsyncSteps"];
-    for (const paramKey of defaultParamKeys) {
-        if (params[paramKey] !== defaultParams[paramKey])
-            url.searchParams.set(paramKey, params[paramKey]);
-        else
-            url.searchParams.delete(paramKey);
-    }
-
-=======
     url.search = params.toSearchParams();
->>>>>>> main
     // Only push state if changed
     if (url.href !== window.location.href)
         window.history.pushState({}, "", url);
