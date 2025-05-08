@@ -4,6 +4,7 @@ import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
+import { parseConfig } from "./data-provider.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -21,7 +22,7 @@ class MainBenchmarkClient {
     _steppingResolver = null;
 
     constructor() {
-        window.addEventListener("DOMContentLoaded", () => this.prepareUI());
+        window.addEventListener("DOMContentLoaded", () => this.init());
         this._showSection(window.location.hash);
         window.dispatchEvent(new Event("SpeedometerReady"));
     }
@@ -324,7 +325,15 @@ class MainBenchmarkClient {
         document.querySelector(".non-standard-params").style.display = "block";
     }
 
+    async init() {
+        console.log("init()");
+        const { suites } = await parseConfig();
+        console.log("suites", suites);
+        this.prepareUI();
+    }
+
     prepareUI() {
+        console.log("prepareUI()");
         window.addEventListener("hashchange", this._hashChangeHandler.bind(this));
         window.addEventListener("resize", this._resizeScreeHandler.bind(this));
         this._resizeScreeHandler();
