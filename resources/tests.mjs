@@ -23,9 +23,6 @@ export class Tags extends Set {
 }
 export class Suites extends Array {
     enable(names, tags, referenceTags) {
-        console.log("names", names);
-        console.log("tags", tags);
-        console.log("referenceTags", referenceTags);
         if (names?.length) {
             const lowerCaseNames = names.map((each) => each.toLowerCase());
             this.forEach((suite) => {
