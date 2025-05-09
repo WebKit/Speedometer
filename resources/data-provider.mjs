@@ -1,6 +1,4 @@
-import { defaultSuites } from "./default-suites.mjs";
-import { Suites } from "./suites.mjs";
-import { Tags } from "./tags.mjs";
+import { defaultSuites, Suites, Tags } from "./tests.mjs";
 const DEFAULT_CONFIG_PATH = "resources/config.json";
 
 // http://localhost:8080/?config=http://localhost:8080/resources/config.json

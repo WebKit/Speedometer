@@ -1,6 +1,5 @@
 import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
-import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
@@ -20,6 +19,8 @@ class MainBenchmarkClient {
     _metrics = Object.create(null);
     _steppingPromise = null;
     _steppingResolver = null;
+    _suites = null;
+    _tags = null;
 
     constructor() {
         window.addEventListener("DOMContentLoaded", () => this.init());
@@ -67,14 +68,14 @@ class MainBenchmarkClient {
         if (this._isRunning)
             return false;
 
-        if (Suites.every((suite) => suite.disabled)) {
+        if (this._suites.every((suite) => suite.disabled)) {
             const message = `No suites selected - "${params.suites}" does not exist.`;
             alert(message);
             console.error(
                 message,
                 params.suites,
                 "\nValid values:",
-                Suites.map((each) => each.name)
+                this._suites.map((each) => each.name)
             );
 
             return false;
@@ -94,12 +95,12 @@ class MainBenchmarkClient {
         this._metrics = Object.create(null);
         this._isRunning = true;
 
-        const enabledSuites = Suites.filter((suite) => !suite.disabled);
+        const enabledSuites = this._suites.filter((suite) => !suite.disabled);
         const totalSuitesCount = enabledSuites.length;
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
-        const runner = new BenchmarkRunner(Suites, this);
+        const runner = new BenchmarkRunner(this._suites, this);
         runner.runMultipleIterations(params.iterationCount);
         return true;
     }
@@ -327,8 +328,8 @@ class MainBenchmarkClient {
 
     async init() {
         const { getSuites, getTags } = await getData();
-        console.log("suites", getSuites());
-        console.log("tags", getTags());
+        this._suites = getSuites();
+        this._tags = getTags();
         this.prepareUI();
     }
 
@@ -347,10 +348,10 @@ class MainBenchmarkClient {
         });
 
         if (params.suites.length > 0 || params.tags.length > 0)
-            Suites.enable(params.suites, params.tags);
+            this._suites.enable(params.suites, params.tags, this._tags);
 
         if (params.developerMode) {
-            this._developerModeContainer = createDeveloperModeContainer(Suites);
+            this._developerModeContainer = createDeveloperModeContainer(this._suites, this._tags);
             document.body.append(this._developerModeContainer);
         }
 
