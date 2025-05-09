@@ -4,7 +4,7 @@
             "name": "NewsSite-PostMessage",
             "url": "resources/newssite/news-next/dist/index.html",
             "tags": ["experimental", "newssite", "language"],
-            "disabled": true,
+            "disabled": false,
             "type": "remote",
             "config": {
                 "name": "default"
