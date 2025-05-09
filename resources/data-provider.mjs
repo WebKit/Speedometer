@@ -15,8 +15,12 @@ export async function getData() {
     const tags = new Tags();
     const suites = new Suites();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const configParam = urlParams.get("config");
+    let configParam = null;
+
+    if (typeof window !== "undefined") {
+        const urlParams = new URLSearchParams(window.location.search);
+        configParam = urlParams.get("config");
+    }
 
     if (configParam) {
         const configUrl = isValidJsonUrl(configParam) ? configParam : DEFAULT_CONFIG_PATH;

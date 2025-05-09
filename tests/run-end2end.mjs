@@ -3,7 +3,7 @@
 import assert from "assert";
 import testSetup from "./helper.mjs";
 
-import { getData } from "./data-provider.mjs";
+import { getData } from "../resources/data-provider.mjs";
 
 const HELP = `
 This script runs end2end tests by invoking the benchmark via the main
