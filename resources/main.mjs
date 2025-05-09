@@ -4,7 +4,7 @@ import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
-import { parseConfig } from "./data-provider.mjs";
+import { getData } from "./data-provider.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -326,15 +326,13 @@ class MainBenchmarkClient {
     }
 
     async init() {
-        console.log("init()");
-        const { suites, tags } = await parseConfig();
-        console.log("suites", suites);
-        console.log("tags", tags);
+        const { getSuites, getTags } = await getData();
+        console.log("suites", getSuites());
+        console.log("tags", getTags());
         this.prepareUI();
     }
 
     prepareUI() {
-        console.log("prepareUI()");
         window.addEventListener("hashchange", this._hashChangeHandler.bind(this));
         window.addEventListener("resize", this._resizeScreeHandler.bind(this));
         this._resizeScreeHandler();
