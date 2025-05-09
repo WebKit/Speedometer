@@ -327,8 +327,9 @@ class MainBenchmarkClient {
 
     async init() {
         console.log("init()");
-        const { suites } = await parseConfig();
+        const { suites, tags } = await parseConfig();
         console.log("suites", suites);
+        console.log("tags", tags);
         this.prepareUI();
     }
 
