@@ -34,6 +34,9 @@ export async function getData() {
         defaultSuites.forEach(suite => suites.push(suite));
     }
 
+    console.log("suites", suites);
+    console.log("tags", tags);
+
     tags.freeze();
     suites.freeze();
 
