@@ -166,7 +166,7 @@ export class RemoteSuiteRunner extends SuiteRunner {
         const appReadyPromise = this._subscribeOnce("app-ready");
         await this._loadFrame(this.suite);
         const response = await appReadyPromise;
-        await this.suite.prepare(this.page);
+        await this.suite.prepare?.(this.page);
         // Capture appId to pass along with messages.
         this.appId = response?.appId;
 
