@@ -327,13 +327,13 @@ class MainBenchmarkClient {
     }
 
     async init() {
-        const { getSuites, getTags } = await getData();
+        const { getSuites, getTags, enableSuites } = await getData();
         this._suites = getSuites();
         this._tags = getTags();
-        this.prepareUI();
+        this.prepareUI(enableSuites);
     }
 
-    prepareUI() {
+    prepareUI(enableSuites) {
         window.addEventListener("hashchange", this._hashChangeHandler.bind(this));
         window.addEventListener("resize", this._resizeScreeHandler.bind(this));
         this._resizeScreeHandler();
@@ -348,7 +348,7 @@ class MainBenchmarkClient {
         });
 
         if (params.suites.length > 0 || params.tags.length > 0)
-            this._suites.enable(params.suites, params.tags, this._tags);
+            enableSuites(params.suites, params.tags, this._tags);
 
         if (params.developerMode) {
             this._developerModeContainer = createDeveloperModeContainer(this._suites, this._tags);
