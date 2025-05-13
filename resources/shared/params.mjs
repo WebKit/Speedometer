@@ -1,5 +1,6 @@
 export const LAYOUT_MODES = Object.freeze(["getBoundingClientRect", "getBoundingRectAndElementFromPoint"]);
 
+const DEFAULT_CONFIG_PATH = "resources/config.json";
 export class Params {
     viewport = {
         width: 800,
@@ -33,6 +34,7 @@ export class Params {
     layoutMode = LAYOUT_MODES[0];
     // Measure more workload prepare time.
     measurePrepare = false;
+    configUrl = "";
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -65,6 +67,7 @@ export class Params {
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
         this.layoutMode = this._parseEnumParam(searchParams, "layoutMode", LAYOUT_MODES);
         this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
+        this.configUrl = this._parseConfigUrl(searchParams);
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -157,6 +160,15 @@ export class Params {
         return shuffleSeed;
     }
 
+    _parseConfigUrl(searchParams) {
+        const configUrl = searchParams.get("configUrl");
+        searchParams.delete("configUrl");
+        if (configUrl)
+            return isValidJsonUrl(configUrl) ? configUrl : DEFAULT_CONFIG_PATH;
+
+        return "";
+    }
+
     toCompleteSearchParamsObject() {
         return this.toSearchParamsObject(false);
     }
@@ -190,6 +202,14 @@ export class Params {
 
     toSearchParams() {
         return this.toSearchParamsObject().toString();
+    }
+}
+
+function isValidJsonUrl(url) {
+    try {
+        return new URL(url) && url.toLowerCase().endsWith(".json");
+    } catch (_) {
+        return false;
     }
 }
 

@@ -1,30 +1,14 @@
 import { defaultSuites, Suites, Tags } from "./tests.mjs";
-const DEFAULT_CONFIG_PATH = "resources/config.json";
+import { params } from "./shared/params.mjs";
 
-// http://localhost:8080/?config=http://localhost:8080/resources/config.json
-
-function isValidJsonUrl(url) {
-    try {
-        return new URL(url) && url.toLowerCase().endsWith(".json");
-    } catch (_) {
-        return false;
-    }
-}
+// http://localhost:8080/?configUrl=http://localhost:8080/resources/config.json
 
 export async function getData() {
     const tags = new Tags();
     const suites = new Suites();
 
-    let configParam = null;
-
-    if (typeof window !== "undefined") {
-        const urlParams = new URLSearchParams(window.location.search);
-        configParam = urlParams.get("config");
-    }
-
-    if (configParam) {
-        const configUrl = isValidJsonUrl(configParam) ? configParam : DEFAULT_CONFIG_PATH;
-        const response = await fetch(configUrl);
+    if (params.configUrl) {
+        const response = await fetch(params.configUrl);
         const config = await response.json();
 
         config.suites.flatMap((suite) => suite.tags).forEach(tag => tags.add(tag));
