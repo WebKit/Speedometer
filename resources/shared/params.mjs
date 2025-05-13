@@ -28,7 +28,7 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
-    configUrl = "";
+    config = "";
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -59,7 +59,7 @@ export class Params {
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
-        this.configUrl = this._parseConfigUrl(searchParams);
+        this.config = this._parseConfig(searchParams);
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -152,11 +152,11 @@ export class Params {
         return shuffleSeed;
     }
 
-    _parseConfigUrl(searchParams) {
-        const configUrl = searchParams.get("configUrl");
-        searchParams.delete("configUrl");
-        if (configUrl)
-            return isValidJsonUrl(configUrl) ? configUrl : DEFAULT_CONFIG_PATH;
+    _parseConfig(searchParams) {
+        const config = searchParams.get("config");
+        searchParams.delete("config");
+        if (config)
+            return isValidJsonUrl(config) ? config : DEFAULT_CONFIG_PATH;
 
         return "";
     }
