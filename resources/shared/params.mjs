@@ -1,3 +1,4 @@
+const DEFAULT_CONFIG_PATH = "resources/config.json";
 export class Params {
     viewport = {
         width: 800,
@@ -27,6 +28,7 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    configUrl = "";
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -57,6 +59,7 @@ export class Params {
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
+        this.configUrl = this._parseConfigUrl(searchParams);
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -149,6 +152,15 @@ export class Params {
         return shuffleSeed;
     }
 
+    _parseConfigUrl(searchParams) {
+        const configUrl = searchParams.get("configUrl");
+        searchParams.delete("configUrl");
+        if (configUrl)
+            return isValidJsonUrl(configUrl) ? configUrl : DEFAULT_CONFIG_PATH;
+
+        return "";
+    }
+
     toCompleteSearchParamsObject() {
         return this.toSearchParamsObject(false);
     }
@@ -182,6 +194,14 @@ export class Params {
 
     toSearchParams() {
         return this.toSearchParamsObject().toString();
+    }
+}
+
+function isValidJsonUrl(url) {
+    try {
+        return new URL(url) && url.toLowerCase().endsWith(".json");
+    } catch (_) {
+        return false;
     }
 }
 
