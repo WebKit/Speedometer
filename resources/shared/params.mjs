@@ -34,7 +34,7 @@ export class Params {
     layoutMode = LAYOUT_MODES[0];
     // Measure more workload prepare time.
     measurePrepare = false;
-    configUrl = "";
+    config = "";
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -67,7 +67,7 @@ export class Params {
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
         this.layoutMode = this._parseEnumParam(searchParams, "layoutMode", LAYOUT_MODES);
         this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
-        this.configUrl = this._parseConfigUrl(searchParams);
+        this.config = this._parseConfig(searchParams);
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -160,11 +160,11 @@ export class Params {
         return shuffleSeed;
     }
 
-    _parseConfigUrl(searchParams) {
-        const configUrl = searchParams.get("configUrl");
-        searchParams.delete("configUrl");
-        if (configUrl)
-            return isValidJsonUrl(configUrl) ? configUrl : DEFAULT_CONFIG_PATH;
+    _parseConfig(searchParams) {
+        const config = searchParams.get("config");
+        searchParams.delete("config");
+        if (config)
+            return isValidJsonUrl(config) ? config : DEFAULT_CONFIG_PATH;
 
         return "";
     }

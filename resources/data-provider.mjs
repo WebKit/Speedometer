@@ -1,14 +1,14 @@
 import { defaultSuites, Suites, Tags } from "./tests.mjs";
 import { params } from "./shared/params.mjs";
 
-// http://localhost:8080/?configUrl=http://localhost:8080/resources/config.json
+// http://localhost:8080/?config=http://localhost:8080/resources/config.json
 
 export async function getData() {
     const tags = new Tags();
     const suites = new Suites();
 
-    if (params.configUrl) {
-        const response = await fetch(params.configUrl);
+    if (params.config) {
+        const response = await fetch(params.config);
         const config = await response.json();
 
         config.suites.flatMap((suite) => suite.tags).forEach(tag => tags.add(tag));
