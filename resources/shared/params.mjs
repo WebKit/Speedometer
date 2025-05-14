@@ -1,4 +1,3 @@
-const DEFAULT_CONFIG_PATH = "resources/config.json";
 export class Params {
     viewport = {
         width: 800,
@@ -28,6 +27,7 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    // External config url to override internal tests.
     config = "";
 
     constructor(searchParams = undefined) {
@@ -155,10 +155,10 @@ export class Params {
     _parseConfig(searchParams) {
         const config = searchParams.get("config");
         searchParams.delete("config");
-        if (config)
-            return isValidJsonUrl(config) ? config : DEFAULT_CONFIG_PATH;
+        if (config && !isValidJsonUrl(config))
+            throw new Error("Invalid config url passed in.");
 
-        return "";
+        return config;
     }
 
     toCompleteSearchParamsObject() {

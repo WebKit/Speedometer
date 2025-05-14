@@ -3,8 +3,6 @@
 import assert from "assert";
 import testSetup from "./helper.mjs";
 
-import { getData } from "../resources/data-provider.mjs";
-
 const HELP = `
 This script runs end2end tests by invoking the benchmark via the main
 Speedometer page in /index.html.
@@ -12,8 +10,8 @@ Speedometer page in /index.html.
 
 const { driver, PORT, stop } = await testSetup(HELP);
 
-const { getSuites } = await getData();
-const suites = getSuites();
+const { dataProvider } = await import("../resources/data-provider.mjs");
+const suites = dataProvider.suites;
 
 async function testPage(url) {
     console.log(`Testing: ${url}`);
