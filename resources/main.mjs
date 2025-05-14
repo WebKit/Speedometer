@@ -4,6 +4,8 @@ import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
+const { dataProvider } = await import("../resources/data-provider.mjs");
+
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
     developerMode = false;
@@ -18,17 +20,16 @@ class MainBenchmarkClient {
     _metrics = Object.create(null);
     _steppingPromise = null;
     _steppingResolver = null;
+    _dataProvider = null;
 
-    constructor() {
-        window.addEventListener("DOMContentLoaded", () => this.prepareUI());
+    constructor(dataProvider) {
+        this._dataProvider = dataProvider;
+        this.prepareUI();
         this._showSection(window.location.hash);
         window.dispatchEvent(new Event("SpeedometerReady"));
     }
 
-    async start() {
-        if (!this._dataProvider)
-            await this._init();
-
+    start() {
         if (this._isStepping())
             this._clearStepping();
         else if (this._startBenchmark())
@@ -326,15 +327,7 @@ class MainBenchmarkClient {
         document.querySelector(".non-standard-params").style.display = "block";
     }
 
-    async _init() {
-        const { dataProvider } = await import("./data-provider.mjs");
-        this._dataProvider = dataProvider;
-    }
-
-    async prepareUI() {
-        if (!this._dataProvider)
-            await this._init();
-
+    prepareUI() {
         window.addEventListener("hashchange", this._hashChangeHandler.bind(this));
         window.addEventListener("resize", this._resizeScreeHandler.bind(this));
         this._resizeScreeHandler();
@@ -479,4 +472,4 @@ const rootStyle = document.documentElement.style;
 rootStyle.setProperty("--viewport-width", `${params.viewport.width}px`);
 rootStyle.setProperty("--viewport-height", `${params.viewport.height}px`);
 
-globalThis.benchmarkClient = new MainBenchmarkClient();
+globalThis.benchmarkClient = new MainBenchmarkClient(dataProvider);
