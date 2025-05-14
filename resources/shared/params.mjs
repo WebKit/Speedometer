@@ -1,6 +1,5 @@
 export const LAYOUT_MODES = Object.freeze(["getBoundingClientRect", "getBoundingRectAndElementFromPoint"]);
 
-const DEFAULT_CONFIG_PATH = "resources/config.json";
 export class Params {
     viewport = {
         width: 800,
@@ -34,6 +33,7 @@ export class Params {
     layoutMode = LAYOUT_MODES[0];
     // Measure more workload prepare time.
     measurePrepare = false;
+    // External config url to override internal tests.
     config = "";
 
     constructor(searchParams = undefined) {
@@ -163,10 +163,10 @@ export class Params {
     _parseConfig(searchParams) {
         const config = searchParams.get("config");
         searchParams.delete("config");
-        if (config)
-            return isValidJsonUrl(config) ? config : DEFAULT_CONFIG_PATH;
+        if (config && !isValidJsonUrl(config))
+            throw new Error("Invalid config url passed in.");
 
-        return "";
+        return config;
     }
 
     toCompleteSearchParamsObject() {

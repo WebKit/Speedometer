@@ -3,7 +3,6 @@ import * as Statistics from "./statistics.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
-import { getData } from "./data-provider.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -19,16 +18,17 @@ class MainBenchmarkClient {
     _metrics = Object.create(null);
     _steppingPromise = null;
     _steppingResolver = null;
-    _suites = null;
-    _tags = null;
 
     constructor() {
-        window.addEventListener("DOMContentLoaded", () => this.init());
+        window.addEventListener("DOMContentLoaded", () => this.prepareUI());
         this._showSection(window.location.hash);
         window.dispatchEvent(new Event("SpeedometerReady"));
     }
 
-    start() {
+    async start() {
+        if (!this._dataProvider)
+            await this._init();
+
         if (this._isStepping())
             this._clearStepping();
         else if (this._startBenchmark())
@@ -68,14 +68,14 @@ class MainBenchmarkClient {
         if (this._isRunning)
             return false;
 
-        if (this._suites.every((suite) => suite.disabled)) {
+        if (this._dataProvider.suites.every((suite) => suite.disabled)) {
             const message = `No suites selected - "${params.suites}" does not exist.`;
             alert(message);
             console.error(
                 message,
                 params.suites,
                 "\nValid values:",
-                this._suites.map((each) => each.name)
+                this._dataProvider.suites.map((each) => each.name)
             );
 
             return false;
@@ -95,12 +95,12 @@ class MainBenchmarkClient {
         this._metrics = Object.create(null);
         this._isRunning = true;
 
-        const enabledSuites = this._suites.filter((suite) => !suite.disabled);
+        const enabledSuites = this._dataProvider.suites.filter((suite) => !suite.disabled);
         const totalSuitesCount = enabledSuites.length;
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
-        const runner = new BenchmarkRunner(this._suites, this);
+        const runner = new BenchmarkRunner(this._dataProvider.suites, this);
         runner.runMultipleIterations(params.iterationCount);
         return true;
     }
@@ -326,14 +326,15 @@ class MainBenchmarkClient {
         document.querySelector(".non-standard-params").style.display = "block";
     }
 
-    async init() {
-        const { getSuites, getTags, enableSuites } = await getData();
-        this._suites = getSuites();
-        this._tags = getTags();
-        this.prepareUI(enableSuites);
+    async _init() {
+        const { dataProvider } = await import("./data-provider.mjs");
+        this._dataProvider = dataProvider;
     }
 
-    prepareUI(enableSuites) {
+    async prepareUI() {
+        if (!this._dataProvider)
+            await this._init();
+
         window.addEventListener("hashchange", this._hashChangeHandler.bind(this));
         window.addEventListener("resize", this._resizeScreeHandler.bind(this));
         this._resizeScreeHandler();
@@ -348,10 +349,10 @@ class MainBenchmarkClient {
         });
 
         if (params.suites.length > 0 || params.tags.length > 0)
-            enableSuites(params.suites, params.tags, this._tags);
+            this._dataProvider.enableSuites(params.suites, params.tags);
 
         if (params.developerMode) {
-            this._developerModeContainer = createDeveloperModeContainer(this._suites, this._tags);
+            this._developerModeContainer = createDeveloperModeContainer(this._dataProvider.suites, this._dataProvider.tags);
             document.body.append(this._developerModeContainer);
         }
 
