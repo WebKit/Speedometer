@@ -329,7 +329,6 @@ class MainBenchmarkClient {
     }
 
     async prepareUI() {
-        console.log("prepareUI()");
         if (!this._dataProvider)
             await this._init();
 
