@@ -161,7 +161,7 @@ export class Params {
     }
 
     _parseConfig(searchParams) {
-        const config = searchParams.get("config");
+        const config = searchParams.get("config") ?? "";
         searchParams.delete("config");
         if (config && !isValidJsonUrl(config))
             throw new Error("Invalid config url passed in.");
