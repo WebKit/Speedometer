@@ -2,6 +2,9 @@ import { defaultSuites } from "./tests.mjs";
 import { params } from "./shared/params.mjs";
 
 const DEFAULT_TAGS = ["all", "default", "experimental"];
+const ALLOWED_DOMAINS = {
+    "app.netlify.com": "/sites/webkit-speedometer-preview/",
+};
 
 // http://localhost:8080/?config=http://localhost:8080/resources/config.json
 
@@ -15,6 +18,45 @@ export class DataProvider{
 
     get suites() {
         return this._suites;
+    }
+
+    _containsAllowedUrl(suite) {
+        // 1. Check for relative URL
+        if (!suite.url.startsWith("http://") && !suite.url.startsWith("https://") && !suite.url.startsWith("//") && !suite.url.startsWith("./")) {
+            const baseUrl = "http://www.example.com";
+            try {
+                const parsedUrl = new URL(suite.url, baseUrl);
+                if (parsedUrl.origin === baseUrl)
+                    return true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        // 2. Check for localhost URL
+        if (suite.url.startsWith("http://localhost:") || suite.url.startsWith("https://localhost:")) {
+            try {
+                const parsedUrl = new URL(suite.url);
+                if (parsedUrl.hostname === "localhost")
+                    return true;
+
+            } catch (e) {
+                // Invalid URL format for localhost
+            }
+            return false;
+        }
+
+        // 3. Check for allowed domains
+        try {
+            const parsedUrl = new URL(suite.url);
+            if (ALLOWED_DOMAINS[parsedUrl.hostname] && ALLOWED_DOMAINS[parsedUrl.hostname].includes(parsedUrl.pathname))
+                return true;
+
+        } catch (e) {
+            // invalid URL
+        }
+
+        return false;
     }
 
     _freezeSuites() {
@@ -43,7 +85,10 @@ export class DataProvider{
             const config = await response.json();
 
             config.suites.flatMap((suite) => suite.tags).forEach(tag => this._tags.add(tag));
-            config.suites.forEach(suite => this._suites.push(suite));
+            config.suites.forEach(suite => {
+                if (this._containsAllowedUrl(suite))
+                    this._suites.push(suite);
+            });
         } else {
             defaultSuites.flatMap((suite) => suite.tags).forEach(tag => this._tags.add(tag));
             defaultSuites.forEach(suite => this._suites.push(suite));
