@@ -1,5 +1,5 @@
 import { Suites, Tags } from "./tests.mjs";
-import { params } from "./shared/params.mjs";
+import { params, LAYOUT_MODES } from "./shared/params.mjs";
 
 export function createDeveloperModeContainer() {
     const container = document.createElement("div");
@@ -22,6 +22,7 @@ export function createDeveloperModeContainer() {
     settings.append(createUIForWarmupBeforeSync());
     settings.append(createUIForSyncStepDelay());
     settings.append(createUIForAsyncSteps());
+    settings.append(createUIForLayoutMode());
 
     content.append(document.createElement("hr"));
     content.append(settings);
@@ -103,6 +104,31 @@ function createTimeRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000
         params[paramKey] = parseInt(range.value);
         updateURL();
     };
+
+    return label;
+}
+
+function createUIForLayoutMode() {
+    return createSelectUI("Force layout mode", params.layoutMode, LAYOUT_MODES, (value) => {
+        params.layoutMode = value;
+    });
+}
+
+function createSelectUI(labelValue, initialValue, choices, paramsUpdateCallback) {
+    const select = document.createElement("select");
+    select.onchange = () => {
+        paramsUpdateCallback(select.value);
+        updateURL();
+    };
+
+    choices.forEach((choice) => {
+        const option = new Option(choice, choice);
+        select.add(option);
+    });
+    select.value = initialValue;
+
+    const label = document.createElement("label");
+    label.append(span(labelValue), select);
 
     return label;
 }
