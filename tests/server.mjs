@@ -1,51 +1,56 @@
-// Simple server adapted from https://developer.mozilla.org/en-US/docs/Learn/Server-side/Node_server_without_framework:
-import * as fs from "fs";
-import * as http from "http";
+// Simple server for local testing.
+
 import * as path from "path";
-const MIME_TYPES = {
-    default: "application/octet-stream",
-    html: "text/html; charset=UTF-8",
-    js: "application/javascript; charset=UTF-8",
-    mjs: "application/javascript; charset=UTF-8",
-    css: "text/css",
-    png: "image/png",
-    jpg: "image/jpg",
-    gif: "image/gif",
-    ico: "image/x-icon",
-    svg: "image/svg+xml",
-};
+import commandLineArgs from "command-line-args";
+import esMain from "es-main";
+import LocalWebServer from "lws";
+import "lws-cors";
+import "lws-index";
+import "lws-log";
+import "lws-static";
 
-const STATIC_PATH = path.join(process.cwd(), "./");
-const toBool = [() => true, () => false];
+const ROOT_DIR = path.join(process.cwd(), "./");
 
-export default function serve(port) {
+export default async function serve(port) {
     if (!port)
         throw new Error("Port is required");
+    const ws = await LocalWebServer.create({
+        port: port,
+        directory: ROOT_DIR,
+        corsOpenerPolicy: "same-origin",
+        corsEmbedderPolicy: "require-corp",
+        logFormat: "dev",
+        stack: ["lws-log", "lws-cors", "lws-static", "lws-index"],
+    });
+    await verifyStartup(ws, port);
 
-    const prepareFile = async (url) => {
-        const paths = [STATIC_PATH, url];
-        if (url.endsWith("/"))
-            paths.push("index.html");
-        const filePath = path.join(...paths);
-        const pathTraversal = !filePath.startsWith(STATIC_PATH);
-        const exists = await fs.promises.access(filePath).then(...toBool);
-        const found = !pathTraversal && exists;
-        const streamPath = found ? filePath : `${STATIC_PATH}/index.html`;
-        const ext = path.extname(streamPath).substring(1).toLowerCase();
-        const stream = fs.createReadStream(streamPath);
-        return { found, ext, stream };
+    process.on("exit", () => ws.server.close());
+
+    return {
+        close() {
+            ws.server.close();
+        },
     };
-
-    const server = http
-        .createServer(async (req, res) => {
-            const file = await prepareFile(req.url);
-            const statusCode = file.found ? 200 : 404;
-            const mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
-            res.writeHead(statusCode, { "Content-Type": mimeType });
-            file.stream.pipe(res);
-        })
-        .listen(port);
-
-    console.log(`Server running at http://127.0.0.1:${port}/`);
-    return server;
 }
+
+async function verifyStartup(ws, port) {
+    await new Promise((resolve, reject) => {
+        ws.server.on("listening", () => {
+            console.log(`Server started on http://localhost:${port}`);
+            resolve();
+        });
+        ws.server.on("error", (e) => {
+            console.error("Error while starting the server", e);
+            reject(e);
+        });
+    });
+}
+
+function main() {
+    const optionDefinitions = [{ name: "port", type: Number, defaultValue: 8080, description: "Set the test-server port, The default value is 8080." }];
+    const options = commandLineArgs(optionDefinitions);
+    serve(options.port);
+}
+
+if (esMain(import.meta))
+    main();

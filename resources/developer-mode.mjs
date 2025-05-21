@@ -1,5 +1,5 @@
 import { Suites, Tags } from "./tests.mjs";
-import { params, defaultParams } from "./shared/params.mjs";
+import { params } from "./shared/params.mjs";
 
 export function createDeveloperModeContainer() {
     const container = document.createElement("div");
@@ -22,6 +22,7 @@ export function createDeveloperModeContainer() {
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
     settings.append(createUIForSyncStepDelay());
+    settings.append(createUIForAsyncSteps());
 
     content.append(document.createElement("hr"));
     content.append(settings);
@@ -49,6 +50,12 @@ function createUIForWarmupSuite() {
 function createUIForMeasurePrepare() {
     return createCheckboxUI("Measure Prepare", params.measurePrepare, (isChecked) => {
         params.measurePrepare = isChecked;
+    });
+}
+
+function createUIForAsyncSteps() {
+    return createCheckboxUI("Use Async Steps", params.useAsyncSteps, (isChecked) => {
+        params.useAsyncSteps = isChecked;
     });
 }
 
@@ -157,6 +164,7 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
     buttons.className = "button-bar";
 
     let button = document.createElement("button");
+    button.className = "select-all";
     button.textContent = "Select all";
     button.onclick = () => {
         for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
@@ -168,6 +176,7 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
 
     button = document.createElement("button");
     button.textContent = "Unselect all";
+    button.className = "unselect-all";
     button.onclick = () => {
         for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
             setSuiteEnabled(suiteIndex, false);
@@ -233,45 +242,36 @@ function createUIForRun() {
     return buttons;
 }
 
-function updateURL() {
-    const url = new URL(window.location.href);
+function updateParamsSuitesAndTags() {
+    params.suites = [];
+    params.tags = [];
 
     // If less than all suites are selected then change the URL "Suites" GET parameter
     // to comma separate only the selected
     const selectedSuites = Suites.filter((suite) => !suite.disabled);
+    if (!selectedSuites.length)
+        return;
 
-    url.searchParams.delete("tags");
-    url.searchParams.delete("suites");
-    url.searchParams.delete("suite");
-    if (selectedSuites.length) {
-        // Try finding common tags that would result in the current suite selection.
-        let commonTags = new Set(selectedSuites[0].tags);
-        for (const suite of Suites) {
-            if (suite.disabled)
-                suite.tags.forEach((tag) => commonTags.delete(tag));
-            else
-                commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
-        }
-        if (selectedSuites.length > 1 && commonTags.size) {
-            const tags = [...commonTags][0];
-            if (tags !== "default")
-                url.searchParams.set("tags", tags);
-            url.searchParams.delete("suites");
-        } else {
-            url.searchParams.set("suites", selectedSuites.map((suite) => suite.name).join(","));
-        }
-    }
-
-    const defaultParamKeys = ["iterationCount", "useWarmupSuite", "warmupBeforeSync", "waitBeforeSync", "measurePrepare"];
-    for (const paramKey of defaultParamKeys) {
-        if (params[paramKey] !== defaultParams[paramKey])
-            url.searchParams.set(paramKey, params[paramKey]);
+    // Try finding common tags that would result in the current suite selection.
+    let commonTags = new Set(selectedSuites[0].tags);
+    for (const suite of Suites) {
+        if (suite.disabled)
+            suite.tags.forEach((tag) => commonTags.delete(tag));
         else
-            url.searchParams.delete(paramKey);
+            commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
     }
+    if (selectedSuites.length > 1 && commonTags.size)
+        params.tags = [...commonTags];
+    else
+        params.suites = selectedSuites.map((suite) => suite.name);
+}
 
+function updateURL() {
+    updateParamsSuitesAndTags();
+
+    const url = new URL(window.location.href);
+    url.search = params.toSearchParams();
     // Only push state if changed
-    url.search = decodeURIComponent(url.search);
     if (url.href !== window.location.href)
         window.history.pushState({}, "", url);
 }
