@@ -27,6 +27,10 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    // Param to tweak the relative complexity of all suites.
+    // The default is 1.0, and for suites supporting this param, the duration
+    // roughly scales wit the complexity.
+    complexity = 1.0;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -37,8 +41,15 @@ export class Params {
         }
     }
 
-    _parseInt(value, errorMessage) {
+    _parseNumber(value, errorMessage) {
         const number = Number(value);
+        if (!Number.isFinite(number) && errorMessage)
+            throw new Error(`Invalid ${errorMessage} param: '${value}', expected Number.`);
+        return number;
+    }
+
+    _parseInt(value, errorMessage) {
+        const number = this._parseNumber(value);
         if (!Number.isInteger(number) && errorMessage)
             throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
         return parseInt(number);
@@ -57,6 +68,7 @@ export class Params {
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
+        this.complexity = this._parserNumberParam(searchParams, "complexity", 0);
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -70,14 +82,21 @@ export class Params {
         return true;
     }
 
-    _parseIntParam(searchParams, paramKey, minValue) {
+    _parserNumberParam(searchParams, paramKey, minValue) {
         if (!searchParams.has(paramKey))
             return defaultParams[paramKey];
 
-        const parsedValue = this._parseInt(searchParams.get(paramKey), "waitBeforeSync");
+        const parsedValue = this._parseNumber(searchParams.get(paramKey), "waitBeforeSync");
         if (parsedValue < minValue)
             throw new Error(`Invalid ${paramKey} param: '${parsedValue}', value must be >= ${minValue}.`);
         searchParams.delete(paramKey);
+        return parsedValue;
+    }
+
+    _parseIntParam(searchParams, paramKey, minValue) {
+        const parsedValue = this._parserNumberParam(searchParams, paramKey, minValue);
+        if (!Number.isInteger(parsedValue))
+            throw new Error(`Invalid ${paramKey} param: '${parsedValue}', expected int.`);
         return parsedValue;
     }
 
