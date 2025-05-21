@@ -24,8 +24,7 @@ export function getAllElements(selector, path = [], lookupStartNode = document) 
 }
 
 export function forceLayout(body, layoutMode = "elementFromPoint") {
-    if (body !== undefined)
-        body = document.body;
+    body ??= document.body;
     const rect = body.getBoundingClientRect();
     if (layoutMode === "elementFromPoint")
         return document.elementFromPoint((rect.width / 2) | 0, (rect.height / 2) | 0);
