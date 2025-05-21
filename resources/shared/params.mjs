@@ -9,9 +9,11 @@ export class Params {
     iterationCount = 10;
     suites = [];
     // A list of tags to filter suites
-    tags = [];
+    tags = ["default"];
     // Toggle running a dummy suite once before the normal test suites.
     useWarmupSuite = false;
+    // toggle async type vs default raf type.
+    useAsyncSteps = false;
     // Change how a test measurement is triggered and async time is measured:
     // "timer": The classic (as in Speedometer 2.x) way using setTimeout
     // "raf":   Using rAF callbacks, both for triggering the sync part and for measuring async time.
@@ -61,6 +63,7 @@ export class Params {
         this.tags = this._parseTags(searchParams);
         this.developerMode = this._parseBooleanParam(searchParams, "developerMode");
         this.useWarmupSuite = this._parseBooleanParam(searchParams, "useWarmupSuite");
+        this.useAsyncSteps = this._parseBooleanParam(searchParams, "useAsyncSteps");
         this.waitBeforeSync = this._parseIntParam(searchParams, "waitBeforeSync", 0);
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
@@ -169,19 +172,30 @@ export class Params {
     }
 
     toSearchParamsObject(filter = true) {
-        const rawParams = { __proto__: null };
+        const rawUrlParams = { __proto__: null };
         for (const [key, value] of Object.entries(this)) {
+            // Handle composite values separately.
+            if (key === "viewport" || key === "suites" || key === "tags")
+                continue;
+            // Skip over default values.
             if (filter && value === defaultParams[key])
                 continue;
-            rawParams[key] = value;
+            rawUrlParams[key] = value;
         }
 
-        // Either suites or params can be used at the same time.
-        if (rawParams.suites?.length && rawParams.tags?.length)
-            delete rawParams.suites;
-        rawParams.viewport = `${this.viewport.width}x${this.viewport.height}`;
+        if (this.viewport.width !== defaultParams.viewport.width || this.viewport.height !== defaultParams.viewport.height)
+            rawUrlParams.viewport = `${this.viewport.width}x${this.viewport.height}`;
 
-        return new URLSearchParams(rawParams);
+        if (this.suites.length) {
+            rawUrlParams.suites = this.suites.join(",");
+        } else if (this.tags.length) {
+            if (!(this.tags.length === 1 && this.tags[0] === "default"))
+                rawUrlParams.tags = this.tags.join(",");
+        } else {
+            rawUrlParams.suites = "";
+        }
+
+        return new URLSearchParams(rawUrlParams);
     }
 
     toSearchParams() {

@@ -15,15 +15,20 @@ jobs:
         runs-on: macos-latest
         steps:
             - name: Checkout Branch
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
+
             - name: Setup Node
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
-                  node-version: 18.13.0
-            - name: Install
-              run: npm install
+                  node-version-file: "package.json"
+                  cache: "npm"
+
+            - name: Install Node Packages
+              run: npm ci
+
             - name: Run linters
               run: npm run format
+
             - name: Check if anything changed
               run: |
                   git_status="`LC_ALL=C git status --porcelain --ignore-submodules -unormal 2>&1`"
@@ -35,6 +40,7 @@ jobs:
                       git diff -U8
                       exit 1
                   fi
+
     build:
         name: Build
         runs-on: macos-latest
@@ -45,15 +51,25 @@ jobs:
             - name: Install Firefox
               if: ${{ matrix.browser == 'firefox' }}
               run: brew install --cask firefox
+
             - name: Checkout Branch
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
+
             - name: Setup Node
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
-                  node-version: 18.13.0
-            - name: Install
-              run: npm install
-            - name: Run tests
+                  node-version-file: "package.json"
+                  cache: "npm"
+
+            - name: Install Node Packages
+              run: npm ci
+
+            - name: Run Unit Tests
               run: |
                   echo "Running in $BROWSER"
                   npm run test:${{ matrix.browser }}
+
+            - name: Run end2end Tests
+              run: |
+                  echo "Running in $BROWSER"
+                  npm run test-e2e:${{ matrix.browser }}
