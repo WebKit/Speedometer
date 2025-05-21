@@ -285,7 +285,7 @@ function updateParamsSuitesAndTags() {
         params.suites = selectedSuites.map((suite) => suite.name);
 }
 
-function updateURL() {
+function handleParamsChange() {
     updateParamsSuitesAndTags();
     handleComplexityChange();
 
