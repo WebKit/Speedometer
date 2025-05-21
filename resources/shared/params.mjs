@@ -68,13 +68,7 @@ export class Params {
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
-
-        if (searchParams.has("complexity")) {
-            this.complexity = this._parseNumber(searchParams.get("complexity"));
-            if (this.complexity <= 0)
-                throw new Error(`Invalid complexity value: ${this.complexity}, must be > 0.0`);
-            searchParams.delete("complexity");
-        }
+        this.complexity = this._parserNumberParam(searchParams, "complexity", 0);
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -88,14 +82,21 @@ export class Params {
         return true;
     }
 
-    _parseIntParam(searchParams, paramKey, minValue) {
+    _parserNumberParam(searchParams, paramKey, minValue) {
         if (!searchParams.has(paramKey))
             return defaultParams[paramKey];
 
-        const parsedValue = this._parseInt(searchParams.get(paramKey), "waitBeforeSync");
+        const parsedValue = this._parseNumber(searchParams.get(paramKey), "waitBeforeSync");
         if (parsedValue < minValue)
             throw new Error(`Invalid ${paramKey} param: '${parsedValue}', value must be >= ${minValue}.`);
         searchParams.delete(paramKey);
+        return parsedValue;
+    }
+
+    _parseIntParam(searchParams, paramKey, minValue) {
+        const parsedValue = this._parserNumberParam(searchParams, paramKey, minValue);
+        if (!Number.isInteger(parsedValue))
+            throw new Error(`Invalid ${paramKey} param: '${parsedValue}', expected int.`);
         return parsedValue;
     }
 
