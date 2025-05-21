@@ -1,5 +1,5 @@
 import { Suites, Tags, handleComplexityChange } from "./tests.mjs";
-import { params } from "./shared/params.mjs";
+import { params, defaultParams } from "./shared/params.mjs";
 
 export function createDeveloperModeContainer() {
     const container = document.createElement("div");
