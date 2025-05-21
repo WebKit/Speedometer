@@ -1,13 +1,5 @@
-<<<<<<< HEAD
 import { Suites, Tags, handleComplexityChange } from "./tests.mjs";
-import { params, defaultParams } from "./shared/params.mjs";
-||||||| d6b5ffea
-import { Suites, Tags } from "./tests.mjs";
-import { params, defaultParams } from "./shared/params.mjs";
-=======
-import { Suites, Tags } from "./tests.mjs";
 import { params } from "./shared/params.mjs";
->>>>>>> bb9e3e1ba62e93480643a9d5c515d725e4618562
 
 export function createDeveloperModeContainer() {
     const container = document.createElement("div");
@@ -29,12 +21,8 @@ export function createDeveloperModeContainer() {
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
     settings.append(createUIForSyncStepDelay());
-<<<<<<< HEAD
     settings.append(createUIForComplexity());
-||||||| d6b5ffea
-=======
     settings.append(createUIForAsyncSteps());
->>>>>>> bb9e3e1ba62e93480643a9d5c515d725e4618562
 
     content.append(document.createElement("hr"));
     content.append(settings);
