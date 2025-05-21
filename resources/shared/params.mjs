@@ -27,6 +27,8 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    // Measure more workload prepare time.
+    measurePrepare = false;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -57,6 +59,7 @@ export class Params {
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
+        this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
