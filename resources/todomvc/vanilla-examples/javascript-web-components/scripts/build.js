@@ -102,6 +102,7 @@ const filesToMove = [
     { src: "node_modules/speedometer-utils/benchmark.mjs", dest: "./dist/src/speedometer-utils/benchmark.mjs" },
     { src: "node_modules/speedometer-utils/helpers.mjs", dest: "./dist/src/speedometer-utils//helpers.mjs" },
     { src: "node_modules/speedometer-utils/translations.mjs", dest: "./dist/src/speedometer-utils/translations.mjs" },
+    { src: "node_modules/speedometer-utils/todomvc-utils.mjs", dest: "./dist/src/speedometer-utils/todomvc-utils.mjs" },
 ];
 
 const importsToRename = [
@@ -124,12 +125,12 @@ const importsToRename = [
     {
         src: "/src/",
         dest: "./",
-        files: ["./dist/src/index.js"],
+        files: ["./dist/src/index.mjs"],
     },
     {
         src: "/node_modules/speedometer-utils/",
         dest: "./speedometer-utils/",
-        files: ["./dist/src/index.js", "./dist/src/workload-test.mjs"],
+        files: ["./dist/src/index.mjs", "./dist/src/workload-test.mjs"],
     },
 ];
 

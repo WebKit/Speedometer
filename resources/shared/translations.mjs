@@ -725,7 +725,6 @@ export const defaultTodoText = {
     emoji: "Something to do 😊",
 };
 
-export const numberOfItemsToAdd = 100;
 export const defaultLanguage = "en";
 
 export function getTodoText(lang = "en", index) {

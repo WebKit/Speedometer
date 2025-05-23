@@ -1,5 +1,6 @@
 import { BenchmarkTestStep } from "./benchmark-runner.mjs";
-import { getTodoText, numberOfItemsToAdd, defaultLanguage } from "./shared/translations.mjs";
+import { getTodoText, defaultLanguage } from "./shared/translations.mjs";
+import { numberOfItemsToAdd } from "./shared/todomvc-utils.mjs";
 
 export const Suites = [];
 
