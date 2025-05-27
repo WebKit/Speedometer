@@ -1,9 +1,9 @@
 import template from "./todo-app.template.js";
 import { useRouter } from "../../hooks/useRouter.js";
 
-import globalStyles from "../../styles/global.constructable.js";
-import appStyles from "../../styles/app.constructable.js";
-import mainStyles from "../../styles/main.constructable.js";
+import globalStyles from "../../../styles/global.constructable.js";
+import appStyles from "../../../styles/app.constructable.js";
+import mainStyles from "../../../styles/main.constructable.js";
 class TodoApp extends HTMLElement {
     #isReady = false;
     #data = [];
