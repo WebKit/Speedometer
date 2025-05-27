@@ -31,6 +31,8 @@ export class Params {
     // The default is 1.0, and for suites supporting this param, the duration
     // roughly scales wit the complexity.
     complexity = 1.0;
+    // Measure more workload prepare time.
+    measurePrepare = false;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -69,6 +71,7 @@ export class Params {
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
         this.complexity = this._parserNumberParam(searchParams, "complexity", 0);
+        this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
