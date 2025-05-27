@@ -531,6 +531,8 @@ section#details .non-standard-params {
     display: none;
     text-align: center;
     margin-bottom: 2em;
+    /* Increase contrast a bit */
+    filter: brightness(1.5);
 }
 
 section#details .non-standard-params h2 {
