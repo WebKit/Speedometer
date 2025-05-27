@@ -1,4 +1,4 @@
-export const LAYOUT_MODES = Object.freeze(["getBoundingClientRect", "elementFromPoint"]);
+export const LAYOUT_MODES = Object.freeze(["getBoundingClientRect", "getBoundingRectAndElementFromPoint"]);
 
 export class Params {
     viewport = {
@@ -29,8 +29,8 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
-    // Choices: getBoundingClientRect or elementFromPoint
-    layoutMode = "getBoundingClientRect";
+    // Choices: "getBoundingClientRect" or "getBoundingRectAndElementFromPoint"
+    layoutMode = LAYOUT_MODES[0];
     // Measure more workload prepare time.
     measurePrepare = false;
 
