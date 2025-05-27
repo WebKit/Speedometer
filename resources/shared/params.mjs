@@ -31,6 +31,8 @@ export class Params {
     shuffleSeed = "off";
     // Choices: getBoundingClientRect or elementFromPoint
     layoutMode = "getBoundingClientRect";
+    // Measure more workload prepare time.
+    measurePrepare = false;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -62,6 +64,7 @@ export class Params {
         this.measurementMethod = this._parseEnumParam(searchParams, "measurementMethod", ["raf"]);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
         this.layoutMode = this._parseEnumParam(searchParams, "layoutMode", LAYOUT_MODES);
+        this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
