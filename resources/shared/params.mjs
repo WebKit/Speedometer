@@ -52,7 +52,7 @@ export class Params {
         return number;
     }
 
-    _parseInt(value, errorMessage, minValue=0) {
+    _parseInt(value, errorMessage, minValue = 0) {
         const number = this._parseNumber(value, errorMessage, minValue);
         if (!Number.isInteger(number) && errorMessage)
             throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
