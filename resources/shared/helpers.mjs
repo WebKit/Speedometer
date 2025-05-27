@@ -23,10 +23,10 @@ export function getAllElements(selector, path = [], lookupStartNode = document) 
     return elements;
 }
 
-export function forceLayout(body, layoutMode = "elementFromPoint") {
+export function forceLayout(body, layoutMode = "getBoundingRectAndElementFromPoint") {
     body ??= document.body;
     const rect = body.getBoundingClientRect();
-    if (layoutMode === "elementFromPoint")
+    if (layoutMode === "getBoundingRectAndElementFromPoint")
         return document.elementFromPoint((rect.width / 2) | 0, (rect.height / 2) | 0);
     return rect.height;
 }
