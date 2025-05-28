@@ -287,6 +287,7 @@ button,
 }
 
 .developer-mode-content button {
+    font-size: 16px;
     background: white;
     flex: auto;
     padding: 4px;
@@ -294,8 +295,20 @@ button,
     border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 10px;
 }
+
+.developer-mode-content button span {
+    padding-left: 10px;
+    font-size: 1.5em;
+    line-height: 10px;
+    position: relative;
+    top: 2px;
+}
+
 .developer-mode-content .tag {
     border-radius: 100vh;
+}
+
+.developer-mode-content .step-button {
     color: white;
     background: rgba(255, 255, 255, 0.1);
 }
@@ -518,6 +531,8 @@ section#details .non-standard-params {
     display: none;
     text-align: center;
     margin-bottom: 2em;
+    /* Increase contrast a bit */
+    filter: brightness(1.5);
 }
 
 section#details .non-standard-params h2 {
@@ -546,6 +561,9 @@ section#details .non-standard-params h2 {
 #non-standard-params-table thead th,
 #non-standard-params-table tbody td {
     padding: 0.1em 0.3em;
+}
+#non-standard-params-table tbody td:nth-child(2) {
+    color: var(--highlight);
 }
 
 section#details .all-metric-results {
