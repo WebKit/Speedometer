@@ -55,6 +55,7 @@
         "lws-cors": "^4.2.1",
         "lws-index": "^3.1.1",
         "lws-log": "^3.0.0",
-        "lws-static": "^3.1.1"
+        "lws-static": "^3.1.1",
+        "prettier-plugin-tailwindcss": "^0.4.1"
     }
 }
