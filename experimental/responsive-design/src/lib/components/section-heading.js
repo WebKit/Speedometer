@@ -9,7 +9,7 @@ class SectionHeading extends LightDOMLitElement {
 
     render() {
         return html`
-            <h2 class="text-left leading-9 tracking-tight has-[+p]:mb-1">${this.title}</h2>
+            <h2 class="has-[+p]:mb-1 text-left leading-9 tracking-tight">${this.title}</h2>
             ${this.subtitle ? html`<p class="pl-1 text-sm text-gray-600">${this.subtitle}</p>` : ""}
         `;
     }

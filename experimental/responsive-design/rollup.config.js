@@ -6,15 +6,25 @@ import html from "@rollup/plugin-html";
 import summary from "rollup-plugin-summary";
 import path from "path";
 import fs from "fs";
+import process from "process";
+
+const DEV_OUTPUT_DIR = "build-dev";
+const PROD_OUTPUT_DIR = "dist";
+
+const outputDir = process.env.ROLLUP_WATCH ? DEV_OUTPUT_DIR : PROD_OUTPUT_DIR;
+
+// Clean the output directory before bundling (only for production builds)
+if (!process.env.ROLLUP_WATCH && fs.existsSync(outputDir))
+    fs.rmSync(outputDir, { recursive: true, force: true });
 
 export default {
     input: "src/app.js",
     output: [
         {
-            file: "dist/app.js",
+            file: `${outputDir}/app.js`,
             format: "es",
             name: "app",
-            plugins: [terser()],
+            plugins: process.env.ROLLUP_WATCH ? [] : [terser()],
         },
     ],
     plugins: [
@@ -49,8 +59,8 @@ export default {
         summary(),
         copy({
             targets: [
-                { src: "index.html", dest: "dist/" },
-                { src: "public/", dest: "dist/" },
+                { src: "index.html", dest: `${outputDir}/` },
+                { src: "public/", dest: `${outputDir}/` },
             ],
         }),
     ],

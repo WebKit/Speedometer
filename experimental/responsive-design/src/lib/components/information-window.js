@@ -5,7 +5,6 @@ import "./restaurant-card.js";
 import chatWindowStyles from "../chat-window.constructable.js";
 class InformationWindow extends LitElement {
     static properties = {
-        restaurants: { type: Array },
         _isChatExpanded: { type: Boolean },
         _currentIndex: { type: Number },
         chatWindow: { type: Object },
@@ -13,15 +12,15 @@ class InformationWindow extends LitElement {
 
     constructor() {
         super();
-        this.restaurants = restaurants;
+        this._restaurants = restaurants;
         this._isChatExpanded = true;
         this._currentIndex = 0;
+
+        // ResizeObserver is used primarily to exercise this API as part of the benchmark.
         this._resizeObserver = new ResizeObserver((entries) => {
             for (const entry of entries) {
-                if (entry.contentBoxSize && entry.contentBoxSize[0])
-                    this._isChatExpanded = entry.contentBoxSize[0].blockSize > 350;
-                else
-                    this._isChatExpanded = entry.contentRect.height > 350;
+                const height = entry.contentBoxSize && entry.contentBoxSize[0] ? entry.contentBoxSize[0].blockSize : entry.contentRect.height;
+                this._isChatExpanded = height > 350;
                 this._currentIndex = 0;
                 this.updateCarousel();
             }
@@ -31,12 +30,20 @@ class InformationWindow extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         adoptStyles(this.shadowRoot, [chatWindowStyles]);
+
+        if (this.hasUpdated && this.chatWindow) {
+            const chatWindowInner = this.chatWindow.shadowRoot.querySelector("#chat-window");
+            if (chatWindowInner)
+                this._resizeObserver.observe(chatWindowInner);
+        }
     }
 
     firstUpdated() {
-        const chatWindowInner = this.chatWindow.shadowRoot.querySelector("#chat-window");
-        if (chatWindowInner)
-            this._resizeObserver.observe(chatWindowInner);
+        if (this.chatWindow) {
+            const chatWindowInner = this.chatWindow.shadowRoot.querySelector("#chat-window");
+            if (chatWindowInner)
+                this._resizeObserver.observe(chatWindowInner);
+        }
     }
 
     disconnectedCallback() {
@@ -60,7 +67,7 @@ class InformationWindow extends LitElement {
     }
 
     nextCard() {
-        if (this._currentIndex < this.restaurants.length - 1) {
+        if (this._currentIndex < this._restaurants.length - 1) {
             this._currentIndex++;
             this.updateCarousel();
         }
@@ -85,13 +92,13 @@ class InformationWindow extends LitElement {
                     &lt;
                 </button>
                 <div class="card-row flex w-full">
-                    ${this.restaurants.map((restaurant) => html` <restaurant-card title="${restaurant.title}" distance="${restaurant.distance}" rating="${restaurant.rating}" class="box-border w-full flex-none p-2"></restaurant-card> `)}
+                    ${this._restaurants.map((restaurant) => html` <restaurant-card title="${restaurant.title}" distance="${restaurant.distance}" rating="${restaurant.rating}" class="box-border w-full flex-none p-2"></restaurant-card> `)}
                 </div>
                 <button
                     id="next-restaurant-btn"
                     class="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 transform cursor-pointer items-center justify-center rounded-full border-0 bg-black bg-opacity-50 p-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
                     @click="${this.nextCard}"
-                    ?disabled="${this._currentIndex === this.restaurants.length - 1}"
+                    ?disabled="${this._currentIndex === this._restaurants.length - 1}"
                 >
                     &gt;
                 </button>
@@ -100,7 +107,7 @@ class InformationWindow extends LitElement {
     }
 
     _getGridTemplate() {
-        return html` <div class="grid grid-cols-2 gap-4">${this.restaurants.map((restaurant) => html` <restaurant-card title="${restaurant.title}" distance="${restaurant.distance}" rating="${restaurant.rating}"></restaurant-card> `)}</div> `;
+        return html` <div class="grid grid-cols-2 gap-4">${this._restaurants.map((restaurant) => html` <restaurant-card title="${restaurant.title}" distance="${restaurant.distance}" rating="${restaurant.rating}"></restaurant-card> `)}</div> `;
     }
 
     render() {

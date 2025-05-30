@@ -27,7 +27,7 @@ class ChatInput extends LightDOMLitElement {
 
     render() {
         return html`
-            <div class="flex min-h-12 items-center border-t border-gray-200 p-1">
+            <div class="min-h-12 flex items-center border-t border-gray-200 p-1">
                 <label for="chat-input" class="sr-only">Chat Input</label>
                 <textarea
                     id="chat-input"

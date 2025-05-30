@@ -23,7 +23,7 @@ class ChatMessages extends LightDOMLitElement {
         if (container) {
             container.scrollTo({
                 top: container.scrollHeight,
-                behavior: "smooth",
+                behavior: "instant",
             });
         }
     }

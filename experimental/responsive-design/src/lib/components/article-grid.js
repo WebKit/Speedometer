@@ -15,7 +15,7 @@ class ArticleGrid extends LightDOMLitElement {
 
     _getArticlesTemplate() {
         return this.articles.map((article) => {
-            return html`<article-card class="col-span-2 grid grid-cols-subgrid" title="${article.title}" description="${article.description}" author="${article.author}" image="${article.image}" .tags="${article.tags}"></article-card>`;
+            return html`<article-card class="grid-cols-subgrid col-span-2 grid" title="${article.title}" description="${article.description}" author="${article.author}" image="${article.image}" .tags="${article.tags}"></article-card>`;
         });
     }
 

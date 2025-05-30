@@ -28,7 +28,7 @@ class RecipeGrid extends LightDOMLitElement {
         return this.recipes.map(
             (recipe, index) => html`
                 <recipe-card
-                    class="${this._expandedCardIndices.includes(index) ? "col-span-2 lg:col-span-2" : ""} relative row-span-6 mt-1 grid grid-rows-subgrid gap-0 rounded-lg bg-white text-left shadow-md hover:shadow-lg"
+                    class="${this._expandedCardIndices.includes(index) ? "col-span-2 lg:col-span-2" : ""} grid-rows-subgrid relative row-span-6 mt-1 grid gap-0 rounded-lg bg-white text-left shadow-md hover:shadow-lg"
                     .recipe="${recipe}"
                     data-index="${index}"
                 ></recipe-card>

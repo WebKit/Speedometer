@@ -24,7 +24,7 @@ class ArticleCard extends LightDOMLitElement {
     render() {
         const tags = this.tags.map((tag) => html`<span class="inline-flex items-center rounded-md bg-orange-100 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-orange-500/10">${tag}</span>`);
         return html`
-            <div class="col-span-2 grid grid-cols-subgrid gap-4 rounded-lg bg-gradient-to-br from-blue-50 to-green-50 shadow-md hover:shadow-lg">
+            <div class="grid-cols-subgrid col-span-2 grid gap-4 rounded-lg bg-gradient-to-br from-blue-50 to-green-50 shadow-md hover:shadow-lg">
                 <div class="flex flex-col justify-around p-4 xl:p-6">
                     <div>
                         <h3 class="lg:text-lg">${this.title}</h3>

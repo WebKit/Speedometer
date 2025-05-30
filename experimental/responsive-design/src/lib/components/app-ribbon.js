@@ -23,6 +23,13 @@ export class AppRibbon extends LightDOMLitElement {
         });
     }
 
+    connectedCallback() {
+        super.connectedCallback();
+
+        if (this.hasUpdated)
+            this._resizeObserver.observe(this);
+    }
+
     firstUpdated() {
         this._resizeObserver.observe(this);
     }
@@ -47,6 +54,8 @@ export class AppRibbon extends LightDOMLitElement {
             { minWidth: 318, buttons: 3 },
         ];
 
+        // ResizeObserver is used primarily to exercise this API as part of the benchmark.
+        // While CSS or window.matchMedia could potentially be used instead.
         const breakpoint = breakpoints.find((bp) => width >= bp.minWidth);
         this.visibleButtons = breakpoint ? this.buttons.slice(0, breakpoint.buttons) : this.buttons.slice(0, 2);
         this.requestUpdate();

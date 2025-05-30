@@ -4,12 +4,12 @@
     "version": "1.0.0",
     "description": "A single page cooking website built with Lit and Tailwind CSS.",
     "engines": {
-        "node": ">=18.13.0",
+        "node": ">=22.0.0",
         "npm": ">=8.19.3"
     },
     "main": "index.js",
     "scripts": {
-        "serve": "web-dev-server",
+        "serve": "web-dev-server --config web-dev-server.config.mjs",
         "prebuild": "npm run build:main-css && npm run build:chat-window-css",
         "build": "rollup --config rollup.config.js",
         "build:main-css": "npx tailwindcss -i ./src/input.css -o ./src/tailwind.generated.css --minify",
@@ -18,16 +18,10 @@
         "dev:main-css": "npx tailwindcss -i ./src/input.css -o ./src/tailwind.generated.css --watch",
         "dev:chat-window-css": "npx tailwindcss -c ./tailwind.chat-window.config.js -i ./src/input.css -o ./src/tailwind.chat-window.generated.css --watch",
         "dev:rollup": "rollup --config rollup.config.js --watch",
-        "dev:serve": "web-dev-server --watch",
-        "lint:check": "eslint **/*.{js,mjs,jsx,ts,tsx}",
-        "lint:fix": "eslint \"**/*.{js,mjs,jsx,ts,tsx}\" --fix",
-        "pretty:check": "prettier --check ./",
-        "pretty:fix": "prettier --write ./",
-        "format": "npm run pretty:fix && npm run lint:fix",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "dev:serve": "web-dev-server --config web-dev-server.dev.config.mjs"
     },
     "dependencies": {
-        "lit": "^3.2.1"
+        "lit": "^3.3.0"
     },
     "devDependencies": {
         "@rollup/plugin-html": "^1.0.4",
@@ -35,15 +29,12 @@
         "@rollup/plugin-terser": "^0.4.4",
         "@web/dev-server": "0.4.3",
         "concurrently": "^9.0.1",
-        "eslint": "^8.57.0",
         "postcss": "^8.4.40",
-        "prettier": "^3.3.3",
-        "prettier-plugin-tailwindcss": "^0.6.8",
-        "rollup": "^4.24.0",
+        "rollup": "^4.41.1",
         "rollup-plugin-copy": "^3.5.0",
-        "rollup-plugin-import-css": "^3.5.6",
+        "rollup-plugin-import-css": "^3.5.8",
         "rollup-plugin-postcss": "^4.0.2",
-        "rollup-plugin-summary": "^3.0.0",
-        "tailwindcss": "^3.4.14"
+        "rollup-plugin-summary": "^3.0.1",
+        "tailwindcss": "^3.4.17"
     }
 }
