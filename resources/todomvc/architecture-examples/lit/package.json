@@ -18,15 +18,15 @@
         "@rollup/plugin-node-resolve": "^15.1.0",
         "@rollup/plugin-terser": "^0.4.3",
         "@rollup/plugin-typescript": "^11.1.1",
+        "@web/dev-server": "^0.2.1",
         "rollup": "^2.79.1",
         "rollup-plugin-minify-html-literals": "^1.2.6",
-        "@web/dev-server": "^0.2.1",
-        "typescript": "^5.0.4",
-        "wireit": "^0.9.5"
+        "typescript": "^5.8.3",
+        "wireit": "^0.14.12"
     },
     "dependencies": {
-        "lit": "^3.0.0-pre.0",
-        "tslib": "^2.5.2"
+        "lit": "^3.3.0",
+        "tslib": "^2.8.1"
     },
     "wireit": {
         "serve": {
@@ -69,7 +69,7 @@
                 ".tsbuildinfo"
             ],
             "clean": false,
-            "command": "tsc"
+            "command": "tsc --pretty"
         },
         "rollup": {
             "files": [
