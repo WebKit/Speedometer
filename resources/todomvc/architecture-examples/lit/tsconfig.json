@@ -2,11 +2,11 @@
     "compilerOptions": {
         "incremental": true,
         "tsBuildInfoFile": "./.tsbuildinfo",
-        "target": "ES2022",
-        "module": "ES2022",
-        "lib": ["DOM", "DOM.Iterable"],
+        "target": "ES2024",
+        "module": "NodeNext",
+        "lib": ["ES2024", "DOM", "DOM.Iterable"],
         "rootDir": "./src",
-        "moduleResolution": "node",
+        "moduleResolution": "NodeNext",
         "sourceMap": true,
         "outDir": "./",
         "importHelpers": true,
@@ -21,9 +21,6 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitOverride": true,
         "skipLibCheck": true,
-        // Once standard decorators ship, we can remove these two.
-        "experimentalDecorators": true,
-        "useDefineForClassFields": false
     },
     "include": ["src/**/*.ts"],
     "exclude": []

@@ -1,29 +1,35 @@
 import type { ReactiveElement } from "lit";
 
 interface ListenerCarryingElement extends ReactiveElement {
+    // This property will be used by the decorator to store the event listener.
+    // It can be dynamically added or explicitly declared by the class using the decorator.
     __updateOnEventListener?: () => void;
 }
 
 /**
- * A property decorator that subscribes to an event on the property value and
+ * An accessor decorator that subscribes to an event on the property value and
  * calls `requestUpdate` when the event fires.
- *
- * If we were using this outside of just this one app we'd use the type system
- * to enforce that the property value is an `EventTarget`.
+ * 
+ * The accessor type must be an `EventTarget`.
  */
-export const updateOnEvent = (eventName: string) => (target: ListenerCarryingElement, propertyKey: string) => {
-    const descriptor = Object.getOwnPropertyDescriptor(target, propertyKey)!;
+export const updateOnEvent = (eventName: string) =>
+  function <T extends ListenerCarryingElement, V extends EventTarget | undefined>(
+    target: ClassAccessorDecoratorTarget<T, V>,
+    _context: ClassAccessorDecoratorContext<T, V>
+  ) {
+    const {get, set} = target;
 
-    const { get, set } = descriptor;
-    const newDescriptor = {
-        ...descriptor,
-        set(this: ListenerCarryingElement, v: EventTarget) {
-            const listener = this.__updateOnEventListener ??= () => this.requestUpdate();
-            const oldValue = get!.call(this);
-            oldValue?.removeEventListener?.(eventName, listener);
-            v?.addEventListener?.(eventName, listener);
-            return set!.call(this, v);
-        },
+    return {
+      get(this: T): V {
+        return get.call(this);
+      },
+      set(this: T, newValue: V): void {
+        const listener = this.__updateOnEventListener ??= () => this.requestUpdate();
+        const oldValue = get.call(this);
+        oldValue?.removeEventListener(eventName, listener);
+        newValue?.addEventListener(eventName, listener);
+        set.call(this, newValue);
+      }
     };
-    Object.defineProperty(target, propertyKey, newDescriptor);
-};
+  };
+  
