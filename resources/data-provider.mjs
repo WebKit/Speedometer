@@ -5,7 +5,7 @@ const DEFAULT_TAGS = ["all", "default", "experimental"];
 const ALLOWED_DOMAINS = {
     "app.netlify.com": "/sites/webkit-speedometer-preview/",
 };
-export class DataProvider{
+export class DataProvider {
     _tags = new Set(DEFAULT_TAGS);
     _suites = [];
 
@@ -36,7 +36,6 @@ export class DataProvider{
                 const parsedUrl = new URL(suite.url);
                 if (parsedUrl.hostname === "localhost")
                     return true;
-
             } catch (e) {
                 // Invalid URL format for localhost
             }
@@ -48,7 +47,6 @@ export class DataProvider{
             const parsedUrl = new URL(suite.url);
             if (ALLOWED_DOMAINS[parsedUrl.hostname] && ALLOWED_DOMAINS[parsedUrl.hostname].includes(parsedUrl.pathname))
                 return true;
-
         } catch (e) {
             // invalid URL
         }
@@ -81,14 +79,14 @@ export class DataProvider{
             const response = await fetch(params.config);
             const config = await response.json();
 
-            config.suites.flatMap((suite) => suite.tags).forEach(tag => this._tags.add(tag));
-            config.suites.forEach(suite => {
+            config.suites.flatMap((suite) => suite.tags).forEach((tag) => this._tags.add(tag));
+            config.suites.forEach((suite) => {
                 if (this._containsAllowedUrl(suite))
                     this._suites.push(suite);
             });
         } else {
-            defaultSuites.flatMap((suite) => suite.tags).forEach(tag => this._tags.add(tag));
-            defaultSuites.forEach(suite => this._suites.push(suite));
+            defaultSuites.flatMap((suite) => suite.tags).forEach((tag) => this._tags.add(tag));
+            defaultSuites.forEach((suite) => this._suites.push(suite));
         }
 
         this._freezeTags();
@@ -143,6 +141,4 @@ export class DataProvider{
 const dataProvider = new DataProvider();
 await dataProvider.init();
 
-export {
-    dataProvider
-};
+export { dataProvider };
