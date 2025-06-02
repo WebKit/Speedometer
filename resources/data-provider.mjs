@@ -5,9 +5,6 @@ const DEFAULT_TAGS = ["all", "default", "experimental"];
 const ALLOWED_DOMAINS = {
     "app.netlify.com": "/sites/webkit-speedometer-preview/",
 };
-
-// http://localhost:8080/?config=http://localhost:8080/resources/config.json
-
 export class DataProvider{
     _tags = new Set(DEFAULT_TAGS);
     _suites = [];
