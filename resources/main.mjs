@@ -1,9 +1,10 @@
 import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
-import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
+
+const { dataProvider } = await import("../resources/data-provider.mjs");
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -19,9 +20,11 @@ class MainBenchmarkClient {
     _metrics = Object.create(null);
     _steppingPromise = null;
     _steppingResolver = null;
+    _dataProvider = null;
 
-    constructor() {
-        window.addEventListener("DOMContentLoaded", () => this.prepareUI());
+    constructor(dataProvider) {
+        this._dataProvider = dataProvider;
+        this.prepareUI();
         this._showSection(window.location.hash);
         window.dispatchEvent(new Event("SpeedometerReady"));
     }
@@ -66,14 +69,14 @@ class MainBenchmarkClient {
         if (this._isRunning)
             return false;
 
-        if (Suites.every((suite) => suite.disabled)) {
+        if (this._dataProvider.suites.every((suite) => suite.disabled)) {
             const message = `No suites selected - "${params.suites}" does not exist.`;
             alert(message);
             console.error(
                 message,
                 params.suites,
                 "\nValid values:",
-                Suites.map((each) => each.name)
+                this._dataProvider.suites.map((each) => each.name)
             );
 
             return false;
@@ -93,12 +96,12 @@ class MainBenchmarkClient {
         this._metrics = Object.create(null);
         this._isRunning = true;
 
-        const enabledSuites = Suites.filter((suite) => !suite.disabled);
+        const enabledSuites = this._dataProvider.suites.filter((suite) => !suite.disabled);
         const totalSuitesCount = enabledSuites.length;
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
-        const runner = new BenchmarkRunner(Suites, this);
+        const runner = new BenchmarkRunner(this._dataProvider.suites, this);
         runner.runMultipleIterations(params.iterationCount);
         return true;
     }
@@ -339,10 +342,10 @@ class MainBenchmarkClient {
         });
 
         if (params.suites.length > 0 || params.tags.length > 0)
-            Suites.enable(params.suites, params.tags);
+            this._dataProvider.enableSuites(params.suites, params.tags);
 
         if (params.developerMode) {
-            this._developerModeContainer = createDeveloperModeContainer(Suites);
+            this._developerModeContainer = createDeveloperModeContainer(this._dataProvider.suites, this._dataProvider.tags);
             document.body.append(this._developerModeContainer);
         }
 
@@ -469,4 +472,4 @@ const rootStyle = document.documentElement.style;
 rootStyle.setProperty("--viewport-width", `${params.viewport.width}px`);
 rootStyle.setProperty("--viewport-height", `${params.viewport.height}px`);
 
-globalThis.benchmarkClient = new MainBenchmarkClient();
+globalThis.benchmarkClient = new MainBenchmarkClient(dataProvider);

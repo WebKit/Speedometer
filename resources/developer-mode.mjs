@@ -1,7 +1,10 @@
-import { Suites, Tags } from "./tests.mjs";
 import { params } from "./shared/params.mjs";
 
-export function createDeveloperModeContainer() {
+let suites, tags;
+
+export function createDeveloperModeContainer(_suites, _tags) {
+    suites = _suites;
+    tags = _tags;
     const container = document.createElement("div");
     container.className = "developer-mode";
 
@@ -119,14 +122,14 @@ function createUIForSuites() {
     control.className = "suites";
     const checkboxes = [];
     const setSuiteEnabled = (suiteIndex, enabled) => {
-        Suites[suiteIndex].disabled = !enabled;
+        suites[suiteIndex].disabled = !enabled;
         checkboxes[suiteIndex].checked = enabled;
     };
 
     control.appendChild(createSuitesGlobalSelectButtons(setSuiteEnabled));
 
     const ol = document.createElement("ol");
-    for (const suite of Suites) {
+    for (const suite of suites) {
         const li = document.createElement("li");
         const checkbox = document.createElement("input");
         checkbox.id = suite.name;
@@ -143,8 +146,8 @@ function createUIForSuites() {
         li.appendChild(label);
         label.onclick = (event) => {
             if (event?.ctrlKey || event?.metaKey) {
-                for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) {
-                    if (Suites[suiteIndex] !== suite)
+                for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
+                    if (suites[suiteIndex] !== suite)
                         setSuiteEnabled(suiteIndex, false);
                     else
                         setSuiteEnabled(suiteIndex, true);
@@ -167,7 +170,7 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
     button.className = "select-all";
     button.textContent = "Select all";
     button.onclick = () => {
-        for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
+        for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++)
             setSuiteEnabled(suiteIndex, true);
 
         updateURL();
@@ -178,7 +181,7 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
     button.textContent = "Unselect all";
     button.className = "unselect-all";
     button.onclick = () => {
-        for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++)
+        for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++)
             setSuiteEnabled(suiteIndex, false);
 
         updateURL();
@@ -188,16 +191,16 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
 }
 
 function createSuitesTagsButton(setSuiteEnabled) {
-    let tags = document.createElement("div");
-    let buttons = tags.appendChild(document.createElement("div"));
+    let container = document.createElement("div");
+    let buttons = container.appendChild(document.createElement("div"));
     buttons.className = "button-bar";
     let i = 0;
     const kTagsPerLine = 3;
-    for (const tag of Tags) {
+    for (const tag of tags) {
         if (tag === "all")
             continue;
         if (!(i % kTagsPerLine)) {
-            buttons = tags.appendChild(document.createElement("div"));
+            buttons = container.appendChild(document.createElement("div"));
             buttons.className = "button-bar";
         }
         i++;
@@ -209,8 +212,8 @@ function createSuitesTagsButton(setSuiteEnabled) {
             const extendSelection = event?.shiftKey;
             const invertSelection = event?.ctrlKey || event?.metaKey;
             const selectedTag = event.target.dataTag;
-            for (let suiteIndex = 0; suiteIndex < Suites.length; suiteIndex++) {
-                let enabled = Suites[suiteIndex].tags.includes(selectedTag);
+            for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++) {
+                let enabled = suites[suiteIndex].tags.includes(selectedTag);
                 if (invertSelection)
                     enabled = !enabled;
                 if (extendSelection && !enabled)
@@ -221,7 +224,7 @@ function createSuitesTagsButton(setSuiteEnabled) {
         };
         buttons.appendChild(button);
     }
-    return tags;
+    return container;
 }
 
 function createUIForRun() {
@@ -249,13 +252,13 @@ function updateParamsSuitesAndTags() {
 
     // If less than all suites are selected then change the URL "Suites" GET parameter
     // to comma separate only the selected
-    const selectedSuites = Suites.filter((suite) => !suite.disabled);
+    const selectedSuites = suites.filter((suite) => !suite.disabled);
     if (!selectedSuites.length)
         return;
 
     // Try finding common tags that would result in the current suite selection.
     let commonTags = new Set(selectedSuites[0].tags);
-    for (const suite of Suites) {
+    for (const suite of suites) {
         if (suite.disabled)
             suite.tags.forEach((tag) => commonTags.delete(tag));
         else

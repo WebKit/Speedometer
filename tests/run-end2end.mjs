@@ -3,14 +3,15 @@
 import assert from "assert";
 import testSetup from "./helper.mjs";
 
-import { Suites } from "../resources/tests.mjs";
-
 const HELP = `
 This script runs end2end tests by invoking the benchmark via the main
 Speedometer page in /index.html.
 `.trim();
 
 const { driver, PORT, stop } = await testSetup(HELP);
+
+const { dataProvider } = await import("../resources/data-provider.mjs");
+const suites = dataProvider.suites;
 
 async function testPage(url) {
     console.log(`Testing: ${url}`);
@@ -72,7 +73,7 @@ function validateMetric(name, metric) {
 async function testIterations() {
     const iterationCount = 2;
     const metrics = await testPage(`index.html?iterationCount=${iterationCount}`);
-    Suites.forEach((suite) => {
+    suites.forEach((suite) => {
         if (!suite.disabled) {
             const metric = metrics[suite.name];
             assert(metric.values.length === iterationCount);
@@ -86,7 +87,7 @@ async function testIterations() {
 
 async function testAll() {
     const metrics = await testPage("index.html?iterationCount=1&tags=all");
-    Suites.forEach((suite) => {
+    suites.forEach((suite) => {
         assert(suite.name in metrics);
         const metric = metrics[suite.name];
         assert(metric.values.length === 1);
@@ -98,7 +99,7 @@ async function testAll() {
 async function testDeveloperMode() {
     const params = ["developerMode", "iterationCount=1", "warmupBeforeSync=2", "waitBeforeSync=2", "shuffleSeed=123", "suites=Perf-Dashboard"];
     const metrics = await testPage(`index.html?${params.join("&")}`);
-    Suites.forEach((suite) => {
+    suites.forEach((suite) => {
         if (suite.name === "Perf-Dashboard") {
             const metric = metrics[suite.name];
             assert(metric.values.length === 1);

@@ -27,6 +27,8 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    // External config url to override internal tests.
+    config = "";
     // Measure more workload prepare time.
     measurePrepare = false;
 
@@ -59,6 +61,7 @@ export class Params {
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
+        this.config = this._parseConfig(searchParams);
         this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
 
         const unused = Array.from(searchParams.keys());
@@ -152,6 +155,15 @@ export class Params {
         return shuffleSeed;
     }
 
+    _parseConfig(searchParams) {
+        const config = searchParams.get("config") ?? "";
+        searchParams.delete("config");
+        if (config && !isValidJsonUrl(config))
+            throw new Error("Invalid config url passed in.");
+
+        return config;
+    }
+
     toCompleteSearchParamsObject() {
         return this.toSearchParamsObject(false);
     }
@@ -185,6 +197,14 @@ export class Params {
 
     toSearchParams() {
         return this.toSearchParamsObject().toString();
+    }
+}
+
+function isValidJsonUrl(url) {
+    try {
+        return new URL(url) && url.toLowerCase().endsWith(".json");
+    } catch (_) {
+        return false;
     }
 }
 
