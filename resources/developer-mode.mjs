@@ -21,6 +21,7 @@ export function createDeveloperModeContainer(_suites, _tags) {
     const settings = document.createElement("div");
     settings.className = "settings";
     settings.append(createUIForIterationCount());
+    settings.append(createUIForMeasurePrepare());
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
     settings.append(createUIForSyncStepDelay());
@@ -46,6 +47,12 @@ function span(text) {
 function createUIForWarmupSuite() {
     return createCheckboxUI("Use Warmup Suite", params.useWarmupSuite, (isChecked) => {
         params.useWarmupSuite = isChecked;
+    });
+}
+
+function createUIForMeasurePrepare() {
+    return createCheckboxUI("Measure Prepare", params.measurePrepare, (isChecked) => {
+        params.measurePrepare = isChecked;
     });
 }
 
@@ -222,12 +229,13 @@ function createSuitesTagsButton(setSuiteEnabled) {
 
 function createUIForRun() {
     const stepTestButton = document.createElement("button");
-    stepTestButton.textContent = "Step Test \u23EF";
+    stepTestButton.className = "step-button";
+    stepTestButton.innerHTML = "Step Test<span>\u23EF</span>";
     stepTestButton.onclick = (event) => {
         globalThis.benchmarkClient.step();
     };
     const startTestButton = document.createElement("button");
-    startTestButton.textContent = "Start Test \u23F5";
+    startTestButton.innerHTML = "Start Test<span>\u23F5</span>";
     startTestButton.onclick = (event) => {
         globalThis.benchmarkClient.start();
     };

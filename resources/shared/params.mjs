@@ -29,6 +29,8 @@ export class Params {
     shuffleSeed = "off";
     // External config url to override internal tests.
     config = "";
+    // Measure more workload prepare time.
+    measurePrepare = false;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -60,6 +62,7 @@ export class Params {
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
         this.config = this._parseConfig(searchParams);
+        this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
