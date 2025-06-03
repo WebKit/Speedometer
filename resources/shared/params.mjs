@@ -27,6 +27,10 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    // Param to tweak the relative complexity of all suites.
+    // The default is 1.0, and for suites supporting this param, the duration
+    // roughly scales with the complexity.
+    complexity = 1.0;
     // Measure more workload prepare time.
     measurePrepare = false;
 
@@ -39,8 +43,17 @@ export class Params {
         }
     }
 
-    _parseInt(value, errorMessage) {
+    _parseNumber(value, errorMessage, minValue = 0) {
         const number = Number(value);
+        if (!Number.isFinite(number) && errorMessage)
+            throw new Error(`Invalid ${errorMessage} param: '${value}', expected Number.`);
+        if (number < minValue)
+            throw new Error(`Invalid ${errorMessage} param: '${value}', value must be >= ${minValue}.`);
+        return number;
+    }
+
+    _parseInt(value, errorMessage, minValue = 0) {
+        const number = this._parseNumber(value, errorMessage, minValue);
         if (!Number.isInteger(number) && errorMessage)
             throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
         return parseInt(number);
@@ -59,6 +72,7 @@ export class Params {
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
+        this.complexity = this._parserNumberParam(searchParams, "complexity", 0);
         this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
 
         const unused = Array.from(searchParams.keys());
@@ -73,13 +87,18 @@ export class Params {
         return true;
     }
 
+    _parserNumberParam(searchParams, paramKey, minValue) {
+        if (!searchParams.has(paramKey))
+            return defaultParams[paramKey];
+        const parsedValue = this._parseNumber(searchParams.get(paramKey), "waitBeforeSync", minValue);
+        searchParams.delete(paramKey);
+        return parsedValue;
+    }
+
     _parseIntParam(searchParams, paramKey, minValue) {
         if (!searchParams.has(paramKey))
             return defaultParams[paramKey];
-
-        const parsedValue = this._parseInt(searchParams.get(paramKey), "waitBeforeSync");
-        if (parsedValue < minValue)
-            throw new Error(`Invalid ${paramKey} param: '${parsedValue}', value must be >= ${minValue}.`);
+        const parsedValue = this._parseInt(searchParams.get(paramKey), "waitBeforeSync", minValue);
         searchParams.delete(paramKey);
         return parsedValue;
     }
