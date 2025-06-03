@@ -8,7 +8,7 @@ const defaultLanguage = "en";
 let numberOfItemsToAdd = defaultNumberOfItemsToAdd;
 
 export function handleComplexityChange() {
-    numberOfItemsToAdd = Math.abs(Math.round(defaultNumberOfItemsToAdd * params.complexity));
+    numberOfItemsToAdd = Math.round(defaultNumberOfItemsToAdd * params.complexity);
 }
 
 function getTodoText(lang, index) {
