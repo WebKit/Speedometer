@@ -252,12 +252,13 @@ function createSuitesTagsButton(setSuiteEnabled) {
 
 function createUIForRun() {
     const stepTestButton = document.createElement("button");
-    stepTestButton.textContent = "Step Test \u23EF";
+    stepTestButton.className = "step-button";
+    stepTestButton.innerHTML = "Step Test<span>\u23EF</span>";
     stepTestButton.onclick = (event) => {
         globalThis.benchmarkClient.step();
     };
     const startTestButton = document.createElement("button");
-    startTestButton.textContent = "Start Test \u23F5";
+    startTestButton.innerHTML = "Start Test<span>\u23F5</span>";
     startTestButton.onclick = (event) => {
         globalThis.benchmarkClient.start();
     };
