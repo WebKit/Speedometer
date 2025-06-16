@@ -28,5 +28,7 @@ export function forceLayout(body, layoutMode = "getBoundingRectAndElementFromPoi
     const rect = body.getBoundingClientRect();
     if (layoutMode === "getBoundingRectAndElementFromPoint")
         return document.elementFromPoint((rect.width / 2) | 0, (rect.height / 2) | 0);
+    else if (layoutMode !== "getBoundingClientRect")
+        throw Error(`Invalid layoutMode: ${layoutMode}`);
     return rect.height;
 }
