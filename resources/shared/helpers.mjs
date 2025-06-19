@@ -1,3 +1,5 @@
+import { isClassElement } from "typescript";
+
 /**
  * Helper Methods
  *
@@ -26,9 +28,12 @@ export function getAllElements(selector, path = [], lookupStartNode = document) 
 export function forceLayout(body, layoutMode = "getBoundingRectAndElementFromPoint") {
     body ??= document.body;
     const rect = body.getBoundingClientRect();
-    if (layoutMode === "getBoundingRectAndElementFromPoint")
-        return document.elementFromPoint((rect.width / 2) | 0, (rect.height / 2) | 0);
-    else if (layoutMode !== "getBoundingClientRect")
-        throw Error(`Invalid layoutMode: ${layoutMode}`);
-    return rect.height;
+    switch (layoutMode) {
+        case "getBoundingRectAndElementFromPoint":
+            return document.elementFromPoint((rect.width / 2) | 0, (rect.height / 2) | 0);
+        case  "getBoundingClientRect":
+            return rect.height;
+        default:
+            throw Error(`Invalid layoutMode: ${layoutMode}`);
+    }
 }
