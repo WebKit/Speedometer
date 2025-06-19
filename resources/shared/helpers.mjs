@@ -1,5 +1,3 @@
-import { isClassElement } from "typescript";
-
 /**
  * Helper Methods
  *
@@ -31,7 +29,7 @@ export function forceLayout(body, layoutMode = "getBoundingRectAndElementFromPoi
     switch (layoutMode) {
         case "getBoundingRectAndElementFromPoint":
             return document.elementFromPoint((rect.width / 2) | 0, (rect.height / 2) | 0);
-        case  "getBoundingClientRect":
+        case "getBoundingClientRect":
             return rect.height;
         default:
             throw Error(`Invalid layoutMode: ${layoutMode}`);
