@@ -88,6 +88,7 @@ class TodoBottombar extends HTMLElement {
     }
 
     MoveToPreviousPage() {
+        this.element.querySelector(".previous-page-button").disabled = true;
         this.dispatchEvent(new CustomEvent("previous-page"));
     }
 
@@ -110,6 +111,10 @@ class TodoBottombar extends HTMLElement {
 
         if (this.isConnected)
             this.updateDisplay();
+    }
+
+    reenablePreviousPageButton() {
+        this.element.querySelector(".previous-page-button").disabled = false;
     }
 
     connectedCallback() {
