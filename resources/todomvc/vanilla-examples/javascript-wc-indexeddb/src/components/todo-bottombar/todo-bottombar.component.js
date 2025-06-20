@@ -115,6 +115,7 @@ class TodoBottombar extends HTMLElement {
 
     reenablePreviousPageButton() {
         this.element.querySelector(".previous-page-button").disabled = false;
+        window.dispatchEvent(new CustomEvent("previous-page-button-enabled", {}));
     }
 
     connectedCallback() {

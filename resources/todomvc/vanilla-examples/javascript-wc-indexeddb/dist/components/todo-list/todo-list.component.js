@@ -11,6 +11,7 @@ class IndexedDBManager {
         this.storeName = 'todos';
         this.db = null;
         this.pendingAdditions = 0;
+        this.totalItemsToggled = 0;
         this.initDB().then(() => {
             const newDiv = document.createElement("div");
             newDiv.classList.add("indexeddb-ready");
@@ -190,6 +191,9 @@ class IndexedDBManager {
                 
                 updateRequest.onsuccess = () => {
                     console.log(`Todo item with itemNumber '${itemNumber}' completed status updated to: ${completed}`);
+                    if (window.numberOfItemsToAdd && ++this.totalItemsToggled === window.numberOfItemsToAdd) {
+                        window.dispatchEvent(new CustomEvent("indexeddb-toggle-completed", {}));
+                    }
                     resolve(todoItem);
                 };
                 

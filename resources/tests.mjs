@@ -267,13 +267,33 @@ Suites.push({
             }
             await indexedDBAddPromise;
         }),
-        // new BenchmarkTestStep("CompletingAllItems", (page) => {
-        //     const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
-        //     for (let i = 0; i < numberOfItemsToAdd; i++) {
-        //         const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
-        //         item.click();
-        //     }
-        // }),
+        new BenchmarkTestStep("CompletingAllItems", async (page) => {
+            const numberOfItemsPerIteration = 10;
+            const numberOfIterations = 10;
+            page.setGlobalVariable("numberOfItemsToAdd", numberOfItemsToAdd);
+            const indexedDBCompletedPromise = new Promise((resolve) => {
+                page.addEventListener("indexeddb-toggle-completed", () => {
+                    resolve();
+                });
+            }); 
+            for (let j=0; j < numberOfIterations; j++) {
+                const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+                for (let i = 0; i < numberOfItemsPerIteration; i++) {
+                    const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
+                    item.click();
+                }
+                // Let the layout update???
+                // Give a change to the pending indexedDB operations to complete in main thread.
+                await new Promise((resolve) => {
+                    setTimeout(() => {resolve();}, 0);
+                });
+                if (j<9) {
+                    const nextPageButton = page.querySelector(".next-page-button", ["todo-app", "todo-bottombar"]);
+                    nextPageButton.click();
+                }
+            }
+            await indexedDBCompletedPromise;
+        }),
         // new BenchmarkTestStep("DeletingAllItems", (page) => {
         //     const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
         //     for (let i = numberOfItemsToAdd - 1; i >= 0; i--) {
