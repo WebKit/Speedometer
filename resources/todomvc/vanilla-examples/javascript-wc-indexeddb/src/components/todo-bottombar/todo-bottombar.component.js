@@ -3,6 +3,38 @@ import template from "./todo-bottombar.template.js";
 import globalStyles from "../../../node_modules/todomvc-css/dist/global.constructable.js";
 import bottombarStyles from "../../../node_modules/todomvc-css/dist/bottombar.constructable.js";
 
+const additionalStyles = new CSSStyleSheet();
+additionalStyles.replaceSync(`
+
+    .clear-completed-button, .clear-completed-button:active,
+    .todo-status,
+    .filter-list
+     {
+        position: unset;
+        transform: unset;
+    }
+
+    .bottombar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        align-items: center;
+        justify-items: center;
+    }
+
+    .bottombar > * {
+        grid-column: span 1;
+    }
+
+    .filter-list {
+        grid-column: span 3;
+    }
+
+    .bottombar.display-none {
+        display: none;
+    }
+`);
+
+
 class TodoBottombar extends HTMLElement {
     static get observedAttributes() {
         return ["total-items", "active-items"];
@@ -20,17 +52,19 @@ class TodoBottombar extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
         this.htmlDirection = document.dir || "ltr";
         this.setAttribute("dir", this.htmlDirection);
-        this.shadow.adoptedStyleSheets = [globalStyles, bottombarStyles];
+        this.shadow.adoptedStyleSheets = [globalStyles, bottombarStyles, additionalStyles];
         this.shadow.append(node);
 
         this.clearCompletedItems = this.clearCompletedItems.bind(this);
+        this.MoveToNextPage = this.MoveToNextPage.bind(this);
+        this.MoveToPreviousPage = this.MoveToPreviousPage.bind(this);
     }
 
     updateDisplay() {
         if (parseInt(this["total-items"]) !== 0)
-            this.element.style.display = "block";
+            this.element.classList.remove("display-none");
         else
-            this.element.style.display = "none";
+            this.element.classList.add("display-none");
 
         this.todoStatus.textContent = `${this["active-items"]} ${this["active-items"] === "1" ? "item" : "items"} left!`;
     }
@@ -47,13 +81,26 @@ class TodoBottombar extends HTMLElement {
     clearCompletedItems() {
         this.dispatchEvent(new CustomEvent("clear-completed-items"));
     }
+    
+    MoveToNextPage() {
+        console.log("Moving to next page");
+        this.dispatchEvent(new CustomEvent("next-page"));
+    }
+
+    MoveToPreviousPage() {
+        this.dispatchEvent(new CustomEvent("previous-page"));
+    }
 
     addListeners() {
         this.clearCompletedButton.addEventListener("click", this.clearCompletedItems);
+        this.element.querySelector(".next-page-button").addEventListener("click", this.MoveToNextPage);
+        this.element.querySelector(".previous-page-button").addEventListener("click", this.MoveToPreviousPage);
     }
 
     removeListeners() {
         this.clearCompletedButton.removeEventListener("click", this.clearCompletedItems);
+        this.getElementById("next-page-button").removeEventListener("click", this.MoveToNextPage);
+        this.getElementById("previous-page-button").removeEventListener("click", this.MoveToPreviousPage);
     }
 
     attributeChangedCallback(property, oldValue, newValue) {

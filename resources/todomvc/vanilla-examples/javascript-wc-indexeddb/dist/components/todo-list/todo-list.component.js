@@ -18,6 +18,10 @@ customListStyles.replaceSync(`
     .todo-list[route="active"] > [itemcompleted="true"] {
         display: none;
     }
+
+    .todo-list > :nth-child(10) ~ todo-item {
+        display: none;
+    }
 `);
 
 console.log(customListStyles);
