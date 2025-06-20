@@ -125,6 +125,10 @@ class Page {
     addEventListener(name, listener) {
         this._frame.contentWindow.addEventListener(name, listener);
     }
+
+    setGlobalVariable(name, value) {
+        this._frame.contentWindow[name] = value;
+    }
 }
 
 const NATIVE_OPTIONS = {
