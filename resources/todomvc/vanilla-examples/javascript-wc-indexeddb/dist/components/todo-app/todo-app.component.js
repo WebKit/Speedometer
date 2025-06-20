@@ -29,6 +29,8 @@ class TodoApp extends HTMLElement {
         this.toggleItems = this.toggleItems.bind(this);
         this.clearCompletedItems = this.clearCompletedItems.bind(this);
         this.routeChange = this.routeChange.bind(this);
+        this.moveToNextPage = this.moveToNextPage.bind(this);
+        this.moveToPreviousPage = this.moveToPreviousPage.bind(this);
 
         this.router = useRouter();
     }
@@ -48,16 +50,17 @@ class TodoApp extends HTMLElement {
     }
 
     toggleItem(event) {
-        if (event.detail.completed === "true") {
+        if (event.detail.completed) {
             this.#numberOfCompletedItems++;
         } else {
             this.#numberOfCompletedItems--;
         }
+        this.list.toggleItem(event.detail.itemNumber, event.detail.completed);
         this.update("toggle-item", event.detail.id);
     }
 
     removeItem(event) {
-        if (event.datail.completed === "true") {
+        if (event.detail.completed) {
             this.#numberOfCompletedItems--;
         }
         this.#numberOfItems--;
@@ -74,6 +77,17 @@ class TodoApp extends HTMLElement {
 
     clearCompletedItems() {
         this.list.removeCompletedItems();
+    }
+
+    moveToNextPage() {
+        this.list.moveToNextPage();
+    }
+
+    moveToPreviousPage() {
+        // Skeleton implementation of previous page navigation
+        this.list.moveToPreviousPage().then(() => {
+            this.bottombar.reenablePreviousPageButton();
+        });
     }
 
     update() {
@@ -100,6 +114,8 @@ class TodoApp extends HTMLElement {
         this.list.listNode.addEventListener("update-item", this.updateItem);
 
         this.bottombar.addEventListener("clear-completed-items", this.clearCompletedItems);
+        this.bottombar.addEventListener("next-page", this.moveToNextPage);
+        this.bottombar.addEventListener("previous-page", this.moveToPreviousPage);
     }
 
     removeListeners() {
@@ -111,6 +127,8 @@ class TodoApp extends HTMLElement {
         this.list.listNode.removeEventListener("update-item", this.updateItem);
 
         this.bottombar.removeEventListener("clear-completed-items", this.clearCompletedItems);
+        this.bottombar.removeEventListener("next-page", this.moveToNextPage);
+        this.bottombar.removeEventListener("previous-page", this.moveToPreviousPage);
     }
 
     routeChange(route) {

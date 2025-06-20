@@ -19,6 +19,7 @@ class TodoItem extends HTMLElement {
         this.itemid = "";
         this.itemtitle = "Todo Item";
         this.itemcompleted = "false";
+        this.itemIndex = null;
 
         const node = document.importNode(template.content, true);
         this.item = node.querySelector(".todo-item");
@@ -92,7 +93,7 @@ class TodoItem extends HTMLElement {
 
         this.dispatchEvent(
             new CustomEvent("toggle-item", {
-                detail: { completed: this.toggleInput.checked },
+                detail: { completed: this.toggleInput.checked, itemNumber: this.itemIndex },
                 bubbles: true,
             })
         );

@@ -2,7 +2,7 @@ const template = document.createElement("template");
 
 template.id = "todo-bottombar-template";
 template.innerHTML = `
-    <footer class="bottombar" style="display:none">
+    <footer class="bottombar display-none">
         <div class="todo-status"><span class="todo-count">0</span> item left</div>
         <ul class="filter-list">
             <li class="filter-item">
@@ -16,6 +16,8 @@ template.innerHTML = `
             </li>
         </ul>
         <button id="clear-completed" class="clear-completed-button">Clear completed</button>
+        <button id="next-page" class="next-page-button"> Next </button>
+        <button id="previous-page" class="previous-page-button"> Previous </button>
     </footer>
 `;
 

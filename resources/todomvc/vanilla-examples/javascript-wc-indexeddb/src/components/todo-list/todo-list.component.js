@@ -10,7 +10,13 @@ class IndexedDBManager {
         this.dbVersion = 1;
         this.storeName = 'todos';
         this.db = null;
-        this.initDB();
+        this.pendingAdditions = 0;
+        this.initDB().then(() => {
+            const newDiv = document.createElement("div");
+            newDiv.classList.add("indexeddb-ready");
+            newDiv.style.display = "none";
+            document.body.append(newDiv);
+        });
     }
 
     initDB() {
@@ -79,9 +85,13 @@ class IndexedDBManager {
             const store = transaction.objectStore(this.storeName);
             
             const request = store.add(todo);
-            
+            this.pendingAdditions++;
+
             request.onsuccess = () => {
                 console.log('Todo added to IndexedDB:', todo);
+                if (--this.pendingAdditions === 0) {
+                    window.dispatchEvent(new CustomEvent("indexeddb-add-completed", {}));
+                }
                 resolve(todo);
             };
             

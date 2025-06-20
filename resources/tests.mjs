@@ -241,6 +241,50 @@ Suites.push({
     ],
 });
 
+
+Suites.push({
+    name: "TodoMVC-WebComponents-IndexedDB",
+    url: "resources/todomvc/vanilla-examples/javascript-wc-indexeddb/dist/index.html",
+    tags: ["todomvc", "webcomponents"],
+    type: "async",
+    async prepare(page) {
+        await page.waitForElement("todo-app");
+        await page.waitForElement(".indexeddb-ready");
+        
+    },
+    tests: [
+        new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, async (page) => {
+            const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
+            const indexedDBAddPromise = new Promise((resolve) => {
+                page.addEventListener("indexeddb-add-completed", () => {
+                    resolve();
+                });
+            }); 
+            for (let i = 0; i < numberOfItemsToAdd; i++) {
+                input.setValue(getTodoText(defaultLanguage, i));
+                input.dispatchEvent("input");
+                input.enter("keyup");
+            }
+            await indexedDBAddPromise;
+        }),
+        // new BenchmarkTestStep("CompletingAllItems", (page) => {
+        //     const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+        //     for (let i = 0; i < numberOfItemsToAdd; i++) {
+        //         const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
+        //         item.click();
+        //     }
+        // }),
+        // new BenchmarkTestStep("DeletingAllItems", (page) => {
+        //     const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+        //     for (let i = numberOfItemsToAdd - 1; i >= 0; i--) {
+        //         const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
+        //         item.click();
+        //     }
+        // }),
+    ],
+});
+
+
 Suites.push({
     name: "TodoMVC-WebComponents",
     url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
