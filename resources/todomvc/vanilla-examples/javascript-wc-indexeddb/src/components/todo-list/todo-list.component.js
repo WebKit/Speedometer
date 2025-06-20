@@ -4,6 +4,7 @@ import TodoItem from "../todo-item/todo-item.component.js";
 import globalStyles from "../../../node_modules/todomvc-css/dist/global.constructable.js";
 import listStyles from "../../../node_modules/todomvc-css/dist/todo-list.constructable.js";
 
+const MAX_ON_SCREEN_ITEMS = 10;
 
 const customListStyles = new CSSStyleSheet();
 customListStyles.replaceSync(`
@@ -16,6 +17,10 @@ customListStyles.replaceSync(`
     }
 
     .todo-list[route="active"] > [itemcompleted="true"] {
+        display: none;
+    }
+
+    :nth-child(${MAX_ON_SCREEN_ITEMS}) ~ todo-item {
         display: none;
     }
 `);
@@ -112,6 +117,18 @@ class TodoList extends HTMLElement {
 
     connectedCallback() {
         this.updateStyles();
+    }
+
+    moveToNextPage() {
+        let completedRemoved = 0;
+        for (let i=0; i < MAX_ON_SCREEN_ITEMS; i++) {
+            const child = this.listNode.firstChild;
+            if (child.getAttribute("itemcompleted") === "true") {
+                completedRemoved++;
+            }
+            child.remove();
+        }
+        return {totalRemoved: MAX_ON_SCREEN_ITEMS, completedRemoved};
     }
 }
 

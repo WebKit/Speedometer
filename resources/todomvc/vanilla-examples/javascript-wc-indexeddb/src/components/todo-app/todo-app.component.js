@@ -29,6 +29,7 @@ class TodoApp extends HTMLElement {
         this.toggleItems = this.toggleItems.bind(this);
         this.clearCompletedItems = this.clearCompletedItems.bind(this);
         this.routeChange = this.routeChange.bind(this);
+        this.moveToNextPage = this.moveToNextPage.bind(this);
 
         this.router = useRouter();
     }
@@ -76,6 +77,13 @@ class TodoApp extends HTMLElement {
         this.list.removeCompletedItems();
     }
 
+    moveToNextPage() {
+        let {totalRemoved, completedRemoved} = this.list.moveToNextPage();
+        this.#numberOfItems -= totalRemoved;
+        this.#numberOfCompletedItems -= completedRemoved;
+        this.update();
+    }
+
     update() {
         const totalItems = this.#numberOfItems;
         const completedItems = this.#numberOfCompletedItems;
@@ -100,6 +108,7 @@ class TodoApp extends HTMLElement {
         this.list.listNode.addEventListener("update-item", this.updateItem);
 
         this.bottombar.addEventListener("clear-completed-items", this.clearCompletedItems);
+        this.bottombar.addEventListener("next-page", this.moveToNextPage);
     }
 
     removeListeners() {
@@ -111,6 +120,7 @@ class TodoApp extends HTMLElement {
         this.list.listNode.removeEventListener("update-item", this.updateItem);
 
         this.bottombar.removeEventListener("clear-completed-items", this.clearCompletedItems);
+        this.bottombar.removeEventListener("next-page", this.moveToNextPage);
     }
 
     routeChange(route) {
