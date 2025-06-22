@@ -88,7 +88,7 @@ export class TodoList extends LitElement {
 
     @updateOnEvent("change")
     @property({ attribute: false })
-        todoList?: Todos;
+        accessor todoList: Todos | undefined;
 
     override render() {
         return html`

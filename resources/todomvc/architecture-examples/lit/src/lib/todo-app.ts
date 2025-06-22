@@ -52,7 +52,7 @@ export class TodoApp extends LitElement {
 
     @updateOnEvent("change")
     @state()
-    readonly todoList = new Todos();
+    accessor todoList = new Todos();
 
     constructor() {
         super();
