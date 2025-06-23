@@ -88,6 +88,7 @@ class TodoBottombar extends HTMLElement {
     }
 
     MoveToPreviousPage() {
+        console.log("Moving to previous page button clicked");
         this.element.querySelector(".previous-page-button").disabled = true;
         this.dispatchEvent(new CustomEvent("previous-page"));
     }
