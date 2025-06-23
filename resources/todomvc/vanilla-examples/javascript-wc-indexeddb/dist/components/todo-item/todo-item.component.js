@@ -100,11 +100,9 @@ class TodoItem extends HTMLElement {
     }
 
     removeItem() {
-        // The todo-list keeps a reference to all elements and updates the list on removal.
-        // (therefore the removal has to happen after the list is updated)
         this.dispatchEvent(
             new CustomEvent("remove-item", {
-                detail: { completed: this.togglegetAtInput.checked},
+                detail: { completed: this.toggleInput.checked, itemNumber: this.itemIndex },
                 bubbles: true,
             })
         );

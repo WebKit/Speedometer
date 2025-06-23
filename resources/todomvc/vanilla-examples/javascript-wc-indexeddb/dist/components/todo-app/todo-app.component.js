@@ -65,6 +65,7 @@ class TodoApp extends HTMLElement {
         }
         this.#numberOfItems--;
         this.update("remove-item", event.detail.id);
+        this.list.removeItem(event.detail.itemNumber);
     }
 
     updateItem(event) {
@@ -86,7 +87,9 @@ class TodoApp extends HTMLElement {
     moveToPreviousPage() {
         // Skeleton implementation of previous page navigation
         this.list.moveToPreviousPage().then(() => {
+            console.log("Moving to previous page");
             this.bottombar.reenablePreviousPageButton();
+            window.dispatchEvent(new CustomEvent("previous-page-loaded", {}));
         });
     }
 

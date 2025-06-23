@@ -12,6 +12,7 @@ class IndexedDBManager {
         this.db = null;
         this.pendingAdditions = 0;
         this.totalItemsToggled = 0;
+        this.totalItemsDeleted = 0;
         this.initDB().then(() => {
             const newDiv = document.createElement("div");
             newDiv.classList.add("indexeddb-ready");
@@ -221,6 +222,47 @@ class IndexedDBManager {
             };
         });
     }
+
+    removeTodo(itemNumber) {
+        return new Promise((resolve, reject) => {
+            // Ensure the database connection is established
+            if (!this.db) {
+                this.initDB()
+                    .then(() => this.removeTodo(itemNumber))
+                    .then(resolve)
+                    .catch(reject);
+                return;
+            }
+
+            // Access the todo item directly by its itemNumber (keyPath)
+            const transaction = this.db.transaction(this.storeName, 'readwrite');
+            const store = transaction.objectStore(this.storeName);
+            
+            // Delete the todo item directly using its primary key (itemNumber)
+            const deleteRequest = store.delete(itemNumber);
+            
+            deleteRequest.onsuccess = () => {
+                if (window.numberOfItemsToAdd && ++this.totalItemsDeleted === window.numberOfItemsToAdd) {
+                    window.dispatchEvent(new CustomEvent("indexeddb-remove-completed", {}));
+                }
+                console.log(`Total items deleted: ${this.totalItemsDeleted}`);
+                console.log(`Todo item with itemNumber '${itemNumber}' deleted successfully`);
+                resolve(itemNumber);
+            };
+            
+            deleteRequest.onerror = (event) => {
+                console.error('Error deleting todo item:', event.target.error);
+                reject(event.target.error);
+            };
+            
+            // Handle transaction errors
+            transaction.onerror = (event) => {
+                console.error('Transaction error while deleting todo:', event.target.error);
+                reject(event.target.error);
+            };
+
+        });
+    }
 }
 
 const MAX_ON_SCREEN_ITEMS = 10;
@@ -288,6 +330,10 @@ class TodoList extends HTMLElement {
         this.listNode.append(element);
 
         this.#addItemToStorage(itemIndex, id, title, priority, completed);
+    }
+
+    removeItem(itemIndex) {
+        this.storageManager.removeTodo(itemIndex);
     }
 
     addItems(items) {

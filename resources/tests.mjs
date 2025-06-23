@@ -294,13 +294,45 @@ Suites.push({
             }
             await indexedDBCompletedPromise;
         }),
-        // new BenchmarkTestStep("DeletingAllItems", (page) => {
-        //     const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
-        //     for (let i = numberOfItemsToAdd - 1; i >= 0; i--) {
-        //         const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
-        //         item.click();
-        //     }
-        // }),
+        new BenchmarkTestStep("DeletingAllItems", async (page) => {
+            const numberOfItemsPerIteration = 10;
+            const numberOfIterations = 10;
+            page.setGlobalVariable("numberOfItemsToAdd", numberOfItemsToAdd);
+            const indexedDBCompletedPromise = new Promise((resolve) => {
+                page.addEventListener("indexeddb-remove-completed", () => {
+                    resolve();
+                });
+            });
+            function iterationFinishedListener () {
+                console.log("Listener listened");
+                iterationFinishedListener.promiseResolve();
+            }
+            page.addEventListener('previous-page-loaded', iterationFinishedListener);
+            for (let j=0; j < numberOfIterations; j++) {
+                const iterationFinishedPromise = new Promise((resolve) => {
+                    iterationFinishedListener.promiseResolve = resolve;
+                });
+                const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
+                for (let i = numberOfItemsPerIteration - 1; i >= 0; i--) {
+                    const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
+                    item.click();
+                }
+                // Let the layout update???
+                // Give a change to the pending indexedDB operations to complete in main thread.
+                await new Promise((resolve) => {
+                    setTimeout(() => {resolve();}, 0);
+                });
+                if (j<9) {
+                    const previousPageButton = page.querySelector(".previous-page-button", ["todo-app", "todo-bottombar"]);
+                    previousPageButton.click();
+                    console.log("Clicked previous page button");
+                    await iterationFinishedPromise;
+                    console.log("Promise resolved for previous page button");
+                }
+            }
+            await indexedDBCompletedPromise;
+            console.log("Finished deleting all items");
+        }),
     ],
 });
 
