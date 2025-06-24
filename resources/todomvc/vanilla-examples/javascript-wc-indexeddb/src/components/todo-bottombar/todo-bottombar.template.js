@@ -16,8 +16,8 @@ template.innerHTML = `
             </li>
         </ul>
         <button id="clear-completed" class="clear-completed-button">Clear completed</button>
-        <button id="next-page" class="next-page-button"> Next </button>
         <button id="previous-page" class="previous-page-button"> Previous </button>
+        <button id="next-page" class="next-page-button"> Next </button>
     </footer>
 `;
 
