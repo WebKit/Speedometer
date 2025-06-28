@@ -57,7 +57,6 @@ export class DataProvider {
             // Check against the allowed domains and paths.
             if (ALLOWED_DOMAINS[parsedUrl.hostname] && ALLOWED_DOMAINS[parsedUrl.hostname].includes(parsedUrl.pathname))
                 return true;
-
         } catch {
             return false;
         }
