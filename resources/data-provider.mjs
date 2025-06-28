@@ -129,7 +129,7 @@ export class DataProvider {
         } else {
             console.warn("Neither names nor tags provided. Enabling all default suites.");
             this._suites.forEach((suite) => {
-                suite.disabled = !("default" in suite.tags);
+                suite.disabled = !suite.tags.includes("default");
             });
         }
         if (this._suites.some((suite) => !suite.disabled))
