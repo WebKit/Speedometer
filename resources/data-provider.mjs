@@ -115,10 +115,7 @@ export class DataProvider {
         if (names?.length) {
             const lowerCaseNames = names.map((each) => each.toLowerCase());
             this._suites.forEach((suite) => {
-                if (lowerCaseNames.includes(suite.name.toLowerCase()))
-                    suite.disabled = false;
-                else
-                    suite.disabled = true;
+                suite.disabled = !lowerCaseNames.includes(suite.name.toLowerCase());
             });
         } else if (tags?.length) {
             tags.forEach((tag) => {
