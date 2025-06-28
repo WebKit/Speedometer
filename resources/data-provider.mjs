@@ -1,3 +1,5 @@
+// example url for local testing:
+// http://localhost:8080/?config=http://localhost:8080/resources/config.json
 import { defaultSuites } from "./tests.mjs";
 import { params } from "./shared/params.mjs";
 
@@ -75,6 +77,7 @@ export class DataProvider {
     }
 
     async init() {
+        console.log("params.config", params.config);
         if (params.config) {
             const response = await fetch(params.config);
             const config = await response.json();
