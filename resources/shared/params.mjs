@@ -208,7 +208,7 @@ export class Params {
 function isValidJsonUrl(url) {
     try {
         return new URL(url) && url.toLowerCase().endsWith(".json");
-    } catch (_) {
+    } catch {
         return false;
     }
 }
