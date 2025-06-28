@@ -19,40 +19,48 @@ export class DataProvider {
         return this._suites;
     }
 
+    /**
+     * Checks if a given URL is allowed based on a set of rules.
+     * We allow:
+     * - Relative URLs (e.g., "/path/to/resource", "path/to/resource").
+     * - Absolute URLs from a list of allowed domains.
+     * - Localhost URLs for development purposes.
+     *
+     * @param {string} url The URL to validate.
+     * @returns {boolean} True if the URL is allowed, false otherwise.
+     */
     _isAllowedUrl(url) {
-        // 1. Check for relative URL
-        if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("//") && !url.startsWith("./")) {
+        // We don't allow protocol-relative URLs (e.g., "//example.com")
+        if (url.startsWith("//"))
+            return false;
+
+        // 1. Handle relative URLs by attempting to resolve them against a base URL.
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
             const baseUrl = "http://www.example.com";
             try {
-                const parsedUrl = new URL(url, baseUrl);
-                if (parsedUrl.origin === baseUrl)
-                    return true;
+                // new URL() successfully parsing indicates a valid relative URL structure.
+                new URL(url, baseUrl);
+                return true;
             } catch (error) {
                 return false;
             }
         }
 
-        // 2. Check for localhost URL
-        if (url.startsWith("http://localhost:") || url.startsWith("https://localhost:")) {
-            try {
-                const parsedUrl = new URL(url);
-                if (parsedUrl.hostname === "localhost")
-                    return true;
-            } catch (e) {
-                // Invalid URL format for localhost
-            }
-            return false;
-        }
-
-        // 3. Check for allowed domains
+        // 2. Handle absolute URLs (including localhost).
         try {
             const parsedUrl = new URL(url);
+
+            // Allow localhost URLs.
+            if (parsedUrl.hostname === "localhost")
+                return true;
+
+            // Check against the allowed domains and paths.
             if (ALLOWED_DOMAINS[parsedUrl.hostname] && ALLOWED_DOMAINS[parsedUrl.hostname].includes(parsedUrl.pathname))
                 return true;
-        } catch (e) {
-            // invalid URL
-        }
 
+        } catch {
+            return false;
+        }
         return false;
     }
 
