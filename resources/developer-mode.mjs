@@ -2,9 +2,9 @@ import { params, LAYOUT_MODES } from "./shared/params.mjs";
 
 let suites, tags;
 
-export function createDeveloperModeContainer(_suites, _tags) {
-    suites = _suites;
-    tags = _tags;
+export function createDeveloperModeContainer(initialSuites, initialTags) {
+    suites = initialSuites;
+    tags = initialTags;
     const container = document.createElement("div");
     container.className = "developer-mode";
 
