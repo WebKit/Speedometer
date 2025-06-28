@@ -77,23 +77,38 @@ export class DataProvider {
     }
 
     async init() {
-        console.log("params.config", params.config);
         if (params.config) {
-            const response = await fetch(params.config);
-            const config = await response.json();
+            try {
+                const response = await fetch(params.config);
+                // ✅ Validate that the network request was successful
+                if (!response.ok)
+                    throw new Error(`Could not fetch config: ${response.status}`);
 
-            config.suites.flatMap((suite) => suite.tags).forEach((tag) => this._tags.add(tag));
-            config.suites.forEach((suite) => {
-                if (this._isAllowedUrl(suite.url))
-                    this._suites.push(suite);
-            });
+                const config = await response.json();
+                // ✅ Validate the structure of the fetched config object
+                if (!config || !Array.isArray(config.suites))
+                    throw new Error("Could not find a valid config structure!");
+
+                config.suites.flatMap((suite) => suite.tags || []).forEach((tag) => this._tags.add(tag));
+                config.suites.forEach((suite) => {
+                    // ✅ Validate each suite object before processing
+                    if (suite && suite.url && this._isAllowedUrl(suite.url))
+                        this._suites.push(suite);
+                });
+            } catch (error) {
+                this._loadDefaultSuites();
+            }
         } else {
-            defaultSuites.flatMap((suite) => suite.tags).forEach((tag) => this._tags.add(tag));
-            defaultSuites.forEach((suite) => this._suites.push(suite));
+            this._loadDefaultSuites();
         }
 
         this._freezeTags();
         this._freezeSuites();
+    }
+
+    _loadDefaultSuites() {
+        defaultSuites.flatMap((suite) => suite.tags).forEach((tag) => this._tags.add(tag));
+        defaultSuites.forEach((suite) => this._suites.push(suite));
     }
 
     enableSuites(names, tags) {
