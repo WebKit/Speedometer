@@ -19,12 +19,12 @@ export class DataProvider {
         return this._suites;
     }
 
-    _containsAllowedUrl(suite) {
+    _isAllowedUrl(url) {
         // 1. Check for relative URL
-        if (!suite.url.startsWith("http://") && !suite.url.startsWith("https://") && !suite.url.startsWith("//") && !suite.url.startsWith("./")) {
+        if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("//") && !url.startsWith("./")) {
             const baseUrl = "http://www.example.com";
             try {
-                const parsedUrl = new URL(suite.url, baseUrl);
+                const parsedUrl = new URL(url, baseUrl);
                 if (parsedUrl.origin === baseUrl)
                     return true;
             } catch (error) {
@@ -33,9 +33,9 @@ export class DataProvider {
         }
 
         // 2. Check for localhost URL
-        if (suite.url.startsWith("http://localhost:") || suite.url.startsWith("https://localhost:")) {
+        if (url.startsWith("http://localhost:") || url.startsWith("https://localhost:")) {
             try {
-                const parsedUrl = new URL(suite.url);
+                const parsedUrl = new URL(url);
                 if (parsedUrl.hostname === "localhost")
                     return true;
             } catch (e) {
@@ -46,7 +46,7 @@ export class DataProvider {
 
         // 3. Check for allowed domains
         try {
-            const parsedUrl = new URL(suite.url);
+            const parsedUrl = new URL(url);
             if (ALLOWED_DOMAINS[parsedUrl.hostname] && ALLOWED_DOMAINS[parsedUrl.hostname].includes(parsedUrl.pathname))
                 return true;
         } catch (e) {
@@ -84,7 +84,7 @@ export class DataProvider {
 
             config.suites.flatMap((suite) => suite.tags).forEach((tag) => this._tags.add(tag));
             config.suites.forEach((suite) => {
-                if (this._containsAllowedUrl(suite))
+                if (this._isAllowedUrl(suite.url))
                     this._suites.push(suite);
             });
         } else {
