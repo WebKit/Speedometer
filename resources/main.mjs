@@ -3,8 +3,7 @@ import * as Statistics from "./statistics.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
-
-const { dataProvider } = await import("../resources/data-provider.mjs");
+import { dataProvider } from "./data-provider.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -468,8 +467,16 @@ class MainBenchmarkClient {
     }
 }
 
-const rootStyle = document.documentElement.style;
-rootStyle.setProperty("--viewport-width", `${params.viewport.width}px`);
-rootStyle.setProperty("--viewport-height", `${params.viewport.height}px`);
+function init() {
+    const rootStyle = document.documentElement.style;
+    rootStyle.setProperty("--viewport-width", `${params.viewport.width}px`);
+    rootStyle.setProperty("--viewport-height", `${params.viewport.height}px`);
 
-globalThis.benchmarkClient = new MainBenchmarkClient(dataProvider);
+    globalThis.benchmarkClient = new MainBenchmarkClient(dataProvider);
+}
+
+if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", init);
+else
+    init();
+
