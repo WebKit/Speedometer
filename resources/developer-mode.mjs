@@ -151,7 +151,7 @@ function createSelectUI(labelValue, initialValue, choices, paramsUpdateCallback)
     const select = document.createElement("select");
     select.onchange = () => {
         paramsUpdateCallback(select.value);
-        updateURL();
+        handleParamsChange();
     };
 
     choices.forEach((choice) => {
