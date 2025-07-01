@@ -2,6 +2,10 @@
     "name": "news-next",
     "version": "0.1.0",
     "private": true,
+    "engines": {
+        "node": ">=22.0.0",
+        "npm": ">=8.19.3"
+    },
     "scripts": {
         "dev": "next dev",
         "build": "next build",
