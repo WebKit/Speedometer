@@ -1,5 +1,6 @@
 import { Metric } from "./metric.mjs";
 import { params } from "./shared/params.mjs";
+import { forceLayout } from "./shared/helpers.mjs";
 import { SUITE_RUNNER_LOOKUP } from "./suite-runner.mjs";
 
 const performance = globalThis.performance;
@@ -30,8 +31,9 @@ class Page {
     }
 
     layout() {
-        const body = this._frame.contentDocument.body.getBoundingClientRect();
-        this.layout.e = document.elementFromPoint((body.width / 2) | 0, (body.height / 2) | 0);
+        const body = this._frame ? this._frame.contentDocument.body : document.body;
+        const value = forceLayout(body, params.layoutMode);
+        body._leakedLayoutValue = value; // Prevent dead code elimination.
     }
 
     async waitForElement(selector) {
