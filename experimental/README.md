@@ -8,7 +8,7 @@ directly meet the criteria for official workloads:
 - Testing features that aren't fully shipped in all browsers
 
 The main purpose is to have a space for low-friction contributions to
-experiment with new ideas. There is no strict requirement to promote
+experiment with new ideas. There is no explicit requirement to promote
 experimental workloads to the official selection.
 
 
@@ -30,4 +30,4 @@ approval from all vendors.
 
 ## Hosting
 Experimental workloads will not be officially hosted on Speedometer releases on
-browserbench.org, unlike the official workloads.
+<https://browserbench.org>, unlike the official workloads.
