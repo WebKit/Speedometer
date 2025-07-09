@@ -145,7 +145,7 @@ function createUIForSuites() {
     control.className = "suites";
     const checkboxes = [];
     const setSuiteEnabled = (suiteIndex, enabled) => {
-        Suites[suiteIndex].disabled = !enabled;
+        Suites[suiteIndex].enabled = enabled;
         checkboxes[suiteIndex].checked = enabled;
     };
 
@@ -157,9 +157,9 @@ function createUIForSuites() {
         const checkbox = document.createElement("input");
         checkbox.id = suite.name;
         checkbox.type = "checkbox";
-        checkbox.checked = !suite.disabled;
+        checkbox.checked = suite.enabled;
         checkbox.onchange = () => {
-            suite.disabled = !checkbox.checked;
+            suite.enabled = checkbox.checked;
             updateURL();
         };
         checkboxes.push(checkbox);
@@ -275,17 +275,17 @@ function updateParamsSuitesAndTags() {
 
     // If less than all suites are selected then change the URL "Suites" GET parameter
     // to comma separate only the selected
-    const selectedSuites = Suites.filter((suite) => !suite.disabled);
+    const selectedSuites = Suites.filter((suite) => suite.enabled);
     if (!selectedSuites.length)
         return;
 
     // Try finding common tags that would result in the current suite selection.
     let commonTags = new Set(selectedSuites[0].tags);
     for (const suite of Suites) {
-        if (suite.disabled)
-            suite.tags.forEach((tag) => commonTags.delete(tag));
-        else
+        if (suite.enabled)
             commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
+        else
+            suite.tags.forEach((tag) => commonTags.delete(tag));
     }
     if (selectedSuites.length > 1 && commonTags.size)
         params.tags = [...commonTags];

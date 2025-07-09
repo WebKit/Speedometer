@@ -66,7 +66,7 @@ class MainBenchmarkClient {
         if (this._isRunning)
             return false;
 
-        if (Suites.every((suite) => suite.disabled)) {
+        if (Suites.every((suite) => !suite.enabled)) {
             const message = `No suites selected - "${params.suites}" does not exist.`;
             alert(message);
             console.error(
@@ -93,7 +93,7 @@ class MainBenchmarkClient {
         this._metrics = Object.create(null);
         this._isRunning = true;
 
-        const enabledSuites = Suites.filter((suite) => !suite.disabled);
+        const enabledSuites = Suites.filter((suite) => suite.enabled);
         const totalSuitesCount = enabledSuites.length;
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
