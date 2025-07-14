@@ -65,7 +65,7 @@ class TodoItem extends HTMLElement {
                     }
                     break;
                 case "itemcompleted":
-                    this.toggleInput.checked = this.itemcompleted === "true" ? true : false;
+                    this.toggleInput.checked = this.itemcompleted === "true";
                     break;
             }
         });
@@ -92,7 +92,7 @@ class TodoItem extends HTMLElement {
 
         this.dispatchEvent(
             new CustomEvent("toggle-item", {
-                detail: { id: this.itemid, completed: this.toggleInput.checked },
+                detail: { completed: this.toggleInput.checked },
                 bubbles: true,
             })
         );
@@ -103,7 +103,7 @@ class TodoItem extends HTMLElement {
         // (therefore the removal has to happen after the list is updated)
         this.dispatchEvent(
             new CustomEvent("remove-item", {
-                detail: { id: this.itemid },
+                detail: { completed: this.togglegetAtInput.checked },
                 bubbles: true,
             })
         );
@@ -112,17 +112,11 @@ class TodoItem extends HTMLElement {
 
     updateItem(event) {
         if (event.target.value !== this.itemtitle) {
-            if (!event.target.value.length) {
+            if (!event.target.value.length)
                 this.removeItem();
-            } else {
+            else
                 this.setAttribute("itemtitle", event.target.value);
-                this.dispatchEvent(
-                    new CustomEvent("update-item", {
-                        detail: { id: this.itemid, title: event.target.value },
-                        bubbles: true,
-                    })
-                );
-            }
+
         }
 
         this.cancelEdit();

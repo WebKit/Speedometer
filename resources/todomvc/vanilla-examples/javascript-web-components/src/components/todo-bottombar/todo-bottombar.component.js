@@ -3,6 +3,17 @@ import template from "./todo-bottombar.template.js";
 import globalStyles from "../../../node_modules/todomvc-css/dist/global.constructable.js";
 import bottombarStyles from "../../../node_modules/todomvc-css/dist/bottombar.constructable.js";
 
+const customStyles = new CSSStyleSheet();
+customStyles.replaceSync(`
+    .bottombar {
+        display: block;
+    }
+
+    :host([total-items="0"]) > .bottombar {
+        display: none;
+    }
+`);
+
 class TodoBottombar extends HTMLElement {
     static get observedAttributes() {
         return ["total-items", "active-items"];
@@ -20,18 +31,13 @@ class TodoBottombar extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
         this.htmlDirection = document.dir || "ltr";
         this.setAttribute("dir", this.htmlDirection);
-        this.shadow.adoptedStyleSheets = [globalStyles, bottombarStyles];
+        this.shadow.adoptedStyleSheets = [globalStyles, bottombarStyles, customStyles];
         this.shadow.append(node);
 
         this.clearCompletedItems = this.clearCompletedItems.bind(this);
     }
 
     updateDisplay() {
-        if (parseInt(this["total-items"]) !== 0)
-            this.element.style.display = "block";
-        else
-            this.element.style.display = "none";
-
         this.todoStatus.textContent = `${this["active-items"]} ${this["active-items"] === "1" ? "item" : "items"} left!`;
     }
 
