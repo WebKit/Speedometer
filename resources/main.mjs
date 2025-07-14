@@ -3,7 +3,6 @@ import * as Statistics from "./statistics.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
-import { dataProvider } from "./data-provider.mjs";
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -19,13 +18,17 @@ class MainBenchmarkClient {
     _metrics = Object.create(null);
     _steppingPromise = null;
     _steppingResolver = null;
-    _dataProvider = null;
+    _dataProviderPromise = null;
 
-    constructor(dataProvider) {
-        this._dataProvider = dataProvider;
+    constructor() {
+        this._dataProviderPromise = import("./data-provider.mjs");
         this.prepareUI();
+        this.evaluateParams();
         this._showSection(window.location.hash);
-        window.dispatchEvent(new Event("SpeedometerReady"));
+
+        this._dataProviderPromise.then(() => {
+            window.dispatchEvent(new Event("SpeedometerReady"));
+        });
     }
 
     start() {
@@ -64,11 +67,13 @@ class MainBenchmarkClient {
         return this._steppingResolver !== null;
     }
 
-    _startBenchmark() {
+    async _startBenchmark() {
         if (this._isRunning)
             return false;
 
-        const enabledSuites = this._dataProvider.suites.filter((suite) => suite.enabled);
+        const { dataProvider } = await this._dataProviderPromise;
+
+        const enabledSuites = dataProvider.suites.filter((suite) => suite.enabled);
         const totalSuitesCount = enabledSuites.length;
 
         if (totalSuitesCount === 0) {
@@ -78,7 +83,7 @@ class MainBenchmarkClient {
                 message,
                 params.suites,
                 "\nValid values:",
-                this._dataProvider.suites.map((each) => each.name)
+                dataProvider.suites.map((each) => each.name)
             );
             return false;
         }
@@ -100,7 +105,7 @@ class MainBenchmarkClient {
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
-        const runner = new BenchmarkRunner(this._dataProvider.suites, this);
+        const runner = new BenchmarkRunner(dataProvider.suites, this);
         runner.runMultipleIterations(params.iterationCount);
         return true;
     }
@@ -339,9 +344,13 @@ class MainBenchmarkClient {
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
+    }
+
+    async evaluateParams() {
+        const { dataProvider } = await this._dataProviderPromise;
 
         if (params.suites.length > 0 || params.tags.length > 0)
-            this._dataProvider.enableSuites(params.suites, params.tags);
+            dataProvider.enableSuites(params.suites, params.tags);
 
         if (params.developerMode) {
             this._developerModeContainer = createDeveloperModeContainer();
@@ -472,7 +481,7 @@ function init() {
     rootStyle.setProperty("--viewport-width", `${params.viewport.width}px`);
     rootStyle.setProperty("--viewport-height", `${params.viewport.height}px`);
 
-    globalThis.benchmarkClient = new MainBenchmarkClient(dataProvider);
+    globalThis.benchmarkClient = new MainBenchmarkClient();
 }
 
 if (document.readyState === "loading")
