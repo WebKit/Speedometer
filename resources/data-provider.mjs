@@ -70,10 +70,9 @@ export class DataProvider {
                 suite.tags = [];
             if (suite.url.startsWith("experimental/"))
                 suite.tags.unshift("all", "experimental");
-            else if (suite.disabled)
-                suite.tags.unshift("all");
             else
-                suite.tags.unshift("all", "default");
+                suite.tags.unshift("all");
+            suite.enabled = suite.tags.include("default");
             Object.freeze(suite.tags);
             Object.freeze(suite.steps);
         });
@@ -122,7 +121,7 @@ export class DataProvider {
         if (names?.length) {
             const lowerCaseNames = names.map((each) => each.toLowerCase());
             this._suites.forEach((suite) => {
-                suite.disabled = !lowerCaseNames.includes(suite.name.toLowerCase());
+                suite.enabled = lowerCaseNames.includes(suite.name.toLowerCase());
             });
         } else if (tags?.length) {
             tags.forEach((tag) => {
@@ -131,15 +130,15 @@ export class DataProvider {
             });
             const tagsSet = new Set(tags);
             this._suites.forEach((suite) => {
-                suite.disabled = !suite.tags.some((tag) => tagsSet.has(tag));
+                suite.enabled = suite.tags.some((tag) => tagsSet.has(tag));
             });
         } else {
             console.warn("Neither names nor tags provided. Enabling all default suites.");
             this._suites.forEach((suite) => {
-                suite.disabled = !suite.tags.includes("default");
+                suite.enabled = suite.tags.includes("default");
             });
         }
-        if (this._suites.some((suite) => !suite.disabled))
+        if (this._suites.some((suite) => suite.enabled))
             return;
         let message, debugInfo;
         if (names?.length) {

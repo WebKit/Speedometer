@@ -74,8 +74,9 @@ async function testIterations() {
     const iterationCount = 2;
     const metrics = await testPage(`index.html?iterationCount=${iterationCount}`);
     suites.forEach((suite) => {
-        if (!suite.disabled) {
+        if (suite.enabled) {
             const metric = metrics[suite.name];
+            assert(metric, `Missing suite result for ${suite.name}`);
             assert(metric.values.length === iterationCount);
         } else {
             assert(!(suite.name in metrics));

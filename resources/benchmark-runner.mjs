@@ -409,7 +409,7 @@ export class BenchmarkRunner {
         const suites = await this._prepareAllSuites();
         try {
             for (const suite of suites) {
-                if (suite.disabled)
+                if (!suite.enabled)
                     continue;
 
                 try {
