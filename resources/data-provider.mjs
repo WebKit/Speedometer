@@ -72,7 +72,7 @@ export class DataProvider {
                 suite.tags.unshift("all", "experimental");
             else
                 suite.tags.unshift("all");
-            suite.enabled = suite.tags.include("default");
+            suite.enabled = suite.tags.includes("default");
             Object.freeze(suite.tags);
             Object.freeze(suite.steps);
         });

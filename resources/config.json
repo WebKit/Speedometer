@@ -3,8 +3,7 @@
         {
             "name": "NewsSite-PostMessage",
             "url": "resources/newssite/news-next/dist/index.html",
-            "tags": ["newssite", "language"],
-            "disabled": false,
+            "tags": ["default", "newssite", "language"],
             "type": "remote",
             "config": {
                 "name": "default"
