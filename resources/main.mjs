@@ -344,7 +344,7 @@ class MainBenchmarkClient {
             this._dataProvider.enableSuites(params.suites, params.tags);
 
         if (params.developerMode) {
-            this._developerModeContainer = createDeveloperModeContainer(this._dataProvider.suites, this._dataProvider.tags);
+            this._developerModeContainer = createDeveloperModeContainer();
             document.body.append(this._developerModeContainer);
         }
 

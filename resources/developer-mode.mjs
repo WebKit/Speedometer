@@ -1,10 +1,9 @@
 import { params, LAYOUT_MODES } from "./shared/params.mjs";
+import { dataProvider } from "./data-provider.mjs";
 
-let suites, tags;
+const { suites, tags } = dataProvider;
 
-export function createDeveloperModeContainer(initialSuites, initialTags) {
-    suites = initialSuites;
-    tags = initialTags;
+export function createDeveloperModeContainer() {
     const container = document.createElement("div");
     container.className = "developer-mode";
 
