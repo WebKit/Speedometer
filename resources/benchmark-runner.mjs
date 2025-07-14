@@ -411,7 +411,6 @@ export class BenchmarkRunner {
             for (const suite of suites) {
                 if (!suite.enabled)
                     continue;
-
                 try {
                     await this._appendFrame();
                     this._page = new Page(this._frame);

@@ -80,7 +80,6 @@ class MainBenchmarkClient {
                 "\nValid values:",
                 this._dataProvider.suites.map((each) => each.name)
             );
-
             return false;
         }
         if (!this._isStepping())
