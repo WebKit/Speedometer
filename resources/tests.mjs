@@ -1,14 +1,6 @@
 import { BenchmarkTestStep } from "./benchmark-runner.mjs";
-import { todos } from "./translations.mjs";
-
-const numberOfItemsToAdd = 100;
-const defaultLanguage = "en";
-
-function getTodoText(lang, index) {
-    const todosSelection = todos[lang] ?? todos[defaultLanguage];
-    const currentIndex = index % todosSelection.length;
-    return todosSelection[currentIndex];
-}
+import { getTodoText, defaultLanguage } from "./shared/translations.mjs";
+import { numberOfItemsToAdd } from "./shared/todomvc-utils.mjs";
 
 export const defaultSuites = [
     {
@@ -217,6 +209,16 @@ export const defaultSuites = [
                 }
             }),
         ],
+    },
+    {
+        name: "TodoMVC-WebComponents-PostMessage",
+        url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+        tags: ["experimental", "todomvc", "webcomponents"],
+        async prepare(){},
+        type: "remote",
+        /* config: {
+            name: "default", // optional param to target non-default tests locally
+        }, */
     },
     {
         name: "TodoMVC-WebComponents-Complex-DOM",
