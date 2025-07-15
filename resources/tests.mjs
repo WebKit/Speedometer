@@ -263,7 +263,6 @@ Suites.push({
     name: "TodoMVC-WebComponents-PostMessage",
     url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
     tags: ["experimental", "todomvc", "webcomponents"],
-    disabled: true,
     async prepare() {},
     type: "remote",
     /* config: {
