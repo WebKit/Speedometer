@@ -2,7 +2,7 @@
     "name": "lit-complex",
     "private": true,
     "engines": {
-        "node": ">=18.13.0",
+        "node": ">=22.0.0",
         "npm": ">=8.19.3"
     },
     "scripts": {

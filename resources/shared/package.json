@@ -1,5 +1,9 @@
 {
     "name": "speedometer-utils",
     "version": "1.0.0",
-    "description": "Utility files for Speedometer & Workloads"
+    "description": "Utility files for Speedometer & Workloads",
+    "engines": {
+        "node": ">=18.13.0",
+        "npm": ">=8.19.3"
+    }
 }

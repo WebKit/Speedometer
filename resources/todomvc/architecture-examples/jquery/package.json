@@ -1,6 +1,10 @@
 {
   "name": "todomvc-jquery",
   "private": true,
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=8.19.3"
+  },
   "scripts": {
     "dev": "http-server . -p 7001 -c-1 --cors",
     "build": "node scripts/build.js",
