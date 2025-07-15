@@ -85,7 +85,7 @@ export class TodoFooter extends LitElement {
 
     @updateOnEvent("change")
     @property({ attribute: false })
-        todoList?: Todos;
+    accessor todoList: Todos | undefined;
 
     override render() {
         if (this.todoList === undefined || this.todoList.all.length === 0)
