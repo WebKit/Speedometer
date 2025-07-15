@@ -4,9 +4,7 @@ import { defaultSuites } from "./tests.mjs";
 import { params } from "./shared/params.mjs";
 
 const DEFAULT_TAGS = ["all", "default", "experimental"];
-const ALLOWED_DOMAINS = {
-    "app.netlify.com": "/sites/webkit-speedometer-preview/",
-};
+const DISALLOWED_DOMAINS = ["browserbench.org"];
 export class DataProvider {
     _tags = new Set(DEFAULT_TAGS);
     _suites = [];
@@ -20,47 +18,24 @@ export class DataProvider {
     }
 
     /**
-     * Checks if a given URL is allowed based on a set of rules.
-     * We allow:
-     * - Relative URLs (e.g., "/path/to/resource", "path/to/resource").
-     * - Absolute URLs from a list of allowed domains.
-     * - Localhost URLs for development purposes.
+     * Checks if a given string is a valid URL, supporting both absolute and relative paths.
      *
-     * @param {string} url The URL to validate.
-     * @returns {boolean} True if the URL is allowed, false otherwise.
+     * This function attempts to construct a URL object. For relative paths, it uses
+     * a dummy base URL to allow the URL constructor to parse them successfully.
+     *
+     * @param {string} url The URL string to validate.
+     * @returns {boolean} True if the URL is valid (absolute or relative), false otherwise.
      */
-    _isAllowedUrl(url) {
-        // We don't allow protocol-relative URLs (e.g., "//example.com")
-        if (url.startsWith("//"))
+    _isValidUrl(url) {
+        if (typeof url !== "string" || url.length === 0)
             return false;
 
-        // 1. Handle relative URLs by attempting to resolve them against a base URL.
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            const baseUrl = "http://www.example.com";
-            try {
-                // new URL() successfully parsing indicates a valid relative URL structure.
-                new URL(url, baseUrl);
-                return true;
-            } catch (error) {
-                return false;
-            }
-        }
-
-        // 2. Handle absolute URLs (including localhost).
         try {
-            const parsedUrl = new URL(url);
-
-            // Allow localhost URLs.
-            if (parsedUrl.hostname === "localhost")
-                return true;
-
-            // Check against the allowed domains and paths.
-            if (ALLOWED_DOMAINS[parsedUrl.hostname] && ALLOWED_DOMAINS[parsedUrl.hostname].includes(parsedUrl.pathname))
-                return true;
-        } catch {
+            new URL(url, "http://www.example.com");
+            return true;
+        } catch (error) {
             return false;
         }
-        return false;
     }
 
     _freezeSuites() {
@@ -85,6 +60,14 @@ export class DataProvider {
     async init() {
         if (params.config) {
             try {
+                const configUrl = new URL(params.config);
+                // Don't fetch if the URL is from DISALLOWED_DOMAINS
+                if (DISALLOWED_DOMAINS.includes(configUrl.hostname)) {
+                    console.warn(`Configuration fetch from a disallowed domain: ${params.config}. Loading default suites.`);
+                    this._loadDefaultSuites();
+                    return;
+                }
+
                 const response = await fetch(params.config);
                 // ✅ Validate that the network request was successful
                 if (!response.ok)
@@ -98,10 +81,11 @@ export class DataProvider {
                 config.suites.flatMap((suite) => suite.tags || []).forEach((tag) => this._tags.add(tag));
                 config.suites.forEach((suite) => {
                     // ✅ Validate each suite object before processing
-                    if (suite && suite.url && this._isAllowedUrl(suite.url))
+                    if (suite && suite.url && this._isValidUrl(suite.url))
                         this._suites.push(suite);
                 });
             } catch (error) {
+                console.warn(`Error loading custom configuration: ${error.message}. Loading default suites.`);
                 this._loadDefaultSuites();
             }
         } else {
