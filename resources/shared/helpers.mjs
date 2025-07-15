@@ -41,15 +41,15 @@ export function getAllElements(selector, path = [], lookupStartNode = document) 
     return elements;
 }
 
-/**
- * Forces a reflow/layout of the document by requesting a DOM property that triggers it.
- * This can be useful for ensuring that styles and positions are up-to-date before
- * performing measurements or animations. It also returns an element from the center of the viewport.
- *
- * @returns {Element|null} An element at the center of the viewport, or null if no element is there.
- */
-export function forceLayout() {
-    const rect = document.body.getBoundingClientRect();
-    const e = document.elementFromPoint((rect.width / 2) | 0, (rect.height / 2) | 0);
-    return e;
+export function forceLayout(body, layoutMode = "getBoundingRectAndElementFromPoint") {
+    body ??= document.body;
+    const rect = body.getBoundingClientRect();
+    switch (layoutMode) {
+        case "getBoundingRectAndElementFromPoint":
+            return document.elementFromPoint((rect.width / 2) | 0, (rect.height / 2) | 0);
+        case "getBoundingClientRect":
+            return rect.height;
+        default:
+            throw Error(`Invalid layoutMode: ${layoutMode}`);
+    }
 }

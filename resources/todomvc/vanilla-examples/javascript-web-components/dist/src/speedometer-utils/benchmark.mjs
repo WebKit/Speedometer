@@ -13,7 +13,7 @@ export class BenchmarkStep {
         this.run = run;
     }
 
-    async runAndRecordStep(params, suite, test, callback) {
+    async runAndRecord(params, suite, test, callback) {
         const testRunner = new TestRunner(null, null, params, suite, test, callback);
         const result = await testRunner.runTest();
         return result;
@@ -26,9 +26,9 @@ export class BenchmarkStep {
  * A single test suite that contains one or more test steps.
  */
 export class BenchmarkSuite {
-    constructor(name, steps) {
+    constructor(name, tests) {
         this.name = name;
-        this.steps = steps;
+        this.tests = tests;
     }
 
     record(_test, syncTime, asyncTime) {
@@ -41,10 +41,9 @@ export class BenchmarkSuite {
         return results;
     }
 
-    async runAndRecordSuite(params, onProgress) {
+    async runAndRecord(params, onProgress) {
         const measuredValues = {
             tests: {},
-            prepare: 0,
             total: 0,
         };
         const suiteStartLabel = `suite-${this.name}-start`;
@@ -52,11 +51,11 @@ export class BenchmarkSuite {
 
         performance.mark(suiteStartLabel);
 
-        for (const step of this.steps) {
-            const result = await step.runAndRecordStep(params, this, step, this.record);
-            measuredValues.tests[step.name] = result;
+        for (const test of this.tests) {
+            const result = await test.runAndRecord(params, this, test, this.record);
+            measuredValues.tests[test.name] = result;
             measuredValues.total += result.total;
-            onProgress?.(step.name);
+            onProgress?.(test.name);
         }
 
         performance.mark(suiteEndLabel);
@@ -104,7 +103,7 @@ export class BenchmarkConnector {
                 const suite = this.suites[event.data.name];
                 if (!suite)
                     console.error(`Suite with the name of "${event.data.name}" not found!`);
-                const { result } = await suite.runAndRecordSuite(params, (test) => this.sendMessage({ type: "step-complete", status: "success", appId: this.appId, name: this.name, test }));
+                const { result } = await suite.runAndRecord(params, (test) => this.sendMessage({ type: "step-complete", status: "success", appId: this.appId, name: this.name, test }));
                 this.sendMessage({ type: "suite-complete", status: "success", appId: this.appId, result });
                 this.disconnect();
                 break;

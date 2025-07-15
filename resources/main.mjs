@@ -66,7 +66,9 @@ class MainBenchmarkClient {
         if (this._isRunning)
             return false;
 
-        if (Suites.every((suite) => suite.disabled)) {
+        const enabledSuites = Suites.filter((suite) => suite.enabled);
+        const totalSuitesCount = enabledSuites.length;
+        if (totalSuitesCount === 0) {
             const message = `No suites selected - "${params.suites}" does not exist.`;
             alert(message);
             console.error(
@@ -75,7 +77,6 @@ class MainBenchmarkClient {
                 "\nValid values:",
                 Suites.map((each) => each.name)
             );
-
             return false;
         }
         if (!this._isStepping())
@@ -93,8 +94,6 @@ class MainBenchmarkClient {
         this._metrics = Object.create(null);
         this._isRunning = true;
 
-        const enabledSuites = Suites.filter((suite) => !suite.disabled);
-        const totalSuitesCount = enabledSuites.length;
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
@@ -250,8 +249,11 @@ class MainBenchmarkClient {
         const trackHeight = 24;
         document.documentElement.style.setProperty("--metrics-line-height", `${trackHeight}px`);
         const plotWidth = (params.viewport.width - 120) / 2;
-        document.getElementById("geomean-chart").innerHTML = renderMetricView({
-            metrics: [metrics.Geomean],
+        const aggregateMetrics = [metrics.Geomean];
+        if (params.measurePrepare)
+            aggregateMetrics.push(metrics.Prepare);
+        document.getElementById("aggregate-chart").innerHTML = renderMetricView({
+            metrics: aggregateMetrics,
             width: plotWidth,
             trackHeight,
             renderChildren: false,

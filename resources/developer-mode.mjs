@@ -1,5 +1,5 @@
 import { Suites, Tags } from "./tests.mjs";
-import { params } from "./shared/params.mjs";
+import { params, LAYOUT_MODES } from "./shared/params.mjs";
 
 export function createDeveloperModeContainer() {
     const container = document.createElement("div");
@@ -18,10 +18,12 @@ export function createDeveloperModeContainer() {
     const settings = document.createElement("div");
     settings.className = "settings";
     settings.append(createUIForIterationCount());
+    settings.append(createUIForMeasurePrepare());
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
     settings.append(createUIForSyncStepDelay());
     settings.append(createUIForAsyncSteps());
+    settings.append(createUIForLayoutMode());
 
     content.append(document.createElement("hr"));
     content.append(settings);
@@ -43,6 +45,12 @@ function span(text) {
 function createUIForWarmupSuite() {
     return createCheckboxUI("Use Warmup Suite", params.useWarmupSuite, (isChecked) => {
         params.useWarmupSuite = isChecked;
+    });
+}
+
+function createUIForMeasurePrepare() {
+    return createCheckboxUI("Measure Prepare", params.measurePrepare, (isChecked) => {
+        params.measurePrepare = isChecked;
     });
 }
 
@@ -107,12 +115,37 @@ function createTimeRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000
     return label;
 }
 
+function createUIForLayoutMode() {
+    return createSelectUI("Force layout mode", params.layoutMode, LAYOUT_MODES, (value) => {
+        params.layoutMode = value;
+    });
+}
+
+function createSelectUI(labelValue, initialValue, choices, paramsUpdateCallback) {
+    const select = document.createElement("select");
+    select.onchange = () => {
+        paramsUpdateCallback(select.value);
+        updateURL();
+    };
+
+    choices.forEach((choice) => {
+        const option = new Option(choice, choice);
+        select.add(option);
+    });
+    select.value = initialValue;
+
+    const label = document.createElement("label");
+    label.append(span(labelValue), select);
+
+    return label;
+}
+
 function createUIForSuites() {
     const control = document.createElement("nav");
     control.className = "suites";
     const checkboxes = [];
     const setSuiteEnabled = (suiteIndex, enabled) => {
-        Suites[suiteIndex].disabled = !enabled;
+        Suites[suiteIndex].enabled = enabled;
         checkboxes[suiteIndex].checked = enabled;
     };
 
@@ -124,9 +157,9 @@ function createUIForSuites() {
         const checkbox = document.createElement("input");
         checkbox.id = suite.name;
         checkbox.type = "checkbox";
-        checkbox.checked = !suite.disabled;
+        checkbox.checked = suite.enabled;
         checkbox.onchange = () => {
-            suite.disabled = !checkbox.checked;
+            suite.enabled = checkbox.checked;
             updateURL();
         };
         checkboxes.push(checkbox);
@@ -219,12 +252,13 @@ function createSuitesTagsButton(setSuiteEnabled) {
 
 function createUIForRun() {
     const stepTestButton = document.createElement("button");
-    stepTestButton.textContent = "Step Test \u23EF";
+    stepTestButton.className = "step-button";
+    stepTestButton.innerHTML = "Step Test<span>\u23EF</span>";
     stepTestButton.onclick = (event) => {
         globalThis.benchmarkClient.step();
     };
     const startTestButton = document.createElement("button");
-    startTestButton.textContent = "Start Test \u23F5";
+    startTestButton.innerHTML = "Start Test<span>\u23F5</span>";
     startTestButton.onclick = (event) => {
         globalThis.benchmarkClient.start();
     };
@@ -241,17 +275,17 @@ function updateParamsSuitesAndTags() {
 
     // If less than all suites are selected then change the URL "Suites" GET parameter
     // to comma separate only the selected
-    const selectedSuites = Suites.filter((suite) => !suite.disabled);
+    const selectedSuites = Suites.filter((suite) => suite.enabled);
     if (!selectedSuites.length)
         return;
 
     // Try finding common tags that would result in the current suite selection.
     let commonTags = new Set(selectedSuites[0].tags);
     for (const suite of Suites) {
-        if (suite.disabled)
-            suite.tags.forEach((tag) => commonTags.delete(tag));
-        else
+        if (suite.enabled)
             commonTags = new Set(suite.tags.filter((tag) => commonTags.has(tag)));
+        else
+            suite.tags.forEach((tag) => commonTags.delete(tag));
     }
     if (selectedSuites.length > 1 && commonTags.size)
         params.tags = [...commonTags];

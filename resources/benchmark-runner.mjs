@@ -1,5 +1,6 @@
 import { Metric } from "./metric.mjs";
 import { params } from "./shared/params.mjs";
+import { forceLayout } from "./shared/helpers.mjs";
 import { SUITE_RUNNER_LOOKUP } from "./suite-runner.mjs";
 
 const performance = globalThis.performance;
@@ -30,8 +31,9 @@ class Page {
     }
 
     layout() {
-        const body = this._frame.contentDocument.body.getBoundingClientRect();
-        this.layout.e = document.elementFromPoint((body.width / 2) | 0, (body.height / 2) | 0);
+        const body = this._frame ? this._frame.contentDocument.body : document.body;
+        const value = forceLayout(body, params.layoutMode);
+        body._leakedLayoutValue = value; // Prevent dead code elimination.
     }
 
     async waitForElement(selector) {
@@ -407,9 +409,8 @@ export class BenchmarkRunner {
         const suites = await this._prepareAllSuites();
         try {
             for (const suite of suites) {
-                if (suite.disabled)
+                if (!suite.enabled)
                     continue;
-
                 try {
                     await this._appendFrame();
                     this._page = new Page(this._frame);
@@ -468,10 +469,10 @@ export class BenchmarkRunner {
 
     _appendIterationMetrics() {
         const getMetric = (name, unit = "ms") => this._metrics[name] || (this._metrics[name] = new Metric(name, unit));
-        const iterationTotalMetric = (i) => {
+        const iterationMetric = (i, name) => {
             if (i >= params.iterationCount)
                 throw new Error(`Requested iteration=${i} does not exist.`);
-            return getMetric(`Iteration-${i}-Total`);
+            return getMetric(`Iteration-${i}-${name}`);
         };
 
         const collectSubMetrics = (prefix, items, parent) => {
@@ -496,20 +497,34 @@ export class BenchmarkRunner {
             // Prepare all iteration metrics so they are listed at the end of
             // of the _metrics object, before "Total" and "Score".
             for (let i = 0; i < this._iterationCount; i++)
-                iterationTotalMetric(i).description = `Test totals for iteration ${i}`;
+                iterationMetric(i, "Total").description = `Test totals for iteration ${i}`;
             getMetric("Geomean", "ms").description = "Geomean of test totals";
             getMetric("Score", "score").description = "Scaled inverse of the Geomean";
+            if (params.measurePrepare)
+                getMetric("Prepare", "ms").description = "Geomean of workload prepare times";
         }
 
         const geomean = getMetric("Geomean");
-        const iterationTotal = iterationTotalMetric(geomean.length);
+        const iteration = geomean.length;
+        const iterationTotal = iterationMetric(iteration, "Total");
         for (const results of Object.values(iterationResults))
             iterationTotal.add(results.total);
         iterationTotal.computeAggregatedMetrics();
         geomean.add(iterationTotal.geomean);
         getMetric("Score").add(geomeanToScore(iterationTotal.geomean));
 
+        if (params.measurePrepare) {
+            const iterationPrepare = iterationMetric(iteration, "Prepare");
+            for (const results of Object.values(iterationResults))
+                iterationPrepare.add(results.prepare);
+            iterationPrepare.computeAggregatedMetrics();
+            const prepare = getMetric("Prepare");
+            prepare.add(iterationPrepare.geomean);
+        }
+
         for (const metric of Object.values(this._metrics))
             metric.computeAggregatedMetrics();
     }
+
+    _initializeMetrics() {}
 }
