@@ -60,10 +60,10 @@ export class DataProvider {
     async init() {
         if (params.config) {
             try {
-                const configUrl = new URL(params.config);
+                const benchmarkUrl = new URL(window.location);
                 // Don't fetch if the URL is from DISALLOWED_DOMAINS
-                if (DISALLOWED_DOMAINS.includes(configUrl.hostname)) {
-                    console.warn(`Configuration fetch from a disallowed domain: ${params.config}. Loading default suites.`);
+                if (DISALLOWED_DOMAINS.includes(benchmarkUrl.hostname)) {
+                    console.warn("Configuration fetch not allowed. Loading default suites.");
                     this._loadDefaultSuites();
                     return;
                 }
