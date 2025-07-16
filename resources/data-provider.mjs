@@ -69,18 +69,18 @@ export class DataProvider {
                 }
 
                 const response = await fetch(params.config);
-                // ✅ Validate that the network request was successful
+                // Validate that the network request was successful
                 if (!response.ok)
                     throw new Error(`Could not fetch config: ${response.status}`);
 
                 const config = await response.json();
-                // ✅ Validate the structure of the fetched config object
+                // Validate the structure of the fetched config object
                 if (!config || !Array.isArray(config.suites))
                     throw new Error("Could not find a valid config structure!");
 
                 config.suites.flatMap((suite) => suite.tags || []).forEach((tag) => this._tags.add(tag));
                 config.suites.forEach((suite) => {
-                    // ✅ Validate each suite object before processing
+                    // Validate each suite object before processing
                     if (suite && suite.url && this._isValidUrl(suite.url))
                         this._suites.push(suite);
                 });
