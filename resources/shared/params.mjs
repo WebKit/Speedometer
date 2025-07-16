@@ -206,9 +206,13 @@ export class Params {
 }
 
 function isValidJsonUrl(url) {
+    if (typeof url !== "string" || url.length === 0)
+        return false;
+
     try {
-        return new URL(url) && url.toLowerCase().endsWith(".json");
-    } catch {
+        const urlObject = new URL(url, "http://www.example.com");
+        return urlObject.pathname.toLowerCase().endsWith(".json");
+    } catch (error) {
         return false;
     }
 }
