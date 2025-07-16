@@ -4,7 +4,7 @@ import { defaultSuites } from "./tests.mjs";
 import { params } from "./shared/params.mjs";
 
 const DEFAULT_TAGS = ["all", "default", "experimental"];
-const DISALLOWED_DOMAINS = ["browserbench.org"];
+const DISALLOWED_DOMAINS = ["browserbench.org", "www.browserbench.org"];
 export class DataProvider {
     _tags = new Set(DEFAULT_TAGS);
     _suites = [];
