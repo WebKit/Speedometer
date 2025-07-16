@@ -83,6 +83,8 @@ export class DataProvider {
                     // Validate each suite object before processing
                     if (suite && suite.url && this._isValidUrl(suite.url))
                         this._suites.push(suite);
+                    else
+                        throw new Error("Invalid suite data");
                 });
             } catch (error) {
                 console.warn(`Error loading custom configuration: ${error.message}. Loading default suites.`);
