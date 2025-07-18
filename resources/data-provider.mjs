@@ -61,7 +61,7 @@ export class DataProvider {
         if (params.config) {
             try {
                 const benchmarkUrl = new URL(window.location);
-                if (DISALLOWED_DOMAINS.some(domain => benchmarkUrl.hostname.endsWith(domain))) {
+                if (DISALLOWED_DOMAINS.some((domain) => benchmarkUrl.hostname.endsWith(domain))) {
                     console.warn("Configuration fetch not allowed. Loading default suites.");
                     this._loadDefaultSuites();
                     return;
