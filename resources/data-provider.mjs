@@ -4,7 +4,7 @@ import { defaultSuites } from "./tests.mjs";
 import { params } from "./shared/params.mjs";
 
 const DEFAULT_TAGS = ["all", "default", "experimental"];
-const DISALLOWED_DOMAINS = ["browserbench.org", "www.browserbench.org"];
+const DISALLOWED_DOMAINS = ["browserbench.org"];
 export class DataProvider {
     _tags = new Set(DEFAULT_TAGS);
     _suites = [];
@@ -61,26 +61,24 @@ export class DataProvider {
         if (params.config) {
             try {
                 const benchmarkUrl = new URL(window.location);
-                // Don't fetch if the URL is from DISALLOWED_DOMAINS
-                if (DISALLOWED_DOMAINS.includes(benchmarkUrl.hostname)) {
+                if (DISALLOWED_DOMAINS.some(domain => benchmarkUrl.hostname.endsWith(domain))) {
                     console.warn("Configuration fetch not allowed. Loading default suites.");
                     this._loadDefaultSuites();
                     return;
                 }
 
                 const response = await fetch(params.config);
-                // Validate that the network request was successful
+
                 if (!response.ok)
                     throw new Error(`Could not fetch config: ${response.status}`);
 
                 const config = await response.json();
-                // Validate the structure of the fetched config object
+
                 if (!config || !Array.isArray(config.suites))
                     throw new Error("Could not find a valid config structure!");
 
                 config.suites.flatMap((suite) => suite.tags || []).forEach((tag) => this._tags.add(tag));
                 config.suites.forEach((suite) => {
-                    // Validate each suite object before processing
                     if (suite && suite.url && this._isValidUrl(suite.url))
                         this._suites.push(suite);
                     else
