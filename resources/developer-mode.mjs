@@ -1,7 +1,7 @@
 import { params, LAYOUT_MODES } from "./shared/params.mjs";
-import { dataProvider } from "./data-provider.mjs";
+import { benchmarkConfigurator } from "./benchmark-configurator.mjs";
 
-const { suites, tags } = dataProvider;
+const { suites, tags } = benchmarkConfigurator;
 
 export function createDeveloperModeContainer() {
     const container = document.createElement("div");

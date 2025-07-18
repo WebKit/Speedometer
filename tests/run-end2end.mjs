@@ -2,7 +2,7 @@
 
 import assert from "assert";
 import testSetup from "./helper.mjs";
-import { dataProvider } from "../resources/data-provider.mjs";
+import { benchmarkConfigurator } from "../resources/benchmark-configurator.mjs";
 
 const HELP = `
 This script runs end2end tests by invoking the benchmark via the main
@@ -11,7 +11,7 @@ Speedometer page in /index.html.
 
 const { driver, PORT, stop } = await testSetup(HELP);
 
-const suites = dataProvider.suites;
+const suites = benchmarkConfigurator.suites;
 
 async function testPage(url) {
     console.log(`Testing: ${url}`);

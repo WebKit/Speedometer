@@ -18,15 +18,15 @@ class MainBenchmarkClient {
     _metrics = Object.create(null);
     _steppingPromise = null;
     _steppingResolver = null;
-    _dataProviderPromise = null;
+    _benchmarkConfiguratorPromise = null;
 
     constructor() {
-        this._dataProviderPromise = import("./data-provider.mjs");
+        this._benchmarkConfiguratorPromise = import("./benchmark-configurator.mjs");
         this.prepareUI();
         this.evaluateParams();
         this._showSection(window.location.hash);
 
-        this._dataProviderPromise.then(() => {
+        this._benchmarkConfiguratorPromise.then(() => {
             window.dispatchEvent(new Event("SpeedometerReady"));
         });
     }
@@ -71,9 +71,9 @@ class MainBenchmarkClient {
         if (this._isRunning)
             return false;
 
-        const { dataProvider } = await this._dataProviderPromise;
+        const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
 
-        const enabledSuites = dataProvider.suites.filter((suite) => suite.enabled);
+        const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const totalSuitesCount = enabledSuites.length;
 
         if (totalSuitesCount === 0) {
@@ -83,7 +83,7 @@ class MainBenchmarkClient {
                 message,
                 params.suites,
                 "\nValid values:",
-                dataProvider.suites.map((each) => each.name)
+                benchmarkConfigurator.suites.map((each) => each.name)
             );
             return false;
         }
@@ -105,7 +105,7 @@ class MainBenchmarkClient {
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
-        const runner = new BenchmarkRunner(dataProvider.suites, this);
+        const runner = new BenchmarkRunner(benchmarkConfigurator.suites, this);
         runner.runMultipleIterations(params.iterationCount);
         return true;
     }
@@ -347,10 +347,10 @@ class MainBenchmarkClient {
     }
 
     async evaluateParams() {
-        const { dataProvider } = await this._dataProviderPromise;
+        const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
 
         if (params.suites.length > 0 || params.tags.length > 0)
-            dataProvider.enableSuites(params.suites, params.tags);
+            benchmarkConfigurator.enableSuites(params.suites, params.tags);
 
         if (params.developerMode) {
             this._developerModeContainer = createDeveloperModeContainer();

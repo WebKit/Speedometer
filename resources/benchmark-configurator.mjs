@@ -5,7 +5,7 @@ import { params } from "./shared/params.mjs";
 
 const DEFAULT_TAGS = ["all", "default", "experimental"];
 const DISALLOWED_DOMAINS = ["browserbench.org"];
-export class DataProvider {
+export class BenchmarkConfigurator {
     _tags = new Set(DEFAULT_TAGS);
     _suites = [];
 
@@ -143,7 +143,7 @@ export class DataProvider {
     }
 }
 
-const dataProvider = new DataProvider();
-await dataProvider.init();
+const benchmarkConfigurator = new BenchmarkConfigurator();
+await benchmarkConfigurator.init();
 
-export { dataProvider };
+export { benchmarkConfigurator };
