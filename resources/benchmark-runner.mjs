@@ -64,13 +64,13 @@ class Page {
      * @param {string[]} [path] An array containing a path to the parent element.
      * @returns PageElement | null
      */
-    querySelector(selector, path = []) {
+    querySelector(selector, path = [], inIframe = false) {
         const lookupStartNode = this._frame.contentDocument;
         const element = getParent(lookupStartNode, path).querySelector(selector);
 
         if (element === null)
             return null;
-        return this._wrapElement(element);
+        return this._wrapElement(inIframe ? element.contentDocument : element);
     }
 
     /**
@@ -121,6 +121,10 @@ class Page {
     _wrapElement(element) {
         return new PageElement(element);
     }
+
+    addEventListener(name, listener, options) {
+        this._frame.contentWindow.addEventListener(name, listener, options);
+    }
 }
 
 const NATIVE_OPTIONS = {
@@ -149,6 +153,14 @@ class PageElement {
 
     getElementByMethod(name) {
         return new PageElement(this.#node[name]());
+    }
+
+    setWidth(width) {
+        this.#node.style.width = width;
+    }
+
+    scrollIntoView(options) {
+        this.#node.scrollIntoView(options);
     }
 
     dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
@@ -207,6 +219,14 @@ class PageElement {
         if (element === null)
             return null;
         return new PageElement(element);
+    }
+
+    querySelectorAllInShadowRoot(selector, path = []) {
+        const lookupStartNode = this.#node.shadowRoot ?? this.#node;
+        const elements = Array.from(getParent(lookupStartNode, path).querySelectorAll(selector));
+        for (let i = 0; i < elements.length; i++)
+            elements[i] = new PageElement(elements[i]);
+        return elements;
     }
 
     querySelector(selector) {
