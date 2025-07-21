@@ -1,9 +1,10 @@
 import { html } from "lit";
+import { when } from "lit/directives/when.js";
 import { LightDOMLitElement } from "./base";
 import { ribbonButtons } from "../../data/ribbon-buttons.js";
 import "./ribbon-button.js";
 
-export class AppRibbon extends LightDOMLitElement {
+class AppRibbon extends LightDOMLitElement {
     static properties = {
         buttons: { type: Array },
         visibleButtons: { type: Array },
@@ -65,7 +66,7 @@ export class AppRibbon extends LightDOMLitElement {
         return this.visibleButtons.map(
             (button, index) => html`
                 <ribbon-button id="${button.id}" text="${button.text}" variant="${button.variant}" iconPosition="${button.iconPosition}"></ribbon-button>
-                ${index === 0 ? html`<div class="mx-0.5 h-6 border-l border-gray-300"></div>` : ""}
+                ${when(index === 0, () => html`<div class="mx-0.5 h-6 border-l border-gray-300"></div>`)}
             `
         );
     }

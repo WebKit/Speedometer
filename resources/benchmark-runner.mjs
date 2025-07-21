@@ -121,6 +121,10 @@ class Page {
     _wrapElement(element) {
         return new PageElement(element);
     }
+
+    addEventListener(name, listener, options) {
+        this._frame.contentWindow.addEventListener(name, listener, options);
+    }
 }
 
 const NATIVE_OPTIONS = {

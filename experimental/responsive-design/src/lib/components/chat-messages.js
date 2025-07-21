@@ -1,4 +1,5 @@
 import { html } from "lit";
+import { when } from "lit/directives/when.js";
 import { ref, createRef } from "lit/directives/ref.js";
 import { LightDOMLitElement } from "./base";
 
@@ -35,7 +36,7 @@ class ChatMessages extends LightDOMLitElement {
                     ${message.user
         ? html` <div class="flex items-center space-x-2">
                               <div class="text-pretty rounded-md bg-teal-600 px-3 py-2 text-xs text-white lg:text-base">
-                                  ${message.user} ${message.imageUrl ? html`<img src="${message.imageUrl}" alt="${message.imageAlt}" class="mt-2 h-32 w-full rounded-md" />` : ""}
+                                  ${message.user} ${when(message.imageUrl, () => html`<img src="${message.imageUrl}" alt="${message.imageAlt}" class="mt-2 h-32 w-full rounded-md" />`)}
                               </div>
                               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0 text-teal-600" fill="currentColor" viewBox="0 0 24 24">
                                   <circle cx="12" cy="8" r="4" />
@@ -51,7 +52,7 @@ class ChatMessages extends LightDOMLitElement {
                                       <path d="M8 16h8" />
                                   </svg>
                                   <div class="text-pretty rounded-md bg-gray-200 px-3 py-2 text-xs text-gray-900 lg:text-base">
-                                      ${message.bot} ${message.imageUrl ? html`<img src="${message.imageUrl}" alt="${message.imageAlt}" class="mt-2 h-32 w-full rounded-md" />` : ""}
+                                      ${message.bot} ${when(message.imageUrl, () => html`<img src="${message.imageUrl}" alt="${message.imageAlt}" class="mt-2 h-32 w-full rounded-md" />`)}
                                   </div>
                               </div>
                           `}

@@ -1,4 +1,5 @@
 import { html } from "lit";
+import { when } from "lit/directives/when.js";
 import { LightDOMLitElement } from "./base";
 
 class RecipeCard extends LightDOMLitElement {
@@ -152,7 +153,7 @@ class RecipeCard extends LightDOMLitElement {
                     </div>
                     <button class="show-more-btn flex-shrink-0 text-sm text-blue-500 hover:text-blue-700" @click="${this._toggleExpand}">${this.isExpanded ? "Less" : "More"}</button>
                 </div>
-                ${this.isExpanded ? this._getExpandedTemplate() : ""}
+                ${when(this.isExpanded, () => this._getExpandedTemplate())}
             </div>
         `;
     }
@@ -173,7 +174,7 @@ class RecipeCard extends LightDOMLitElement {
                 <div class="absolute -top-4 left-0 right-0 flex justify-center space-x-2 p-2">
                     ${this.recipe.tags.map((tag) => html`<span class="${this._getPillColor(tag)} inline-flex items-center rounded-full border p-1 text-xs font-medium">${tag}</span> `)}
                 </div>
-                ${this.isExpanded ? this._getExpandedTemplate() : ""}
+                ${when(this.isExpanded, () => this._getExpandedTemplate())}
                 <button @click="${this._toggleExpand}" class="show-more-btn w-28 justify-self-end border-none bg-transparent p-1 text-sm text-blue-400 hover:text-blue-900">${this.isExpanded ? "Show Less" : "Show More..."}</button>
             </div>
         `;

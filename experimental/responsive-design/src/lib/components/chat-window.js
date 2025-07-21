@@ -1,4 +1,4 @@
-import { LitElement, adoptStyles, html } from "lit";
+import { LitElement, adoptStyles, html, nothing } from "lit";
 import { messages as initialMessages } from "../../data/messages.js";
 import "./chat-messages.js";
 import "./chat-input.js";
@@ -76,7 +76,7 @@ class ChatWindow extends LitElement {
 
     _getContentTemplate() {
         if (!this._isExpanded)
-            return null;
+            return nothing;
         return this._showOptions ? this._getOptionsTemplate() : this._getChatTemplate();
     }
 

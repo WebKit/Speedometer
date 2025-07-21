@@ -34,8 +34,14 @@ class RecipeGrid extends LightDOMLitElement {
             this._compactQuery.removeEventListener("change", this._boundHandleLayoutChange);
     }
 
-    _handleLayoutChange(event) {
+    async _handleLayoutChange(event) {
         this.isCompactLayout = event.matches;
+
+        await this.updateComplete;
+
+        // Dispatch to parent window (the benchmark runner's window)
+        if (window.parent !== window)
+            window.parent.dispatchEvent(new CustomEvent("resize-work-complete"));
     }
 
     _handleToggleExpand(event) {

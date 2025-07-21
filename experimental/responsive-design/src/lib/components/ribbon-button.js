@@ -1,7 +1,7 @@
 import { html } from "lit";
 import { LightDOMLitElement } from "./base";
 
-export class RibbonButton extends LightDOMLitElement {
+class RibbonButton extends LightDOMLitElement {
     static properties = {
         text: { type: String },
         variant: { type: String },
