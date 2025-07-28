@@ -22,7 +22,7 @@ class ChatInput extends LightDOMLitElement {
 
     _sendMessage() {
         if (this.value.trim())
-            this.dispatchEvent(new CustomEvent("send-chat", { bubbles: true, composed: true }));
+            this.dispatchEvent(new CustomEvent("send-chat"));
     }
 
     render() {

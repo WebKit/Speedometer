@@ -30,8 +30,11 @@ class Page {
         return this._frame.contentWindow.localStorage;
     }
 
-    layout() {
-        const body = this._frame ? this._frame.contentDocument.body : document.body;
+    layout(target = null) {
+        // If target is provided, it should be a body element to force layout on
+        // Otherwise force layout on the current page's body
+        const body = target || this._frame?.contentDocument?.body || document.body;
+
         const value = forceLayout(body, params.layoutMode);
         body._leakedLayoutValue = value; // Prevent dead code elimination.
     }
@@ -64,13 +67,13 @@ class Page {
      * @param {string[]} [path] An array containing a path to the parent element.
      * @returns PageElement | null
      */
-    querySelector(selector, path = [], inIframe = false) {
+    querySelector(selector, path = []) {
         const lookupStartNode = this._frame.contentDocument;
         const element = getParent(lookupStartNode, path).querySelector(selector);
 
         if (element === null)
             return null;
-        return this._wrapElement(inIframe ? element.contentDocument : element);
+        return this.wrapElement(element);
     }
 
     /**
@@ -92,7 +95,7 @@ class Page {
         const lookupStartNode = this._frame.contentDocument;
         const elements = Array.from(getParent(lookupStartNode, path).querySelectorAll(selector));
         for (let i = 0; i < elements.length; i++)
-            elements[i] = this._wrapElement(elements[i]);
+            elements[i] = this.wrapElement(elements[i]);
         return elements;
     }
 
@@ -100,7 +103,7 @@ class Page {
         const element = this._frame.contentDocument.getElementById(id);
         if (element === null)
             return null;
-        return this._wrapElement(element);
+        return this.wrapElement(element);
     }
 
     call(functionName) {
@@ -115,10 +118,10 @@ class Page {
     }
 
     callToGetElement(functionName) {
-        return this._wrapElement(this._frame.contentWindow[functionName]());
+        return this.wrapElement(this._frame.contentWindow[functionName]());
     }
 
-    _wrapElement(element) {
+    wrapElement(element) {
         return new PageElement(element);
     }
 
@@ -137,6 +140,14 @@ class PageElement {
 
     constructor(node) {
         this.#node = node;
+    }
+
+    getContentDocument() {
+        if (this.#node.nodeName?.toLowerCase() !== "iframe")
+            throw new Error("getContentDocument() called on non-iframe element");
+        if (!this.#node.contentDocument)
+            throw new Error("Iframe contentDocument is not available.");
+        return this.#node.contentDocument;
     }
 
     setValue(value) {

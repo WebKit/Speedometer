@@ -56,7 +56,6 @@ class InformationWindow extends LitElement {
         this._isChatExpanded = event.detail.isExpanded;
         this._currentIndex = 0;
         this.updateCarousel();
-        this.requestUpdate();
     }
 
     previousCard() {
