@@ -1,6 +1,7 @@
 # TodoMVC: Dart Jaspr
 
 ## Description
+
 This is a TodoMVC app written in Dart using the Jaspr DOM framework. It can be
 compiled to either JavaScript or WebAssembly (with GC extension).
 
@@ -24,6 +25,7 @@ Build your project using either:
 The output will be located inside the `build/jaspr/` directory.
 
 ## Updating the checked-in build artifacts
+
 To update the checked-in artifacts in the `dist/` directory, run
 
 ```
