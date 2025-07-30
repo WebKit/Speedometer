@@ -27,7 +27,8 @@ describe("ExperimentalSuites", () => {
     });
     it("should be disabled by default", () => {
         ExperimentalSuites.forEach((suite) => {
-            expect(suite.disabled).to.be(true);
+            expect(suite.enabled).to.be(false);
+            expect(suite.tags.includes("default")).to.be(false);
         });
     });
     it("should have experimental url", () => {
