@@ -1,6 +1,6 @@
 import { BenchmarkTestStep } from "../resources/benchmark-runner.mjs";
-import { getTodoText } from "./shared/translations.mjs";
-import { numberOfItemsToAdd } from "./shared/todomvc-utils.mjs";
+import { getTodoText } from "../resources/shared/translations.mjs";
+import { numberOfItemsToAdd } from "../resources/shared/todomvc-utils.mjs";
 
 export const ExperimentalSuites = [];
 
