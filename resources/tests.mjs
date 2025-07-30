@@ -3,9 +3,6 @@ import { ExperimentalSuites } from "../experimental/tests.mjs";
 import { getTodoText, defaultLanguage } from "./shared/translations.mjs";
 import { numberOfItemsToAdd } from "./shared/todomvc-utils.mjs";
 
-const numberOfItemsToAdd = 100;
-const defaultLanguage = "en";
-
 export const Suites = [];
 
 Suites.enable = function (names, tags) {
