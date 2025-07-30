@@ -409,9 +409,8 @@ export class BenchmarkRunner {
         const suites = await this._prepareAllSuites();
         try {
             for (const suite of suites) {
-                if (suite.disabled)
+                if (!suite.enabled)
                     continue;
-
                 try {
                     await this._appendFrame();
                     this._page = new Page(this._frame);

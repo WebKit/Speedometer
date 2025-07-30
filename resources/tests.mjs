@@ -1,15 +1,10 @@
 import { BenchmarkTestStep } from "./benchmark-runner.mjs";
-import { todos } from "./translations.mjs";
 import { ExperimentalSuites } from "../experimental/tests.mjs";
+import { getTodoText, defaultLanguage } from "./shared/translations.mjs";
+import { numberOfItemsToAdd } from "./shared/todomvc-utils.mjs";
 
 const numberOfItemsToAdd = 100;
 const defaultLanguage = "en";
-
-function getTodoText(lang, index) {
-    const todosSelection = todos[lang] ?? todos[defaultLanguage];
-    const currentIndex = index % todosSelection.length;
-    return todosSelection[currentIndex];
-}
 
 export const Suites = [];
 
@@ -17,10 +12,7 @@ Suites.enable = function (names, tags) {
     if (names?.length) {
         const lowerCaseNames = names.map((each) => each.toLowerCase());
         this.forEach((suite) => {
-            if (lowerCaseNames.includes(suite.name.toLowerCase()))
-                suite.disabled = false;
-            else
-                suite.disabled = true;
+            suite.enabled = lowerCaseNames.includes(suite.name.toLowerCase());
         });
     } else if (tags?.length) {
         tags.forEach((tag) => {
@@ -29,15 +21,15 @@ Suites.enable = function (names, tags) {
         });
         const tagsSet = new Set(tags);
         this.forEach((suite) => {
-            suite.disabled = !suite.tags.some((tag) => tagsSet.has(tag));
+            suite.enabled = suite.tags.some((tag) => tagsSet.has(tag));
         });
     } else {
         console.warn("Neither names nor tags provided. Enabling all default suites.");
         this.forEach((suite) => {
-            suite.disabled = !("default" in suite.tags);
+            suite.enabled = suite.tags.includes("default");
         });
     }
-    if (this.some((suite) => !suite.disabled))
+    if (this.some((suite) => suite.enabled))
         return;
     let message, debugInfo;
     if (names?.length) {
@@ -61,7 +53,6 @@ Suites.push({
     name: "TodoMVC-Emoji",
     url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
     tags: ["todomvc", "experimental"],
-    disabled: true,
     async prepare(page) {
         await page.waitForElement("todo-app");
     },
@@ -94,7 +85,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-JavaScript-ES5",
     url: "resources/todomvc/vanilla-examples/javascript-es5/dist/index.html",
-    tags: ["todomvc"],
+    tags: ["default", "todomvc"],
     async prepare(page) {
         (await page.waitForElement(".new-todo")).focus();
     },
@@ -124,7 +115,6 @@ Suites.push({
     name: "TodoMVC-JavaScript-ES5-Complex-DOM",
     url: "resources/todomvc/vanilla-examples/javascript-es5-complex/dist/index.html",
     tags: ["todomvc", "complex"],
-    disabled: true,
     async prepare(page) {
         (await page.waitForElement(".new-todo")).focus();
     },
@@ -154,7 +144,6 @@ Suites.push({
     name: "TodoMVC-JavaScript-ES6-Webpack",
     url: "resources/todomvc/vanilla-examples/javascript-es6-webpack/dist/index.html",
     tags: ["todomvc"],
-    disabled: true,
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -184,7 +173,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-JavaScript-ES6-Webpack-Complex-DOM",
     url: "resources/todomvc/vanilla-examples/javascript-es6-webpack-complex/dist/index.html",
-    tags: ["todomvc", "complex", "complex-default"],
+    tags: ["default", "todomvc", "complex", "complex-default"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -214,7 +203,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-WebComponents",
     url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
-    tags: ["todomvc", "webcomponents"],
+    tags: ["default", "todomvc", "webcomponents"],
     async prepare(page) {
         await page.waitForElement("todo-app");
     },
@@ -245,10 +234,21 @@ Suites.push({
 });
 
 Suites.push({
+    name: "TodoMVC-WebComponents-PostMessage",
+    url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+    tags: ["experimental", "todomvc", "webcomponents"],
+    disabled: true,
+    async prepare() {},
+    type: "remote",
+    /* config: {
+        name: "default", // optional param to target non-default tests locally
+    }, */
+});
+
+Suites.push({
     name: "TodoMVC-WebComponents-Complex-DOM",
     url: "resources/todomvc/vanilla-examples/javascript-web-components-complex/dist/index.html",
     tags: ["todomvc", "webcomponents", "complex"],
-    disabled: true,
     async prepare(page) {
         await page.waitForElement("todo-app");
     },
@@ -282,7 +282,6 @@ Suites.push({
     name: "TodoMVC-React",
     url: "resources/todomvc/architecture-examples/react/dist/index.html#/home",
     tags: ["todomvc"],
-    disabled: true,
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -312,7 +311,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-React-Complex-DOM",
     url: "resources/todomvc/architecture-examples/react-complex/dist/index.html#/home",
-    tags: ["todomvc", "complex", "complex-default"],
+    tags: ["default", "todomvc", "complex", "complex-default"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -342,7 +341,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-React-Redux",
     url: "resources/todomvc/architecture-examples/react-redux/dist/index.html",
-    tags: ["todomvc"],
+    tags: ["default", "todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -372,7 +371,6 @@ Suites.push({
     name: "TodoMVC-React-Redux-Complex-DOM",
     url: "resources/todomvc/architecture-examples/react-redux-complex/dist/index.html",
     tags: ["todomvc", "complex"],
-    disabled: true,
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -401,7 +399,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Backbone",
     url: "resources/todomvc/architecture-examples/backbone/dist/index.html",
-    tags: ["todomvc"],
+    tags: ["default", "todomvc"],
     async prepare(page) {
         await page.waitForElement("#appIsReady");
         const newTodo = page.querySelector(".new-todo");
@@ -433,7 +431,6 @@ Suites.push({
     name: "TodoMVC-Backbone-Complex-DOM",
     url: "resources/todomvc/architecture-examples/backbone-complex/dist/index.html",
     tags: ["todomvc", "complex"],
-    disabled: true,
     async prepare(page) {
         await page.waitForElement("#appIsReady");
         const newTodo = page.querySelector(".new-todo");
@@ -465,7 +462,6 @@ Suites.push({
     name: "TodoMVC-Angular",
     url: "resources/todomvc/architecture-examples/angular/dist/index.html",
     tags: ["todomvc"],
-    disabled: true,
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -495,7 +491,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Angular-Complex-DOM",
     url: "resources/todomvc/architecture-examples/angular-complex/dist/index.html",
-    tags: ["todomvc", "complex", "complex-default"],
+    tags: ["default", "todomvc", "complex", "complex-default"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -525,7 +521,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Vue",
     url: "resources/todomvc/architecture-examples/vue/dist/index.html",
-    tags: ["todomvc"],
+    tags: ["default", "todomvc"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -556,7 +552,6 @@ Suites.push({
     name: "TodoMVC-Vue-Complex-DOM",
     url: "resources/todomvc/architecture-examples/vue-complex/dist/index.html",
     tags: ["todomvc", "complex", "complex-default"],
-    disabled: true,
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -586,7 +581,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-jQuery",
     url: "resources/todomvc/architecture-examples/jquery/dist/index.html",
-    tags: ["todomvc"],
+    tags: ["default", "todomvc"],
     async prepare(page) {
         await page.waitForElement("#appIsReady");
         const newTodo = page.getElementById("new-todo");
@@ -615,7 +610,6 @@ Suites.push({
     name: "TodoMVC-jQuery-Complex-DOM",
     url: "resources/todomvc/architecture-examples/jquery-complex/dist/index.html",
     tags: ["todomvc", "complex"],
-    disabled: true,
     async prepare(page) {
         await page.waitForElement("#appIsReady");
         const newTodo = page.getElementById("new-todo");
@@ -644,7 +638,6 @@ Suites.push({
     name: "TodoMVC-Preact",
     url: "resources/todomvc/architecture-examples/preact/dist/index.html#/home",
     tags: ["todomvc"],
-    disabled: true,
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -673,7 +666,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Preact-Complex-DOM",
     url: "resources/todomvc/architecture-examples/preact-complex/dist/index.html#/home",
-    tags: ["todomvc", "complex", "complex-default"],
+    tags: ["default", "todomvc", "complex", "complex-default"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -703,7 +696,6 @@ Suites.push({
     name: "TodoMVC-Svelte",
     url: "resources/todomvc/architecture-examples/svelte/dist/index.html",
     tags: ["todomvc"],
-    disabled: true,
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -732,7 +724,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Svelte-Complex-DOM",
     url: "resources/todomvc/architecture-examples/svelte-complex/dist/index.html",
-    tags: ["todomvc", "complex", "complex-default"],
+    tags: ["default", "todomvc", "complex", "complex-default"],
     async prepare(page) {
         const element = await page.waitForElement(".new-todo");
         element.focus();
@@ -762,7 +754,6 @@ Suites.push({
     name: "TodoMVC-Lit",
     url: "resources/todomvc/architecture-examples/lit/dist/index.html",
     tags: ["todomvc", "webcomponents"],
-    disabled: true,
     async prepare(page) {
         await page.waitForElement("todo-app");
     },
@@ -794,7 +785,7 @@ Suites.push({
 Suites.push({
     name: "TodoMVC-Lit-Complex-DOM",
     url: "resources/todomvc/architecture-examples/lit-complex/dist/index.html",
-    tags: ["todomvc", "webcomponents", "complex", "complex-default"],
+    tags: ["default", "todomvc", "webcomponents", "complex", "complex-default"],
     async prepare(page) {
         await page.waitForElement("todo-app");
     },
@@ -826,7 +817,7 @@ Suites.push({
 Suites.push({
     name: "NewsSite-Next",
     url: "resources/newssite/news-next/dist/index.html",
-    tags: ["newssite", "language"],
+    tags: ["default", "newssite", "language"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
@@ -867,7 +858,7 @@ Suites.push({
 Suites.push({
     name: "NewsSite-Nuxt",
     url: "resources/newssite/news-nuxt/dist/index.html",
-    tags: ["newssite"],
+    tags: ["default", "newssite"],
     async prepare(page) {
         await page.waitForElement("#navbar-dropdown-toggle");
     },
@@ -908,7 +899,7 @@ Suites.push({
 Suites.push({
     name: "Editor-CodeMirror",
     url: "resources/editors/dist/codemirror.html",
-    tags: ["editor"],
+    tags: ["default", "editor"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Long", (page) => {
@@ -927,7 +918,7 @@ Suites.push({
 Suites.push({
     name: "Editor-TipTap",
     url: "resources/editors/dist/tiptap.html",
-    tags: ["editor"],
+    tags: ["default", "editor"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Long", (page) => {
@@ -946,7 +937,7 @@ Suites.push({
 Suites.push({
     name: "Charts-observable-plot",
     url: "resources/charts/dist/observable-plot.html",
-    tags: ["chart"],
+    tags: ["default", "chart"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Stacked by 6", (page) => {
@@ -973,7 +964,7 @@ Suites.push({
 Suites.push({
     name: "Charts-chartjs",
     url: "resources/charts/dist/chartjs.html",
-    tags: ["chart"],
+    tags: ["default", "chart"],
     async prepare(page) {},
     tests: [
         new BenchmarkTestStep("Draw scatter", (page) => {
@@ -993,7 +984,7 @@ Suites.push({
 Suites.push({
     name: "React-Stockcharts-SVG",
     url: "resources/react-stockcharts/build/index.html?type=svg",
-    tags: ["chart", "svg"],
+    tags: ["default", "chart", "svg"],
     async prepare(page) {
         await page.waitForElement("#render");
     },
@@ -1033,7 +1024,7 @@ Suites.push({
 Suites.push({
     name: "Perf-Dashboard",
     url: "resources/perf.webkit.org/public/v3/#/charts/?since=1678991819934&paneList=((55-1974-null-null-(5-2.5-500)))",
-    tags: ["chart", "webcomponents"],
+    tags: ["default", "chart", "webcomponents"],
     async prepare(page) {
         await page.waitForElement("#app-is-ready");
         page.call("startTest");
@@ -1077,10 +1068,8 @@ Object.freeze(Suites);
 Suites.forEach((suite) => {
     if (!suite.tags)
         suite.tags = [];
-    else if (suite.disabled)
-        suite.tags.unshift("all");
-    else
-        suite.tags.unshift("all", "default");
+    suite.tags.unshift("all");
+    suite.enabled = suite.tags.includes("default");
     Object.freeze(suite.tags);
     Object.freeze(suite.steps);
 });

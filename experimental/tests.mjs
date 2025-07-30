@@ -17,7 +17,6 @@ ExperimentalSuites.push({
     name: "TodoMVC-LocalStorage",
     url: "experimental/todomvc-localstorage/dist/index.html",
     tags: ["todomvc", "experimental"],
-    disabled: true,
     async prepare(page) {
         (await page.waitForElement(".new-todo")).focus();
         page.getLocalStorage().getItem("javascript-es5");
@@ -48,7 +47,6 @@ ExperimentalSuites.push({
     name: "NewsSite-PostMessage",
     url: "resources/newssite/news-next/dist/index.html",
     tags: ["experimental", "newssite", "language"],
-    disabled: true,
     async prepare() {},
     type: "remote",
     /* config: {
