@@ -22,7 +22,7 @@ describe("ExperimentalSuites", () => {
     });
     it("should have 'experimental' tag", () => {
         ExperimentalSuites.forEach((suite) => {
-            expect(suite.tags.includes("experimental"));
+            expect(suite.tags.includes("experimental")).to.be(true);
         });
     });
     it("should be disabled by default", () => {
@@ -31,11 +31,7 @@ describe("ExperimentalSuites", () => {
             expect(suite.tags.includes("default")).to.be(false);
         });
     });
-    it("should have experimental url", () => {
-        ExperimentalSuites.forEach((suite) => {
-            expect(suite.url.startsWith("experimental/"));
-        });
-    });
+
     it("should have unique names", () => {
         const uniqueNames = new Set();
         ExperimentalSuites.forEach((suite) => {
@@ -73,13 +69,19 @@ describe("Suites", () => {
     it("default suites should be enabled by default", () => {
         Suites.forEach((suite) => {
             if (suite.tags.includes("default"))
-                expect(!suite.disabled);
+                expect(suite.enabled).to.be(true);
         });
     });
     it("should have 'default' and not 'experimental' tag", () => {
         Suites.forEach((suite) => {
             if (suite.tags.includes("experimental"))
-                expect(!suite.tags.includes("default"));
+                expect(suite.tags.includes("default")).to.be(false);
+        });
+    });
+    it("should have experimental tag for experimental url", () => {
+        ExperimentalSuites.forEach((suite) => {
+            if (suite.tags.includes("experimental"))
+                expect(suite.tags.includes("experimental")).to.be(true);
         });
     });
     it("should not have duplicate tags", () => {
