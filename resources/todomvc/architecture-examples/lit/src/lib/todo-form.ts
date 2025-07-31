@@ -36,13 +36,14 @@ export class TodoForm extends LitElement {
 
     @updateOnEvent("change")
     @property({ attribute: false })
-        todoList?: Todos;
+    accessor todoList: Todos | undefined;
 
     override render() {
         return html`<input @change=${this.#onChange} @keydown=${this.#onKeydown} class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" />`;
     }
 
-    @query("input", true) newTodoInput!: HTMLInputElement;
+    @query("input", true)
+    accessor newTodoInput!: HTMLInputElement;
 
     #onChange() {
         const { value } = this.newTodoInput;
