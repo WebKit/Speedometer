@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Interacting with Featured Page to Navigate or Search Items</title>
+        <link rel="stylesheet" href="css/test.css">
+  </head>
+
+    <body>
+        <div id="overlay"></div>
+            <div class="slide-section">
+                <!-- Images used are from https://unsplash.dogedoge.com/.
+                     The license is at https://unsplash.dogedoge.com/license -->
+                <div id="mode1" class="box">
+                    <img src="./assets/pizza.jpg" /><span>1</span>
+                </div>
+                <div id="mode2" class="box">
+                    <img src="./assets/wine2.jpg" /><span>2</span>
+                </div>
+                <div id="mode3" class="box">
+                    <img src="./assets/ice-cream.jpg" /><span>3</span>
+                </div>
+                <div id="mode4" class="box">
+                    <img src="./assets/barbecue.jpg" /><span>4</span>
+                </div>
+                <div id="mode5" class="box">
+                   <img src="./assets/donut.jpg" /><span>5</span>
+                </div>
+            </div>
+
+        <div class="table-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Popularity</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </body>
+    <script src="scripts/test.js"></script>
+</html>
