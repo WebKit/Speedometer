@@ -771,6 +771,63 @@ export const defaultSuites = [
         ],
     },
     {
+        name: "TodoMVC-Jaspr-Dart2JS-O4",
+        url: "experimental/todomvc-dart-jaspr/dist/out-dart2js-O4/index.html",
+        tags: ["todomvc", "experimental"],
+        async prepare(page) {
+            (await page.waitForElement(".new-todo")).focus();
+        },
+        tests: [
+            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+                const newTodo = page.querySelector(".new-todo");
+                for (let i = 0; i < numberOfItemsToAdd; i++) {
+                    newTodo.setValue(getTodoText("ja", i));
+                    newTodo.dispatchEvent("change");
+                    newTodo.enter("keypress");
+                }
+            }),
+            new BenchmarkTestStep("CompletingAllItems", (page) => {
+                const checkboxes = page.querySelectorAll(".toggle");
+                for (let i = 0; i < numberOfItemsToAdd; i++)
+                    checkboxes[i].click();
+            }),
+            new BenchmarkTestStep("DeletingAllItems", (page) => {
+                const deleteButtons = page.querySelectorAll(".destroy");
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                    deleteButtons[i].click();
+            }),
+        ],
+    },
+    {
+        name: "TodoMVC-Jaspr-Dart2Wasm-O2",
+        url: "experimental/todomvc-dart-jaspr/dist/out-dart2wasm-O2/index.html",
+        tags: ["todomvc", "experimental"],
+        disabled: true,
+        async prepare(page) {
+            (await page.waitForElement(".new-todo")).focus();
+        },
+        tests: [
+            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+                const newTodo = page.querySelector(".new-todo");
+                for (let i = 0; i < numberOfItemsToAdd; i++) {
+                    newTodo.setValue(getTodoText("ja", i));
+                    newTodo.dispatchEvent("change");
+                    newTodo.enter("keypress");
+                }
+            }),
+            new BenchmarkTestStep("CompletingAllItems", (page) => {
+                const checkboxes = page.querySelectorAll(".toggle");
+                for (let i = 0; i < numberOfItemsToAdd; i++)
+                    checkboxes[i].click();
+            }),
+            new BenchmarkTestStep("DeletingAllItems", (page) => {
+                const deleteButtons = page.querySelectorAll(".destroy");
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                    deleteButtons[i].click();
+            }),
+        ],
+    },
+    {
         name: "NewsSite-Next",
         url: "resources/newssite/news-next/dist/index.html",
         tags: ["default", "newssite", "language"],
