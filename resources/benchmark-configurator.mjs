@@ -6,15 +6,15 @@ import { params } from "./shared/params.mjs";
 const DEFAULT_TAGS = ["all", "default", "experimental"];
 const DISALLOWED_DOMAINS = ["browserbench.org"];
 export class BenchmarkConfigurator {
-    _tags = new Set(DEFAULT_TAGS);
-    _suites = [];
+    #tags = new Set(DEFAULT_TAGS);
+    #suites = [];
 
     get tags() {
-        return this._tags;
+        return this.#tags;
     }
 
     get suites() {
-        return this._suites;
+        return this.#suites;
     }
 
     /**
@@ -39,8 +39,8 @@ export class BenchmarkConfigurator {
     }
 
     _freezeSuites() {
-        Object.freeze(this._suites);
-        this._suites.forEach((suite) => {
+        Object.freeze(this.#suites);
+        this.#suites.forEach((suite) => {
             if (!suite.tags)
                 suite.tags = [];
             if (suite.url.startsWith("experimental/"))
@@ -54,7 +54,7 @@ export class BenchmarkConfigurator {
     }
 
     _freezeTags() {
-        Object.freeze(this._tags);
+        Object.freeze(this.#tags);
     }
 
     async init() {
@@ -77,10 +77,10 @@ export class BenchmarkConfigurator {
                 if (!config || !Array.isArray(config.suites))
                     throw new Error("Could not find a valid config structure!");
 
-                config.suites.flatMap((suite) => suite.tags || []).forEach((tag) => this._tags.add(tag));
+                config.suites.flatMap((suite) => suite.tags || []).forEach((tag) => this.#tags.add(tag));
                 config.suites.forEach((suite) => {
                     if (suite && suite.url && this._isValidUrl(suite.url))
-                        this._suites.push(suite);
+                        this.#suites.push(suite);
                     else
                         throw new Error("Invalid suite data");
                 });
@@ -97,45 +97,45 @@ export class BenchmarkConfigurator {
     }
 
     _loadDefaultSuites() {
-        defaultSuites.flatMap((suite) => suite.tags).forEach((tag) => this._tags.add(tag));
-        defaultSuites.forEach((suite) => this._suites.push(suite));
+        defaultSuites.flatMap((suite) => suite.tags).forEach((tag) => this.#tags.add(tag));
+        defaultSuites.forEach((suite) => this.#suites.push(suite));
     }
 
     enableSuites(names, tags) {
         if (names?.length) {
             const lowerCaseNames = names.map((each) => each.toLowerCase());
-            this._suites.forEach((suite) => {
+            this.#suites.forEach((suite) => {
                 suite.enabled = lowerCaseNames.includes(suite.name.toLowerCase());
             });
         } else if (tags?.length) {
             tags.forEach((tag) => {
-                if (!this._tags.has(tag))
+                if (!this.#tags.has(tag))
                     console.error(`Unknown Suites tag: "${tag}"`);
             });
             const tagsSet = new Set(tags);
-            this._suites.forEach((suite) => {
+            this.#suites.forEach((suite) => {
                 suite.enabled = suite.tags.some((tag) => tagsSet.has(tag));
             });
         } else {
             console.warn("Neither names nor tags provided. Enabling all default suites.");
-            this._suites.forEach((suite) => {
+            this.#suites.forEach((suite) => {
                 suite.enabled = suite.tags.includes("default");
             });
         }
-        if (this._suites.some((suite) => suite.enabled))
+        if (this.#suites.some((suite) => suite.enabled))
             return;
         let message, debugInfo;
         if (names?.length) {
             message = `Suites "${names}" does not match any Suite. No tests to run.`;
             debugInfo = {
                 providedNames: names,
-                validNames: this._suites.map((each) => each.name),
+                validNames: this.#suites.map((each) => each.name),
             };
         } else if (tags?.length) {
             message = `Tags "${tags}" does not match any Suite. No tests to run.`;
             debugInfo = {
                 providedTags: tags,
-                validTags: Array.from(this._tags),
+                validTags: Array.from(this.#tags),
             };
         }
         alert(message);
