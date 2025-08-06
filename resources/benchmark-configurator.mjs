@@ -1,6 +1,6 @@
 // example url for local testing:
 // http://localhost:8080/?config=http://localhost:8080/resources/config.json
-import { defaultSuites } from "./tests.mjs";
+import { defaultSuites } from "./default-tests.mjs";
 import { params } from "./shared/params.mjs";
 
 const DEFAULT_TAGS = ["all", "default", "experimental"];
