@@ -3,8 +3,8 @@ import template from "./todo-bottombar.template.js";
 import globalStyles from "../../styles/global.constructable.js";
 import bottombarStyles from "../../styles/bottombar.constructable.js";
 
-const additionalStyles = new CSSStyleSheet();
-additionalStyles.replaceSync(`
+const customStyles = new CSSStyleSheet();
+customStyles.replaceSync(`
 
     .clear-completed-button, .clear-completed-button:active,
     .todo-status,
@@ -29,11 +29,10 @@ additionalStyles.replaceSync(`
         grid-column: span 3;
     }
 
-    .bottombar.display-none {
+     :host([total-items="0"]) > .bottombar {
         display: none;
     }
 `);
-
 
 class TodoBottombar extends HTMLElement {
     static get observedAttributes() {
@@ -52,7 +51,7 @@ class TodoBottombar extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
         this.htmlDirection = document.dir || "ltr";
         this.setAttribute("dir", this.htmlDirection);
-        this.shadow.adoptedStyleSheets = [globalStyles, bottombarStyles, additionalStyles];
+        this.shadow.adoptedStyleSheets = [globalStyles, bottombarStyles, customStyles];
         this.shadow.append(node);
 
         this.clearCompletedItems = this.clearCompletedItems.bind(this);
@@ -61,11 +60,6 @@ class TodoBottombar extends HTMLElement {
     }
 
     updateDisplay() {
-        if (parseInt(this["total-items"]) !== 0)
-            this.element.classList.remove("display-none");
-        else
-            this.element.classList.add("display-none");
-
         this.todoStatus.textContent = `${this["active-items"]} ${this["active-items"] === "1" ? "item" : "items"} left!`;
     }
 
@@ -81,14 +75,12 @@ class TodoBottombar extends HTMLElement {
     clearCompletedItems() {
         this.dispatchEvent(new CustomEvent("clear-completed-items"));
     }
-    
+
     MoveToNextPage() {
-        console.log("Moving to next page");
         this.dispatchEvent(new CustomEvent("next-page"));
     }
 
     MoveToPreviousPage() {
-        console.log("Moving to previous page button clicked");
         this.element.querySelector(".previous-page-button").disabled = true;
         this.dispatchEvent(new CustomEvent("previous-page"));
     }

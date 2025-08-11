@@ -2,8 +2,8 @@ import template from "./todo-item.template.js";
 import { useDoubleClick } from "../../hooks/useDoubleClick.js";
 import { useKeyListener } from "../../hooks/useKeyListener.js";
 
-import globalStyles from "todomvc-css/dist/global.constructable.js";
-import itemStyles from "todomvc-css/dist/todo-item.constructable.js";
+import globalStyles from "../../../node_modules/todomvc-css/dist/global.constructable.js";
+import itemStyles from "../../../node_modules/todomvc-css/dist/todo-item.constructable.js";
 
 class TodoItem extends HTMLElement {
     static get observedAttributes() {
@@ -66,7 +66,7 @@ class TodoItem extends HTMLElement {
                     }
                     break;
                 case "itemcompleted":
-                    this.toggleInput.checked = this.itemcompleted === "true" ? true : false;
+                    this.toggleInput.checked = this.itemcompleted === "true";
                     break;
             }
         });

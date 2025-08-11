@@ -66,7 +66,7 @@ class TodoItem extends HTMLElement {
                     }
                     break;
                 case "itemcompleted":
-                    this.toggleInput.checked = this.itemcompleted === "true" ? true : false;
+                    this.toggleInput.checked = this.itemcompleted === "true";
                     break;
             }
         });
@@ -111,11 +111,10 @@ class TodoItem extends HTMLElement {
 
     updateItem(event) {
         if (event.target.value !== this.itemtitle) {
-            if (!event.target.value.length) {
+            if (!event.target.value.length)
                 this.removeItem();
-            } else {
+            else
                 this.setAttribute("itemtitle", event.target.value);
-            }
         }
 
         this.cancelEdit();
