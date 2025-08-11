@@ -34,7 +34,6 @@ additionalStyles.replaceSync(`
     }
 `);
 
-
 class TodoBottombar extends HTMLElement {
     static get observedAttributes() {
         return ["total-items", "active-items"];
@@ -81,14 +80,12 @@ class TodoBottombar extends HTMLElement {
     clearCompletedItems() {
         this.dispatchEvent(new CustomEvent("clear-completed-items"));
     }
-    
+
     MoveToNextPage() {
-        console.log("Moving to next page");
         this.dispatchEvent(new CustomEvent("next-page"));
     }
 
     MoveToPreviousPage() {
-        console.log("Moving to previous page button clicked");
         this.element.querySelector(".previous-page-button").disabled = true;
         this.dispatchEvent(new CustomEvent("previous-page"));
     }

@@ -114,6 +114,10 @@ export class SuiteRunner {
         if (this.#suite === WarmupSuite)
             return;
 
+        // Skip recording results if the test step has ignoreResult flag set to true
+        if (test.ignoreResult)
+            return;
+
         let total = syncTime + asyncTime;
         this.#suiteResults.tests[test.name] = {
             tests: { Sync: syncTime, Async: asyncTime },
