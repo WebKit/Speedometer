@@ -2,8 +2,8 @@ import template from "./todo-item.template.js";
 import { useDoubleClick } from "../../hooks/useDoubleClick.js";
 import { useKeyListener } from "../../hooks/useKeyListener.js";
 
-import globalStyles from "../../../node_modules/todomvc-css/dist/global.constructable.js";
-import itemStyles from "../../../node_modules/todomvc-css/dist/todo-item.constructable.js";
+import globalStyles from "todomvc-css/dist/global.constructable.js";
+import itemStyles from "todomvc-css/dist/todo-item.constructable.js";
 
 class TodoItem extends HTMLElement {
     static get observedAttributes() {
@@ -111,11 +111,10 @@ class TodoItem extends HTMLElement {
 
     updateItem(event) {
         if (event.target.value !== this.itemtitle) {
-            if (!event.target.value.length) {
+            if (!event.target.value.length)
                 this.removeItem();
-            } else {
+            else
                 this.setAttribute("itemtitle", event.target.value);
-            }
         }
 
         this.cancelEdit();

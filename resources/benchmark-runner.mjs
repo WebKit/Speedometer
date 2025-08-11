@@ -5,9 +5,10 @@ import { SUITE_RUNNER_LOOKUP } from "./suite-runner.mjs";
 const performance = globalThis.performance;
 
 export class BenchmarkTestStep {
-    constructor(testName, testFunction) {
+    constructor(testName, testFunction, ignoreResult = false) {
         this.name = testName;
         this.run = testFunction;
+        this.ignoreResult = ignoreResult;
     }
 }
 
@@ -126,6 +127,10 @@ class Page {
 
     setGlobalVariable(name, value) {
         this._frame.contentWindow[name] = value;
+    }
+
+    getGlobalVariable(name) {
+        return this._frame.contentWindow[name];
     }
 }
 

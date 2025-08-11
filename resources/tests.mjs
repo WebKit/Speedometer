@@ -241,74 +241,92 @@ Suites.push({
     ],
 });
 
-
 Suites.push({
     name: "TodoMVC-WebComponents-IndexedDB",
-    url: "resources/todomvc/vanilla-examples/javascript-wc-indexeddb/dist/index.html",
-    tags: ["todomvc", "webcomponents"],
+    url: "experimental/javascript-wc-indexeddb/dist/index.html",
+    tags: ["todomvc", "webcomponents", "experimental"],
     type: "async",
     async prepare(page) {
         await page.waitForElement("todo-app");
         await page.waitForElement(".indexeddb-ready");
-        
+        page.setGlobalVariable(
+            "addPromise",
+            new Promise((resolve) => {
+                page.addEventListener("indexeddb-add-completed", () => {
+                    resolve();
+                });
+            })
+        );
+        page.setGlobalVariable(
+            "completePromise",
+            new Promise((resolve) => {
+                page.addEventListener("indexeddb-toggle-completed", () => {
+                    resolve();
+                });
+            })
+        );
+        page.setGlobalVariable(
+            "removePromise",
+            new Promise((resolve) => {
+                page.addEventListener("indexeddb-remove-completed", () => {
+                    resolve();
+                });
+            })
+        );
     },
     tests: [
         new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, async (page) => {
             const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
-            const indexedDBAddPromise = new Promise((resolve) => {
-                page.addEventListener("indexeddb-add-completed", () => {
-                    resolve();
-                });
-            }); 
             for (let i = 0; i < numberOfItemsToAdd; i++) {
                 input.setValue(getTodoText(defaultLanguage, i));
                 input.dispatchEvent("input");
                 input.enter("keyup");
             }
-            await indexedDBAddPromise;
         }),
+        new BenchmarkTestStep(
+            "FinishAddingItemsToDB",
+            async (page) => {
+                await page.getGlobalVariable("addPromise");
+            },
+            true
+        ),
         new BenchmarkTestStep("CompletingAllItems", async (page) => {
             const numberOfItemsPerIteration = 10;
             const numberOfIterations = 10;
             page.setGlobalVariable("numberOfItemsToAdd", numberOfItemsToAdd);
-            const indexedDBCompletedPromise = new Promise((resolve) => {
-                page.addEventListener("indexeddb-toggle-completed", () => {
-                    resolve();
-                });
-            }); 
-            for (let j=0; j < numberOfIterations; j++) {
+            for (let j = 0; j < numberOfIterations; j++) {
                 const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
                 for (let i = 0; i < numberOfItemsPerIteration; i++) {
                     const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
                     item.click();
                 }
-                // Let the layout update???
-                // Give a change to the pending indexedDB operations to complete in main thread.
-                await new Promise((resolve) => {
-                    setTimeout(() => {resolve();}, 0);
-                });
-                if (j<9) {
+                // // Let the layout update???
+                // // Give a change to the pending indexedDB operations to complete in main thread.
+                // await new Promise((resolve) => {
+                //     setTimeout(() => {resolve();}, 0);
+                // });
+                if (j < 9) {
                     const nextPageButton = page.querySelector(".next-page-button", ["todo-app", "todo-bottombar"]);
                     nextPageButton.click();
                 }
             }
-            await indexedDBCompletedPromise;
         }),
+        new BenchmarkTestStep(
+            "FinishModifyingItemsInDB",
+            async (page) => {
+                await page.getGlobalVariable("completePromise");
+            },
+            true
+        ),
         new BenchmarkTestStep("DeletingAllItems", async (page) => {
             const numberOfItemsPerIteration = 10;
             const numberOfIterations = 10;
             page.setGlobalVariable("numberOfItemsToAdd", numberOfItemsToAdd);
-            const indexedDBCompletedPromise = new Promise((resolve) => {
-                page.addEventListener("indexeddb-remove-completed", () => {
-                    resolve();
-                });
-            });
-            function iterationFinishedListener () {
-                console.log("Listener listened");
+            function iterationFinishedListener() {
                 iterationFinishedListener.promiseResolve();
             }
-            page.addEventListener('previous-page-loaded', iterationFinishedListener);
-            for (let j=0; j < numberOfIterations; j++) {
+            page.addEventListener("previous-page-loaded", iterationFinishedListener);
+            for (let j = 0; j < numberOfIterations; j++) {
                 const iterationFinishedPromise = new Promise((resolve) => {
                     iterationFinishedListener.promiseResolve = resolve;
                 });
@@ -320,22 +338,26 @@ Suites.push({
                 // Let the layout update???
                 // Give a change to the pending indexedDB operations to complete in main thread.
                 await new Promise((resolve) => {
-                    setTimeout(() => {resolve();}, 0);
+                    setTimeout(() => {
+                        resolve();
+                    }, 0);
                 });
-                if (j<9) {
+                if (j < 9) {
                     const previousPageButton = page.querySelector(".previous-page-button", ["todo-app", "todo-bottombar"]);
                     previousPageButton.click();
-                    console.log("Clicked previous page button");
                     await iterationFinishedPromise;
-                    console.log("Promise resolved for previous page button");
                 }
             }
-            await indexedDBCompletedPromise;
-            console.log("Finished deleting all items");
         }),
+        new BenchmarkTestStep(
+            "FinishDeletingItemsFromDB",
+            async (page) => {
+                await page.getGlobalVariable("removePromise");
+            },
+            true
+        ),
     ],
 });
-
 
 Suites.push({
     name: "TodoMVC-WebComponents",
