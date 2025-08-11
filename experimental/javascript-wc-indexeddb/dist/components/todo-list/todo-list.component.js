@@ -6,9 +6,9 @@ import listStyles from "../../styles/todo-list.constructable.js";
 
 class IndexedDBManager {
     constructor() {
-        this.dbName = 'todoDB';
+        this.dbName = "todoDB";
         this.dbVersion = 1;
-        this.storeName = 'todos';
+        this.storeName = "todos";
         this.db = null;
         this.pendingAdditions = 0;
         this.totalItemsToggled = 0;
@@ -25,50 +25,44 @@ class IndexedDBManager {
         return new Promise((resolve, reject) => {
             // Delete the existing database first for clean state
             const deleteRequest = indexedDB.deleteDatabase(this.dbName);
-            
+
             deleteRequest.onerror = (event) => {
-                console.warn('Error deleting database:', event.target.error);
                 // Continue despite error in deletion
                 this.openDatabase(resolve, reject);
             };
-            
+
             deleteRequest.onsuccess = () => {
-                console.log('Database deleted successfully for clean initialization');
                 this.openDatabase(resolve, reject);
             };
-            
+
             deleteRequest.onblocked = () => {
-                console.warn('Database deletion was blocked. Connections might still be open.');
                 // Try opening anyway
                 this.openDatabase(resolve, reject);
             };
         });
     }
-    
+
     openDatabase(resolve, reject) {
         const request = indexedDB.open(this.dbName, this.dbVersion);
-        
+
         request.onerror = (event) => {
-            console.error('IndexedDB error:', event.target.error);
             reject(event.target.error);
         };
-        
+
         request.onsuccess = (event) => {
             this.db = event.target.result;
-            console.log('IndexedDB connection established successfully');
             resolve(this.db);
         };
-        
+
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
-            
+
             // Create object store (since we're always creating a fresh DB now)
-            const store = db.createObjectStore(this.storeName, { keyPath: 'itemNumber' });
-            store.createIndex('id', 'id', { unique: true });
-            store.createIndex('title', 'title', { unique: false });
-            store.createIndex('completed', 'completed', { unique: false });
-            store.createIndex('priority', 'priority', { unique: false });
-            console.log(`Object store '${this.storeName}' created successfully`);
+            const store = db.createObjectStore(this.storeName, { keyPath: "itemNumber" });
+            store.createIndex("id", "id", { unique: true });
+            store.createIndex("title", "title", { unique: false });
+            store.createIndex("completed", "completed", { unique: false });
+            store.createIndex("priority", "priority", { unique: false });
         };
     }
 
@@ -76,29 +70,28 @@ class IndexedDBManager {
         return new Promise((resolve, reject) => {
             // Ensure the database connection is established
             if (!this.db) {
-                this.initDB().then(() => this.addTodo(todo))
+                this.initDB()
+                    .then(() => this.addTodo(todo))
                     .then(resolve)
                     .catch(reject);
                 return;
             }
 
             // Add todo item to IndexedDB
-            const transaction = this.db.transaction(this.storeName, 'readwrite');
+            const transaction = this.db.transaction(this.storeName, "readwrite");
             const store = transaction.objectStore(this.storeName);
-            
+
             const request = store.add(todo);
             this.pendingAdditions++;
 
             request.onsuccess = () => {
-                console.log('Todo added to IndexedDB:', todo);
-                if (--this.pendingAdditions === 0) {
+                if (--this.pendingAdditions === 0)
                     window.dispatchEvent(new CustomEvent("indexeddb-add-completed", {}));
-                }
+
                 resolve(todo);
             };
-            
+
             request.onerror = (event) => {
-                console.error('Error adding todo to IndexedDB:', event.target.error);
                 reject(event.target.error);
             };
         });
@@ -115,21 +108,21 @@ class IndexedDBManager {
                 return;
             }
 
-            const transaction = this.db.transaction(this.storeName, 'readonly');
+            const transaction = this.db.transaction(this.storeName, "readonly");
             const store = transaction.objectStore(this.storeName);
-            
+
             // Use IDBKeyRange to get items with itemNumber less than upperItemNumber
             const range = IDBKeyRange.upperBound(upperItemNumber, true); // true = exclusive bound
-            
+
             // Open a cursor to iterate through records in descending order
-            const request = store.openCursor(range, 'prev');
-            
+            const request = store.openCursor(range, "prev");
+
             const items = [];
             let itemsProcessed = 0;
-            
+
             request.onsuccess = (event) => {
                 const cursor = event.target.result;
-                
+
                 // Check if we have a valid cursor and haven't reached our count limit
                 if (cursor && itemsProcessed < count) {
                     items.push(cursor.value);
@@ -138,20 +131,18 @@ class IndexedDBManager {
                 } else {
                     // We're done - sort items by itemNumber in descending order
                     // for proper display order (newest to oldest)
-                    items.sort((a, b) => a.itemNumber -  b.itemNumber);
-                    
+                    items.sort((a, b) => a.itemNumber - b.itemNumber);
+
                     resolve(items);
                 }
             };
-            
+
             request.onerror = (event) => {
-                console.error('Error retrieving todos from IndexedDB:', event.target.error);
                 reject(event.target.error);
             };
-            
+
             // Also handle transaction errors
             transaction.onerror = (event) => {
-                console.error('Transaction error while retrieving todos:', event.target.error);
                 reject(event.target.error);
             };
         });
@@ -169,55 +160,49 @@ class IndexedDBManager {
             }
 
             // Access the todo item directly by its itemNumber (keyPath)
-            const transaction = this.db.transaction(this.storeName, 'readwrite');
+            const transaction = this.db.transaction(this.storeName, "readwrite");
             const store = transaction.objectStore(this.storeName);
-            
+
             // Get the todo item directly using its primary key (itemNumber)
             const getRequest = store.get(itemNumber);
-            
+
             getRequest.onsuccess = (event) => {
                 const todoItem = getRequest.result;
-                
+
                 if (!todoItem) {
-                    console.error(`Todo item with itemNumber '${itemNumber}' not found`);
                     reject(new Error(`Todo item with itemNumber '${itemNumber}' not found`));
                     return;
                 }
-                
+
                 // Update the completed status
                 todoItem.completed = completed;
-                
+
                 // Save the updated item back to the database
                 const updateRequest = store.put(todoItem);
-                
+
                 updateRequest.onsuccess = () => {
-                    console.log(`Todo item with itemNumber '${itemNumber}' completed status updated to: ${completed}`);
-                    if (window.numberOfItemsToAdd && ++this.totalItemsToggled === window.numberOfItemsToAdd) {
+                    if (window.numberOfItemsToAdd && ++this.totalItemsToggled === window.numberOfItemsToAdd)
                         window.dispatchEvent(new CustomEvent("indexeddb-toggle-completed", {}));
-                    }
+
                     resolve(todoItem);
                 };
-                
+
                 updateRequest.onerror = (event) => {
-                    console.error('Error updating todo item:', event.target.error);
                     reject(event.target.error);
                 };
             };
-            
+
             getRequest.onerror = (event) => {
-                console.error('Error retrieving todo item:', event.target.error);
                 reject(event.target.error);
             };
-            
+
             // Handle potential errors in finding the item
             transaction.onerror = (event) => {
-                console.error('Transaction error while toggling todo:', event.target.error);
                 reject(event.target.error);
             };
-            
+
             // Handle transaction errors
             transaction.onerror = (event) => {
-                console.error('Transaction error while toggling todo:', event.target.error);
                 reject(event.target.error);
             };
         });
@@ -235,32 +220,27 @@ class IndexedDBManager {
             }
 
             // Access the todo item directly by its itemNumber (keyPath)
-            const transaction = this.db.transaction(this.storeName, 'readwrite');
+            const transaction = this.db.transaction(this.storeName, "readwrite");
             const store = transaction.objectStore(this.storeName);
-            
+
             // Delete the todo item directly using its primary key (itemNumber)
             const deleteRequest = store.delete(itemNumber);
-            
+
             deleteRequest.onsuccess = () => {
-                if (window.numberOfItemsToAdd && ++this.totalItemsDeleted === window.numberOfItemsToAdd) {
+                if (window.numberOfItemsToAdd && ++this.totalItemsDeleted === window.numberOfItemsToAdd)
                     window.dispatchEvent(new CustomEvent("indexeddb-remove-completed", {}));
-                }
-                console.log(`Total items deleted: ${this.totalItemsDeleted}`);
-                console.log(`Todo item with itemNumber '${itemNumber}' deleted successfully`);
+
                 resolve(itemNumber);
             };
-            
+
             deleteRequest.onerror = (event) => {
-                console.error('Error deleting todo item:', event.target.error);
-                reject(event.target.error);
-            };
-            
-            // Handle transaction errors
-            transaction.onerror = (event) => {
-                console.error('Transaction error while deleting todo:', event.target.error);
                 reject(event.target.error);
             };
 
+            // Handle transaction errors
+            transaction.onerror = (event) => {
+                reject(event.target.error);
+            };
         });
     }
 }
@@ -285,7 +265,6 @@ customListStyles.replaceSync(`
         display: none;
     }
 `);
-
 
 class TodoList extends HTMLElement {
     static get observedAttributes() {
@@ -358,13 +337,7 @@ class TodoList extends HTMLElement {
 
     toggleItem(itemNumber, completed) {
         // Update the item in the IndexedDB
-        this.storageManager.toggleTodo(itemNumber, completed)
-            .then(updatedItem => {
-                console.log('Todo item successfully updated in IndexedDB:', updatedItem);
-            })
-            .catch(error => {
-                console.error('Failed to update todo item in IndexedDB:', error);
-            });
+        this.storageManager.toggleTodo(itemNumber, completed);
     }
 
     updateStyles() {
@@ -401,33 +374,35 @@ class TodoList extends HTMLElement {
     }
 
     moveToNextPage() {
-        for (let i=0; i < MAX_ON_SCREEN_ITEMS; i++) {
+        for (let i = 0; i < MAX_ON_SCREEN_ITEMS; i++) {
             const child = this.listNode.firstChild;
-            if (child.getAttribute("itemcompleted") === "true") {
-            }
+            if (!child)
+                break;
             child.remove();
-        };
+        }
         this.#firstItemIndexOnScreen = this.listNode.firstChild.itemIndex;
     }
 
     moveToPreviousPage() {
-        return this.storageManager.getTodos(this.#firstItemIndexOnScreen, MAX_ON_SCREEN_ITEMS).then((items) => {
-            console.log(items);
-            const elements = items.map((item) => {
-                const { id, title, completed, priority } = item;
-                const element = new TodoItem();
-                element.setAttribute("itemid", id);
-                element.setAttribute("itemtitle", title);
-                element.setAttribute("itemcompleted", completed);
-                element.setAttribute("data-priority", priority);
-                element.itemIndex = item.itemNumber;
-                return element;
+        return this.storageManager
+            .getTodos(this.#firstItemIndexOnScreen, MAX_ON_SCREEN_ITEMS)
+            .then((items) => {
+                const elements = items.map((item) => {
+                    const { id, title, completed, priority } = item;
+                    const element = new TodoItem();
+                    element.setAttribute("itemid", id);
+                    element.setAttribute("itemtitle", title);
+                    element.setAttribute("itemcompleted", completed);
+                    element.setAttribute("data-priority", priority);
+                    element.itemIndex = item.itemNumber;
+                    return element;
+                });
+                this.#firstItemIndexOnScreen = items[0].itemNumber;
+                this.listNode.replaceChildren(...elements);
+            })
+            .catch((error) => {
+                // Error retrieving previous todos
             });
-            this.#firstItemIndexOnScreen = items[0].itemNumber;
-            this.listNode.replaceChildren(...elements);
-        }).catch((error) => {
-            console.error('Error retrieving previous todos:', error);
-        });
     }
 
     #addItemToStorage(itemIndex, id, title, priority, completed) {
@@ -437,17 +412,11 @@ class TodoList extends HTMLElement {
             id,
             title,
             completed,
-            priority
+            priority,
         };
-        
+
         // Add the item to IndexedDB and handle the Promise
-        this.storageManager.addTodo(todoItem)
-            .then(result => {
-                console.log('Todo item successfully stored in IndexedDB:', result);
-            })
-            .catch(error => {
-                console.error('Failed to store todo item in IndexedDB:', error);
-            });
+        this.storageManager.addTodo(todoItem);
     }
 }
 

@@ -5,9 +5,19 @@ import { nanoid } from "../../utils/nanoid.js";
 import globalStyles from "../../styles/global.constructable.js";
 import topbarStyles from "../../styles/topbar.constructable.js";
 
+const customListStyles = new CSSStyleSheet();
+customListStyles.replaceSync(`
+    .toggle-all-container {
+        display: block;
+    }
+    :host([total-items="0"]) .toggle-all-container {
+        display: none;
+    }
+`);
+
 class TodoTopbar extends HTMLElement {
     static get observedAttributes() {
-        return ["total-items", "active-items", "completed-items"];
+        return ["active-items", "completed-items"];
     }
 
     #route = undefined;
@@ -23,7 +33,7 @@ class TodoTopbar extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
         this.htmlDirection = document.dir || "ltr";
         this.setAttribute("dir", this.htmlDirection);
-        this.shadow.adoptedStyleSheets = [globalStyles, topbarStyles];
+        this.shadow.adoptedStyleSheets = [globalStyles, topbarStyles, customListStyles];
         this.shadow.append(node);
 
         this.keysListeners = [];
@@ -75,7 +85,7 @@ class TodoTopbar extends HTMLElement {
                 this.toggleInput.disabled = !parseInt(this["completed-items"]);
                 break;
             default:
-                this.toggleInput.checked = this["total-items"] === this["completed-items"];
+                this.toggleInput.checked = !parseInt(this["active-items"]);
                 this.toggleInput.disabled = false;
         }
     }

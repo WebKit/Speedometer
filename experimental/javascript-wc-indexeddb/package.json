@@ -1,5 +1,5 @@
 {
-    "name": "todomvc-javascript-web-components",
+    "name": "todomvc-javascript-web-components-indexeddb",
     "version": "1.0.0",
     "description": "TodoMVC app written with JavaScript using web components.",
     "engines": {
@@ -17,6 +17,6 @@
     "license": "ISC",
     "dependencies": {
         "http-server": "^14.1.1",
-        "todomvc-css": "file:../../todomvc-css"
+        "todomvc-css": "file:../../resources/todomvc/todomvc-css"
     }
 }

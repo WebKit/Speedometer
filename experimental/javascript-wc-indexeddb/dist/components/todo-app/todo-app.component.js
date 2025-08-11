@@ -50,19 +50,19 @@ class TodoApp extends HTMLElement {
     }
 
     toggleItem(event) {
-        if (event.detail.completed) {
+        if (event.detail.completed)
             this.#numberOfCompletedItems++;
-        } else {
+        else
             this.#numberOfCompletedItems--;
-        }
+
         this.list.toggleItem(event.detail.itemNumber, event.detail.completed);
         this.update("toggle-item", event.detail.id);
     }
 
     removeItem(event) {
-        if (event.detail.completed) {
+        if (event.detail.completed)
             this.#numberOfCompletedItems--;
-        }
+
         this.#numberOfItems--;
         this.update("remove-item", event.detail.id);
         this.list.removeItem(event.detail.itemNumber);
@@ -87,7 +87,6 @@ class TodoApp extends HTMLElement {
     moveToPreviousPage() {
         // Skeleton implementation of previous page navigation
         this.list.moveToPreviousPage().then(() => {
-            console.log("Moving to previous page");
             this.bottombar.reenablePreviousPageButton();
             window.dispatchEvent(new CustomEvent("previous-page-loaded", {}));
         });
