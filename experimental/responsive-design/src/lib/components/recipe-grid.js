@@ -39,9 +39,7 @@ class RecipeGrid extends LightDOMLitElement {
 
         await this.updateComplete;
 
-        // Dispatch to parent window (the benchmark runner's window)
-        if (window.parent !== window)
-            window.parent.dispatchEvent(new CustomEvent("resize-work-complete"));
+        window.dispatchEvent(new CustomEvent("resize-work-complete"));
     }
 
     _handleToggleExpand(event) {

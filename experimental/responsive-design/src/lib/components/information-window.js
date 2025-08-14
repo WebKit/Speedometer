@@ -74,8 +74,10 @@ class InformationWindow extends LitElement {
 
     updateCarousel() {
         const cardRow = this.shadowRoot.querySelector(".card-row");
-        if (cardRow)
+        if (cardRow) {
             cardRow.style.transform = `translateX(-${this._currentIndex * 100}%)`;
+            cardRow.style.transition = "none";
+        }
 
         this.requestUpdate();
     }
@@ -84,7 +86,7 @@ class InformationWindow extends LitElement {
         return html`
             <div class="relative w-full overflow-hidden">
                 <button
-                    class="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 transform cursor-pointer items-center justify-center rounded-full border-0 bg-black bg-opacity-50 p-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+                    class="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 transform animate-none cursor-pointer items-center justify-center rounded-full border-0 bg-black bg-opacity-50 p-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
                     @click="${this.previousCard}"
                     ?disabled="${this._currentIndex === 0}"
                 >
@@ -95,7 +97,7 @@ class InformationWindow extends LitElement {
                 </div>
                 <button
                     id="next-restaurant-btn"
-                    class="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 transform cursor-pointer items-center justify-center rounded-full border-0 bg-black bg-opacity-50 p-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+                    class="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 transform animate-none cursor-pointer items-center justify-center rounded-full border-0 bg-black bg-opacity-50 p-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
                     @click="${this.nextCard}"
                     ?disabled="${this._currentIndex === this._restaurants.length - 1}"
                 >

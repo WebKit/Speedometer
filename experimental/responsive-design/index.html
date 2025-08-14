@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Cooking with Lit and Tailwind</title>
+        <script type="module" src="app.js"></script>
         <style>
             body,
             html {
@@ -12,14 +13,9 @@
                 height: 100%;
                 overflow: hidden;
             }
-            #content-iframe {
-                width: 100%;
-                height: 100%;
-                border: none;
-            }
         </style>
     </head>
     <body>
-        <iframe title="Cooking Website with Recipes" id="content-iframe" src="iframe.html"></iframe>
+        <cooking-app></cooking-app>
     </body>
 </html>

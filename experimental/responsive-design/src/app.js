@@ -1,1 +1,1 @@
-export * from "./lib/components/cooking-app.js";
+import "./lib/components/cooking-app.js";

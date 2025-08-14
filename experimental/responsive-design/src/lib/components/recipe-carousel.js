@@ -101,7 +101,7 @@ class RecipeCarousel extends LightDOMLitElement {
                         &lt;
                     </button>
                     <div class="px-5 pb-1">
-                        <div class="carousel scrollbar-hide flex w-full snap-x overflow-x-scroll scroll-smooth">${this._getCarouselItemsTemplate()}</div>
+                        <div class="carousel scrollbar-hide flex w-full snap-x overflow-x-scroll scroll-auto">${this._getCarouselItemsTemplate()}</div>
                     </div>
                     <button
                         id="next-item-carousel-btn"

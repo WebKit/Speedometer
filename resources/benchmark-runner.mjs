@@ -121,6 +121,10 @@ class Page {
         return this.wrapElement(this._frame.contentWindow[functionName]());
     }
 
+    setWidth(widthPx) {
+        this._frame.style.width = `${widthPx}px`;
+    }
+
     wrapElement(element) {
         return new PageElement(element);
     }
@@ -164,10 +168,6 @@ class PageElement {
 
     getElementByMethod(name) {
         return new PageElement(this.#node[name]());
-    }
-
-    setWidth(width) {
-        this.#node.style.width = width;
     }
 
     scrollIntoView(options) {
@@ -230,14 +230,6 @@ class PageElement {
         if (element === null)
             return null;
         return new PageElement(element);
-    }
-
-    querySelectorAllInShadowRoot(selector, path = []) {
-        const lookupStartNode = this.#node.shadowRoot ?? this.#node;
-        const elements = Array.from(getParent(lookupStartNode, path).querySelectorAll(selector));
-        for (let i = 0; i < elements.length; i++)
-            elements[i] = new PageElement(elements[i]);
-        return elements;
     }
 
     querySelector(selector) {
