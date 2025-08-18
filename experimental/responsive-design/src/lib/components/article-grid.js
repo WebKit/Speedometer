@@ -8,6 +8,7 @@ class ArticleGrid extends LightDOMLitElement {
     static properties = {
         articles: { type: Array },
     };
+
     constructor() {
         super();
         this.articles = articles;

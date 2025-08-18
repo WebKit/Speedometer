@@ -1145,6 +1145,10 @@ Suites.push({
             await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         }),
         new BenchmarkTestStep("ScrollToChatAndSendMessages", async (page) => {
+            const cvWorkComplete = new Promise((resolve) => {
+                page.addEventListener("video-grid-content-visibility-complete", resolve, { once: true });
+            });
+
             const nextItemBtn = page.querySelector("#next-item-carousel-btn", ["cooking-app", "main-content", "recipe-carousel"]);
             const recipeCarouselItems = page.querySelectorAll(".carousel-item", ["cooking-app", "main-content", "recipe-carousel"]);
             const numOfCarouselItems = recipeCarouselItems.length - 3;
@@ -1172,6 +1176,7 @@ Suites.push({
                 chatInput.enter("keydown");
                 page.layout();
             }
+            await cvWorkComplete;
         }),
         new BenchmarkTestStep("IncreaseWidthIn5Steps", async (page) => {
             const widths = [560, 640, 704, 768, 800];
