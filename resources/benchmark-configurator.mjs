@@ -38,6 +38,17 @@ export class BenchmarkConfigurator {
         }
     }
 
+    /**
+     * Reports an error by showing an alert and logging a message to the console.
+     * @private
+     * @param {string} message The error message to display.
+     * @param {object} [debugInfo] An optional object containing additional debug information.
+     */
+    _reportError(message, debugInfo) {
+        alert(message);
+        console.error(message, debugInfo);
+    }
+
     _freezeSuites() {
         Object.freeze(this.#suites);
         this.#suites.forEach((suite) => {
@@ -125,24 +136,17 @@ export class BenchmarkConfigurator {
         if (this.#suites.some((suite) => suite.enabled))
             return;
 
-        let message;
-        let debugInfo;
-
         if (names?.length) {
-            message = `Suites "${names}" does not match any Suite. No tests to run.`;
-            debugInfo = {
+            this._reportError(`Suites "${names}" does not match any Suite. No tests to run.`, {
                 providedNames: names,
                 validNames: this.#suites.map((each) => each.name),
-            };
+            });
         } else if (tags?.length) {
-            message = `Tags "${tags}" does not match any Suite. No tests to run.`;
-            debugInfo = {
+            this._reportError(`Tags "${tags}" does not match any Suite. No tests to run.`, {
                 providedTags: tags,
                 validTags: Array.from(this.#tags),
-            };
+            });
         }
-        alert(message);
-        console.error(message, debugInfo);
     }
 }
 
