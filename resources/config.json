@@ -1,0 +1,13 @@
+{
+    "suites": [
+        {
+            "name": "NewsSite-PostMessage",
+            "url": "resources/newssite/news-next/dist/index.html",
+            "tags": ["newssite", "language"],
+            "type": "remote",
+            "config": {
+                "name": "default"
+            }
+        }
+    ]
+}

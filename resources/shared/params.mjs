@@ -33,6 +33,8 @@ export class Params {
     layoutMode = LAYOUT_MODES[0];
     // Measure more workload prepare time.
     measurePrepare = false;
+    // External config url to override internal tests.
+    config = "";
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -65,6 +67,7 @@ export class Params {
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
         this.layoutMode = this._parseEnumParam(searchParams, "layoutMode", LAYOUT_MODES);
         this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
+        this.config = this._parseConfig(searchParams);
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -157,6 +160,15 @@ export class Params {
         return shuffleSeed;
     }
 
+    _parseConfig(searchParams) {
+        const config = searchParams.get("config") ?? "";
+        searchParams.delete("config");
+        if (config && !isValidJsonUrl(config))
+            throw new Error("Invalid config url passed in.");
+
+        return config;
+    }
+
     toCompleteSearchParamsObject() {
         return this.toSearchParamsObject(false);
     }
@@ -190,6 +202,18 @@ export class Params {
 
     toSearchParams() {
         return this.toSearchParamsObject().toString();
+    }
+}
+
+function isValidJsonUrl(url) {
+    if (typeof url !== "string" || url.length === 0)
+        return false;
+
+    try {
+        new URL(url, "http://www.example.com");
+        return true;
+    } catch (error) {
+        return false;
     }
 }
 
