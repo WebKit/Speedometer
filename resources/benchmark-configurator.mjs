@@ -124,7 +124,10 @@ export class BenchmarkConfigurator {
         }
         if (this.#suites.some((suite) => suite.enabled))
             return;
-        let message, debugInfo;
+
+        let message;
+        let debugInfo;
+
         if (names?.length) {
             message = `Suites "${names}" does not match any Suite. No tests to run.`;
             debugInfo = {
