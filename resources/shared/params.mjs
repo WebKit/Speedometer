@@ -210,8 +210,8 @@ function isValidJsonUrl(url) {
         return false;
 
     try {
-        const urlObject = new URL(url, "http://www.example.com");
-        return urlObject.pathname.toLowerCase().endsWith(".json");
+        new URL(url, "http://www.example.com");
+        return true;
     } catch (error) {
         return false;
     }
