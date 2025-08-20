@@ -1,5 +1,6 @@
 // example url for local testing:
-// http://localhost:8080/?config=http://localhost:8080/resources/config.json
+// http://localhost:8080/?developerMode=true&config=http://localhost:8080/resources/config.json
+// since the json doesn't contain a default suite, dismiss warning popups and select from the developerMenu
 import { defaultSuites } from "./default-tests.mjs";
 import { params } from "./shared/params.mjs";
 
