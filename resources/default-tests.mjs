@@ -1077,4 +1077,108 @@ export const defaultSuites = [
             }),
         ],
     },
+    {
+        name: "Responsive-Design",
+        url: "experimental/responsive-design/dist/index.html",
+        tags: ["responsive-design", "webcomponents", "experimental"],
+        type: "async",
+        async prepare(page) {
+            await page.waitForElement("cooking-app");
+        },
+        tests: [
+            new BenchmarkTestStep("LoadChatAndExpandRecipes", async (page) => {
+                const resumePreviousChatBtn = page.querySelector("#resume-previous-chat-btn", ["cooking-app", "chat-window"]);
+                resumePreviousChatBtn.click();
+                page.layout();
+
+                const nextRestaurantBtn = page.querySelector("#next-restaurant-btn", ["cooking-app", "information-window"]);
+                const restaurantCards = page.querySelectorAll("restaurant-card", ["cooking-app", "information-window"]);
+                const numOfRestaurantCards = restaurantCards.length - 1;
+                for (let i = 0; i < numOfRestaurantCards; i++) {
+                    nextRestaurantBtn.click();
+                    page.layout();
+                }
+
+                const showMoreBtn = page.querySelectorAll(".show-more-btn", ["cooking-app", "main-content", "recipe-grid"]);
+                for (const btn of showMoreBtn) {
+                    btn.click();
+                    page.layout();
+                }
+            }),
+            new BenchmarkTestStep("ReduceWidthIn5Steps", async (page) => {
+                const widths = [768, 704, 640, 560, 480];
+                const MATCH_MEDIA_QUERY_BREAKPOINT = 640;
+
+                // The matchMedia query is "(max-width: 640px)"
+                // Starting from a width > 640px, we'll only get 1 event when crossing to <= 640px
+                // This happens when the width changes from 704px to 640px
+                const resizeWorkPromise = new Promise((resolve) => {
+                    page.addEventListener("resize-work-complete", resolve, { once: true });
+                });
+
+                for (const width of widths) {
+                    page.setWidth(width);
+                    page.layout();
+                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT)
+                        await resizeWorkPromise;
+                }
+
+                await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            }),
+            new BenchmarkTestStep("ScrollToChatAndSendMessages", async (page) => {
+                const cvWorkComplete = new Promise((resolve) => {
+                    page.addEventListener("video-grid-content-visibility-complete", resolve, { once: true });
+                });
+
+                const nextItemBtn = page.querySelector("#next-item-carousel-btn", ["cooking-app", "main-content", "recipe-carousel"]);
+                const recipeCarouselItems = page.querySelectorAll(".carousel-item", ["cooking-app", "main-content", "recipe-carousel"]);
+                const numOfCarouselItems = recipeCarouselItems.length - 3;
+                for (let i = 0; i < numOfCarouselItems; i++) {
+                    nextItemBtn.click();
+                    page.layout();
+                }
+
+                // Collapse recipes
+                const showMoreBtnCollapse = page.querySelectorAll(".show-more-btn", ["cooking-app", "main-content", "recipe-grid"]);
+                for (const btn of showMoreBtnCollapse) {
+                    btn.click();
+                    page.layout();
+                }
+
+                const chatWindow = page.querySelector("#chat-window", ["cooking-app", "chat-window"]);
+                chatWindow.scrollIntoView({ behavior: "instant" });
+                page.layout();
+
+                const messagesToBeSent = ["Please generate an image of Tomato Soup.", "Try again, but make the soup look thicker.", "Try again, but make the soup served in a rustic bowl and include a sprinkle of fresh herbs on top."];
+                const chatInput = page.querySelector("#chat-input", ["cooking-app", "chat-window"]);
+                for (const message of messagesToBeSent) {
+                    chatInput.setValue(message);
+                    chatInput.dispatchEvent("input");
+                    chatInput.enter("keydown");
+                    page.layout();
+                }
+                await cvWorkComplete;
+            }),
+            new BenchmarkTestStep("IncreaseWidthIn5Steps", async (page) => {
+                const widths = [560, 640, 704, 768, 800];
+                const MATCH_MEDIA_QUERY_BREAKPOINT = 704;
+
+                // The matchMedia query is "(max-width: 640px)"
+                // Starting from a width <= 640px, we'll get 1 event when crossing back to > 640px.
+                // This happens when the width changes from 640px to 704px.
+                const resizeWorkPromise = new Promise((resolve) => {
+                    page.addEventListener("resize-work-complete", resolve, { once: true });
+                });
+
+                for (const width of widths) {
+                    page.setWidth(width);
+                    page.layout();
+                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT)
+                        await resizeWorkPromise;
+                }
+
+                await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            }),
+        ],
+    },
 ];
