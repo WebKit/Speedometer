@@ -69,7 +69,7 @@ export class TestRunner {
         const measureAsync = () => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
-            this.page.layout();
+            this.page?.layout();
 
             const asyncEndTime = performance.now();
             performance.mark(asyncEndLabel);
@@ -92,7 +92,7 @@ export class TestRunner {
 }
 
 export class AsyncTestRunner extends TestRunner {
-    constructor(frame, page, params, suite, test, callback, type) {
+    constructor(frame, page, params, suite, test, callback, type = "async") {
         super(frame, page, params, suite, test, callback, type);
     }
 

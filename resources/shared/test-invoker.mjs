@@ -46,8 +46,8 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
 
             this._asyncCallback();
             setTimeout(async () => {
-                await this._reportCallback();
-                resolve();
+                const result = await this._reportCallback();
+                resolve(result);
             }, 0);
         };
 

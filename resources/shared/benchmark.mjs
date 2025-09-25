@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { TestRunner } from "./test-runner.mjs";
+import { TestRunner, AsyncTestRunner } from "./test-runner.mjs";
 import { Params } from "./params.mjs";
 
 /**
@@ -20,15 +20,24 @@ export class BenchmarkStep {
     }
 }
 
+export class AsyncBenchmarkStep extends BenchmarkStep {
+    async runAndRecord(params, suite, test, callback) {
+        const testRunner = new AsyncTestRunner(null, null, params, suite, test, callback);
+        const result = await testRunner.runTest();
+        return result;
+    }
+}
+
 /**
  * BenchmarkSuite
  *
  * A single test suite that contains one or more test steps.
  */
 export class BenchmarkSuite {
-    constructor(name, tests) {
+    constructor(name, tests, type = "sync") {
         this.name = name;
         this.tests = tests;
+        this.type = type;
     }
 
     record(_test, syncTime, asyncTime) {
@@ -70,6 +79,13 @@ export class BenchmarkSuite {
         };
     }
 }
+
+export class AsyncBenchmarkSuite extends BenchmarkSuite {
+    constructor(name, tests) {
+        super(name, tests, "async");
+    }
+}
+
 
 /** **********************************************************************
  * BenchmarkConnector
