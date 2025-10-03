@@ -28,16 +28,22 @@ export class AsyncBenchmarkStep extends BenchmarkStep {
     }
 }
 
+export const BenchmarkSuiteType = Object.freeze({
+  SYNC: "sync",
+  ASYNC: "async",
+});
+
 /**
  * BenchmarkSuite
  *
  * A single test suite that contains one or more test steps.
  */
 export class BenchmarkSuite {
-    constructor(name, tests, type = "sync") {
+    constructor(name, tests, type = BenchmarkSuiteType.SYNC) {
         this.name = name;
         this.tests = tests;
         this.type = type;
+        console.assert(this.type in BenchmarkSuiteType);
     }
 
     record(_test, syncTime, asyncTime) {
@@ -82,7 +88,7 @@ export class BenchmarkSuite {
 
 export class AsyncBenchmarkSuite extends BenchmarkSuite {
     constructor(name, tests) {
-        super(name, tests, "async");
+        super(name, tests, BenchmarkSuiteType.ASYNC);
     }
 }
 
