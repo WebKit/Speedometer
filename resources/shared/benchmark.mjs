@@ -94,7 +94,6 @@ export class AsyncBenchmarkSuite extends BenchmarkSuite {
     }
 }
 
-
 export const MESSAGE_TYPE = Object.freeze({
     __proto__: null,
     appReady: "app-ready",
@@ -108,7 +107,6 @@ export const MESSAGE_STATUS = Object.freeze({
     success: "success",
     error: "error",
 });
-
 
 /** **********************************************************************
  * BenchmarkConnector

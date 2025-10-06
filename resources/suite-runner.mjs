@@ -181,7 +181,7 @@ export class RemoteSuiteRunner extends SuiteRunner {
         // Ask workload to run its own tests.
         this._sendMessage(MESSAGE_TYPE.suiteStart, { name: this.suite.config?.name || "default" });
         // Capture metrics from the completed tests.
-        const { result }  = await this._subscribeOnce(MESSAGE_TYPE.suiteComplete);
+        const { result } = await this._subscribeOnce(MESSAGE_TYPE.suiteComplete);
 
         this.suiteResults.tests = {
             ...this.suiteResults.tests,
