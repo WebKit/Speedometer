@@ -144,7 +144,7 @@ export class BenchmarkConnector {
                 const { name } = message.payload;
                 const suite = this.suites[name];
                 if (!suite)
-                    console.error(`Suite with the name of "${.name}" not found!`);
+                    console.error(`Suite with the name of "${name}" not found!`);
                 const onProgress = (test) => this._sendMessage(MESSAGE_TYPE.stepComplete, { name: this.name, test });
                 const { result } = await suite.runAndRecord(params, onProgress);
                 this._sendMessage(MESSAGE_TYPE.suiteComplete, { result });
