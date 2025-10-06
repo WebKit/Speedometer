@@ -1,4 +1,5 @@
 import { TEST_RUNNER_LOOKUP } from "./shared/test-runner.mjs";
+import { MESSAGE_TYPE } from "./shared/benchmark.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
 
 export class SuiteRunner {
@@ -163,7 +164,7 @@ export class RemoteSuiteRunner extends SuiteRunner {
         performance.mark(suitePrepareStartLabel);
 
         // Wait for the app-ready message from the workload.
-        const appReadyPromise = this._subscribeOnce("app-ready");
+        const appReadyPromise = this._subscribeOnce(MESSAGE_TYPE.appReady);
         await this._loadFrame(this.suite);
         const response = await appReadyPromise;
         await this.suite.prepare?.(this.page);
@@ -178,20 +179,30 @@ export class RemoteSuiteRunner extends SuiteRunner {
 
     async _runSuite() {
         // Ask workload to run its own tests.
-        this.frame.contentWindow.postMessage({ id: this.appId, key: "benchmark-connector", type: "benchmark-suite", name: this.suite.config?.name || "default" }, "*");
+        this._sendMessage(MESSAGE_TYPE.suiteStart, { name: this.suite.config?.name || "default" });
         // Capture metrics from the completed tests.
-        const response = await this._subscribeOnce("suite-complete");
+        const { result }  = await this._subscribeOnce(MESSAGE_TYPE.suiteComplete);
 
         this.suiteResults.tests = {
             ...this.suiteResults.tests,
-            ...response.result.tests,
+            ...result.tests,
         };
 
         this.suiteResults.prepare = this.#prepareTime;
-        this.suiteResults.total = response.result.total;
+        this.suiteResults.total = result.total;
 
         this._validateSuiteResults();
         await this._updateClient();
+    }
+
+    _sendMessage(type, payload) {
+        const message = {
+            appId: this.appId,
+            key: "benchmark-connector",
+            type: type,
+            payload: payload,
+        };
+        this.frame.contentWindow.postMessage(message, "*");
     }
 
     _handlePostMessage(event) {
@@ -217,8 +228,11 @@ export class RemoteSuiteRunner extends SuiteRunner {
     _subscribeOnce(type) {
         return new Promise((resolve) => {
             this._startSubscription(type, (e) => {
+                const message = e.data;
+                if (message.appId !== this.appId)
+                    throw new Error(`Got message for invalid app: ${message.appId} instead of {this.appId}`);
                 this._stopSubscription(type);
-                resolve(e.data);
+                resolve(message.payload);
             });
         });
     }

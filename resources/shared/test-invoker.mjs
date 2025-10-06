@@ -79,8 +79,8 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
     }
 }
 
-export const TEST_INVOKER_LOOKUP = {
+export const TEST_INVOKER_LOOKUP = Object.freeze({
     __proto__: null,
     raf: RAFTestInvoker,
     async: AsyncRAFTestInvoker,
-};
+});
