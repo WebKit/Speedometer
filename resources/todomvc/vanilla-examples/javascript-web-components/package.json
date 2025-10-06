@@ -18,6 +18,6 @@
     "dependencies": {
         "http-server": "^14.1.1",
         "todomvc-css": "file:../../todomvc-css",
-        "speedometer-utils": "file:../../../shared"
+        "speedometer-utils": "link:../../../shared"
     }
 }
