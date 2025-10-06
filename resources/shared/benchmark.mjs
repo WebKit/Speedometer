@@ -28,7 +28,7 @@ export class AsyncBenchmarkStep extends BenchmarkStep {
     }
 }
 
-export const BenchmarkSuiteType = Object.freeze({
+export const BENCHMARK_SUITE_TYPE = Object.freeze({
     __proto__: null,
     sync: "sync",
     async: "async",
@@ -40,11 +40,11 @@ export const BenchmarkSuiteType = Object.freeze({
  * A single test suite that contains one or more test steps.
  */
 export class BenchmarkSuite {
-    constructor(name, tests, type = BenchmarkSuiteType.sync) {
+    constructor(name, tests, type = BENCHMARK_SUITE_TYPE.sync) {
         this.name = name;
         this.tests = tests;
         this.type = type;
-        console.assert(this.type in BenchmarkSuiteType);
+        console.assert(this.type in BENCHMARK_SUITE_TYPE);
     }
 
     record(_test, syncTime, asyncTime) {
@@ -90,7 +90,7 @@ export class BenchmarkSuite {
 
 export class AsyncBenchmarkSuite extends BenchmarkSuite {
     constructor(name, tests) {
-        super(name, tests, BenchmarkSuiteType.async);
+        super(name, tests, BENCHMARK_SUITE_TYPE.async);
     }
 }
 
@@ -144,7 +144,7 @@ export class BenchmarkConnector {
                 const { name } = message.payload;
                 const suite = this.suites[name];
                 if (!suite)
-                    console.error(`Suite with the name of "${name}" not found!`);
+                    console.error(`Suite with the name of "${.name}" not found!`);
                 const onProgress = (test) => this._sendMessage(MESSAGE_TYPE.stepComplete, { name: this.name, test });
                 const { result } = await suite.runAndRecord(params, onProgress);
                 this._sendMessage(MESSAGE_TYPE.suiteComplete, { result });
