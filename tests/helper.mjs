@@ -6,7 +6,7 @@ import firefox from "selenium-webdriver/firefox.js";
 import chrome from "selenium-webdriver/chrome.js";
 import edge from "selenium-webdriver/edge.js";
 
-import LogInspector  from "selenium-webdriver/bidi/logInspector.js";
+import LogInspector from "selenium-webdriver/bidi/logInspector.js";
 import { Builder } from "selenium-webdriver";
 
 const optionDefinitions = [
@@ -46,27 +46,20 @@ export default async function testSetup(helpText) {
     let builder;
     switch (BROWSER) {
         case "safari": {
-            builder = new Builder()
-                .forBrowser(BROWSER);
+            builder = new Builder().forBrowser(BROWSER);
             // No bidi and log support in safari.
             break;
         }
         case "firefox": {
-            builder = new Builder()
-                .forBrowser(BROWSER)
-                .setFirefoxOptions(new firefox.Options().enableBidi());
+            builder = new Builder().forBrowser(BROWSER).setFirefoxOptions(new firefox.Options().enableBidi());
             break;
         }
         case "chrome": {
-            builder = new Builder()
-                .forBrowser(BROWSER)
-                .setChromeOptions(new chrome.Options().enableBidi());
+            builder = new Builder().forBrowser(BROWSER).setChromeOptions(new chrome.Options().enableBidi());
             break;
         }
         case "edge": {
-            builder = new Builder()
-                .forBrowser(BROWSER)
-                .setEdgeOptions(new edge.Options().enableBidi());
+            builder = new Builder().forBrowser(BROWSER).setEdgeOptions(new edge.Options().enableBidi());
             break;
         }
         default: {
