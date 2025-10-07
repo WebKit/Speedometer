@@ -101,10 +101,8 @@ export default async function testSetup(helpText) {
         server.close();
         if (logInspector)
             await logInspector.close();
-        if (driver) {
+        if (driver)
             driver.close();
-            driver = undefined;
-        }
     }
     return { driver, PORT, stop };
 }
