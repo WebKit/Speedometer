@@ -160,19 +160,17 @@ export class RemoteSuiteRunner extends SuiteRunner {
         const suiteName = this.suite.name;
         const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
         const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
-
         performance.mark(suitePrepareStartLabel);
 
         // Wait for the app-ready message from the workload.
         const appReadyPromise = this._subscribeOnce(MESSAGE_TYPE.appReady);
         await this._loadFrame(this.suite);
+        // The suite will send out the app-ready message.
         const response = await appReadyPromise;
+        this._initializeAppId(response.appId);
         await this.suite.prepare?.(this.page);
-        // Capture appId to pass along with messages.
-        this.appId = response?.appId;
 
         performance.mark(suitePrepareEndLabel);
-
         const entry = performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
         this.#prepareTime = entry.duration;
     }
@@ -206,7 +204,8 @@ export class RemoteSuiteRunner extends SuiteRunner {
     }
 
     _handlePostMessage(event) {
-        const callback = this.postMessageCallbacks.get(event.data.type);
+        const message = event.data;
+        const callback = this.postMessageCallbacks.get(message.type);
         if (callback)
             callback(event);
     }
@@ -229,12 +228,18 @@ export class RemoteSuiteRunner extends SuiteRunner {
         return new Promise((resolve) => {
             this._startSubscription(type, (e) => {
                 const message = e.data;
-                if (message.appId !== this.appId)
-                    throw new Error(`Got message for invalid app: ${message.appId} instead of {this.appId}`);
+                if (type !== MESSAGE_TYPE.appReady && message.appId !== this.appId)
+                    throw new Error(`Got message for invalid app: ${message.appId} instead of ${this.appId}`);
                 this._stopSubscription(type);
                 resolve(message.payload);
             });
         });
+    }
+
+    _initializeAppId(appId) {
+        console.assert(!this.appId, `Cannot receive ${MESSAGE_TYPE.appReady} twice`);
+        console.assert(appId, `${MESSAGE_TYPE.appReady} sent no appId`);
+        this.appId = appId;
     }
 }
 

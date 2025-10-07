@@ -133,8 +133,10 @@ export class BenchmarkConnector {
 
     async onMessage(event) {
         const message = event.data;
-        if (message.appId !== this.appId || message.key !== "benchmark-connector")
+        if (message.appId !== this.appId || message.key !== "benchmark-connector") {
+            console.warning("Invalid message", message);
             return;
+        }
 
         switch (message.type) {
             case MESSAGE_TYPE.suiteStart:
@@ -165,7 +167,7 @@ export class BenchmarkConnector {
 
     connect() {
         window.addEventListener("message", this.onMessage);
-        this._sendMessage({ type: MESSAGE_TYPE.appReady });
+        this._sendMessage(MESSAGE_TYPE.appReady, { appId: this.appId });
     }
 
     disconnect() {

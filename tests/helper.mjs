@@ -88,6 +88,9 @@ export default async function testSetup(helpText) {
         await logInspector.onConsoleEntry((log) => {
             console.log(`${log.type}.${log.level}`.toUpperCase(), log.text);
         });
+        await logInspector.onJavascriptException((log) => {
+            console.log(log);
+        });
     }
 
     async function stop() {
