@@ -2,7 +2,12 @@ import commandLineUsage from "command-line-usage";
 import commandLineArgs from "command-line-args";
 import serve from "./server.mjs";
 
-import { Builder, Capabilities, logging } from "selenium-webdriver";
+import firefox from "selenium-webdriver/firefox.js";
+import chrome from "selenium-webdriver/chrome.js";
+import edge from "selenium-webdriver/edge.js";
+
+import LogInspector  from "selenium-webdriver/bidi/logInspector.js";
+import { Builder } from "selenium-webdriver";
 
 const optionDefinitions = [
     { name: "browser", type: String, description: "Set the browser to test, choices are [safari, firefox, chrome]. By default the $BROWSER env variable is used." },
@@ -38,35 +43,39 @@ export default async function testSetup(helpText) {
     if (!BROWSER)
         printHelp("No browser specified, use $BROWSER or --browser", 1);
 
-    let capabilities;
+    let builder;
     switch (BROWSER) {
-        case "safari":
-            capabilities = Capabilities.safari();
+        case "safari": {
+            builder = new Builder()
+                .forBrowser(BROWSER);
+            // No bidi and log support in safari.
             break;
-
+        }
         case "firefox": {
-            capabilities = Capabilities.firefox();
+            builder = new Builder()
+                .forBrowser(BROWSER)
+                .setFirefoxOptions(new firefox.Options().enableBidi());
             break;
         }
         case "chrome": {
-            capabilities = Capabilities.chrome();
+            builder = new Builder()
+                .forBrowser(BROWSER)
+                .setChromeOptions(new chrome.Options().enableBidi());
             break;
         }
         case "edge": {
-            capabilities = Capabilities.edge();
+            builder = new Builder()
+                .forBrowser(BROWSER)
+                .setEdgeOptions(new edge.Options().enableBidi());
             break;
         }
         default: {
             printHelp(`Invalid browser "${BROWSER}", choices are: "safari", "firefox", "chrome", "edge"`);
         }
     }
-    const prefs = new logging.Preferences();
-    prefs.setLevel(logging.Type.BROWSER, logging.Level.ALL); // Capture all log levels
-    capabilities.setLoggingPrefs(prefs);
-
     const PORT = options.port;
     const server = await serve(PORT);
-    let driver;
+    let driver, logInspector;
 
     process.on("unhandledRejection", (err) => {
         console.error(err);
@@ -78,13 +87,24 @@ export default async function testSetup(helpText) {
     });
     process.on("exit", () => stop());
 
-    driver = await new Builder().withCapabilities(capabilities).build();
+    driver = await builder.build();
     driver.manage().window().setRect({ width: 1200, height: 1000 });
 
-    function stop() {
+    if (BROWSER !== "safari") {
+        logInspector = await LogInspector(driver);
+        await logInspector.onConsoleEntry((log) => {
+            console.log(`${log.type}.${log.level}`.toUpperCase(), log.text);
+        });
+    }
+
+    async function stop() {
         server.close();
-        if (driver)
+        if (logInspector)
+            await logInspector.close();
+        if (driver) {
             driver.close();
+            driver = undefined;
+        }
     }
     return { driver, PORT, stop };
 }
