@@ -9,7 +9,7 @@ const Suites = {
 for (const [name, suites] of Object.entries(Suites)) {
     describe(`${name}-common`, () => {
         it("should be frozen", () => {
-            // FIXME: free suite
+            // FIXME: freeze suite
             // expect(Object.isFrozen(suites)).to.be(true);
         });
         it("should have tags array", () => {
