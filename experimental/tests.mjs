@@ -1,12 +1,13 @@
 import { BenchmarkTestStep } from "../resources/benchmark-runner.mjs";
 import { getTodoText } from "../resources/shared/translations.mjs";
 import { numberOfItemsToAdd } from "../resources/shared/todomvc-utils.mjs";
+import { freezeSuites } from "../resources/suites-helper.mjs";
 
-export const ExperimentalSuites = Object.freeze([
+export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-LocalStorage",
         url: "experimental/todomvc-localstorage/dist/index.html",
-        tags: ["todomvc"],
+        tags: ["todomvc", "experimental"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
             page.getLocalStorage().getItem("javascript-es5");
@@ -32,7 +33,6 @@ export const ExperimentalSuites = Object.freeze([
             }),
         ],
     },
-
     {
         name: "TodoMVC-Emoji",
         url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",

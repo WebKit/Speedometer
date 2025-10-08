@@ -1,8 +1,9 @@
 import { BenchmarkTestStep } from "./benchmark-runner.mjs";
 import { getTodoText, defaultLanguage } from "./shared/translations.mjs";
 import { numberOfItemsToAdd } from "./shared/todomvc-utils.mjs";
+import { freezeSuites } from "../resources/suites-helper.mjs";
 
-export const DefaultSuites = Object.freeze([
+export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-JavaScript-ES5",
         url: "resources/todomvc/vanilla-examples/javascript-es5/dist/index.html",
