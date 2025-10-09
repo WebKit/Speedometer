@@ -13,7 +13,7 @@ export class BenchmarkStep {
         this.run = run;
     }
 
-    async runAndRecord(params, suite, test, callback) {
+    async runAndRecordStep(params, suite, test, callback) {
         const testRunner = new TestRunner(null, null, params, suite, test, callback);
         const result = await testRunner.runTest();
         return result;
@@ -40,9 +40,9 @@ export const BENCHMARK_SUITE_TYPE = Object.freeze({
  * A single test suite that contains one or more test steps.
  */
 export class BenchmarkSuite {
-    constructor(name, tests, type = BENCHMARK_SUITE_TYPE.sync) {
+    constructor(name, steps, type = BENCHMARK_SUITE_TYPE.sync) {
         this.name = name;
-        this.tests = tests;
+        this.steps = steps;
         this.type = type;
         console.assert(this.type in BENCHMARK_SUITE_TYPE);
     }
@@ -57,7 +57,7 @@ export class BenchmarkSuite {
         return results;
     }
 
-    async runAndRecord(params, onProgress) {
+    async runAndRecordSuite(params, onProgress) {
         const measuredValues = {
             tests: {},
             prepare: 0,
@@ -68,12 +68,12 @@ export class BenchmarkSuite {
 
         performance.mark(suiteStartLabel);
 
-        for (const test of this.tests) {
-            const result = await test.runAndRecord(params, this, test, this.record);
-            console.assert(result, "Missing test return value", test);
-            measuredValues.tests[test.name] = result;
+        for (const step of this.steps) {
+            const result = await step.runAndRecordStep(params, this, step, this.record);
+            console.assert(result, "Missing test return value", step);
+            measuredValues.tests[step.name] = result;
             measuredValues.total += result.total;
-            onProgress?.(test.name);
+            onProgress?.(step.name);
         }
 
         performance.mark(suiteEndLabel);
@@ -146,7 +146,7 @@ export class BenchmarkConnector {
                 if (!suite)
                     console.error(`Suite with the name of "${name}" not found!`);
                 const onProgress = (test) => this._sendMessage(MESSAGE_TYPE.stepComplete, { name: this.name, test });
-                const { result } = await suite.runAndRecord(params, onProgress);
+                const { result } = await suite.runAndRecordSuite(params, onProgress);
                 this._sendMessage(MESSAGE_TYPE.suiteComplete, { result });
                 this.disconnect();
                 break;
