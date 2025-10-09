@@ -83,7 +83,7 @@ export class BenchmarkSuite {
             type: "suite-tests-complete",
             status: "success",
             result: measuredValues,
-            suitename: this.name,
+            suiteName: this.name,
         };
     }
 }
@@ -145,7 +145,7 @@ export class BenchmarkConnector {
                 const suite = this.suites[name];
                 if (!suite)
                     console.error(`Suite with the name of "${name}" not found!`);
-                const onProgress = (test) => this._sendMessage(MESSAGE_TYPE.stepComplete, { name: this.name, test });
+                const onProgress = (step) => this._sendMessage(MESSAGE_TYPE.stepComplete, { name: this.name, step });
                 const { result } = await suite.runAndRecordSuite(params, onProgress);
                 this._sendMessage(MESSAGE_TYPE.suiteComplete, { result });
                 this.disconnect();
