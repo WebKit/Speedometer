@@ -1,7 +1,7 @@
 import template from "./todo-bottombar.template.js";
 
-import globalStyles from "../../styles/global.constructable.js";
-import bottombarStyles from "../../styles/bottombar.constructable.js";
+import globalStyles from "../../../styles/global.constructable.js";
+import bottombarStyles from "../../../styles/bottombar.constructable.js";
 
 class TodoBottombar extends HTMLElement {
     static get observedAttributes() {

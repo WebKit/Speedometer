@@ -14,11 +14,13 @@ const SUITES_FIXTURE = [
     {
         name: "Suite 1",
         async prepare(page) {},
+        enabled: true,
         tests: [TEST_FIXTURE("Test 1"), TEST_FIXTURE("Test 2"), TEST_FIXTURE("Test 3")],
     },
     {
         name: "Suite 2",
         async prepare(page) {},
+        enabled: true,
         tests: [TEST_FIXTURE("Test 1")],
     },
 ];
@@ -138,7 +140,7 @@ describe("BenchmarkRunner", () => {
         });
 
         describe("runSuite", () => {
-            let _prepareSuiteSpy, _loadFrameStub, _runTestStub, _validateSuiteRessultsStub, _suitePrepareSpy, performanceMarkSpy;
+            let _prepareSuiteSpy, _loadFrameStub, _runTestStub, _validateSuiteResultsStub, _suitePrepareSpy, performanceMarkSpy;
 
             const suite = SUITES_FIXTURE[0];
 
@@ -146,7 +148,7 @@ describe("BenchmarkRunner", () => {
                 _prepareSuiteSpy = spy(SuiteRunner.prototype, "_prepareSuite");
                 _loadFrameStub = stub(SuiteRunner.prototype, "_loadFrame").callsFake(async () => null);
                 _runTestStub = stub(TestRunner.prototype, "runTest").callsFake(async () => null);
-                _validateSuiteRessultsStub = stub(SuiteRunner.prototype, "_validateSuiteResults").callsFake(async () => null);
+                _validateSuiteResultsStub = stub(SuiteRunner.prototype, "_validateSuiteResults").callsFake(async () => null);
                 performanceMarkSpy = spy(window.performance, "mark");
                 _suitePrepareSpy = spy(suite, "prepare");
 
@@ -161,7 +163,7 @@ describe("BenchmarkRunner", () => {
 
             it("should run and record results for every test in suite", async () => {
                 assert.calledThrice(_runTestStub);
-                assert.calledOnce(_validateSuiteRessultsStub);
+                assert.calledOnce(_validateSuiteResultsStub);
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-prepare-start");
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-prepare-end");
                 assert.calledWith(performanceMarkSpy, "suite-Suite 1-start");

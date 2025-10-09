@@ -1,6 +1,5 @@
 import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
-import { Suites } from "./tests.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
@@ -19,11 +18,17 @@ class MainBenchmarkClient {
     _metrics = Object.create(null);
     _steppingPromise = null;
     _steppingResolver = null;
+    _benchmarkConfiguratorPromise = null;
 
     constructor() {
-        window.addEventListener("DOMContentLoaded", () => this.prepareUI());
+        this._benchmarkConfiguratorPromise = import("./benchmark-configurator.mjs");
+        this.prepareUI();
+        this.evaluateParams();
         this._showSection(window.location.hash);
-        window.dispatchEvent(new Event("SpeedometerReady"));
+
+        this._benchmarkConfiguratorPromise.then(() => {
+            window.dispatchEvent(new Event("SpeedometerReady"));
+        });
     }
 
     start() {
@@ -62,20 +67,24 @@ class MainBenchmarkClient {
         return this._steppingResolver !== null;
     }
 
-    _startBenchmark() {
+    async _startBenchmark() {
         if (this._isRunning)
             return false;
 
-        if (Suites.every((suite) => suite.disabled)) {
+        const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
+
+        const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
+        const totalSuitesCount = enabledSuites.length;
+
+        if (totalSuitesCount === 0) {
             const message = `No suites selected - "${params.suites}" does not exist.`;
             alert(message);
             console.error(
                 message,
                 params.suites,
                 "\nValid values:",
-                Suites.map((each) => each.name)
+                benchmarkConfigurator.suites.map((each) => each.name)
             );
-
             return false;
         }
         if (!this._isStepping())
@@ -93,12 +102,10 @@ class MainBenchmarkClient {
         this._metrics = Object.create(null);
         this._isRunning = true;
 
-        const enabledSuites = Suites.filter((suite) => !suite.disabled);
-        const totalSuitesCount = enabledSuites.length;
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
-        const runner = new BenchmarkRunner(Suites, this);
+        const runner = new BenchmarkRunner(benchmarkConfigurator.suites, this);
         runner.runMultipleIterations(params.iterationCount);
         return true;
     }
@@ -337,12 +344,16 @@ class MainBenchmarkClient {
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
         });
+    }
+
+    async evaluateParams() {
+        const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
 
         if (params.suites.length > 0 || params.tags.length > 0)
-            Suites.enable(params.suites, params.tags);
+            benchmarkConfigurator.enableSuites(params.suites, params.tags);
 
         if (params.developerMode) {
-            this._developerModeContainer = createDeveloperModeContainer(Suites);
+            this._developerModeContainer = createDeveloperModeContainer();
             document.body.append(this._developerModeContainer);
         }
 
@@ -465,8 +476,15 @@ class MainBenchmarkClient {
     }
 }
 
-const rootStyle = document.documentElement.style;
-rootStyle.setProperty("--viewport-width", `${params.viewport.width}px`);
-rootStyle.setProperty("--viewport-height", `${params.viewport.height}px`);
+function init() {
+    const rootStyle = document.documentElement.style;
+    rootStyle.setProperty("--viewport-width", `${params.viewport.width}px`);
+    rootStyle.setProperty("--viewport-height", `${params.viewport.height}px`);
 
-globalThis.benchmarkClient = new MainBenchmarkClient();
+    globalThis.benchmarkClient = new MainBenchmarkClient();
+}
+
+if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", init);
+else
+    init();

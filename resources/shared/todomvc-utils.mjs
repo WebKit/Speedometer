@@ -1,0 +1,8 @@
+import { params } from "./params.mjs";
+
+export const defaultNumberOfItemsToAdd = 100;
+export let numberOfItemsToAdd = defaultNumberOfItemsToAdd;
+
+export function handleComplexityChange() {
+    numberOfItemsToAdd = Math.round(defaultNumberOfItemsToAdd * params.complexity);
+}
