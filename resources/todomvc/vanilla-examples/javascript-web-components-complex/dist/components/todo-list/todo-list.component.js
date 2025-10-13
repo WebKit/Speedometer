@@ -6,20 +6,12 @@ import listStyles from "../../styles/todo-list.constructable.js";
 
 const customListStyles = new CSSStyleSheet();
 customListStyles.replaceSync(`
-    .todo-list > todo-item {
-        display: block;
-    }
-
     .todo-list[route="completed"] > [itemcompleted="false"] {
         display: none;
     }
 
     .todo-list[route="active"] > [itemcompleted="true"] {
         display: none;
-    }
-
-    .todo-list {
-        display: block;
     }
 
     :host([total-items="0"]) > .todo-list {

@@ -5,10 +5,6 @@ import bottombarStyles from "../../../styles/bottombar.constructable.js";
 
 const customStyles = new CSSStyleSheet();
 customStyles.replaceSync(`
-    .bottombar {
-        display: block;
-    }
-
     :host([total-items="0"]) > .bottombar {
         display: none;
     }

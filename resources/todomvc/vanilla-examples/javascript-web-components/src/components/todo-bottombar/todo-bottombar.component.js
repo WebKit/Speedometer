@@ -5,10 +5,6 @@ import bottombarStyles from "../../../node_modules/todomvc-css/dist/bottombar.co
 
 const customStyles = new CSSStyleSheet();
 customStyles.replaceSync(`
-    .bottombar {
-        display: block;
-    }
-
     :host([total-items="0"]) > .bottombar {
         display: none;
     }
