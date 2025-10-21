@@ -21,8 +21,7 @@ class IndexedDBManager {
             const deleteRequest = indexedDB.deleteDatabase(this.dbName);
 
             deleteRequest.onerror = (event) => {
-                // Continue despite error in deletion
-                this.openDatabase(resolve, reject);
+                reject(event.target.error);
             };
 
             deleteRequest.onsuccess = () => {
@@ -30,8 +29,7 @@ class IndexedDBManager {
             };
 
             deleteRequest.onblocked = () => {
-                // Try opening anyway
-                this.openDatabase(resolve, reject);
+                reject(new Error("Database deletion blocked - please close other tabs using this database"));
             };
         });
     }
