@@ -22,19 +22,27 @@ const filesToMove = {
         { src: "node_modules/todomvc-css/dist/todo-list.constructable.js", dest: "styles/todo-list.constructable.js" },
         { src: "node_modules/todomvc-css/dist/todo-item.constructable.js", dest: "styles/todo-item.constructable.js" },
     ],
+    dexie: [{ src: "node_modules/dexie/dist/modern/dexie.mjs", dest: "libs/dexie.mjs" }],
 };
 
-const importsToRename = {
-    src: "../../../node_modules/todomvc-css/dist/",
-    dest: "../../styles/",
-    files: [
-        "components/todo-app/todo-app.component.js",
-        "components/todo-bottombar/todo-bottombar.component.js",
-        "components/todo-item/todo-item.component.js",
-        "components/todo-list/todo-list.component.js",
-        "components/todo-topbar/todo-topbar.component.js",
-    ],
-};
+const importsToRename = [
+    {
+        src: "../../../node_modules/todomvc-css/dist/",
+        dest: "../../styles/",
+        files: [
+            "components/todo-app/todo-app.component.js",
+            "components/todo-bottombar/todo-bottombar.component.js",
+            "components/todo-item/todo-item.component.js",
+            "components/todo-list/todo-list.component.js",
+            "components/todo-topbar/todo-topbar.component.js",
+        ],
+    },
+    {
+        src: "../../../node_modules/dexie/dist/modern/dexie.mjs",
+        dest: "../libs/dexie.mjs",
+        files: ["storage/dexieDB-manager.js"],
+    },
+];
 
 const copy = async (src, dest) => {
     await fs.mkdir(getDirName(dest), { recursive: true });
@@ -86,7 +94,8 @@ const build = async () => {
     await fs.writeFile(`${targetDirectory}/${htmlFile}`, contents);
 
     // rename imports in modules
-    importsToRename.files.forEach((file) => updateImports({ file, src: importsToRename.src, dest: importsToRename.dest }));
+    for (const importConfig of importsToRename)
+        importConfig.files.forEach((file) => updateImports({ file, src: importConfig.src, dest: importConfig.dest }));
 
     console.log("done!!");
 };

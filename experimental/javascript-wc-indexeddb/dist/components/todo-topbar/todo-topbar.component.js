@@ -7,9 +7,6 @@ import topbarStyles from "../../styles/topbar.constructable.js";
 
 const customListStyles = new CSSStyleSheet();
 customListStyles.replaceSync(`
-    .toggle-all-container {
-        display: block;
-    }
     :host([total-items="0"]) .toggle-all-container {
         display: none;
     }

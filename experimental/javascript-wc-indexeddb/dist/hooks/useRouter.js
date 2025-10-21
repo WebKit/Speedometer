@@ -12,10 +12,10 @@ export const useRouter = (callback) => {
      * Change event handler.
      */
     const handleChange = () => {
-        current = document.location.hash;
+        current = document.location.hash.split("?")[0];
         /* istanbul ignore else */
         if (onChange)
-            onChange(document.location.hash);
+            onChange(getRoute());
     };
 
     /**
@@ -37,7 +37,18 @@ export const useRouter = (callback) => {
         window.removeEventListener("load", handleChange);
     };
 
-    const getRoute = () => current.split("/").slice(-1)[0];
+    /**
+     * Get the filter route from the hash (active, completed, or all)
+     * Handles both formats: #/active and #indexeddb/active
+     */
+    const getRoute = () => {
+        const parts = current.replace(/^#/, "").split("/");
+
+        // If the first part and is a storage type, return 'all'
+        const filterPart = parts[2];
+        // Otherwise return the part (or empty for 'all')
+        return filterPart || "all";
+    };
 
     return { initRouter, getRoute, disableRouter };
 };

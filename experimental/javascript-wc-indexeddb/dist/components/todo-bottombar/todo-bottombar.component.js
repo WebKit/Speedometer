@@ -1,4 +1,5 @@
 import template from "./todo-bottombar.template.js";
+import { getStorageType } from "../../storage/storage-factory.js";
 
 import globalStyles from "../../styles/global.constructable.js";
 import bottombarStyles from "../../styles/bottombar.constructable.js";
@@ -57,6 +58,21 @@ class TodoBottombar extends HTMLElement {
         this.clearCompletedItems = this.clearCompletedItems.bind(this);
         this.MoveToNextPage = this.MoveToNextPage.bind(this);
         this.MoveToPreviousPage = this.MoveToPreviousPage.bind(this);
+
+        // Set up filter links with storage type
+        this.setupFilterLinks();
+    }
+
+    setupFilterLinks() {
+        const storagePrefix = getStorageType();
+
+        this.filterLinks.forEach((link) => {
+            const route = link.dataset.route;
+            if (route === "all")
+                link.href = `#/${storagePrefix}`;
+            else
+                link.href = `#/${storagePrefix}/${route}`;
+        });
     }
 
     updateDisplay() {
@@ -64,6 +80,10 @@ class TodoBottombar extends HTMLElement {
     }
 
     updateRoute(route) {
+        // Update filter links to preserve current storage type
+        this.setupFilterLinks();
+
+        // Update selected state
         this.filterLinks.forEach((link) => {
             if (link.dataset.route === route)
                 link.classList.add("selected");

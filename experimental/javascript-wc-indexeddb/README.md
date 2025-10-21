@@ -7,6 +7,17 @@ It utilizes custom elements and html templates to build reusable components.
 
 In contrast to other workloads, this application uses an updated set of css rules and an optimized dom structure to ensure the application follows best practices in regards to accessibility.
 
+## Storage Options
+
+This application supports two different IndexedDB implementations that can be selected via URL hash:
+
+-   **Vanilla IndexedDB** (default): Uses the native IndexedDB API
+    -   Access via: `http://localhost:7005/#indexeddb` or `http://localhost:7005/`
+-   **Dexie.js**: Uses the Dexie.js wrapper library for IndexedDB
+    -   Access via: `http://localhost:7005/#dexie`
+
+Simply click on the storage API links in the header to switch between implementations. The database will be reset when switching between storage types.
+
 ## Built steps
 
 A simple build script copies all necessary files to a `dist` folder.
