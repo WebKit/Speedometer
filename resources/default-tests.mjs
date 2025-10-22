@@ -51,7 +51,7 @@ export const DefaultSuites = freezeSuites([
                 async (page) => {
                     await page.getGlobalVariable("addPromise");
                 },
-                true
+                /* ignoreResult =*/ true
             ),
             new BenchmarkTestStep("CompletingAllItems", async (page) => {
                 const numberOfItemsPerIteration = 10;
@@ -75,7 +75,7 @@ export const DefaultSuites = freezeSuites([
                 async (page) => {
                     await page.getGlobalVariable("completePromise");
                 },
-                true
+                /* ignoreResult =*/ true
             ),
             new BenchmarkTestStep("DeletingAllItems", async (page) => {
                 const numberOfItemsPerIteration = 10;
@@ -107,7 +107,7 @@ export const DefaultSuites = freezeSuites([
                 async (page) => {
                     await page.getGlobalVariable("removePromise");
                 },
-                true
+                /* ignoreResult =*/ true
             ),
         ],
     },
@@ -158,7 +158,7 @@ export const DefaultSuites = freezeSuites([
                 async (page) => {
                     await page.getGlobalVariable("addPromise");
                 },
-                true
+                /* ignoreResult =*/ true
             ),
             new BenchmarkTestStep("CompletingAllItems", async (page) => {
                 const numberOfItemsPerIteration = 10;
@@ -182,7 +182,7 @@ export const DefaultSuites = freezeSuites([
                 async (page) => {
                     await page.getGlobalVariable("completePromise");
                 },
-                true
+                /* ignoreResult =*/ true
             ),
             new BenchmarkTestStep("DeletingAllItems", async (page) => {
                 const numberOfItemsPerIteration = 10;
@@ -214,7 +214,7 @@ export const DefaultSuites = freezeSuites([
                 async (page) => {
                     await page.getGlobalVariable("removePromise");
                 },
-                true
+                /* ignoreResult =*/ true
             ),
         ],
     },
