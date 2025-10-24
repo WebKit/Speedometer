@@ -67,30 +67,33 @@ class DexieDBManager {
         return items.reverse();
     }
 
-    async toggleTodo(itemNumber, completed) {
+    toggleTodo(itemNumber, completed) {
         // Ensure the database connection is established
-        if (!this.db) {
-            await this.initDB();
-            return this.toggleTodo(itemNumber, completed);
-        }
+        if (!this.db)
+            throw new Error("Database connection is not established");
 
-        // Get the todo item
-        const todoItem = await this.db.todos.get(itemNumber);
-
-        if (!todoItem)
-            throw new Error(`Todo item with itemNumber '${itemNumber}' not found`);
-
-        // Update the completed status
-        todoItem.completed = completed;
-
-        // Save the updated item back to the database
-        await this.db.todos.put(todoItem);
         this.pendingToggles++;
 
-        if (--this.pendingToggles === 0)
-            window.dispatchEvent(new CustomEvent("indexeddb-toggle-completed", {}));
+        // Get the todo item and update it
+        this.db.todos
+            .get(itemNumber)
+            .then((todoItem) => {
+                if (!todoItem)
+                    throw new Error(`Todo item with itemNumber '${itemNumber}' not found`);
 
-        return todoItem;
+                // Update the completed status
+                todoItem.completed = completed;
+
+                // Save the updated item back to the database
+                return this.db.todos.put(todoItem);
+            })
+            .then(() => {
+                if (--this.pendingToggles === 0)
+                    window.dispatchEvent(new CustomEvent("indexeddb-toggle-completed", {}));
+            })
+            .catch((error) => {
+                throw error;
+            });
     }
 
     removeTodo(itemNumber) {

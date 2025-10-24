@@ -67,19 +67,21 @@ class IndexedDBManager {
         const transaction = this.db.transaction(this.storeName, "readwrite");
         const store = transaction.objectStore(this.storeName);
 
-        const request = store.add(todo);
+        store.add(todo);
         this.pendingAdditions++;
 
-        request.onsuccess = () => {
+        transaction.oncomplete = () => {
             // When running in Speedometer, the event will be dispatched only once
             // because all the additions are done in a tight loop.
             if (--this.pendingAdditions === 0)
                 window.dispatchEvent(new CustomEvent("indexeddb-add-completed", {}));
         };
 
-        request.onerror = (event) => {
+        transaction.onerror = (event) => {
             throw event.target.error;
         };
+
+        transaction.commit();
     }
 
     async getTodos(upperItemNumber, count) {
@@ -112,78 +114,62 @@ class IndexedDBManager {
                     // We're done - sort items by itemNumber in descending order
                     // for proper display order (newest to oldest)
                     items.sort((a, b) => a.itemNumber - b.itemNumber);
-
                     resolve(items);
                 }
             };
 
-            request.onerror = (event) => {
-                reject(event.target.error);
-            };
-
-            // Also handle transaction errors
             transaction.onerror = (event) => {
                 reject(event.target.error);
             };
+
         });
     }
 
-    async toggleTodo(itemNumber, completed) {
+    toggleTodo(itemNumber, completed) {
         // Ensure the database connection is established
-        if (!this.db) {
-            await this.initDB();
-            return this.toggleTodo(itemNumber, completed);
-        }
+        if (!this.db)
+            throw new Error("Database connection is not established");
 
-        return new Promise((resolve, reject) => {
-            // Access the todo item directly by its itemNumber (keyPath)
-            const transaction = this.db.transaction(this.storeName, "readwrite");
-            const store = transaction.objectStore(this.storeName);
+        // Access the todo item directly by its itemNumber (keyPath)
+        const transaction = this.db.transaction(this.storeName, "readwrite");
+        const store = transaction.objectStore(this.storeName);
 
-            // Get the todo item directly using its primary key (itemNumber)
-            const getRequest = store.get(itemNumber);
+        // Get the todo item directly using its primary key (itemNumber)
+        const getRequest = store.get(itemNumber);
 
-            getRequest.onsuccess = (event) => {
-                const todoItem = getRequest.result;
+        this.pendingToggles++;
 
-                if (!todoItem) {
-                    reject(new Error(`Todo item with itemNumber '${itemNumber}' not found`));
-                    return;
-                }
+        getRequest.onsuccess = (event) => {
+            const todoItem = getRequest.result;
 
-                // Update the completed status
-                todoItem.completed = completed;
-                this.pendingToggles++;
+            if (!todoItem)
+                throw new Error(`Todo item with itemNumber '${itemNumber}' not found`);
 
-                // Save the updated item back to the database
-                const updateRequest = store.put(todoItem);
+            // Update the completed status
+            todoItem.completed = completed;
+            // Save the updated item back to the database
+            const updateRequest = store.put(todoItem);
 
-                updateRequest.onsuccess = () => {
-                    if (--this.pendingToggles === 0)
-                        window.dispatchEvent(new CustomEvent("indexeddb-toggle-completed", {}));
-
-                    resolve(todoItem);
-                };
-
-                updateRequest.onerror = (event) => {
-                    reject(event.target.error);
-                };
+            updateRequest.onerror = (event) => {
+                throw event.target.error;
             };
 
-            getRequest.onerror = (event) => {
-                reject(event.target.error);
-            };
+            transaction.commit();
+        };
 
-            // Handle potential errors in finding the item
-            transaction.onerror = (event) => {
-                reject(event.target.error);
-            };
+        getRequest.onerror = (event) => {
+            throw event.target.error;
+        };
 
-            // Handle transaction errors
-            transaction.onerror = (event) => {
-                reject(event.target.error);
-            };
-        });
+        transaction.oncomplete = () => {
+            if (--this.pendingToggles === 0)
+                window.dispatchEvent(new CustomEvent("indexeddb-toggle-completed", {}));
+        };
+
+        // Handle transaction errors
+        transaction.onerror = (event) => {
+            throw event.target.error;
+        };
     }
 
     removeTodo(itemNumber) {
@@ -199,19 +185,16 @@ class IndexedDBManager {
         const deleteRequest = store.delete(itemNumber);
         this.pendingDeletions++;
 
-        deleteRequest.onsuccess = () => {
+        transaction.oncomplete = () => {
             if (--this.pendingDeletions === 0)
                 window.dispatchEvent(new CustomEvent("indexeddb-remove-completed", {}));
         };
 
-        deleteRequest.onerror = (event) => {
-            throw event.target.error;
-        };
-
-        // Handle transaction errors
         transaction.onerror = (event) => {
             throw event.target.error;
         };
+
+        transaction.commit();
     }
 }
 
