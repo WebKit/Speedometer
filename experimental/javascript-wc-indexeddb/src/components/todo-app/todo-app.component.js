@@ -46,7 +46,7 @@ class TodoApp extends HTMLElement {
     addItem(event) {
         const { detail: item } = event;
         this.list.addItem(item, this.#numberOfItems++);
-        this.update("add-item", item.id);
+        this.update();
     }
 
     toggleItem(event) {
@@ -56,7 +56,7 @@ class TodoApp extends HTMLElement {
             this.#numberOfCompletedItems--;
 
         this.list.toggleItem(event.detail.itemNumber, event.detail.completed);
-        this.update("toggle-item", event.detail.id);
+        this.update();
     }
 
     removeItem(event) {
@@ -64,12 +64,12 @@ class TodoApp extends HTMLElement {
             this.#numberOfCompletedItems--;
 
         this.#numberOfItems--;
-        this.update("remove-item", event.detail.id);
+        this.update();
         this.list.removeItem(event.detail.itemNumber);
     }
 
     updateItem(event) {
-        this.update("update-item", event.detail.id);
+        this.update();
     }
 
     toggleItems(event) {
@@ -84,12 +84,10 @@ class TodoApp extends HTMLElement {
         this.list.moveToNextPage();
     }
 
-    moveToPreviousPage() {
-        // Skeleton implementation of previous page navigation
-        this.list.moveToPreviousPage().then(() => {
-            this.bottombar.reenablePreviousPageButton();
-            window.dispatchEvent(new CustomEvent("previous-page-loaded", {}));
-        });
+    async moveToPreviousPage() {
+        await this.list.moveToPreviousPage();
+        this.bottombar.reenablePreviousPageButton();
+        window.dispatchEvent(new CustomEvent("previous-page-loaded", {}));
     }
 
     update() {
@@ -140,7 +138,7 @@ class TodoApp extends HTMLElement {
     }
 
     connectedCallback() {
-        this.update("connected");
+        this.update();
         this.addListeners();
         this.router.initRouter(this.routeChange);
         this.#isReady = true;

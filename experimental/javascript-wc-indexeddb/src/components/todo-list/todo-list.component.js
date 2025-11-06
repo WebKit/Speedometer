@@ -139,26 +139,20 @@ class TodoList extends HTMLElement {
         this.#firstItemIndexOnScreen = this.listNode.firstChild.itemIndex;
     }
 
-    moveToPreviousPage() {
-        return this.storageManager
-            .getTodos(this.#firstItemIndexOnScreen, MAX_ON_SCREEN_ITEMS)
-            .then((items) => {
-                const elements = items.map((item) => {
-                    const { id, title, completed, priority } = item;
-                    const element = new TodoItem();
-                    element.setAttribute("itemid", id);
-                    element.setAttribute("itemtitle", title);
-                    element.setAttribute("itemcompleted", completed);
-                    element.setAttribute("data-priority", priority);
-                    element.itemIndex = item.itemNumber;
-                    return element;
-                });
-                this.#firstItemIndexOnScreen = items[0].itemNumber;
-                this.listNode.replaceChildren(...elements);
-            })
-            .catch((error) => {
-                // Error retrieving previous todos
-            });
+    async moveToPreviousPage() {
+        const items = await this.storageManager.getTodos(this.#firstItemIndexOnScreen, MAX_ON_SCREEN_ITEMS);
+        const elements = items.map((item) => {
+            const { id, title, completed, priority } = item;
+            const element = new TodoItem();
+            element.setAttribute("itemid", id);
+            element.setAttribute("itemtitle", title);
+            element.setAttribute("itemcompleted", completed);
+            element.setAttribute("data-priority", priority);
+            element.itemIndex = item.itemNumber;
+            return element;
+        });
+        this.#firstItemIndexOnScreen = items[0].itemNumber;
+        this.listNode.replaceChildren(...elements);
     }
 
     #addItemToStorage(itemIndex, id, title, priority, completed) {

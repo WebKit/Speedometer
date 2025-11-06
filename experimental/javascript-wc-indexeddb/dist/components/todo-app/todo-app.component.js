@@ -84,12 +84,10 @@ class TodoApp extends HTMLElement {
         this.list.moveToNextPage();
     }
 
-    moveToPreviousPage() {
-        // Skeleton implementation of previous page navigation
-        this.list.moveToPreviousPage().then(() => {
-            this.bottombar.reenablePreviousPageButton();
-            window.dispatchEvent(new CustomEvent("previous-page-loaded", {}));
-        });
+    async moveToPreviousPage() {
+        await this.list.moveToPreviousPage();
+        this.bottombar.reenablePreviousPageButton();
+        window.dispatchEvent(new CustomEvent("previous-page-loaded", {}));
     }
 
     update() {

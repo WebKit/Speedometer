@@ -121,7 +121,6 @@ class IndexedDBManager {
             transaction.onerror = (event) => {
                 reject(event.target.error);
             };
-
         });
     }
 
@@ -182,7 +181,7 @@ class IndexedDBManager {
         const store = transaction.objectStore(this.storeName);
 
         // Delete the todo item directly using its primary key (itemNumber)
-        const deleteRequest = store.delete(itemNumber);
+        store.delete(itemNumber);
         this.pendingDeletions++;
 
         transaction.oncomplete = () => {
