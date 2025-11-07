@@ -21,4 +21,3 @@ window.addEventListener("db-ready", () => {
     const benchmarkConnector = new BenchmarkConnector(suites, appName, appVersion);
     benchmarkConnector.connect();
 });
-

@@ -1,18 +1,11 @@
 import Dexie from "../../libs/dexie.mjs";
+import BaseStorageManager from "./base-storage-manager.js";
 
-class DexieDBManager {
+class DexieDBManager extends BaseStorageManager {
     constructor() {
-        this.dbName = "todoDB";
-        this.storeName = "todos";
-        this.db = null;
-        this.pendingAdditions = 0;
-        this.pendingToggles = 0;
-        this.pendingDeletions = 0;
+        super();
         this.initDB().then(() => {
-            const newDiv = document.createElement("div");
-            newDiv.classList.add("indexeddb-ready");
-            newDiv.style.display = "none";
-            document.body.append(newDiv);
+            this._dispatchReadyEvent();
         });
     }
 
@@ -35,19 +28,16 @@ class DexieDBManager {
     }
 
     addTodo(todo) {
-        // Ensure the database connection is established
-        if (!this.db)
-            throw new Error("Database connection is not established");
+        this._ensureDbConnection();
 
-        this.pendingAdditions++;
+        this._incrementPendingAdditions();
         // Add todo item to Dexie
         this.db.todos
             .add(todo)
             .then(() => {
                 // When running in Speedometer, the event will be dispatched only once
                 // because all the additions are done in a tight loop.
-                if (--this.pendingAdditions === 0)
-                    window.dispatchEvent(new CustomEvent("db-add-completed", {}));
+                this._handleAddComplete();
             })
             .catch((error) => {
                 throw error;
@@ -55,9 +45,7 @@ class DexieDBManager {
     }
 
     async getTodos(upperItemNumber, count) {
-        // Ensure the database connection is established
-        if (!this.db)
-            throw new Error("Database connection is not established");
+        this._ensureDbConnection();
 
         // Get items with itemNumber less than upperItemNumber
         // Use reverse to get highest first, then limit, then reverse result back to ascending
@@ -68,11 +56,9 @@ class DexieDBManager {
     }
 
     toggleTodo(itemNumber, completed) {
-        // Ensure the database connection is established
-        if (!this.db)
-            throw new Error("Database connection is not established");
+        this._ensureDbConnection();
 
-        this.pendingToggles++;
+        this._incrementPendingToggles();
 
         // Get the todo item and update it
         this.db.todos
@@ -88,8 +74,7 @@ class DexieDBManager {
                 return this.db.todos.put(todoItem);
             })
             .then(() => {
-                if (--this.pendingToggles === 0)
-                    window.dispatchEvent(new CustomEvent("db-toggle-completed", {}));
+                this._handleToggleComplete();
             })
             .catch((error) => {
                 throw error;
@@ -97,17 +82,14 @@ class DexieDBManager {
     }
 
     removeTodo(itemNumber) {
-        // Ensure the database connection is established
-        if (!this.db)
-            throw new Error("Database connection is not established");
+        this._ensureDbConnection();
 
-        this.pendingDeletions++;
+        this._incrementPendingDeletions();
         // Delete the todo item
         this.db.todos
             .delete(itemNumber)
             .then(() => {
-                if (--this.pendingDeletions === 0)
-                    window.dispatchEvent(new CustomEvent("db-remove-completed", {}));
+                this._handleRemoveComplete();
             })
             .catch((error) => {
                 throw error;

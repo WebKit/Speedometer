@@ -1,14 +1,11 @@
-class IndexedDBManager {
+import BaseStorageManager from "./base-storage-manager.js";
+
+class IndexedDBManager extends BaseStorageManager {
     constructor() {
-        this.dbName = "todoDB";
+        super();
         this.dbVersion = 1;
-        this.storeName = "todos";
-        this.db = null;
-        this.pendingAdditions = 0;
-        this.pendingToggles = 0;
-        this.pendingDeletions = 0;
         this.initDB().then(() => {
-            window.dispatchEvent(new CustomEvent("db-ready", {}));
+            this._dispatchReadyEvent();
         });
     }
 
@@ -56,22 +53,19 @@ class IndexedDBManager {
     }
 
     addTodo(todo) {
-        // Ensure the database connection is established
-        if (!this.db)
-            throw new Error("Database connection is not established");
+        this._ensureDbConnection();
 
         // Add todo item to IndexedDB
         const transaction = this.db.transaction(this.storeName, "readwrite");
         const store = transaction.objectStore(this.storeName);
 
         store.add(todo);
-        this.pendingAdditions++;
+        this._incrementPendingAdditions();
 
         transaction.oncomplete = () => {
             // When running in Speedometer, the event will be dispatched only once
             // because all the additions are done in a tight loop.
-            if (--this.pendingAdditions === 0)
-                window.dispatchEvent(new CustomEvent("db-add-completed", {}));
+            this._handleAddComplete();
         };
 
         transaction.onerror = (event) => {
@@ -82,9 +76,7 @@ class IndexedDBManager {
     }
 
     async getTodos(upperItemNumber, count) {
-        // Ensure the database connection is established
-        if (!this.db)
-            throw new Error("Database connection is not established");
+        this._ensureDbConnection();
 
         return new Promise((resolve, reject) => {
             const transaction = this.db.transaction(this.storeName, "readonly");
@@ -122,9 +114,7 @@ class IndexedDBManager {
     }
 
     toggleTodo(itemNumber, completed) {
-        // Ensure the database connection is established
-        if (!this.db)
-            throw new Error("Database connection is not established");
+        this._ensureDbConnection();
 
         // Access the todo item directly by its itemNumber (keyPath)
         const transaction = this.db.transaction(this.storeName, "readwrite");
@@ -133,7 +123,7 @@ class IndexedDBManager {
         // Get the todo item directly using its primary key (itemNumber)
         const getRequest = store.get(itemNumber);
 
-        this.pendingToggles++;
+        this._incrementPendingToggles();
 
         getRequest.onsuccess = (event) => {
             const todoItem = getRequest.result;
@@ -158,8 +148,7 @@ class IndexedDBManager {
         };
 
         transaction.oncomplete = () => {
-            if (--this.pendingToggles === 0)
-                window.dispatchEvent(new CustomEvent("db-toggle-completed", {}));
+            this._handleToggleComplete();
         };
 
         // Handle transaction errors
@@ -169,9 +158,7 @@ class IndexedDBManager {
     }
 
     removeTodo(itemNumber) {
-        // Ensure the database connection is established
-        if (!this.db)
-            throw new Error("Database connection is not established");
+        this._ensureDbConnection();
 
         // Access the todo item directly by its itemNumber (keyPath)
         const transaction = this.db.transaction(this.storeName, "readwrite");
@@ -179,11 +166,10 @@ class IndexedDBManager {
 
         // Delete the todo item directly using its primary key (itemNumber)
         store.delete(itemNumber);
-        this.pendingDeletions++;
+        this._incrementPendingDeletions();
 
         transaction.oncomplete = () => {
-            if (--this.pendingDeletions === 0)
-                window.dispatchEvent(new CustomEvent("db-remove-completed", {}));
+            this._handleRemoveComplete();
         };
 
         transaction.onerror = (event) => {

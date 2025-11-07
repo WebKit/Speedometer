@@ -1,5 +1,5 @@
 import { BenchmarkTestStep } from "../resources/benchmark-runner.mjs";
-import { getTodoText, defaultLanguage } from "../resources/shared/translations.mjs";
+import { getTodoText } from "../resources/shared/translations.mjs";
 import { numberOfItemsToAdd } from "../resources/shared/todomvc-utils.mjs";
 import { freezeSuites } from "../resources/suites-helper.mjs";
 
