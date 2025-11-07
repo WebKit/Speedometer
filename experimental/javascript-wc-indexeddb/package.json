@@ -18,6 +18,7 @@
     "dependencies": {
         "dexie": "^4.2.1",
         "http-server": "^14.1.1",
-        "todomvc-css": "file:../../resources/todomvc/todomvc-css"
+        "todomvc-css": "file:../../resources/todomvc/todomvc-css",
+        "speedometer-utils": "../../resources/shared"
     }
 }

@@ -1,9 +1,9 @@
 import template from "./todo-app.template.js";
 import { useRouter } from "../../hooks/useRouter.js";
 
-import globalStyles from "../../styles/global.constructable.js";
-import appStyles from "../../styles/app.constructable.js";
-import mainStyles from "../../styles/main.constructable.js";
+import globalStyles from "../../../styles/global.constructable.js";
+import appStyles from "../../../styles/app.constructable.js";
+import mainStyles from "../../../styles/main.constructable.js";
 class TodoApp extends HTMLElement {
     #isReady = false;
     #numberOfItems = 0;
@@ -46,7 +46,7 @@ class TodoApp extends HTMLElement {
     addItem(event) {
         const { detail: item } = event;
         this.list.addItem(item, this.#numberOfItems++);
-        this.update("add-item", item.id);
+        this.update();
     }
 
     toggleItem(event) {
@@ -56,7 +56,7 @@ class TodoApp extends HTMLElement {
             this.#numberOfCompletedItems--;
 
         this.list.toggleItem(event.detail.itemNumber, event.detail.completed);
-        this.update("toggle-item", event.detail.id);
+        this.update();
     }
 
     removeItem(event) {
@@ -64,12 +64,12 @@ class TodoApp extends HTMLElement {
             this.#numberOfCompletedItems--;
 
         this.#numberOfItems--;
-        this.update("remove-item", event.detail.id);
+        this.update();
         this.list.removeItem(event.detail.itemNumber);
     }
 
     updateItem(event) {
-        this.update("update-item", event.detail.id);
+        this.update();
     }
 
     toggleItems(event) {
@@ -132,13 +132,14 @@ class TodoApp extends HTMLElement {
     }
 
     routeChange(route) {
-        this.list.updateRoute(route);
-        this.bottombar.updateRoute(route);
-        this.topbar.updateRoute(route);
+        const routeName = route.split("/")[1] || "all";
+        this.list.updateRoute(routeName);
+        this.bottombar.updateRoute(routeName);
+        this.topbar.updateRoute(routeName);
     }
 
     connectedCallback() {
-        this.update("connected");
+        this.update();
         this.addListeners();
         this.router.initRouter(this.routeChange);
         this.#isReady = true;

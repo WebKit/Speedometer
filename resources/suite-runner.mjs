@@ -12,6 +12,7 @@ export class SuiteRunner {
 
     constructor(frame, page, params, suite, client, measuredValues) {
         // FIXME: Create SuiteRunner-local measuredValues.
+        console.log("Params", params);
         this.#suiteResults = measuredValues.tests[suite.name];
         if (!this.#suiteResults) {
             this.#suiteResults = { tests: {}, prepare: 0, total: 0 };
@@ -105,7 +106,8 @@ export class SuiteRunner {
             const frame = this.#frame;
             frame.onload = () => resolve();
             frame.onerror = () => reject();
-            frame.src = `${this.#suite.url}?${this.#params.toSearchParams()}`;
+            const splitUrl = this.#suite.url.split("?");
+            frame.src = `${splitUrl[0]}?${splitUrl[1] ?? ""}&${this.#params.toSearchParams()}`;
         });
     }
 

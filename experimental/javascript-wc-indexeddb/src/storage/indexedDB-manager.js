@@ -8,10 +8,7 @@ class IndexedDBManager {
         this.pendingToggles = 0;
         this.pendingDeletions = 0;
         this.initDB().then(() => {
-            const newDiv = document.createElement("div");
-            newDiv.classList.add("indexeddb-ready");
-            newDiv.style.display = "none";
-            document.body.append(newDiv);
+            window.dispatchEvent(new CustomEvent("db-ready", {}));
         });
     }
 
@@ -74,7 +71,7 @@ class IndexedDBManager {
             // When running in Speedometer, the event will be dispatched only once
             // because all the additions are done in a tight loop.
             if (--this.pendingAdditions === 0)
-                window.dispatchEvent(new CustomEvent("indexeddb-add-completed", {}));
+                window.dispatchEvent(new CustomEvent("db-add-completed", {}));
         };
 
         transaction.onerror = (event) => {
@@ -162,7 +159,7 @@ class IndexedDBManager {
 
         transaction.oncomplete = () => {
             if (--this.pendingToggles === 0)
-                window.dispatchEvent(new CustomEvent("indexeddb-toggle-completed", {}));
+                window.dispatchEvent(new CustomEvent("db-toggle-completed", {}));
         };
 
         // Handle transaction errors
@@ -186,7 +183,7 @@ class IndexedDBManager {
 
         transaction.oncomplete = () => {
             if (--this.pendingDeletions === 0)
-                window.dispatchEvent(new CustomEvent("indexeddb-remove-completed", {}));
+                window.dispatchEvent(new CustomEvent("db-remove-completed", {}));
         };
 
         transaction.onerror = (event) => {

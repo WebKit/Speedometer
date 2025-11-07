@@ -132,9 +132,10 @@ class TodoApp extends HTMLElement {
     }
 
     routeChange(route) {
-        this.list.updateRoute(route);
-        this.bottombar.updateRoute(route);
-        this.topbar.updateRoute(route);
+        const routeName = route.split("/")[1] || "all";
+        this.list.updateRoute(routeName);
+        this.bottombar.updateRoute(routeName);
+        this.topbar.updateRoute(routeName);
     }
 
     connectedCallback() {

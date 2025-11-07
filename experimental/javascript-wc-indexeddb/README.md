@@ -31,14 +31,16 @@ When moving to the previous page the previous 10 items are loaded from the datab
 
 ## Storage Options
 
-This application supports two different IndexedDB implementations that can be selected via URL hash:
+This application supports two different IndexedDB implementations that can be selected via URL search parameters:
 
 -   **Vanilla IndexedDB** (default): Uses the native IndexedDB API
-    -   Access via: `http://localhost:7005/#/indexeddb` or `http://localhost:7005/`
+    -   Access via: `http://localhost:7005/?storageType=vanilla` or `http://localhost:7005/`
 -   **Dexie.js**: Uses the Dexie.js wrapper library for IndexedDB
-    -   Access via: `http://localhost:7005/#/dexie`
+    -   Access via: `http://localhost:7005/?storageType=dexie`
 
-Simply click on the storage API links in the header to switch between implementations. The database will be reset when switching between storage types.
+Simply use the URL parameters to switch between implementations. The database will be reset when switching between storage types.
+
+Navigation within the app uses simple hash-based routes like `#/active`, `#/completed`, or `#/` for all todos.
 
 ## Built steps
 

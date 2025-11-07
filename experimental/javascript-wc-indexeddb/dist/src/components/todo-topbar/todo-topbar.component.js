@@ -2,8 +2,8 @@ import template from "./todo-topbar.template.js";
 import { useKeyListener } from "../../hooks/useKeyListener.js";
 import { nanoid } from "../../utils/nanoid.js";
 
-import globalStyles from "../../styles/global.constructable.js";
-import topbarStyles from "../../styles/topbar.constructable.js";
+import globalStyles from "../../../styles/global.constructable.js";
+import topbarStyles from "../../../styles/topbar.constructable.js";
 
 const customListStyles = new CSSStyleSheet();
 customListStyles.replaceSync(`

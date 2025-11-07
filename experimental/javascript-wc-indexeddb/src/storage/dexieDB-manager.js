@@ -47,7 +47,7 @@ class DexieDBManager {
                 // When running in Speedometer, the event will be dispatched only once
                 // because all the additions are done in a tight loop.
                 if (--this.pendingAdditions === 0)
-                    window.dispatchEvent(new CustomEvent("indexeddb-add-completed", {}));
+                    window.dispatchEvent(new CustomEvent("db-add-completed", {}));
             })
             .catch((error) => {
                 throw error;
@@ -89,7 +89,7 @@ class DexieDBManager {
             })
             .then(() => {
                 if (--this.pendingToggles === 0)
-                    window.dispatchEvent(new CustomEvent("indexeddb-toggle-completed", {}));
+                    window.dispatchEvent(new CustomEvent("db-toggle-completed", {}));
             })
             .catch((error) => {
                 throw error;
@@ -107,7 +107,7 @@ class DexieDBManager {
             .delete(itemNumber)
             .then(() => {
                 if (--this.pendingDeletions === 0)
-                    window.dispatchEvent(new CustomEvent("indexeddb-remove-completed", {}));
+                    window.dispatchEvent(new CustomEvent("db-remove-completed", {}));
             })
             .catch((error) => {
                 throw error;

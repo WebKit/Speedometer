@@ -130,6 +130,7 @@ class TodoList extends HTMLElement {
     }
 
     moveToNextPage() {
+        console.log('number of children before removing:', this.listNode.children.length);
         for (let i = 0; i < MAX_ON_SCREEN_ITEMS; i++) {
             const child = this.listNode.firstChild;
             if (!child)

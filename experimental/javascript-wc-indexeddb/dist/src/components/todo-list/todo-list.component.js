@@ -2,8 +2,8 @@ import template from "./todo-list.template.js";
 import TodoItem from "../todo-item/todo-item.component.js";
 import { createStorageManager } from "../../storage/storage-factory.js";
 
-import globalStyles from "../../styles/global.constructable.js";
-import listStyles from "../../styles/todo-list.constructable.js";
+import globalStyles from "../../../styles/global.constructable.js";
+import listStyles from "../../../styles/todo-list.constructable.js";
 
 const MAX_ON_SCREEN_ITEMS = 10;
 
@@ -130,6 +130,7 @@ class TodoList extends HTMLElement {
     }
 
     moveToNextPage() {
+        console.log('number of children before removing:', this.listNode.children.length);
         for (let i = 0; i < MAX_ON_SCREEN_ITEMS; i++) {
             const child = this.listNode.firstChild;
             if (!child)
@@ -140,8 +141,7 @@ class TodoList extends HTMLElement {
     }
 
     async moveToPreviousPage() {
-        const items = await this.storageManager
-            .getTodos(this.#firstItemIndexOnScreen, MAX_ON_SCREEN_ITEMS);
+        const items = await this.storageManager.getTodos(this.#firstItemIndexOnScreen, MAX_ON_SCREEN_ITEMS);
         const elements = items.map((item) => {
             const { id, title, completed, priority } = item;
             const element = new TodoItem();
