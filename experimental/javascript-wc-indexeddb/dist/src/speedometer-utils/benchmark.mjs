@@ -8,9 +8,10 @@ import { Params } from "./params.mjs";
  * A single test step, with a common interface to interact with.
  */
 export class BenchmarkStep {
-    constructor(name, run) {
+    constructor(name, run, ignoreResult = false) {
         this.name = name;
         this.run = run;
+        this.ignoreResult = ignoreResult;
     }
 
     async runAndRecord(params, suite, test, callback) {
@@ -106,6 +107,7 @@ export class BenchmarkConnector {
                 if (!suite)
                     console.error(`Suite with the name of "${event.data.name}" not found!`);
                 const { result } = await suite.runAndRecord(params, (test) => this.sendMessage({ type: "step-complete", status: "success", appId: this.appId, name: this.name, test }));
+                console.log(result, result.tests);
                 this.sendMessage({ type: "suite-complete", status: "success", appId: this.appId, result });
                 this.disconnect();
                 break;

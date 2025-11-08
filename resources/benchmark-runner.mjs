@@ -6,10 +6,9 @@ import { SUITE_RUNNER_LOOKUP } from "./suite-runner.mjs";
 const performance = globalThis.performance;
 
 export class BenchmarkTestStep {
-    constructor(testName, testFunction, ignoreResult = false) {
+    constructor(testName, testFunction) {
         this.name = testName;
         this.run = testFunction;
-        this.ignoreResult = ignoreResult;
     }
 }
 

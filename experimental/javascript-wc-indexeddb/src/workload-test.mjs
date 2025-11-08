@@ -35,7 +35,6 @@ const suites = {
                 }
                 if (j < 9) {
                     const nextPageButton = document.querySelector("todo-app").shadowRoot.querySelector("todo-bottombar").shadowRoot.querySelector(".next-page-button");
-                    console.log("Clicking next page button", j);
                     nextPageButton.click();
                 }
             }

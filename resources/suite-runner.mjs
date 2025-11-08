@@ -12,7 +12,6 @@ export class SuiteRunner {
 
     constructor(frame, page, params, suite, client, measuredValues) {
         // FIXME: Create SuiteRunner-local measuredValues.
-        console.log("Params", params);
         this.#suiteResults = measuredValues.tests[suite.name];
         if (!this.#suiteResults) {
             this.#suiteResults = { tests: {}, prepare: 0, total: 0 };
@@ -114,10 +113,6 @@ export class SuiteRunner {
     _recordTestResults = async (test, syncTime, asyncTime) => {
         // Skip reporting updates for the warmup suite.
         if (this.#suite === WarmupSuite)
-            return;
-
-        // Skip recording results if the test step has ignoreResult flag set to true
-        if (test.ignoreResult)
             return;
 
         let total = syncTime + asyncTime;
