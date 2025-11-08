@@ -121,18 +121,6 @@ class Page {
     _wrapElement(element) {
         return new PageElement(element);
     }
-
-    addEventListener(name, listener) {
-        this._frame.contentWindow.addEventListener(name, listener);
-    }
-
-    setGlobalVariable(name, value) {
-        this._frame.contentWindow[name] = value;
-    }
-
-    getGlobalVariable(name) {
-        return this._frame.contentWindow[name];
-    }
 }
 
 const NATIVE_OPTIONS = {
