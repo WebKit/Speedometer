@@ -1,3 +1,5 @@
+import { numberOfItemsToAdd, promisesEventsNames } from "../workload-test.mjs";
+
 // Base class for storage managers that provides common functionality
 // for tracking pending operations and dispatching events.
 class BaseStorageManager {
@@ -5,9 +7,9 @@ class BaseStorageManager {
         this.dbName = "todoDB";
         this.storeName = "todos";
         this.db = null;
-        this.pendingAdditions = 0;
-        this.pendingToggles = 0;
-        this.pendingDeletions = 0;
+        this.finishedAddtions = 0;
+        this.finishedToggles = 0;
+        this.finishedDeletions = 0;
         this.initDB().then(() => {
             this._dispatchReadyEvent();
         });
@@ -24,36 +26,24 @@ class BaseStorageManager {
     // of that type are complete.
 
     _handleAddComplete() {
-        if (--this.pendingAdditions === 0)
-            window.dispatchEvent(new CustomEvent("db-add-completed", {}));
+        if (++this.finishedAddtions === numberOfItemsToAdd)
+            window.dispatchEvent(new CustomEvent(promisesEventsNames.add, {}));
     }
 
     _handleToggleComplete() {
-        if (--this.pendingToggles === 0)
-            window.dispatchEvent(new CustomEvent("db-toggle-completed", {}));
+        if (++this.finishedToggles === numberOfItemsToAdd)
+            window.dispatchEvent(new CustomEvent(promisesEventsNames.toggle, {}));
     }
 
     _handleRemoveComplete() {
-        if (--this.pendingDeletions === 0) {
+        if (++this.finishedDeletions === numberOfItemsToAdd) {
             this.db.close();
-            window.dispatchEvent(new CustomEvent("db-remove-completed", {}));
+            window.dispatchEvent(new CustomEvent(promisesEventsNames.delete, {}));
         }
     }
 
     _dispatchReadyEvent() {
         window.dispatchEvent(new CustomEvent("db-ready", {}));
-    }
-
-    _incrementPendingAdditions() {
-        this.pendingAdditions++;
-    }
-
-    _incrementPendingToggles() {
-        this.pendingToggles++;
-    }
-
-    _incrementPendingDeletions() {
-        this.pendingDeletions++;
     }
 
     // Abstract methods that must be implemented by subclasses

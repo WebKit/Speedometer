@@ -47,10 +47,6 @@ class IndexedDBManager extends BaseStorageManager {
         this._ensureDbConnection();
 
         const transaction = this.db.transaction(this.storeName, "readwrite");
-        const store = transaction.objectStore(this.storeName);
-
-        store.add(todo);
-        this._incrementPendingAdditions();
 
         transaction.oncomplete = () => {
             // When running in Speedometer, the event will be dispatched only once
@@ -59,9 +55,12 @@ class IndexedDBManager extends BaseStorageManager {
         };
 
         transaction.onerror = (event) => {
+            console.error("Transaction error:", event.target.error);
             throw event.target.error;
         };
 
+        const store = transaction.objectStore(this.storeName);
+        store.add(todo);
         transaction.commit();
     }
 
@@ -111,8 +110,6 @@ class IndexedDBManager extends BaseStorageManager {
 
         const getRequest = store.get(itemNumber);
 
-        this._incrementPendingToggles();
-
         getRequest.onsuccess = (event) => {
             const todoItem = getRequest.result;
 
@@ -150,10 +147,6 @@ class IndexedDBManager extends BaseStorageManager {
         const transaction = this.db.transaction(this.storeName, "readwrite");
         const store = transaction.objectStore(this.storeName);
 
-        // Delete the todo item directly using its primary key (itemNumber)
-        store.delete(itemNumber);
-        this._incrementPendingDeletions();
-
         transaction.oncomplete = () => {
             this._handleRemoveComplete();
         };
@@ -162,6 +155,8 @@ class IndexedDBManager extends BaseStorageManager {
             throw event.target.error;
         };
 
+        // Delete the todo item directly using its primary key (itemNumber)
+        store.delete(itemNumber);
         transaction.commit();
     }
 }

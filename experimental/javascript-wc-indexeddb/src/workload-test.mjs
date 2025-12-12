@@ -4,6 +4,23 @@ import { numberOfItemsToAdd } from "/node_modules/speedometer-utils/todomvc-util
 
 export const appName = "todomvc-indexeddb";
 export const appVersion = "1.0.0";
+export { numberOfItemsToAdd };
+
+export const promisesEventsNames = {
+    add: "db-add-completed",
+    toggle: "db-toggle-completed",
+    delete: "db-delete-completed",
+};
+
+const addPromise = new Promise((resolve) => {
+    window.addEventListener(promisesEventsNames.add, () => resolve());
+});
+const togglePromise = new Promise((resolve) => {
+    window.addEventListener(promisesEventsNames.toggle, () => resolve());
+});
+const deletePromise = new Promise((resolve) => {
+    window.addEventListener(promisesEventsNames.delete, () => resolve());
+});
 
 const suites = {
     default: new BenchmarkSuite("indexeddb", [
@@ -18,7 +35,7 @@ const suites = {
         new BenchmarkStep(
             "FinishAddingItemsToDB",
             async () => {
-                await window.addPromise;
+                await addPromise;
             },
             /* ignoreResult = */ true
         ),
@@ -42,7 +59,7 @@ const suites = {
         new BenchmarkStep(
             "FinishModifyingItemsInDB",
             async () => {
-                await window.togglePromise;
+                await togglePromise;
             },
             /* ignoreResult = */ true
         ),
@@ -74,7 +91,7 @@ const suites = {
         new BenchmarkStep(
             "FinishDeletingItemsFromDB",
             async () => {
-                await window.removePromise;
+                await deletePromise;
             },
             /* ignoreResult = */ true
         ),

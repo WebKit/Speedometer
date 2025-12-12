@@ -1,17 +1,6 @@
 import { BenchmarkConnector } from "/src/speedometer-utils/benchmark.mjs";
 import suites, { appName, appVersion } from "/src/workload-test.mjs";
 
-window.workloadPromises = {};
-window.workloadPromises.addPromise = new Promise((resolve) => {
-    window.addEventListener("db-add-completed", () => resolve());
-});
-window.workloadPromises.togglePromise = new Promise((resolve) => {
-    window.addEventListener("db-toggle-completed", () => resolve());
-});
-window.workloadPromises.deletePromise = new Promise((resolve) => {
-    window.addEventListener("db-delete-completed", () => resolve());
-});
-
 window.addEventListener("db-ready", () => {
     /*
     Paste below into dev console for manual testing:

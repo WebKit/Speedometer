@@ -24,7 +24,6 @@ class DexieDBManager extends BaseStorageManager {
     addTodo(todo) {
         this._ensureDbConnection();
 
-        this._incrementPendingAdditions();
         this.db.todos
             .add(todo)
             .then(() => {
@@ -51,8 +50,6 @@ class DexieDBManager extends BaseStorageManager {
     toggleTodo(itemNumber, completed) {
         this._ensureDbConnection();
 
-        this._incrementPendingToggles();
-
         this.db.todos
             .get(itemNumber)
             .then((todoItem) => {
@@ -73,7 +70,6 @@ class DexieDBManager extends BaseStorageManager {
     removeTodo(itemNumber) {
         this._ensureDbConnection();
 
-        this._incrementPendingDeletions();
         this.db.todos
             .delete(itemNumber)
             .then(() => {
