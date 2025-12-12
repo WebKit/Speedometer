@@ -4,24 +4,18 @@ import BaseStorageManager from "./base-storage-manager.js";
 class DexieDBManager extends BaseStorageManager {
     constructor() {
         super();
-        this.initDB().then(() => {
-            this._dispatchReadyEvent();
-        });
     }
 
     async initDB() {
         // Delete the existing database first for clean state
         await Dexie.delete(this.dbName);
 
-        // Create new Dexie database
         this.db = new Dexie(this.dbName);
 
-        // Define schema
         this.db.version(1).stores({
             todos: "itemNumber, id, title, completed, priority",
         });
 
-        // Open the database
         await this.db.open();
 
         return this.db;
@@ -31,7 +25,6 @@ class DexieDBManager extends BaseStorageManager {
         this._ensureDbConnection();
 
         this._incrementPendingAdditions();
-        // Add todo item to Dexie
         this.db.todos
             .add(todo)
             .then(() => {
@@ -60,17 +53,13 @@ class DexieDBManager extends BaseStorageManager {
 
         this._incrementPendingToggles();
 
-        // Get the todo item and update it
         this.db.todos
             .get(itemNumber)
             .then((todoItem) => {
                 if (!todoItem)
                     throw new Error(`Todo item with itemNumber '${itemNumber}' not found`);
 
-                // Update the completed status
                 todoItem.completed = completed;
-
-                // Save the updated item back to the database
                 return this.db.todos.put(todoItem);
             })
             .then(() => {
@@ -85,7 +74,6 @@ class DexieDBManager extends BaseStorageManager {
         this._ensureDbConnection();
 
         this._incrementPendingDeletions();
-        // Delete the todo item
         this.db.todos
             .delete(itemNumber)
             .then(() => {

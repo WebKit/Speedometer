@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { TestRunner } from "./test-runner.mjs";
+import { TestRunner, AsyncTestRunner } from "./test-runner.mjs";
 import { Params } from "./params.mjs";
 
 /**
@@ -15,7 +15,8 @@ export class BenchmarkStep {
     }
 
     async runAndRecord(params, suite, test, callback) {
-        const testRunner = new TestRunner(null, null, params, suite, test, callback);
+        const TestRunnerClass = params.useAsyncSteps ? AsyncTestRunner : TestRunner;
+        const testRunner = new TestRunnerClass(null, null, params, suite, test, callback);
         const result = await testRunner.runTest();
         return result;
     }
@@ -107,7 +108,6 @@ export class BenchmarkConnector {
                 if (!suite)
                     console.error(`Suite with the name of "${event.data.name}" not found!`);
                 const { result } = await suite.runAndRecord(params, (test) => this.sendMessage({ type: "step-complete", status: "success", appId: this.appId, name: this.name, test }));
-                console.log(result, result.tests);
                 this.sendMessage({ type: "suite-complete", status: "success", appId: this.appId, result });
                 this.disconnect();
                 break;

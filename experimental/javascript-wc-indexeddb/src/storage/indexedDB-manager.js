@@ -1,14 +1,6 @@
 import BaseStorageManager from "./base-storage-manager.js";
 
 class IndexedDBManager extends BaseStorageManager {
-    constructor() {
-        super();
-        this.dbVersion = 1;
-        this.initDB().then(() => {
-            this._dispatchReadyEvent();
-        });
-    }
-
     initDB() {
         return new Promise((resolve, reject) => {
             // Delete the existing database first for clean state
@@ -29,7 +21,7 @@ class IndexedDBManager extends BaseStorageManager {
     }
 
     openDatabase(resolve, reject) {
-        const request = indexedDB.open(this.dbName, this.dbVersion);
+        const request = indexedDB.open(this.dbName, 1);
 
         request.onerror = (event) => {
             reject(event.target.error);
@@ -43,7 +35,6 @@ class IndexedDBManager extends BaseStorageManager {
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
 
-            // Create object store (since we're always creating a fresh DB now)
             const store = db.createObjectStore(this.storeName, { keyPath: "itemNumber" });
             store.createIndex("id", "id", { unique: true });
             store.createIndex("title", "title", { unique: false });
@@ -55,7 +46,6 @@ class IndexedDBManager extends BaseStorageManager {
     addTodo(todo) {
         this._ensureDbConnection();
 
-        // Add todo item to IndexedDB
         const transaction = this.db.transaction(this.storeName, "readwrite");
         const store = transaction.objectStore(this.storeName);
 
@@ -116,11 +106,9 @@ class IndexedDBManager extends BaseStorageManager {
     toggleTodo(itemNumber, completed) {
         this._ensureDbConnection();
 
-        // Access the todo item directly by its itemNumber (keyPath)
         const transaction = this.db.transaction(this.storeName, "readwrite");
         const store = transaction.objectStore(this.storeName);
 
-        // Get the todo item directly using its primary key (itemNumber)
         const getRequest = store.get(itemNumber);
 
         this._incrementPendingToggles();
@@ -131,9 +119,7 @@ class IndexedDBManager extends BaseStorageManager {
             if (!todoItem)
                 throw new Error(`Todo item with itemNumber '${itemNumber}' not found`);
 
-            // Update the completed status
             todoItem.completed = completed;
-            // Save the updated item back to the database
             const updateRequest = store.put(todoItem);
 
             updateRequest.onerror = (event) => {
