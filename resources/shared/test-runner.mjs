@@ -9,7 +9,7 @@ export class TestRunner {
     #callback;
     #type;
 
-    constructor(frame, page, params, suite, test, callback, type) {
+    constructor(frame, page, params, suite, test, callback, type = "default") {
         this.#suite = suite;
         this.#test = test;
         this.#params = params;
@@ -17,6 +17,7 @@ export class TestRunner {
         this.#page = page;
         this.#frame = frame;
         this.#type = type;
+        console.assert(type in TEST_RUNNER_LOOKUP);
     }
 
     get page() {
@@ -69,7 +70,7 @@ export class TestRunner {
         const measureAsync = () => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
-            this.page.layout();
+            this.page?.layout();
 
             const asyncEndTime = performance.now();
             performance.mark(asyncEndLabel);
@@ -92,8 +93,8 @@ export class TestRunner {
 }
 
 export class AsyncTestRunner extends TestRunner {
-    constructor(frame, page, params, suite, test, callback, type) {
-        super(frame, page, params, suite, test, callback, type);
+    constructor(frame, page, params, suite, test, callback) {
+        super(frame, page, params, suite, test, callback, "async");
     }
 
     async _runSyncStep(test, page) {
@@ -101,9 +102,9 @@ export class AsyncTestRunner extends TestRunner {
     }
 }
 
-export const TEST_RUNNER_LOOKUP = {
+export const TEST_RUNNER_LOOKUP = Object.freeze({
     __proto__: null,
     default: TestRunner,
     async: AsyncTestRunner,
     remote: TestRunner,
-};
+});
