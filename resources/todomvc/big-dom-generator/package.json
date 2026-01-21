@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Complex DOM generator to embed TodoMVC in a static HTML page",
     "engines": {
-        "node": ">=18.13.0",
+        "node": ">=22.0.0",
         "npm": ">=8.19.3"
     },
     "scripts": {
