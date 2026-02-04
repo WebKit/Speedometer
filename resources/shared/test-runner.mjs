@@ -17,7 +17,7 @@ export class TestRunner {
         this.#page = page;
         this.#frame = frame;
         this.#type = type;
-        console.assert(type in TEST_RUNNER_LOOKUP);
+        console.assert(type in TEST_RUNNER_LOOKUP, "Invalid type", type);
     }
 
     get page() {
@@ -70,7 +70,7 @@ export class TestRunner {
         const measureAsync = () => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
-            this.page?.layout();
+            this.page.layout();
 
             const asyncEndTime = performance.now();
             performance.mark(asyncEndLabel);

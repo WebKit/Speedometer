@@ -44,7 +44,7 @@ export class BenchmarkSuite {
         this.name = name;
         this.steps = steps;
         this.type = type;
-        console.assert(this.type in BENCHMARK_SUITE_TYPE);
+        console.assert(this.type in BENCHMARK_SUITE_TYPE, "Invalid Type", this.type);
     }
 
     record(_test, syncTime, asyncTime) {
@@ -89,8 +89,8 @@ export class BenchmarkSuite {
 }
 
 export class AsyncBenchmarkSuite extends BenchmarkSuite {
-    constructor(name, tests) {
-        super(name, tests, BENCHMARK_SUITE_TYPE.async);
+    constructor(name, steps) {
+        super(name, steps, BENCHMARK_SUITE_TYPE.async);
     }
 }
 
