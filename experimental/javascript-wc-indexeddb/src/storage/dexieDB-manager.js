@@ -51,7 +51,7 @@ class DexieDBManager extends BaseStorageManager {
         this._ensureDbConnection();
 
         this.db.todos
-            .update(itemNumber, {completed: completed})
+            .update(itemNumber, { completed: completed })
             .then(() => {
                 this._handleToggleComplete();
             })
