@@ -89,9 +89,10 @@ class IndexedDBManager extends BaseStorageManager {
                     itemsProcessed++;
                     cursor.continue(); // Move to next item
                 } else {
-                    // We're done - sort items by itemNumber in descending order
-                    // for proper display order (newest to oldest)
+                    // We're done - sort items by itemNumber in ascending order
+                    // for proper display order (oldest to newest)
                     items.sort((a, b) => a.itemNumber - b.itemNumber);
+                    transaction.commit();
                     resolve(items);
                 }
             };

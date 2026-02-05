@@ -7,7 +7,7 @@ class BaseStorageManager {
         this.dbName = "todoDB";
         this.storeName = "todos";
         this.db = null;
-        this.finishedAddtions = 0;
+        this.finishedAdditions = 0;
         this.finishedToggles = 0;
         this.finishedDeletions = 0;
         this.initDB().then(() => {

@@ -51,14 +51,7 @@ class DexieDBManager extends BaseStorageManager {
         this._ensureDbConnection();
 
         this.db.todos
-            .get(itemNumber)
-            .then((todoItem) => {
-                if (!todoItem)
-                    throw new Error(`Todo item with itemNumber '${itemNumber}' not found`);
-
-                todoItem.completed = completed;
-                return this.db.todos.put(todoItem);
-            })
+            .update(itemNumber, {completed: completed})
             .then(() => {
                 this._handleToggleComplete();
             })
