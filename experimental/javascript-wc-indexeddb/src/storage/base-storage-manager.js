@@ -26,7 +26,7 @@ class BaseStorageManager {
     // of that type are complete.
 
     _handleAddComplete() {
-        if (++this.finishedAddtions === numberOfItemsToAdd)
+        if (++this.finishedAdditions === numberOfItemsToAdd)
             window.dispatchEvent(new CustomEvent(promisesEventsNames.add, {}));
     }
 
