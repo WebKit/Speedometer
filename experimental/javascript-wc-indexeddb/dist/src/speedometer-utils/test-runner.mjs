@@ -1,4 +1,5 @@
 import { TEST_INVOKER_LOOKUP } from "./test-invoker.mjs";
+import { forceLayout } from "./helpers.mjs";
 
 export class TestRunner {
     #frame;
@@ -69,13 +70,13 @@ export class TestRunner {
         const measureAsync = () => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
-            if (this.page) {
-                this.page.layout();
-            } else {
-                const body = document.body;
-                const height = body.getBoundingClientRect().height;
-                body._leakedLayoutValue = height;
-            }
+            //
+            // Note: This matches the behavior of Page.layout() in benchmark-runner.mjs.
+            // Since shared code cannot depend on Page, we duplicate the logic here,
+            // falling back to document.body for remote workloads that don't have a frame.
+            const body = this.#frame?.contentDocument?.body ?? document.body;
+            const value = forceLayout(body, this.#params.layoutMode);
+            body._leakedLayoutValue = value; // Prevent dead code elimination.
 
             const asyncEndTime = performance.now();
             performance.mark(asyncEndLabel);
