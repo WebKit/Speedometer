@@ -42,7 +42,6 @@ const suites = {
         new BenchmarkStep("CompletingAllItems", async () => {
             const numberOfItemsPerIteration = 10;
             const numberOfIterations = 10;
-            window.numberOfItemsToAdd = numberOfItemsToAdd;
             for (let j = 0; j < numberOfIterations; j++) {
                 const todoList = document.querySelector("todo-app").shadowRoot.querySelector("todo-list");
                 const items = todoList.shadowRoot.querySelectorAll("todo-item");
@@ -66,7 +65,6 @@ const suites = {
         new BenchmarkStep("DeletingAllItems", async () => {
             const numberOfItemsPerIteration = 10;
             const numberOfIterations = 10;
-            window.numberOfItemsToAdd = numberOfItemsToAdd;
             function iterationFinishedListener() {
                 iterationFinishedListener.promiseResolve();
             }
