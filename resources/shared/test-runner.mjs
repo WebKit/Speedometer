@@ -69,7 +69,13 @@ export class TestRunner {
         const measureAsync = () => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
-            this.page.layout();
+            if (this.page) {
+                this.page.layout();
+            } else {
+                const body = document.body;
+                const height = body.getBoundingClientRect().height;
+                body._leakedLayoutValue = height;
+            }
 
             const asyncEndTime = performance.now();
             performance.mark(asyncEndLabel);
