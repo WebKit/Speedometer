@@ -1,6 +1,6 @@
 /* eslint-disable no-case-declarations */
 import { TestRunner, AsyncTestRunner } from "./test-runner.mjs";
-import { Params } from "./params.mjs";
+import { Params } from "/node_modules/speedometer-utils/params.mjs";
 
 /**
  * BenchmarkStep

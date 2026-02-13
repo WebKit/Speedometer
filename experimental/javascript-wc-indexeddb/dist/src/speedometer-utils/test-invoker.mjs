@@ -5,9 +5,7 @@ class TestInvoker {
         this._reportCallback = reportCallback;
         this._params = params;
     }
-}
 
-class BaseRAFTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
             if (this._params.waitBeforeSync)
@@ -18,7 +16,7 @@ class BaseRAFTestInvoker extends TestInvoker {
     }
 }
 
-class RAFTestInvoker extends BaseRAFTestInvoker {
+class RAFTestInvoker extends TestInvoker {
     _scheduleCallbacks(resolve) {
         requestAnimationFrame(() => this._syncCallback());
         requestAnimationFrame(() => {
@@ -33,7 +31,7 @@ class RAFTestInvoker extends BaseRAFTestInvoker {
     }
 }
 
-class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
+class AsyncRAFTestInvoker extends TestInvoker {
     static mc = new MessageChannel();
     _scheduleCallbacks(resolve) {
         let gotTimer = false;

@@ -67,12 +67,15 @@ export class TestRunner {
             asyncStartTime = syncEndTime;
         };
         const measureAsync = () => {
-            const bodyReference = this.#frame ? this.#frame.contentDocument.body : document.body;
-            const windowReference = this.#frame ? this.#frame.contentWindow : window;
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
-            const height = bodyReference.getBoundingClientRect().height;
-            windowReference._unusedHeightValue = height; // Prevent dead code elimination.
+            if (this.page) {
+                this.page.layout();
+            } else {
+                const body = document.body;
+                const height = body.getBoundingClientRect().height;
+                body._leakedLayoutValue = height;
+            }
 
             const asyncEndTime = performance.now();
             performance.mark(asyncEndLabel);

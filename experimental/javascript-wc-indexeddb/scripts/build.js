@@ -97,11 +97,10 @@ const filesToMove = [
     { src: "node_modules/todomvc-css/dist/todo-list.constructable.js", dest: "./dist/styles/todo-list.constructable.js" },
     { src: "node_modules/todomvc-css/dist/todo-item.constructable.js", dest: "./dist/styles/todo-item.constructable.js" },
     { src: "node_modules/dexie/dist/modern/dexie.mjs", dest: "./dist/libs/dexie.mjs" },
-    { src: "src/speedometer-utils/test-invoker.mjs", dest: "./dist/src/speedometer-utils/test-invoker.mjs" },
-    { src: "src/speedometer-utils/test-runner.mjs", dest: "./dist/src/speedometer-utils/test-runner.mjs" },
-    { src: "src/speedometer-utils/params.mjs", dest: "./dist/src/speedometer-utils/params.mjs" },
+    { src: "node_modules/speedometer-utils/test-invoker.mjs", dest: "./dist/src/speedometer-utils/test-invoker.mjs" },
+    { src: "node_modules/speedometer-utils/test-runner.mjs", dest: "./dist/src/speedometer-utils/test-runner.mjs" },
+    { src: "node_modules/speedometer-utils/params.mjs", dest: "./dist/src/speedometer-utils/params.mjs" },
     { src: "src/speedometer-utils/benchmark.mjs", dest: "./dist/src/speedometer-utils/benchmark.mjs" },
-    { src: "src/speedometer-utils/helpers.mjs", dest: "./dist/src/speedometer-utils/helpers.mjs" },
     { src: "node_modules/speedometer-utils/translations.mjs", dest: "./dist/src/speedometer-utils/translations.mjs" },
     { src: "node_modules/speedometer-utils/todomvc-utils.mjs", dest: "./dist/src/speedometer-utils/todomvc-utils.mjs" },
 ];
@@ -137,6 +136,11 @@ const importsToRename = [
         src: "/node_modules/speedometer-utils/",
         dest: "./speedometer-utils/",
         files: ["./dist/src/index.mjs", "./dist/src/workload-test.mjs"],
+    },
+    {
+        src: "/node_modules/speedometer-utils/",
+        dest: "./",
+        files: ["./dist/src/speedometer-utils/benchmark.mjs"],
     },
 ];
 
