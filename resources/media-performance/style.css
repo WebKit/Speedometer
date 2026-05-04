@@ -1,0 +1,61 @@
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    margin: 16px;
+}
+
+.controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+button {
+    background-color: #f4f4f4;
+    color: #1a1a1a;
+    border: 1px solid #cccccc;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+button.completed {
+    background-color: #d8f3dc;
+    border-color: #2d6a4f;
+}
+
+.stage {
+    border: 1px solid #cccccc;
+    padding: 12px;
+    border-radius: 4px;
+}
+
+.canvas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.canvas-cell h4 {
+    margin: 0 0 8px;
+    font-size: 13px;
+}
+
+canvas,
+video {
+    background: #000000;
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.status {
+    margin-top: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: #555555;
+}

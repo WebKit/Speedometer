@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Media Streaming Workload</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-prefetch-ready="0">
+    <div class="controls">
+        <button id="initial-playback">Initial Playback</button>
+        <button id="seek">Seek</button>
+    </div>
+    <div class="stage">
+        <video id="player" width="320" height="180" muted playsinline preload="auto"></video>
+        <div class="status">
+            <span id="status">Idle</span>
+        </div>
+    </div>
+    <script src="streaming.js"></script>
+</body>
+</html>

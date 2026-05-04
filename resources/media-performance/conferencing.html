@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Media Conferencing Workload</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="controls">
+        <button id="video-chat">Video Chat</button>
+        <button id="voice-chat">Voice Chat</button>
+    </div>
+    <div class="stage">
+        <div class="canvas-grid">
+            <div class="canvas-cell">
+                <h4>Local Preview</h4>
+                <canvas id="local-canvas" width="1920" height="1080"></canvas>
+            </div>
+            <div class="canvas-cell">
+                <h4>Remote Preview</h4>
+                <canvas id="remote-canvas" width="1920" height="1080"></canvas>
+            </div>
+        </div>
+        <div class="status">
+            <span id="status">Idle</span>
+        </div>
+    </div>
+    <script src="conferencing.js"></script>
+</body>
+</html>
