@@ -105,7 +105,8 @@ export class SuiteRunner {
             const frame = this.#frame;
             frame.onload = () => resolve();
             frame.onerror = () => reject();
-            frame.src = `${this.#suite.url}?${this.#params.toSearchParams()}`;
+            const splitUrl = this.#suite.url.split("?");
+            frame.src = `${splitUrl[0]}?${splitUrl[1] ?? ""}&${this.#params.toSearchParams()}`;
         });
     }
 

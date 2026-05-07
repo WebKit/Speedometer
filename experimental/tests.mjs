@@ -142,4 +142,24 @@ export const ExperimentalSuites = freezeSuites([
           name: "default", // optional param to target non-default tests locally
         }, */
     },
+    {
+        name: "TodoMVC-WebComponents-IndexedDB",
+        url: "experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=vanilla",
+        tags: ["todomvc", "webcomponents", "experimental"],
+        async prepare() {},
+        type: "remote",
+        /* config: {
+          name: "default", // optional param to target non-default tests locally
+        }, */
+    },
+    {
+        name: "TodoMVC-WebComponents-DexieJS",
+        url: "experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=dexie",
+        tags: ["todomvc", "webcomponents", "experimental"],
+        async prepare() {},
+        type: "remote",
+        /* config: {
+          name: "default", // optional param to target non-default tests locally
+        }, */
+    },
 ]);
