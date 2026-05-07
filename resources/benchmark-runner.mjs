@@ -118,8 +118,16 @@ class Page {
         return this._wrapElement(this._frame.contentWindow[functionName]());
     }
 
+    setWidth(widthPx) {
+        this._frame.style.width = `${widthPx}px`;
+    }
+
     _wrapElement(element) {
         return new PageElement(element);
+    }
+
+    addEventListener(name, listener, options) {
+        this._frame.contentWindow.addEventListener(name, listener, options);
     }
 }
 
@@ -149,6 +157,10 @@ class PageElement {
 
     getElementByMethod(name) {
         return new PageElement(this.#node[name]());
+    }
+
+    scrollIntoView(options) {
+        this.#node.scrollIntoView(options);
     }
 
     dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
