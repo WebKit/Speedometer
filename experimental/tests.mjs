@@ -242,7 +242,12 @@ export const ExperimentalSuites = freezeSuites([
                     chatInput.enter("keydown");
                     page.layout();
                 }
-                await cvWorkComplete;
+
+                // Safari can overscroll the chat element here and never send the
+                // video grid's contentvisibilityautostatechange event. See
+                // https://github.com/WebKit/Speedometer/issues/525. Remove this
+                // fallback once Speedometer CI runs a Safari with that WebKit fix.
+                await Promise.race([cvWorkComplete, new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))]);
             }),
             new BenchmarkTestStep("IncreaseWidthIn5Steps", async (page) => {
                 const widths = [560, 640, 704, 768, 800];
