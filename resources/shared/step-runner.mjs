@@ -1,4 +1,4 @@
-import { TEST_INVOKER_LOOKUP } from "./test-invoker.mjs";
+import { STEP_SCHEDULER_LOOKUP } from "./step-scheduler.mjs";
 import { forceLayout } from "./helpers.mjs";
 
 export class StepRunner {
@@ -90,11 +90,11 @@ export class StepRunner {
         };
 
         const report = () => this.#callback(this.#step, syncTime, asyncTime);
-        const invokerType = this.#suite.type === "async" || this.#params.useAsyncSteps ? "async" : this.#params.measurementMethod;
-        const invokerClass = TEST_INVOKER_LOOKUP[invokerType];
-        const invoker = new invokerClass(runSync, measureAsync, report, this.#params);
+        const schedulerType = this.#suite.type === "async" || this.#params.useAsyncSteps ? "async" : this.#params.measurementMethod;
+        const schedulerClass = STEP_SCHEDULER_LOOKUP[schedulerType];
+        const scheduler = new schedulerClass(runSync, measureAsync, report, this.#params);
 
-        return invoker.start();
+        return scheduler.start();
     }
 }
 
