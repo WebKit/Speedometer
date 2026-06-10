@@ -19,15 +19,16 @@ function delayAsync(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function handlePrecache(event, { suites = [], delay = 0 }) {
-    await caches.delete(CACHE_NAME);
+async function handlePrecache(event, { suites = [], delay = 0, clearCache = true }) {
+    if (clearCache) {
+        await caches.delete(CACHE_NAME);
+        cachedSuitesPrefixes.clear();
+    }
     const cache = await caches.open(CACHE_NAME);
 
     let loaded = 0;
     let totalSize = 0;
     const urlsToCache = [];
-
-    cachedSuitesPrefixes.clear();
     for (const suite of suites) {
         if (!suite.resources)
             continue;
@@ -46,7 +47,9 @@ async function handlePrecache(event, { suites = [], delay = 0 }) {
 
     await Promise.all(promises);
 
-    cachedUrls = new Set(urlsToCache.map((item) => item.url));
+    for (const item of urlsToCache) {
+        cachedUrls.add(item.url);
+    }
     replyToClient(event, { type: SW_MESSAGES.PRECACHE_DONE, totalSize, count: urlsToCache.length });
 }
 
@@ -55,12 +58,9 @@ async function parseSuiteResources(suite) {
         const response = await fetch(suite.resources);
         if (!response.ok)
             return [];
-        let text = await response.text();
-        if (text.endsWith("\n"))
-            text = text.slice(0, -1);
-        const lines = text.split("\n").map((l) => l.trim());
-        return lines.map((resourceUrl) => ({
-            url: new URL(resourceUrl, suite.url).href,
+        const text = await response.text();
+        return text.trim().split("\n").map((resourceUrl) => ({
+            url: new URL(resourceUrl.trim(), suite.url).href,
             suiteName: suite.name,
         }));
     } catch (e) {
@@ -70,9 +70,16 @@ async function parseSuiteResources(suite) {
 }
 
 async function fetchAndCache(cache, url, delayMs) {
+    const request = new Request(url, { cache: "no-cache" });
+    const existing = await cache.match(request);
+    if (existing) {
+        const blob = await existing.blob();
+        return blob.size;
+    }
+
     if (delayMs)
         await delayAsync(delayMs);
-    const request = new Request(url, { cache: "no-cache" });
+
     try {
         await cache.add(request);
         const cachedResponse = await cache.match(request);
@@ -106,7 +113,9 @@ self.addEventListener("message", function (event) {
 });
 
 self.addEventListener("fetch", function (event) {
-    const isCached = cachedUrls.has(event.request.url);
+    const urlObj = new URL(event.request.url);
+    const cleanUrl = urlObj.origin + urlObj.pathname;
+    const isCached = cachedUrls.has(cleanUrl) || cachedUrls.has(event.request.url);
 
     if (isCached) {
         event.respondWith(handleFetch(event.request));
@@ -136,7 +145,7 @@ self.addEventListener("fetch", function (event) {
 
 async function handleFetch(request) {
     const cache = await caches.open(CACHE_NAME);
-    const cachedResponse = await cache.match(request);
+    const cachedResponse = await cache.match(request, { ignoreSearch: true });
     if (cachedResponse)
         return cachedResponse;
     return fetch(request);

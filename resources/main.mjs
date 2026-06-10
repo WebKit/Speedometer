@@ -24,7 +24,7 @@ export class PreloadServiceWorker {
         return true;
     }
 
-    async precacheSuites(suites, resourceLoadDelay, onProgress) {
+    async precacheSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
         if (suites.length === 0)
             return;
 
@@ -59,6 +59,7 @@ export class PreloadServiceWorker {
                     type: SW_MESSAGES.PRECACHE_SUITES,
                     suites: suitesData,
                     delay: resourceLoadDelay,
+                    clearCache: clearCache,
                 },
                 [channel.port2]
             );
@@ -146,9 +147,12 @@ class MainBenchmarkClient {
         if (this._isRunning)
             return false;
 
-        this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
-
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
+
+        if (!params.isDefault())
+            await this._cacheResources(benchmarkConfigurator);
+
+        this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
 
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const totalSuitesCount = enabledSuites.length;
@@ -445,27 +449,40 @@ class MainBenchmarkClient {
 
     async _setupServiceWorker(benchmarkConfigurator) {
         await this.preloadServiceWorker.setup();
+        await this._cacheResources(benchmarkConfigurator);
+    }
 
-        this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
+    async _cacheResources(benchmarkConfigurator) {
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
+        const clearCache = !params.isDefault();
+        this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
 
         try {
-            await this.preloadServiceWorker.precacheSuites(enabledSuites, params.resourceLoadDelay, (progressData) => {
-                const { loaded, total, url, suiteName } = progressData;
-                document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
-                document.getElementById("preload-progress-completed").max = total;
-                document.getElementById("preload-progress-completed").value = loaded;
-                const filename = url ? url.substring(url.lastIndexOf("/") + 1) : "";
-                const labelText = suiteName ? `${suiteName}: ${filename}` : filename;
-                document.getElementById("preload-info-label").textContent = labelText;
-                document.getElementById("preload-info-progress").textContent = `${loaded} / ${total}`;
-            });
+            await this.preloadServiceWorker.precacheSuites(
+                enabledSuites,
+                params.resourceLoadDelay,
+                clearCache,
+                this._updateCacheProgress.bind(this)
+            );
+            this._didInitialPrecache = true;
             this._enableStartButtons();
         } catch (error) {
-            console.error("Service Worker setup failed:", error);
+            console.error("Service Worker precache failed:", error);
             this._setBenchmarkState(BENCHMARK_STATE.ERROR);
             this._enableStartButtons();
         }
+    }
+
+    _updateCacheProgress(progressData) {
+        const { loaded, total, url, suiteName } = progressData;
+        document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
+        const progress = document.getElementById("preload-progress-completed")
+        progress.max = total;
+        progress.value = loaded;
+        const filename = url ? url.substring(url.lastIndexOf("/") + 1) : "";
+        const labelText = suiteName ? `${suiteName}: ${filename}` : filename;
+        document.getElementById("preload-info-label").textContent = labelText;
+        document.getElementById("preload-info-progress").textContent = `${loaded} / ${total}`;
     }
 
     _enableStartButtons() {
@@ -483,15 +500,13 @@ class MainBenchmarkClient {
         const startButton = document.querySelector(".start-tests-button");
         if (state === BENCHMARK_STATE.PRELOADING) {
             document.getElementById("preload-progress-completed").value = 0;
-            document.getElementById("preload-info-label").textContent = "Connecting to Service Worker...";
+            document.getElementById("preload-info-label").textContent = "";
             document.getElementById("preload-info-progress").textContent = "";
             document.body.style.setProperty("--preload-progress", "0%");
-            if (startButton)
-                startButton.textContent = "Preloading...";
+            startButton.textContent = "Preloading...";
         } else if (state === BENCHMARK_STATE.READY || state === BENCHMARK_STATE.IDLE || state === BENCHMARK_STATE.DONE || state === BENCHMARK_STATE.ERROR) {
             document.body.style.removeProperty("--preload-progress");
-            if (startButton)
-                startButton.textContent = "Start Test";
+            startButton.textContent = "Start Test";
         }
     }
 

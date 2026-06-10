@@ -72,11 +72,10 @@ for (const [name, suites] of Object.entries(Suites)) {
                 const resourcesUrl = new URL(suite.resources, baseUrl).href;
                 const res = await fetch(resourcesUrl);
                 expect(res.ok).to.be(true);
-                let text = await res.text();
-                expect(text.endsWith("\n")).to.be(true);
-                text = text.slice(0, -1);
+                const text = await res.text();
+                expect(text.trim().length).to.be.greaterThan(0, `resources.txt for ${suite.name} is empty`);
 
-                const files = text.split("\n");
+                const files = text.trim().split("\n");
                 for (const file of files)
                     expect(file.trim().length).to.be.greaterThan(0);
 

@@ -206,6 +206,10 @@ export class Params {
     toSearchParams() {
         return this.toSearchParamsObject().toString();
     }
+
+    isDefault() {
+        return this === defaultParams;
+    }
 }
 
 function isValidJsonUrl(url) {
