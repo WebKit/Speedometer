@@ -1,7 +1,6 @@
 const fs = require("fs").promises;
 const { dirname } = require("path");
 const path = require("path");
-const { generateResourcesFile } = require("../../../resources/shared/generate-resources");
 
 /**
  * createDirectory
@@ -166,4 +165,4 @@ const build = async () => {
     console.log("Done with building!");
 };
 
-build().then(() => generateResourcesFile(path.join(__dirname, "../dist")));
+build().then(() => import("../../../resources/shared/generate-resources.mjs").then(m => m.generateResourcesFile(path.join(__dirname, "../dist"));));
