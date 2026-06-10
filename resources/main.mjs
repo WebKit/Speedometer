@@ -458,12 +458,7 @@ class MainBenchmarkClient {
         this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
 
         try {
-            await this.preloadServiceWorker.precacheSuites(
-                enabledSuites,
-                params.resourceLoadDelay,
-                clearCache,
-                this._updateCacheProgress.bind(this)
-            );
+            await this.preloadServiceWorker.precacheSuites(enabledSuites, params.resourceLoadDelay, clearCache, this._updateCacheProgress.bind(this));
             this._didInitialPrecache = true;
             this._enableStartButtons();
         } catch (error) {
@@ -476,7 +471,7 @@ class MainBenchmarkClient {
     _updateCacheProgress(progressData) {
         const { loaded, total, url, suiteName } = progressData;
         document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
-        const progress = document.getElementById("preload-progress-completed")
+        const progress = document.getElementById("preload-progress-completed");
         progress.max = total;
         progress.value = loaded;
         const filename = url ? url.substring(url.lastIndexOf("/") + 1) : "";

@@ -47,9 +47,9 @@ async function handlePrecache(event, { suites = [], delay = 0, clearCache = true
 
     await Promise.all(promises);
 
-    for (const item of urlsToCache) {
+    for (const item of urlsToCache)
         cachedUrls.add(item.url);
-    }
+
     replyToClient(event, { type: SW_MESSAGES.PRECACHE_DONE, totalSize, count: urlsToCache.length });
 }
 
@@ -59,10 +59,13 @@ async function parseSuiteResources(suite) {
         if (!response.ok)
             return [];
         const text = await response.text();
-        return text.trim().split("\n").map((resourceUrl) => ({
-            url: new URL(resourceUrl.trim(), suite.url).href,
-            suiteName: suite.name,
-        }));
+        return text
+            .trim()
+            .split("\n")
+            .map((resourceUrl) => ({
+                url: new URL(resourceUrl.trim(), suite.url).href,
+                suiteName: suite.name,
+            }));
     } catch (e) {
         console.warn("Failed to fetch resources.txt for", suite.name);
         return [];
