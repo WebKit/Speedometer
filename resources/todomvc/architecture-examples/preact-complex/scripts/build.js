@@ -15,4 +15,4 @@ const options = {
 };
 
 buildComplex(options);
-import("../../../../shared/generate-resources.mjs").then(m => m.generateResourcesFile(path.join(__dirname, "../dist")););
+import("../../../../shared/generate-resources.mjs").then((m) => m.generateResourcesFile(path.join(__dirname, "../dist")));

@@ -165,4 +165,4 @@ const build = async () => {
     console.log("Done with building!");
 };
 
-build().then(() => import("../../../resources/shared/generate-resources.mjs").then(m => m.generateResourcesFile(path.join(__dirname, "../dist"));));
+build().then(() => import("../../../resources/shared/generate-resources.mjs").then((m) => m.generateResourcesFile(path.join(__dirname, "../dist"))));

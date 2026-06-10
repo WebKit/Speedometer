@@ -13,9 +13,8 @@ export class PreloadServiceWorker {
 
     async setup() {
         const existingRegistrations = await navigator.serviceWorker.getRegistrations();
-        for (const existing of existingRegistrations) {
+        for (const existing of existingRegistrations)
             await existing.unregister();
-        }
 
         this.registration = await navigator.serviceWorker.register("/sw.mjs", { type: "module" });
         await this.registration.update();
@@ -26,18 +25,22 @@ export class PreloadServiceWorker {
     }
 
     async precacheSuites(suites, resourceLoadDelay, onProgress) {
-        if (suites.length === 0) return;
+        if (suites.length === 0)
+            return;
 
-        const suitesData = suites.filter(s => s.resources).map(s => ({
-            name: s.name,
-            url: new URL(s.url, window.location.href).href,
-            resources: new URL(s.resources, window.location.href).href
-        }));
+        const suitesData = suites
+            .filter((s) => s.resources)
+            .map((s) => ({
+                name: s.name,
+                url: new URL(s.url, window.location.href).href,
+                resources: new URL(s.resources, window.location.href).href,
+            }));
 
-        if (suitesData.length === 0) return;
+        if (suitesData.length === 0)
+            return;
 
         const startTime = performance.now();
-        return new Promise((resolve) => {
+        await new Promise((resolve) => {
             const channel = new MessageChannel();
             channel.port1.onmessage = (event) => {
                 if (event.data?.type === SW_MESSAGES.PRECACHE_DONE) {
@@ -51,11 +54,14 @@ export class PreloadServiceWorker {
                     onProgress(event.data);
                 }
             };
-            this.sw.postMessage({
-                type: SW_MESSAGES.PRECACHE_SUITES,
-                suites: suitesData,
-                delay: resourceLoadDelay
-            }, [channel.port2]);
+            this.sw.postMessage(
+                {
+                    type: SW_MESSAGES.PRECACHE_SUITES,
+                    suites: suitesData,
+                    delay: resourceLoadDelay,
+                },
+                [channel.port2]
+            );
         });
     }
 
@@ -63,7 +69,6 @@ export class PreloadServiceWorker {
         this.sw.postMessage({ type: SW_MESSAGES.SET_STATE, state });
     }
 }
-
 
 const BENCHMARK_STATE = Object.freeze({
     IDLE: "IDLE",
@@ -84,10 +89,7 @@ class MainBenchmarkClient {
     _progressCompleted = null;
     _isRunning = false;
     _hasResults = false;
-    _developerModeContainer = null;
     _metrics = Object.create(null);
-    _developerModeContainer = null;
-    _progressCompleted = null;
     preloadServiceWorker = new PreloadServiceWorker();
     _steppingPromise = null;
     _steppingResolver = null;
@@ -475,9 +477,8 @@ class MainBenchmarkClient {
 
     _setBenchmarkState(state) {
         document.body.setAttribute("data-benchmark-state", state);
-        if (this.preloadServiceWorker) {
+        if (this.preloadServiceWorker)
             this.preloadServiceWorker.setState(state);
-        }
 
         const startButton = document.querySelector(".start-tests-button");
         if (state === BENCHMARK_STATE.PRELOADING) {
@@ -485,10 +486,12 @@ class MainBenchmarkClient {
             document.getElementById("preload-info-label").textContent = "Connecting to Service Worker...";
             document.getElementById("preload-info-progress").textContent = "";
             document.body.style.setProperty("--preload-progress", "0%");
-            if (startButton) startButton.textContent = "Preloading...";
+            if (startButton)
+                startButton.textContent = "Preloading...";
         } else if (state === BENCHMARK_STATE.READY || state === BENCHMARK_STATE.IDLE || state === BENCHMARK_STATE.DONE || state === BENCHMARK_STATE.ERROR) {
             document.body.style.removeProperty("--preload-progress");
-            if (startButton) startButton.textContent = "Start Test";
+            if (startButton)
+                startButton.textContent = "Start Test";
         }
     }
 

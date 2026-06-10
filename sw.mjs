@@ -16,7 +16,7 @@ function replyToClient(event, msg) {
 }
 
 function delayAsync(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function handlePrecache(event, { suites = [], delay = 0 }) {
@@ -29,7 +29,8 @@ async function handlePrecache(event, { suites = [], delay = 0 }) {
 
     cachedSuitesPrefixes.clear();
     for (const suite of suites) {
-        if (!suite.resources) continue;
+        if (!suite.resources)
+            continue;
         const prefix = new URL(".", suite.url).href;
         cachedSuitesPrefixes.add(prefix);
         urlsToCache.push(...await parseSuiteResources(suite));
@@ -45,19 +46,22 @@ async function handlePrecache(event, { suites = [], delay = 0 }) {
 
     await Promise.all(promises);
 
-    cachedUrls = new Set(urlsToCache.map(item => item.url));
+    cachedUrls = new Set(urlsToCache.map((item) => item.url));
     replyToClient(event, { type: SW_MESSAGES.PRECACHE_DONE, totalSize, count: urlsToCache.length });
 }
 
 async function parseSuiteResources(suite) {
     try {
         const response = await fetch(suite.resources);
-        if (!response.ok) return [];
-        const text = await response.text();
-        const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
-        return lines.map(resourceUrl => ({
+        if (!response.ok)
+            return [];
+        let text = await response.text();
+        if (text.endsWith("\n"))
+            text = text.slice(0, -1);
+        const lines = text.split("\n").map((l) => l.trim());
+        return lines.map((resourceUrl) => ({
             url: new URL(resourceUrl, suite.url).href,
-            suiteName: suite.name
+            suiteName: suite.name,
         }));
     } catch (e) {
         console.warn("Failed to fetch resources.txt for", suite.name);
@@ -66,12 +70,14 @@ async function parseSuiteResources(suite) {
 }
 
 async function fetchAndCache(cache, url, delayMs) {
-    if (delayMs) await delayAsync(delayMs);
+    if (delayMs)
+        await delayAsync(delayMs);
     const request = new Request(url, { cache: "no-cache" });
     try {
         await cache.add(request);
         const cachedResponse = await cache.match(request);
-        if (!cachedResponse) return 0;
+        if (!cachedResponse)
+            return 0;
         const blob = await cachedResponse.blob();
         return blob.size;
     } catch (e) {
@@ -90,13 +96,13 @@ self.addEventListener("activate", function (event) {
 
 self.addEventListener("message", function (event) {
     const { data } = event;
-    if (!data) return;
+    if (!data)
+        return;
 
-    if (data.type === SW_MESSAGES.SET_STATE) {
+    if (data.type === SW_MESSAGES.SET_STATE)
         currentState = data.state;
-    } else if (data.type === SW_MESSAGES.PRECACHE_SUITES) {
+    else if (data.type === SW_MESSAGES.PRECACHE_SUITES)
         event.waitUntil(handlePrecache(event, data));
-    }
 });
 
 self.addEventListener("fetch", function (event) {
@@ -107,9 +113,10 @@ self.addEventListener("fetch", function (event) {
         return;
     }
 
-    // We only enforce strict blocking when the benchmark is actively RUNNING 
+    // We only enforce strict blocking when the benchmark is actively RUNNING
     // to allow runner resources to be loaded.
-    if (currentState !== BENCHMARK_STATE.RUNNING) return;
+    if (currentState !== BENCHMARK_STATE.RUNNING)
+        return;
 
     let isCachedSuite = false;
     for (const prefix of cachedSuitesPrefixes) {
@@ -130,6 +137,7 @@ self.addEventListener("fetch", function (event) {
 async function handleFetch(request) {
     const cache = await caches.open(CACHE_NAME);
     const cachedResponse = await cache.match(request);
-    if (cachedResponse) return cachedResponse;
+    if (cachedResponse)
+        return cachedResponse;
     return fetch(request);
 }
