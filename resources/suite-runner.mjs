@@ -96,7 +96,7 @@ export class SuiteRunner {
         const { suiteTotal, suitePrepare } = this.#suiteResults.total;
         if (suiteTotal === 0)
             throw new Error(`Got invalid 0-time total for suite ${this.#suite.name}: ${suiteTotal}`);
-        if (this.#params.measurePrepare && suitePrepare === 0)
+        if ((this.#params.measurePrepare || this.#suite.measurePrepare) && suitePrepare === 0)
             throw new Error(`Got invalid 0-time prepare time for suite ${this.#suite.name}: ${suitePrepare}`);
     }
 
@@ -172,7 +172,6 @@ export class RemoteSuiteRunner extends SuiteRunner {
         this.appId = response?.appId;
 
         performance.mark(suitePrepareEndLabel);
-
         const entry = performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
         this.#prepareTime = entry.duration;
     }

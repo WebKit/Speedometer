@@ -7,6 +7,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-JavaScript-ES5",
         url: "resources/todomvc/vanilla-examples/javascript-es5/dist/index.html",
+        resources: "resources/todomvc/vanilla-examples/javascript-es5/dist/resources.txt",
         tags: ["default", "todomvc"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();

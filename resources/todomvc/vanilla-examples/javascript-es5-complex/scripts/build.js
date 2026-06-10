@@ -3,6 +3,7 @@
  */
 const path = require("path");
 const { buildComplex } = require("big-dom-generator/utils/buildComplex");
+const { generateResourcesFile } = require("../../../../shared/generate-resources");
 
 const options = {
     callerDirectory: path.resolve(__dirname),
@@ -17,3 +18,4 @@ const options = {
 };
 
 buildComplex(options);
+generateResourcesFile(path.join(__dirname, "../dist"));
