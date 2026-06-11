@@ -1,8 +1,8 @@
 /**
  * Build the TodoMVC: React Complex DOM example.
  */
-const path = require("path");
-const { buildComplex } = require("big-dom-generator/utils/buildComplex");
+import path from "path";
+import { buildComplex } from "big-dom-generator/utils/buildComplex.js";
 
 const options = {
     callerDirectory: path.resolve(__dirname),

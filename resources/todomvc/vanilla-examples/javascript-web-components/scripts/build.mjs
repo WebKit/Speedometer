@@ -1,5 +1,5 @@
-const fs = require("fs").promises;
-const { dirname } = require("path");
+import fs from "fs/promises";
+import { dirname } from "path";
 
 /**
  * createDirectory
