@@ -1,5 +1,5 @@
-const fs = require("fs").promises;
-const path = require("path");
+import fs from "fs/promises";
+import path from "path";
 
 const rootDirectory = "./";
 const sourceDirectory = "./src";
@@ -7,7 +7,14 @@ const targetDirectory = "./dist";
 
 const htmlFile = "index.html";
 
-const filesToMove = ["node_modules/todomvc-common/base.css", "node_modules/todomvc-app-css/index.css"];
+const filesToMove = [
+    "node_modules/todomvc-common/base.css",
+    "node_modules/todomvc-app-css/index.css",
+    "node_modules/jquery/dist/jquery.min.js",
+    "node_modules/underscore/underscore-min.js",
+    "node_modules/backbone/backbone-min.js",
+    "node_modules/backbone/backbone-min.js.map",
+];
 
 const copy = async (src, dest) => {
     await fs.copyFile(src, dest);
@@ -37,10 +44,8 @@ const build = async () => {
     let html = await fs.readFile(path.join(targetDirectory, htmlFile), "utf8");
 
     // remove base paths from files to move
-    for (let i = 0; i < filesToMove.length; i++) {
-        const basePath = `${filesToMove[i].split("/").slice(0, -1).join("/")}/`;
-        html = html.replace(basePath, "");
-    }
+    for (let i = 0; i < filesToMove.length; i++)
+        html = html.replace(filesToMove[i], path.basename(filesToMove[i]));
 
     // remove basePath from source directory
     const basePath = `${path.basename(sourceDirectory)}/`;

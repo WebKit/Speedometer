@@ -1,6 +1,10 @@
-const fs = require("fs");
-const path = require("path");
-const { execSync } = require("child_process");
+import fs from "fs";
+import path from "path";
+import { execSync } from "child_process";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const __dirname = import.meta.dirname;
 
 /**
  * Builds the complex version of TodoMVC.
@@ -21,7 +25,7 @@ const { execSync } = require("child_process");
  * @param {string} options.standaloneDirectory - The directory of the TodoMVC standalone version.
  * @param {string} options.complexDirectory - The directory of the TodoMVC complex version.
  */
-function buildComplex(options) {
+export function buildComplex(options) {
     const {
         callerDirectory,
         sourceDirectory,
@@ -156,5 +160,3 @@ function getHtmlBodySync(filePath) {
 
     return htmlContent.substring(bodyStartIndex + 6, bodyEndIndex);
 }
-
-module.exports = { buildComplex };
