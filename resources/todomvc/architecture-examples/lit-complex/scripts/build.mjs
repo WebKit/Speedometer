@@ -3,6 +3,11 @@
  */
 import path from "path";
 import { buildComplex } from "big-dom-generator/utils/buildComplex.js";
+import { fileURLToPath as _fileURLToPath } from "url";
+import { dirname as _dirname } from "path";
+const __filename = _fileURLToPath(import.meta.url);
+const __dirname = _dirname(__filename);
+
 
 const options = {
     callerDirectory: path.resolve(__dirname),
