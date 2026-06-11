@@ -1,4 +1,5 @@
 import { execFileSync } from "child_process";
+import { parseArgs } from "util";
 import fs from "fs";
 
 function formatAll() {
@@ -26,8 +27,7 @@ function runPrettier(files) {
 
 function runEslint(files) {
     const jsTsFiles = files.filter((f) => /\.(js|mjs|jsx|ts|tsx)$/.test(f));
-    if (jsTsFiles.length === 0)
-        return;
+    if (jsTsFiles.length === 0) return;
     try {
         console.log(`Running eslint on ${jsTsFiles.length} file(s)`);
         runInBatches("eslint", ["--fix"], jsTsFiles);
@@ -46,9 +46,31 @@ function getChangedFiles() {
     return [...new Set(files)];
 }
 
-const isAll = process.argv.includes("--all");
+let values;
+try {
+    ({ values } = parseArgs({
+        options: {
+            all: { type: "boolean" },
+            help: { type: "boolean", short: "h" },
+        },
+        strict: true,
+    }));
+} catch (err) {
+    console.error(err.message);
+    console.error("Run 'node tests/format.mjs --help' for usage.");
+    process.exit(1);
+}
 
-if (isAll) {
+if (values.help) {
+    console.log(`Usage: node tests/format.mjs [options]
+
+Options:
+  --all          Format all files across the repository instead of just changed files
+  -h, --help     Show this help message`);
+    process.exit(0);
+}
+
+if (values.all) {
     formatAll();
     process.exit(0);
 }
