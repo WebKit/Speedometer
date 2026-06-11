@@ -1,12 +1,10 @@
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
-import { fileURLToPath } from "url";
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = import.meta.dirname;
 
 /**
  * Builds the complex version of TodoMVC.
