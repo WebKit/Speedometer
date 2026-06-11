@@ -1,14 +1,18 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import path from "path";
+import { fileURLToPath } from "url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
     entry: {
         app: path.resolve(__dirname, "src", "index.js"),
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: "TodoMVC: React-Redux",
-            template: "public/index.html",
+            title: "TodoMVC: React",
+            template: path.resolve(__dirname, "public", "index.html"),
         }),
     ],
     output: {
@@ -23,7 +27,7 @@ module.exports = {
         rules: [
             {
                 test: /\.(js|jsx)$/,
-                exclude: /nodeModules/,
+                exclude: /node_modules/,
                 use: {
                     loader: "babel-loader",
                     options: {

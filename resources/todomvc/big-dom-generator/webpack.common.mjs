@@ -1,16 +1,12 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const path = require("path");
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = {
+export default {
     entry: {
-        app: path.resolve(__dirname, "src", "index.js"),
+        app: path.resolve(__dirname, "index.js"),
     },
-    plugins: [
-        new HtmlWebpackPlugin({
-            title: "TodoMVC: React",
-            template: path.resolve(__dirname, "public", "index.html"),
-        }),
-    ],
     output: {
         filename: "[name].bundle.js",
         path: path.resolve(__dirname, "dist"),
@@ -35,8 +31,16 @@ module.exports = {
                 },
             },
             {
-                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                test: /\.svg$/i,
+                issuer: /\.[jt]sx?$/,
+                use: ["@svgr/webpack"],
+            },
+            {
+                test: /\.png$/,
                 type: "asset/resource",
+                generator: {
+                    filename: "[name][ext]",
+                },
             },
         ],
     },
