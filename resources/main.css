@@ -288,12 +288,10 @@ button,
     /* Col 1: checkbox, Col 2: text, Col 3: input, Col 4: value */
     grid-template-columns: min-content 1fr 1fr 5em;
     align-items: center;
-    column-gap: 4px;
-    row-gap: 4px;
+    gap: 4px;
 }
 .developer-mode-content .settings hr {
     grid-column: 1 / -1;
-    width: 100%;
     margin: 8px 0;
 }
 
@@ -308,17 +306,12 @@ button,
     content: "•";
     grid-column: 1;
     margin-right: 0.2em; /* match checkbox margin so it visually centers */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    place-self: center;
     color: var(--foreground);
 }
 .developer-mode-content input[type="checkbox"] {
-    margin: 0;
-    margin-right: 0.2em;
-}
-.developer-mode-content .settings input[type="checkbox"] {
     grid-column: 1;
+    margin: 0 0.2em 0 0;
 }
 .developer-mode-content .settings input[type="checkbox"] + span {
     /* Checkbox text spans the rest of the row */
