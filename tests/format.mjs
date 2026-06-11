@@ -8,7 +8,8 @@ function formatAll() {
     execFileSync("npm", ["run", "lint:fix"], { stdio: "inherit" });
 }
 
-function runInBatches(command, args, files, batchSize = 100) {
+// Chunk files into batches to avoid "Argument list too long" errors on large changelists.
+function execFileSyncInBatches(command, args, files, batchSize = 100) {
     for (let i = 0; i < files.length; i += batchSize) {
         const batch = files.slice(i, i + batchSize);
         execFileSync("npx", [command, ...args, ...batch], { stdio: "inherit" });
@@ -18,7 +19,7 @@ function runInBatches(command, args, files, batchSize = 100) {
 function runPrettier(files) {
     try {
         console.log(`Running prettier on ${files.length} file(s)`);
-        runInBatches("prettier", ["--write", "--ignore-unknown"], files);
+        execFileSyncInBatches("prettier", ["--write", "--ignore-unknown"], files);
     } catch (e) {
         console.error("Prettier formatting failed");
         process.exit(1);
@@ -30,7 +31,7 @@ function runEslint(files) {
     if (jsTsFiles.length === 0) return;
     try {
         console.log(`Running eslint on ${jsTsFiles.length} file(s)`);
-        runInBatches("eslint", ["--fix"], jsTsFiles);
+        execFileSyncInBatches("eslint", ["--fix"], jsTsFiles);
     } catch (e) {
         console.error("ESLint formatting failed");
         process.exit(1);
@@ -38,6 +39,7 @@ function runEslint(files) {
 }
 
 function getChangedFiles() {
+    // "--diff-filter=ACMR" => ignore deleted files.
     const diffOut = execFileSync("git", ["diff", "--name-only", "--diff-filter=ACMR", "@{upstream}"], { encoding: "utf8" });
     const files = diffOut
         .split("\n")
