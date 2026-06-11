@@ -36,7 +36,10 @@ export default async function serve(port) {
 async function verifyStartup(ws, port) {
     await new Promise((resolve, reject) => {
         ws.server.on("listening", () => {
-            console.log(`Server started on http://localhost:${port}`);
+            console.log("Server started:");
+            console.log(`  http://localhost:${port}`);
+            console.log(`  http://localhost:${port}?developerMode`);
+            console.log("");
             resolve();
         });
         ws.server.on("error", (e) => {
