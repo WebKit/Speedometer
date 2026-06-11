@@ -110,7 +110,6 @@ async function testDeveloperMode() {
     });
 }
 
-
 async function test() {
     const retries = options.retry ?? DEFAULT_RETRIES;
     try {
@@ -121,16 +120,17 @@ async function test() {
 }
 
 async function testWithRetries(retries = DEFAULT_RETRIES) {
-    for (let attempts = 0; attempts <= retries; attempts++) {
+    const maxAttempts = retries + 1;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
             await tryTests();
             return;
         } catch (e) {
-            console.error(`\nTests failed on attempt ${attempts + 1}!`);
-            if (attempts === retries)
+            console.error(`\nTests failed on attempt ${attempt}!`);
+            if (attempt === maxAttempts)
                 throw e;
 
-            console.log(`Retrying... (${attempts + 1}/${retries})`);
+            console.log(`Retrying... (${attempt}/${maxAttempts})`);
         }
     }
 }
