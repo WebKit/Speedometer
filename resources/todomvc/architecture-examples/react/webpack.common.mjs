@@ -1,6 +1,5 @@
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "path";
-const currentFile = import.meta.filename;
 const currentDir = import.meta.dirname;
 
 export default {
