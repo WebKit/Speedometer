@@ -507,10 +507,10 @@ class MainBenchmarkClient {
             document.getElementById("preload-info-label").textContent = "";
             document.getElementById("preload-info-progress").textContent = "";
             document.body.style.setProperty("--preload-progress", "0%");
-            startButton.textContent = "Preloading...";
+            startButton.innerHTML = "<div>Preloading</div>";
         } else if (state === BENCHMARK_STATE.READY || state === BENCHMARK_STATE.IDLE || state === BENCHMARK_STATE.DONE || state === BENCHMARK_STATE.ERROR) {
             document.body.style.removeProperty("--preload-progress");
-            startButton.textContent = "Start Test";
+            startButton.innerHTML = "<div>Start Test</div>";
         }
     }
 

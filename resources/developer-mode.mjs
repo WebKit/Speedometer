@@ -52,7 +52,7 @@ function createUIForWarmupSuite() {
 }
 
 function createUIForPreload() {
-    return createCheckboxUI("Enable service worker for resource preloading", params.preload, (isChecked) => {
+    return createCheckboxUI("Use service worker for resource preloading", params.preload, (isChecked) => {
         params.preload = isChecked;
     });
 }

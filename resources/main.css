@@ -938,10 +938,17 @@ section#about .note {
 
 [data-benchmark-state="PRELOADING"] .start-tests-button {
     color: var(--foreground);
-    background-image: linear-gradient(-45deg, var(--foreground) 15%, transparent 15%, transparent 50%, var(--foreground) 50%, var(--foreground) 65%, transparent 65%, transparent 100%);
+    background-image: linear-gradient(-45deg, var(--foreground) 3px, transparent 3px, transparent 50%, var(--foreground) 50%, var(--foreground) calc(50% + 3px), transparent calc(50% + 3px), transparent 100%);
     background-size: 20px 20px;
     animation: barber-pole 1s linear infinite;
     pointer-events: none;
+}
+
+[data-benchmark-state="PRELOADING"] .start-tests-button > div {
+    background-color: var(--background);
+    border-radius: 10px;
+    padding: 0 0.3em;
+    display: inline-block;
 }
 
 @keyframes barber-pole {

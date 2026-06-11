@@ -37,7 +37,7 @@ export class Params {
     config = "";
     // Resource load delay in ms for the service worker pre-caching.
     resourceLoadDelay = 0;
-    // Enable service worker for resource preloading.
+    // Use service worker for resource preloading.
     preload = false;
 
     constructor(searchParams = undefined) {
