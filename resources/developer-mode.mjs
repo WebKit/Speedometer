@@ -26,6 +26,7 @@ export function createDeveloperModeContainer() {
     settings.append(createUIForSyncStepDelay());
     settings.append(createUIForAsyncSteps());
     settings.append(createUIForLayoutMode());
+    settings.append(createUIForPreload());
 
     content.append(document.createElement("hr"));
     content.append(settings);
@@ -47,6 +48,12 @@ function span(text) {
 function createUIForWarmupSuite() {
     return createCheckboxUI("Use Warmup Suite", params.useWarmupSuite, (isChecked) => {
         params.useWarmupSuite = isChecked;
+    });
+}
+
+function createUIForPreload() {
+    return createCheckboxUI("Enable service worker for resource preloading", params.preload, (isChecked) => {
+        params.preload = isChecked;
     });
 }
 
@@ -72,7 +79,7 @@ function createCheckboxUI(labelValue, initialValue, paramsUpdateCallback) {
     };
 
     const label = document.createElement("label");
-    label.append(checkbox, " ", span(labelValue));
+    label.append(checkbox, span(labelValue));
 
     return label;
 }

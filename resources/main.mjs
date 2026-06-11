@@ -16,6 +16,12 @@ export class PreloadServiceWorker {
         for (const existing of existingRegistrations)
             await existing.unregister();
 
+        if (!params.preload) {
+            this.registration = null;
+            this.sw = null;
+            return false;
+        }
+
         this.registration = await navigator.serviceWorker.register("/sw.mjs", { type: "module" });
         await this.registration.update();
         await navigator.serviceWorker.ready;
@@ -25,7 +31,7 @@ export class PreloadServiceWorker {
     }
 
     async precacheSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
-        if (suites.length === 0)
+        if (!this.sw || suites.length === 0)
             return;
 
         const suitesData = suites
@@ -67,7 +73,8 @@ export class PreloadServiceWorker {
     }
 
     setState(state) {
-        this.sw.postMessage({ type: SW_MESSAGES.SET_STATE, state });
+        if (this.sw)
+            this.sw.postMessage({ type: SW_MESSAGES.SET_STATE, state });
     }
 }
 
@@ -107,14 +114,14 @@ class MainBenchmarkClient {
         });
     }
 
-    start() {
+    async start() {
         if (this._isStepping())
             this._clearStepping();
-        else if (this._startBenchmark())
+        else if (await this._startBenchmark())
             this._showSection("#running");
     }
 
-    step() {
+    async step() {
         const currentSteppingResolver = this._steppingResolver;
         this._steppingPromise = new Promise((resolve) => {
             this._steppingResolver = resolve;
@@ -122,7 +129,7 @@ class MainBenchmarkClient {
         if (this._isStepping())
             currentSteppingResolver();
         if (!this._isRunning) {
-            this._startBenchmark();
+            await this._startBenchmark();
             this._showSection("#running");
         }
     }
@@ -148,6 +155,8 @@ class MainBenchmarkClient {
             return false;
 
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
+
+        await this.preloadServiceWorker.setup();
 
         if (!params.isDefault())
             await this._cacheResources(benchmarkConfigurator);
