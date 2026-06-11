@@ -2,7 +2,7 @@
  * Builds the TodoMVC Angular Complex DOM.
  */
 import path from "path";
-import { buildComplex } from "big-dom-generator/utils/buildComplex.js";
+import { buildComplex } from "big-dom-generator/utils/buildComplex.mjs";
 import { fileURLToPath as _fileURLToPath } from "url";
 import { dirname as _dirname } from "path";
 const __filename = _fileURLToPath(import.meta.url);
