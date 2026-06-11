@@ -1,11 +1,16 @@
-const { merge } = require("webpack-merge");
-const common = require("./webpack.common.js");
+import { merge } from "webpack-merge";
+import common from "./webpack.common.mjs";
 
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const webpack = require("webpack");
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import CopyPlugin from "copy-webpack-plugin";
+import webpack from "webpack";
 
-module.exports = merge(common, {
+import postcssImport from "postcss-import";
+import postcssVarfallback from "postcss-varfallback";
+import postcssDropunusedvars from "postcss-dropunusedvars";
+import cssnano from "cssnano";
+
+export default merge(common, {
     mode: "production",
     plugins: [
         new MiniCssExtractPlugin({
@@ -33,7 +38,7 @@ module.exports = merge(common, {
                         loader: "postcss-loader",
                         options: {
                             postcssOptions: {
-                                plugins: [require("postcss-import"), require("postcss-varfallback"), require("postcss-dropunusedvars"), require("cssnano")],
+                                plugins: [postcssImport, postcssVarfallback, postcssDropunusedvars, cssnano],
                             },
                         },
                     },
