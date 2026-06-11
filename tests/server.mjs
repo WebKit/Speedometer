@@ -39,7 +39,7 @@ async function verifyStartup(ws, port) {
             console.log("Server started:");
             console.log(`  http://localhost:${port}`);
             console.log(`  http://localhost:${port}?developerMode`);
-            console.log("")
+            console.log("");
             resolve();
         });
         ws.server.on("error", (e) => {
