@@ -56,6 +56,8 @@ export class BenchmarkConfigurator {
         this.#suites.forEach((suite) => {
             if (!suite.tags)
                 suite.tags = [];
+            if (!("measurePrepare" in suite))
+                suite.measurePrepare = false;
             if (suite.url.startsWith("experimental/"))
                 suite.tags.unshift("all", "experimental");
             else

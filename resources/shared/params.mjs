@@ -35,6 +35,10 @@ export class Params {
     measurePrepare = false;
     // External config url to override internal tests.
     config = "";
+    // Resource load delay in ms for the service worker pre-caching.
+    resourceLoadDelay = 0;
+    // Use service worker for resource preloading.
+    preload = false;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -68,6 +72,8 @@ export class Params {
         this.layoutMode = this._parseEnumParam(searchParams, "layoutMode", LAYOUT_MODES);
         this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
         this.config = this._parseConfig(searchParams);
+        this.resourceLoadDelay = this._parseIntParam(searchParams, "resourceLoadDelay", 0);
+        this.preload = this._parseBooleanParam(searchParams, "preload");
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -202,6 +208,10 @@ export class Params {
 
     toSearchParams() {
         return this.toSearchParamsObject().toString();
+    }
+
+    isDefault() {
+        return this === defaultParams;
     }
 }
 

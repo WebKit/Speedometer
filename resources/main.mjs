@@ -1,8 +1,91 @@
 import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
+import { SW_MESSAGES } from "./shared/sw-messages.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
+
+export class PreloadServiceWorker {
+    constructor() {
+        this.registration = null;
+        this.sw = null;
+    }
+
+    async setup() {
+        const existingRegistrations = await navigator.serviceWorker.getRegistrations();
+        for (const existing of existingRegistrations)
+            await existing.unregister();
+
+        if (!params.preload) {
+            this.registration = null;
+            this.sw = null;
+            return false;
+        }
+
+        this.registration = await navigator.serviceWorker.register("/sw.mjs", { type: "module" });
+        await this.registration.update();
+        await navigator.serviceWorker.ready;
+
+        this.sw = navigator.serviceWorker.controller || this.registration.active;
+        return true;
+    }
+
+    async precacheSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
+        if (!this.sw || suites.length === 0)
+            return;
+
+        const suitesData = suites
+            .filter((s) => s.resources)
+            .map((s) => ({
+                name: s.name,
+                url: new URL(s.url, window.location.href).href,
+                resources: new URL(s.resources, window.location.href).href,
+            }));
+
+        if (suitesData.length === 0)
+            return;
+
+        const startTime = performance.now();
+        await new Promise((resolve) => {
+            const channel = new MessageChannel();
+            channel.port1.onmessage = (event) => {
+                if (event.data?.type === SW_MESSAGES.PRECACHE_DONE) {
+                    const timeTakenMs = performance.now() - startTime;
+                    const { totalSize, count } = event.data;
+                    const sizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+                    const timeSec = (timeTakenMs / 1000).toFixed(2);
+                    console.log(`Preloaded ${count} files (${sizeMB} MB) in ${timeSec}s`);
+                    resolve();
+                } else if (event.data?.type === SW_MESSAGES.PRECACHE_PROGRESS) {
+                    onProgress(event.data);
+                }
+            };
+            this.sw.postMessage(
+                {
+                    type: SW_MESSAGES.PRECACHE_SUITES,
+                    suites: suitesData,
+                    delay: resourceLoadDelay,
+                    clearCache: clearCache,
+                },
+                [channel.port2]
+            );
+        });
+    }
+
+    setState(state) {
+        if (this.sw)
+            this.sw.postMessage({ type: SW_MESSAGES.SET_STATE, state });
+    }
+}
+
+const BENCHMARK_STATE = Object.freeze({
+    IDLE: "IDLE",
+    PRELOADING: "PRELOADING",
+    READY: "READY",
+    RUNNING: "RUNNING",
+    DONE: "DONE",
+    ERROR: "ERROR",
+});
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -14,8 +97,8 @@ class MainBenchmarkClient {
     _progressCompleted = null;
     _isRunning = false;
     _hasResults = false;
-    _developerModeContainer = null;
     _metrics = Object.create(null);
+    preloadServiceWorker = new PreloadServiceWorker();
     _steppingPromise = null;
     _steppingResolver = null;
     _benchmarkConfiguratorPromise = null;
@@ -31,14 +114,14 @@ class MainBenchmarkClient {
         });
     }
 
-    start() {
+    async start() {
         if (this._isStepping())
             this._clearStepping();
-        else if (this._startBenchmark())
+        else if (await this._startBenchmark())
             this._showSection("#running");
     }
 
-    step() {
+    async step() {
         const currentSteppingResolver = this._steppingResolver;
         this._steppingPromise = new Promise((resolve) => {
             this._steppingResolver = resolve;
@@ -46,7 +129,7 @@ class MainBenchmarkClient {
         if (this._isStepping())
             currentSteppingResolver();
         if (!this._isRunning) {
-            this._startBenchmark();
+            await this._startBenchmark();
             this._showSection("#running");
         }
     }
@@ -72,6 +155,13 @@ class MainBenchmarkClient {
             return false;
 
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
+
+        await this.preloadServiceWorker.setup();
+
+        if (!params.isDefault())
+            await this._cacheResources(benchmarkConfigurator);
+
+        this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
 
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const totalSuitesCount = enabledSuites.length;
@@ -146,6 +236,7 @@ class MainBenchmarkClient {
         this._isRunning = false;
         this._hasResults = true;
         this._metrics = metrics;
+        this._setBenchmarkState(BENCHMARK_STATE.DONE);
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         if (scoreResults.isValid)
@@ -166,6 +257,7 @@ class MainBenchmarkClient {
         this._isRunning = false;
         this._hasResults = true;
         this._metrics = Object.create(null);
+        this._setBenchmarkState(BENCHMARK_STATE.ERROR);
         this._populateInvalidScore();
         this.showResultsSummary();
         throw error;
@@ -343,6 +435,7 @@ class MainBenchmarkClient {
         document.getElementById("copy-csv").onclick = this.copyCSVResults.bind(this);
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
+            button.disabled = true;
         });
     }
 
@@ -357,8 +450,68 @@ class MainBenchmarkClient {
             document.body.append(this._developerModeContainer);
         }
 
+        await this._setupServiceWorker(benchmarkConfigurator);
+
         if (params.startAutomatically)
             this.start();
+    }
+
+    async _setupServiceWorker(benchmarkConfigurator) {
+        await this.preloadServiceWorker.setup();
+        await this._cacheResources(benchmarkConfigurator);
+    }
+
+    async _cacheResources(benchmarkConfigurator) {
+        const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
+        const clearCache = !params.isDefault();
+        this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
+
+        try {
+            await this.preloadServiceWorker.precacheSuites(enabledSuites, params.resourceLoadDelay, clearCache, this._updateCacheProgress.bind(this));
+            this._didInitialPrecache = true;
+            this._enableStartButtons();
+        } catch (error) {
+            console.error("Service Worker precache failed:", error);
+            this._setBenchmarkState(BENCHMARK_STATE.ERROR);
+            this._enableStartButtons();
+        }
+    }
+
+    _updateCacheProgress(progressData) {
+        const { loaded, total, url, suiteName } = progressData;
+        document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
+        const progress = document.getElementById("preload-progress-completed");
+        progress.max = total;
+        progress.value = loaded;
+        const filename = url ? url.substring(url.lastIndexOf("/") + 1) : "";
+        const labelText = suiteName ? `${suiteName}: ${filename}` : filename;
+        document.getElementById("preload-info-label").textContent = labelText;
+        document.getElementById("preload-info-progress").textContent = `${loaded} / ${total}`;
+    }
+
+    _enableStartButtons() {
+        this._setBenchmarkState(BENCHMARK_STATE.READY);
+        document.querySelectorAll(".start-tests-button").forEach((button) => {
+            button.disabled = false;
+        });
+    }
+
+    _setBenchmarkState(state) {
+        document.body.setAttribute("data-benchmark-state", state);
+        if (this.preloadServiceWorker)
+            this.preloadServiceWorker.setState(state);
+
+        const startButton = document.querySelector(".start-tests-button");
+        if (state === BENCHMARK_STATE.PRELOADING) {
+            document.getElementById("preload-progress-completed").value = 0;
+            document.getElementById("preload-info-label").textContent = "";
+            document.getElementById("preload-info-progress").textContent = "";
+            document.body.style.setProperty("--preload-progress", "0%");
+            startButton.innerHTML = "<div>Preloading</div>";
+        } else if (state === BENCHMARK_STATE.READY || state === BENCHMARK_STATE.IDLE || state === BENCHMARK_STATE.DONE || state === BENCHMARK_STATE.ERROR) {
+            document.body.style.removeProperty("--preload-progress");
+            startButton.innerHTML = "<div>Start Test</div>";
+        }
     }
 
     _hashChangeHandler() {
