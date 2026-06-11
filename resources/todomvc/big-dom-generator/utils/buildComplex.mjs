@@ -25,7 +25,7 @@ const __dirname = import.meta.dirname;
  * @param {string} options.standaloneDirectory - The directory of the TodoMVC standalone version.
  * @param {string} options.complexDirectory - The directory of the TodoMVC complex version.
  */
-function buildComplex(options) {
+export function buildComplex(options) {
     const {
         callerDirectory,
         sourceDirectory,
@@ -161,4 +161,3 @@ function getHtmlBodySync(filePath) {
     return htmlContent.substring(bodyStartIndex + 6, bodyEndIndex);
 }
 
-export { buildComplex };
