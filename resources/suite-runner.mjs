@@ -1,4 +1,4 @@
-import { TEST_RUNNER_LOOKUP } from "./shared/test-runner.mjs";
+import { STEP_RUNNER_LOOKUP } from "./shared/step-runner.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
 
 export class SuiteRunner {
@@ -73,14 +73,14 @@ export class SuiteRunner {
         const suiteEndLabel = `suite-${suiteName}-end`;
 
         performance.mark(suiteStartLabel);
-        for (const test of this.#suite.tests) {
+        for (const step of this.#suite.tests) {
             if (this.#client?.willRunTest)
-                await this.#client.willRunTest(this.#suite, test);
+                await this.#client.willRunTest(this.#suite, step);
 
-            const testRunnerType = this.#suite.type ?? this.params.useAsyncSteps ? "async" : "default";
-            const testRunnerClass = TEST_RUNNER_LOOKUP[testRunnerType];
-            const testRunner = new testRunnerClass(this.#frame, this.#page, this.#params, this.#suite, test, this._recordTestResults, testRunnerType);
-            await testRunner.runTest();
+            const stepRunnerType = this.#suite.type ?? this.params.useAsyncSteps ? "async" : "default";
+            const stepRunnerClass = STEP_RUNNER_LOOKUP[stepRunnerType];
+            const stepRunner = new stepRunnerClass(this.#frame, this.#page, this.#params, this.#suite, step, this._recordTestResults, stepRunnerType);
+            await stepRunner.runStep();
         }
         performance.mark(suiteEndLabel);
 
@@ -110,13 +110,13 @@ export class SuiteRunner {
         });
     }
 
-    _recordTestResults = async (test, syncTime, asyncTime) => {
+    _recordTestResults = async (step, syncTime, asyncTime) => {
         // Skip reporting updates for the warmup suite.
         if (this.#suite === WarmupSuite)
             return;
 
         let total = syncTime + asyncTime;
-        this.#suiteResults.tests[test.name] = {
+        this.#suiteResults.tests[step.name] = {
             tests: { Sync: syncTime, Async: asyncTime },
             total: total,
         };
