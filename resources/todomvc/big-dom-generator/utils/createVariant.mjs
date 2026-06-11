@@ -7,7 +7,6 @@ import postcss from "postcss";
  * to trigger different code paths related to scrolling in browsers.
  */
 try {
-
     const INPUT_FILE_PATH = "./dist/big-dom.css";
     const OUTPUT_FILE_PATH = "./dist/big-dom-with-stacking-context-scrollable.css";
 

@@ -5,7 +5,6 @@ import path from "path";
 import { buildComplex } from "big-dom-generator/utils/buildComplex.mjs";
 const __dirname = import.meta.dirname;
 
-
 const options = {
     callerDirectory: path.resolve(__dirname),
     sourceDirectory: path.join("..", "node_modules", "todomvc-angular", "dist"),

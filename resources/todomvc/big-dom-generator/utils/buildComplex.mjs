@@ -160,4 +160,3 @@ function getHtmlBodySync(filePath) {
 
     return htmlContent.substring(bodyStartIndex + 6, bodyEndIndex);
 }
-
