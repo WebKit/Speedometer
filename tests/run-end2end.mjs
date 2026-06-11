@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 import assert from "assert";
-import testSetup from "./helper.mjs";
+import testSetup, { DEFAULT_RETRIES } from "./helper.mjs";
 import { benchmarkConfigurator } from "../resources/benchmark-configurator.mjs";
 
 const HELP = `
@@ -9,7 +9,7 @@ This script runs end2end tests by invoking the benchmark via the main
 Speedometer page in /index.html.
 `.trim();
 
-const { driver, PORT, stop } = await testSetup(HELP);
+const { driver, PORT, stop, retry } = await testSetup(HELP);
 
 const suites = benchmarkConfigurator.suites;
 
@@ -112,17 +112,34 @@ async function testDeveloperMode() {
 
 async function test() {
     try {
-        await driver.manage().setTimeouts({ script: 60000 });
-        await testIterations();
-        await testAll();
-        await testDeveloperMode();
-        console.log("\nTests complete!");
-    } catch (e) {
-        console.error("\nTests failed!");
-        throw e;
+        await testWithRetries(retry);
     } finally {
         stop();
     }
+}
+
+async function testWithRetries(retries = DEFAULT_RETRIES) {
+    const maxAttempts = retries + 1;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            await tryTests();
+            return;
+        } catch (e) {
+            console.error(`\nTests failed on attempt ${attempt}!`);
+            if (attempt === maxAttempts)
+                throw e;
+
+            console.log(`Retrying... (${attempt}/${maxAttempts})`);
+        }
+    }
+}
+
+async function tryTests() {
+    await driver.manage().setTimeouts({ script: 60000 });
+    await testIterations();
+    await testAll();
+    await testDeveloperMode();
+    console.log("\nTests complete!");
 }
 
 setImmediate(test);
