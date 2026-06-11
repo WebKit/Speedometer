@@ -4,10 +4,12 @@ import serve from "./server.mjs";
 
 import { Builder, Capabilities, logging } from "selenium-webdriver";
 
+export const DEFAULT_RETRIES = 1;
+
 const optionDefinitions = [
     { name: "browser", type: String, description: "Set the browser to test, choices are [safari, firefox, chrome]. By default the $BROWSER env variable is used." },
     { name: "port", type: Number, defaultValue: 8010, description: "Set the test-server port, The default value is 8010." },
-    { name: "retry", type: Number, defaultValue: 0, description: "Number of retries for the tests on failure." },
+    { name: "retry", type: Number, defaultValue: DEFAULT_RETRIES, description: "Number of retries for the tests on failure." },
     { name: "help", alias: "h", description: "Print this help text." },
 ];
 

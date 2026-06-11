@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 import assert from "assert";
-import testSetup from "./helper.mjs";
+import testSetup, { DEFAULT_RETRIES } from "./helper.mjs";
 import { benchmarkConfigurator } from "../resources/benchmark-configurator.mjs";
 
 const HELP = `
@@ -110,8 +110,9 @@ async function testDeveloperMode() {
     });
 }
 
+
 async function test() {
-    const retries = options.retry || 0;
+    const retries = options.retry ?? DEFAULT_RETRIES;
     try {
         await testWithRetries(retries);
     } finally {
@@ -119,7 +120,7 @@ async function test() {
     }
 }
 
-async function testWithRetries(retries = 0) {
+async function testWithRetries(retries = DEFAULT_RETRIES) {
     for (let attempts = 0; attempts <= retries; attempts++) {
         try {
             await tryTests();
