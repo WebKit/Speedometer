@@ -1,11 +1,12 @@
+import fs from "fs";
+import postcss from "postcss";
+
 /**
  * Create a variant of big-dom.css by adding a property
  * that creates a CSS stacking context for the overflow scroller (<div class="tree-area">)
  * to trigger different code paths related to scrolling in browsers.
  */
 try {
-    const fs = require("fs");
-    const postcss = require("postcss");
 
     const INPUT_FILE_PATH = "./dist/big-dom.css";
     const OUTPUT_FILE_PATH = "./dist/big-dom-with-stacking-context-scrollable.css";
