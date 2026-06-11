@@ -1,12 +1,20 @@
-const path = require("path");
+import path from "path";
+const currentDir = import.meta.dirname;
+import HtmlWebpackPlugin from "html-webpack-plugin";
 
-module.exports = {
+export default {
     entry: {
-        app: path.resolve(__dirname, "index.js"),
+        app: path.resolve(currentDir, "src", "index.js"),
     },
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: "TodoMVC: React-Redux",
+            template: "public/index.html",
+        }),
+    ],
     output: {
         filename: "[name].bundle.js",
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(currentDir, "dist"),
         clean: true,
     },
     resolve: {
@@ -16,7 +24,7 @@ module.exports = {
         rules: [
             {
                 test: /\.(js|jsx)$/,
-                exclude: /node_modules/,
+                exclude: /nodeModules/,
                 use: {
                     loader: "babel-loader",
                     options: {
@@ -28,16 +36,8 @@ module.exports = {
                 },
             },
             {
-                test: /\.svg$/i,
-                issuer: /\.[jt]sx?$/,
-                use: ["@svgr/webpack"],
-            },
-            {
-                test: /\.png$/,
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: "asset/resource",
-                generator: {
-                    filename: "[name][ext]",
-                },
             },
         ],
     },

@@ -1,11 +1,11 @@
-const { merge } = require("webpack-merge");
-const common = require("./webpack.common.js");
+import { merge } from "webpack-merge";
+import common from "./webpack.common.mjs";
 
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
+import TerserPlugin from "terser-webpack-plugin";
 
-module.exports = merge(common, {
+export default merge(common, {
     mode: "production",
     devtool: "source-map",
     plugins: [
