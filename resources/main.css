@@ -10,6 +10,7 @@
     --text-width: 650px;
     --metrics-line-height: 25px;
     --scrollbar-width: 10px;
+    --developer-mode-settings-height: 280px;
 }
 
 body {
@@ -225,16 +226,6 @@ button,
     position: fixed;
     left: 10px;
     top: 10px;
-    max-height: calc(100vh - 20px);
-    display: grid;
-    grid-template-rows: minmax(0, 1fr);
-    box-sizing: border-box;
-}
-
-.developer-mode details {
-    display: grid;
-    grid-template-rows: min-content minmax(0, 1fr);
-    min-height: 0;
 }
 
 .developer-mode summary {
@@ -245,20 +236,14 @@ button,
 }
 
 .developer-mode-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 0;
     padding-bottom: 1rem;
-    box-sizing: border-box;
 }
 
 .developer-mode .suites {
-    flex: 0 1 auto;
-    min-height: 0;
+    max-height: calc(100vh - var(--developer-mode-settings-height));
     margin-right: calc(0px - var(--scrollbar-width));
     padding-right: var(--scrollbar-width);
-    overflow-y: auto;
+    overflow: auto;
 }
 
 .developer-mode-content ol {
@@ -268,7 +253,6 @@ button,
 }
 .developer-mode-content .button-bar {
     display: flex;
-    flex: none;
     margin-top: 5px;
     gap: 3px;
 }
@@ -281,54 +265,20 @@ button,
     content: " ✘";
 }
 
-.developer-mode-content .settings {
-    flex: none;
-    display: grid;
-    /* Col 1: checkbox, Col 2: text, Col 3: input, Col 4: value */
-    grid-template-columns: min-content 1fr 1fr 5em;
-    align-items: center;
-    column-gap: 4px;
-    row-gap: 4px;
-}
-.developer-mode-content .settings hr {
-    grid-column: 1 / -1;
-    width: 100%;
-    margin: 8px 0;
-}
-
 .developer-mode-content .settings label {
-    display: contents;
-}
-.developer-mode-content .settings label > span:first-child {
-    /* Range and Select labels start here */
-    grid-column: 2;
-}
-.developer-mode-content .settings label:not(:has(input[type="checkbox"]))::before {
-    content: "•";
-    grid-column: 1;
-    margin-right: 0.2em; /* match checkbox margin so it visually centers */
+    width: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--foreground);
 }
-.developer-mode-content input[type="checkbox"] {
-    margin: 0;
-    margin-right: 0.2em;
+.developer-mode-content .settings label * {
+    flex: 1;
 }
 .developer-mode-content .settings input[type="checkbox"] {
-    grid-column: 1;
-}
-.developer-mode-content .settings input[type="checkbox"] + span {
-    /* Checkbox text spans the rest of the row */
-    grid-column: 2 / -1;
-}
-.developer-mode-content .settings select {
-    /* Select spans input and value columns */
-    grid-column: 3 / -1;
+    flex: 0;
+    margin-left: 0px;
 }
 .developer-mode-content .settings .range-label-data {
-    grid-column: 4;
+    flex: 0;
+    min-width: 5em;
     text-align: right;
 }
 
@@ -363,7 +313,6 @@ button,
     background: rgba(255, 255, 255, 0.1);
 }
 .developer-mode-content hr {
-    flex: none;
     width: initial;
     margin: 10px 0;
 }
