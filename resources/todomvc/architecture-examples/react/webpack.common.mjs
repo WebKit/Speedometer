@@ -1,23 +1,21 @@
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const currentFile = import.meta.filename;
+const currentDir = import.meta.dirname;
 
 export default {
     entry: {
-        app: path.resolve(__dirname, "src", "index.js"),
+        app: path.resolve(currentDir, "src", "index.js"),
     },
     plugins: [
         new HtmlWebpackPlugin({
             title: "TodoMVC: React",
-            template: path.resolve(__dirname, "public", "index.html"),
+            template: path.resolve(currentDir, "public", "index.html"),
         }),
     ],
     output: {
         filename: "[name].bundle.js",
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(currentDir, "dist"),
         clean: true,
     },
     resolve: {

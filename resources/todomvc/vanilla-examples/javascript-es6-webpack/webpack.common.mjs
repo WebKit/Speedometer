@@ -1,23 +1,22 @@
 import path from "path";
-import { fileURLToPath } from "url";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const currentFile = import.meta.filename;
+const currentDir = import.meta.dirname;
 
 export default {
     entry: {
-        app: path.resolve(__dirname, "src", "app.js"),
+        app: path.resolve(currentDir, "src", "app.js"),
     },
     plugins: [
         new HtmlWebpackPlugin({
             title: "TodoMVC: JavaScript Es6 Webpack",
-            template: path.resolve(__dirname, "src", "index.html"),
+            template: path.resolve(currentDir, "src", "index.html"),
         }),
     ],
     output: {
         filename: "[name].bundle.js",
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(currentDir, "dist"),
         clean: true,
     },
     module: {
