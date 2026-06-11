@@ -41,6 +41,9 @@ export default async function testSetup(helpText) {
     if (!BROWSER)
         printHelp("No browser specified, use $BROWSER or --browser", 1);
 
+    if (options.retry < 0)
+        printHelp("Number of retries cannot be negative", 1);
+
     let capabilities;
     switch (BROWSER) {
         case "safari":
@@ -89,5 +92,5 @@ export default async function testSetup(helpText) {
         if (driver)
             driver.close();
     }
-    return { driver, PORT, stop, options };
+    return { driver, PORT, stop, retry: options.retry };
 }

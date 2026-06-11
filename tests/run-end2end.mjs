@@ -9,7 +9,7 @@ This script runs end2end tests by invoking the benchmark via the main
 Speedometer page in /index.html.
 `.trim();
 
-const { driver, PORT, stop, options } = await testSetup(HELP);
+const { driver, PORT, stop, retry } = await testSetup(HELP);
 
 const suites = benchmarkConfigurator.suites;
 
@@ -111,9 +111,8 @@ async function testDeveloperMode() {
 }
 
 async function test() {
-    const retries = options.retry ?? DEFAULT_RETRIES;
     try {
-        await testWithRetries(retries);
+        await testWithRetries(retry);
     } finally {
         stop();
     }
