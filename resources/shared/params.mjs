@@ -20,8 +20,12 @@ export class Params {
     // "timer": The classic (as in Speedometer 2.x) way using setTimeout
     // "raf":   Using rAF callbacks, both for triggering the sync part and for measuring async time.
     measurementMethod = "raf";
+    // Wait time after suite preparation in ms.
+    waitAfterSetup = 0;
     // Wait time before the sync step in ms.
     waitBeforeSync = 0;
+    // Wait after running a suite.
+    waitAfterSuite = 0;
     // Warmup time before the sync step in ms.
     warmupBeforeSync = 0;
     // Seed for shuffling the execution order of suites.
@@ -61,7 +65,9 @@ export class Params {
         this.developerMode = this._parseBooleanParam(searchParams, "developerMode");
         this.useWarmupSuite = this._parseBooleanParam(searchParams, "useWarmupSuite");
         this.useAsyncSteps = this._parseBooleanParam(searchParams, "useAsyncSteps");
+        this.waitAfterSetup = this._parseIntParam(searchParams, "waitAfterSetup", 0);
         this.waitBeforeSync = this._parseIntParam(searchParams, "waitBeforeSync", 0);
+        this.waitAfterSuite = this._parseIntParam(searchParams, "waitAfterSuite", 0);
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseEnumParam(searchParams, "measurementMethod", ["raf"]);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
