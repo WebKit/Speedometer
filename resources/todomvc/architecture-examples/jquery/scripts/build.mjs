@@ -1,5 +1,5 @@
-const fs = require("fs").promises;
-const path = require("path");
+import fs from "fs/promises";
+import path from "path";
 
 const rootDirectory = "./";
 const sourceDirectory = "./src";
@@ -7,14 +7,7 @@ const targetDirectory = "./dist";
 
 const htmlFile = "index.html";
 
-const filesToMove = [
-    "node_modules/todomvc-common/base.css",
-    "node_modules/todomvc-app-css/index.css",
-    "node_modules/jquery/dist/jquery.min.js",
-    "node_modules/underscore/underscore-min.js",
-    "node_modules/backbone/backbone-min.js",
-    "node_modules/backbone/backbone-min.js.map",
-];
+const filesToMove = ["node_modules/todomvc-common/base.css", "node_modules/todomvc-app-css/index.css", "node_modules/jquery/dist/jquery.min.js", "node_modules/handlebars/dist/handlebars.min.js", "node_modules/director/build/director.min.js"];
 
 const copy = async (src, dest) => {
     await fs.copyFile(src, dest);
