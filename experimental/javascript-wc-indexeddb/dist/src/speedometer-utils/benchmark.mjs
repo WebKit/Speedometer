@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { TestRunner, AsyncTestRunner } from "./test-runner.mjs";
+import { StepRunner, AsyncStepRunner } from "./step-runner.mjs";
 import { Params } from "./params.mjs";
 
 /**
@@ -15,10 +15,10 @@ export class BenchmarkStep {
     }
 
     async runAndRecord(params, suite, test, callback) {
-        const TestRunnerClass = params.useAsyncSteps ? AsyncTestRunner : TestRunner;
+        const StepRunnerClass = params.useAsyncSteps ? AsyncStepRunner : StepRunner;
         const type = params.useAsyncSteps ? "async" : "sync";
-        const testRunner = new TestRunnerClass(null, null, params, suite, test, callback, type);
-        const result = await testRunner.runTest();
+        const stepRunner = new StepRunnerClass(null, null, params, suite, test, callback, type);
+        const result = await stepRunner.runStep();
         return result;
     }
 }

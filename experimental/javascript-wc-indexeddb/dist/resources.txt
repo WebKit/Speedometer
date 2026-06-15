@@ -18,7 +18,7 @@ src/speedometer-utils/benchmark.mjs
 src/speedometer-utils/helpers.mjs
 src/speedometer-utils/params.mjs
 src/speedometer-utils/step-runner.mjs
-src/speedometer-utils/test-invoker.mjs
+src/speedometer-utils/step-scheduler.mjs
 src/speedometer-utils/todomvc-utils.mjs
 src/speedometer-utils/translations.mjs
 src/storage/base-storage-manager.js
