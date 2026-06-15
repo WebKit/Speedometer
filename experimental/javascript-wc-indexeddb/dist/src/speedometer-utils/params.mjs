@@ -37,6 +37,8 @@ export class Params {
     config = "";
     // Resource load delay in ms for the service worker pre-caching.
     resourceLoadDelay = 0;
+    // Use service worker for resource preloading.
+    preload = false;
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -71,6 +73,7 @@ export class Params {
         this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
         this.config = this._parseConfig(searchParams);
         this.resourceLoadDelay = this._parseIntParam(searchParams, "resourceLoadDelay", 0);
+        this.preload = this._parseBooleanParam(searchParams, "preload");
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)

@@ -1,3 +1,4 @@
+import { generateResourcesFile } from "../../../../shared/generate-resources.mjs";
 /**
  * Builds the TodoMVC jQuery Complex DOM.
  */

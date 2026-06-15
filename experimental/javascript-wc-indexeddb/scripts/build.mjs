@@ -1,5 +1,9 @@
+import path from "path";
+import { generateResourcesFile } from "../../../resources/shared/generate-resources.mjs";
 import fs from "fs/promises";
 import { dirname } from "path";
+
+const __dirname = import.meta.dirname;
 
 /**
  * createDirectory
@@ -164,4 +168,5 @@ const build = async () => {
     console.log("Done with building!");
 };
 
-build().then(() => import("../../../resources/shared/generate-resources.mjs").then((m) => m.generateResourcesFile(path.join(__dirname, "../dist"))));
+await build();
+await generateResourcesFile(path.join(import.meta.dirname, "../dist"));

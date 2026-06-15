@@ -1,3 +1,4 @@
+import { generateResourcesFile } from "../../../../shared/generate-resources.mjs";
 /**
  * Builds the TodoMVC React-Redux Complex DOM.
  */
@@ -16,4 +17,4 @@ const options = {
 };
 
 buildComplex(options);
-import("../../../../shared/generate-resources.mjs").then((m) => m.generateResourcesFile(path.join(__dirname, "../dist")));
+await generateResourcesFile(path.join(import.meta.dirname, "../dist"));
