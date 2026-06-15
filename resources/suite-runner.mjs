@@ -4,6 +4,7 @@ import { WarmupSuite } from "./benchmark-runner.mjs";
 function delay(ms) {
     if (ms > 0)
         return new Promise((resolve) => setTimeout(resolve, ms));
+    return undefined;
 }
 
 export class SuiteRunner {
