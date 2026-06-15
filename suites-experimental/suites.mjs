@@ -35,7 +35,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-Emoji",
-        url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+        url: "suites/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             await page.waitForElement("todo-app");
@@ -67,7 +67,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-WebComponents-PostMessage",
-        url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+        url: "suites/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
         tags: ["experimental", "todomvc", "webcomponents"],
         async prepare() {},
         type: "remote",
@@ -134,7 +134,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "NewsSite-PostMessage",
-        url: "resources/newssite/news-next/dist/index.html",
+        url: "suites/newssite/news-next/dist/index.html",
         tags: ["experimental", "newssite", "language"],
         async prepare() {},
         type: "remote",
