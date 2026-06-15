@@ -79,7 +79,7 @@ function createCheckboxUI(labelValue, initialValue, paramsUpdateCallback) {
     };
 
     const label = document.createElement("label");
-    label.append(checkbox, " ", span(labelValue));
+    label.append(checkbox, span(labelValue));
 
     return label;
 }
