@@ -6,7 +6,7 @@ import { freezeSuites } from "../resources/suites-helper.mjs";
 export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-LocalStorage",
-        url: "experimental/todomvc-localstorage/dist/index.html",
+        url: "suites-experimental/todomvc-localstorage/dist/index.html",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
@@ -77,7 +77,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-Jaspr-Dart2JS-O4",
-        url: "experimental/todomvc-dart-jaspr/dist/out-dart2js-O4/index.html",
+        url: "suites-experimental/todomvc-dart-jaspr/dist/out-dart2js-O4/index.html",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
@@ -105,7 +105,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-Jaspr-Dart2Wasm-O2",
-        url: "experimental/todomvc-dart-jaspr/dist/out-dart2wasm-O2/index.html",
+        url: "suites-experimental/todomvc-dart-jaspr/dist/out-dart2wasm-O2/index.html",
         tags: ["todomvc", "experimental"],
         disabled: true,
         async prepare(page) {
@@ -144,7 +144,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-WebComponents-IndexedDB",
-        url: "experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=vanilla",
+        url: "suites-experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=vanilla",
         tags: ["todomvc", "webcomponents", "experimental"],
         async prepare() {},
         type: "remote",
@@ -154,7 +154,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-WebComponents-DexieJS",
-        url: "experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=dexie",
+        url: "suites-experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=dexie",
         tags: ["todomvc", "webcomponents", "experimental"],
         async prepare() {},
         type: "remote",
@@ -164,7 +164,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "Responsive-Design",
-        url: "experimental/responsive-design/dist/index.html",
+        url: "suites-experimental/responsive-design/dist/index.html",
         tags: ["responsive-design", "webcomponents", "experimental"],
         type: "async",
         async prepare(page) {
