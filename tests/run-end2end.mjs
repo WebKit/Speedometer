@@ -118,6 +118,7 @@ async function test() {
     }
 }
 
+const RETRY_DELAY_MS = 3000;
 async function testWithRetries(retries = DEFAULT_RETRIES) {
     const maxAttempts = retries + 1;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -130,6 +131,7 @@ async function testWithRetries(retries = DEFAULT_RETRIES) {
                 throw e;
 
             console.log(`Retrying... (${attempt}/${maxAttempts})`);
+            await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
         }
     }
 }

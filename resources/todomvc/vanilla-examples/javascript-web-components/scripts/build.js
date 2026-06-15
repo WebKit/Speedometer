@@ -96,7 +96,7 @@ const filesToMove = [
     { src: "node_modules/todomvc-css/dist/bottombar.constructable.js", dest: "./dist/styles/bottombar.constructable.js" },
     { src: "node_modules/todomvc-css/dist/todo-list.constructable.js", dest: "./dist/styles/todo-list.constructable.js" },
     { src: "node_modules/todomvc-css/dist/todo-item.constructable.js", dest: "./dist/styles/todo-item.constructable.js" },
-    { src: "node_modules/speedometer-utils/test-invoker.mjs", dest: "./dist/src/speedometer-utils/test-invoker.mjs" },
+    { src: "node_modules/speedometer-utils/step-scheduler.mjs", dest: "./dist/src/speedometer-utils/test-invoker.mjs" },
     { src: "node_modules/speedometer-utils/step-runner.mjs", dest: "./dist/src/speedometer-utils/step-runner.mjs" },
     { src: "node_modules/speedometer-utils/params.mjs", dest: "./dist/src/speedometer-utils/params.mjs" },
     { src: "node_modules/speedometer-utils/benchmark.mjs", dest: "./dist/src/speedometer-utils/benchmark.mjs" },
