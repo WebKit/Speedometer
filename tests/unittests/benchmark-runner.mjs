@@ -1,6 +1,6 @@
 import { BenchmarkRunner } from "../../resources/benchmark-runner.mjs";
 import { SuiteRunner } from "../../resources/suite-runner.mjs";
-import { TestRunner } from "../../resources/shared/test-runner.mjs";
+import { StepRunner } from "../../resources/shared/step-runner.mjs";
 import { defaultParams } from "../../resources/shared/params.mjs";
 
 function TEST_FIXTURE(name) {
@@ -147,7 +147,7 @@ describe("BenchmarkRunner", () => {
             before(async () => {
                 _prepareSuiteSpy = spy(SuiteRunner.prototype, "_prepareSuite");
                 _loadFrameStub = stub(SuiteRunner.prototype, "_loadFrame").callsFake(async () => null);
-                _runTestStub = stub(TestRunner.prototype, "runTest").callsFake(async () => null);
+                _runTestStub = stub(StepRunner.prototype, "runStep").callsFake(async () => null);
                 _validateSuiteResultsStub = stub(SuiteRunner.prototype, "_validateSuiteResults").callsFake(async () => null);
                 performanceMarkSpy = spy(window.performance, "mark");
                 _suitePrepareSpy = spy(suite, "prepare");
@@ -200,7 +200,7 @@ describe("BenchmarkRunner", () => {
 
                 // SuiteRunner adds 2 marks.
                 // Suite used here contains 3 tests.
-                // Each TestRunner adds 3 marks.
+                // Each StepRunner adds 3 marks.
                 expect(performanceMarkSpy.callCount).to.equal(11);
             });
         });

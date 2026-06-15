@@ -2,33 +2,69 @@
 + echo 'Current Dart SDK version'
 Current Dart SDK version
 + dart --version
-Dart SDK version: 3.9.0-333.0.dev (dev) (Fri Jul 11 09:03:09 2025 -0700) on "macos_arm64"
+Dart SDK version: 3.10.7 (stable) (Tue Dec 23 00:01:57 2025 -0800) on "linux_x64"
 + echo 'Fetching dependencies'
 Fetching dependencies
 + dart pub get
 Resolving dependencies...
 Downloading packages...
-  _fe_analyzer_shared 82.0.0 (85.0.0 available)
-  analyzer 7.4.5 (7.5.7 available)
-  analyzer_plugin 0.13.1 (0.13.4 available)
-  dds 4.2.7 (5.0.4 available)
+  build_daemon 4.0.4 (4.1.1 available)
+  dds 4.2.7 (5.1.0 available)
   devtools_shared 10.0.2 (12.0.0 available)
   dtd 2.5.1 (4.0.0 available)
-  dwds 24.3.5 (24.4.0 available)
+  dwds 24.3.5 (26.2.3 available)
   json_rpc_2 3.0.3 (4.0.0 available)
   mime 1.0.6 (2.0.0 available)
   shelf_web_socket 2.0.1 (3.0.0 available)
   vm_service 14.3.1 (15.0.2 available)
   webdev 3.7.1 (3.7.2 available)
 Got dependencies!
-12 packages have newer versions incompatible with dependency constraints.
+10 packages have newer versions incompatible with dependency constraints.
 Try `dart pub outdated` for more information.
 + echo 'Building dart2js version in -O4'
 Building dart2js version in -O4
 + rm -rf build dist/out-dart2js-O4
 + dart run jaspr_cli:jaspr build -O4 --extra-js-compiler-option=--disable-program-split
 Building jaspr for client rendering mode.
-⠋ Building web assets......⠙ Building web assets...... (1ms)✓ Completed building web assets. (11.8s)
+⠋ Building web assets......⠙ Building web assets...... (1ms)[BUILDER] Starting daemon...
+[BUILDER] About to build [web]...
+[BUILDER] 0s jaspr_builder:codec_bundle on 107 inputs; $sdk|lib/$lib$
+[BUILDER] 0s jaspr_builder:styles_bundle on 107 inputs; $sdk|lib/$lib$
+[BUILDER] 0s jaspr_builder:clients_bundle on 107 inputs; $sdk|lib/$lib$
+[BUILDER] 0s jaspr_builder:codec_module on 3136 inputs; collection|lib/algorithms.dart
+[BUILDER] 0s jaspr_builder:codec_module on 3136 inputs: 1 no-op; collection|lib/collection.dart
+[BUILDER] 0s jaspr_builder:styles_module on 3137 inputs; collection|lib/algorithms.dart
+[BUILDER] 0s jaspr_builder:client_module on 3140 inputs; collection|lib/algorithms.dart
+[BUILDER] 0s jaspr_builder:styles_module on 3137 inputs: 2433 no-op; build_runner|lib/src/commands/build_command.dart
+[BUILDER] 1s jaspr_builder:styles_module on 3137 inputs: 2783 no-op; jaspr|lib/src/dom/styles/properties/all.dart
+[BUILDER] 2s jaspr_builder:client_module on 3140 inputs: 2754 no-op; spent 1s analyzing; jaspr|lib/src/client/client_binding.dart
+[BUILDER] 5s jaspr_builder:codec_module on 3136 inputs: 2875 no-op; spent 4s analyzing; jaspr_builder|lib/src/codec/codec_bundle_builder.dart
+[BUILDER] 5s jaspr_builder:client_module on 3140 inputs: 3019 no-op; spent 4s analyzing; jaspr_cli|lib/src/migrations/html_helper_migration.dart
+[BUILDER] 5s jaspr_builder:codec_module on 3136 inputs: 3136 no-op; spent 4s analyzing
+[BUILDER] 0s jaspr_builder:codec_bundle on 107 inputs: 107 no-op
+[BUILDER] 0s jaspr_builder:sync_mixins_module on 3 inputs; lib/app.dart
+[BUILDER] 0s jaspr_builder:sync_mixins_module on 3 inputs: 3 no-op
+[BUILDER] 2s jaspr_builder:styles_module on 3137 inputs: 2 skipped, 3135 no-op; spent 1s analyzing
+[BUILDER] 0s jaspr_builder:styles_bundle on 107 inputs: 107 no-op
+[BUILDER] 0s jaspr_builder:imports_module on 6 inputs; lib/app.dart
+[BUILDER] 0s jaspr_builder:imports_module on 6 inputs: 3 skipped, 3 no-op
+[BUILDER] 0s jaspr_builder:stub on 1 input; lib/$lib$
+[BUILDER] 0s jaspr_builder:stub on 1 input: 1 no-op
+[BUILDER] 5s jaspr_builder:client_module on 3140 inputs: 5 skipped, 1 output, 3134 no-op; spent 4s analyzing
+[BUILDER] 0s jaspr_builder:clients_bundle on 107 inputs: 1 output, 106 no-op
+[BUILDER] 0s jaspr_builder:import_output on 6 inputs; lib/app.imports.json
+[BUILDER] 0s jaspr_builder:import_output on 6 inputs: 6 skipped
+[BUILDER] 0s build_web_compilers:entrypoint_marker on 1 input; web/$web$
+[BUILDER] 0s build_web_compilers:entrypoint_marker on 1 input: 1 no-op
+[BUILDER] 0s build_web_compilers:entrypoint on 4 inputs; web/main.dart
+[BUILDER] build_web_compilers:entrypoint on web/main.dart:
+[BUILDER] Running `dart compile js` with -Djaspr.flags.release=true -O4 --disable-program-split --libraries-spec=/usr/local/google/home/kustermann/Downloads/dart-sdk/lib/libraries.json --packages=org-dartlang-app:///.dart_tool/package_config.json --multi-root-scheme=org-dartlang-app --multi-root=/tmp/scratch_spaceGRFOLT/ -oweb/main.dart.js org-dartlang-app:///web/main.dart
+[BUILDER] build_web_compilers:entrypoint on web/main.dart:
+[BUILDER] Compiled 13,679,467 input bytes (8,684,593 characters source) to 125,106 characters JavaScript in 1.76 seconds
+[BUILDER] 2s build_web_compilers:entrypoint on 4 inputs: 1 output; spent 2s building; web/main.imports.dart
+[BUILDER] 2s build_web_compilers:entrypoint on 4 inputs: 3 skipped, 1 output; spent 2s building
+[BUILDER] Built with build_runner/jit in 19s; wrote 769 outputs.
+Completed building web assets.
 Completed building project to /build/jaspr.
 + mkdir -p dist/out-dart2js-O4
 + cp build/jaspr/index.html build/jaspr/base.css build/jaspr/index.css build/jaspr/favicon.ico build/jaspr/main.dart.js dist/out-dart2js-O4
@@ -37,7 +73,45 @@ Building dart2js version in -O4
 + rm -rf build dist/out-dart2wasm-O2
 + dart run jaspr_cli:jaspr build -O2 --experimental-wasm
 Building jaspr for client rendering mode.
-⠋ Building web assets......⠙ Building web assets...... (1ms)✓ Completed building web assets. (12.4s)
+⠋ Building web assets......⠙ Building web assets...... (1ms)[BUILDER] Starting daemon...
+[BUILDER] About to build [web]...
+[BUILDER] 0s jaspr_builder:codec_bundle on 107 inputs; $sdk|lib/$lib$
+[BUILDER] 0s jaspr_builder:styles_bundle on 107 inputs; $sdk|lib/$lib$
+[BUILDER] 0s jaspr_builder:clients_bundle on 107 inputs; $sdk|lib/$lib$
+[BUILDER] 0s jaspr_builder:codec_module on 3136 inputs; collection|lib/algorithms.dart
+[BUILDER] 0s jaspr_builder:codec_module on 3136 inputs: 1 no-op; collection|lib/collection.dart
+[BUILDER] 0s jaspr_builder:styles_module on 3137 inputs; collection|lib/algorithms.dart
+[BUILDER] 0s jaspr_builder:client_module on 3140 inputs; collection|lib/algorithms.dart
+[BUILDER] 0s jaspr_builder:client_module on 3140 inputs: 2483 no-op; posix|lib/src/bindings/mac_part2.dart
+[BUILDER] 1s jaspr_builder:styles_module on 3137 inputs: 2783 no-op; jaspr|lib/src/dom/styles/properties/all.dart
+[BUILDER] 2s jaspr_builder:client_module on 3140 inputs: 2754 no-op; spent 2s analyzing; jaspr|lib/src/client/client_binding.dart
+[BUILDER] 5s jaspr_builder:codec_module on 3136 inputs: 2875 no-op; spent 4s analyzing; jaspr_builder|lib/src/codec/codec_bundle_builder.dart
+[BUILDER] 5s jaspr_builder:client_module on 3140 inputs: 3019 no-op; spent 4s analyzing; jaspr_cli|lib/src/migrations/html_helper_migration.dart
+[BUILDER] 6s jaspr_builder:codec_module on 3136 inputs: 3136 no-op; spent 4s analyzing
+[BUILDER] 0s jaspr_builder:codec_bundle on 107 inputs: 107 no-op
+[BUILDER] 0s jaspr_builder:sync_mixins_module on 3 inputs; lib/app.dart
+[BUILDER] 0s jaspr_builder:sync_mixins_module on 3 inputs: 3 no-op
+[BUILDER] 2s jaspr_builder:styles_module on 3137 inputs: 2 skipped, 3135 no-op; spent 1s analyzing
+[BUILDER] 0s jaspr_builder:styles_bundle on 107 inputs: 107 no-op
+[BUILDER] 0s jaspr_builder:imports_module on 6 inputs; lib/app.dart
+[BUILDER] 0s jaspr_builder:imports_module on 6 inputs: 3 skipped, 3 no-op
+[BUILDER] 0s jaspr_builder:stub on 1 input; lib/$lib$
+[BUILDER] 0s jaspr_builder:stub on 1 input: 1 no-op
+[BUILDER] 5s jaspr_builder:client_module on 3140 inputs: 5 skipped, 1 output, 3134 no-op; spent 4s analyzing
+[BUILDER] 0s jaspr_builder:clients_bundle on 107 inputs: 1 output, 106 no-op
+[BUILDER] 0s jaspr_builder:import_output on 6 inputs; lib/app.imports.json
+[BUILDER] 0s jaspr_builder:import_output on 6 inputs: 6 skipped
+[BUILDER] 0s build_web_compilers:entrypoint_marker on 1 input; web/$web$
+[BUILDER] 0s build_web_compilers:entrypoint_marker on 1 input: 1 no-op
+[BUILDER] 0s build_web_compilers:entrypoint on 4 inputs; web/main.dart
+[BUILDER] build_web_compilers:entrypoint on web/main.dart:
+[BUILDER] Running `dart compile wasm` with --packages=org-dartlang-app:///.dart_tool/package_config.json -E--multi-root-scheme=org-dartlang-app -E--multi-root=/tmp/scratch_spaceHCUCGC/ -Djaspr.flags.release=true -O2 -o web/main.wasm org-dartlang-app:///web/main.dart
+[BUILDER] build_web_compilers:entrypoint on web/main.dart:
+[BUILDER] Generated wasm module 'web/main.wasm', and JS init file 'web/main.mjs'.
+[BUILDER] 3s build_web_compilers:entrypoint on 4 inputs: 1 output; spent 3s building; web/main.imports.dart
+[BUILDER] 3s build_web_compilers:entrypoint on 4 inputs: 3 skipped, 1 output; spent 3s building
+[BUILDER] Built with build_runner/jit in 20s; wrote 770 outputs.
+Completed building web assets.
 Completed building project to /build/jaspr.
 + mkdir -p dist/out-dart2wasm-O2
 + cp build/jaspr/index.html build/jaspr/base.css build/jaspr/index.css build/jaspr/favicon.ico build/jaspr/main.dart.js build/jaspr/main.mjs build/jaspr/main.wasm dist/out-dart2wasm-O2

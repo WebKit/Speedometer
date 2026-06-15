@@ -1,3 +1,4 @@
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
 @client
@@ -6,11 +7,7 @@ class TodoMVC extends StatefulComponent {
   State<StatefulComponent> createState() => TodoMVCState();
 }
 
-enum DisplayState {
-  all,
-  active,
-  completed,
-}
+enum DisplayState { all, active, completed }
 
 // Todo string, active pair
 typedef Todo = ({bool isActive, String todo});
@@ -76,92 +73,95 @@ class TodoMVCState extends State<TodoMVC> {
   int get completedCount => allCount - activeCount;
 
   @override
-  Iterable<Component> build(BuildContext context) => [
-        section(id: 'root', classes: 'todoapp', [
-          header(classes: 'header', attributes: {
-            'data-testid': 'header'
-          }, [
-            h1([text('todos')]),
+  Component build(BuildContext context) =>
+      section(id: 'root', classes: 'todoapp', [
+        header(
+          classes: 'header',
+          attributes: {'data-testid': 'header'},
+          [
+            h1([Component.text('todos')]),
             div(classes: 'input-container', [NewTodo(addTodo)]),
-          ]),
-          main_(
-              classes: 'main',
-              styles:
-                  Styles.raw({'display': todos.isEmpty ? 'none;' : 'block;'}),
-              [
-                div(classes: 'toggle-all-container', [
-                  input(
-                      classes: 'toggle-all',
-                      id: 'toggle-all',
-                      type: InputType.checkbox,
-                      attributes: activeCount > 0 ? null : {'checked': ''},
-                      onChange: (_) => toggleAll(),
-                      []),
-                  label(classes: 'toggle-all-label', attributes: {
-                    'for': 'toggle-all'
-                  }, [
-                    text('Mark all as complete'),
-                  ]),
-                ]),
-                ul(classes: 'todo-list', [
-                  for (var (dataId, (:isActive, :todo)) in todos.keyValues)
-                    if (isActive && displayState != DisplayState.completed ||
-                        !isActive && displayState != DisplayState.active)
-                      li(classes: isActive ? '' : 'completed', attributes: {
-                        'data-id': '$dataId'
-                      }, [
-                        div(classes: 'view', [
-                          input(
-                              classes: 'toggle',
-                              key: Key('$dataId-$isActive'),
-                              type: InputType.checkbox,
-                              attributes: isActive ? null : {'checked': ''},
-                              onChange: (_) => toggle(dataId),
-                              []),
-                          label([text(todo)]),
-                          button(
-                              classes: 'destroy',
-                              onClick: () => destroy(dataId),
-                              []),
-                        ])
+          ],
+        ),
+        main_(
+          classes: 'main',
+          styles: Styles(display: todos.isEmpty ? Display.none : Display.block),
+          [
+            div(classes: 'toggle-all-container', [
+              input(
+                classes: 'toggle-all',
+                id: 'toggle-all',
+                type: InputType.checkbox,
+                attributes: activeCount > 0 ? null : {'checked': ''},
+                onChange: (_) => toggleAll(),
+              ),
+              label(
+                classes: 'toggle-all-label',
+                attributes: {'for': 'toggle-all'},
+                [Component.text('Mark all as complete')],
+              ),
+            ]),
+            ul(classes: 'todo-list', [
+              for (var (dataId, (:isActive, :todo)) in todos.keyValues)
+                if (isActive && displayState != DisplayState.completed ||
+                    !isActive && displayState != DisplayState.active)
+                  li(
+                    classes: isActive ? '' : 'completed',
+                    attributes: {'data-id': '$dataId'},
+                    [
+                      div(classes: 'view', [
+                        input(
+                          classes: 'toggle',
+                          key: Key('$dataId-$isActive'),
+                          type: InputType.checkbox,
+                          attributes: isActive ? null : {'checked': ''},
+                          onChange: (_) => toggle(dataId),
+                        ),
+                        label([Component.text(todo)]),
+                        button(
+                          classes: 'destroy',
+                          onClick: () => destroy(dataId),
+                          [],
+                        ),
                       ]),
+                    ],
+                  ),
+            ]),
+          ],
+        ),
+        footer(
+          classes: 'footer',
+          styles: Styles(display: todos.isEmpty ? Display.none : Display.block),
+          [
+            span(classes: 'todo-count', [
+              strong([Component.text('$activeCount')]),
+              Component.text(' item${activeCount == 1 ? '' : 's'} left'),
+            ]),
+            ul(classes: 'filters', [
+              for (var (name, state) in [
+                ('All', DisplayState.all),
+                ('Active', DisplayState.active),
+                ('Completed', DisplayState.completed),
+              ])
+                li([
+                  span(
+                    classes: displayState == state ? 'selected' : '',
+                    events: {'click': (_) => setDisplayState(state)},
+                    [Component.text(name)],
+                  ),
                 ]),
-              ]),
-          footer(
-              classes: 'footer',
-              styles:
-                  Styles.raw({'display': todos.isEmpty ? 'none;' : 'block;'}),
-              [
-                span(classes: 'todo-count', [
-                  strong([text('$activeCount')]),
-                  text(' item${activeCount == 1 ? '' : 's'} left'),
-                ]),
-                ul(classes: 'filters', [
-                  for (var (name, state) in [
-                    ('All', DisplayState.all),
-                    ('Active', DisplayState.active),
-                    ('Completed', DisplayState.completed)
-                  ])
-                    li([
-                      span(
-                          classes: displayState == state ? 'selected' : '',
-                          events: {
-                            'click': (_) => setDisplayState(state),
-                          },
-                          [
-                            text(name)
-                          ])
-                    ]),
-                ]),
-                button(
-                    classes: 'clear-completed',
-                    styles: Styles.raw(
-                        {'display': completedCount == 0 ? 'none;' : 'block;'}),
-                    onClick: clearCompleted,
-                    [text('Clear completed')]),
-              ]),
-        ]),
-      ];
+            ]),
+            button(
+              classes: 'clear-completed',
+              styles: Styles(
+                display: completedCount == 0 ? Display.none : Display.block,
+              ),
+              onClick: clearCompleted,
+              [Component.text('Clear completed')],
+            ),
+          ],
+        ),
+      ]);
 }
 
 class NewTodo extends StatelessComponent {
@@ -170,16 +170,12 @@ class NewTodo extends StatelessComponent {
   NewTodo(this.handler);
 
   @override
-  Iterable<Component> build(BuildContext context) => [
-        input(
-            classes: 'new-todo',
-            value: '',
-            onChange: (str) => handler(str as String),
-            attributes: {
-              'placeholder': 'What needs to be done?',
-            },
-            []),
-      ];
+  Component build(BuildContext context) => input(
+    classes: 'new-todo',
+    value: '',
+    onChange: (str) => handler(str as String),
+    attributes: {'placeholder': 'What needs to be done?'},
+  );
 }
 
 extension MapExtensions<K, V> on Map<K, V> {

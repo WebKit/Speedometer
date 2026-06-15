@@ -1,7 +1,8 @@
 // example url for local testing:
 // http://localhost:8080/?developerMode=true&config=http://localhost:8080/resources/config.json
 // since the json doesn't contain a default suite, dismiss warning popups and select from the developerMenu
-import { defaultSuites } from "./default-tests.mjs";
+import { DefaultSuites } from "./default-tests.mjs";
+import { ExperimentalSuites } from "../experimental/tests.mjs";
 import { params } from "./shared/params.mjs";
 
 const DEFAULT_TAGS = ["all", "default", "experimental"];
@@ -75,7 +76,7 @@ export class BenchmarkConfigurator {
                 const benchmarkUrl = new URL(window.location);
                 if (DISALLOWED_DOMAINS.some((domain) => benchmarkUrl.hostname.endsWith(domain))) {
                     console.warn("Configuration fetch not allowed. Loading default suites.");
-                    this._loadDefaultSuites();
+                    this._loadSuites();
                     return;
                 }
 
@@ -98,19 +99,24 @@ export class BenchmarkConfigurator {
                 });
             } catch (error) {
                 console.warn(`Error loading custom configuration: ${error.message}. Loading default suites.`);
-                this._loadDefaultSuites();
+                this._loadSuites();
             }
         } else {
-            this._loadDefaultSuites();
+            this._loadSuites();
         }
 
         this._freezeTags();
         this._freezeSuites();
     }
 
-    _loadDefaultSuites() {
-        defaultSuites.flatMap((suite) => suite.tags).forEach((tag) => this.#tags.add(tag));
-        defaultSuites.forEach((suite) => this.#suites.push(suite));
+    _loadSuites() {
+        DefaultSuites.forEach((suite) => this._loadSuite(suite));
+        ExperimentalSuites.forEach((suite) => this._loadSuite(suite));
+    }
+
+    _loadSuite(suite) {
+        suite.tags.forEach((tag) => this.#tags.add(tag));
+        this.#suites.push(suite);
     }
 
     enableSuites(names, tags) {
