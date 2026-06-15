@@ -22,7 +22,7 @@ export class PreloadServiceWorker {
             return false;
         }
 
-        this.registration = await navigator.serviceWorker.register("/sw.mjs", { type: "module" });
+        this.registration = await navigator.serviceWorker.register("./sw.mjs", { type: "module" });
         await this.registration.update();
         await navigator.serviceWorker.ready;
 
@@ -30,7 +30,7 @@ export class PreloadServiceWorker {
         return true;
     }
 
-    async precacheSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
+    async preloadSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
         if (!this.sw || suites.length === 0)
             return;
 
@@ -48,21 +48,36 @@ export class PreloadServiceWorker {
         const startTime = performance.now();
         await new Promise((resolve) => {
             const channel = new MessageChannel();
-            channel.port1.onmessage = (event) => {
-                if (event.data?.type === SW_MESSAGES.PRECACHE_DONE) {
+            let timeoutId = setTimeout(() => {
+                channel.port1.onmessage = null;
+                console.error("Service worker preloading timed out");
+                resolve();
+            }, 30000);
+            const port = channel.port1;
+            port.onmessage = (event) => {
+                if (event.data?.type === SW_MESSAGES.PRELOAD_DONE) {
+                    port.onmessage = null;
+                    if (timeoutId)
+                        clearTimeout(timeoutId);
                     const timeTakenMs = performance.now() - startTime;
                     const { totalSize, count } = event.data;
                     const sizeMB = (totalSize / (1024 * 1024)).toFixed(2);
                     const timeSec = (timeTakenMs / 1000).toFixed(2);
                     console.log(`Preloaded ${count} files (${sizeMB} MB) in ${timeSec}s`);
                     resolve();
-                } else if (event.data?.type === SW_MESSAGES.PRECACHE_PROGRESS) {
-                    onProgress(event.data);
+                } else if (event.data?.type === SW_MESSAGES.PRELOAD_PROGRESS) {
+                    if (onProgress)
+                        onProgress(event.data);
+                } else if (event.data?.type === 'ERROR') {
+                    port.onmessage = null;
+                    if (timeoutId)
+                        clearTimeout(timeoutId);
+                    reject(new Error(event.data.message));
                 }
             };
             this.sw.postMessage(
                 {
-                    type: SW_MESSAGES.PRECACHE_SUITES,
+                    type: SW_MESSAGES.PRELOAD_SUITES,
                     suites: suitesData,
                     delay: resourceLoadDelay,
                     clearCache: clearCache,
@@ -72,9 +87,19 @@ export class PreloadServiceWorker {
         });
     }
 
-    setState(state) {
-        if (this.sw)
-            this.sw.postMessage({ type: SW_MESSAGES.SET_STATE, state });
+    async setState(state) {
+        if (!this.sw) return;
+        return new Promise((resolve, reject) => {
+            const channel = new MessageChannel();
+            channel.port1.onmessage = (event) => {
+                if (event.data?.type === 'SUCCESS') {
+                    resolve();
+                } else if (event.data?.type === 'ERROR') {
+                    reject(new Error(event.data.message));
+                }
+            };
+            this.sw.postMessage({ type: SW_MESSAGES.SET_STATE, state }, [channel.port2]);
+        });
     }
 }
 
@@ -161,7 +186,12 @@ class MainBenchmarkClient {
         if (!params.isDefault())
             await this._cacheResources(benchmarkConfigurator);
 
-        this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
+        try {
+            await this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
+        } catch (error) {
+            alert(error.message);
+            return false;
+        }
 
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const totalSuitesCount = enabledSuites.length;
@@ -467,11 +497,11 @@ class MainBenchmarkClient {
         this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
 
         try {
-            await this.preloadServiceWorker.precacheSuites(enabledSuites, params.resourceLoadDelay, clearCache, this._updateCacheProgress.bind(this));
-            this._didInitialPrecache = true;
+            await this.preloadServiceWorker.preloadSuites(enabledSuites, params.resourceLoadDelay, clearCache, this._updateCacheProgress.bind(this));
+            this._didInitialPreload = true;
             this._enableStartButtons();
         } catch (error) {
-            console.error("Service Worker precache failed:", error);
+            console.error("Service Worker preload failed:", error);
             this._setBenchmarkState(BENCHMARK_STATE.ERROR);
             this._enableStartButtons();
         }
@@ -496,10 +526,10 @@ class MainBenchmarkClient {
         });
     }
 
-    _setBenchmarkState(state) {
+    async _setBenchmarkState(state) {
         document.body.setAttribute("data-benchmark-state", state);
         if (this.preloadServiceWorker)
-            this.preloadServiceWorker.setState(state);
+            await this.preloadServiceWorker.setState(state);
 
         const startButton = document.querySelector(".start-tests-button");
         if (state === BENCHMARK_STATE.PRELOADING) {
