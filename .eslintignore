@@ -3,48 +3,48 @@
 package-lock.json
 **/.angular
 
-/resources/todomvc/architecture-examples/*
-!/resources/todomvc/architecture-examples/angular
-!/resources/todomvc/architecture-examples/angular-complex
-!/resources/todomvc/architecture-examples/backbone
-!/resources/todomvc/architecture-examples/backbone-complex
-!/resources/todomvc/architecture-examples/lit
-/resources/todomvc/architecture-examples/lit/.wireit
-/resources/todomvc/architecture-examples/lit/dist/index.js
-!/resources/todomvc/architecture-examples/lit-complex
-!/resources/todomvc/architecture-examples/preact
-!/resources/todomvc/architecture-examples/preact-complex
-!/resources/todomvc/architecture-examples/react
-!/resources/todomvc/architecture-examples/react-complex
-!/resources/todomvc/architecture-examples/react-redux
-!/resources/todomvc/architecture-examples/react-redux-complex
-!/resources/todomvc/architecture-examples/svelte
-!/resources/todomvc/architecture-examples/svelte-complex
-!/resources/todomvc/architecture-examples/vue
-!/resources/todomvc/architecture-examples/vue-complex
+/suites/todomvc/architecture-examples/*
+!/suites/todomvc/architecture-examples/angular
+!/suites/todomvc/architecture-examples/angular-complex
+!/suites/todomvc/architecture-examples/backbone
+!/suites/todomvc/architecture-examples/backbone-complex
+!/suites/todomvc/architecture-examples/lit
+/suites/todomvc/architecture-examples/lit/.wireit
+/suites/todomvc/architecture-examples/lit/dist/index.js
+!/suites/todomvc/architecture-examples/lit-complex
+!/suites/todomvc/architecture-examples/preact
+!/suites/todomvc/architecture-examples/preact-complex
+!/suites/todomvc/architecture-examples/react
+!/suites/todomvc/architecture-examples/react-complex
+!/suites/todomvc/architecture-examples/react-redux
+!/suites/todomvc/architecture-examples/react-redux-complex
+!/suites/todomvc/architecture-examples/svelte
+!/suites/todomvc/architecture-examples/svelte-complex
+!/suites/todomvc/architecture-examples/vue
+!/suites/todomvc/architecture-examples/vue-complex
 
-/resources/todomvc/vanilla-examples/*
-!/resources/todomvc/vanilla-examples/javascript-es5
-!/resources/todomvc/vanilla-examples/javascript-es5-complex
-!/resources/todomvc/vanilla-examples/javascript-es6
-!/resources/todomvc/vanilla-examples/javascript-es6-complex
-!/resources/todomvc/vanilla-examples/javascript-es6-webpack
-!/resources/todomvc/vanilla-examples/javascript-es6-webpack-complex
-!/resources/todomvc/vanilla-examples/javascript-web-components
-!/resources/todomvc/vanilla-examples/javascript-web-components-complex/
+/suites/todomvc/vanilla-examples/*
+!/suites/todomvc/vanilla-examples/javascript-es5
+!/suites/todomvc/vanilla-examples/javascript-es5-complex
+!/suites/todomvc/vanilla-examples/javascript-es6
+!/suites/todomvc/vanilla-examples/javascript-es6-complex
+!/suites/todomvc/vanilla-examples/javascript-es6-webpack
+!/suites/todomvc/vanilla-examples/javascript-es6-webpack-complex
+!/suites/todomvc/vanilla-examples/javascript-web-components
+!/suites/todomvc/vanilla-examples/javascript-web-components-complex/
 
-!/resources/todomvc/big-dom-generator
+!/suites/todomvc/big-dom-generator
 
-!/resources/editors
-/resources/editors/assets
+!/suites/editors
+/suites/editors/assets
 
-!/resources/newssite
-!/resources/newssite/news-next
-!/resources/newssite/news-nuxt
-!/resources/newssite/news-site-css
+!/suites/newssite
+!/suites/newssite/news-next
+!/suites/newssite/news-nuxt
+!/suites/newssite/news-site-css
 
-/resources/perf.webkit.org
+/suites/perf.webkit.org
 
-/resources/react-stockcharts
+/suites/react-stockcharts
 
-/experimental/responsive-design/build-dev/
+/suites-experimental/responsive-design/build-dev/
