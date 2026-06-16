@@ -5,8 +5,38 @@ import { freezeSuites } from "../resources/suites-helper.mjs";
 
 export const ExperimentalSuites = freezeSuites([
     {
+        name: "TodoMVC-JavaScript-ES5-Cached",
+        url: "resources/todomvc/vanilla-examples/javascript-es5/dist/index.html",
+        resources: "resources/todomvc/vanilla-examples/javascript-es5/dist/resources.txt",
+        tags: ["todomvc", "experimental", "cached"],
+        async prepare(page) {
+            (await page.waitForElement(".new-todo")).focus();
+        },
+        tests: [
+            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+                const newTodo = page.querySelector(".new-todo");
+                for (let i = 0; i < numberOfItemsToAdd; i++) {
+                    newTodo.setValue(getTodoText("ja", i));
+                    newTodo.dispatchEvent("change");
+                    newTodo.enter("keypress");
+                }
+            }),
+            new BenchmarkTestStep("CompletingAllItems", (page) => {
+                const checkboxes = page.querySelectorAll(".toggle");
+                for (let i = 0; i < numberOfItemsToAdd; i++)
+                    checkboxes[i].click();
+            }),
+            new BenchmarkTestStep("DeletingAllItems", (page) => {
+                const deleteButtons = page.querySelectorAll(".destroy");
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
+                    deleteButtons[i].click();
+            }),
+        ],
+    },
+    {
         name: "TodoMVC-LocalStorage",
         url: "experimental/todomvc-localstorage/dist/index.html",
+        resources: "experimental/todomvc-localstorage/dist/resources.txt",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
@@ -36,6 +66,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-Emoji",
         url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+        resources: "resources/todomvc/vanilla-examples/javascript-web-components/dist/resources.txt",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             await page.waitForElement("todo-app");
@@ -68,6 +99,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-WebComponents-PostMessage",
         url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+        resources: "resources/todomvc/vanilla-examples/javascript-web-components/dist/resources.txt",
         tags: ["experimental", "todomvc", "webcomponents"],
         async prepare() {},
         type: "remote",
@@ -78,6 +110,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-Jaspr-Dart2JS-O4",
         url: "experimental/todomvc-dart-jaspr/dist/out-dart2js-O4/index.html",
+        resources: "experimental/todomvc-dart-jaspr/dist/out-dart2js-O4/resources.txt",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
@@ -106,6 +139,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-Jaspr-Dart2Wasm-O2",
         url: "experimental/todomvc-dart-jaspr/dist/out-dart2wasm-O2/index.html",
+        resources: "experimental/todomvc-dart-jaspr/dist/out-dart2wasm-O2/resources.txt",
         tags: ["todomvc", "experimental"],
         disabled: true,
         async prepare(page) {
@@ -135,6 +169,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "NewsSite-PostMessage",
         url: "resources/newssite/news-next/dist/index.html",
+        resources: "resources/newssite/news-next/dist/resources.txt",
         tags: ["experimental", "newssite", "language"],
         async prepare() {},
         type: "remote",
@@ -165,6 +200,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "Responsive-Design",
         url: "experimental/responsive-design/dist/index.html",
+        resources: "experimental/responsive-design/dist/resources.txt",
         tags: ["responsive-design", "webcomponents", "experimental"],
         type: "async",
         async prepare(page) {

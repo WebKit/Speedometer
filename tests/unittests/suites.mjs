@@ -64,6 +64,32 @@ for (const [name, suites] of Object.entries(Suites)) {
                 expect(suite.url.length).to.be.greaterThan(0);
             });
         });
+        it("should have resources.txt listing only valid files", async () => {
+            const baseUrl = `${window.location.origin}/`;
+            for (const suite of suites) {
+                if (!suite.resources)
+                    continue;
+                const resourcesUrl = new URL(suite.resources, baseUrl).href;
+                const res = await fetch(resourcesUrl);
+                expect(res.ok).to.be(true);
+                const text = await res.text();
+                expect(text.trim().length).to.be.greaterThan(0, `resources.txt for ${suite.name} is empty`);
+
+                const files = text.trim().split("\n");
+                for (const file of files)
+                    expect(file.trim().length).to.be.greaterThan(0);
+
+                await Promise.all(
+                    files.map(async (file) => {
+                        const fileUrl = new URL(file, resourcesUrl).href;
+                        const fileRes = await fetch(fileUrl, { method: "HEAD" });
+                        if (!fileRes.ok)
+                            throw new Error(`Failed to load ${fileUrl} (listed in ${resourcesUrl})`);
+                        expect(fileRes.ok).to.be(true);
+                    })
+                );
+            }
+        });
     });
 }
 

@@ -419,7 +419,17 @@ button.show-about {
     display: none;
 }
 
-#progress {
+#preload-progress {
+    display: none;
+}
+
+:root[data-benchmark-state="PRELOADING"] #preload-progress,
+:root[data-benchmark-state="PRELOADING"] #preload-info {
+    display: block;
+}
+
+#progress,
+#preload-progress {
     position: absolute;
     bottom: -6px;
     left: 60px;
@@ -429,7 +439,8 @@ button.show-about {
     border-right: 6px solid var(--background);
 }
 
-#progress-completed {
+#progress-completed,
+#preload-progress-completed {
     position: absolute;
     top: 0;
     left: 0;
@@ -440,11 +451,13 @@ button.show-about {
     background-color: var(--inactive-color);
 }
 
-#progress-completed::-webkit-progress-value {
+#progress-completed::-webkit-progress-value,
+#preload-progress-completed::-webkit-progress-value {
     background-color: var(--foreground);
 }
 
-#progress-completed::-moz-progress-bar {
+#progress-completed::-moz-progress-bar,
+#preload-progress-completed::-moz-progress-bar {
     background-color: var(--foreground);
 }
 
@@ -455,7 +468,9 @@ button.show-about {
     background-color: var(--background);
 }
 
-#info {
+#info,
+#preload-info {
+    display: none;
     position: absolute;
     bottom: -25px;
     left: 60px;
@@ -465,11 +480,13 @@ button.show-about {
     text-align: center;
     font-size: 12px;
 }
-#info-label {
+#info-label,
+#preload-info-label {
     position: absolute;
     left: 6px;
 }
-#info-progress {
+#info-progress,
+#preload-info-progress {
     position: absolute;
     right: 6px;
     text-align: right;
@@ -944,4 +961,46 @@ section#about .note {
 .chart .white {
     color: #fff;
     stroke: #fff;
+}
+
+#preload-progress,
+#preload-info {
+    display: none;
+}
+
+[data-benchmark-state="PRELOADING"] {
+    cursor: wait;
+}
+
+[data-benchmark-state="PRELOADING"] #preload-progress,
+[data-benchmark-state="PRELOADING"] #preload-info {
+    display: block;
+}
+
+[data-benchmark-state="RUNNING"] #info {
+    display: block;
+}
+
+[data-benchmark-state="PRELOADING"] .start-tests-button {
+    color: var(--foreground);
+    background-image: linear-gradient(-45deg, var(--foreground) 3px, transparent 3px, transparent 50%, var(--foreground) 50%, var(--foreground) calc(50% + 3px), transparent calc(50% + 3px), transparent 100%);
+    background-size: 20px 20px;
+    animation: barber-pole 1s linear infinite;
+    pointer-events: none;
+}
+
+[data-benchmark-state="PRELOADING"] .start-tests-button > div {
+    background-color: var(--background);
+    border-radius: 10px;
+    padding: 0 0.3em;
+    display: inline-block;
+}
+
+@keyframes barber-pole {
+    0% {
+        background-position: 0 0, 0 0;
+    }
+    100% {
+        background-position: 20px 0, 0 0;
+    }
 }

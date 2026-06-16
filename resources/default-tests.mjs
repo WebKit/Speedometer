@@ -7,6 +7,8 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-JavaScript-ES5",
         url: "resources/todomvc/vanilla-examples/javascript-es5/dist/index.html",
+        resources: "resources/todomvc/vanilla-examples/javascript-es5/dist/resources.txt",
+        preload: true,
         tags: ["default", "todomvc"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
@@ -35,6 +37,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-JavaScript-ES5-Complex-DOM",
         url: "resources/todomvc/vanilla-examples/javascript-es5-complex/dist/index.html",
+        resources: "resources/todomvc/vanilla-examples/javascript-es5-complex/dist/resources.txt",
         tags: ["todomvc", "complex"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
@@ -63,6 +66,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-JavaScript-ES6-Webpack",
         url: "resources/todomvc/vanilla-examples/javascript-es6-webpack/dist/index.html",
+        resources: "resources/todomvc/vanilla-examples/javascript-es6-webpack/dist/resources.txt",
         tags: ["todomvc"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -92,6 +96,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-JavaScript-ES6-Webpack-Complex-DOM",
         url: "resources/todomvc/vanilla-examples/javascript-es6-webpack-complex/dist/index.html",
+        resources: "resources/todomvc/vanilla-examples/javascript-es6-webpack-complex/dist/resources.txt",
         tags: ["default", "todomvc", "complex", "complex-default"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -121,6 +126,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-WebComponents",
         url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+        resources: "resources/todomvc/vanilla-examples/javascript-web-components/dist/resources.txt",
         tags: ["default", "todomvc", "webcomponents"],
         async prepare(page) {
             await page.waitForElement("todo-app");
@@ -153,6 +159,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-WebComponents-Complex-DOM",
         url: "resources/todomvc/vanilla-examples/javascript-web-components-complex/dist/index.html",
+        resources: "resources/todomvc/vanilla-examples/javascript-web-components-complex/dist/resources.txt",
         tags: ["todomvc", "webcomponents", "complex"],
         async prepare(page) {
             await page.waitForElement("todo-app");
@@ -243,6 +250,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-React-Redux",
         url: "resources/todomvc/architecture-examples/react-redux/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/react-redux/dist/resources.txt",
         tags: ["default", "todomvc"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -271,6 +279,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-React-Redux-Complex-DOM",
         url: "resources/todomvc/architecture-examples/react-redux-complex/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/react-redux-complex/dist/resources.txt",
         tags: ["todomvc", "complex"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -299,6 +308,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Backbone",
         url: "resources/todomvc/architecture-examples/backbone/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/backbone/dist/resources.txt",
         tags: ["default", "todomvc"],
         async prepare(page) {
             await page.waitForElement("#appIsReady");
@@ -329,6 +339,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Backbone-Complex-DOM",
         url: "resources/todomvc/architecture-examples/backbone-complex/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/backbone-complex/dist/resources.txt",
         tags: ["todomvc", "complex"],
         async prepare(page) {
             await page.waitForElement("#appIsReady");
@@ -359,6 +370,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Angular",
         url: "resources/todomvc/architecture-examples/angular/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/angular/dist/resources.txt",
         tags: ["todomvc"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -388,6 +400,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Angular-Complex-DOM",
         url: "resources/todomvc/architecture-examples/angular-complex/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/angular-complex/dist/resources.txt",
         tags: ["default", "todomvc", "complex", "complex-default"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -417,6 +430,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Vue",
         url: "resources/todomvc/architecture-examples/vue/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/vue/dist/resources.txt",
         tags: ["default", "todomvc"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -446,6 +460,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Vue-Complex-DOM",
         url: "resources/todomvc/architecture-examples/vue-complex/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/vue-complex/dist/resources.txt",
         tags: ["todomvc", "complex", "complex-default"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -475,6 +490,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-jQuery",
         url: "resources/todomvc/architecture-examples/jquery/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/jquery/dist/resources.txt",
         tags: ["default", "todomvc"],
         async prepare(page) {
             await page.waitForElement("#appIsReady");
@@ -502,6 +518,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-jQuery-Complex-DOM",
         url: "resources/todomvc/architecture-examples/jquery-complex/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/jquery-complex/dist/resources.txt",
         tags: ["todomvc", "complex"],
         async prepare(page) {
             await page.waitForElement("#appIsReady");
@@ -585,6 +602,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Svelte",
         url: "resources/todomvc/architecture-examples/svelte/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/svelte/dist/resources.txt",
         tags: ["todomvc"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -613,6 +631,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Svelte-Complex-DOM",
         url: "resources/todomvc/architecture-examples/svelte-complex/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/svelte-complex/dist/resources.txt",
         tags: ["default", "todomvc", "complex", "complex-default"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -641,6 +660,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Lit",
         url: "resources/todomvc/architecture-examples/lit/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/lit/dist/resources.txt",
         tags: ["todomvc", "webcomponents"],
         async prepare(page) {
             await page.waitForElement("todo-app");
@@ -672,6 +692,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Lit-Complex-DOM",
         url: "resources/todomvc/architecture-examples/lit-complex/dist/index.html",
+        resources: "resources/todomvc/architecture-examples/lit-complex/dist/resources.txt",
         tags: ["default", "todomvc", "webcomponents", "complex", "complex-default"],
         async prepare(page) {
             await page.waitForElement("todo-app");
@@ -703,6 +724,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "NewsSite-Next",
         url: "resources/newssite/news-next/dist/index.html",
+        resources: "resources/newssite/news-next/dist/resources.txt",
         tags: ["default", "newssite", "language"],
         async prepare(page) {
             await page.waitForElement("#navbar-dropdown-toggle");
@@ -743,6 +765,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "NewsSite-Nuxt",
         url: "resources/newssite/news-nuxt/dist/index.html",
+        resources: "resources/newssite/news-nuxt/dist/resources.txt",
         tags: ["default", "newssite"],
         async prepare(page) {
             await page.waitForElement("#navbar-dropdown-toggle");

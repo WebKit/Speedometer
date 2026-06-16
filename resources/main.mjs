@@ -1,8 +1,136 @@
 import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
+import { SW_MESSAGES } from "./shared/sw-messages.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
+
+const PRELOAD_TIMEOUT_MS = 60_000;
+
+export class PreloadServiceWorker {
+    constructor() {
+        this.registration = null;
+        this.sw = null;
+    }
+
+    async setup() {
+        await this._unregisterOldServiceWorkers();
+
+        if (!params.preload) {
+            this.registration = null;
+            this.sw = null;
+            return false;
+        }
+
+        await this._registerServiceWorker();
+        this._setupMessageListener();
+
+        return true;
+    }
+
+    async _unregisterOldServiceWorkers() {
+        const existingRegistrations = await navigator.serviceWorker.getRegistrations();
+        for (const existing of existingRegistrations)
+            await existing.unregister();
+    }
+
+    async _registerServiceWorker() {
+        this.registration = await navigator.serviceWorker.register("./sw.mjs", { type: "module" });
+        await this.registration.update();
+        await navigator.serviceWorker.ready;
+        this.sw = navigator.serviceWorker.controller || this.registration.active;
+    }
+
+    _setupMessageListener() {
+        navigator.serviceWorker.addEventListener("message", (event) => {
+            if (event.data?.type === SW_MESSAGES.FATAL_ERROR)
+                globalThis.benchmarkClient?.handleError(new Error(event.data.message));
+        });
+    }
+
+    _sendMessageWithReply(messageData, onProgress, timeoutMs = 0) {
+        if (!this.sw)
+            return Promise.resolve();
+
+        return new Promise((resolve, reject) => {
+            const channel = new MessageChannel();
+            const port = channel.port1;
+            let timeoutId = null;
+
+            const cleanup = () => {
+                port.onmessage = null;
+                if (timeoutId)
+                    clearTimeout(timeoutId);
+            };
+
+            if (timeoutMs > 0) {
+                timeoutId = setTimeout(() => {
+                    cleanup();
+                    console.error(`Service worker message timed out: ${messageData.type}`);
+                    resolve(); // Resolve to not block execution
+                }, timeoutMs);
+            }
+
+            port.onmessage = (event) => {
+                const data = event.data || {};
+                if (data.type === SW_MESSAGES.PRELOAD_PROGRESS) {
+                    onProgress?.(data);
+                    return;
+                }
+                cleanup();
+                if (data.type === "ERROR") {
+                    reject(new Error(data.message || "Unknown SW Error"));
+                    return;
+                }
+
+                resolve(data);
+            };
+
+            this.sw.postMessage(messageData, [channel.port2]);
+        });
+    }
+
+    async clearSw() {
+        if (!this.sw)
+            return;
+        await this._sendMessageWithReply({ type: SW_MESSAGES.CLEAR_CACHE });
+    }
+
+    async preloadSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
+        if (!this.sw || suites.length === 0)
+            return;
+
+        const suitesData = suites
+            .filter((s) => s.resources)
+            .map((s) => ({
+                name: s.name,
+                url: new URL(s.url, window.location.href).href,
+                resources: new URL(s.resources, window.location.href).href,
+            }));
+
+        if (suitesData.length === 0)
+            return;
+
+        const startTime = performance.now();
+        const response = await this._sendMessageWithReply({ type: SW_MESSAGES.PRELOAD_SUITES, suites: suitesData, delay: resourceLoadDelay, clearCache }, onProgress, PRELOAD_TIMEOUT_MS);
+
+        if (response?.type === SW_MESSAGES.PRELOAD_DONE) {
+            const timeTakenMs = performance.now() - startTime;
+            const sizeMB = (response.totalSize / (1024 * 1024)).toFixed(2);
+            const timeSec = (timeTakenMs / 1000).toFixed(2);
+            console.log(`Preloaded ${response.count} files (${sizeMB} MB) in ${timeSec}s`);
+        }
+    }
+}
+
+const BENCHMARK_STATE = Object.freeze({
+    IDLE: "IDLE",
+    PRELOADING: "PRELOADING",
+    READY: "READY",
+    RUNNING: "RUNNING",
+    DONE: "DONE",
+    ERROR: "ERROR",
+});
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
@@ -14,8 +142,8 @@ class MainBenchmarkClient {
     _progressCompleted = null;
     _isRunning = false;
     _hasResults = false;
-    _developerModeContainer = null;
     _metrics = Object.create(null);
+    _preloadServiceWorker = new PreloadServiceWorker();
     _steppingPromise = null;
     _steppingResolver = null;
     _benchmarkConfiguratorPromise = null;
@@ -31,14 +159,14 @@ class MainBenchmarkClient {
         });
     }
 
-    start() {
+    async start() {
         if (this._isStepping())
             this._clearStepping();
-        else if (this._startBenchmark())
+        else if (await this._startBenchmark())
             this._showSection("#running");
     }
 
-    step() {
+    async step() {
         const currentSteppingResolver = this._steppingResolver;
         this._steppingPromise = new Promise((resolve) => {
             this._steppingResolver = resolve;
@@ -46,7 +174,7 @@ class MainBenchmarkClient {
         if (this._isStepping())
             currentSteppingResolver();
         if (!this._isRunning) {
-            this._startBenchmark();
+            await this._startBenchmark();
             this._showSection("#running");
         }
     }
@@ -72,6 +200,18 @@ class MainBenchmarkClient {
             return false;
 
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
+
+        await this._preloadServiceWorker.setup();
+
+        if (!this._didInitialPreload)
+            await this._cacheResources(benchmarkConfigurator);
+
+        try {
+            await this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
+        } catch (error) {
+            alert(error.message);
+            return false;
+        }
 
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const totalSuitesCount = enabledSuites.length;
@@ -146,6 +286,7 @@ class MainBenchmarkClient {
         this._isRunning = false;
         this._hasResults = true;
         this._metrics = metrics;
+        this._setBenchmarkState(BENCHMARK_STATE.DONE);
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         if (scoreResults.isValid)
@@ -166,7 +307,8 @@ class MainBenchmarkClient {
         this._isRunning = false;
         this._hasResults = true;
         this._metrics = Object.create(null);
-        this._populateInvalidScore();
+        this._setBenchmarkState(BENCHMARK_STATE.ERROR);
+        this._populateInvalidScore(error.message);
         this.showResultsSummary();
         throw error;
     }
@@ -180,10 +322,20 @@ class MainBenchmarkClient {
             document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
     }
 
-    _populateInvalidScore() {
+    _populateInvalidScore(errorText) {
         document.getElementById("summary").className = "invalid";
         document.getElementById("result-number").textContent = "Error";
         document.getElementById("confidence-number").textContent = "";
+
+        const invalidScoreText = document.getElementById("invalid-score-text");
+        if (errorText) {
+            invalidScoreText.textContent = errorText;
+        } else {
+            invalidScoreText.innerHTML = `
+                One or more subtests produced no duration.<br />
+                Please check your <a href="./instructions.html" target="_blank">browser settings</a> and re-run the benchmark.<br />
+            `;
+        }
     }
 
     _computeResults(measuredValuesList, displayUnit) {
@@ -288,15 +440,15 @@ class MainBenchmarkClient {
         document.getElementById("metrics-results").innerHTML = html;
 
         const filePrefix = `speedometer-3-${new Date().toISOString()}`;
-        let jsonData = this._formattedJSONResult({ modern: false });
-        let jsonLink = document.getElementById("download-classic-json");
-        jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
-        jsonLink.setAttribute("download", `${filePrefix}.json`);
+        const classicJsonData = this._formattedJSONResult({ modern: false });
+        const classicJsonLink = document.getElementById("download-classic-json");
+        classicJsonLink.href = URL.createObjectURL(new Blob([classicJsonData], { type: "application/json" }));
+        classicJsonLink.setAttribute("download", `${filePrefix}.json`);
 
-        jsonLink = document.getElementById("download-full-json");
-        jsonData = this._formattedJSONResult({ modern: true });
-        jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
-        jsonLink.setAttribute("download", `${filePrefix}.json`);
+        const fullJsonLink = document.getElementById("download-full-json");
+        const fullJsonData = this._formattedJSONResult({ modern: true });
+        fullJsonLink.href = URL.createObjectURL(new Blob([fullJsonData], { type: "application/json" }));
+        fullJsonLink.setAttribute("download", `${filePrefix}.json`);
 
         const csvData = this._formattedCSVResult();
         const csvLink = document.getElementById("download-csv");
@@ -343,6 +495,7 @@ class MainBenchmarkClient {
         document.getElementById("copy-csv").onclick = this.copyCSVResults.bind(this);
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
+            button.disabled = true;
         });
     }
 
@@ -357,8 +510,70 @@ class MainBenchmarkClient {
             document.body.append(this._developerModeContainer);
         }
 
+        await this._setupServiceWorker(benchmarkConfigurator);
+
         if (params.startAutomatically)
             this.start();
+    }
+
+    async _setupServiceWorker(benchmarkConfigurator) {
+        await this._preloadServiceWorker.setup();
+        await this._cacheResources(benchmarkConfigurator);
+    }
+
+    async _cacheResources(benchmarkConfigurator) {
+        const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
+        const clearCache = !params.isDefault();
+        this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
+
+        try {
+            await this._preloadServiceWorker.preloadSuites(enabledSuites, params.resourceLoadDelay, clearCache, this._updateCacheProgress.bind(this));
+            this._didInitialPreload = true;
+            this._enableStartButtons();
+        } catch (error) {
+            console.error("Service Worker preload failed:", error);
+            this._setBenchmarkState(BENCHMARK_STATE.ERROR);
+            this._populateInvalidScore(error?.message);
+            this.showResultsSummary();
+            throw error;
+        }
+    }
+
+    _updateCacheProgress(progressData) {
+        const { loaded, total, url, suiteName } = progressData;
+        document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
+        const progress = document.getElementById("preload-progress-completed");
+        progress.max = total;
+        progress.value = loaded;
+        const filename = url ? url.substring(url.lastIndexOf("/") + 1) : "";
+        const labelText = suiteName ? `${suiteName}: ${filename}` : filename;
+        document.getElementById("preload-info-label").textContent = labelText;
+        document.getElementById("preload-info-progress").textContent = `${loaded} / ${total}`;
+    }
+
+    _enableStartButtons() {
+        this._setBenchmarkState(BENCHMARK_STATE.READY);
+        document.querySelectorAll(".start-tests-button").forEach((button) => {
+            button.disabled = false;
+        });
+    }
+
+    async _setBenchmarkState(state) {
+        document.body.setAttribute("data-benchmark-state", state);
+
+        const startButton = document.querySelector(".start-tests-button");
+        if (state === BENCHMARK_STATE.PRELOADING) {
+            document.getElementById("preload-progress-completed").value = 0;
+            document.getElementById("preload-info-label").textContent = "";
+            document.getElementById("preload-info-progress").textContent = "";
+            document.body.style.setProperty("--preload-progress", "0%");
+            startButton.innerHTML = "<div>Preloading</div>";
+        } else if (state !== BENCHMARK_STATE.RUNNING) {
+            document.body.style.removeProperty("--preload-progress");
+            startButton.innerHTML = "<div>Start Test</div>";
+            if (state !== BENCHMARK_STATE.READY)
+                await this._preloadServiceWorker?.clearSw();
+        }
     }
 
     _hashChangeHandler() {
