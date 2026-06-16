@@ -44,16 +44,8 @@ class AsyncRAFTestInvoker extends TestInvoker {
 
             this._asyncCallback();
             setTimeout(async () => {
-<<<<<<< HEAD:resources/shared/test-invoker.mjs
-                const result = await this._reportCallback();
-                resolve(result);
-||||||| d90b6fde:resources/shared/test-invoker.mjs
-                await this._reportCallback();
-                resolve();
-=======
                 const results = await this._reportCallback();
                 resolve(results);
->>>>>>> main:experimental/javascript-wc-indexeddb/dist/src/speedometer-utils/test-invoker.mjs
             }, 0);
         };
 
