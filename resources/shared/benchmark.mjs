@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { TestRunner, AsyncTestRunner } from "./test-runner.mjs";
+import { StepRunner, AsyncStepRunner } from "./step-runner.mjs";
 import { Params } from "./params.mjs";
 
 /**
@@ -13,16 +13,16 @@ export class BenchmarkStep {
         this.run = run;
     }
 
-    async runAndRecordStep(params, suite, test, callback) {
-        const testRunner = new TestRunner(null, null, params, suite, test, callback);
-        const result = await testRunner.runTest();
+    async runAndRecordStep(params, suite, step, callback) {
+        const stepRunner = new StepRunner(null, null, params, suite, step, callback);
+        const result = await stepRunner.runStep();
         return result;
     }
 }
 
 export class AsyncBenchmarkStep extends BenchmarkStep {
     async runAndRecord(params, suite, test, callback) {
-        const testRunner = new AsyncTestRunner(null, null, params, suite, test, callback);
+        const testRunner = new AsyncStepRunner(null, null, params, suite, test, callback);
         const result = await testRunner.runTest();
         return result;
     }
@@ -47,7 +47,7 @@ export class BenchmarkSuite {
         console.assert(this.type in BENCHMARK_SUITE_TYPE, "Invalid Type", this.type);
     }
 
-    record(_test, syncTime, asyncTime) {
+    record(_step, syncTime, asyncTime) {
         const total = syncTime + asyncTime;
         const results = {
             tests: { Sync: syncTime, Async: asyncTime },

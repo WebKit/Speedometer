@@ -1,5 +1,3 @@
-export const LAYOUT_MODES = Object.freeze(["getBoundingClientRect", "getBoundingRectAndElementFromPoint"]);
-
 export class Params {
     viewport = {
         width: 800,
@@ -11,7 +9,7 @@ export class Params {
     iterationCount = 10;
     suites = [];
     // A list of tags to filter suites
-    tags = ["default"];
+    tags = [];
     // Toggle running a dummy suite once before the normal test suites.
     useWarmupSuite = false;
     // toggle async type vs default raf type.
@@ -29,12 +27,6 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
-    // Choices: "getBoundingClientRect" or "getBoundingRectAndElementFromPoint"
-    layoutMode = LAYOUT_MODES[0];
-    // Measure more workload prepare time.
-    measurePrepare = false;
-    // External config url to override internal tests.
-    config = "";
 
     constructor(searchParams = undefined) {
         if (searchParams)
@@ -63,11 +55,8 @@ export class Params {
         this.useAsyncSteps = this._parseBooleanParam(searchParams, "useAsyncSteps");
         this.waitBeforeSync = this._parseIntParam(searchParams, "waitBeforeSync", 0);
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
-        this.measurementMethod = this._parseEnumParam(searchParams, "measurementMethod", ["raf"]);
+        this.measurementMethod = this._parseMeasurementMethod(searchParams);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
-        this.layoutMode = this._parseEnumParam(searchParams, "layoutMode", LAYOUT_MODES);
-        this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
-        this.config = this._parseConfig(searchParams);
 
         const unused = Array.from(searchParams.keys());
         if (unused.length > 0)
@@ -132,14 +121,14 @@ export class Params {
         return tags;
     }
 
-    _parseEnumParam(searchParams, paramKey, enumArray) {
-        if (!searchParams.has(paramKey))
-            return defaultParams[paramKey];
-        const value = searchParams.get(paramKey);
-        if (!enumArray.includes(value))
-            throw new Error(`Got invalid ${paramKey}: '${value}', choices are ${enumArray}`);
-        searchParams.delete(paramKey);
-        return value;
+    _parseMeasurementMethod(searchParams) {
+        if (!searchParams.has("measurementMethod"))
+            return defaultParams.measurementMethod;
+        const measurementMethod = searchParams.get("measurementMethod");
+        if (measurementMethod !== "raf")
+            throw new Error(`Invalid measurement method: '${measurementMethod}', must be 'raf'.`);
+        searchParams.delete("measurementMethod");
+        return measurementMethod;
     }
 
     _parseShuffleSeed(searchParams) {
@@ -158,15 +147,6 @@ export class Params {
         }
         searchParams.delete("shuffleSeed");
         return shuffleSeed;
-    }
-
-    _parseConfig(searchParams) {
-        const config = searchParams.get("config") ?? "";
-        searchParams.delete("config");
-        if (config && !isValidJsonUrl(config))
-            throw new Error("Invalid config url passed in.");
-
-        return config;
     }
 
     toCompleteSearchParamsObject() {
@@ -188,32 +168,16 @@ export class Params {
         if (this.viewport.width !== defaultParams.viewport.width || this.viewport.height !== defaultParams.viewport.height)
             rawUrlParams.viewport = `${this.viewport.width}x${this.viewport.height}`;
 
-        if (this.suites.length) {
+        if (this.suites.length)
             rawUrlParams.suites = this.suites.join(",");
-        } else if (this.tags.length) {
-            if (!(this.tags.length === 1 && this.tags[0] === "default"))
-                rawUrlParams.tags = this.tags.join(",");
-        } else {
-            rawUrlParams.suites = "";
-        }
+        else if (this.tags.length)
+            rawUrlParams.tags = this.tags.join(",");
 
         return new URLSearchParams(rawUrlParams);
     }
 
     toSearchParams() {
         return this.toSearchParamsObject().toString();
-    }
-}
-
-function isValidJsonUrl(url) {
-    if (typeof url !== "string" || url.length === 0)
-        return false;
-
-    try {
-        new URL(url, "http://www.example.com");
-        return true;
-    } catch (error) {
-        return false;
     }
 }
 

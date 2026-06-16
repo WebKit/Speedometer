@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { TestRunner, AsyncTestRunner } from "./test-runner.mjs";
+import { TestRunner } from "./test-runner.mjs";
 import { Params } from "./params.mjs";
 
 /**
@@ -20,31 +20,15 @@ export class BenchmarkStep {
     }
 }
 
-export class AsyncBenchmarkStep extends BenchmarkStep {
-    async runAndRecord(params, suite, test, callback) {
-        const testRunner = new AsyncTestRunner(null, null, params, suite, test, callback);
-        const result = await testRunner.runTest();
-        return result;
-    }
-}
-
-export const BENCHMARK_SUITE_TYPE = Object.freeze({
-    __proto__: null,
-    sync: "sync",
-    async: "async",
-});
-
 /**
  * BenchmarkSuite
  *
  * A single test suite that contains one or more test steps.
  */
 export class BenchmarkSuite {
-    constructor(name, tests, type = BENCHMARK_SUITE_TYPE.sync) {
+    constructor(name, tests) {
         this.name = name;
         this.tests = tests;
-        this.type = type;
-        console.assert(this.type in BENCHMARK_SUITE_TYPE);
     }
 
     record(_test, syncTime, asyncTime) {
@@ -60,7 +44,6 @@ export class BenchmarkSuite {
     async runAndRecord(params, onProgress) {
         const measuredValues = {
             tests: {},
-            prepare: 0,
             total: 0,
         };
         const suiteStartLabel = `suite-${this.name}-start`;
@@ -70,7 +53,6 @@ export class BenchmarkSuite {
 
         for (const test of this.tests) {
             const result = await test.runAndRecord(params, this, test, this.record);
-            console.assert(result, "Missing test return value", test);
             measuredValues.tests[test.name] = result;
             measuredValues.total += result.total;
             onProgress?.(test.name);
@@ -87,26 +69,6 @@ export class BenchmarkSuite {
         };
     }
 }
-
-export class AsyncBenchmarkSuite extends BenchmarkSuite {
-    constructor(name, tests) {
-        super(name, tests, BENCHMARK_SUITE_TYPE.async);
-    }
-}
-
-export const MESSAGE_TYPE = Object.freeze({
-    __proto__: null,
-    appReady: "app-ready",
-    suiteStart: "suite-start",
-    stepComplete: "step-complete",
-    suiteComplete: "suite-complete",
-});
-
-export const MESSAGE_STATUS = Object.freeze({
-    __proto__: null,
-    success: "success",
-    error: "error",
-});
 
 /** **********************************************************************
  * BenchmarkConnector
@@ -132,42 +94,31 @@ export class BenchmarkConnector {
     }
 
     async onMessage(event) {
-        const message = event.data;
-        if (message.appId !== this.appId || message.key !== "benchmark-connector") {
-            console.warning("Invalid message", message);
+        if (event.data.id !== this.appId || event.data.key !== "benchmark-connector")
             return;
-        }
 
-        switch (message.type) {
-            case MESSAGE_TYPE.suiteStart:
+        switch (event.data.type) {
+            case "benchmark-suite":
                 const params = new Params(new URLSearchParams(window.location.search));
-                const { name } = message.payload;
-                const suite = this.suites[name];
+                const suite = this.suites[event.data.name];
                 if (!suite)
-                    console.error(`Suite with the name of "${name}" not found!`);
-                const onProgress = (test) => this._sendMessage(MESSAGE_TYPE.stepComplete, { name: this.name, test });
-                const { result } = await suite.runAndRecord(params, onProgress);
-                this._sendMessage(MESSAGE_TYPE.suiteComplete, { result });
+                    console.error(`Suite with the name of "${event.data.name}" not found!`);
+                const { result } = await suite.runAndRecord(params, (test) => this.sendMessage({ type: "step-complete", status: "success", appId: this.appId, name: this.name, test }));
+                this.sendMessage({ type: "suite-complete", status: "success", appId: this.appId, result });
                 this.disconnect();
                 break;
             default:
-                console.error(`Message data type not supported: ${message.type}`);
+                console.error(`Message data type not supported: ${event.data.type}`);
         }
     }
 
-    _sendMessage(type, payload, status = MESSAGE_STATUS.success) {
-        const message = {
-            appId: this.appId,
-            type: type,
-            payload: payload,
-            status: status,
-        };
+    sendMessage(message) {
         window.top.postMessage(message, "*");
     }
 
     connect() {
         window.addEventListener("message", this.onMessage);
-        this._sendMessage(MESSAGE_TYPE.appReady, { appId: this.appId });
+        this.sendMessage({ type: "app-ready", status: "success", appId: this.appId });
     }
 
     disconnect() {

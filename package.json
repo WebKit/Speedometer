@@ -20,7 +20,8 @@
         "lint:fix": "eslint \"**/*.{js,mjs,jsx,ts,tsx}\" --fix",
         "pretty:check": "prettier --check ./",
         "pretty:fix": "prettier --write ./",
-        "format": "npm run pretty:fix && npm run lint:fix",
+        "format": "node tests/format.mjs",
+        "format:all": "node tests/format.mjs --all",
         "test:chrome": "node tests/run-unittests.mjs --browser chrome",
         "test:firefox": "node tests/run-unittests.mjs --browser firefox",
         "test:safari": "node tests/run-unittests.mjs --browser safari",
@@ -53,8 +54,9 @@
         "lws-static": "^3.1.1",
         "mocha": "^10.2.0",
         "prettier": "^2.8.3",
-        "selenium-webdriver": "^4.36.0",
+        "prettier-plugin-tailwindcss": "^0.4.1",
+        "selenium-webdriver": "^4.44.0",
         "sinon": "^17.0.1",
-        "typescript": "^5.0.4"
+        "typescript": "~5.1.0"
     }
 }

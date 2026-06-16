@@ -46,8 +46,8 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
 
             this._asyncCallback();
             setTimeout(async () => {
-                const result = await this._reportCallback();
-                resolve(result);
+                await this._reportCallback();
+                resolve();
             }, 0);
         };
 
@@ -79,8 +79,8 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
     }
 }
 
-export const TEST_INVOKER_LOOKUP = Object.freeze({
+export const TEST_INVOKER_LOOKUP = {
     __proto__: null,
     raf: RAFTestInvoker,
     async: AsyncRAFTestInvoker,
-});
+};
