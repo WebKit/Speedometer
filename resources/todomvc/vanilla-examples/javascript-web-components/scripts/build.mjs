@@ -3,8 +3,6 @@ import { generateResourcesFile } from "../../../../shared/generate-resources.mjs
 import fs from "fs/promises";
 import { dirname } from "path";
 
-const __dirname = import.meta.dirname;
-
 /**
  * createDirectory
  *

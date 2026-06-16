@@ -2,8 +2,6 @@ import { generateResourcesFile } from "../../../resources/shared/generate-resour
 import fs from "fs/promises";
 import path from "path";
 
-const __dirname = import.meta.dirname;
-
 const rootDirectory = "./";
 const sourceDirectory = "./src";
 const targetDirectory = "./dist";

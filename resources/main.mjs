@@ -5,6 +5,8 @@ import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
+const PRELOAD_TIMEOUT_MS = 60_000;
+
 export class PreloadServiceWorker {
     constructor() {
         this.registration = null;
@@ -12,9 +14,7 @@ export class PreloadServiceWorker {
     }
 
     async setup() {
-        const existingRegistrations = await navigator.serviceWorker.getRegistrations();
-        for (const existing of existingRegistrations)
-            await existing.unregister();
+        await this._unregisterOldServiceWorkers();
 
         if (!params.preload) {
             this.registration = null;
@@ -22,12 +22,78 @@ export class PreloadServiceWorker {
             return false;
         }
 
+        await this._registerServiceWorker();
+        this._setupMessageListener();
+
+        return true;
+    }
+
+    async _unregisterOldServiceWorkers() {
+        const existingRegistrations = await navigator.serviceWorker.getRegistrations();
+        for (const existing of existingRegistrations)
+            await existing.unregister();
+    }
+
+    async _registerServiceWorker() {
         this.registration = await navigator.serviceWorker.register("./sw.mjs", { type: "module" });
         await this.registration.update();
         await navigator.serviceWorker.ready;
-
         this.sw = navigator.serviceWorker.controller || this.registration.active;
-        return true;
+    }
+
+    _setupMessageListener() {
+        navigator.serviceWorker.addEventListener("message", (event) => {
+            if (event.data?.type === SW_MESSAGES.FATAL_ERROR)
+                globalThis.benchmarkClient?.handleError(new Error(event.data.message));
+        });
+    }
+
+    _sendMessageWithReply(messageData, onProgress, timeoutMs = 0) {
+        if (!this.sw)
+            return Promise.resolve();
+
+        return new Promise((resolve, reject) => {
+            const channel = new MessageChannel();
+            const port = channel.port1;
+            let timeoutId = null;
+
+            const cleanup = () => {
+                port.onmessage = null;
+                if (timeoutId)
+                    clearTimeout(timeoutId);
+            };
+
+            if (timeoutMs > 0) {
+                timeoutId = setTimeout(() => {
+                    cleanup();
+                    console.error(`Service worker message timed out: ${messageData.type}`);
+                    resolve(); // Resolve to not block execution
+                }, timeoutMs);
+            }
+
+            port.onmessage = (event) => {
+                const data = event.data || {};
+                if (data.type === SW_MESSAGES.PRELOAD_PROGRESS) {
+                    onProgress?.(data);
+                    return;
+                }
+                cleanup();
+                if (data.type === "ERROR") {
+                    reject(new Error(data.message || "Unknown SW Error"));
+                    return;
+                }
+
+                resolve(data);
+            };
+
+            this.sw.postMessage(messageData, [channel.port2]);
+        });
+    }
+
+    async clearSw() {
+        if (!this.sw)
+            return;
+        await this._sendMessageWithReply({ type: SW_MESSAGES.CLEAR_CACHE });
     }
 
     async preloadSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
@@ -46,60 +112,14 @@ export class PreloadServiceWorker {
             return;
 
         const startTime = performance.now();
-        await new Promise((resolve) => {
-            const channel = new MessageChannel();
-            let timeoutId = setTimeout(() => {
-                channel.port1.onmessage = null;
-                console.error("Service worker preloading timed out");
-                resolve();
-            }, 30000);
-            const port = channel.port1;
-            port.onmessage = (event) => {
-                if (event.data?.type === SW_MESSAGES.PRELOAD_DONE) {
-                    port.onmessage = null;
-                    if (timeoutId)
-                        clearTimeout(timeoutId);
-                    const timeTakenMs = performance.now() - startTime;
-                    const { totalSize, count } = event.data;
-                    const sizeMB = (totalSize / (1024 * 1024)).toFixed(2);
-                    const timeSec = (timeTakenMs / 1000).toFixed(2);
-                    console.log(`Preloaded ${count} files (${sizeMB} MB) in ${timeSec}s`);
-                    resolve();
-                } else if (event.data?.type === SW_MESSAGES.PRELOAD_PROGRESS) {
-                    if (onProgress)
-                        onProgress(event.data);
-                } else if (event.data?.type === 'ERROR') {
-                    port.onmessage = null;
-                    if (timeoutId)
-                        clearTimeout(timeoutId);
-                    reject(new Error(event.data.message));
-                }
-            };
-            this.sw.postMessage(
-                {
-                    type: SW_MESSAGES.PRELOAD_SUITES,
-                    suites: suitesData,
-                    delay: resourceLoadDelay,
-                    clearCache: clearCache,
-                },
-                [channel.port2]
-            );
-        });
-    }
+        const response = await this._sendMessageWithReply({ type: SW_MESSAGES.PRELOAD_SUITES, suites: suitesData, delay: resourceLoadDelay, clearCache }, onProgress, PRELOAD_TIMEOUT_MS);
 
-    async setState(state) {
-        if (!this.sw) return;
-        return new Promise((resolve, reject) => {
-            const channel = new MessageChannel();
-            channel.port1.onmessage = (event) => {
-                if (event.data?.type === 'SUCCESS') {
-                    resolve();
-                } else if (event.data?.type === 'ERROR') {
-                    reject(new Error(event.data.message));
-                }
-            };
-            this.sw.postMessage({ type: SW_MESSAGES.SET_STATE, state }, [channel.port2]);
-        });
+        if (response?.type === SW_MESSAGES.PRELOAD_DONE) {
+            const timeTakenMs = performance.now() - startTime;
+            const sizeMB = (response.totalSize / (1024 * 1024)).toFixed(2);
+            const timeSec = (timeTakenMs / 1000).toFixed(2);
+            console.log(`Preloaded ${response.count} files (${sizeMB} MB) in ${timeSec}s`);
+        }
     }
 }
 
@@ -123,7 +143,7 @@ class MainBenchmarkClient {
     _isRunning = false;
     _hasResults = false;
     _metrics = Object.create(null);
-    preloadServiceWorker = new PreloadServiceWorker();
+    _preloadServiceWorker = new PreloadServiceWorker();
     _steppingPromise = null;
     _steppingResolver = null;
     _benchmarkConfiguratorPromise = null;
@@ -181,9 +201,9 @@ class MainBenchmarkClient {
 
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
 
-        await this.preloadServiceWorker.setup();
+        await this._preloadServiceWorker.setup();
 
-        if (!params.isDefault())
+        if (!this._didInitialPreload)
             await this._cacheResources(benchmarkConfigurator);
 
         try {
@@ -288,7 +308,7 @@ class MainBenchmarkClient {
         this._hasResults = true;
         this._metrics = Object.create(null);
         this._setBenchmarkState(BENCHMARK_STATE.ERROR);
-        this._populateInvalidScore();
+        this._populateInvalidScore(error.message);
         this.showResultsSummary();
         throw error;
     }
@@ -302,10 +322,20 @@ class MainBenchmarkClient {
             document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
     }
 
-    _populateInvalidScore() {
+    _populateInvalidScore(errorText) {
         document.getElementById("summary").className = "invalid";
         document.getElementById("result-number").textContent = "Error";
         document.getElementById("confidence-number").textContent = "";
+
+        const invalidScoreText = document.getElementById("invalid-score-text");
+        if (errorText) {
+            invalidScoreText.textContent = errorText;
+        } else {
+            invalidScoreText.innerHTML = `
+                One or more subtests produced no duration.<br />
+                Please check your <a href="./instructions.html" target="_blank">browser settings</a> and re-run the benchmark.<br />
+            `;
+        }
     }
 
     _computeResults(measuredValuesList, displayUnit) {
@@ -410,15 +440,15 @@ class MainBenchmarkClient {
         document.getElementById("metrics-results").innerHTML = html;
 
         const filePrefix = `speedometer-3-${new Date().toISOString()}`;
-        let jsonData = this._formattedJSONResult({ modern: false });
-        let jsonLink = document.getElementById("download-classic-json");
-        jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
-        jsonLink.setAttribute("download", `${filePrefix}.json`);
+        const classicJsonData = this._formattedJSONResult({ modern: false });
+        const classicJsonLink = document.getElementById("download-classic-json");
+        classicJsonLink.href = URL.createObjectURL(new Blob([classicJsonData], { type: "application/json" }));
+        classicJsonLink.setAttribute("download", `${filePrefix}.json`);
 
-        jsonLink = document.getElementById("download-full-json");
-        jsonData = this._formattedJSONResult({ modern: true });
-        jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
-        jsonLink.setAttribute("download", `${filePrefix}.json`);
+        const fullJsonLink = document.getElementById("download-full-json");
+        const fullJsonData = this._formattedJSONResult({ modern: true });
+        fullJsonLink.href = URL.createObjectURL(new Blob([fullJsonData], { type: "application/json" }));
+        fullJsonLink.setAttribute("download", `${filePrefix}.json`);
 
         const csvData = this._formattedCSVResult();
         const csvLink = document.getElementById("download-csv");
@@ -487,7 +517,7 @@ class MainBenchmarkClient {
     }
 
     async _setupServiceWorker(benchmarkConfigurator) {
-        await this.preloadServiceWorker.setup();
+        await this._preloadServiceWorker.setup();
         await this._cacheResources(benchmarkConfigurator);
     }
 
@@ -497,13 +527,15 @@ class MainBenchmarkClient {
         this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
 
         try {
-            await this.preloadServiceWorker.preloadSuites(enabledSuites, params.resourceLoadDelay, clearCache, this._updateCacheProgress.bind(this));
+            await this._preloadServiceWorker.preloadSuites(enabledSuites, params.resourceLoadDelay, clearCache, this._updateCacheProgress.bind(this));
             this._didInitialPreload = true;
             this._enableStartButtons();
         } catch (error) {
             console.error("Service Worker preload failed:", error);
             this._setBenchmarkState(BENCHMARK_STATE.ERROR);
-            this._enableStartButtons();
+            this._populateInvalidScore(error?.message);
+            this.showResultsSummary();
+            throw error;
         }
     }
 
@@ -528,8 +560,6 @@ class MainBenchmarkClient {
 
     async _setBenchmarkState(state) {
         document.body.setAttribute("data-benchmark-state", state);
-        if (this.preloadServiceWorker)
-            await this.preloadServiceWorker.setState(state);
 
         const startButton = document.querySelector(".start-tests-button");
         if (state === BENCHMARK_STATE.PRELOADING) {
@@ -538,9 +568,11 @@ class MainBenchmarkClient {
             document.getElementById("preload-info-progress").textContent = "";
             document.body.style.setProperty("--preload-progress", "0%");
             startButton.innerHTML = "<div>Preloading</div>";
-        } else if (state === BENCHMARK_STATE.READY || state === BENCHMARK_STATE.IDLE || state === BENCHMARK_STATE.DONE || state === BENCHMARK_STATE.ERROR) {
+        } else if (state !== BENCHMARK_STATE.RUNNING) {
             document.body.style.removeProperty("--preload-progress");
             startButton.innerHTML = "<div>Start Test</div>";
+            if (state !== BENCHMARK_STATE.READY)
+                await this._preloadServiceWorker?.clearSw();
         }
     }
 
