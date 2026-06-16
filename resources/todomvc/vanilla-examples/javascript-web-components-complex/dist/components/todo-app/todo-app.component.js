@@ -6,7 +6,8 @@ import appStyles from "../../styles/app.constructable.js";
 import mainStyles from "../../styles/main.constructable.js";
 class TodoApp extends HTMLElement {
     #isReady = false;
-    #data = [];
+    #numberOfItems = 0;
+    #numberOfCompletedItems = 0;
     constructor() {
         super();
 
@@ -42,37 +43,28 @@ class TodoApp extends HTMLElement {
 
     addItem(event) {
         const { detail: item } = event;
-
-        this.#data.push(item);
-        this.list.addItem(item);
-
+        this.list.addItem(item, this.#numberOfItems++);
         this.update("add-item", item.id);
     }
 
     toggleItem(event) {
-        this.#data.forEach((entry) => {
-            if (entry.id === event.detail.id)
-                entry.completed = event.detail.completed;
-        });
+        if (event.detail.completed)
+            this.#numberOfCompletedItems++;
+        else
+            this.#numberOfCompletedItems--;
 
         this.update("toggle-item", event.detail.id);
     }
 
     removeItem(event) {
-        this.#data.forEach((entry, index) => {
-            if (entry.id === event.detail.id)
-                this.#data.splice(index, 1);
-        });
+        if (event.detail.completed)
+            this.#numberOfCompletedItems--;
 
+        this.#numberOfItems--;
         this.update("remove-item", event.detail.id);
     }
 
     updateItem(event) {
-        this.#data.forEach((entry) => {
-            if (entry.id === event.detail.id)
-                entry.title = event.detail.title;
-        });
-
         this.update("update-item", event.detail.id);
     }
 
@@ -84,13 +76,12 @@ class TodoApp extends HTMLElement {
         this.list.removeCompletedItems();
     }
 
-    update(type = "", id = "") {
-        const totalItems = this.#data.length;
-        const activeItems = this.#data.filter((entry) => !entry.completed).length;
-        const completedItems = totalItems - activeItems;
+    update() {
+        const totalItems = this.#numberOfItems;
+        const completedItems = this.#numberOfCompletedItems;
+        const activeItems = totalItems - completedItems;
 
         this.list.setAttribute("total-items", totalItems);
-        this.list.updateElements(type, id);
 
         this.topbar.setAttribute("total-items", totalItems);
         this.topbar.setAttribute("active-items", activeItems);
