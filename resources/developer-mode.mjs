@@ -1,5 +1,6 @@
 import { params, LAYOUT_MODES, defaultParams } from "./shared/params.mjs";
 import { benchmarkConfigurator } from "./benchmark-configurator.mjs";
+import { handleComplexityChange } from "./tests.mjs";
 
 const { suites, tags } = benchmarkConfigurator;
 
@@ -187,7 +188,7 @@ function createUIForSuites() {
         checkbox.type = "checkbox";
         checkbox.checked = suite.enabled;
         checkbox.onchange = () => {
-             suite.enabled = checkbox.checked;
+            suite.enabled = checkbox.checked;
             handleParamsChange();
         };
         checkboxes.push(checkbox);

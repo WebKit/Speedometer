@@ -1,5 +1,5 @@
 import { BenchmarkTestStep } from "./benchmark-runner.mjs";
-import { todos } from "./translations.mjs";
+import { todos } from "./shared/translations.mjs";
 import { params } from "./shared/params.mjs";
 
 const defaultNumberOfItemsToAdd = 100;
