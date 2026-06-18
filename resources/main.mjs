@@ -43,8 +43,7 @@ class MainBenchmarkClient {
         this._steppingPromise = new Promise((resolve) => {
             this._steppingResolver = resolve;
         });
-        if (this._isStepping())
-            currentSteppingResolver();
+        currentSteppingResolver?.();
         if (!this._isRunning) {
             this._startBenchmark();
             this._showSection("#running");
@@ -55,7 +54,7 @@ class MainBenchmarkClient {
         const currentSteppingResolver = this._steppingResolver;
         this._steppingPromise = null;
         this._steppingResolver = null;
-        currentSteppingResolver();
+        currentSteppingResolver?.();
     }
 
     async _awaitNextStep(suite, test) {
@@ -127,9 +126,11 @@ class MainBenchmarkClient {
             await this._awaitNextStep(suite, test);
     }
 
-    didFinishSuite() {
+    async didFinishSuite(suite) {
         this._finishedTestCount++;
         this._progressCompleted.value = this._finishedTestCount;
+        if (this._steppingPromise)
+            await this._awaitNextStep(suite, { name: "Finished" });
     }
 
     didRunSuites(measuredValues) {
