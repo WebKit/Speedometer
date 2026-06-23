@@ -139,16 +139,16 @@ export class TodoItem extends LitElement {
     ];
 
     @property()
-        todoId = "";
+    accessor todoId = "";
 
     @property()
-        text = "";
+    accessor text = "";
 
     @property({ type: Boolean })
-        completed = false;
+    accessor completed = false;
 
     @state()
-        isEditing: boolean = false;
+    accessor isEditing: boolean = false;
 
     override render() {
         const itemClassList = {
