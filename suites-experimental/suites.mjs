@@ -292,4 +292,24 @@ export const ExperimentalSuites = freezeSuites([
             }),
         ],
     },
+    {
+        name: "ChatRoom-React",
+        url: "suites-experimental/chat-room/dist/index.html",
+        resources: "suites-experimental/chat-room/dist/resources.txt",
+        tags: ["chat-room", "experimental"],
+        async prepare(page) {
+            await page.waitForElement(".room-list-item");
+        },
+        tests: [
+            new BenchmarkTestStep("SwitchRooms", (page) => {
+                const rooms = page.querySelectorAll(".room-list-item");
+                const iterations = 20;
+                // Starts past room 0, which is already open: clicking it commits nothing.
+                for (let i = 1; i <= iterations; i++) {
+                    rooms[i % rooms.length].click();
+                    page.layout();
+                }
+            }),
+        ],
+    },
 ]);
