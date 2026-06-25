@@ -3,6 +3,25 @@ import { getTodoText } from "../resources/shared/translations.mjs";
 import { getNumberOfItemsToAdd } from "../resources/shared/todomvc-utils.mjs";
 import { freezeSuites } from "../resources/suites-helper.mjs";
 
+// Yield a task so React's concurrent scheduler lands the pending update before
+// the next interaction. A MessageChannel round-trip rather than setTimeout(0):
+// an async step is awaited inside the measured window (see
+// resources/shared/step-runner.mjs), so the timer clamp would be reported as
+// workload time.
+//
+// Closed at both ends because an entangled port is a cycle collector root.
+function yieldTask() {
+    return new Promise((resolve) => {
+        const channel = new MessageChannel();
+        channel.port1.onmessage = () => {
+            channel.port1.close();
+            channel.port2.close();
+            resolve();
+        };
+        channel.port2.postMessage(0);
+    });
+}
+
 export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-LocalStorage",
@@ -297,16 +316,18 @@ export const ExperimentalSuites = freezeSuites([
         url: "suites-experimental/chat-room/dist/index.html",
         resources: "suites-experimental/chat-room/dist/resources.txt",
         tags: ["chat-room", "experimental"],
+        type: "async",
         async prepare(page) {
             await page.waitForElement(".room-list-item");
         },
         tests: [
-            new BenchmarkTestStep("SwitchRooms", (page) => {
+            new BenchmarkTestStep("SwitchRooms", async (page) => {
                 const rooms = page.querySelectorAll(".room-list-item");
                 const iterations = 20;
                 // Starts past room 0, which is already open: clicking it commits nothing.
                 for (let i = 1; i <= iterations; i++) {
                     rooms[i % rooms.length].click();
+                    await yieldTask();
                     page.layout();
                 }
             }),

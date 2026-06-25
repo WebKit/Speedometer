@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { flushSync } from "react-dom";
 import { rooms } from "./data/rooms.js";
 import RoomList from "./components/room-list.jsx";
 import Timeline from "./components/timeline.jsx";
@@ -8,11 +7,10 @@ export default function App() {
     const [selectedRoomId, setSelectedRoomId] = useState(rooms[0].id);
     const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
 
-    // Commit each room switch synchronously. Without this, React 18 batches a
-    // burst of programmatic clicks into a single deferred render, so only the
-    // last switch would render. flushSync makes each click render one switch,
-    // matching how a real discrete user click behaves.
-    const handleSelect = (roomId) => flushSync(() => setSelectedRoomId(roomId));
+    // A plain state update, so the switch commits through React's normal
+    // concurrent scheduler, the way a real discrete click does. The suite yields
+    // a task between clicks so each switch commits before the next.
+    const handleSelect = (roomId) => setSelectedRoomId(roomId);
 
     return (
         <div className="app">
