@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "TodoMVC app written with JavaScript es5 features.",
     "engines": {
-        "node": ">=18.13.0",
+        "node": ">=22.0.0",
         "npm": ">=8.19.3"
     },
     "private": true,

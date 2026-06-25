@@ -23,5 +23,9 @@
         "http-server": "^14.1.1",
         "news-site-css": "file:../news-site-css",
         "uuid": "^9.0.0"
+    },
+    "engines": {
+        "node": ">=22.0.0",
+        "npm": ">=8.19.3"
     }
 }
