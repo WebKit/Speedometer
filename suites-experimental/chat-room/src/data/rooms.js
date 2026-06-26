@@ -80,6 +80,13 @@ const WORDS = [
     "time",
 ];
 
+// Emoji are everywhere in a real chat. The pool mixes plain codepoints with
+// variation selectors, skin tone modifiers and ZWJ sequences, so the workload
+// exercises grapheme clustering as well as color-font rendering.
+const INLINE_EMOJIS = ["😀", "😂", "🎉", "🔥", "❤️", "🙏", "👀", "🚀", "😅", "🤔", "💯", "✨", "🙌🏽", "👍🏻", "😍", "🥳", "😭", "🤯", "👏", "💪🏾", "🧠", "☕", "🐛", "📈", "👩‍💻", "🧑‍🚀", "👨‍👩‍👧‍👦", "🏳️‍🌈", "🤷‍♀️", "🙋‍♂️", "🫠", "🫶"];
+
+const REACTION_EMOJIS = ["👍", "❤️", "😂", "🎉", "🔥", "✅", "👀", "🙏", "💯", "🚀", "😅", "🤯"];
+
 function initials(name) {
     return name
         .split(" ")
@@ -89,14 +96,55 @@ function initials(name) {
         .toUpperCase();
 }
 
+// Pick a run of distinct-looking emoji, strided by the seed so neighbouring
+// messages don't end up with the same run.
+function pickEmojis(seed, count) {
+    const picked = [];
+    for (let i = 0; i < count; i++)
+        picked.push(INLINE_EMOJIS[(seed * 7 + i * 13) % INLINE_EMOJIS.length]);
+    return picked;
+}
+
 // Build a message body of a deterministic, varied length from the word pool.
+// Most messages carry emoji: roughly one in eleven is emoji-only, and many of
+// the rest get some sprinkled between the words and/or a run appended at the
+// end. A decent share stays plain text so that path is still exercised too.
 function buildBody(seed) {
+    if (seed % 11 === 0)
+        return pickEmojis(seed, 2 + (seed % 4)).join(" ");
+
     const wordCount = 6 + (seed % 22);
+    const sprinkle = seed % 5 < 2;
     const words = [];
-    for (let i = 0; i < wordCount; i++)
+    for (let i = 0; i < wordCount; i++) {
         words.push(WORDS[(seed + i) % WORDS.length]);
+        if (sprinkle && i > 0 && i < wordCount - 1 && (seed + i) % 7 === 0)
+            words.push(INLINE_EMOJIS[(seed + i) % INLINE_EMOJIS.length]);
+    }
     const sentence = words.join(" ");
-    return `${sentence.charAt(0).toUpperCase() + sentence.slice(1)}.`;
+    const text = `${sentence.charAt(0).toUpperCase() + sentence.slice(1)}.`;
+    if (seed % 4 === 0)
+        return `${text} ${pickEmojis(seed, 1 + (seed % 3)).join("")}`;
+    if (seed % 3 === 0)
+        return `${text} ${INLINE_EMOJIS[seed % INLINE_EMOJIS.length]}`;
+    return text;
+}
+
+// Build a deterministic reactions row. Reaction pills are all over a busy chat,
+// so roughly two messages in three have at least one and popular ones collect a
+// whole row of them.
+function buildReactions(seed) {
+    if (seed % 3 === 2)
+        return [];
+    const count = 1 + (seed % 4);
+    const reactions = [];
+    for (let i = 0; i < count; i++) {
+        reactions.push({
+            emoji: REACTION_EMOJIS[(seed + i * 5) % REACTION_EMOJIS.length],
+            count: 1 + ((seed + i) % 12),
+        });
+    }
+    return reactions;
 }
 
 // Format a deterministic HH:MM timestamp without touching the real clock.
@@ -120,6 +168,7 @@ function buildMessages(roomIndex) {
             colorIndex: seed % AVATAR_COLOR_COUNT,
             time: buildTime(seed),
             body: buildBody(seed),
+            reactions: buildReactions(seed),
         });
     }
     return messages;

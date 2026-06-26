@@ -156,3 +156,25 @@ body {
     line-height: 1.4;
     color: #2c3038;
 }
+
+.timeline-message-reactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.reaction {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 8px;
+    border: 1px solid #e3e8ef;
+    border-radius: 12px;
+    background-color: #f4f6fa;
+    font-size: 12px;
+}
+
+.reaction-count {
+    color: #737d8c;
+}
