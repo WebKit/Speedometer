@@ -12,6 +12,16 @@ export default function Message({ message }) {
                     <span className="timeline-message-time">{message.time}</span>
                 </div>
                 <div className="timeline-message-text">{message.body}</div>
+                {message.reactions.length > 0
+                    && <div className="timeline-message-reactions">
+                        {message.reactions.map((reaction) =>
+                            <span className="reaction" key={reaction.emoji}>
+                                <span className="reaction-emoji">{reaction.emoji}</span>
+                                <span className="reaction-count">{reaction.count}</span>
+                            </span>
+                        )}
+                    </div>
+                }
             </div>
         </li>
     );
