@@ -71,9 +71,9 @@ export class Params {
 
         if (warnUnused) {
             const unused = Array.from(searchParams.keys());
-            if (unused.length > 0) {
+            if (unused.length > 0)
                 console.error(`Got unused search params: ${unused.join(", ")}`);
-            }
+
         }
     }
 
