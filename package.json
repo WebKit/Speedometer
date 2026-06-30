@@ -55,8 +55,8 @@
         "mocha": "^10.2.0",
         "prettier": "^2.8.3",
         "prettier-plugin-tailwindcss": "^0.4.1",
-        "selenium-webdriver": "^4.27.0",
+        "selenium-webdriver": "^4.44.0",
         "sinon": "^17.0.1",
-        "typescript": "^5.0.4"
+        "typescript": "~5.1.0"
     }
 }
