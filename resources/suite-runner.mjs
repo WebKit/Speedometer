@@ -105,10 +105,10 @@ export class SuiteRunner {
             const frame = this.#frame;
             frame.onload = () => resolve();
             frame.onerror = () => reject();
-            const splitUrl = this.#suite.url.split("?");
-            const queryPart = splitUrl[1] ?? "";
-            const searchParams = this.#params.toSearchParams();
-            frame.src = `${splitUrl[0]}?${queryPart}${queryPart && searchParams ? "&" : ""}${searchParams}`;
+            const url = new URL(this.#suite.url, document.baseURI);
+            for (const [key, value] of this.#params.toSearchParamsObject())
+                url.searchParams.append(key, value);
+            frame.src = url.href;
         });
     }
 
