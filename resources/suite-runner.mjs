@@ -106,7 +106,9 @@ export class SuiteRunner {
             frame.onload = () => resolve();
             frame.onerror = () => reject();
             const splitUrl = this.#suite.url.split("?");
-            frame.src = `${splitUrl[0]}?${splitUrl[1] ?? ""}&${this.#params.toSearchParams()}`;
+            const queryPart = splitUrl[1] ?? "";
+            const searchParams = this.#params.toSearchParams();
+            frame.src = `${splitUrl[0]}?${queryPart}${queryPart && searchParams ? "&" : ""}${searchParams}`;
         });
     }
 
