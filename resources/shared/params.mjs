@@ -73,7 +73,6 @@ export class Params {
             const unused = Array.from(searchParams.keys());
             if (unused.length > 0)
                 console.error(`Got unused search params: ${unused.join(", ")}`);
-
         }
     }
 
