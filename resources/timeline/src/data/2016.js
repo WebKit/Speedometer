@@ -1,19 +1,53 @@
 export default [
     {
-        "id": "card-2016-10-15",
-        "date": "2016-10-15",
-        "title": "AlphaGo besiegt den Go-Meister Lee Sedol",
-        "description": "Googles KI-System AlphaGo besiegte den südkoreanischen Go-Großmeister Lee Sedol im antiken Brettspiel Go mit 4 zu 1. Dies war ein Durchbruch, da Go wegen seiner astronomischen Anzahl an Zügen als für Computer unbezwingbar galt.",
-        "tags": [
-            "software",
-            "milestone"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/AlphaGo"
+        id: "card-2016-10-15",
+        date: "2016-10-15",
+        title: "AlphaGo besiegt den Go-Meister Lee Sedol",
+        description:
+            "Googles KI-System AlphaGo besiegte den südkoreanischen Go-Großmeister Lee Sedol im antiken Brettspiel Go mit 4 zu 1. Dies war ein Durchbruch, da Go wegen seiner astronomischen Anzahl an Zügen als für Computer unbezwingbar galt.",
+        tags: ["software", "milestone"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/AlphaGo",
     },
-    {"title": "Pokémon Go", "description": "Das Augmented-Reality-Spiel Pokémon Go von Niantic löste im Sommer einen weltweiten Hype aus.", "tags": ["software", "gaming", "consumer"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Pok%C3%A9mon_Go", "id": "card-2016-01-01", "date": "2016-01-01"},
-    {"title": "AirPods", "description": "Apple stellte die komplett kabellosen In-Ear-Kopfhörer AirPods vor, die den Markt für TWS (True Wireless Stereo) befeuerten.", "tags": ["hardware", "consumer"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/AirPods", "id": "card-2016-01-02", "date": "2016-01-02"},
-    {"title": "TikTok", "description": "Das chinesische Unternehmen ByteDance startete Douyin, das im darauffolgenden Jahr als TikTok weltweit durchstartete.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/TikTok", "id": "card-2016-01-03", "date": "2016-01-03"},
-    {"title": "HTC Vive", "description": "In Partnerschaft mit Valve brachte HTC das VR-Headset Vive auf den Markt.", "tags": ["hardware", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/HTC_Vive", "id": "card-2016-01-04", "date": "2016-01-04"}
+    {
+        title: "Pokémon Go",
+        description: "Das Augmented-Reality-Spiel Pokémon Go von Niantic löste im Sommer einen weltweiten Hype aus.",
+        tags: ["software", "gaming", "consumer"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Pok%C3%A9mon_Go",
+        id: "card-2016-01-01",
+        date: "2016-01-01",
+    },
+    {
+        title: "AirPods",
+        description: "Apple stellte die komplett kabellosen In-Ear-Kopfhörer AirPods vor, die den Markt für TWS (True Wireless Stereo) befeuerten.",
+        tags: ["hardware", "consumer"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/AirPods",
+        id: "card-2016-01-02",
+        date: "2016-01-02",
+    },
+    {
+        title: "TikTok",
+        description: "Das chinesische Unternehmen ByteDance startete Douyin, das im darauffolgenden Jahr als TikTok weltweit durchstartete.",
+        tags: ["software", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/TikTok",
+        id: "card-2016-01-03",
+        date: "2016-01-03",
+    },
+    {
+        title: "HTC Vive",
+        description: "In Partnerschaft mit Valve brachte HTC das VR-Headset Vive auf den Markt.",
+        tags: ["hardware", "gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/HTC_Vive",
+        id: "card-2016-01-04",
+        date: "2016-01-04",
+    },
 ];

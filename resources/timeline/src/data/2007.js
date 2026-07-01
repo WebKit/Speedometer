@@ -1,24 +1,58 @@
 export default [
     {
-        "id": "card-2007-10-15",
-        "date": "2007-10-15",
-        "title": "Steve Jobs stellt das erste Apple iPhone vor",
-        "description": "Steve Jobs enthüllte das iPhone. Durch den Verzicht auf physische Tasten zugunsten eines kapazitiven Multi-Touchscreens und eines vollständigen Webbrowsers begründete es das moderne Smartphone-Zeitalter und verschob den Schwerpunkt des Computings auf mobile Plattformen.",
-        "tags": [
-            "consumer",
-            "milestone"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/IPhone",
-        "stats": {
-            "clockSpeed": "412 MHz",
-            "memory": "128 MB RAM, 4 GB bis 16 GB Flash",
-            "transistors": "ARM11-basierter Samsung SoC"
-        }
+        id: "card-2007-10-15",
+        date: "2007-10-15",
+        title: "Steve Jobs stellt das erste Apple iPhone vor",
+        description:
+            "Steve Jobs enthüllte das iPhone. Durch den Verzicht auf physische Tasten zugunsten eines kapazitiven Multi-Touchscreens und eines vollständigen Webbrowsers begründete es das moderne Smartphone-Zeitalter und verschob den Schwerpunkt des Computings auf mobile Plattformen.",
+        tags: ["consumer", "milestone"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/IPhone",
+        stats: {
+            clockSpeed: "412 MHz",
+            memory: "128 MB RAM, 4 GB bis 16 GB Flash",
+            transistors: "ARM11-basierter Samsung SoC",
+        },
     },
-    {"title": "iPhone", "description": "Apple stellte das erste iPhone vor und revolutionierte den Markt für Smartphones maßgeblich.", "tags": ["hardware", "consumer"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/IPhone", "id": "card-2007-01-01", "date": "2007-01-01"},
-    {"title": "Android", "description": "Die Open Handset Alliance rund um Google kündigte offiziell das offene mobile Betriebssystem Android an.", "tags": ["software"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Android_(Betriebssystem)", "id": "card-2007-01-02", "date": "2007-01-02"},
-    {"title": "Dropbox", "description": "Dropbox wurde gegründet und brachte Cloud-Speicher für Endnutzer in den Mainstream.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Dropbox", "id": "card-2007-01-03", "date": "2007-01-03"},
-    {"title": "Amazon Kindle", "description": "Amazon präsentierte den ersten Kindle E-Reader, der E-Books populär machte.", "tags": ["hardware", "consumer"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Amazon_Kindle", "id": "card-2007-01-04", "date": "2007-01-04"}
+    {
+        title: "iPhone",
+        description: "Apple stellte das erste iPhone vor und revolutionierte den Markt für Smartphones maßgeblich.",
+        tags: ["hardware", "consumer"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/IPhone",
+        id: "card-2007-01-01",
+        date: "2007-01-01",
+    },
+    {
+        title: "Android",
+        description: "Die Open Handset Alliance rund um Google kündigte offiziell das offene mobile Betriebssystem Android an.",
+        tags: ["software"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Android_(Betriebssystem)",
+        id: "card-2007-01-02",
+        date: "2007-01-02",
+    },
+    {
+        title: "Dropbox",
+        description: "Dropbox wurde gegründet und brachte Cloud-Speicher für Endnutzer in den Mainstream.",
+        tags: ["software", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Dropbox",
+        id: "card-2007-01-03",
+        date: "2007-01-03",
+    },
+    {
+        title: "Amazon Kindle",
+        description: "Amazon präsentierte den ersten Kindle E-Reader, der E-Books populär machte.",
+        tags: ["hardware", "consumer"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Amazon_Kindle",
+        id: "card-2007-01-04",
+        date: "2007-01-04",
+    },
 ];

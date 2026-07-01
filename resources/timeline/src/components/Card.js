@@ -1,6 +1,5 @@
 import m from "mithril";
-
-const Chart = {
+import { categoryLabels } from "./Controls.js";const Chart = {
     draw(dom, chartData, width) {
         const ctx = dom.getContext("2d");
         if (!ctx)
@@ -78,7 +77,7 @@ export const Card = {
                 m("h3.card-title", highlight(title, searchQuery))
             ]),
             m(".card-tags",
-                tags.map(tag => m("span.tag", { class: `tag-${tag}` }, tag))
+                tags.map(tag => m("span.tag", { class: `tag-${tag}` }, categoryLabels[tag] || tag))
             ),
             m("p.card-desc", highlight(description, searchQuery)),
             stats && m(".card-stats-summary", [

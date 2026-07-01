@@ -1,22 +1,56 @@
 export default [
     {
-        "id": "card-2024-10-15",
-        "date": "2024-10-15",
-        "title": "Exascale-Supercomputer Frontier und El Capitan",
-        "description": "Die Supercomputer Frontier und El Capitan in den USA überschritten offiziell die Grenze von 1 ExaFLOPS ($10^{18}$ Rechenoperationen pro Sekunde). Diese massiv parallelen Systeme basieren auf Zehntausenden AMD- und Nvidia-GPUs und dienen der Klima- und Kernforschung.",
-        "tags": [
-            "hardware",
-            "milestone"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Frontier_(Supercomputer)",
-        "stats": {
-            "transistors": "37.888 AMD EPYC CPUs, 151.552 Instinct GPUs"
-        }
+        id: "card-2024-10-15",
+        date: "2024-10-15",
+        title: "Exascale-Supercomputer Frontier und El Capitan",
+        description:
+            "Die Supercomputer Frontier und El Capitan in den USA überschritten offiziell die Grenze von 1 ExaFLOPS ($10^{18}$ Rechenoperationen pro Sekunde). Diese massiv parallelen Systeme basieren auf Zehntausenden AMD- und Nvidia-GPUs und dienen der Klima- und Kernforschung.",
+        tags: ["hardware", "milestone"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Frontier_(Supercomputer)",
+        stats: {
+            transistors: "37.888 AMD EPYC CPUs, 151.552 Instinct GPUs",
+        },
     },
-    {"title": "Apple Vision Pro", "description": "Apple startete den Verkauf seines ersten Mixed-Reality-Headsets, der Vision Pro, auf dem US-Markt.", "tags": ["hardware", "consumer"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Apple_Vision_Pro", "id": "card-2024-01-01", "date": "2024-01-01"},
-    {"title": "Sora", "description": "OpenAI kündigte das KI-Modell Sora an, welches in der Lage ist, hyperrealistische Videos aus Text-Prompts zu generieren.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Sora_(Text-zu-Video-Modell)", "id": "card-2024-01-02", "date": "2024-01-02"},
-    {"title": "Claude 3", "description": "Anthropic veröffentlichte die Claude-3-Modellfamilie, die als starke Konkurrenz zu GPT-4 auftrat.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Claude_(Sprachmodell)", "id": "card-2024-01-03", "date": "2024-01-03"},
-    {"title": "PlayStation 5 Pro", "description": "Sony kündigte eine leistungsstärkere \"Pro\"-Version der PlayStation 5 Konsole an.", "tags": ["hardware", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/PlayStation_5", "id": "card-2024-01-04", "date": "2024-01-04"}
+    {
+        title: "Apple Vision Pro",
+        description: "Apple startete den Verkauf seines ersten Mixed-Reality-Headsets, der Vision Pro, auf dem US-Markt.",
+        tags: ["hardware", "consumer"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Apple_Vision_Pro",
+        id: "card-2024-01-01",
+        date: "2024-01-01",
+    },
+    {
+        title: "Sora",
+        description: "OpenAI kündigte das KI-Modell Sora an, welches in der Lage ist, hyperrealistische Videos aus Text-Prompts zu generieren.",
+        tags: ["software", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Sora_(Text-zu-Video-Modell)",
+        id: "card-2024-01-02",
+        date: "2024-01-02",
+    },
+    {
+        title: "Claude 3",
+        description: "Anthropic veröffentlichte die Claude-3-Modellfamilie, die als starke Konkurrenz zu GPT-4 auftrat.",
+        tags: ["software", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Claude_(Sprachmodell)",
+        id: "card-2024-01-03",
+        date: "2024-01-03",
+    },
+    {
+        title: "PlayStation 5 Pro",
+        description: 'Sony kündigte eine leistungsstärkere "Pro"-Version der PlayStation 5 Konsole an.',
+        tags: ["hardware", "gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/PlayStation_5",
+        id: "card-2024-01-04",
+        date: "2024-01-04",
+    },
 ];

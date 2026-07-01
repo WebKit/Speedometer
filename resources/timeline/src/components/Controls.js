@@ -1,5 +1,16 @@
 import m from "mithril";
 
+export const categoryLabels = {
+    "hardware": "Hardware",
+    "software": "Software",
+    "consumer": "Konsumenten",
+    "networking": "Netzwerk",
+    "milestone": "Meilenstein",
+    "gaming": "Spiele",
+    "art": "Kunst",
+    "military": "Militär"
+};
+
 export const Controls = {
     view(vnode) {
         const {
@@ -8,17 +19,6 @@ export const Controls = {
         } = vnode.attrs;
 
         const categories = ["hardware", "software", "consumer", "networking", "milestone", "gaming", "art", "military"];
-        
-        const categoryLabels = {
-            "hardware": "Hardware",
-            "software": "Software",
-            "consumer": "Konsumenten",
-            "networking": "Netzwerk",
-            "milestone": "Meilenstein",
-            "gaming": "Spiele",
-            "art": "Kunst",
-            "military": "Militär"
-        };
 
         return m("header#app-header", [
             m(".header-title-section", [

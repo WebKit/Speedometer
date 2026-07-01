@@ -1,19 +1,53 @@
 export default [
     {
-        "id": "card-2008-10-15",
-        "date": "2008-10-15",
-        "title": "Google veröffentlicht das Android-Betriebssystem",
-        "description": "Das von Google angeführte Konsortium Open Handset Alliance brachte Android auf den Markt. Als quelloffenes Mobilbetriebssystem wurde es zur dominierenden Software-Plattform für Smartphones weltweit und forderte Apple direkt heraus.",
-        "tags": [
-            "software",
-            "consumer"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Android_(Betriebssystem)"
+        id: "card-2008-10-15",
+        date: "2008-10-15",
+        title: "Google veröffentlicht das Android-Betriebssystem",
+        description:
+            "Das von Google angeführte Konsortium Open Handset Alliance brachte Android auf den Markt. Als quelloffenes Mobilbetriebssystem wurde es zur dominierenden Software-Plattform für Smartphones weltweit und forderte Apple direkt heraus.",
+        tags: ["software", "consumer"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Android_(Betriebssystem)",
     },
-    {"title": "App Store", "description": "Apple startete den App Store, der Drittanbietern erlaubte, Anwendungen für das iPhone anzubieten.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/App_Store_(iOS)", "id": "card-2008-01-01", "date": "2008-01-01"},
-    {"title": "Google Chrome", "description": "Google veröffentlichte den Chrome-Browser, der bald zum weltweit meistgenutzten Webbrowser aufstieg.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Google_Chrome", "id": "card-2008-01-02", "date": "2008-01-02"},
-    {"title": "GitHub", "description": "GitHub wurde gegründet und entwickelte sich zur wichtigsten Plattform für Software-Entwicklungsprojekte und Versionsverwaltung.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/GitHub", "id": "card-2008-01-03", "date": "2008-01-03"},
-    {"title": "HTC Dream", "description": "Das HTC Dream erschien als erstes kommerzielles Smartphone mit dem Betriebssystem Android.", "tags": ["hardware", "consumer"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/HTC_Dream", "id": "card-2008-01-04", "date": "2008-01-04"}
+    {
+        title: "App Store",
+        description: "Apple startete den App Store, der Drittanbietern erlaubte, Anwendungen für das iPhone anzubieten.",
+        tags: ["software", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/App_Store_(iOS)",
+        id: "card-2008-01-01",
+        date: "2008-01-01",
+    },
+    {
+        title: "Google Chrome",
+        description: "Google veröffentlichte den Chrome-Browser, der bald zum weltweit meistgenutzten Webbrowser aufstieg.",
+        tags: ["software", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Google_Chrome",
+        id: "card-2008-01-02",
+        date: "2008-01-02",
+    },
+    {
+        title: "GitHub",
+        description: "GitHub wurde gegründet und entwickelte sich zur wichtigsten Plattform für Software-Entwicklungsprojekte und Versionsverwaltung.",
+        tags: ["software", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/GitHub",
+        id: "card-2008-01-03",
+        date: "2008-01-03",
+    },
+    {
+        title: "HTC Dream",
+        description: "Das HTC Dream erschien als erstes kommerzielles Smartphone mit dem Betriebssystem Android.",
+        tags: ["hardware", "consumer"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/HTC_Dream",
+        id: "card-2008-01-04",
+        date: "2008-01-04",
+    },
 ];

@@ -1,31 +1,63 @@
 export default [
     {
-        "id": "card-2009-10-15",
-        "date": "2009-10-15",
-        "title": "Satoshi Nakamoto startet das Bitcoin-Netzwerk",
-        "description": "Unter dem Pseudonym Satoshi Nakamoto wurde der Genesis-Block der Kryptowährung Bitcoin geschürft. Bitcoin basiert auf einer dezentralen Blockchain-Architektur und kryptografischen Proof-of-Work-Verfahren.",
-        "tags": [
-            "networking",
-            "software"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Bitcoin"
+        id: "card-2009-10-15",
+        date: "2009-10-15",
+        title: "Satoshi Nakamoto startet das Bitcoin-Netzwerk",
+        description: "Unter dem Pseudonym Satoshi Nakamoto wurde der Genesis-Block der Kryptowährung Bitcoin geschürft. Bitcoin basiert auf einer dezentralen Blockchain-Architektur und kryptografischen Proof-of-Work-Verfahren.",
+        tags: ["networking", "software"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Bitcoin",
     },
     {
-        "id": "card-politics-wahlcomputer",
-        "date": "2009-03-03",
-        "title": "Urteil des Bundesverfassungsgerichts zu Wahlcomputern",
-        "description": "Das deutsche Bundesverfassungsgericht erklärte den Einsatz von elektronischen Wahlcomputern bei der Bundestagswahl 2005 für verfassungswidrig. Kritisiert wurde, dass ein Wahlvorgang ohne manuelle Auswertung für den Bürger intransparent sei und Manipulationen nicht ausgeschlossen werden können.",
-        "tags": [
-            "politics"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Wahlger%C3%A4t"
+        id: "card-politics-wahlcomputer",
+        date: "2009-03-03",
+        title: "Urteil des Bundesverfassungsgerichts zu Wahlcomputern",
+        description:
+            "Das deutsche Bundesverfassungsgericht erklärte den Einsatz von elektronischen Wahlcomputern bei der Bundestagswahl 2005 für verfassungswidrig. Kritisiert wurde, dass ein Wahlvorgang ohne manuelle Auswertung für den Bürger intransparent sei und Manipulationen nicht ausgeschlossen werden können.",
+        tags: ["politics"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Wahlger%C3%A4t",
     },
-    {"title": "Bitcoin", "description": "Der Genesis-Block der Bitcoin-Blockchain wurde geschürft, was den Startschuss für Kryptowährungen gab.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Bitcoin", "id": "card-2009-01-01", "date": "2009-01-01"},
-    {"title": "Windows 7", "description": "Microsoft brachte Windows 7 heraus, um das umstrittene Windows Vista abzulösen.", "tags": ["software"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Microsoft_Windows_7", "id": "card-2009-01-02", "date": "2009-01-02"},
-    {"title": "Minecraft", "description": "Markus 'Notch' Persson veröffentlichte die erste spielbare Alpha-Version des Sandbox-Spiels Minecraft.", "tags": ["software", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Minecraft", "id": "card-2009-01-03", "date": "2009-01-03"},
-    {"title": "WhatsApp", "description": "WhatsApp wurde gegründet und veränderte die mobile Kommunikation und das SMS-Schreiben fundamental.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/WhatsApp", "id": "card-2009-01-04", "date": "2009-01-04"}
+    {
+        title: "Bitcoin",
+        description: "Der Genesis-Block der Bitcoin-Blockchain wurde geschürft, was den Startschuss für Kryptowährungen gab.",
+        tags: ["software", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Bitcoin",
+        id: "card-2009-01-01",
+        date: "2009-01-01",
+    },
+    {
+        title: "Windows 7",
+        description: "Microsoft brachte Windows 7 heraus, um das umstrittene Windows Vista abzulösen.",
+        tags: ["software"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Microsoft_Windows_7",
+        id: "card-2009-01-02",
+        date: "2009-01-02",
+    },
+    {
+        title: "Minecraft",
+        description: "Markus 'Notch' Persson veröffentlichte die erste spielbare Alpha-Version des Sandbox-Spiels Minecraft.",
+        tags: ["software", "gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Minecraft",
+        id: "card-2009-01-03",
+        date: "2009-01-03",
+    },
+    {
+        title: "WhatsApp",
+        description: "WhatsApp wurde gegründet und veränderte die mobile Kommunikation und das SMS-Schreiben fundamental.",
+        tags: ["software", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/WhatsApp",
+        id: "card-2009-01-04",
+        date: "2009-01-04",
+    },
 ];

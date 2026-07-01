@@ -1,24 +1,58 @@
 export default [
     {
-        "id": "card-2015-10-15",
-        "date": "2015-10-15",
-        "title": "Google stellt die erste Tensor Processing Unit (TPU v1) vor",
-        "description": "Google nahm die erste Generation der TPU in Betrieb. Dieser anwendungsspezifische Schaltkreis (ASIC) wurde gezielt zur Beschleunigung neuronaler Netze optimiert. Die TPU bot eine enorme Leistung pro Watt für AI-Inferenzaufgaben.",
-        "tags": [
-            "hardware",
-            "milestone"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Tensor_Processing_Unit",
-        "stats": {
-            "clockSpeed": "700 MHz",
-            "memory": "8 GB HBM Speicher",
-            "transistors": "ASIC für Matrix-Multiplikationen"
-        }
+        id: "card-2015-10-15",
+        date: "2015-10-15",
+        title: "Google stellt die erste Tensor Processing Unit (TPU v1) vor",
+        description:
+            "Google nahm die erste Generation der TPU in Betrieb. Dieser anwendungsspezifische Schaltkreis (ASIC) wurde gezielt zur Beschleunigung neuronaler Netze optimiert. Die TPU bot eine enorme Leistung pro Watt für AI-Inferenzaufgaben.",
+        tags: ["hardware", "milestone"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Tensor_Processing_Unit",
+        stats: {
+            clockSpeed: "700 MHz",
+            memory: "8 GB HBM Speicher",
+            transistors: "ASIC für Matrix-Multiplikationen",
+        },
     },
-    {"title": "Windows 10", "description": "Microsoft veröffentlichte Windows 10, das wieder ein klassisches Startmenü einführte und Windows as a Service etablierte.", "tags": ["software"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Microsoft_Windows_10", "id": "card-2015-01-01", "date": "2015-01-01"},
-    {"title": "Apple Music", "description": "Apple stieg mit Apple Music in das lukrative Geschäft mit Musik-Streaming ein.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Apple_Music", "id": "card-2015-01-02", "date": "2015-01-02"},
-    {"title": "Discord", "description": "Die Chat- und Voice-App Discord wurde veröffentlicht und mauserte sich schnell zum Standard für Gamer.", "tags": ["software", "gaming", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Discord_(Software)", "id": "card-2015-01-03", "date": "2015-01-03"},
-    {"title": "TensorFlow", "description": "Google machte seine Machine-Learning-Bibliothek TensorFlow als Open-Source-Software für die Öffentlichkeit zugänglich.", "tags": ["software"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/TensorFlow", "id": "card-2015-01-04", "date": "2015-01-04"}
+    {
+        title: "Windows 10",
+        description: "Microsoft veröffentlichte Windows 10, das wieder ein klassisches Startmenü einführte und Windows as a Service etablierte.",
+        tags: ["software"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Microsoft_Windows_10",
+        id: "card-2015-01-01",
+        date: "2015-01-01",
+    },
+    {
+        title: "Apple Music",
+        description: "Apple stieg mit Apple Music in das lukrative Geschäft mit Musik-Streaming ein.",
+        tags: ["software", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Apple_Music",
+        id: "card-2015-01-02",
+        date: "2015-01-02",
+    },
+    {
+        title: "Discord",
+        description: "Die Chat- und Voice-App Discord wurde veröffentlicht und mauserte sich schnell zum Standard für Gamer.",
+        tags: ["software", "gaming", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Discord_(Software)",
+        id: "card-2015-01-03",
+        date: "2015-01-03",
+    },
+    {
+        title: "TensorFlow",
+        description: "Google machte seine Machine-Learning-Bibliothek TensorFlow als Open-Source-Software für die Öffentlichkeit zugänglich.",
+        tags: ["software"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/TensorFlow",
+        id: "card-2015-01-04",
+        date: "2015-01-04",
+    },
 ];
