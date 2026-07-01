@@ -271,4 +271,46 @@ export const ExperimentalSuites = freezeSuites([
             }),
         ],
     },
+    {
+        name: "Timeline-Mithril",
+        url: "resources/timeline/dist/index.html",
+        tags: ["default", "timeline", "mithril"],
+        async prepare(page) {
+            await page.waitForElement("#app-container");
+        },
+        tests: [
+            new BenchmarkTestStep("LoadTOC", (page) => {
+                page.querySelector("#btn-load-toc").click();
+                page.layout();
+            }),
+            new BenchmarkTestStep("ScrollToMiddle", (page) => {
+                page.querySelector("#btn-scroll-to-middle").click();
+                page.layout();
+            }),
+            new BenchmarkTestStep("SearchAndReplace", (page) => {
+                const searchInput = page.querySelector(".search-replace-panel input[placeholder='Suchen...']");
+                const replaceInput = page.querySelector(".search-replace-panel input[placeholder='Ersetzen...']");
+                const replaceBtn = page.querySelector(".search-replace-panel button");
+                
+                searchInput.setValue("Computer");
+                searchInput.dispatchEvent("input");
+                replaceInput.setValue("Rechner");
+                replaceInput.dispatchEvent("input");
+                replaceBtn.click();
+                page.layout();
+            }),
+            new BenchmarkTestStep("FilterCategories", (page) => {
+                const filterCheckboxes = page.querySelectorAll("#filter-panel input[type=checkbox]");
+                filterCheckboxes[2].click();
+                page.layout();
+                filterCheckboxes[3].click();
+                page.layout();
+            }),
+            new BenchmarkTestStep("ScrollToBottom", (page) => {
+                page.querySelector("#btn-scroll-to-bottom").click();
+                page.layout();
+            })
+        ]
+    }
 ]);
+
