@@ -29,5 +29,9 @@ export default [
                 100000000000000000
             ]
         }
-    }
+    },
+    {"title": "Artemis 3", "description": "Mit der Artemis-3-Mission der NASA soll erstmals seit Apollo 17 wieder eine bemannte Mondlandung stattfinden.", "tags": ["hardware", "tech"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Artemis_3", "id": "card-2026-01-01", "date": "2026-01-01"},
+    {"title": "The Elder Scrolls VI", "description": "Bethesda lieferte Neuigkeiten zum Status des mit Spannung erwarteten Rollenspiels The Elder Scrolls VI.", "tags": ["software", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/The_Elder_Scrolls", "id": "card-2026-01-02", "date": "2026-01-02"},
+    {"title": "6G Netzwerke", "description": "Internationale Gremien einigten sich auf weitere Standards für die zukünftige 6G-Mobilfunktechnologie.", "tags": ["hardware", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/6G", "id": "card-2026-01-03", "date": "2026-01-03"},
+    {"title": "Next-Gen Xbox", "description": "Microsoft veröffentlichte erste Konzepte für die übernächste Xbox-Generation mit Cloud-Schwerpunkt.", "tags": ["hardware", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Xbox_Series", "id": "card-2026-01-04", "date": "2026-01-04"}
 ];

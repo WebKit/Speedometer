@@ -1,93 +1,53 @@
 export default [
     {
-        "id": "card-2001-10-15",
-        "date": "2001-10-15",
-        "title": "Apple veröffentlicht Mac OS X und bringt den iPod",
-        "description": "Apple brachte mit Mac OS X ein auf BSD-Unix basierendes, stabiles Betriebssystem auf den Markt. Parallel dazu wurde der Musikplayer iPod vorgestellt, der die Weichen für Apples Transformation in eine mobile Computing-Firma stellte.",
-        "tags": [
-            "software",
-            "consumer"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Mac_OS_X"
-    }
-,
+        id: "card-2001-10-15",
+        date: "2001-10-15",
+        title: "Apple veröffentlicht Mac OS X und bringt den iPod",
+        description:
+            "Apple brachte mit Mac OS X ein auf BSD-Unix basierendes, stabiles Betriebssystem auf den Markt. Parallel dazu wurde der Musikplayer iPod vorgestellt, der die Weichen für Apples Transformation in eine mobile Computing-Firma stellte.",
+        tags: ["software", "consumer"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Mac_OS_X",
+    },
     {
-    "id": "card-2001-08-04-213",
-    "date": "2001-08-04",
-    "title": "Ausstellung 'Digital Dreams'",
-    "description": "Die Ausstellung 'Digital Dreams' in London präsentiert erstmals computergenerierte Kunst einem breiten Publikum.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        title: "Windows XP",
+        description: "Microsoft veröffentlichte Windows XP, eines der beliebtesten und langlebigsten Betriebssysteme des Unternehmens.",
+        tags: ["software"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Microsoft_Windows_XP",
+        id: "card-2001-01-01",
+        date: "2001-01-01",
+    },
     {
-    "id": "card-2001-12-06-211",
-    "date": "2001-12-06",
-    "title": "Release von ArtGen 1.0",
-    "description": "Die erste Version von PaintPro erscheint und revolutioniert die digitale Bildbearbeitung.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        title: "Mac OS X",
+        description: "Apple veröffentlichte mit Mac OS X 10.0 das erste Betriebssystem der neuen Generation mit Aqua-Oberfläche.",
+        tags: ["software"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Mac_OS_X_10.0",
+        id: "card-2001-01-02",
+        date: "2001-01-02",
+    },
     {
-    "id": "card-2001-08-20-457",
-    "date": "2001-08-20",
-    "title": "Gründung der Digital Art Academy",
-    "description": "Die Digital Art Academy wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        title: "Xbox",
+        description: "Microsoft stieg mit der ersten Xbox-Konsole in den Konsolenmarkt ein.",
+        tags: ["hardware", "gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Xbox",
+        id: "card-2001-01-03",
+        date: "2001-01-03",
+    },
     {
-    "id": "card-2001-02-24-132",
-    "date": "2001-02-24",
-    "title": "Erster Flug der AeroScout Drohne",
-    "description": "Die unbemannte Aufklärungsdrohne SkyEye Mk1 absolviert erfolgreich ihren Jungfernflug.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2001-04-18-570",
-    "date": "2001-04-18",
-    "title": "Gründung der Institute of Virtual Aesthetics",
-    "description": "Die Zentrum für Medienkunst wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2001-08-14-337",
-    "date": "2001-08-14",
-    "title": "Gründung des Studios Digital Dreams",
-    "description": "Das Entwicklerstudio Digital Dreams wird gegründet und beginnt mit der Arbeit an seinem ersten Ego-Shooter-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2001-03-18-504",
-    "date": "2001-03-18",
-    "title": "Künstler Max Mustermann nutzt neue KI",
-    "description": "Der Digitalkünstler John Doe veröffentlicht sein erstes Werk, das vollständig durch algorithmische Generative KI generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-}
+        title: "Wikipedia",
+        description: "Jimmy Wales und Larry Sanger starteten Wikipedia als freie Online-Enzyklopädie.",
+        tags: ["software", "web"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Wikipedia",
+        id: "card-2001-01-04",
+        date: "2001-01-04",
+    },
 ];

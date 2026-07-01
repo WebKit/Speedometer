@@ -11,72 +11,9 @@ export default [
         "type": "text",
         "width": 380,
         "wikiUrl": "https://de.wikipedia.org/wiki/MacBook_Pro"
-    }
-,
-    {
-    "id": "card-2006-04-06-803",
-    "date": "2006-04-06",
-    "title": "Digitalisierungsprojekt NetForce 2000",
-    "description": "Das Verteidigungsministerium startet NetForce 2000 zur umfassenden Digitalisierung der Streitkräfte.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2006-03-02-760",
-    "date": "2006-03-02",
-    "title": "Gründung des Studios NextGen Studios",
-    "description": "Das Entwicklerstudio CyberCore wird gegründet und beginnt mit der Arbeit an seinem ersten RPG-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2006-12-17-505",
-    "date": "2006-12-17",
-    "title": "Neue Quantum Console Konsole",
-    "description": "Die neue MegaDrive X kommt auf den Markt und bietet bisher unerreichte Grafikfähigkeiten für Heimanwender.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2006-05-24-902",
-    "date": "2006-05-24",
-    "title": "Digitalisierungsprojekt Digital Shield",
-    "description": "Das Verteidigungsministerium startet Digital Shield zur umfassenden Digitalisierung der Streitkräfte.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2006-01-07-567",
-    "date": "2006-01-07",
-    "title": "Ausstellung 'Algorithmic Aesthetics'",
-    "description": "Die Ausstellung 'The Virtual Canvas' in Tokyo präsentiert erstmals computergenerierte Kunst einem breiten Publikum.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2006-01-21-869",
-    "date": "2006-01-21",
-    "title": "Gründung der Zentrum für Medienkunst",
-    "description": "Die Zentrum für Medienkunst wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-}
+    },
+    {"title": "Twitter", "description": "Der Mikroblogging-Dienst Twitter (heute X) ging mit dem ersten Tweet online.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/X_(soziales_Netzwerk)", "id": "card-2006-01-01", "date": "2006-01-01"},
+    {"title": "PlayStation 3", "description": "Sony brachte die PlayStation 3 auf den Markt, die erstmals Blu-ray-Laufwerke integrierte.", "tags": ["hardware", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/PlayStation_3", "id": "card-2006-01-02", "date": "2006-01-02"},
+    {"title": "Nintendo Wii", "description": "Nintendo stellte die Wii vor, deren innovative Bewegungssteuerung völlig neue Zielgruppen für Videospiele erschloss.", "tags": ["hardware", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Wii", "id": "card-2006-01-03", "date": "2006-01-03"},
+    {"title": "Amazon Web Services", "description": "Amazon startete mit der Elastic Compute Cloud (EC2) einen Eckpfeiler des modernen Cloud-Computings.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Amazon_Web_Services", "id": "card-2006-01-04", "date": "2006-01-04"}
 ];

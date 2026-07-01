@@ -10,83 +10,9 @@ export default [
         "type": "text",
         "width": 380,
         "wikiUrl": "https://de.wikipedia.org/wiki/Raytracing"
-    }
-,
-    {
-    "id": "card-2018-07-11-286",
-    "date": "2018-07-11",
-    "title": "Veröffentlichung von Dungeon Master",
-    "description": "Das bahnbrechende Spiel Neo Racing wird veröffentlicht und prägt das Puzzle-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2018-09-15-261",
-    "date": "2018-09-15",
-    "title": "Erster digitaler Film 'The Digital Frontier'",
-    "description": "Der Kurzfilm 'Pixels in Motion' feiert Premiere als erstes vollständig am Computer gerendertes Kunstwerk.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2018-08-21-24",
-    "date": "2018-08-21",
-    "title": "Erstes eSports-Turnier in London",
-    "description": "In Tokyo findet das erste große eSports-Turnier für Pixel Warriors mit hunderten Teilnehmern statt.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2018-03-12-122",
-    "date": "2018-03-12",
-    "title": "Meilenstein für Astro Strike",
-    "description": "Pixel Warriors erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Simulation.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2018-09-15-397",
-    "date": "2018-09-15",
-    "title": "Release von VectorDraw 1.0",
-    "description": "Die erste Version von RenderMax erscheint und revolutioniert die digitale Bildbearbeitung.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2018-09-05-438",
-    "date": "2018-09-05",
-    "title": "Gründung der Cyber-Abteilung Ghost Squadron",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit NetDefenders aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2018-06-26-789",
-    "date": "2018-06-26",
-    "title": "Gründung des Studios NextGen Studios",
-    "description": "Das Entwicklerstudio Digital Dreams wird gegründet und beginnt mit der Arbeit an seinem ersten RPG-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+    },
+    {"title": "DSGVO (GDPR)", "description": "Die Datenschutz-Grundverordnung der Europäischen Union trat in Kraft und veränderte den weltweiten Umgang mit Nutzerdaten.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Datenschutz-Grundverordnung", "id": "card-2018-01-01", "date": "2018-01-01"},
+    {"title": "Red Dead Redemption 2", "description": "Rockstar Games veröffentlichte das sehnlichst erwartete Open-World-Western-Spiel Red Dead Redemption 2.", "tags": ["software", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Red_Dead_Redemption_2", "id": "card-2018-01-02", "date": "2018-01-02"},
+    {"title": "Nvidia RTX", "description": "Nvidia stellte die GeForce-20-Serie vor und brachte damit Hardware-unterstütztes Raytracing in den Endkundenmarkt.", "tags": ["hardware", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Nvidia-GeForce-20-Serie", "id": "card-2018-01-03", "date": "2018-01-03"},
+    {"title": "Super Smash Bros. Ultimate", "description": "Nintendo veröffentlichte den extrem erfolgreichen Crossover-Prügler für die Nintendo Switch.", "tags": ["software", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Super_Smash_Bros._Ultimate", "id": "card-2018-01-04", "date": "2018-01-04"}
 ];

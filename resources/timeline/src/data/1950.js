@@ -1,90 +1,56 @@
 export default [
     {
-    "id": "card-1950-09-26-355",
-    "date": "1950-09-26",
-    "title": "Neue PlayBox Konsole",
-    "description": "Die neue HoloDeck kommt auf den Markt und bietet bisher unerreichte Grafikfähigkeiten für Heimanwender.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1950,
+        title: "Turing-Test",
+        description: 'Alan Turing veröffentlicht seinen Artikel "Computing Machinery and Intelligence", in dem er den Turing-Test zur Feststellung von künstlicher Intelligenz vorschlägt.',
+        wikiUrl: "https://de.wikipedia.org/wiki/Turing-Test",
+        type: "text",
+        width: 380,
+        date: "1950-01-01",
+        tags: ["default"],
+        id: "card-default-1950-01-01-70434",
+    },
     {
-    "id": "card-1950-11-11-144",
-    "date": "1950-11-11",
-    "title": "Gründung des Studios CyberCore",
-    "description": "Das Entwicklerstudio RetroMinds wird gegründet und beginnt mit der Arbeit an seinem ersten Action-Adventure-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1950,
+        title: "Zuse Z4",
+        description: "Die Zuse Z4 wird an die ETH Zürich geliefert und nimmt dort ihren Betrieb auf. Sie ist zu dieser Zeit der einzige funktionierende Computer in Kontinentaleuropa und der erste kommerzielle Computer weltweit.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Zuse_Z4",
+        type: "text",
+        width: 380,
+        date: "1950-01-01",
+        tags: ["default"],
+        id: "card-default-1950-01-01-87395",
+    },
     {
-    "id": "card-1950-06-07-745",
-    "date": "1950-06-07",
-    "title": "Release von RenderMax 1.0",
-    "description": "Die erste Version von ArtGen erscheint und revolutioniert die digitale Bildbearbeitung.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1950,
+        title: "Hamming-Code",
+        description: "Richard Hamming veröffentlicht die Theorie zur Fehlererkennung und -korrektur in der Datenübertragung, bekannt als Hamming-Code.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Hamming-Code",
+        type: "text",
+        width: 380,
+        date: "1950-01-01",
+        tags: ["default"],
+        id: "card-default-1950-01-01-52603",
+    },
     {
-    "id": "card-1950-01-04-531",
-    "date": "1950-01-04",
-    "title": "Gründung der Digital Art Academy",
-    "description": "Die Institute of Virtual Aesthetics wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1950,
+        title: "SEAC",
+        description: "Der SEAC (Standards Eastern Automatic Computer) wird vom National Bureau of Standards in Betrieb genommen und gehört zu den ersten elektronischen Rechenanlagen in den USA.",
+        wikiUrl: "https://de.wikipedia.org/wiki/SEAC_(Computer)",
+        type: "text",
+        width: 380,
+        date: "1950-01-01",
+        tags: ["default"],
+        id: "card-default-1950-01-01-29759",
+    },
     {
-    "id": "card-1950-07-09-255",
-    "date": "1950-07-09",
-    "title": "Erster digitaler Film 'Virtual Realities'",
-    "description": "Der Kurzfilm 'Virtual Realities' feiert Premiere als erstes vollständig am Computer gerendertes Kunstwerk.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1950-07-21-664",
-    "date": "1950-07-21",
-    "title": "Veröffentlichung von Virtual Fighter",
-    "description": "Das bahnbrechende Spiel Space Quest wird veröffentlicht und prägt das Puzzle-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1950-04-27-957",
-    "date": "1950-04-27",
-    "title": "Gründung des Studios RetroMinds",
-    "description": "Das Entwicklerstudio RetroMinds wird gegründet und beginnt mit der Arbeit an seinem ersten Action-Adventure-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1950-11-20-993",
-    "date": "1950-11-20",
-    "title": "Erstes eSports-Turnier in Berlin",
-    "description": "In Tokyo findet das erste große eSports-Turnier für Astro Strike mit hunderten Teilnehmern statt.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+        id: "card-gaming-1950-08-25-71688",
+        date: "1950-08-25",
+        title: "Bertie the Brain",
+        description: "Computerspiel aus dem Jahr 1950",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Geschichte_der_Videospiele_1947%E2%80%931969",
+    },
 ];

@@ -16,50 +16,9 @@ export default [
             "memory": "128 MB RAM, 4 GB bis 16 GB Flash",
             "transistors": "ARM11-basierter Samsung SoC"
         }
-    }
-,
-    {
-    "id": "card-2007-01-25-796",
-    "date": "2007-01-25",
-    "title": "Gründung der Cyber-Abteilung CyberOps",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit NetDefenders aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2007-12-21-328",
-    "date": "2007-12-21",
-    "title": "Künstler Elena Rodriguez nutzt neue KI",
-    "description": "Der Digitalkünstler Elena Rodriguez veröffentlicht sein erstes Werk, das vollständig durch algorithmische Vektor-Algorithmen generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2007-10-28-106",
-    "date": "2007-10-28",
-    "title": "Gründung der Institute of Virtual Aesthetics",
-    "description": "Die Digital Art Academy wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2007-09-01-734",
-    "date": "2007-09-01",
-    "title": "Meilenstein für Galaxy Defender",
-    "description": "Galaxy Defender erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Action-Adventure.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+    },
+    {"title": "iPhone", "description": "Apple stellte das erste iPhone vor und revolutionierte den Markt für Smartphones maßgeblich.", "tags": ["hardware", "consumer"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/IPhone", "id": "card-2007-01-01", "date": "2007-01-01"},
+    {"title": "Android", "description": "Die Open Handset Alliance rund um Google kündigte offiziell das offene mobile Betriebssystem Android an.", "tags": ["software"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Android_(Betriebssystem)", "id": "card-2007-01-02", "date": "2007-01-02"},
+    {"title": "Dropbox", "description": "Dropbox wurde gegründet und brachte Cloud-Speicher für Endnutzer in den Mainstream.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Dropbox", "id": "card-2007-01-03", "date": "2007-01-03"},
+    {"title": "Amazon Kindle", "description": "Amazon präsentierte den ersten Kindle E-Reader, der E-Books populär machte.", "tags": ["hardware", "consumer"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Amazon_Kindle", "id": "card-2007-01-04", "date": "2007-01-04"}
 ];

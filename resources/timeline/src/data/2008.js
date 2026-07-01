@@ -11,50 +11,9 @@ export default [
         "type": "text",
         "width": 380,
         "wikiUrl": "https://de.wikipedia.org/wiki/Android_(Betriebssystem)"
-    }
-,
-    {
-    "id": "card-2008-10-18-373",
-    "date": "2008-10-18",
-    "title": "Test des AutoTurret Alpha Prototyps",
-    "description": "Ein erfolgreicher Test des rechnergestützten Waffensystems RailGun X wird abgeschlossen.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2008-11-05-363",
-    "date": "2008-11-05",
-    "title": "Erstes eSports-Turnier in Berlin",
-    "description": "In San Francisco findet das erste große eSports-Turnier für Astro Strike mit hunderten Teilnehmern statt.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2008-01-06-215",
-    "date": "2008-01-06",
-    "title": "Künstler Akira Tanaka nutzt neue KI",
-    "description": "Der Digitalkünstler Anna Schmidt veröffentlicht sein erstes Werk, das vollständig durch algorithmische Neuronale Netze generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2008-02-28-979",
-    "date": "2008-02-28",
-    "title": "Gründung der Institute of Virtual Aesthetics",
-    "description": "Die Institute of Virtual Aesthetics wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-}
+    },
+    {"title": "App Store", "description": "Apple startete den App Store, der Drittanbietern erlaubte, Anwendungen für das iPhone anzubieten.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/App_Store_(iOS)", "id": "card-2008-01-01", "date": "2008-01-01"},
+    {"title": "Google Chrome", "description": "Google veröffentlichte den Chrome-Browser, der bald zum weltweit meistgenutzten Webbrowser aufstieg.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Google_Chrome", "id": "card-2008-01-02", "date": "2008-01-02"},
+    {"title": "GitHub", "description": "GitHub wurde gegründet und entwickelte sich zur wichtigsten Plattform für Software-Entwicklungsprojekte und Versionsverwaltung.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/GitHub", "id": "card-2008-01-03", "date": "2008-01-03"},
+    {"title": "HTC Dream", "description": "Das HTC Dream erschien als erstes kommerzielles Smartphone mit dem Betriebssystem Android.", "tags": ["hardware", "consumer"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/HTC_Dream", "id": "card-2008-01-04", "date": "2008-01-04"}
 ];

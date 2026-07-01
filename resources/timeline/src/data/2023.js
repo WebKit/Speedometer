@@ -11,83 +11,9 @@ export default [
         "type": "text",
         "width": 380,
         "wikiUrl": "https://de.wikipedia.org/wiki/Llama_2"
-    }
-,
-    {
-    "id": "card-2023-03-03-131",
-    "date": "2023-03-03",
-    "title": "Künstler Elena Rodriguez nutzt neue KI",
-    "description": "Der Digitalkünstler Anna Schmidt veröffentlicht sein erstes Werk, das vollständig durch algorithmische Neuronale Netze generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2023-03-15-510",
-    "date": "2023-03-15",
-    "title": "Gründung der Cyber-Abteilung Division Zero",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit CyberOps aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2023-01-16-977",
-    "date": "2023-01-16",
-    "title": "Test des RailGun X Prototyps",
-    "description": "Ein erfolgreicher Test des rechnergestützten Waffensystems RailGun X wird abgeschlossen.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2023-01-21-542",
-    "date": "2023-01-21",
-    "title": "Erster digitaler Film 'Pixels in Motion'",
-    "description": "Der Kurzfilm 'Pixels in Motion' feiert Premiere als erstes vollständig am Computer gerendertes Kunstwerk.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2023-09-17-887",
-    "date": "2023-09-17",
-    "title": "Erster Flug der AeroScout Drohne",
-    "description": "Die unbemannte Aufklärungsdrohne SilentWing absolviert erfolgreich ihren Jungfernflug.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2023-10-13-583",
-    "date": "2023-10-13",
-    "title": "Gründung des Studios RetroMinds",
-    "description": "Das Entwicklerstudio CyberCore wird gegründet und beginnt mit der Arbeit an seinem ersten Action-Adventure-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2023-10-28-475",
-    "date": "2023-10-28",
-    "title": "Veröffentlichung von Pixel Warriors",
-    "description": "Das bahnbrechende Spiel Dungeon Master wird veröffentlicht und prägt das RPG-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+    },
+    {"title": "GPT-4", "description": "OpenAI präsentierte sein leistungsstarkes neues multimodales Sprachmodell GPT-4.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/GPT-4", "id": "card-2023-01-01", "date": "2023-01-01"},
+    {"title": "Tears of the Kingdom", "description": "Nintendo brachte The Legend of Zelda: Tears of the Kingdom als lang erwarteten Nachfolger von Breath of the Wild heraus.", "tags": ["software", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/The_Legend_of_Zelda:_Tears_of_the_Kingdom", "id": "card-2023-01-02", "date": "2023-01-02"},
+    {"title": "Baldur's Gate 3", "description": "Larian Studios veröffentlichte das komplexe Rollenspiel Baldur's Gate 3, welches mit Kritikerpreisen überhäuft wurde.", "tags": ["software", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Baldur%E2%80%99s_Gate_3", "id": "card-2023-01-03", "date": "2023-01-03"},
+    {"title": "LLaMA", "description": "Meta veröffentlichte LLaMA, ein einflussreiches großes Sprachmodell, das als Open-Source zugänglich gemacht wurde.", "tags": ["software"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/LLaMA", "id": "card-2023-01-04", "date": "2023-01-04"}
 ];

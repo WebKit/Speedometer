@@ -1,49 +1,46 @@
 export default [
     {
-        "id": "card-1997-10-15",
-        "date": "1997-10-15",
-        "title": "Supercomputer Deep Blue besiegt Garry Kasparov",
-        "description": "Der von IBM entwickelte Schach-Supercomputer 'Deep Blue' besiegte den amtierenden Schachweltmeister Garry Kasparov in einer Revanche-Partie unter Turnierbedingungen mit 3,5 zu 2,5. Dies galt als historischer Meilenstein der KI-Entwicklung.",
-        "tags": [
-            "software",
-            "milestone"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Deep_Blue"
-    }
-,
+        year: 1997,
+        title: "Pentium II",
+        description: "Intel stellte den Pentium-II-Prozessor vor, der die Leistung im Multimedia-Bereich deutlich verbesserte.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Pentium_II",
+        type: "text",
+        width: 380,
+        date: "1997-01-01",
+        tags: ["hardware"],
+        id: "card-hardware-1997-01-01-26277",
+    },
     {
-    "id": "card-1997-01-16-901",
-    "date": "1997-01-16",
-    "title": "Künstler Akira Tanaka nutzt neue KI",
-    "description": "Der Digitalkünstler Akira Tanaka veröffentlicht sein erstes Werk, das vollständig durch algorithmische Vektor-Algorithmen generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1997,
+        title: "Grand Theft Auto",
+        description: "Das erste Spiel der überaus erfolgreichen Grand-Theft-Auto-Serie (GTA) wurde veröffentlicht.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Grand_Theft_Auto",
+        type: "text",
+        width: 380,
+        date: "1997-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1997-01-01-78781",
+    },
     {
-    "id": "card-1997-05-23-643",
-    "date": "1997-05-23",
-    "title": "Gründung der Cyber-Abteilung Division Zero",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit Division Zero aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1997,
+        title: "Age of Empires",
+        description: "Ensemble Studios und Microsoft brachten das erste Echtzeit-Strategiespiel der Age of Empires-Reihe auf den Markt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Age_of_Empires",
+        type: "text",
+        width: 380,
+        date: "1997-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1997-01-01-37381",
+    },
     {
-    "id": "card-1997-06-20-939",
-    "date": "1997-06-20",
-    "title": "Veröffentlichung von Galaxy Defender",
-    "description": "Das bahnbrechende Spiel Pixel Warriors wird veröffentlicht und prägt das RPG-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1997,
+        title: "WLAN-Standard 802.11",
+        description: "Das IEEE verabschiedete den ersten 802.11-Standard für drahtlose Netzwerke (WLAN).",
+        wikiUrl: "https://de.wikipedia.org/wiki/Wireless_Local_Area_Network",
+        type: "text",
+        width: 380,
+        date: "1997-01-01",
+        tags: ["default"],
+        id: "card-default-1997-01-01-73779",
+    },
 ];

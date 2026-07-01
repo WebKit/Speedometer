@@ -1,79 +1,66 @@
 export default [
     {
-    "id": "card-1962-09-04-621",
-    "date": "1962-09-04",
-    "title": "Meilenstein für Galaxy Defender",
-    "description": "Neo Racing erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Action-Adventure.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1962,
+        title: "Entwicklung von Spacewar!",
+        description: "Steve Russell entwickelte am MIT auf einem PDP-1 den Titel Spacewar!, eines der ersten digitalen Computerspiele der Welt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Spacewar!",
+        type: "text",
+        width: 380,
+        date: "1962-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1962-01-01-61582",
+    },
     {
-    "id": "card-1962-05-18-795",
-    "date": "1962-05-18",
-    "title": "Digitalisierungsprojekt Digital Shield",
-    "description": "Das Verteidigungsministerium startet Digital Shield zur umfassenden Digitalisierung der Streitkräfte.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1962,
+        title: "Start des Telstar 1",
+        description: "Der erste aktive zivile Kommunikationssatellit, Telstar 1, wurde gestartet und übertrug erstmals Live-Fernsehbilder über den Atlantik.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Telstar",
+        type: "text",
+        width: 380,
+        date: "1962-01-01",
+        tags: ["default"],
+        id: "card-default-1962-01-01-7528",
+    },
     {
-    "id": "card-1962-10-19-970",
-    "date": "1962-10-19",
-    "title": "Künstler Max Mustermann nutzt neue KI",
-    "description": "Der Digitalkünstler John Doe veröffentlicht sein erstes Werk, das vollständig durch algorithmische Neuronale Netze generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1962,
+        title: "Inbetriebnahme des Atlas-Computers",
+        description: "An der Universität Manchester wurde der Atlas-Computer in Betrieb genommen. Er war der erste Rechner, der das Konzept des virtuellen Speichers (Paging) nutzte.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Atlas_(Computer)",
+        type: "text",
+        width: 380,
+        date: "1962-01-01",
+        tags: ["default"],
+        id: "card-default-1962-01-01-85018",
+    },
     {
-    "id": "card-1962-04-01-443",
-    "date": "1962-04-01",
-    "title": "Erster digitaler Film 'Cyber Journey'",
-    "description": "Der Kurzfilm 'Pixels in Motion' feiert Premiere als erstes vollständig am Computer gerendertes Kunstwerk.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1962,
+        title: "Erster Laborrechner LINC",
+        description: "Der Laboratory Instrument Computer (LINC) wurde entwickelt. Er gilt als ein früher Vorläufer des Personal Computers, da er für die Nutzung durch eine einzelne Person konzipiert war.",
+        wikiUrl: "https://de.wikipedia.org/wiki/LINC",
+        type: "text",
+        width: 380,
+        date: "1962-01-01",
+        tags: ["default"],
+        id: "card-default-1962-01-01-63296",
+    },
     {
-    "id": "card-1962-09-08-551",
-    "date": "1962-09-08",
-    "title": "Meilenstein für Galaxy Defender",
-    "description": "Astro Strike erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Action-Adventure.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        id: "card-gaming-1962-01-01-94852",
+        date: "1962-01-01",
+        title: "Q2079937",
+        description: "Computerspiel",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Computerspiel",
+    },
     {
-    "id": "card-1962-05-01-430",
-    "date": "1962-05-01",
-    "title": "Künstler Elena Rodriguez nutzt neue KI",
-    "description": "Der Digitalkünstler John Doe veröffentlicht sein erstes Werk, das vollständig durch algorithmische Neuronale Netze generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1962-01-03-538",
-    "date": "1962-01-03",
-    "title": "Veröffentlichung von Galaxy Defender",
-    "description": "Das bahnbrechende Spiel Virtual Fighter wird veröffentlicht und prägt das Action-Adventure-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+        id: "card-gaming-1962-01-01-59482",
+        date: "1962-01-01",
+        title: "Marienbad",
+        description: "Computerspiel aus dem Jahr 1962",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Marienbad",
+    },
 ];

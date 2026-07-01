@@ -1,93 +1,66 @@
 export default [
     {
-        "id": "card-1968-10-15",
-        "date": "1968-10-15",
-        "title": "Douglas Engelbarts 'Mother of All Demos'",
-        "description": "Auf einer Konferenz in San Francisco präsentierte Douglas Engelbart ein funktionierendes System mit einer Computermaus, Fenstern auf dem Bildschirm, Hyperlinks, Textverarbeitung und Videokonferenzen. Diese Visionen beeinflussten die grafische UI-Entwicklung nachhaltig.",
-        "tags": [
-            "networking",
-            "consumer"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/The_Mother_of_All_Demos"
-    }
-,
+        year: 1968,
+        title: "The Mother of All Demos",
+        description: "Douglas Engelbart präsentiert bahnbrechende Technologien wie die Computermaus, Hypertext und eine grafische Benutzeroberfläche.",
+        wikiUrl: "https://de.wikipedia.org/wiki/The_Mother_of_All_Demos",
+        type: "text",
+        width: 380,
+        date: "1968-01-01",
+        tags: ["default"],
+        id: "card-default-1968-01-01-80707",
+    },
     {
-    "id": "card-1968-05-16-182",
-    "date": "1968-05-16",
-    "title": "Einführung des CyberShield Systems",
-    "description": "Das Militär führt das hochmoderne Sentinel OS ein, das die taktische Kommunikation revolutioniert.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1968,
+        title: "Gründung von Intel",
+        description: "Gordon Moore und Robert Noyce gründen das Halbleiterunternehmen Intel in Santa Clara, Kalifornien.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Intel",
+        type: "text",
+        width: 380,
+        date: "1968-01-01",
+        tags: ["default"],
+        id: "card-default-1968-01-01-81160",
+    },
     {
-    "id": "card-1968-10-23-681",
-    "date": "1968-10-23",
-    "title": "Einführung des ComLink Alpha Systems",
-    "description": "Das Militär führt das hochmoderne TacNet 2.0 ein, das die taktische Kommunikation revolutioniert.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1968,
+        title: "Geburtsstunde der Softwaretechnik",
+        description: "Auf der NATO-Konferenz in Garmisch-Partenkirchen wird der Begriff 'Software Engineering' geprägt, um die sogenannte Softwarekrise zu überwinden.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Softwaretechnik",
+        type: "text",
+        width: 380,
+        date: "1968-01-01",
+        tags: ["software"],
+        id: "card-software-1968-01-01-71498",
+    },
     {
-    "id": "card-1968-03-10-242",
-    "date": "1968-03-10",
-    "title": "Künstler Akira Tanaka nutzt neue KI",
-    "description": "Der Digitalkünstler John Doe veröffentlicht sein erstes Werk, das vollständig durch algorithmische Vektor-Algorithmen generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1968,
+        title: "Apollo Guidance Computer im Einsatz",
+        description: "Der Apollo Guidance Computer steuert erfolgreich den ersten bemannten Flug um den Mond (Apollo 8).",
+        wikiUrl: "https://de.wikipedia.org/wiki/Apollo_Guidance_Computer",
+        type: "text",
+        width: 380,
+        date: "1968-01-01",
+        tags: ["default"],
+        id: "card-default-1968-01-01-80686",
+    },
     {
-    "id": "card-1968-10-11-930",
-    "date": "1968-10-11",
-    "title": "Veröffentlichung von Neo Racing",
-    "description": "Das bahnbrechende Spiel Cyber Knights wird veröffentlicht und prägt das RPG-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        id: "card-gaming-1968-01-01-66126",
+        date: "1968-01-01",
+        title: "Q5124608",
+        description: "Computerspiel aus dem Jahr 1968",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Geschichte_der_Videospiele",
+    },
     {
-    "id": "card-1968-01-17-97",
-    "date": "1968-01-17",
-    "title": "Gründung der Cyber-Abteilung NetDefenders",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit Division Zero aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1968-11-10-46",
-    "date": "1968-11-10",
-    "title": "Gründung der Digital Art Academy",
-    "description": "Die Zentrum für Medienkunst wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1968-11-06-236",
-    "date": "1968-11-06",
-    "title": "Erster Flug der SkyEye Mk1 Drohne",
-    "description": "Die unbemannte Aufklärungsdrohne SilentWing absolviert erfolgreich ihren Jungfernflug.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-}
+        id: "card-gaming-1968-01-01-71306",
+        date: "1968-01-01",
+        title: "Q117842320",
+        description: "Computerspiel aus dem Jahr 1968",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Geschichte_der_Videospiele",
+    },
 ];

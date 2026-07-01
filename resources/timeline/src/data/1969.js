@@ -1,71 +1,76 @@
 export default [
     {
-        "id": "card-1969-10-15",
-        "date": "1969-10-15",
-        "title": "ARPANET – Die Geburtsstunde des Internets",
-        "description": "Das vom US-Verteidigungsministerium beauftragte ARPANET verband die ersten vier Universitäten (UCLA, Stanford, UC Santa Barbara und University of Utah) miteinander. Die erste versendete Nachricht war 'LO' (beim Versuch, 'LOGIN' zu tippen, stürzte das System ab).",
-        "tags": [
-            "networking",
-            "milestone"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/ARPANET"
-    }
-,
+        year: 1969,
+        title: "ARPANET",
+        description: "Der erste Knoten des ARPANETs, des Vorläufers des Internets, wird an der UCLA in Betrieb genommen.",
+        wikiUrl: "https://de.wikipedia.org/wiki/ARPANET",
+        type: "text",
+        width: 380,
+        date: "1969-01-01",
+        tags: ["default"],
+        id: "card-default-1969-01-01-51519",
+    },
     {
-    "id": "card-1969-07-04-821",
-    "date": "1969-07-04",
-    "title": "Künstler Akira Tanaka nutzt neue KI",
-    "description": "Der Digitalkünstler Anna Schmidt veröffentlicht sein erstes Werk, das vollständig durch algorithmische Fraktal-Generatoren generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1969,
+        title: "Entwicklung von Unix",
+        description: "Ken Thompson und Dennis Ritchie beginnen in den Bell Labs mit der Entwicklung des Betriebssystems Unix.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Unix",
+        type: "text",
+        width: 380,
+        date: "1969-01-01",
+        tags: ["default"],
+        id: "card-default-1969-01-01-69299",
+    },
     {
-    "id": "card-1969-11-23-887",
-    "date": "1969-11-23",
-    "title": "Meilenstein für Neo Racing",
-    "description": "Astro Strike erreicht 1 Million aktive Spieler und setzt einen neuen Standard im RPG.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1969,
+        title: "Gründung von AMD",
+        description: "Advanced Micro Devices (AMD) wird von Jerry Sanders und weiteren ehemaligen Fairchild-Mitarbeitern gegründet.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Advanced_Micro_Devices",
+        type: "text",
+        width: 380,
+        date: "1969-01-01",
+        tags: ["default"],
+        id: "card-default-1969-01-01-84153",
+    },
     {
-    "id": "card-1969-07-15-764",
-    "date": "1969-07-15",
-    "title": "Einführung des TacNet 2.0 Systems",
-    "description": "Das Militär führt das hochmoderne ComLink Alpha ein, das die taktische Kommunikation revolutioniert.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1969,
+        title: "Mondlandung (Apollo 11)",
+        description: "Dank der Echtzeit-Berechnungen des Apollo Guidance Computers gelingt die erste bemannte Mondlandung.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Apollo_11",
+        type: "text",
+        width: 380,
+        date: "1969-01-01",
+        tags: ["default"],
+        id: "card-default-1969-01-01-34493",
+    },
     {
-    "id": "card-1969-08-02-69",
-    "date": "1969-08-02",
-    "title": "Einführung des Aegis-X Systems",
-    "description": "Das Militär führt das hochmoderne Sentinel OS ein, das die taktische Kommunikation revolutioniert.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        id: "card-gaming-1969-01-01-16084",
+        date: "1969-01-01",
+        title: "Space Travel",
+        description: "Computerspiel aus dem Jahr 1969",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Space_Travel",
+    },
     {
-    "id": "card-1969-07-24-178",
-    "date": "1969-07-24",
-    "title": "Meilenstein für Galaxy Defender",
-    "description": "Cyber Knights erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Puzzle.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+        id: "card-gaming-1969-01-01-92357",
+        date: "1969-01-01",
+        title: "Hamurabi",
+        description: "Computerspiel aus dem Jahr 1968",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Hamurabi",
+    },
+    {
+        id: "card-gaming-1969-01-01-17673",
+        date: "1969-01-01",
+        title: "Q55936714",
+        description: "Computerspiel aus dem Jahr 1969",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Jack_Black",
+    },
 ];

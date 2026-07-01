@@ -1,5 +1,5 @@
 import m from "mithril";
-import { allData as staticData } from "./data/index.js";
+import staticData from "./data/index.js";
 import { Controls } from "./components/Controls.js";
 import { Timeline } from "./components/Timeline.js";
 import { Card } from "./components/Card.js";
@@ -7,11 +7,28 @@ import { MiniOverview } from "./components/MiniOverview.js";
 
 const App = () => {
     const allData = staticData;
+
+    allData.forEach((card, index) => {
+        if (!card) {
+            console.error(`Validation Error: Card at index ${index} is null or undefined.`);
+            return;
+        }
+        const identifier = card.id ? `ID: ${card.id}` : `index: ${index}`;
+        if (!card.title) {
+            console.error(`Validation Error: Card (${identifier}) is missing a 'title'.`);
+        }
+        if (!Array.isArray(card.tags) || card.tags.length === 0) {
+            console.error(`Validation Error: Card (${identifier}) must have at least one tag in the 'tags' array.`);
+        }
+        if (!card.description) {
+            console.error(`Validation Error: Card (${identifier}) is missing a 'description'.`);
+        }
+        if (!card.wikiUrl) {
+            console.error(`Validation Error: Card (${identifier}) is missing a 'wikiUrl'.`);
+        }
+    });
     let activeFilters = ["hardware", "software", "consumer", "networking", "milestone"];
     let searchQuery = "";
-    let replacementQuery = "";
-    let tocVisible = false;
-    let tocLoaded = false;
     let activeIndex = 0;
     let dataVersion = 1;
 
@@ -41,82 +58,10 @@ const App = () => {
                             activeFilters = activeFilters.filter(t => t !== tag);
                         }
                         applyFilters();
-                    },
-                    searchQuery,
-                    onSearchQueryChange: (val) => {
-                        searchQuery = val;
-                    },
-                    replacementQuery,
-                    onReplacementQueryChange: (val) => {
-                        replacementQuery = val;
-                    },
-                    onSearchReplace: () => {
-                        if (!searchQuery)
-                            return;
-                        const regex = new RegExp(searchQuery.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&"), "gi");
-                        allData.forEach(card => {
-                            if (card.title) {
-                                card.title = card.title.replace(regex, replacementQuery);
-                            }
-                            if (card.description) {
-                                card.description = card.description.replace(regex, replacementQuery);
-                            }
-                        });
-                        searchQuery = replacementQuery;
-                        replacementQuery = "";
-                        dataVersion++;
-                        applyFilters();
-                    },
-                    onToggleTOC: () => {
-                        tocVisible = !tocVisible;
-                    },
-                    onLoadTOC: () => {
-                        tocLoaded = true;
-                    },
-                    onScrollToMonth: (decadeYear) => {
-                        const targetCardIndex = filteredData.findIndex(card => card.id === `header-${decadeYear}`);
-                        if (targetCardIndex !== -1 && timelineHandle.scrollToIndex)
-                            timelineHandle.scrollToIndex(targetCardIndex);
-
                     }
                 }),
                 m("#main-content", [
-                    m("aside#toc-sidebar", { class: tocVisible ? "" : "hidden" }, [
-                        m("h2", "Jahrzehnte"),
-                        tocLoaded && m("ul#toc-list", (() => {
-                            const decadesList = [];
-                            for (let y = 1900; y <= 2020; y += 10) {
-                                const targetCard = filteredData.find(card => card.id === `header-${y}`);
-                                if (targetCard) {
-                                    decadesList.push({
-                                        label: `${y}er`,
-                                        targetId: targetCard.id
-                                    });
-                                }
-                            }
-                            const lastCard = filteredData.find(card => card.id === "header-2026");
-                            if (lastCard) {
-                                decadesList.push({
-                                    label: "2026",
-                                    targetId: lastCard.id
-                                });
-                            }
-                            return decadesList.map(item =>
-                                m("li", { key: item.label },
-                                    m("a", {
-                                        href: "#",
-                                        onclick: (e) => {
-                                            e.preventDefault();
-                                            const targetCardIndex = filteredData.findIndex(card => card.id === item.targetId);
-                                            if (targetCardIndex !== -1 && timelineHandle.scrollToIndex)
-                                                timelineHandle.scrollToIndex(targetCardIndex);
 
-                                        }
-                                    }, item.label)
-                                )
-                            );
-                        })())
-                    ]),
                     m(Timeline, {
                         data: filteredData,
                         version: dataVersion,
@@ -134,9 +79,9 @@ const App = () => {
                 m(MiniOverview, {
                     data: filteredData,
                     activeIndex: activeIndex,
-                    onJumpToIndex: (idx) => {
+                    onJumpToIndex: (idx, behavior = "smooth") => {
                         if (timelineHandle.scrollToIndex)
-                            timelineHandle.scrollToIndex(idx);
+                            timelineHandle.scrollToIndex(idx, behavior);
 
                     }
                 })

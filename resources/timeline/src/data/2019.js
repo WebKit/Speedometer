@@ -10,72 +10,9 @@ export default [
         "type": "text",
         "width": 380,
         "wikiUrl": "https://de.wikipedia.org/wiki/USB4"
-    }
-,
-    {
-    "id": "card-2019-06-11-16",
-    "date": "2019-06-11",
-    "title": "Gründung der Cyber-Abteilung NetDefenders",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit Division Zero aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2019-05-02-590",
-    "date": "2019-05-02",
-    "title": "Einführung des Sentinel OS Systems",
-    "description": "Das Militär führt das hochmoderne ComLink Alpha ein, das die taktische Kommunikation revolutioniert.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2019-11-11-465",
-    "date": "2019-11-11",
-    "title": "Einführung des Aegis-X Systems",
-    "description": "Das Militär führt das hochmoderne ComLink Alpha ein, das die taktische Kommunikation revolutioniert.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2019-07-04-992",
-    "date": "2019-07-04",
-    "title": "Veröffentlichung von Virtual Fighter",
-    "description": "Das bahnbrechende Spiel Astro Strike wird veröffentlicht und prägt das RPG-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2019-12-23-167",
-    "date": "2019-12-23",
-    "title": "Neue PlayBox Konsole",
-    "description": "Die neue BitBox kommt auf den Markt und bietet bisher unerreichte Grafikfähigkeiten für Heimanwender.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2019-02-26-568",
-    "date": "2019-02-26",
-    "title": "Gründung des Studios Digital Dreams",
-    "description": "Das Entwicklerstudio PixelForge wird gegründet und beginnt mit der Arbeit an seinem ersten Puzzle-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+    },
+    {"title": "Google Stadia", "description": "Google startete den Cloud-Gaming-Dienst Stadia, der Videospiele direkt über das Internet streamte.", "tags": ["software", "gaming", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Google_Stadia", "id": "card-2019-01-01", "date": "2019-01-01"},
+    {"title": "Oculus Quest", "description": "Das Standalone-VR-Headset Oculus Quest machte Virtual Reality ohne leistungsstarken PC zugänglicher.", "tags": ["hardware", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Oculus_Quest", "id": "card-2019-01-02", "date": "2019-01-02"},
+    {"title": "Mac Pro", "description": "Apple kündigte einen radikal neu designten und extrem modularen Mac Pro an.", "tags": ["hardware"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Mac_Pro", "id": "card-2019-01-03", "date": "2019-01-03"},
+    {"title": "Wi-Fi 6", "description": "Der neue WLAN-Standard IEEE 802.11ax (Wi-Fi 6) wurde offiziell eingeführt und verbesserte die Netzwerk-Effizienz.", "tags": ["hardware", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Wireless_Local_Area_Network", "id": "card-2019-01-04", "date": "2019-01-04"}
 ];

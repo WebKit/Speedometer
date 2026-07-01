@@ -1,59 +1,46 @@
 export default [
     {
-        "id": "card-1983-10-15",
-        "date": "1983-10-15",
-        "title": "ARPANET wechselt auf TCP/IP-Protokollstandard",
-        "description": "Am 1. Januar 1983 stellte das ARPANET sein gesamtes Übertragungsnetz auf das TCP/IP-Protokollsuite um. Dies gilt als Geburtsstunde des modernen Internets, da nun heterogene Netze modular miteinander kommunizieren konnten.",
-        "tags": [
-            "networking"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Internet_Protocol_Suite"
-    }
-,
+        year: 1983,
+        title: "Apple Lisa",
+        description: "Apple stellt den Lisa vor, einen der ersten kommerziellen Computer mit einer grafischen Benutzeroberfläche und einer Maus.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Apple_Lisa",
+        type: "text",
+        width: 380,
+        date: "1983-01-01",
+        tags: ["default"],
+        id: "card-default-1983-01-01-76023",
+    },
     {
-    "id": "card-1983-02-17-904",
-    "date": "1983-02-17",
-    "title": "Erster Flug der NightHawk Drohne",
-    "description": "Die unbemannte Aufklärungsdrohne NightHawk absolviert erfolgreich ihren Jungfernflug.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1983,
+        title: "Nintendo Entertainment System",
+        description: "Das Famicom wird in Japan veröffentlicht, das später im Westen als NES den Videospielmarkt revolutionieren wird.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Nintendo_Entertainment_System",
+        type: "text",
+        width: 380,
+        date: "1983-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1983-01-01-73585",
+    },
     {
-    "id": "card-1983-11-05-616",
-    "date": "1983-11-05",
-    "title": "Release von RenderMax 1.0",
-    "description": "Die erste Version von ArtGen erscheint und revolutioniert die digitale Bildbearbeitung.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1983,
+        title: "ARPANET (TCP/IP)",
+        description: "Das ARPANET stellt vollständig auf das Protokoll TCP/IP um, was als die Geburtsstunde des modernen Internets gilt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/ARPANET",
+        type: "text",
+        width: 380,
+        date: "1983-01-01",
+        tags: ["default"],
+        id: "card-default-1983-01-01-44890",
+    },
     {
-    "id": "card-1983-02-04-605",
-    "date": "1983-02-04",
-    "title": "Meilenstein für Dungeon Master",
-    "description": "Neo Racing erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Ego-Shooter.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1983-05-19-728",
-    "date": "1983-05-19",
-    "title": "Gründung des Studios RetroMinds",
-    "description": "Das Entwicklerstudio CyberCore wird gegründet und beginnt mit der Arbeit an seinem ersten Simulation-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1983,
+        title: "Lotus 1-2-3",
+        description: "Die Tabellenkalkulation Lotus 1-2-3 wird veröffentlicht und wird zur ersten „Killer-Applikation“ für den IBM PC.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Lotus_1-2-3",
+        type: "text",
+        width: 380,
+        date: "1983-01-01",
+        tags: ["default"],
+        id: "card-default-1983-01-01-57547",
+    },
 ];

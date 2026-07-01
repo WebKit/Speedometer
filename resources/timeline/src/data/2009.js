@@ -11,61 +11,21 @@ export default [
         "type": "text",
         "width": 380,
         "wikiUrl": "https://de.wikipedia.org/wiki/Bitcoin"
-    }
-,
+    },
     {
-    "id": "card-2009-11-22-279",
-    "date": "2009-11-22",
-    "title": "Ausstellung 'Digital Dreams'",
-    "description": "Die Ausstellung 'The Virtual Canvas' in Paris präsentiert erstmals computergenerierte Kunst einem breiten Publikum.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2009-11-11-208",
-    "date": "2009-11-11",
-    "title": "Veröffentlichung von Virtual Fighter",
-    "description": "Das bahnbrechende Spiel Dungeon Master wird veröffentlicht und prägt das RPG-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2009-05-04-139",
-    "date": "2009-05-04",
-    "title": "Gründung der Zentrum für Medienkunst",
-    "description": "Die Zentrum für Medienkunst wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2009-12-14-994",
-    "date": "2009-12-14",
-    "title": "Gründung der Cyber-Abteilung NetDefenders",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit CyberOps aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2009-10-21-976",
-    "date": "2009-10-21",
-    "title": "Gründung der Institute of Virtual Aesthetics",
-    "description": "Die Digital Art Academy wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-}
+        "id": "card-politics-wahlcomputer",
+        "date": "2009-03-03",
+        "title": "Urteil des Bundesverfassungsgerichts zu Wahlcomputern",
+        "description": "Das deutsche Bundesverfassungsgericht erklärte den Einsatz von elektronischen Wahlcomputern bei der Bundestagswahl 2005 für verfassungswidrig. Kritisiert wurde, dass ein Wahlvorgang ohne manuelle Auswertung für den Bürger intransparent sei und Manipulationen nicht ausgeschlossen werden können.",
+        "tags": [
+            "politics"
+        ],
+        "type": "text",
+        "width": 380,
+        "wikiUrl": "https://de.wikipedia.org/wiki/Wahlger%C3%A4t"
+    },
+    {"title": "Bitcoin", "description": "Der Genesis-Block der Bitcoin-Blockchain wurde geschürft, was den Startschuss für Kryptowährungen gab.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Bitcoin", "id": "card-2009-01-01", "date": "2009-01-01"},
+    {"title": "Windows 7", "description": "Microsoft brachte Windows 7 heraus, um das umstrittene Windows Vista abzulösen.", "tags": ["software"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Microsoft_Windows_7", "id": "card-2009-01-02", "date": "2009-01-02"},
+    {"title": "Minecraft", "description": "Markus 'Notch' Persson veröffentlichte die erste spielbare Alpha-Version des Sandbox-Spiels Minecraft.", "tags": ["software", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Minecraft", "id": "card-2009-01-03", "date": "2009-01-03"},
+    {"title": "WhatsApp", "description": "WhatsApp wurde gegründet und veränderte die mobile Kommunikation und das SMS-Schreiben fundamental.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/WhatsApp", "id": "card-2009-01-04", "date": "2009-01-04"}
 ];

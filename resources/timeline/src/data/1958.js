@@ -1,60 +1,46 @@
 export default [
     {
-        "id": "card-1958-10-15",
-        "date": "1958-10-15",
-        "title": "John McCarthy erschafft LISP und der integrierte Schaltkreis",
-        "description": "John McCarthy entwickelte am MIT die Programmiersprache LISP (List Processing), die zur dominierenden Sprache für Künstliche Intelligenz wurde. Gleichzeitig präsentierte Jack Kilby bei Texas Instruments den Prototyp eines integrierten Schaltkreises (Chip) auf einer Germanium-Platte.",
-        "tags": [
-            "software",
-            "hardware"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Lisp"
-    }
-,
+        year: 1958,
+        title: "Erfindung des integrierten Schaltkreises",
+        description: "Jack Kilby von Texas Instruments demonstrierte den ersten funktionierenden integrierten Schaltkreis (Mikrochip).",
+        wikiUrl: "https://de.wikipedia.org/wiki/Integrierter_Schaltkreis",
+        type: "text",
+        width: 380,
+        date: "1958-01-01",
+        tags: ["hardware"],
+        id: "card-hardware-1958-01-01-80796",
+    },
     {
-    "id": "card-1958-07-25-53",
-    "date": "1958-07-25",
-    "title": "Veröffentlichung von Astro Strike",
-    "description": "Das bahnbrechende Spiel Space Quest wird veröffentlicht und prägt das Echtzeitstrategie-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1958,
+        title: "Lisp",
+        description: "John McCarthy erfand die Programmiersprache Lisp, die schnell zur Standardsprache in der Künstlichen Intelligenz wurde.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Lisp",
+        type: "text",
+        width: 380,
+        date: "1958-01-01",
+        tags: ["software"],
+        id: "card-software-1958-01-01-76635",
+    },
     {
-    "id": "card-1958-10-15-836",
-    "date": "1958-10-15",
-    "title": "Erster digitaler Film 'Pixels in Motion'",
-    "description": "Der Kurzfilm 'Pixels in Motion' feiert Premiere als erstes vollständig am Computer gerendertes Kunstwerk.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1958,
+        title: "Tennis for Two",
+        description: "William Higinbotham entwickelte das Spiel 'Tennis for Two' auf einem Oszilloskop, welches als eines der ersten Videospiele gilt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Tennis_for_Two",
+        type: "text",
+        width: 380,
+        date: "1958-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1958-01-01-99978",
+    },
     {
-    "id": "card-1958-08-13-760",
-    "date": "1958-08-13",
-    "title": "Erstes eSports-Turnier in New York",
-    "description": "In San Francisco findet das erste große eSports-Turnier für Dungeon Master mit hunderten Teilnehmern statt.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1958-12-04-467",
-    "date": "1958-12-04",
-    "title": "Neue MegaDrive X Konsole",
-    "description": "Die neue BitBox kommt auf den Markt und bietet bisher unerreichte Grafikfähigkeiten für Heimanwender.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1958,
+        title: "SAGE-System",
+        description: "Das Semi-Automatic Ground Environment (SAGE), ein computergestütztes Luftverteidigungssystem der USA, nahm den Betrieb auf.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Semi-Automatic_Ground_Environment",
+        type: "text",
+        width: 380,
+        date: "1958-01-01",
+        tags: ["default"],
+        id: "card-default-1958-01-01-77853",
+    },
 ];

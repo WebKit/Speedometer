@@ -1,35 +1,46 @@
 export default [
     {
-    "id": "card-1952-04-22-19",
-    "date": "1952-04-22",
-    "title": "Gründung des Studios Digital Dreams",
-    "description": "Das Entwicklerstudio NextGen Studios wird gegründet und beginnt mit der Arbeit an seinem ersten Simulation-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1952,
+        title: "IBM 701",
+        description: "IBM kündigt den IBM 701 an, den ersten kommerziellen wissenschaftlichen Computer des Unternehmens, der in Serie produziert wird.",
+        wikiUrl: "https://de.wikipedia.org/wiki/IBM_701",
+        type: "text",
+        width: 380,
+        date: "1952-01-01",
+        tags: ["default"],
+        id: "card-default-1952-01-01-26324",
+    },
     {
-    "id": "card-1952-08-06-129",
-    "date": "1952-08-06",
-    "title": "Meilenstein für Galaxy Defender",
-    "description": "Cyber Knights erreicht 1 Million aktive Spieler und setzt einen neuen Standard im RPG.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1952,
+        title: "A-0",
+        description: "Grace Hopper entwickelt mit A-0 den ersten Compiler der Welt, der menschlich lesbaren Programmcode in Maschinensprache übersetzt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/A-0",
+        type: "text",
+        width: 380,
+        date: "1952-01-01",
+        tags: ["software"],
+        id: "card-software-1952-01-01-54917",
+    },
     {
-    "id": "card-1952-06-22-787",
-    "date": "1952-06-22",
-    "title": "Test des SmartMissile V2 Prototyps",
-    "description": "Ein erfolgreicher Test des rechnergestützten Waffensystems SmartMissile V2 wird abgeschlossen.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1952,
+        title: "OXO",
+        description: "Alexander S. Douglas entwickelt OXO (Tic-Tac-Toe) auf dem EDSAC, das als eines der ersten Videospiele der Computergeschichte gilt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/OXO",
+        type: "text",
+        width: 380,
+        date: "1952-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1952-01-01-34536",
+    },
+    {
+        year: 1952,
+        title: "Huffman-Kodierung",
+        description: "David A. Huffman veröffentlicht den Algorithmus zur Huffman-Kodierung, der zur verlustfreien Datenkompression genutzt wird.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Huffman-Kodierung",
+        type: "text",
+        width: 380,
+        date: "1952-01-01",
+        tags: ["default"],
+        id: "card-default-1952-01-01-44271",
+    },
 ];

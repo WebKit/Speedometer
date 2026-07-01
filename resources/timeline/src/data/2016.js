@@ -11,61 +11,9 @@ export default [
         "type": "text",
         "width": 380,
         "wikiUrl": "https://de.wikipedia.org/wiki/AlphaGo"
-    }
-,
-    {
-    "id": "card-2016-08-14-79",
-    "date": "2016-08-14",
-    "title": "Meilenstein für Dungeon Master",
-    "description": "Galaxy Defender erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Echtzeitstrategie.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2016-08-10-840",
-    "date": "2016-08-10",
-    "title": "Meilenstein für Dungeon Master",
-    "description": "Space Quest erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Action-Adventure.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2016-01-23-519",
-    "date": "2016-01-23",
-    "title": "Gründung der Zentrum für Medienkunst",
-    "description": "Die Zentrum für Medienkunst wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2016-07-04-778",
-    "date": "2016-07-04",
-    "title": "Gründung der Cyber-Abteilung Ghost Squadron",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit CyberOps aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2016-12-23-637",
-    "date": "2016-12-23",
-    "title": "Künstler John Doe nutzt neue KI",
-    "description": "Der Digitalkünstler Akira Tanaka veröffentlicht sein erstes Werk, das vollständig durch algorithmische Fraktal-Generatoren generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-}
+    },
+    {"title": "Pokémon Go", "description": "Das Augmented-Reality-Spiel Pokémon Go von Niantic löste im Sommer einen weltweiten Hype aus.", "tags": ["software", "gaming", "consumer"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Pok%C3%A9mon_Go", "id": "card-2016-01-01", "date": "2016-01-01"},
+    {"title": "AirPods", "description": "Apple stellte die komplett kabellosen In-Ear-Kopfhörer AirPods vor, die den Markt für TWS (True Wireless Stereo) befeuerten.", "tags": ["hardware", "consumer"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/AirPods", "id": "card-2016-01-02", "date": "2016-01-02"},
+    {"title": "TikTok", "description": "Das chinesische Unternehmen ByteDance startete Douyin, das im darauffolgenden Jahr als TikTok weltweit durchstartete.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/TikTok", "id": "card-2016-01-03", "date": "2016-01-03"},
+    {"title": "HTC Vive", "description": "In Partnerschaft mit Valve brachte HTC das VR-Headset Vive auf den Markt.", "tags": ["hardware", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/HTC_Vive", "id": "card-2016-01-04", "date": "2016-01-04"}
 ];

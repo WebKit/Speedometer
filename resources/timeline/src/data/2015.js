@@ -16,61 +16,9 @@ export default [
             "memory": "8 GB HBM Speicher",
             "transistors": "ASIC für Matrix-Multiplikationen"
         }
-    }
-,
-    {
-    "id": "card-2015-09-12-697",
-    "date": "2015-09-12",
-    "title": "Einführung des TacNet 2.0 Systems",
-    "description": "Das Militär führt das hochmoderne Sentinel OS ein, das die taktische Kommunikation revolutioniert.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2015-01-08-980",
-    "date": "2015-01-08",
-    "title": "Gründung des Studios NextGen Studios",
-    "description": "Das Entwicklerstudio Digital Dreams wird gegründet und beginnt mit der Arbeit an seinem ersten Simulation-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2015-10-10-176",
-    "date": "2015-10-10",
-    "title": "Neue BitBox Konsole",
-    "description": "Die neue BitBox kommt auf den Markt und bietet bisher unerreichte Grafikfähigkeiten für Heimanwender.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2015-12-16-727",
-    "date": "2015-12-16",
-    "title": "Digitalisierungsprojekt NetForce 2000",
-    "description": "Das Verteidigungsministerium startet TechGuard zur umfassenden Digitalisierung der Streitkräfte.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2015-03-24-735",
-    "date": "2015-03-24",
-    "title": "Test des RailGun X Prototyps",
-    "description": "Ein erfolgreicher Test des rechnergestützten Waffensystems AutoTurret Alpha wird abgeschlossen.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-}
+    },
+    {"title": "Windows 10", "description": "Microsoft veröffentlichte Windows 10, das wieder ein klassisches Startmenü einführte und Windows as a Service etablierte.", "tags": ["software"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Microsoft_Windows_10", "id": "card-2015-01-01", "date": "2015-01-01"},
+    {"title": "Apple Music", "description": "Apple stieg mit Apple Music in das lukrative Geschäft mit Musik-Streaming ein.", "tags": ["software", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Apple_Music", "id": "card-2015-01-02", "date": "2015-01-02"},
+    {"title": "Discord", "description": "Die Chat- und Voice-App Discord wurde veröffentlicht und mauserte sich schnell zum Standard für Gamer.", "tags": ["software", "gaming", "web"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Discord_(Software)", "id": "card-2015-01-03", "date": "2015-01-03"},
+    {"title": "TensorFlow", "description": "Google machte seine Machine-Learning-Bibliothek TensorFlow als Open-Source-Software für die Öffentlichkeit zugänglich.", "tags": ["software"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/TensorFlow", "id": "card-2015-01-04", "date": "2015-01-04"}
 ];

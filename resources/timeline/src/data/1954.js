@@ -1,48 +1,46 @@
 export default [
     {
-        "id": "card-1954-10-15",
-        "date": "1954-10-15",
-        "title": "IBM startet Entwicklung der Sprache FORTRAN",
-        "description": "Ein IBM-Team um John Backus begann mit dem Entwurf von FORTRAN (Formula Translation), der ersten voll funktionsfähigen Hochsprache. Compiler übersetzten fortan lesbare mathematische Formeln direkt in Maschinencode, was die Softwareentwicklung extrem beschleunigte.",
-        "tags": [
-            "software"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Fortran"
-    }
-,
+        year: 1954,
+        title: "Fortran",
+        description: "John Backus beginnt bei IBM mit der Entwicklung von Fortran, der ersten weit verbreiteten höheren Programmiersprache.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Fortran",
+        type: "text",
+        width: 380,
+        date: "1954-01-01",
+        tags: ["software"],
+        id: "card-software-1954-01-01-65077",
+    },
     {
-    "id": "card-1954-08-23-469",
-    "date": "1954-08-23",
-    "title": "Digitalisierungsprojekt TechGuard",
-    "description": "Das Verteidigungsministerium startet Digital Shield zur umfassenden Digitalisierung der Streitkräfte.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1954,
+        title: "IBM 704",
+        description: "IBM stellt den Großrechner IBM 704 vor. Er ist der erste massenproduzierte Computer mit Hardware-Unterstützung für Gleitkommaarithmetik.",
+        wikiUrl: "https://de.wikipedia.org/wiki/IBM_704",
+        type: "text",
+        width: 380,
+        date: "1954-01-01",
+        tags: ["hardware"],
+        id: "card-hardware-1954-01-01-82415",
+    },
     {
-    "id": "card-1954-05-14-435",
-    "date": "1954-05-14",
-    "title": "Künstler John Doe nutzt neue KI",
-    "description": "Der Digitalkünstler Elena Rodriguez veröffentlicht sein erstes Werk, das vollständig durch algorithmische Fraktal-Generatoren generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1954,
+        title: "TRADIC",
+        description: "Die Bell Laboratories entwickeln den TRADIC (Transistor Digital Computer), den ersten komplett transistorisierten Computer in den USA.",
+        wikiUrl: "https://de.wikipedia.org/wiki/TRADIC",
+        type: "text",
+        width: 380,
+        date: "1954-01-01",
+        tags: ["default"],
+        id: "card-default-1954-01-01-72329",
+    },
     {
-    "id": "card-1954-01-17-86",
-    "date": "1954-01-17",
-    "title": "Test des AutoTurret Alpha Prototyps",
-    "description": "Ein erfolgreicher Test des rechnergestützten Waffensystems RailGun X wird abgeschlossen.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1954,
+        title: "Regency TR-1",
+        description: "Das Regency TR-1 kommt als erstes kommerzielles Transistorradio auf den Markt und markiert den Beginn der Miniaturisierung in der Unterhaltungselektronik.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Regency_TR-1",
+        type: "text",
+        width: 380,
+        date: "1954-01-01",
+        tags: ["default"],
+        id: "card-default-1954-01-01-68922",
+    },
 ];

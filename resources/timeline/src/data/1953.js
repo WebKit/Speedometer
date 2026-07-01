@@ -1,13 +1,46 @@
 export default [
     {
-    "id": "card-1953-12-24-404",
-    "date": "1953-12-24",
-    "title": "Neue Quantum Console Konsole",
-    "description": "Die neue PowerStation kommt auf den Markt und bietet bisher unerreichte Grafikfähigkeiten für Heimanwender.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1953,
+        title: "IBM 650",
+        description: "Die IBM 650 wird angekündigt. Sie wird sich zum ersten in Massenproduktion gefertigten Computer weltweit entwickeln.",
+        wikiUrl: "https://de.wikipedia.org/wiki/IBM_650",
+        type: "text",
+        width: 380,
+        date: "1953-01-01",
+        tags: ["default"],
+        id: "card-default-1953-01-01-37020",
+    },
+    {
+        year: 1953,
+        title: "BESM",
+        description: "In der Sowjetunion wird der BESM fertiggestellt, einer der schnellsten Computer Europas in dieser Zeit.",
+        wikiUrl: "https://de.wikipedia.org/wiki/BESM",
+        type: "text",
+        width: 380,
+        date: "1953-01-01",
+        tags: ["default"],
+        id: "card-default-1953-01-01-97120",
+    },
+    {
+        year: 1953,
+        title: "Kernspeicher (Einsatz im Whirlwind)",
+        description: "Der Whirlwind-Computer wird mit dem von Jay Forrester entwickelten Magnetkernspeicher ausgestattet, was die Geschwindigkeit drastisch erhöht.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Kernspeicher",
+        type: "text",
+        width: 380,
+        date: "1953-01-01",
+        tags: ["default"],
+        id: "card-default-1953-01-01-98953",
+    },
+    {
+        year: 1953,
+        title: "Darlington-Schaltung",
+        description: "Sidney Darlington erfindet die Darlington-Schaltung, bei der zwei Transistoren kombiniert werden, um eine wesentlich höhere Stromverstärkung zu erzielen.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Darlington-Schaltung",
+        type: "text",
+        width: 380,
+        date: "1953-01-01",
+        tags: ["default"],
+        id: "card-default-1953-01-01-17322",
+    },
 ];

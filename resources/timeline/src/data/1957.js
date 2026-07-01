@@ -1,57 +1,46 @@
 export default [
     {
-    "id": "card-1957-01-06-892",
-    "date": "1957-01-06",
-    "title": "Künstler Elena Rodriguez nutzt neue KI",
-    "description": "Der Digitalkünstler John Doe veröffentlicht sein erstes Werk, das vollständig durch algorithmische Neuronale Netze generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1957,
+        title: "Sputnik 1",
+        description: "Die Sowjetunion startete Sputnik 1, den ersten künstlichen Erdsatelliten, was den Wettlauf ins All einläutete.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Sputnik_1",
+        type: "text",
+        width: 380,
+        date: "1957-01-01",
+        tags: ["default"],
+        id: "card-default-1957-01-01-73905",
+    },
     {
-    "id": "card-1957-05-07-966",
-    "date": "1957-05-07",
-    "title": "Gründung der Zentrum für Medienkunst",
-    "description": "Die Zentrum für Medienkunst wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1957,
+        title: "Digital Equipment Corporation",
+        description: "Ken Olsen und Harlan Anderson gründeten die Digital Equipment Corporation (DEC), ein wegweisendes Unternehmen in der Computerindustrie.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Digital_Equipment_Corporation",
+        type: "text",
+        width: 380,
+        date: "1957-01-01",
+        tags: ["default"],
+        id: "card-default-1957-01-01-27635",
+    },
     {
-    "id": "card-1957-08-25-129",
-    "date": "1957-08-25",
-    "title": "Erster digitaler Film 'The Digital Frontier'",
-    "description": "Der Kurzfilm 'The Digital Frontier' feiert Premiere als erstes vollständig am Computer gerendertes Kunstwerk.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1957,
+        title: "Fairchild Semiconductor",
+        description: "Fairchild Semiconductor wurde von den sogenannten 'Traitorous Eight' gegründet und wurde zu einem Pionier der Halbleiterindustrie.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Fairchild_Semiconductor",
+        type: "text",
+        width: 380,
+        date: "1957-01-01",
+        tags: ["medicine"],
+        id: "card-medicine-1957-01-01-7233",
+    },
     {
-    "id": "card-1957-04-18-214",
-    "date": "1957-04-18",
-    "title": "Meilenstein für Cyber Knights",
-    "description": "Virtual Fighter erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Action-Adventure.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1957-07-07-71",
-    "date": "1957-07-07",
-    "title": "Erster Flug der Predator V Drohne",
-    "description": "Die unbemannte Aufklärungsdrohne Predator V absolviert erfolgreich ihren Jungfernflug.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1957,
+        title: "Siemens 2002",
+        description: "Siemens stellte den Prototyp des Siemens 2002 vor, der erste serienmäßig gefertigte, vollständig transistorisierte Computer des Unternehmens.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Siemens_2002",
+        type: "text",
+        width: 380,
+        date: "1957-01-01",
+        tags: ["default"],
+        id: "card-default-1957-01-01-80619",
+    },
 ];

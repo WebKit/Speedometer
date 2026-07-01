@@ -1,60 +1,46 @@
 export default [
     {
-        "id": "card-1996-10-15",
-        "date": "1996-10-15",
-        "title": "Einführung von USB 1.0 und Nintendo 64",
-        "description": "Ein Konsortium aus Intel, Microsoft und weiteren Firmen verabschiedete die USB 1.0-Spezifikation zur Vereinheitlichung von PC-Anschlüssen. Gleichzeitig kam das wegweisende Nintendo 64 auf den Markt.",
-        "tags": [
-            "hardware",
-            "consumer"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Universal_Serial_Bus"
-    }
-,
+        year: 1996,
+        title: "Nintendo 64",
+        description: "Das Nintendo 64 wurde veröffentlicht und brachte 3D-Grafik und Analog-Sticks in den Mainstream der Videospiele.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Nintendo_64",
+        type: "text",
+        width: 380,
+        date: "1996-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1996-01-01-50661",
+    },
     {
-    "id": "card-1996-03-24-400",
-    "date": "1996-03-24",
-    "title": "Ausstellung 'Algorithmic Aesthetics'",
-    "description": "Die Ausstellung 'The Virtual Canvas' in San Francisco präsentiert erstmals computergenerierte Kunst einem breiten Publikum.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1996,
+        title: "Quake",
+        description: "id Software brachte den Ego-Shooter Quake heraus, der echte 3D-Umgebungen und Netzwerk-Mehrspielermodi bot.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Quake_(Computerspiel)",
+        type: "text",
+        width: 380,
+        date: "1996-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1996-01-01-21897",
+    },
     {
-    "id": "card-1996-01-28-838",
-    "date": "1996-01-28",
-    "title": "Digitalisierungsprojekt Operation Future",
-    "description": "Das Verteidigungsministerium startet NetForce 2000 zur umfassenden Digitalisierung der Streitkräfte.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1996,
+        title: "Einführung von USB 1.0",
+        description: "Der Standard Universal Serial Bus (USB) 1.0 wurde spezifiziert, um Peripheriegeräte einfacher an Computer anzuschließen.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Universal_Serial_Bus",
+        type: "text",
+        width: 380,
+        date: "1996-01-01",
+        tags: ["default"],
+        id: "card-default-1996-01-01-2666",
+    },
     {
-    "id": "card-1996-03-18-598",
-    "date": "1996-03-18",
-    "title": "Gründung des Studios CyberCore",
-    "description": "Das Entwicklerstudio Digital Dreams wird gegründet und beginnt mit der Arbeit an seinem ersten Ego-Shooter-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1996-10-08-538",
-    "date": "1996-10-08",
-    "title": "Veröffentlichung von Virtual Fighter",
-    "description": "Das bahnbrechende Spiel Cyber Knights wird veröffentlicht und prägt das Echtzeitstrategie-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1996,
+        title: "Deep Blue",
+        description: "Der Schachcomputer Deep Blue von IBM gewann erstmals eine Partie unter Turnierbedingungen gegen den amtierenden Weltmeister Garri Kasparow.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Deep_Blue",
+        type: "text",
+        width: 380,
+        date: "1996-01-01",
+        tags: ["default"],
+        id: "card-default-1996-01-01-57246",
+    },
 ];

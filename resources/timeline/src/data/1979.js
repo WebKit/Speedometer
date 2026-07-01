@@ -1,71 +1,46 @@
 export default [
     {
-        "id": "card-1979-10-15",
-        "date": "1979-10-15",
-        "title": "Motorola 68000 und die Tabellenkalkulation VisiCalc",
-        "description": "Motorola brachte den 68000-Prozessor auf den Markt, der später den Apple Macintosh antrieb. Gleichzeitig erschien VisiCalc, die erste Tabellenkalkulation, welche den Apple II für Unternehmen unentbehrlich machte.",
-        "tags": [
-            "hardware",
-            "software"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Motorola_68000"
-    }
-,
+        year: 1979,
+        title: "VisiCalc",
+        description: "Mit VisiCalc erscheint 1979 das erste Tabellenkalkulationsprogramm, das den Computer zum wichtigen Geschäftswerkzeug macht.",
+        wikiUrl: "https://de.wikipedia.org/wiki/VisiCalc",
+        type: "text",
+        width: 380,
+        date: "1979-01-01",
+        tags: ["software"],
+        id: "card-software-1979-01-01-81747",
+    },
     {
-    "id": "card-1979-12-14-525",
-    "date": "1979-12-14",
-    "title": "Meilenstein für Dungeon Master",
-    "description": "Dungeon Master erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Puzzle.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1979,
+        title: "Motorola 68000",
+        description: "Motorola führt 1979 den 68000-Prozessor ein, der in den folgenden Jahren in vielen Computern und Konsolen verwendet wird.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Motorola_68000",
+        type: "text",
+        width: 380,
+        date: "1979-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1979-01-01-91981",
+    },
     {
-    "id": "card-1979-05-16-736",
-    "date": "1979-05-16",
-    "title": "Gründung der Cyber-Abteilung CyberOps",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit CyberOps aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1979,
+        title: "Entwicklung des Usenet",
+        description: "Tom Truscott und Jim Ellis entwickeln 1979 das Usenet, ein frühes und einflussreiches weltweites Netzwerk.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Usenet",
+        type: "text",
+        width: 380,
+        date: "1979-01-01",
+        tags: ["default"],
+        id: "card-default-1979-01-01-16852",
+    },
     {
-    "id": "card-1979-05-01-863",
-    "date": "1979-05-01",
-    "title": "Test des SmartMissile V2 Prototyps",
-    "description": "Ein erfolgreicher Test des rechnergestützten Waffensystems RailGun X wird abgeschlossen.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1979-06-05-230",
-    "date": "1979-06-05",
-    "title": "Einführung des CyberShield Systems",
-    "description": "Das Militär führt das hochmoderne Aegis-X ein, das die taktische Kommunikation revolutioniert.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1979-04-05-523",
-    "date": "1979-04-05",
-    "title": "Gründung der Institute of Virtual Aesthetics",
-    "description": "Die Zentrum für Medienkunst wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1979,
+        title: "Asteroids",
+        description: "Atari veröffentlicht im November 1979 das Arcade-Spiel Asteroids, das zu einem der größten Erfolge der Firmengeschichte wird.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Asteroids_(Computerspiel)",
+        type: "text",
+        width: 380,
+        date: "1979-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1979-01-01-51212",
+    },
 ];

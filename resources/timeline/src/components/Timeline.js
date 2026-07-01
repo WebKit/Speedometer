@@ -15,13 +15,25 @@ export const Timeline = () => {
     let xPositions = [];
     let totalWidth = 0;
 
+    function getCardId(card, index) {
+        return card.id != null ? card.id : `_idx_${index}`;
+    }
+
+    function getCardWidth(card, index) {
+        const id = getCardId(card, index);
+        let w = widthCache.get(id);
+        if (w === undefined) w = card.width;
+        w = Number(w);
+        return isNaN(w) || w <= 0 ? 350 : w;
+    }
+
     function calculatePositions(data) {
         xPositions = [];
         let currentX = paddingLeft;
         for (let i = 0; i < data.length; i++) {
             xPositions.push(currentX);
             const card = data[i];
-            const width = widthCache.get(card.id) || card.width || 350;
+            const width = getCardWidth(card, i);
             currentX += width + gap;
         }
         totalWidth = data.length > 0 ? currentX - gap + paddingLeft : 0;
@@ -54,14 +66,14 @@ export const Timeline = () => {
             scrollLeft = containerEl.scrollLeft;
 
             if (vnode.attrs.handle) {
-                vnode.attrs.handle.scrollToIndex = (index) => {
+                vnode.attrs.handle.scrollToIndex = (index, requestedBehavior = "smooth") => {
                     if (index < 0 || index >= vnode.attrs.data.length || !containerEl)
                         return;
                     
                     const doScroll = (behavior) => {
                         const x = xPositions[index];
                         const card = vnode.attrs.data[index];
-                        const width = widthCache.get(card.id) || card.width || 350;
+                        const width = getCardWidth(card, index);
                         const currentClientWidth = containerEl.clientWidth;
                         const targetScrollLeft = Math.max(0, x - (currentClientWidth - width) / 2);
                         containerEl.scrollTo({
@@ -70,12 +82,14 @@ export const Timeline = () => {
                         });
                     };
 
-                    doScroll("smooth");
+                    doScroll(requestedBehavior);
                     
                     // Double check after animation to ensure precise alignment
-                    setTimeout(() => {
-                        if (containerEl) doScroll("auto");
-                    }, 600);
+                    if (requestedBehavior === "smooth") {
+                        setTimeout(() => {
+                            if (containerEl) doScroll("auto");
+                        }, 600);
+                    }
                 };
             }
 
@@ -91,7 +105,7 @@ export const Timeline = () => {
                         let m_idx = Math.floor((l + r) / 2);
                         let x = xPositions[m_idx];
                         let card = vnode.attrs.data[m_idx];
-                        let w = widthCache.get(card.id) || card.width || 350;
+                        let w = getCardWidth(card, m_idx);
                         let middle = x + w / 2;
                         
                         if (middle === viewportMiddle) {
@@ -110,7 +124,7 @@ export const Timeline = () => {
                     for (let i = Math.max(0, searchCenter - 1); i <= Math.min(xPositions.length - 1, searchCenter + 1); i++) {
                         let x = xPositions[i];
                         let card = vnode.attrs.data[i];
-                        let w = widthCache.get(card.id) || card.width || 350;
+                        let w = getCardWidth(card, i);
                         let diff = Math.abs(viewportMiddle - (x + w / 2));
                         if (diff < minDiff) {
                             minDiff = diff;
@@ -154,7 +168,7 @@ export const Timeline = () => {
                 while (l <= r) {
                     let m_idx = Math.floor((l + r) / 2);
                     let x = xPositions[m_idx];
-                    let w = widthCache.get(data[m_idx].id) || data[m_idx].width || 350;
+                    let w = getCardWidth(data[m_idx], m_idx);
                     if (x + w < viewportStart) {
                         l = m_idx + 1;
                     } else {
@@ -168,7 +182,7 @@ export const Timeline = () => {
             for (let i = startIndex; i < data.length; i++) {
                 const x = xPositions[i];
                 const card = data[i];
-                const width = widthCache.get(card.id) || card.width || 350;
+                const width = getCardWidth(card, i);
                 
                 if (x > viewportEnd) {
                     break;
@@ -200,11 +214,15 @@ export const Timeline = () => {
                     }
                 }, [
                     visibleItems.map(d => {
+                        const cardId = getCardId(d.item, d.index);
                         // Pass width callback to let cards report measured width
-                        const childVnode = renderItem(d.item, (width) => {
-                            const cached = widthCache.get(d.item.id);
-                            if (cached !== width) {
-                                widthCache.set(d.item.id, width);
+                        const childVnode = renderItem(d.item, (reportedWidth) => {
+                            const parsedWidth = Number(reportedWidth);
+                            if (isNaN(parsedWidth) || parsedWidth <= 0) return;
+                            
+                            const cached = widthCache.get(cardId);
+                            if (cached !== parsedWidth) {
+                                widthCache.set(cardId, parsedWidth);
                                 // Recalculate positions immediately and redraw
                                 calculatePositions(data);
                                 m.redraw();
@@ -221,7 +239,7 @@ export const Timeline = () => {
                             top: "50%",
                             transform: `translate3d(${d.x}px, -50%, 0)`
                         });
-                        childVnode.key = d.item.id;
+                        childVnode.key = cardId;
                         return childVnode;
                     })
                 ])

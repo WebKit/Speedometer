@@ -1,35 +1,66 @@
 export default [
     {
-    "id": "card-1966-09-06-715",
-    "date": "1966-09-06",
-    "title": "Ausstellung 'Digital Dreams'",
-    "description": "Die Ausstellung 'Digital Dreams' in Paris präsentiert erstmals computergenerierte Kunst einem breiten Publikum.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1966,
+        title: "ELIZA",
+        description: "Joseph Weizenbaum entwickelt das Computerprogramm ELIZA, das die Kommunikation zwischen einem Menschen und einem Therapeuten simuliert.",
+        wikiUrl: "https://de.wikipedia.org/wiki/ELIZA",
+        type: "text",
+        width: 380,
+        date: "1966-01-01",
+        tags: ["software"],
+        id: "card-software-1966-01-01-37839",
+    },
     {
-    "id": "card-1966-11-16-820",
-    "date": "1966-11-16",
-    "title": "Erster digitaler Film 'The Digital Frontier'",
-    "description": "Der Kurzfilm 'Cyber Journey' feiert Premiere als erstes vollständig am Computer gerendertes Kunstwerk.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1966,
+        title: "Lichtwellenleiter",
+        description: "Charles Kuen Kao und George Hockham publizieren ihre bahnbrechende Arbeit über die Verwendung von Glasfasern zur optischen Datenübertragung.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Lichtwellenleiter",
+        type: "text",
+        width: 380,
+        date: "1966-01-01",
+        tags: ["default"],
+        id: "card-default-1966-01-01-76717",
+    },
     {
-    "id": "card-1966-01-27-539",
-    "date": "1966-01-27",
-    "title": "Erster Flug der NightHawk Drohne",
-    "description": "Die unbemannte Aufklärungsdrohne SilentWing absolviert erfolgreich ihren Jungfernflug.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1966,
+        title: "Magnavox Odyssey Konzept",
+        description: "Ralph Baer beginnt mit der Entwicklung der Brown Box, dem Prototyp der Magnavox Odyssey, der ersten kommerziellen Videospielkonsole.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Magnavox_Odyssey",
+        type: "text",
+        width: 380,
+        date: "1966-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1966-01-01-12427",
+    },
+    {
+        year: 1966,
+        title: "OS/360",
+        description: "IBM veröffentlicht OS/360, ein Batch-Processing-Betriebssystem für die System/360-Großrechner, das viele moderne Betriebssystemkonzepte einführt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/OS/360",
+        type: "text",
+        width: 380,
+        date: "1966-01-01",
+        tags: ["default"],
+        id: "card-default-1966-01-01-10941",
+    },
+    {
+        id: "card-gaming-1966-01-01-10084",
+        date: "1966-01-01",
+        title: "Kakuro",
+        description: "Logikrätselgattung",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Kakuro",
+    },
+    {
+        id: "card-gaming-1966-01-01-23713",
+        date: "1966-01-01",
+        title: "Q18754124",
+        description: "Computerspiel aus dem Jahr 1966",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Fahrenheit_451_(Begriffskl%C3%A4rung)",
+    },
 ];

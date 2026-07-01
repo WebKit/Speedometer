@@ -1,87 +1,86 @@
 export default [
     {
-        "id": "card-1971-10-15",
-        "date": "1971-10-15",
-        "title": "Intel 4004 – Der erste Einchip-Mikroprozessor",
-        "description": "Die Firma Intel brachte mit dem 4004 den ersten kommerziellen, auf einem einzigen Silizium-Die integrierten 4-Bit-Prozessor auf den Markt. Er bestand aus 2.250 Transistoren und war für Tischrechner gedacht. Er läutete die Ära der Mikroprozessoren ein.",
-        "tags": [
-            "hardware",
-            "milestone"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Intel_4004",
-        "stats": {
-            "clockSpeed": "740 kHz",
-            "memory": "640 Byte Adressraum",
-            "transistors": "2.250 Transistoren (10 μm Fertigung)"
-        }
-    }
-,
+        year: 1971,
+        title: "Intel 4004",
+        description: "Intel bringt den 4004 auf den Markt, den ersten kommerziellen Mikroprozessor der Welt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Intel_4004",
+        type: "text",
+        width: 380,
+        date: "1971-01-01",
+        tags: ["hardware"],
+        id: "card-hardware-1971-01-01-26084",
+    },
     {
-    "id": "card-1971-12-23-698",
-    "date": "1971-12-23",
-    "title": "Release von VectorDraw 1.0",
-    "description": "Die erste Version von CGI Creator erscheint und revolutioniert die digitale Bildbearbeitung.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1971,
+        title: "Die erste E-Mail",
+        description: "Ray Tomlinson sendet die erste Netzwerk-E-Mail über das ARPANET und führt dabei das @-Zeichen ein.",
+        wikiUrl: "https://de.wikipedia.org/wiki/E-Mail",
+        type: "text",
+        width: 380,
+        date: "1971-01-01",
+        tags: ["default"],
+        id: "card-default-1971-01-01-41139",
+    },
     {
-    "id": "card-1971-06-08-841",
-    "date": "1971-06-08",
-    "title": "Meilenstein für Galaxy Defender",
-    "description": "Neo Racing erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Action-Adventure.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1971,
+        title: "Computer Space",
+        description: "Nolan Bushnell und Ted Dabney veröffentlichen 'Computer Space', das erste kommerziell hergestellte Arcade-Videospiel.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Computer_Space",
+        type: "text",
+        width: 380,
+        date: "1971-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1971-01-01-99206",
+    },
     {
-    "id": "card-1971-10-02-79",
-    "date": "1971-10-02",
-    "title": "Erster digitaler Film 'Pixels in Motion'",
-    "description": "Der Kurzfilm 'Virtual Realities' feiert Premiere als erstes vollständig am Computer gerendertes Kunstwerk.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1971,
+        title: "Kenbak-1",
+        description: "Der Kenbak-1, der oft als der erste in Serie produzierte Personal Computer bezeichnet wird, kommt auf den Markt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Kenbak-1",
+        type: "text",
+        width: 380,
+        date: "1971-01-01",
+        tags: ["default"],
+        id: "card-default-1971-01-01-81760",
+    },
     {
-    "id": "card-1971-12-12-179",
-    "date": "1971-12-12",
-    "title": "Veröffentlichung von Virtual Fighter",
-    "description": "Das bahnbrechende Spiel Space Quest wird veröffentlicht und prägt das Puzzle-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        id: "card-gaming-1971-01-01-44759",
+        date: "1971-01-01",
+        title: "Star Trek",
+        description: "Computerspiel aus dem Jahr 1971",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Star_Trek",
+    },
     {
-    "id": "card-1971-02-03-580",
-    "date": "1971-02-03",
-    "title": "Erstes eSports-Turnier in Paris",
-    "description": "In Paris findet das erste große eSports-Turnier für Cyber Knights mit hunderten Teilnehmern statt.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        id: "card-gaming-1971-01-01-39985",
+        date: "1971-01-01",
+        title: "Galaxy Game",
+        description: "Arcade-Spiel aus dem Jahr 1971",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Der_Super_Mario_Galaxy_Film",
+    },
     {
-    "id": "card-1971-10-20-858",
-    "date": "1971-10-20",
-    "title": "Künstler Elena Rodriguez nutzt neue KI",
-    "description": "Der Digitalkünstler John Doe veröffentlicht sein erstes Werk, das vollständig durch algorithmische Fraktal-Generatoren generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-}
+        id: "card-gaming-1971-01-01-88696",
+        date: "1971-01-01",
+        title: "The Oregon Trail",
+        description: "Computerspiel aus dem Jahr 1971",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Oregon_Trail",
+    },
+    {
+        id: "card-gaming-1971-01-01-90209",
+        date: "1971-01-01",
+        title: "Q4866418",
+        description: "Computerspiel aus dem Jahr 1971",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Geschichte_der_Videospiele",
+    },
 ];

@@ -1,76 +1,46 @@
 export default [
     {
-        "id": "header-1960",
-        "date": "1960-01-01",
-        "title": "Jahrzehnt 1960er",
-        "description": "Etablierung von Mainframes, integrierte Schaltkreise (Mikrochips) und erste Computernetzwerke.",
-        "tags": [
-            "hardware"
-        ],
-        "type": "text",
-        "width": 380
+        year: 1960,
+        title: "Erste Spezifikation von COBOL",
+        description: "Die Programmiersprache COBOL (Common Business-Oriented Language) wurde erstmals standardisiert und veröffentlicht, um eine einheitliche Sprache für kaufmännische Anwendungen zu schaffen.",
+        wikiUrl: "https://de.wikipedia.org/wiki/COBOL",
+        type: "text",
+        width: 380,
+        date: "1960-01-01",
+        tags: ["software"],
+        id: "card-software-1960-01-01-20135",
     },
     {
-        "id": "card-1960-10-15",
-        "date": "1960-10-15",
-        "title": "DEC stellt den interaktiven Minicomputer PDP-1 vor",
-        "description": "Digital Equipment Corporation (DEC) brachte den PDP-1 auf den Markt. Er war deutlich kompakter als bisherige Großrechner und verfügte über einen Oszilloskop-Bildschirm, auf dem Studenten des MIT mit 'Spacewar!' das erste interaktive Computerspiel programmierten.",
-        "tags": [
-            "hardware",
-            "consumer"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/PDP-1",
-        "stats": {
-            "clockSpeed": "200 kHz",
-            "memory": "4 KB RAM (erweiterbar auf 64 KB)",
-            "transistors": "2.700 Transistoren, 3.000 Dioden"
-        }
-    }
-,
+        year: 1960,
+        title: "Einführung des PDP-1",
+        description: "Die Digital Equipment Corporation (DEC) brachte den PDP-1 auf den Markt, den ersten kommerziellen Computer, der auf eine interaktive Nutzung mit Bildschirm und Tastatur ausgelegt war.",
+        wikiUrl: "https://de.wikipedia.org/wiki/PDP-1",
+        type: "text",
+        width: 380,
+        date: "1960-01-01",
+        tags: ["default"],
+        id: "card-default-1960-01-01-34065",
+    },
     {
-    "id": "card-1960-03-18-752",
-    "date": "1960-03-18",
-    "title": "Gründung der Digital Art Academy",
-    "description": "Die Zentrum für Medienkunst wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1960,
+        title: "Erfindung des Lasers",
+        description: "Theodore Maiman demonstrierte den weltweit ersten funktionierenden Laser (einen Rubinlaser), eine Technologie, die später für optische Datenspeicher und Netzwerke essenziell wurde.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Laser",
+        type: "text",
+        width: 380,
+        date: "1960-01-01",
+        tags: ["default"],
+        id: "card-default-1960-01-01-65424",
+    },
     {
-    "id": "card-1960-11-12-573",
-    "date": "1960-11-12",
-    "title": "Gründung der Zentrum für Medienkunst",
-    "description": "Die Zentrum für Medienkunst wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1960-10-05-593",
-    "date": "1960-10-05",
-    "title": "Veröffentlichung von Dungeon Master",
-    "description": "Das bahnbrechende Spiel Pixel Warriors wird veröffentlicht und prägt das Simulation-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1960-06-12-33",
-    "date": "1960-06-12",
-    "title": "Gründung der Cyber-Abteilung NetDefenders",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit CyberOps aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1960,
+        title: "Start von Echo 1",
+        description: "Der erste passive Kommunikationssatellit der NASA, Echo 1, wurde in die Erdumlaufbahn gebracht und ebnete den Weg für die weltweite Satellitenkommunikation.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Echo_1",
+        type: "text",
+        width: 380,
+        date: "1960-01-01",
+        tags: ["default"],
+        id: "card-default-1960-01-01-7528",
+    },
 ];

@@ -1,65 +1,56 @@
 export default [
     {
-        "id": "header-1951",
-        "date": "1951-01-01",
-        "title": "Jahrzehnt 1950er",
-        "description": "Der Übergang von Röhren zu Transistoren, kommerzielle Großrechner und erste höhere Sprachen.",
-        "tags": [
-            "hardware"
-        ],
-        "type": "text",
-        "width": 380
+        year: 1951,
+        title: "UNIVAC I",
+        description: "Der erste UNIVAC I (Universal Automatic Computer) wird an das United States Census Bureau übergeben. Es ist der erste kommerzielle in Serie gefertigte Computer der USA.",
+        wikiUrl: "https://de.wikipedia.org/wiki/UNIVAC_I",
+        type: "text",
+        width: 380,
+        date: "1951-01-01",
+        tags: ["default"],
+        id: "card-default-1951-01-01-80670",
     },
     {
-        "id": "card-1951-10-15",
-        "date": "1951-10-15",
-        "title": "Remington Rand liefert den UNIVAC I aus",
-        "description": "Der UNIVAC I (Universal Automatic Computer) wurde als erster kommerziell gefertigter Röhrenrechner an das US-Zensusbüro ausgeliefert. Berühmt wurde er durch die korrekte Hochrechnung des Siegers der US-Präsidentschaftswahl 1952 bei der TV-Berichterstattung.",
-        "tags": [
-            "hardware",
-            "consumer"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/UNIVAC_I",
-        "stats": {
-            "clockSpeed": "2.25 MHz",
-            "memory": "1.000 Wörter (Quecksilber-Verzögerungsleitung)",
-            "transistors": "5.000 Vakuumröhren"
-        }
-    }
-,
+        year: 1951,
+        title: "EDVAC",
+        description: "Der EDVAC (Electronic Discrete Variable Automatic Computer) nimmt offiziell seinen Betrieb auf. Er ist einer der ersten Computer, der auf der Von-Neumann-Architektur basiert.",
+        wikiUrl: "https://de.wikipedia.org/wiki/EDVAC",
+        type: "text",
+        width: 380,
+        date: "1951-01-01",
+        tags: ["medicine"],
+        id: "card-medicine-1951-01-01-83449",
+    },
     {
-    "id": "card-1951-03-17-891",
-    "date": "1951-03-17",
-    "title": "Neue Quantum Console Konsole",
-    "description": "Die neue Quantum Console kommt auf den Markt und bietet bisher unerreichte Grafikfähigkeiten für Heimanwender.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1951,
+        title: "Ferranti Mark I",
+        description: "Der Ferranti Mark I wird an die Universität Manchester ausgeliefert und gilt als der erste kommerziell erhältliche Universalcomputer der Welt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Ferranti_Mark_I",
+        type: "text",
+        width: 380,
+        date: "1951-01-01",
+        tags: ["default"],
+        id: "card-default-1951-01-01-80767",
+    },
     {
-    "id": "card-1951-01-20-488",
-    "date": "1951-01-20",
-    "title": "Einführung des CyberShield Systems",
-    "description": "Das Militär führt das hochmoderne ComLink Alpha ein, das die taktische Kommunikation revolutioniert.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1951,
+        title: "Whirlwind",
+        description: "Der Whirlwind-Computer des MIT nimmt seinen Betrieb auf. Er operiert in Echtzeit und wurde ursprünglich für Flugsimulatoren der US Navy entwickelt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Whirlwind",
+        type: "text",
+        width: 380,
+        date: "1951-01-01",
+        tags: ["default"],
+        id: "card-default-1951-01-01-1272",
+    },
     {
-    "id": "card-1951-05-17-597",
-    "date": "1951-05-17",
-    "title": "Test des SmartMissile V2 Prototyps",
-    "description": "Ein erfolgreicher Test des rechnergestützten Waffensystems AutoTurret Alpha wird abgeschlossen.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-}
+        id: "card-gaming-1951-05-05-5233",
+        date: "1951-05-05",
+        title: "Nimrod",
+        description: "Computer",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Nimrod",
+    },
 ];

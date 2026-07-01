@@ -1,93 +1,46 @@
 export default [
     {
-        "id": "card-1998-10-15",
-        "date": "1998-10-15",
-        "title": "Gründung der Google LLC und Suchmaschinen-Optimierung",
-        "description": "Larry Page und Sergey Brin gründeten Google in einer Garage, basierend auf ihrem PageRank-Algorithmus. Dieser bewertete die Wichtigkeit von Webseiten anhand ihrer Verlinkungen und löste die bisherigen hierarchischen Webverzeichnisse ab.",
-        "tags": [
-            "networking",
-            "software"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/Google_LLC"
-    }
-,
+        year: 1998,
+        title: "Gründung von Google",
+        description: "Larry Page und Sergey Brin gründeten das Unternehmen Google, um ihre Suchmaschine weiterzuentwickeln.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Google",
+        type: "text",
+        width: 380,
+        date: "1998-01-01",
+        tags: ["default"],
+        id: "card-default-1998-01-01-211",
+    },
     {
-    "id": "card-1998-09-17-929",
-    "date": "1998-09-17",
-    "title": "Gründung der Institute of Virtual Aesthetics",
-    "description": "Die Digital Art Academy wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1998,
+        title: "Windows 98",
+        description: "Microsoft veröffentlichte Windows 98, das eine verbesserte USB-Unterstützung und den Internet Explorer 4.0 bot.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Windows_98",
+        type: "text",
+        width: 380,
+        date: "1998-01-01",
+        tags: ["default"],
+        id: "card-default-1998-01-01-77551",
+    },
     {
-    "id": "card-1998-07-07-91",
-    "date": "1998-07-07",
-    "title": "Test des RailGun X Prototyps",
-    "description": "Ein erfolgreicher Test des rechnergestützten Waffensystems RailGun X wird abgeschlossen.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1998,
+        title: "iMac G3",
+        description: "Apple stellte den iMac G3 vor, der sich durch sein farbenfrohes, transluzentes Gehäuse von den damaligen PCs abhob.",
+        wikiUrl: "https://de.wikipedia.org/wiki/IMac_G3",
+        type: "text",
+        width: 380,
+        date: "1998-01-01",
+        tags: ["default"],
+        id: "card-default-1998-01-01-40860",
+    },
     {
-    "id": "card-1998-09-24-916",
-    "date": "1998-09-24",
-    "title": "Künstler John Doe nutzt neue KI",
-    "description": "Der Digitalkünstler Max Mustermann veröffentlicht sein erstes Werk, das vollständig durch algorithmische Fraktal-Generatoren generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1998-04-11-135",
-    "date": "1998-04-11",
-    "title": "Digitalisierungsprojekt Operation Future",
-    "description": "Das Verteidigungsministerium startet Operation Future zur umfassenden Digitalisierung der Streitkräfte.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1998-03-18-365",
-    "date": "1998-03-18",
-    "title": "Ausstellung 'Algorithmic Aesthetics'",
-    "description": "Die Ausstellung 'Digital Dreams' in Berlin präsentiert erstmals computergenerierte Kunst einem breiten Publikum.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1998-06-05-491",
-    "date": "1998-06-05",
-    "title": "Ausstellung 'Algorithmic Aesthetics'",
-    "description": "Die Ausstellung 'Digital Dreams' in London präsentiert erstmals computergenerierte Kunst einem breiten Publikum.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1998-07-04-930",
-    "date": "1998-07-04",
-    "title": "Ausstellung 'Algorithmic Aesthetics'",
-    "description": "Die Ausstellung 'Algorithmic Aesthetics' in London präsentiert erstmals computergenerierte Kunst einem breiten Publikum.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1998,
+        title: "Game Boy Color",
+        description: "Nintendo brachte den Game Boy Color heraus, die erste Handheld-Konsole des Unternehmens mit Farbbildschirm.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Game_Boy_Color",
+        type: "text",
+        width: 380,
+        date: "1998-01-01",
+        tags: ["gaming"],
+        id: "card-gaming-1998-01-01-48734",
+    },
 ];

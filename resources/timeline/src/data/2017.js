@@ -10,61 +10,9 @@ export default [
         "type": "text",
         "width": 380,
         "wikiUrl": "https://de.wikipedia.org/wiki/Ryzen"
-    }
-,
-    {
-    "id": "card-2017-12-11-986",
-    "date": "2017-12-11",
-    "title": "Digitalisierungsprojekt NetForce 2000",
-    "description": "Das Verteidigungsministerium startet NetForce 2000 zur umfassenden Digitalisierung der Streitkräfte.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2017-01-08-574",
-    "date": "2017-01-08",
-    "title": "Release von PaintPro 1.0",
-    "description": "Die erste Version von RenderMax erscheint und revolutioniert die digitale Bildbearbeitung.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2017-08-18-417",
-    "date": "2017-08-18",
-    "title": "Release von VectorDraw 1.0",
-    "description": "Die erste Version von PaintPro erscheint und revolutioniert die digitale Bildbearbeitung.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2017-03-18-754",
-    "date": "2017-03-18",
-    "title": "Meilenstein für Galaxy Defender",
-    "description": "Dungeon Master erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Puzzle.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-2017-08-25-172",
-    "date": "2017-08-25",
-    "title": "Gründung des Studios NextGen Studios",
-    "description": "Das Entwicklerstudio RetroMinds wird gegründet und beginnt mit der Arbeit an seinem ersten Action-Adventure-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+    },
+    {"title": "Nintendo Switch", "description": "Nintendo brachte die Switch heraus, eine hybride Konsole für den stationären und mobilen Einsatz.", "tags": ["hardware", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Nintendo_Switch", "id": "card-2017-01-01", "date": "2017-01-01"},
+    {"title": "Fortnite Battle Royale", "description": "Epic Games veröffentlichte den kostenlosen Battle-Royale-Modus für Fortnite, der zu einem globalen Phänomen wurde.", "tags": ["software", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Fortnite", "id": "card-2017-01-02", "date": "2017-01-02"},
+    {"title": "Xbox One X", "description": "Microsoft brachte mit der Xbox One X eine leistungsstarke Hardware-Revision seiner Konsole für 4K-Gaming heraus.", "tags": ["hardware", "gaming"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Xbox_One", "id": "card-2017-01-03", "date": "2017-01-03"},
+    {"title": "Transformer-Modell", "description": "Google-Forscher veröffentlichten das Konzept der Transformer-Architektur, das zur Grundlage moderner generativer KI wurde.", "tags": ["software"], "type": "text", "width": 380, "wikiUrl": "https://de.wikipedia.org/wiki/Transformer_(K%C3%BCnstliche_Intelligenz)", "id": "card-2017-01-04", "date": "2017-01-04"}
 ];

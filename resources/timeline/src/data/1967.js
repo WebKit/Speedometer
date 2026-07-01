@@ -1,68 +1,86 @@
 export default [
     {
-    "id": "card-1967-12-24-528",
-    "date": "1967-12-24",
-    "title": "Erstes eSports-Turnier in Berlin",
-    "description": "In London findet das erste große eSports-Turnier für Space Quest mit hunderten Teilnehmern statt.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1967,
+        title: "Erfindung der Diskette",
+        description: "Ein Team bei IBM unter der Leitung von Alan Shugart entwickelt das erste Diskettenlaufwerk für Datenspeicherung.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Diskette",
+        type: "text",
+        width: 380,
+        date: "1967-01-01",
+        tags: ["default"],
+        id: "card-default-1967-01-01-97121",
+    },
     {
-    "id": "card-1967-12-20-921",
-    "date": "1967-12-20",
-    "title": "Gründung der Cyber-Abteilung Division Zero",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit Division Zero aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1967,
+        title: "Logo (Programmiersprache)",
+        description: "Seymour Papert und Wally Feurzeig entwickeln Logo, eine Programmiersprache, die speziell für pädagogische Zwecke konzipiert wurde.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Logo_(Programmiersprache)",
+        type: "text",
+        width: 380,
+        date: "1967-01-01",
+        tags: ["software"],
+        id: "card-software-1967-01-01-34772",
+    },
     {
-    "id": "card-1967-07-08-203",
-    "date": "1967-07-08",
-    "title": "Gründung der Institute of Virtual Aesthetics",
-    "description": "Die Zentrum für Medienkunst wird gegründet, um die Schnittstelle zwischen Technologie und bildender Kunst zu erforschen.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1967,
+        title: "Erster Taschenrechner-Prototyp",
+        description: "Jack Kilby, Jerry Merryman und James Van Tassel entwickeln bei Texas Instruments den ersten Prototyp eines elektronischen Taschenrechners (Cal-Tech).",
+        wikiUrl: "https://de.wikipedia.org/wiki/Taschenrechner",
+        type: "text",
+        width: 380,
+        date: "1967-01-01",
+        tags: ["default"],
+        id: "card-default-1967-01-01-6702",
+    },
     {
-    "id": "card-1967-08-17-255",
-    "date": "1967-08-17",
-    "title": "Künstler Elena Rodriguez nutzt neue KI",
-    "description": "Der Digitalkünstler Anna Schmidt veröffentlicht sein erstes Werk, das vollständig durch algorithmische Generative KI generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1967,
+        title: "Simula 67",
+        description: "Ole-Johan Dahl und Kristen Nygaard stellen Simula 67 vor, die erste Programmiersprache, die objektorientierte Konzepte wie Klassen und Vererbung beinhaltet.",
+        wikiUrl: "https://de.wikipedia.org/wiki/Simula",
+        type: "text",
+        width: 380,
+        date: "1967-01-01",
+        tags: ["software"],
+        id: "card-software-1967-01-01-9840",
+    },
     {
-    "id": "card-1967-07-24-203",
-    "date": "1967-07-24",
-    "title": "Digitalisierungsprojekt Operation Future",
-    "description": "Das Verteidigungsministerium startet TechGuard zur umfassenden Digitalisierung der Streitkräfte.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        id: "card-gaming-1967-01-01-57176",
+        date: "1967-01-01",
+        title: "Q3646296",
+        description: "Computerspiel aus dem Jahr 1967",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Tobruk_(Begriffskl%C3%A4rung)",
+    },
     {
-    "id": "card-1967-07-22-722",
-    "date": "1967-07-22",
-    "title": "Gründung des Studios PixelForge",
-    "description": "Das Entwicklerstudio CyberCore wird gegründet und beginnt mit der Arbeit an seinem ersten RPG-Spiel.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+        id: "card-gaming-1967-01-01-4163",
+        date: "1967-01-01",
+        title: "Q35809671",
+        description: "Computerspiel aus dem Jahr 1967",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Tobruk_(Begriffskl%C3%A4rung)",
+    },
+    {
+        id: "card-gaming-1967-01-01-80221",
+        date: "1967-01-01",
+        title: "Q117842302",
+        description: "Computerspiel aus dem Jahr 1967",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Tobruk_(Begriffskl%C3%A4rung)",
+    },
+    {
+        id: "card-gaming-1967-08-01-73320",
+        date: "1967-08-01",
+        title: "Q111673930",
+        description: "Computerspiel aus dem Jahr 1967",
+        tags: ["gaming"],
+        type: "text",
+        width: 380,
+        wikiUrl: "https://de.wikipedia.org/wiki/Tobruk_(Begriffskl%C3%A4rung)",
+    },
 ];

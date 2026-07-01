@@ -1,71 +1,46 @@
 export default [
     {
-        "id": "card-1964-10-15",
-        "date": "1964-10-15",
-        "title": "IBM System/360 und der Durchbruch des Mikrochips",
-        "description": "IBM definierte mit der System/360-Serie eine einheitliche Computer-Familienarchitektur. Unterschiedlich teure Modelle konnten denselben Binärcode verarbeiten. Gleichzeitig begann die Massenproduktion integrierter Silizium-ICs bei Texas Instruments.",
-        "tags": [
-            "hardware",
-            "milestone"
-        ],
-        "type": "text",
-        "width": 380,
-        "wikiUrl": "https://de.wikipedia.org/wiki/IBM_System/360"
-    }
-,
+        year: 1964,
+        title: "Ankündigung der IBM System/360",
+        description: "IBM präsentierte die Großrechner-Familie System/360. Durch ihre abwärtskompatible Architektur prägte sie die Computernutzung in Unternehmen für Jahrzehnte.",
+        wikiUrl: "https://de.wikipedia.org/wiki/IBM_System/360",
+        type: "text",
+        width: 380,
+        date: "1964-01-01",
+        tags: ["default"],
+        id: "card-default-1964-01-01-17663",
+    },
     {
-    "id": "card-1964-08-22-494",
-    "date": "1964-08-22",
-    "title": "Künstler Akira Tanaka nutzt neue KI",
-    "description": "Der Digitalkünstler Elena Rodriguez veröffentlicht sein erstes Werk, das vollständig durch algorithmische Fraktal-Generatoren generiert wurde.",
-    "tags": [
-        "art"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1964,
+        title: "Entwicklung der Programmiersprache BASIC",
+        description: "John G. Kemeny und Thomas E. Kurtz entwickelten am Dartmouth College die Programmiersprache BASIC, um Studierenden den Einstieg in die Programmierung zu erleichtern.",
+        wikiUrl: "https://de.wikipedia.org/wiki/BASIC",
+        type: "text",
+        width: 380,
+        date: "1964-01-01",
+        tags: ["software"],
+        id: "card-software-1964-01-01-14449",
+    },
     {
-    "id": "card-1964-10-24-947",
-    "date": "1964-10-24",
-    "title": "Gründung der Cyber-Abteilung Ghost Squadron",
-    "description": "Zur Abwehr digitaler Bedrohungen wird die neue Spezialeinheit NetDefenders aufgestellt.",
-    "tags": [
-        "military"
-    ],
-    "type": "text",
-    "width": 380
-},
+        year: 1964,
+        title: "Vorstellung des CDC 6600",
+        description: "Der von Seymour Cray entwickelte CDC 6600 wurde vorgestellt. Er gilt als der erste erfolgreiche Supercomputer und war bis 1969 der schnellste Rechner der Welt.",
+        wikiUrl: "https://de.wikipedia.org/wiki/CDC_6600",
+        type: "text",
+        width: 380,
+        date: "1964-01-01",
+        tags: ["default"],
+        id: "card-default-1964-01-01-68770",
+    },
     {
-    "id": "card-1964-08-01-6",
-    "date": "1964-08-01",
-    "title": "Meilenstein für Space Quest",
-    "description": "Neo Racing erreicht 1 Million aktive Spieler und setzt einen neuen Standard im Ego-Shooter.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1964-02-10-884",
-    "date": "1964-02-10",
-    "title": "Veröffentlichung von Space Quest",
-    "description": "Das bahnbrechende Spiel Cyber Knights wird veröffentlicht und prägt das Ego-Shooter-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-},
-    {
-    "id": "card-1964-09-14-97",
-    "date": "1964-09-14",
-    "title": "Veröffentlichung von Virtual Fighter",
-    "description": "Das bahnbrechende Spiel Galaxy Defender wird veröffentlicht und prägt das RPG-Genre auf Jahre hinaus.",
-    "tags": [
-        "gaming"
-    ],
-    "type": "text",
-    "width": 380
-}
+        year: 1964,
+        title: "Erste Spezifikation von PL/I",
+        description: "Die Programmiersprache PL/I (Programming Language One) wurde im Auftrag von IBM entworfen, um die Funktionen von Fortran und COBOL in einer Sprache zu vereinen.",
+        wikiUrl: "https://de.wikipedia.org/wiki/PL/I",
+        type: "text",
+        width: 380,
+        date: "1964-01-01",
+        tags: ["software"],
+        id: "card-software-1964-01-01-70304",
+    },
 ];
