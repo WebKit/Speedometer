@@ -1,6 +1,12 @@
 import { STEP_RUNNER_LOOKUP } from "./shared/step-runner.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
 
+function delay(ms) {
+    if (ms > 0)
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    return undefined;
+}
+
 export class SuiteRunner {
     #frame;
     #page;
@@ -72,6 +78,8 @@ export class SuiteRunner {
         const suiteStartLabel = `suite-${suiteName}-start`;
         const suiteEndLabel = `suite-${suiteName}-end`;
 
+        await delay(this.#params.waitAfterSetup);
+
         performance.mark(suiteStartLabel);
         for (const step of this.#suite.tests) {
             if (this.#client?.willRunTest)
@@ -83,6 +91,8 @@ export class SuiteRunner {
             await stepRunner.runStep();
         }
         performance.mark(suiteEndLabel);
+
+        await delay(this.#params.waitAfterSuite);
 
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
         this._validateSuiteResults();
@@ -180,10 +190,14 @@ export class RemoteSuiteRunner extends SuiteRunner {
     }
 
     async _runSuite() {
+        await delay(this.params.waitAfterSetup);
+
         // Ask workload to run its own tests.
         this.frame.contentWindow.postMessage({ id: this.appId, key: "benchmark-connector", type: "benchmark-suite", name: this.suite.config?.name || "default" }, "*");
         // Capture metrics from the completed tests.
         const response = await this._subscribeOnce("suite-complete");
+
+        await delay(this.params.waitAfterSuite);
 
         this.suiteResults.tests = {
             ...this.suiteResults.tests,

@@ -23,7 +23,9 @@ export function createDeveloperModeContainer() {
     settings.append(createUIForMeasurePrepare());
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
+    settings.append(createUIForWaitAfterSetup());
     settings.append(createUIForSyncStepDelay());
+    settings.append(createUIForWaitAfterSuite());
     settings.append(createUIForAsyncSteps());
     settings.append(createUIForLayoutMode());
 
@@ -87,6 +89,14 @@ function createUIForWarmupBeforeSync() {
 
 function createUIForSyncStepDelay() {
     return createTimeRangeUI("Sync step delay: ", "waitBeforeSync");
+}
+
+function createUIForWaitAfterSetup() {
+    return createTimeRangeUI("Post setup delay: ", "waitAfterSetup");
+}
+
+function createUIForWaitAfterSuite() {
+    return createTimeRangeUI("Post suite delay: ", "waitAfterSuite");
 }
 
 function createTimeRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000) {
