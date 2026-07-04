@@ -1,46 +1,102 @@
 export default [
     {
         year: 1994,
-        title: "World Wide Web Consortium",
-        description: "Tim Berners-Lee gründet das World Wide Web Consortium (W3C) am MIT, um Web-Standards zu entwickeln.",
-        wikiUrl: "https://de.wikipedia.org/wiki/World_Wide_Web_Consortium",
+        title: {
+            DE: "World Wide Web Consortium",
+            FR: "World Wide Web Consortium",
+            IT: "World Wide Web Consortium",
+        },
+        description: {
+            DE: "Tim Berners-Lee gründet das World Wide Web Consortium (W3C) am MIT, um Web-Standards zu entwickeln.",
+            FR: "Tim Berners-Lee gründet das World Wide Web Consortium (W3C) am MIT, um Web-Standards zu entwickeln.",
+            IT: "Tim Berners-Lee gründet das World Wide Web Consortium (W3C) am MIT, um Web-Standards zu entwickeln.",
+        },
         type: "text",
         width: 380,
         date: "1994-01-01",
         tags: ["default"],
         id: "card-default-1994-01-01-13893",
+        links: {
+            wikipedia: {
+                DE: "https://de.wikipedia.org/wiki/World_Wide_Web_Consortium",
+                FR: "https://fr.wikipedia.org/wiki/World_Wide_Web_Consortium",
+                IT: "https://it.wikipedia.org/wiki/World_Wide_Web_Consortium",
+            },
+        },
     },
     {
         year: 1994,
-        title: "Amazon",
-        description: "Jeff Bezos gründet Amazon.com, das zunächst als Online-Buchhandlung startet.",
-        wikiUrl: "https://de.wikipedia.org/wiki/Amazon",
+        title: {
+            DE: "Amazon System",
+            FR: "Système Amazon",
+            IT: "Sistema Amazon",
+        },
+        description: {
+            DE: "Jeff Bezos gründet Amazon.com, das zunächst als Online-Buchhandlung startet.",
+            FR: "Jeff Bezos gründet Amazon.com, das zunächst als Online-Buchhandlung startet.",
+            IT: "Jeff Bezos gründet Amazon.com, das zunächst als Online-Buchhandlung startet.",
+        },
         type: "text",
         width: 380,
         date: "1994-01-01",
         tags: ["default"],
         id: "card-default-1994-01-01-55756",
+        links: {
+            wikipedia: {
+                DE: "https://de.wikipedia.org/wiki/Amazon",
+                FR: "https://fr.wikipedia.org/wiki/Amazon",
+                IT: "https://it.wikipedia.org/wiki/Amazon",
+            },
+        },
     },
     {
         year: 1994,
-        title: "Yahoo",
-        description: "David Filo und Jerry Yang gründen Yahoo, das mit einem Webverzeichnis große Bekanntheit erlangt.",
-        wikiUrl: "https://de.wikipedia.org/wiki/Yahoo",
+        title: {
+            DE: "Yahoo System",
+            FR: "Système Yahoo",
+            IT: "Sistema Yahoo",
+        },
+        description: {
+            DE: "David Filo und Jerry Yang gründen Yahoo, das mit einem Webverzeichnis große Bekanntheit erlangt.",
+            FR: "David Filo und Jerry Yang gründen Yahoo, das mit einem Webverzeichnis große Bekanntheit erlangt.",
+            IT: "David Filo und Jerry Yang gründen Yahoo, das mit einem Webverzeichnis große Bekanntheit erlangt.",
+        },
         type: "text",
         width: 380,
         date: "1994-01-01",
         tags: ["default"],
         id: "card-default-1994-01-01-81005",
+        links: {
+            wikipedia: {
+                DE: "https://de.wikipedia.org/wiki/Yahoo",
+                FR: "https://fr.wikipedia.org/wiki/Yahoo_%28homonymie%29",
+                IT: "https://it.wikipedia.org/wiki/Yahoo_%28disambigua%29",
+            },
+        },
     },
     {
         year: 1994,
-        title: "Netscape Navigator",
-        description: "Die erste Version des Webbrowsers Netscape Navigator erscheint und dominiert zunächst den Browsermarkt.",
-        wikiUrl: "https://de.wikipedia.org/wiki/Netscape_Navigator",
+        title: {
+            DE: "Netscape Navigator",
+            FR: "Netscape Navigator",
+            IT: "Netscape Navigator",
+        },
+        description: {
+            DE: "Die erste Version des Webbrowsers Netscape Navigator erscheint und dominiert zunächst den Browsermarkt.",
+            FR: "Die erste Version des Webbrowsers Netscape Navigator erscheint und dominiert zunächst den Browsermarkt.",
+            IT: "Die erste Version des Webbrowsers Netscape Navigator erscheint und dominiert zunächst den Browsermarkt.",
+        },
         type: "text",
         width: 380,
         date: "1994-01-01",
         tags: ["default"],
         id: "card-default-1994-01-01-47607",
+        links: {
+            wikipedia: {
+                DE: "https://de.wikipedia.org/wiki/Netscape_Navigator",
+                FR: "https://fr.wikipedia.org/wiki/Netscape_Navigator",
+                IT: "https://it.wikipedia.org/wiki/Netscape_Navigator",
+            },
+        },
     },
 ];
