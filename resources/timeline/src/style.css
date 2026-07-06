@@ -1315,3 +1315,20 @@ button.btn-nav:hover .desc {
     background: rgba(0, 0, 0, 0.4);
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
 }
+
+.card-desc a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px dashed rgba(56, 189, 248, 0.4);
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.card-desc a:hover {
+    color: #fff;
+    background: rgba(56, 189, 248, 0.15);
+    border-bottom: 1px solid var(--primary-color);
+    text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
