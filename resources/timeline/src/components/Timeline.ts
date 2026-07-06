@@ -123,7 +123,8 @@ export const Timeline = () => {
             if (this.onResize) window.removeEventListener("resize", this.onResize);
         },
         view(vnode) {
-            const { data, renderItem, cardBuffer = 10 } = vnode.attrs;
+            const { data, renderItem, layoutMode, cardBuffer = 10 } = vnode.attrs;
+            const isVirtual = layoutMode === "virtual";
 
             let firstVisibleIndex = 0;
             if (data.length > 0) {
@@ -151,8 +152,8 @@ export const Timeline = () => {
                 }
             }
 
-            const startIdx = Math.max(0, firstVisibleIndex - cardBuffer);
-            const endIdx = Math.min(data.length - 1, lastVisibleIndex + cardBuffer);
+            const startIdx = isVirtual ? Math.max(0, firstVisibleIndex - cardBuffer) : 0;
+            const endIdx = isVirtual ? Math.min(data.length - 1, lastVisibleIndex + cardBuffer) : data.length - 1;
 
             const visibleItems = [];
             for (let i = startIdx; i <= endIdx; i++) {
@@ -178,11 +179,22 @@ export const Timeline = () => {
                     m(
                         "#document-content",
                         {
-                            style: {
+                            class: isVirtual ? "virtual-layout" : "browser-layout",
+                            style: isVirtual ? {
                                 position: "relative",
                                 width: `${totalWidth}px`,
                                 height: "100%",
                                 flexShrink: "0",
+                            } : {
+                                position: "relative",
+                                display: "flex",
+                                gap: `${gap}px`,
+                                paddingLeft: `${paddingLeft}px`,
+                                paddingRight: `${paddingLeft}px`,
+                                height: "100%",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                width: "max-content",
                             },
                         },
                         [
@@ -193,11 +205,13 @@ export const Timeline = () => {
                                 if (!childVnode.attrs) childVnode.attrs = {};
                                 if (!childVnode.attrs.style) childVnode.attrs.style = {};
 
-                                childVnode.attrs.style = Object.assign({}, childVnode.attrs.style, {
-                                    position: "absolute",
-                                    top: "50%",
-                                    "--x-pos": `${d.x}px`,
-                                });
+                                if (isVirtual) {
+                                    childVnode.attrs.style = Object.assign({}, childVnode.attrs.style, {
+                                        position: "absolute",
+                                        top: "50%",
+                                        "--x-pos": `${d.x}px`,
+                                    });
+                                }
                                 childVnode.key = cardId;
                                 return childVnode;
                             }),

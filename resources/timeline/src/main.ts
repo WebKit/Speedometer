@@ -28,6 +28,7 @@ const App = () => {
     let searchQuery = "";
     let showSuggestions = false;
     let activeIndex = 0;
+    let layoutMode = "virtual";
     let dataVersion = 1;
 
     const timelineHandle: { scrollToIndex?: (idx: number, behavior?: string) => void } = {};
@@ -96,6 +97,7 @@ const App = () => {
                     searchQuery,
                     suggestions,
                     showSuggestions,
+                    layoutMode,
                     onSearchChange: (q: string) => {
                         searchQuery = q;
                         showSuggestions = q.trim().length > 0;
@@ -107,6 +109,10 @@ const App = () => {
                     },
                     onCloseSuggestions: () => {
                         showSuggestions = false;
+                    },
+                    onLayoutModeChange: (mode: string) => {
+                        layoutMode = mode;
+                        dataVersion++;
                     },
                     onJumpToCard: (idx: number) => {
                         activeIndex = idx;
@@ -163,6 +169,7 @@ const App = () => {
                         version: dataVersion,
                         handle: timelineHandle,
                         activeIndex: activeIndex,
+                        layoutMode: layoutMode,
                         cardBuffer: 10,
                         onActiveIndexChange: (idx) => {
                             activeIndex = idx;

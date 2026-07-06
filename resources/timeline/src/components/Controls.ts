@@ -4,7 +4,7 @@ import { t, getLanguage, setLanguage, Language, translateContent } from "../i18n
 
 export const Controls = {
     view(vnode) {
-        const { activeFilters, onFilterChange, searchQuery, suggestions, showSuggestions, onSearchChange, onJumpToCard, onFocusSearch, onCloseSuggestions } = vnode.attrs;
+        const { activeFilters, onFilterChange, searchQuery, suggestions, showSuggestions, layoutMode, onSearchChange, onJumpToCard, onFocusSearch, onCloseSuggestions, onLayoutModeChange } = vnode.attrs;
 
         const categories = Object.keys(TAGS);
 
@@ -128,6 +128,19 @@ export const Controls = {
                                 s.title
                             ])
                         )
+                    ])
+                ]),
+                m(".action-group.layout-group", [
+                    m("span.group-label", "LAYOUT"),
+                    m(".layout-selector", { style: { display: "flex", gap: "4px" } }, [
+                        m("button.lang-btn", {
+                            class: layoutMode === "browser" ? "active" : "",
+                            onclick: () => onLayoutModeChange("browser"),
+                        }, "Browser"),
+                        m("button.lang-btn", {
+                            class: layoutMode === "virtual" ? "active" : "",
+                            onclick: () => onLayoutModeChange("virtual"),
+                        }, "Virtual")
                     ])
                 ]),
                 m(".action-group.lang-group", [

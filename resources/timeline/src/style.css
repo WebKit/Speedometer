@@ -1332,3 +1332,15 @@ button.btn-nav:hover .desc {
     border-bottom: 1px solid var(--primary-color);
     text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
 }
+
+/* Layout Modes */
+#document-content.browser-layout .timeline-card {
+    left: auto;
+    transform: none;
+    top: auto;
+    position: relative;
+}
+
+#document-content.browser-layout .timeline-card:hover {
+    transform: translateY(-16px) scale(1.02);
+}
