@@ -150,17 +150,6 @@ export const Controls = {
                             m("button.lang-btn", {
                                 class: getLanguage() === lang ? "active" : "",
                                 onclick: () => setLanguage(lang),
-                                style: {
-                                    background: getLanguage() === lang ? "var(--primary-color)" : "transparent",
-                                    color: getLanguage() === lang ? "#000" : "var(--text-color)",
-                                    border: "1px solid rgba(255, 255, 255, 0.2)",
-                                    borderRadius: "4px",
-                                    padding: "2px 6px",
-                                    fontSize: "0.75rem",
-                                    cursor: "pointer",
-                                    fontWeight: "bold",
-                                    transition: "all 0.2s"
-                                }
                             }, lang)
                         )
                     )

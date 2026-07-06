@@ -66,10 +66,9 @@ body {
     border-bottom: var(--glass-border);
     padding: 16px 28px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
     z-index: 10;
     box-shadow: var(--shadow);
 }
@@ -105,19 +104,28 @@ body {
     flex-wrap: wrap;
     align-items: center;
     gap: 16px;
-    flex: 1;
-    justify-content: flex-end;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .action-group {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 8px 16px;
+    padding: 0 16px;
+    height: 38px;
+    box-sizing: border-box;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
     box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.action-group:focus-within {
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.15), inset 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .group-label {
@@ -1272,48 +1280,53 @@ button.btn-nav:hover .desc {
     text-shadow: 0 0 8px rgba(192, 132, 252, 0.6);
 }
 
-/* Language Toggle */
+/* Language / Layout Toggle Buttons */
 .lang-btn {
     background: transparent;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     color: #64748b;
-    padding: 4px 8px;
+    padding: 2px 8px;
     font-family: inherit;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 700;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 6px;
     transition: all 0.3s;
+    height: 24px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .lang-btn:hover {
     color: #fff;
     background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 .lang-btn.active {
-    color: #fff;
+    color: #000;
     background: var(--primary-color);
+    border-color: var(--primary-color);
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
 }
 
 .search-input {
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: transparent;
+    border: none;
     color: #fff;
-    border-radius: 8px;
-    padding: 6px 12px;
     font-family: inherit;
     font-size: 0.8rem;
     outline: none;
     width: 180px;
     transition: all 0.3s;
+    height: 100%;
+    padding: 0;
 }
 
 .search-input:focus {
-    border-color: var(--primary-color);
-    background: rgba(0, 0, 0, 0.4);
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    /* Focus styles are handled by .action-group:focus-within */
 }
 
 .card-desc a {
