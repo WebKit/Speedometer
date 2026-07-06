@@ -15,6 +15,25 @@ export const Controls = {
             ]),
 
             m(".header-actions", [
+                m(".action-group.filter-group", [
+                    m("span.group-label", t("filter")),
+                    m(
+                        "#filter-panel",
+                        categories.map((cat) => {
+                            const tagData = (TAGS as any)[cat];
+                            const label = tagData ? translateContent(tagData.label) : cat;
+                            return m(
+                                "span.filter-pill",
+                                {
+                                    key: cat,
+                                    class: `tag tag-${cat} ${activeFilters.includes(cat) ? "" : "inactive"}`,
+                                    onclick: () => onFilterChange(cat, !activeFilters.includes(cat)),
+                                },
+                                label
+                            );
+                        })
+                    ),
+                ]),
                 m(".action-group.search-group", { style: { position: "relative" } }, [
                     m("input.search-input", {
                         type: "text",
@@ -26,17 +45,6 @@ export const Controls = {
                                 onJumpToCard(suggestions[0].index);
                                 onSearchChange(""); // close suggestions
                             }
-                        },
-                        style: {
-                            background: "rgba(0, 0, 0, 0.25)",
-                            border: "1px solid rgba(255, 255, 255, 0.15)",
-                            color: "#fff",
-                            borderRadius: "8px",
-                            padding: "6px 12px",
-                            fontSize: "0.8rem",
-                            outline: "none",
-                            width: "180px",
-                            transition: "all 0.3s",
                         }
                     }),
                     searchQuery && suggestions.length > 0 && m(".suggestions-panel", {
@@ -84,25 +92,6 @@ export const Controls = {
                             s.title
                         ])
                     ))
-                ]),
-                m(".action-group.filter-group", [
-                    m("span.group-label", t("filter")),
-                    m(
-                        "#filter-panel",
-                        categories.map((cat) => {
-                            const tagData = (TAGS as any)[cat];
-                            const label = tagData ? translateContent(tagData.label) : cat;
-                            return m(
-                                "span.filter-pill",
-                                {
-                                    key: cat,
-                                    class: `tag tag-${cat} ${activeFilters.includes(cat) ? "" : "inactive"}`,
-                                    onclick: () => onFilterChange(cat, !activeFilters.includes(cat)),
-                                },
-                                label
-                            );
-                        })
-                    ),
                 ]),
                 m(".action-group.lang-group", [
                     m("span.group-label", "LANG"),

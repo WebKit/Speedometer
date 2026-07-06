@@ -1296,3 +1296,22 @@ button.btn-nav:hover .desc {
     background: var(--primary-color);
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
 }
+
+.search-input {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    outline: none;
+    width: 180px;
+    transition: all 0.3s;
+}
+
+.search-input:focus {
+    border-color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+}
