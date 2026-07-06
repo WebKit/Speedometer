@@ -2,10 +2,11 @@
 *.pyc
 .DS_Store
 .directory
-/node_modules
+node_modules
 
 .vscode
 .angular
+.gemini
 
 /resources/todomvc/architecture-examples/angular/node_modules/
 /resources/todomvc/architecture-examples/angular-complex/node_modules/

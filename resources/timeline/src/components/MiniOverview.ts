@@ -412,11 +412,14 @@ export const MiniOverview = () => {
                                                 left: dragPercentage !== null ? `${dragPercentage * 100}%` : `${((activeYear - startYear) / totalYears) * 100}%`,
                                                 cursor: isDraggingSlider ? "grabbing" : "grab",
                                                 pointerEvents: "auto",
+                                                transition: isDraggingSlider ? "none" : "",
                                             },
                                             onpointerdown: (e) => {
                                                 e.preventDefault();
                                                 e.stopPropagation();
                                                 isDraggingSlider = true;
+                                                const container = document.getElementById("document-container");
+                                                if (container) container.style.scrollBehavior = "auto";
                                                 e.target.setPointerCapture(e.pointerId);
 
                                                 const row = document.querySelector(".date-slider-row");
@@ -458,6 +461,8 @@ export const MiniOverview = () => {
                                                 const handlePointerUp = (upEvent) => {
                                                     isDraggingSlider = false;
                                                     dragPercentage = null;
+                                                    const container = document.getElementById("document-container");
+                                                    if (container) container.style.scrollBehavior = "";
                                                     if (animationFrameId !== null) {
                                                         cancelAnimationFrame(animationFrameId);
                                                         animationFrameId = null;
@@ -478,7 +483,6 @@ export const MiniOverview = () => {
                                     ),
                                 ]
                             ),
-
                             m(".data-marker-row", [
                                 markersCache.map((marker) => {
                                     const isHovered = dataHoverState && dataHoverState.index === marker.index;
