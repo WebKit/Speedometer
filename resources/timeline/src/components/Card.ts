@@ -38,11 +38,77 @@ const Chart = {
     },
 };
 
-function highlight(text, query) {
-    if (!query) return text;
-    const constEscapedQuery = query.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
-    const parts = text.split(new RegExp(`(${constEscapedQuery})`, "gi"));
-    return parts.map((part) => (part.toLowerCase() === query.toLowerCase() ? m("mark.highlight", part) : part));
+function formatInlineStyles(str: string, query: string): any[] {
+    if (!str) return [];
+
+    const escapedQuery = query ? query.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&") : "";
+    const regexParts = [
+        "`([^`]+)`",                   // 1. Code
+        "\\*\\*([^*]+)\\*\\*",         // 2. Bold
+        "\\*([^*]+)\\*",               // 3. Italic
+    ];
+    if (escapedQuery) {
+        regexParts.push(`(${escapedQuery})`); // 4. Search Highlight
+    }
+
+    const masterRegex = new RegExp(regexParts.join("|"), "gi");
+    let match;
+    let lastIndex = 0;
+    const result: any[] = [];
+
+    while ((match = masterRegex.exec(str)) !== null) {
+        const before = str.substring(lastIndex, match.index);
+        if (before) {
+            result.push(before);
+        }
+
+        const [full, code, bold, italic, highlightStr] = match;
+
+        if (code !== undefined) {
+            result.push(m("code", code));
+        } else if (bold !== undefined) {
+            result.push(m("strong", formatInlineStyles(bold, query)));
+        } else if (italic !== undefined) {
+            result.push(m("em", formatInlineStyles(italic, query)));
+        } else if (highlightStr !== undefined) {
+            result.push(m("mark.highlight", highlightStr));
+        }
+
+        lastIndex = masterRegex.lastIndex;
+    }
+
+    const after = str.substring(lastIndex);
+    if (after) {
+        result.push(after);
+    }
+
+    return result;
+}
+
+function parseMarkdown(text: string, query: string): any[] {
+    if (!text) return [];
+
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    let match;
+    let lastIndex = 0;
+    const parts: any[] = [];
+
+    while ((match = linkRegex.exec(text)) !== null) {
+        const textBefore = text.substring(lastIndex, match.index);
+        if (textBefore) {
+            parts.push(...formatInlineStyles(textBefore, query));
+        }
+        const label = match[1];
+        const url = match[2];
+        parts.push(m("a", { href: url, target: "_blank", rel: "noopener noreferrer" }, formatInlineStyles(label, query)));
+        lastIndex = linkRegex.lastIndex;
+    }
+    const textAfter = text.substring(lastIndex);
+    if (textAfter) {
+        parts.push(...formatInlineStyles(textAfter, query));
+    }
+
+    return parts;
 }
 
 export const Card = {
@@ -78,7 +144,7 @@ export const Card = {
                 ),
             },
             m(".timeline-card-inner", [
-                m(".card-header", [m("span.card-date", date), m("h3.card-title", highlight(titleStr, searchQuery))]),
+                m(".card-header", [m("span.card-date", date), m("h3.card-title", formatInlineStyles(titleStr, searchQuery))]),
                 m(
                     ".card-tags",
                     tags.map((tag: string) => {
@@ -87,7 +153,7 @@ export const Card = {
                         return m("span.tag", { class: `tag-${tag}` }, label);
                     })
                 ),
-                m("p.card-desc", highlight(descriptionStr, searchQuery)),
+                m("p.card-desc", parseMarkdown(descriptionStr, searchQuery)),
                 stats &&
                     m(".card-stats-summary", [
                         stats.transistors && m("div", [m("strong", t("transistors")), ` ${stats.transistors}`]),

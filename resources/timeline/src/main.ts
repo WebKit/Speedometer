@@ -5,6 +5,7 @@ import { Timeline } from "./components/Timeline.js";
 import { Card } from "./components/Card.js";
 import { MiniOverview } from "./components/MiniOverview.js";
 import { TAGS } from "./data/tags.js";
+import { translateContent } from "./i18n.js";
 
 const App = () => {
     const allData = staticData;
@@ -41,6 +42,32 @@ const App = () => {
 
     return {
         view() {
+            let suggestions: Array<{ index: number; year: string; title: string }> = [];
+            if (searchQuery.trim().length > 0) {
+                const query = searchQuery.toLowerCase().trim();
+                suggestions = filteredData.map((card, index) => {
+                    const titleStr = translateContent(card.title).toLowerCase();
+                    const descStr = translateContent(card.description).toLowerCase();
+                    let score = 0;
+                    if (titleStr.startsWith(query)) score += 100;
+                    else if (titleStr.includes(query)) score += 50;
+                    if (descStr.includes(query)) score += 10;
+                    
+                    const yearStr = card.date.substring(0, 4);
+                    if (yearStr.includes(query)) score += 20;
+
+                    return {
+                        index,
+                        year: yearStr,
+                        title: translateContent(card.title),
+                        score
+                    };
+                })
+                .filter(m => m.score > 0)
+                .sort((a, b) => b.score - a.score || a.index - b.index)
+                .slice(0, 5);
+            }
+
             return m("#app-container", [
                 m("style", Object.values(TAGS).map((tag: any) => `
                     .tag-${tag.id} {
@@ -65,6 +92,20 @@ const App = () => {
                 `).join("\n")),
                 m(Controls as m.Component<any>, {
                     activeFilters,
+                    searchQuery,
+                    suggestions,
+                    onSearchChange: (q: string) => {
+                        searchQuery = q;
+                    },
+                    onJumpToCard: (idx: number) => {
+                        activeIndex = idx;
+                        dataVersion++;
+                        setTimeout(() => {
+                            if (timelineHandle.scrollToIndex) {
+                                timelineHandle.scrollToIndex(idx, "smooth");
+                            }
+                        }, 0);
+                    },
                     onFilterChange: (tag, checked) => {
                         let currentCardDate = null;
                         if (filteredData[activeIndex]) {
