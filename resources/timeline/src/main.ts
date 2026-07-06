@@ -26,6 +26,7 @@ const App = () => {
     });
     let activeFilters = Object.keys(TAGS);
     let searchQuery = "";
+    let showSuggestions = false;
     let activeIndex = 0;
     let dataVersion = 1;
 
@@ -94,11 +95,22 @@ const App = () => {
                     activeFilters,
                     searchQuery,
                     suggestions,
+                    showSuggestions,
                     onSearchChange: (q: string) => {
                         searchQuery = q;
+                        showSuggestions = q.trim().length > 0;
+                    },
+                    onFocusSearch: () => {
+                        if (searchQuery.trim().length > 0) {
+                            showSuggestions = true;
+                        }
+                    },
+                    onCloseSuggestions: () => {
+                        showSuggestions = false;
                     },
                     onJumpToCard: (idx: number) => {
                         activeIndex = idx;
+                        showSuggestions = false;
                         dataVersion++;
                         setTimeout(() => {
                             if (timelineHandle.scrollToIndex) {
