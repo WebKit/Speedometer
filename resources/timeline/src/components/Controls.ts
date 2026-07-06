@@ -37,7 +37,7 @@ export const Controls = {
                 m(".action-group.search-group", { style: { position: "relative" } }, [
                     m("input.search-input", {
                         type: "text",
-                        placeholder: "Suchen...",
+                        placeholder: t("searchPlaceholder"),
                         value: searchQuery,
                         oninput: (e: any) => onSearchChange(e.target.value),
                         onfocus: () => onFocusSearch(),
@@ -83,7 +83,7 @@ export const Controls = {
                                 background: "rgba(0,0,0,0.2)",
                             }
                         }, [
-                            m("span", { style: { fontWeight: "800", fontSize: "0.65rem", color: "#64748b", textTransform: "uppercase" } }, "Vorschläge"),
+                            m("span", { style: { fontWeight: "800", fontSize: "0.65rem", color: "#64748b", textTransform: "uppercase" } }, t("suggestionsTitle")),
                             m("span.close-suggestions-btn", {
                                 onclick: (e: any) => {
                                     e.stopPropagation();

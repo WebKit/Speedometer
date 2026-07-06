@@ -10,7 +10,9 @@ const translations = {
         "transistors": "Transistoren:",
         "clockSpeed": "Taktfrequenz:",
         "memory": "Speicher:",
-        "wikipedia": "Wikipedia ↗"
+        "wikipedia": "Wikipedia ↗",
+        "searchPlaceholder": "Suchen...",
+        "suggestionsTitle": "Vorschläge"
     },
     FR: {
         "title": "Histoire de l'informatique",
@@ -19,7 +21,9 @@ const translations = {
         "transistors": "Transistors :",
         "clockSpeed": "Fréquence d'horloge :",
         "memory": "Mémoire :",
-        "wikipedia": "Wikipédia ↗"
+        "wikipedia": "Wikipédia ↗",
+        "searchPlaceholder": "Rechercher...",
+        "suggestionsTitle": "Suggestions"
     },
     IT: {
         "title": "Storia del computer",
@@ -28,7 +32,9 @@ const translations = {
         "transistors": "Transistor:",
         "clockSpeed": "Frequenza di clock:",
         "memory": "Memoria:",
-        "wikipedia": "Wikipedia ↗"
+        "wikipedia": "Wikipedia ↗",
+        "searchPlaceholder": "Cerca...",
+        "suggestionsTitle": "Suggerimenti"
     }
 };
 
