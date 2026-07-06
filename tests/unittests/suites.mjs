@@ -1,5 +1,5 @@
-import { ExperimentalSuites } from "../../experimental/suites.mjs";
-import { DefaultSuites } from "../../resources/default-suites.mjs";
+import { ExperimentalSuites } from "../../suites-experimental/suites.mjs";
+import { DefaultSuites } from "../../suites/default-suites.mjs";
 
 const Suites = {
     ExperimentalSuites,
