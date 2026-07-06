@@ -8,9 +8,9 @@ export default [
             IT: "Der erste reale 'Computer Bug' und die Zuse Z4",
         },
         description: {
-            DE: "Grace Hopper fand im Relais-Computer Harvard Mark II eine tote Motte, die ein Relais blockierte, und prägte den Begriff 'Bug' (Fehler). Zur gleichen Zeit rettete Konrad Zuse seine verbesserte Zuse Z4 vor der heranrückenden Front nach Bayern. Sie war bis 1950 der einzige turingmächtige Rechner in Kontinentaleuropa.",
-            FR: "Grace Hopper fand im Relais-Computer Harvard Mark II eine tote Motte, die ein Relais blockierte, und prägte den Begriff 'Bug' (Fehler). Zur gleichen Zeit rettete Konrad Zuse seine verbesserte Zuse Z4 vor der heranrückenden Front nach Bayern. Sie war bis 1950 der einzige turingmächtige Rechner in Kontinentaleuropa.",
-            IT: "Grace Hopper fand im Relais-Computer Harvard Mark II eine tote Motte, die ein Relais blockierte, und prägte den Begriff 'Bug' (Fehler). Zur gleichen Zeit rettete Konrad Zuse seine verbesserte Zuse Z4 vor der heranrückenden Front nach Bayern. Sie war bis 1950 der einzige turingmächtige Rechner in Kontinentaleuropa.",
+            DE: "**Grace Hopper** fand im Relais-Computer **Harvard Mark II** eine tote Motte, die ein Relais blockierte, und prägte den Begriff **'Bug'** (Fehler). Zur gleichen Zeit rettete **Konrad Zuse** seine verbesserte **Zuse Z4** vor der heranrückenden Front nach Bayern. Sie war bis 1950 der einzige turingmächtige Rechner in Kontinentaleuropa. Details siehe [Wikipedia](https://de.wikipedia.org/wiki/Zuse_Z4).",
+            FR: "**Grace Hopper** fand im Relais-Computer **Harvard Mark II** eine tote Motte, die ein Relais blockierte, und prägte den Begriff **'Bug'** (Fehler). Zur gleichen Zeit rettete **Konrad Zuse** seine verbesserte **Zuse Z4** vor der heranrückenden Front nach Bayern. Sie war bis 1950 der einzige turingmächtige Rechner in Kontinentaleuropa. Voir [Wikipédia](https://fr.wikipedia.org/wiki/Zuse_4).",
+            IT: "**Grace Hopper** fand im Relais-Computer **Harvard Mark II** eine tote Motte, die ein Relais blockierte, und prägte den Begriff **'Bug'** (Fehler). Zur gleichen Zeit rettete **Konrad Zuse** seine verbesserte **Zuse Z4** vor der heranrückenden Front nach Bayern. Sie war bis 1950 der einzige turingmächtige Rechner in Kontinentaleuropa. Dettagli su [Wikipedia](https://it.wikipedia.org/wiki/Z4_%28computer%29).",
         },
         tags: ["software", "hardware"],
         type: "text",

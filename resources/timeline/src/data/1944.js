@@ -8,9 +8,9 @@ export default [
             IT: "Aiken vollendet den Großrechner Harvard Mark I",
         },
         description: {
-            DE: "Howard H. Aiken stellte an der Harvard University den Automatic Sequence Controlled Computer (Mark I) fertig. Der gigantische, 15 Meter lange elektromechanische Universalrechner wurde zur Ballistikberechnung für die US-Marine eingesetzt.",
-            FR: "Howard H. Aiken stellte an der Harvard University den Automatic Sequence Controlled Computer (Mark I) fertig. Der gigantische, 15 Meter lange elektromechanische Universalrechner wurde zur Ballistikberechnung für die US-Marine eingesetzt.",
-            IT: "Howard H. Aiken stellte an der Harvard University den Automatic Sequence Controlled Computer (Mark I) fertig. Der gigantische, 15 Meter lange elektromechanische Universalrechner wurde zur Ballistikberechnung für die US-Marine eingesetzt.",
+            DE: "**Howard H. Aiken** stellte an der Harvard University den **Automatic Sequence Controlled Computer (Mark I)** fertig. Der gigantische, 15 Meter lange elektromechanische Universalrechner wurde zur Ballistikberechnung für die US-Marine eingesetzt. Details siehe [Wikipedia](https://de.wikipedia.org/wiki/Harvard_Mark_I).",
+            FR: "**Howard H. Aiken** stellte an der Harvard University den **Automatic Sequence Controlled Computer (Mark I)** fertig. Der gigantische, 15 Meter lange elektromechanische Universalrechner wurde zur Ballistikberechnung für die US-Marine eingesetzt. Voir [Wikipédia](https://de.wikipedia.org/wiki/Harvard_Mark_I).",
+            IT: "**Howard H. Aiken** stellte an der Harvard University den **Automatic Sequence Controlled Computer (Mark I)** fertig. Der gigantische, 15 Meter lange elektromechanische Universalrechner wurde zur Ballistikberechnung für die US-Marine eingesetzt. Dettagli su [Wikipedia](https://de.wikipedia.org/wiki/Harvard_Mark_I).",
         },
         tags: ["hardware"],
         type: "text",

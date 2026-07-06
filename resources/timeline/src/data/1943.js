@@ -8,9 +8,9 @@ export default [
             IT: "Der Röhrencomputer Colossus geht in Betrieb",
         },
         description: {
-            DE: "Der britische Ingenieur Tommy Flowers konstruierte 'Colossus', den weltweit ersten elektronischen Spezialrechner mit 1.500 Vakuumröhren. Colossus wurde in Bletchley Park zur Entzifferung der Lorenz-Schlüsselzusatzgeräte eingesetzt.",
-            FR: "Der britische Ingenieur Tommy Flowers konstruierte 'Colossus', den weltweit ersten elektronischen Spezialrechner mit 1.500 Vakuumröhren. Colossus wurde in Bletchley Park zur Entzifferung der Lorenz-Schlüsselzusatzgeräte eingesetzt.",
-            IT: "Der britische Ingenieur Tommy Flowers konstruierte 'Colossus', den weltweit ersten elektronischen Spezialrechner mit 1.500 Vakuumröhren. Colossus wurde in Bletchley Park zur Entzifferung der Lorenz-Schlüsselzusatzgeräte eingesetzt.",
+            DE: "Der britische Ingenieur **Tommy Flowers** konstruierte **Colossus**, den weltweit ersten elektronischen Spezialrechner mit 1.500 Vakuumröhren. **Colossus** wurde in **Bletchley Park** zur Entzifferung der **Lorenz-Schlüsselzusatzgeräte** eingesetzt. Details siehe [Wikipedia](https://de.wikipedia.org/wiki/Colossus).",
+            FR: "Der britische Ingenieur **Tommy Flowers** konstruierte **Colossus**, den weltweit ersten elektronischen Spezialrechner mit 1.500 Vakuumröhren. **Colossus** wurde in **Bletchley Park** zur Entzifferung der **Lorenz-Schlüsselzusatzgeräte** eingesetzt. Voir [Wikipédia](https://fr.wikipedia.org/wiki/Colossus_%28ordinateur%29).",
+            IT: "Der britische Ingenieur **Tommy Flowers** konstruierte **Colossus**, den weltweit ersten elektronischen Spezialrechner mit 1.500 Vakuumröhren. **Colossus** wurde in **Bletchley Park** zur Entzifferung der **Lorenz-Schlüsselzusatzgeräte** eingesetzt. Dettagli su [Wikipedia](https://it.wikipedia.org/wiki/Colossus).",
         },
         tags: ["hardware"],
         type: "text",

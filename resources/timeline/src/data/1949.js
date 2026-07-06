@@ -8,9 +8,9 @@ export default [
             IT: "EDSAC – Der erste speicherprogrammierbare Computer",
         },
         description: {
-            DE: "Unter Maurice Wilkes wurde an der University of Cambridge der EDSAC in Betrieb genommen. Basierend auf der Von-Neumann-Architektur war er der weltweit erste betriebsbereite Computer, der seine Befehle und Daten im selben physikalischen Arbeitsspeicher lagern konnte.",
-            FR: "Unter Maurice Wilkes wurde an der University of Cambridge der EDSAC in Betrieb genommen. Basierend auf der Von-Neumann-Architektur war er der weltweit erste betriebsbereite Computer, der seine Befehle und Daten im selben physikalischen Arbeitsspeicher lagern konnte.",
-            IT: "Unter Maurice Wilkes wurde an der University of Cambridge der EDSAC in Betrieb genommen. Basierend auf der Von-Neumann-Architektur war er der weltweit erste betriebsbereite Computer, der seine Befehle und Daten im selben physikalischen Arbeitsspeicher lagern konnte.",
+            DE: "Unter **Maurice Wilkes** wurde an der University of Cambridge der **EDSAC** in Betrieb genommen. Basierend auf der **Von-Neumann-Architektur** war er der weltweit erste betriebsbereite Computer, der seine Befehle und Daten im selben physikalischen Arbeitsspeicher lagern konnte. Details siehe [Wikipedia](https://de.wikipedia.org/wiki/EDSAC).",
+            FR: "Unter **Maurice Wilkes** wurde an der University of Cambridge der **EDSAC** in Betrieb genommen. Basierend auf der **Von-Neumann-Architektur** war er der weltweit erste betriebsbereite Computer, der seine Befehle und Daten im selben physikalischen Arbeitsspeicher lagern konnte. Voir [Wikipédia](https://de.wikipedia.org/wiki/EDSAC).",
+            IT: "Unter **Maurice Wilkes** wurde an der University of Cambridge der **EDSAC** in Betrieb genommen. Basierend auf der **Von-Neumann-Architektur** war er der weltweit erste betriebsbereite Computer, der seine Befehle und Daten im selben physikalischen Arbeitsspeicher lagern konnte. Dettagli su [Wikipedia](https://de.wikipedia.org/wiki/EDSAC).",
         },
         tags: ["hardware", "software"],
         type: "text",
