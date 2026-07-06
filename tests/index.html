@@ -27,9 +27,11 @@
                 },
             });
 
-            await import("./unittests/benchmark-runner.mjs");
-            await import("./unittests/params.mjs");
-            await import("./unittests/suites.mjs");
+            const cacheBust = Date.now();
+            await import("./unittests/benchmark-runner.mjs?t=" + cacheBust);
+            await import("./unittests/params.mjs?t=" + cacheBust);
+            await import("./unittests/suites.mjs?t=" + cacheBust);
+            await import("../resources/timeline/tests/timeline.mjs?t=" + cacheBust);
 
             globalThis.testResults = undefined;
             globalThis.testRunner = mocha.run();
@@ -51,6 +53,7 @@
                         error: {
                             name: test?.err?.name,
                             message: test?.err?.message,
+                            stack: test?.err?.stack,
                         },
                     });
                 }

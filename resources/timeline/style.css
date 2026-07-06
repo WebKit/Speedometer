@@ -7,8 +7,8 @@
     --primary-hover: #0056b3;
     --header-bg: #ffffff;
     --card-bg: #ffffff;
-    --shadow: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
-    
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+
     /* Tag colors */
     --tag-policy-bg: #cce5ff;
     --tag-policy-color: #004085;
@@ -18,7 +18,7 @@
     --tag-economy-color: #856404;
     --tag-social-bg: #f8d7da;
     --tag-social-color: #721c24;
-    
+
     --timeline-line-color: #adb5bd;
 }
 
@@ -32,8 +32,8 @@
         --primary-hover: #2b4764;
         --header-bg: #1e1e1e;
         --card-bg: #1d1d1d;
-        --shadow: 0 4px 6px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
-        
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+
         --tag-policy-bg: #004085;
         --tag-policy-color: #cce5ff;
         --tag-medical-bg: #155724;
@@ -42,7 +42,7 @@
         --tag-economy-color: #fff3cd;
         --tag-social-bg: #721c24;
         --tag-social-color: #f8d7da;
-        
+
         --timeline-line-color: #495057;
     }
 }
@@ -201,7 +201,7 @@ button:active {
 
 /* The Timeline Line */
 #document-content::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 0;
@@ -233,7 +233,7 @@ button:active {
 
 /* Connection point on the timeline */
 .timeline-card::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: -35px; /* (gap 50px / 2) = 25px + card border? 
@@ -285,10 +285,22 @@ button:active {
     letter-spacing: 0.05em;
 }
 
-.tag-policy { background-color: var(--tag-policy-bg); color: var(--tag-policy-color); }
-.tag-medical { background-color: var(--tag-medical-bg); color: var(--tag-medical-color); }
-.tag-economy { background-color: var(--tag-economy-bg); color: var(--tag-economy-color); }
-.tag-social { background-color: var(--tag-social-bg); color: var(--tag-social-color); }
+.tag-policy {
+    background-color: var(--tag-policy-bg);
+    color: var(--tag-policy-color);
+}
+.tag-medical {
+    background-color: var(--tag-medical-bg);
+    color: var(--tag-medical-color);
+}
+.tag-economy {
+    background-color: var(--tag-economy-bg);
+    color: var(--tag-economy-color);
+}
+.tag-social {
+    background-color: var(--tag-social-bg);
+    color: var(--tag-social-color);
+}
 
 .card-desc {
     font-size: 0.9rem;
@@ -317,7 +329,8 @@ button:active {
     margin-top: auto; /* Push to bottom if space permits */
 }
 
-.card-table th, .card-table td {
+.card-table th,
+.card-table td {
     border: 1px solid var(--border-color);
     padding: 5px 8px;
     text-align: left;

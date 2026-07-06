@@ -421,12 +421,14 @@ button.btn-nav:hover .desc {
     box-sizing: border-box;
     flex-shrink: 0;
     justify-content: flex-start;
+    left: var(--x-pos);
+    transform: translateY(-50%);
     transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* Card Lifting up with dynamic shadow */
 .timeline-card:hover {
-    transform: translateY(-16px) scale(1.02);
+    transform: translateY(-50%) translateY(-16px) scale(1.02);
     box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.05);
     border-color: rgba(56, 189, 248, 0.4);
 }
@@ -787,6 +789,7 @@ button.btn-nav:hover .desc {
     align-items: center;
     cursor: pointer;
     margin-bottom: 8px;
+    flex-shrink: 0; /* CRITICAL: Prevent flexbox from collapsing slider row to 0px height */
 }
 
 .date-slider-track {
@@ -850,11 +853,13 @@ button.btn-nav:hover .desc {
 .computation-graph-row {
     flex: 1;
     position: relative;
+    min-height: 0; /* CRITICAL: Allow graph to shrink below content height and fit the flex container */
 }
 
 .data-marker-row {
     height: 30px;
     position: relative;
+    flex-shrink: 0; /* CRITICAL: Prevent flexbox from collapsing marker dots row to 0px height */
 }
 
 .graph-svg {
@@ -1080,32 +1085,44 @@ button.btn-nav:hover .desc {
     stroke-dasharray: 4 2;
 }
 
+.flops-data-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 15;
+}
+
 .hover-point {
-    vector-effect: non-scaling-stroke;
-    stroke: #ffffff;
-    stroke-width: 2px;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 20;
+    border: 2px solid #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
     .hover-point {
-        stroke: #0f172a;
+        border-color: #0f172a;
     }
 }
 
 .cpu-point {
-    fill: #00f0ff;
-    r: 4px;
-    filter: drop-shadow(0 0 8px rgba(0, 240, 255, 1));
+    background-color: #00f0ff;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 1);
 }
 .gpu-point {
-    fill: #39ff14;
-    r: 4px;
-    filter: drop-shadow(0 0 8px rgba(57, 255, 20, 1));
+    background-color: #39ff14;
+    box-shadow: 0 0 8px rgba(57, 255, 20, 1);
 }
 .tpu-point {
-    fill: #ff00ff;
-    r: 4px;
-    filter: drop-shadow(0 0 8px rgba(255, 0, 255, 1));
+    background-color: #ff00ff;
+    box-shadow: 0 0 8px rgba(255, 0, 255, 1);
 }
 
 .tooltip-dot {

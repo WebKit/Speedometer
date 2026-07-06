@@ -15,13 +15,13 @@ export class Virtualizer {
         this.pool = {
             event: [],
             milestone: [],
-            header: []
+            header: [],
         };
 
         this.defaultWidths = {
             event: 300,
             milestone: 200,
-            header: 150
+            header: 150,
         };
 
         this.buffer = 400; // pixels of buffer left/right viewport
@@ -31,7 +31,7 @@ export class Virtualizer {
 
     init() {
         this.calculatePositions();
-        this.container.addEventListener('scroll', () => this.handleScroll());
+        this.container.addEventListener("scroll", () => this.handleScroll());
         this.handleScroll();
     }
 
@@ -46,7 +46,7 @@ export class Virtualizer {
         }
         this.totalWidth = currentX;
         this.content.style.width = `${this.totalWidth}px`;
-        this.content.style.height = '100%';
+        this.content.style.height = "100%";
     }
 
     handleScroll() {
@@ -61,24 +61,21 @@ export class Virtualizer {
             const block = this.data[i];
             const x = this.xPositions[i];
             const width = this.widthCache.get(block.id) || this.defaultWidths[block.type] || 250;
-            if (x + width >= viewportStart && x <= viewportEnd) {
+            if (x + width >= viewportStart && x <= viewportEnd)
                 newVisibleIndices.add(i);
-            }
         }
 
         for (const index of this.visibleIndices) {
-            if (!newVisibleIndices.has(index)) {
+            if (!newVisibleIndices.has(index))
                 this.recycleElement(index);
-            }
         }
 
         let cacheDirty = false;
         for (const index of newVisibleIndices) {
             if (!this.visibleIndices.has(index) || !this.renderedElements.has(index)) {
                 const widthChanged = this.renderElement(index);
-                if (widthChanged) {
+                if (widthChanged)
                     cacheDirty = true;
-                }
             }
         }
 
@@ -95,18 +92,17 @@ export class Virtualizer {
         const type = block.type;
         let node = this.getRecycledNode(type);
 
-        if (!node) {
+        if (!node)
             node = this.createNewNode(type);
-        }
 
         this.renderCallback(block, node);
         this.content.appendChild(node);
 
         const x = this.xPositions[index];
         node.style.transform = `translate3d(${x}px, 0, 0)`;
-        node.style.position = 'absolute';
-        node.style.top = '0';
-        node.style.bottom = '0';
+        node.style.position = "absolute";
+        node.style.top = "0";
+        node.style.bottom = "0";
 
         this.renderedElements.set(index, node);
 
@@ -136,28 +132,29 @@ export class Virtualizer {
             this.renderedElements.delete(index);
             node.remove();
             const type = this.data[index].type;
-            if (!this.pool[type]) {
+            if (!this.pool[type])
                 this.pool[type] = [];
-            }
+
             this.pool[type].push(node);
         }
     }
 
     getRecycledNode(type) {
-        if (this.pool[type] && this.pool[type].length > 0) {
+        if (this.pool[type] && this.pool[type].length > 0)
             return this.pool[type].pop();
-        }
+
         return null;
     }
 
     createNewNode(type) {
-        const div = document.createElement('div');
+        const div = document.createElement("div");
         div.className = `timeline-block block-${type}`;
         return div;
     }
 
     scrollToIndex(index) {
-        if (index < 0 || index >= this.data.length) return;
+        if (index < 0 || index >= this.data.length)
+            return;
         this.calculatePositions();
         const x = this.xPositions[index];
         this.container.scrollLeft = x;
@@ -170,9 +167,9 @@ export class Virtualizer {
     }
 
     updateData(newData) {
-        for (const index of this.visibleIndices) {
+        for (const index of this.visibleIndices)
             this.recycleElement(index);
-        }
+
         this.visibleIndices.clear();
         this.renderedElements.clear();
 

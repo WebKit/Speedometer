@@ -27,7 +27,7 @@ const HISTORIC_EVENTS = {
     "2020-11-18": { title: "US Passes 250,000 Deaths", desc: "The US passes a tragic milestone as the winter surge accelerates.", tags: ["medical"] },
     "2020-12-11": { title: "Pfizer Vaccine Emergency Auth", desc: "FDA issues first emergency use authorization for Pfizer-BioNTech COVID-19 vaccine.", tags: ["policy", "medical"] },
     "2020-12-14": { title: "First Vaccine Doses in US", desc: "The US vaccination campaign begins with healthcare workers receiving doses.", tags: ["medical"] },
-    "2020-12-18": { title: "Moderna Vaccine Auth", desc: "FDA authorizes Moderna's COVID-19 vaccine for emergency use.", tags: ["policy", "medical"] }
+    "2020-12-18": { title: "Moderna Vaccine Auth", desc: "FDA authorizes Moderna's COVID-19 vaccine for emergency use.", tags: ["policy", "medical"] },
 };
 
 // Helper to generate generic description if no historic event
@@ -51,23 +51,28 @@ function getStatsForDay(dayIndex) {
     if (dayIndex < 60) {
         dailyCases = Math.floor(Math.pow(dayIndex / 60, 3) * 5);
         dailyDeaths = dayIndex > 45 ? Math.random() < 0.1 ? 1 : 0 : 0;
-    } else if (dayIndex < 120) { // Mar-Apr
+    } else if (dayIndex < 120) {
+        // Mar-Apr
         const t = (dayIndex - 60) / 60;
         dailyCases = Math.floor(200 + t * 30000 + Math.random() * 5000);
         dailyDeaths = Math.floor(t * 2000 + Math.random() * 300);
-    } else if (dayIndex < 180) { // May-Jun
+    } else if (dayIndex < 180) {
+        // May-Jun
         const t = (dayIndex - 120) / 60;
         dailyCases = Math.floor(30000 - t * 10000 + Math.random() * 5000);
         dailyDeaths = Math.floor(2000 - t * 1200 + Math.random() * 200);
-    } else if (dayIndex < 240) { // Jul-Aug
+    } else if (dayIndex < 240) {
+        // Jul-Aug
         const t = (dayIndex - 180) / 60;
         dailyCases = Math.floor(20000 + t * 50000 + Math.sin(t * Math.PI) * 10000 + Math.random() * 8000);
         dailyDeaths = Math.floor(800 + t * 400 + Math.random() * 150);
-    } else if (dayIndex < 300) { // Sep-Oct
+    } else if (dayIndex < 300) {
+        // Sep-Oct
         const t = (dayIndex - 240) / 60;
         dailyCases = Math.floor(50000 + t * 30000 + Math.random() * 10000);
         dailyDeaths = Math.floor(900 + t * 100 + Math.random() * 100);
-    } else { // Nov-Dec
+    } else {
+        // Nov-Dec
         const t = (dayIndex - 300) / 65;
         dailyCases = Math.floor(80000 + t * 150000 + Math.random() * 30000);
         dailyDeaths = Math.floor(1000 + t * 2000 + Math.random() * 500);
@@ -75,7 +80,7 @@ function getStatsForDay(dayIndex) {
 
     return {
         newCases: Math.max(0, dailyCases),
-        newDeaths: Math.max(0, dailyDeaths)
+        newDeaths: Math.max(0, dailyDeaths),
     };
 }
 
@@ -114,7 +119,6 @@ export function generateDocumentData(count = 366) {
                 tags.push(TAGS[Math.floor(Math.random() * TAGS.length)]);
                 if (Math.random() < 0.3)
                     tags.push(TAGS[Math.floor(Math.random() * TAGS.length)]);
-
             }
         }
         tags = [...new Set(tags)];
@@ -130,8 +134,8 @@ export function generateDocumentData(count = 366) {
                 newCases: stats.newCases,
                 newDeaths: stats.newDeaths,
                 totalCases: cumulativeCases,
-                totalDeaths: cumulativeDeaths
-            }
+                totalDeaths: cumulativeDeaths,
+            },
         };
 
         if (type === "text") {
@@ -143,21 +147,13 @@ export function generateDocumentData(count = 366) {
                 ["Northeast", Math.floor(stats.newCases * 0.2).toString(), Math.floor(stats.newDeaths * 0.25).toString(), "Active"],
                 ["Midwest", Math.floor(stats.newCases * 0.25).toString(), Math.floor(stats.newDeaths * 0.2).toString(), "Active"],
                 ["South", Math.floor(stats.newCases * 0.35).toString(), Math.floor(stats.newDeaths * 0.4).toString(), "Critical"],
-                ["West", Math.floor(stats.newCases * 0.2).toString(), Math.floor(stats.newDeaths * 0.15).toString(), "Stable"]
+                ["West", Math.floor(stats.newCases * 0.2).toString(), Math.floor(stats.newDeaths * 0.15).toString(), "Stable"],
             ];
         } else if (type === "chart") {
             card.width = 550;
             card.chartData = {
                 labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                datasets: [
-                    Math.floor(stats.newCases * 0.5),
-                    Math.floor(stats.newCases * 0.7),
-                    Math.floor(stats.newCases * 0.9),
-                    stats.newCases,
-                    Math.floor(stats.newCases * 0.8),
-                    Math.floor(stats.newCases * 0.6),
-                    Math.floor(stats.newCases * 0.5)
-                ]
+                datasets: [Math.floor(stats.newCases * 0.5), Math.floor(stats.newCases * 0.7), Math.floor(stats.newCases * 0.9), stats.newCases, Math.floor(stats.newCases * 0.8), Math.floor(stats.newCases * 0.6), Math.floor(stats.newCases * 0.5)],
             };
         }
 

@@ -274,7 +274,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "Timeline-Mithril",
         url: "resources/timeline/dist/index.html",
-        tags: ["default", "timeline", "mithril"],
+        tags: ["experimental", "timeline", "mithril"],
         async prepare(page) {
             await page.waitForElement("#app-container");
         },
@@ -291,7 +291,7 @@ export const ExperimentalSuites = freezeSuites([
                 const searchInput = page.querySelector(".search-replace-panel input[placeholder='Suchen...']");
                 const replaceInput = page.querySelector(".search-replace-panel input[placeholder='Ersetzen...']");
                 const replaceBtn = page.querySelector(".search-replace-panel button");
-                
+
                 searchInput.setValue("Computer");
                 searchInput.dispatchEvent("input");
                 replaceInput.setValue("Rechner");
@@ -309,8 +309,7 @@ export const ExperimentalSuites = freezeSuites([
             new BenchmarkTestStep("ScrollToBottom", (page) => {
                 page.querySelector("#btn-scroll-to-bottom").click();
                 page.layout();
-            })
-        ]
-    }
+            }),
+        ],
+    },
 ]);
-

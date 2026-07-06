@@ -271,6 +271,15 @@ export const MiniOverview = () => {
                                         class: "graph-svg",
                                     },
                                     [
+                                        m("defs", [
+                                            m("filter", { id: "glow", x: "-20%", y: "-20%", width: "140%", height: "140%" }, [
+                                                m("feGaussianBlur", { stdDeviation: "0.8", result: "blur" }),
+                                                m("feMerge", [
+                                                    m("feMergeNode", { in: "blur" }),
+                                                    m("feMergeNode", { in: "SourceGraphic" })
+                                                ])
+                                            ])
+                                        ]),
 
                                         // Decade lines
                                         decades.map((decade) =>

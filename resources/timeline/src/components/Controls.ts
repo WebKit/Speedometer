@@ -1,16 +1,6 @@
 import m from "mithril";
 import { TAGS } from "../data/tags.js";
-import { t, getLanguage, setLanguage, Language } from "../i18n.js";
-
-export const categoryLabels = new Proxy({}, {
-    get(target, prop) {
-        if (typeof prop === "string") {
-            const key = `cat_${prop}` as any;
-            return t(key) || prop;
-        }
-        return undefined;
-    }
-}) as Record<string, string>;
+import { t, getLanguage, setLanguage, Language, translateContent } from "../i18n.js";
 
 export const Controls = {
     view(vnode) {
@@ -29,17 +19,19 @@ export const Controls = {
                     m("span.group-label", t("filter")),
                     m(
                         "#filter-panel",
-                        categories.map((cat) =>
-                            m(
+                        categories.map((cat) => {
+                            const tagData = (TAGS as any)[cat];
+                            const label = tagData ? translateContent(tagData.label) : cat;
+                            return m(
                                 "span.filter-pill",
                                 {
                                     key: cat,
                                     class: `tag tag-${cat} ${activeFilters.includes(cat) ? "" : "inactive"}`,
                                     onclick: () => onFilterChange(cat, !activeFilters.includes(cat)),
                                 },
-                                categoryLabels[cat] || cat
-                            )
-                        )
+                                label
+                            );
+                        })
                     ),
                 ]),
                 m(".action-group.lang-group", [

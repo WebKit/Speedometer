@@ -1,5 +1,5 @@
 import m from "mithril";
-import { categoryLabels } from "./Controls.js";
+import { TAGS } from "../data/tags.js";
 import { t, translateContent } from "../i18n.js";
 
 const Chart = {
@@ -81,7 +81,11 @@ export const Card = {
                 m(".card-header", [m("span.card-date", date), m("h3.card-title", highlight(titleStr, searchQuery))]),
                 m(
                     ".card-tags",
-                    tags.map((tag: string) => m("span.tag", { class: `tag-${tag}` }, categoryLabels[tag] || tag))
+                    tags.map((tag: string) => {
+                        const tagData = (TAGS as any)[tag];
+                        const label = tagData ? translateContent(tagData.label) : tag;
+                        return m("span.tag", { class: `tag-${tag}` }, label);
+                    })
                 ),
                 m("p.card-desc", highlight(descriptionStr, searchQuery)),
                 stats &&
