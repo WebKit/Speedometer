@@ -7,7 +7,6 @@ const DB_VERSION = 2;
 
 class LockStore {
     constructor() {
-        this.activeClientId = null;
         this.dbPromise = null;
     }
 
@@ -32,8 +31,6 @@ class LockStore {
     }
 
     async getOwner() {
-        if (this.activeClientId !== null)
-            return this.activeClientId;
         try {
             const db = await this._openDB();
             const data = await new Promise((resolve, reject) => {
@@ -42,16 +39,14 @@ class LockStore {
                 req.onsuccess = () => resolve(req.result);
                 req.onerror = () => reject(req.error);
             });
-            this.activeClientId = data?.clientId || null;
+            return data?.clientId || null;
         } catch (e) {
             console.warn("IndexedDB read failed", e);
-            this.activeClientId = null;
+            return null;
         }
-        return this.activeClientId;
     }
 
     async setOwner(clientId) {
-        this.activeClientId = clientId;
         try {
             const db = await this._openDB();
             await new Promise((resolve, reject) => {
@@ -66,7 +61,6 @@ class LockStore {
     }
 
     async clear() {
-        this.activeClientId = null;
         try {
             const db = await this._openDB();
             await new Promise((resolve, reject) => {
@@ -80,10 +74,11 @@ class LockStore {
         }
     }
 
-    hasLock(clientId) {
-        if (!this.activeClientId)
+    async hasLock(clientId) {
+        const activeClientId = await this.getOwner();
+        if (!activeClientId)
             return true;
-        return this.activeClientId === clientId;
+        return activeClientId === clientId;
     }
 }
 
@@ -165,7 +160,7 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay 
 
     await Promise.all(promises);
 
-    if (!STORE.hasLock(clientId)) {
+    if (!(await STORE.hasLock(clientId))) {
         replyError(event, "Speedometer aborted: Another tab took over.");
         return;
     }
@@ -175,7 +170,7 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay 
 async function parseSuiteResources(suite) {
     const response = await fetch(suite.resources);
     if (!response.ok)
-        return [];
+        throw new Error(`Failed to load resources for suite ${suite.name}: ${suite.resources} returned ${response.status}`);
     const text = await response.text();
     return text
         .trim()
@@ -223,7 +218,7 @@ self.addEventListener("activate", (event) => {
 });
 
 async function updateActiveClient(newClientId) {
-    const oldClientId = STORE.activeClientId;
+    const oldClientId = await STORE.getOwner();
     if (oldClientId === newClientId)
         return false;
 
@@ -237,8 +232,7 @@ async function updateActiveClient(newClientId) {
 }
 
 async function handleClearCacheMessage(event, clientId) {
-    await STORE.getOwner();
-    if (!STORE.hasLock(clientId)) {
+    if (!(await STORE.hasLock(clientId))) {
         replyError(event, "Cannot clear SW: You do not own the lock.");
         return;
     }
