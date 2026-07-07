@@ -5,35 +5,6 @@ import { freezeSuites } from "../resources/suites-helper.mjs";
 
 export const ExperimentalSuites = freezeSuites([
     {
-        name: "TodoMVC-JavaScript-ES5-Cached",
-        url: "suites/todomvc/vanilla-examples/javascript-es5/dist/index.html",
-        resources: "suites/todomvc/vanilla-examples/javascript-es5/dist/resources.txt",
-        tags: ["todomvc", "experimental", "cached"],
-        async prepare(page) {
-            (await page.waitForElement(".new-todo")).focus();
-        },
-        tests: [
-            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
-                const newTodo = page.querySelector(".new-todo");
-                for (let i = 0; i < numberOfItemsToAdd; i++) {
-                    newTodo.setValue(getTodoText("ja", i));
-                    newTodo.dispatchEvent("change");
-                    newTodo.enter("keypress");
-                }
-            }),
-            new BenchmarkTestStep("CompletingAllItems", (page) => {
-                const checkboxes = page.querySelectorAll(".toggle");
-                for (let i = 0; i < numberOfItemsToAdd; i++)
-                    checkboxes[i].click();
-            }),
-            new BenchmarkTestStep("DeletingAllItems", (page) => {
-                const deleteButtons = page.querySelectorAll(".destroy");
-                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
-                    deleteButtons[i].click();
-            }),
-        ],
-    },
-    {
         name: "TodoMVC-LocalStorage",
         url: "suites-experimental/todomvc-localstorage/dist/index.html",
         resources: "suites-experimental/todomvc-localstorage/dist/resources.txt",
