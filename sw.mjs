@@ -132,7 +132,7 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay 
 
     const cache = await caches.open(CACHE_NAME);
     let loaded = 0;
-    let totalSize = 0;
+    let transferredSize = 0;
     const urlsToCache = [];
 
     for (const suite of suites) {
@@ -144,7 +144,7 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay 
     const total = urlsToCache.length;
     const promises = urlsToCache.map(async (item, index) => {
         const size = await fetchAndCache(cache, item.url, delay * index);
-        totalSize += size;
+        transferredSize += size;
         loaded++;
         replyToClient(event, SW_MESSAGES.PRELOAD_PROGRESS, { loaded, total, url: item.url, suiteName: item.suiteName });
     });
@@ -155,7 +155,7 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay 
         replyError(event, "Speedometer aborted: Another tab took over.");
         return;
     }
-    replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { totalSize, count: urlsToCache.length });
+    replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { transferredSize, count: urlsToCache.length });
 }
 
 async function parseSuiteResources(suite) {
@@ -172,6 +172,11 @@ async function parseSuiteResources(suite) {
         }));
 }
 
+function getResponseSize(response) {
+    const contentLength = response.headers.get("content-length");
+    return contentLength ? parseInt(contentLength, 10) : 0;
+}
+
 async function fetchAndCache(cache, url, delayMs) {
     if (delayMs)
         await delayAsync(delayMs);
@@ -179,13 +184,13 @@ async function fetchAndCache(cache, url, delayMs) {
         const request = new Request(url, { cache: "no-cache" });
         const existing = await cache.match(request);
         if (existing)
-            return (await existing.blob()).size;
+            return getResponseSize(existing);
 
         try {
             const response = await fetch(request);
             if (!response.ok)
                 return 0;
-            const size = (await response.clone().blob()).size;
+            const size = getResponseSize(response);
             await cache.put(request, response);
             return size;
         } catch (e) {
@@ -227,11 +232,11 @@ async function handleClearCacheMessage(event, clientId) {
     replyToClient(event, "SUCCESS");
 }
 
-const MESSAGE_HANDLERS = {
+const MESSAGE_HANDLERS = Object.freeze({
     __proto__: null,
     [SW_MESSAGES.PRELOAD_SUITES]: handlePreloadSuitesMessage,
     [SW_MESSAGES.CLEAR_CACHE]: handleClearCacheMessage,
-};
+});
 
 self.addEventListener("message", (event) => {
     const { data } = event;

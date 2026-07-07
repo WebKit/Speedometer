@@ -121,9 +121,9 @@ export class ResourcePreloader {
 
         if (response?.type === SW_MESSAGES.PRELOAD_DONE) {
             const timeTakenMs = performance.now() - startTime;
-            const sizeMB = (response.totalSize / (1024 * 1024)).toFixed(2);
+            const sizeMB = (response.transferredSize / (1024 * 1024)).toFixed(2);
             const timeSec = (timeTakenMs / 1000).toFixed(2);
-            console.log(`Preloaded ${response.count} files (${sizeMB} MB) in ${timeSec}s`);
+            console.log(`Preloaded ${response.count} files (${sizeMB} MB transferred) in ${timeSec}s`);
         }
         this._preloadParams = params.toSearchParams();
     }

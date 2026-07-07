@@ -117,8 +117,10 @@ export class BenchmarkConfigurator {
     }
 
     _loadSuite(suite) {
-        suite.tags.forEach((tag) => this.#tags.add(tag));
-        this.#suites.push(suite);
+        if (suite.tags)
+            suite.tags.forEach((tag) => this.#tags.add(tag));
+
+        this.#suites.push({ ...suite, tags: suite.tags ? [...suite.tags] : [] });
     }
 
     enableSuites(names, tags) {

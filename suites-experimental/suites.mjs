@@ -6,8 +6,8 @@ import { freezeSuites } from "../resources/suites-helper.mjs";
 export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-JavaScript-ES5-Cached",
-        url: "resources/todomvc/vanilla-examples/javascript-es5/dist/index.html",
-        resources: "resources/todomvc/vanilla-examples/javascript-es5/dist/resources.txt",
+        url: "suites/todomvc/vanilla-examples/javascript-es5/dist/index.html",
+        resources: "suites/todomvc/vanilla-examples/javascript-es5/dist/resources.txt",
         tags: ["todomvc", "experimental", "cached"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
