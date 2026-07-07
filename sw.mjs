@@ -3,6 +3,7 @@ import { SW_MESSAGES } from "./resources/shared/sw-messages.mjs";
 const CACHE_NAME = "speedometer-cache-v4.0";
 const DB_NAME = "SpeedometerStateDB";
 const STORE_NAME = "SpeedometerSWState";
+const DB_VERSION = 2;
 
 class LockStore {
     constructor() {
@@ -15,7 +16,7 @@ class LockStore {
             return this.dbPromise;
 
         this.dbPromise = new Promise((resolve, reject) => {
-            const request = indexedDB.open(DB_NAME, 1);
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
             request.onupgradeneeded = (event) => {
                 const db = event.target.result;
                 if (!db.objectStoreNames.contains(STORE_NAME))
