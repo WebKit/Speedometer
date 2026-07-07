@@ -96,7 +96,6 @@ for (const [name, suites] of Object.entries(Suites)) {
             }
             if (brokenResourcesList.length > 0)
                 throw new Error(`Failed to load the following resources:\n${brokenResourcesList.join("\n")}`);
-
         });
     });
 }

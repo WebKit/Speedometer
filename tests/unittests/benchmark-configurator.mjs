@@ -34,9 +34,9 @@ describe("BenchmarkConfigurator", () => {
         const configurator = new BenchmarkConfigurator();
         await configurator.init();
         configurator.enableSuites([], ["todomvc"]);
-        const todomvcSuites = configurator.suites.filter(suite => suite.tags.includes("todomvc"));
-        const otherSuites = configurator.suites.filter(suite => !suite.tags.includes("todomvc"));
-        todomvcSuites.forEach(suite => expect(suite.enabled).to.be(true));
-        otherSuites.forEach(suite => expect(suite.enabled).to.be(false));
+        const todomvcSuites = configurator.suites.filter((suite) => suite.tags.includes("todomvc"));
+        const otherSuites = configurator.suites.filter((suite) => !suite.tags.includes("todomvc"));
+        todomvcSuites.forEach((suite) => expect(suite.enabled).to.be(true));
+        otherSuites.forEach((suite) => expect(suite.enabled).to.be(false));
     });
 });
