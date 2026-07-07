@@ -125,7 +125,7 @@ export class ResourcePreloader {
             const timeSec = (timeTakenMs / 1000).toFixed(2);
             console.log(`Preloaded ${response.count} files (${sizeMB} MB) in ${timeSec}s`);
         }
-        this._preloadParams = params.toSearchParams()
+        this._preloadParams = params.toSearchParams();
     }
 }
 
@@ -223,7 +223,7 @@ class MainBenchmarkClient {
         if (!this._isStepping())
             this._developerModeContainer?.remove();
 
-        await this._setupResourcePreloader(benchmarkConfigurator)
+        await this._setupResourcePreloader(benchmarkConfigurator);
 
         try {
             await this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
