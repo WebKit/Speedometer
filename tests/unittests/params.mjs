@@ -127,5 +127,24 @@ describe("Params", () => {
             );
             expect(params.suites).to.eql(["SuiteB", "Suite1", "SuiteA"]);
         });
+        it("should warn on unused params when warnUnused is true", () => {
+            const consoleErrorStub = sinon.stub(console, "error");
+            try {
+                new Params(new URLSearchParams({ unknownParam: "value" }), true);
+                expect(consoleErrorStub.calledOnce).to.be(true);
+                expect(consoleErrorStub.calledWith("Got unused search params: unknownParam")).to.be(true);
+            } finally {
+                consoleErrorStub.restore();
+            }
+        });
+        it("should not warn on unused params when warnUnused is false", () => {
+            const consoleErrorStub = sinon.stub(console, "error");
+            try {
+                new Params(new URLSearchParams({ unknownParam: "value" }), false);
+                expect(consoleErrorStub.called).to.be(false);
+            } finally {
+                consoleErrorStub.restore();
+            }
+        });
     });
 });

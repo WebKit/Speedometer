@@ -1,8 +1,8 @@
 // example url for local testing:
 // http://localhost:8080/?developerMode=true&config=http://localhost:8080/resources/config.json
 // since the json doesn't contain a default suite, dismiss warning popups and select from the developerMenu
-import { DefaultSuites } from "./default-tests.mjs";
-import { ExperimentalSuites } from "../experimental/tests.mjs";
+import { DefaultSuites } from "../suites/default-suites.mjs";
+import { ExperimentalSuites } from "../suites-experimental/suites.mjs";
 import { params } from "./shared/params.mjs";
 
 const DEFAULT_TAGS = ["all", "default", "experimental"];
