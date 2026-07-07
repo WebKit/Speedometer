@@ -160,7 +160,7 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay 
 
     await Promise.all(promises);
 
-    if (!(await STORE.hasLock(clientId))) {
+    if (!await STORE.hasLock(clientId)) {
         replyError(event, "Speedometer aborted: Another tab took over.");
         return;
     }
@@ -232,7 +232,7 @@ async function updateActiveClient(newClientId) {
 }
 
 async function handleClearCacheMessage(event, clientId) {
-    if (!(await STORE.hasLock(clientId))) {
+    if (!await STORE.hasLock(clientId)) {
         replyError(event, "Cannot clear SW: You do not own the lock.");
         return;
     }
