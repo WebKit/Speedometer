@@ -37,6 +37,9 @@ export const translations = {
         cat_medicine: "Medizin",
         cat_science: "Wissenschaft",
         cat_default: "Allgemein",
+        wikipedia: "Wikipedia ↗",
+        searchPlaceholder: "Suchen...",
+        suggestionsTitle: "Vorschläge",
     },
     FR: {
         title: "Histoire de l'informatique",
@@ -63,6 +66,9 @@ export const translations = {
         cat_medicine: "Médecine",
         cat_science: "Science",
         cat_default: "Général",
+        wikipedia: "Wikipédia ↗",
+        searchPlaceholder: "Rechercher...",
+        suggestionsTitle: "Suggestions",
     },
     IT: {
         title: "Storia del computer",
@@ -89,11 +95,22 @@ export const translations = {
         cat_medicine: "Medicina",
         cat_science: "Scienza",
         cat_default: "Generale",
+        wikipedia: "Wikipedia ↗",
+        searchPlaceholder: "Cerca...",
+        suggestionsTitle: "Suggerimenti",
     }
 };
 
 export type TranslationKey = keyof typeof translations["DE"];
 
-export const t = (key: TranslationKey): string => {
-    return translations[activeLanguage][key] || translations["DE"][key] || key;
+export const t = (key: TranslationKey | string): string => {
+    return translations[activeLanguage][key as TranslationKey] || translations["DE"][key as TranslationKey] || key;
 };
+
+export function translateContent(field: any): string {
+    if (!field) return "";
+    if (typeof field === "object") {
+        return field[activeLanguage] || field.DE || Object.values(field)[0] || "";
+    }
+    return String(field);
+}

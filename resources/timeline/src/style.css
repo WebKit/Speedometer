@@ -64,11 +64,11 @@ body {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: var(--glass-border);
-    padding: 16px 28px;
+    padding: 12px 20px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: 8px;
     z-index: 10;
     box-shadow: var(--shadow);
 }
@@ -103,7 +103,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 16px;
+    gap: 8px;
     width: 100%;
     justify-content: space-between;
 }
@@ -360,7 +360,7 @@ button.btn-nav:hover .desc {
     flex: 1;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 40px 0;
+    padding: 0;
     scroll-behavior: smooth;
     display: flex;
     align-items: center;
@@ -401,7 +401,7 @@ button.btn-nav:hover .desc {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.8), rgba(192, 132, 252, 0.8), transparent);
+    background: linear-gradient(90deg, rgba(56, 189, 248, 0.5), rgba(192, 132, 252, 0.5));
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
     transform: translateY(-50%);
     z-index: 1;
@@ -416,7 +416,7 @@ button.btn-nav:hover .desc {
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     border-left: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 24px;
-    padding: 28px;
+    padding: 16px 20px;
     box-shadow: var(--card-shadow), inset 0 0 20px rgba(255, 255, 255, 0.02);
     display: flex;
     flex-direction: column;
@@ -429,16 +429,38 @@ button.btn-nav:hover .desc {
     box-sizing: border-box;
     flex-shrink: 0;
     justify-content: flex-start;
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.virtual-layout .timeline-card {
     left: var(--x-pos);
     transform: translateY(-50%);
-    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.browser-layout .timeline-card {
+    transform: none;
+}
+
+.timeline-card-inner {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    height: 100%;
 }
 
 /* Card Lifting up with dynamic shadow */
 .timeline-card:hover {
-    transform: translateY(-50%) translateY(-16px) scale(1.02);
     box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.05);
     border-color: rgba(56, 189, 248, 0.4);
+}
+
+.virtual-layout .timeline-card:hover {
+    transform: translateY(-50%) scale(1.02);
+}
+
+.browser-layout .timeline-card:hover {
+    transform: scale(1.02);
 }
 
 /* Node on Timeline */
@@ -446,7 +468,7 @@ button.btn-nav:hover .desc {
     content: "";
     position: absolute;
     top: 50%;
-    left: -53px;
+    left: -33px;
     width: 16px;
     height: 16px;
     border-radius: 50%;
@@ -459,7 +481,7 @@ button.btn-nav:hover .desc {
 }
 
 .timeline-card:hover::before {
-    transform: translate(4.02px, 15.69px) translateY(-50%) scale(1.5);
+    transform: translate(4.02px, 0) translateY(-50%) scale(1.5);
     background-color: var(--primary-color);
     box-shadow: 0 0 25px var(--primary-color), 0 0 0 4px rgba(15, 23, 42, 0.8);
 }

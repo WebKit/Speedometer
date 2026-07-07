@@ -14,26 +14,26 @@ export const Controls = {
                 m("span.subtitle", t("subtitle"))
             ]),
 
+            m(".action-group.filter-group", { style: { width: "100%", height: "auto", padding: "8px 16px" } }, [
+                m("span.group-label", t("filter")),
+                m(
+                    "#filter-panel",
+                    categories.map((cat) => {
+                        const tagData = (TAGS as any)[cat];
+                        const label = tagData ? translateContent(tagData.label) : cat;
+                        return m(
+                            "span.filter-pill",
+                            {
+                                key: cat,
+                                class: `tag tag-${cat} ${activeFilters.includes(cat) ? "" : "inactive"}`,
+                                onclick: () => onFilterChange(cat, !activeFilters.includes(cat)),
+                            },
+                            label
+                        );
+                    })
+                ),
+            ]),
             m(".header-actions", [
-                m(".action-group.filter-group", [
-                    m("span.group-label", t("filter")),
-                    m(
-                        "#filter-panel",
-                        categories.map((cat) => {
-                            const tagData = (TAGS as any)[cat];
-                            const label = tagData ? translateContent(tagData.label) : cat;
-                            return m(
-                                "span.filter-pill",
-                                {
-                                    key: cat,
-                                    class: `tag tag-${cat} ${activeFilters.includes(cat) ? "" : "inactive"}`,
-                                    onclick: () => onFilterChange(cat, !activeFilters.includes(cat)),
-                                },
-                                label
-                            );
-                        })
-                    ),
-                ]),
                 m(".action-group.search-group", { style: { position: "relative" } }, [
                     m("input.search-input", {
                         type: "text",
