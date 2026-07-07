@@ -4,7 +4,7 @@ import { t, getLanguage, setLanguage, Language, translateContent } from "../i18n
 
 export const Controls = {
     view(vnode) {
-        const { activeFilters, onFilterChange, searchQuery, suggestions, showSuggestions, layoutMode, onSearchChange, onJumpToCard, onFocusSearch, onCloseSuggestions, onLayoutModeChange } = vnode.attrs;
+        const { activeFilters, onFilterChange, onFilterOnly, searchQuery, suggestions, showSuggestions, layoutMode, onSearchChange, onJumpToCard, onFocusSearch, onCloseSuggestions, onLayoutModeChange } = vnode.attrs;
 
         const categories = Object.keys(TAGS);
 
@@ -27,6 +27,10 @@ export const Controls = {
                                 key: cat,
                                 class: `tag tag-${cat} ${activeFilters.includes(cat) ? "" : "inactive"}`,
                                 onclick: () => onFilterChange(cat, !activeFilters.includes(cat)),
+                                ondblclick: (e: any) => {
+                                    e.stopPropagation();
+                                    if (onFilterOnly) onFilterOnly(cat);
+                                },
                             },
                             label
                         );

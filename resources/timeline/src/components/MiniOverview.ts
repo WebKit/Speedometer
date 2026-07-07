@@ -44,8 +44,8 @@ export const MiniOverview = () => {
         return `${val.toFixed(1)} FLOPS`;
     };
 
-    const minLog = -3;
-    const maxLog = 18;
+    const minLog = -4;
+    const maxLog = 19;
     const logRange = maxLog - minLog;
 
     const getX = (year: number) => ((year - startYear) / totalYears) * 100;
@@ -114,7 +114,7 @@ export const MiniOverview = () => {
             if (!py) return;
             const xPos = getX(py);
             const primaryTag = item.tags && item.tags.length > 0 ? item.tags[0] : "default";
-            const yOffset = (index * 13) % 20;
+            const yOffset = (index * 17) % 44 + 8;
             markersCache.push({
                 index,
                 id: item.id || index,
@@ -156,19 +156,13 @@ export const MiniOverview = () => {
             const hoverGPU = displayYear >= 1995 ? getMovingAverageLog(displayYear, gpuPoints) : null;
             const hoverTPU = displayYear >= 2015 ? getMovingAverageLog(displayYear, tpuPoints) : null;
 
-            // 1. Always-visible overall baseline density curve (ensures density graph is visible at all times)
-            const overallDensity = calculateDensityCurve(sourceData, { startYear, endYear, windowYears: 6, maxHeight: 85 });
-            const hoverOverall = getDensityAtYear(displayYear, overallDensity, sourceData, 6);
-
-            // 2. On-the-fly search matching cards density curve
+            // 1. On-the-fly search matching cards density curve
             let searchDensity: { path: string; areaPath: string; maxVal: number } | null = null;
-            let hoverSearch: { density: number; itemsInWindow: number } | null = null;
             if (searchQuery && typeof searchQuery === "string" && searchQuery.trim().length > 0 && matchingCards && matchingCards.length > 0) {
                 searchDensity = calculateDensityCurve(matchingCards, { startYear, endYear, windowYears: 6, maxHeight: 85 });
-                hoverSearch = getDensityAtYear(displayYear, searchDensity, matchingCards, 6);
             }
 
-            // 3. Find closest marker across entire chart (responsive hover detection)
+            // 2. Find closest marker across entire chart (responsive hover detection)
             let closestMarker: any = null;
             let closestMarkerDist = Infinity;
             markersCache.forEach((marker) => {
@@ -179,7 +173,7 @@ export const MiniOverview = () => {
                 }
             });
 
-            // 4. On-the-fly category hover density curves
+            // 3. On-the-fly category hover density curves
             let hoveredTags: string[] = [];
             if (dataHoverState && dataHoverState.active && dataHoverState.index !== undefined && sourceData[dataHoverState.index]) {
                 hoveredTags = sourceData[dataHoverState.index].tags || [];
@@ -193,8 +187,7 @@ export const MiniOverview = () => {
                 const tagInfo = (TAGS as any)[category] || (TAGS as any).default;
                 const color = tagInfo ? tagInfo.color : "#38bdf8";
                 const label = tagInfo && tagInfo.label ? (tagInfo.label[vnode.attrs.language || "DE"] || tagInfo.label.DE || category) : category;
-                const metrics = getDensityAtYear(displayYear, density, categoryCards, 6);
-                return { category, density, color, label, metrics };
+                return { category, density, color, label };
             }).filter((item) => item.density && item.density.maxVal > 0);
 
             // Find closest CPU point
@@ -229,6 +222,37 @@ export const MiniOverview = () => {
                     closestTpu = p;
                 }
             });
+
+            let targetY: number | null = null;
+            let targetType: "cpu" | "gpu" | "tpu" = "cpu";
+            let targetColor = "#00f0ff";
+
+            const pointsAtYear = [
+                hoverCPU !== null ? { y: getY(hoverCPU), type: "cpu" as const, color: "#00f0ff" } : null,
+                hoverGPU !== null ? { y: getY(hoverGPU), type: "gpu" as const, color: "#39ff14" } : null,
+                hoverTPU !== null ? { y: getY(hoverTPU), type: "tpu" as const, color: "#ff00ff" } : null,
+            ].filter(Boolean) as Array<{ y: number; type: "cpu" | "gpu" | "tpu"; color: string }>;
+
+            if (pointsAtYear.length > 0) {
+                if (hoverState.active && hoverState.boundW) {
+                    const mouseYPct = (hoverState.y / 150) * 100;
+                    let minDist = Infinity;
+                    pointsAtYear.forEach((pt) => {
+                        const dist = Math.abs(pt.y - mouseYPct);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            targetY = pt.y;
+                            targetType = pt.type;
+                            targetColor = pt.color;
+                        }
+                    });
+                } else {
+                    const pt = pointsAtYear[0];
+                    targetY = pt.y;
+                    targetType = pt.type;
+                    targetColor = pt.color;
+                }
+            }
 
             return m(
                 "#mini-overview-container",
@@ -322,9 +346,14 @@ export const MiniOverview = () => {
                                                     m("feMergeNode", { in: "SourceGraphic" })
                                                 ])
                                             ]),
-                                            m("linearGradient", { id: "density-grad-overall", x1: "0%", y1: "0%", x2: "0%", y2: "100%" }, [
-                                                m("stop", { offset: "0%", stopColor: "rgba(56, 189, 248, 0.4)" }),
-                                                m("stop", { offset: "100%", stopColor: "rgba(56, 189, 248, 0.05)" })
+                                            m("marker#arrow-cpu", { viewBox: "0 0 10 10", refX: "5", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" }, [
+                                                m("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "#00f0ff" })
+                                            ]),
+                                            m("marker#arrow-gpu", { viewBox: "0 0 10 10", refX: "5", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" }, [
+                                                m("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "#39ff14" })
+                                            ]),
+                                            m("marker#arrow-tpu", { viewBox: "0 0 10 10", refX: "5", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" }, [
+                                                m("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "#ff00ff" })
                                             ])
                                         ]),
 
@@ -347,44 +376,6 @@ export const MiniOverview = () => {
                                             height: "100%",
                                         }),
 
-                                        // 1. Overall Event Density Graph (always visible baseline in sky blue gradient)
-                                        overallDensity && overallDensity.maxVal > 0 ? [
-                                            m("path.density-area-overall", {
-                                                d: overallDensity.areaPath,
-                                                style: { fill: "url(#density-grad-overall)", opacity: 1.0, transition: "all 0.3s ease" }
-                                            }),
-                                            m("path.density-line-overall", {
-                                                d: overallDensity.path,
-                                                style: { stroke: "#38bdf8", strokeWidth: "3px", fill: "none", filter: "url(#glow)", opacity: 0.85, transition: "all 0.3s ease" }
-                                            })
-                                        ] : null,
-
-                                        // 2. Search matching cards density graph in background
-                                        searchDensity && searchDensity.maxVal > 0 ? [
-                                            m("path.search-density-area", {
-                                                d: searchDensity.areaPath,
-                                                style: { fill: "#fbbf24", opacity: 0.45, transition: "all 0.3s ease" }
-                                            }),
-                                            m("path.search-density-line", {
-                                                d: searchDensity.path,
-                                                style: { stroke: "#fcd34d", strokeWidth: "3.5px", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" }
-                                            })
-                                        ] : null,
-
-                                        // 3. Hovered category moving average smooth window density graph in background
-                                        hoverDensities.map((hd) => [
-                                            m("path.hover-density-area", {
-                                                key: `area-${hd.category}`,
-                                                d: hd.density.areaPath,
-                                                style: { fill: hd.color, opacity: 0.45, transition: "all 0.3s ease" }
-                                            }),
-                                            m("path.hover-density-line", {
-                                                key: `line-${hd.category}`,
-                                                d: hd.density.path,
-                                                style: { stroke: hd.color, strokeWidth: "3.5px", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" }
-                                            })
-                                        ]),
-
                                         m("polyline.cpu-line", { points: cpuPath }),
                                         m("polyline.gpu-line", { points: gpuPath }),
                                         m("polyline.tpu-line", { points: tpuPath }),
@@ -400,24 +391,88 @@ export const MiniOverview = () => {
                                                 strokeDasharray: hoverState.active ? "none" : "2 2"
                                             }
                                         }),
+
+                                        targetY !== null && m("line.tooltip-connector", {
+                                            x1: getX(displayYear),
+                                            y1: 0,
+                                            x2: getX(displayYear),
+                                            y2: targetY,
+                                            style: {
+                                                stroke: targetColor,
+                                                strokeWidth: "1.5px",
+                                                strokeDasharray: "3 3",
+                                                markerEnd: `url(#arrow-${targetType})`,
+                                                filter: "url(#glow)",
+                                                transition: "all 0.15s ease"
+                                            }
+                                        }),
                                     ]
                                 ),
-                                // Individual data points rendered as HTML dots to avoid SVG stretching/oval distortion
-                                processedFlops.map((p) =>
-                                    m("div.flops-data-dot", {
-                                        key: `${p.name}-${p.preciseYear}`,
-                                        style: {
-                                            left: `${p.x}%`,
-                                            top: `${p.y}%`,
-                                            backgroundColor: p.type === "cpu" ? "#00f0ff" : p.type === "gpu" ? "#39ff14" : "#ff00ff",
-                                            boxShadow: p.type === "cpu" 
-                                                ? "0 0 6px rgba(0, 240, 255, 0.4)" 
-                                                : p.type === "gpu" 
-                                                    ? "0 0 6px rgba(57, 255, 20, 0.4)" 
-                                                    : "0 0 6px rgba(255, 0, 255, 0.4)"
-                                        }
-                                    })
+                                m(".flops-dots-container", {
+                                    style: {
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        pointerEvents: "none",
+                                        zIndex: 15,
+                                    }
+                                },
+                                    processedFlops.map((p) =>
+                                        m("div.flops-data-dot", {
+                                            key: `${p.name}-${p.preciseYear}`,
+                                            style: {
+                                                left: `${p.x}%`,
+                                                top: `${p.y}%`,
+                                                backgroundColor: p.type === "cpu" ? "#00f0ff" : p.type === "gpu" ? "#39ff14" : "#ff00ff",
+                                                boxShadow: p.type === "cpu" 
+                                                    ? "0 0 6px rgba(0, 240, 255, 0.4)" 
+                                                    : p.type === "gpu" 
+                                                        ? "0 0 6px rgba(57, 255, 20, 0.4)" 
+                                                        : "0 0 6px rgba(255, 0, 255, 0.4)"
+                                            }
+                                        })
+                                    )
                                 ),
+                                m("svg", {
+                                    viewBox: "0 0 100 100",
+                                    preserveAspectRatio: "none",
+                                    class: "density-graph-svg",
+                                    style: {
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        pointerEvents: "none",
+                                        zIndex: 18,
+                                        overflow: "visible"
+                                    }
+                                }, [
+                                    searchDensity && searchDensity.maxVal > 0 ? [
+                                        m("path.search-density-area", {
+                                            d: searchDensity.areaPath,
+                                            style: { fill: "#fbbf24", opacity: 0.45, transition: "all 0.3s ease" }
+                                        }),
+                                        m("path.search-density-line", {
+                                            d: searchDensity.path,
+                                            style: { stroke: "#fcd34d", strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" }
+                                        })
+                                    ] : null,
+                                    hoverDensities.map((hd) => [
+                                        m("path.hover-density-area", {
+                                            key: `area-${hd.category}`,
+                                            d: hd.density.areaPath,
+                                            style: { fill: hd.color, opacity: 0.45, transition: "all 0.3s ease" }
+                                        }),
+                                        m("path.hover-density-line", {
+                                            key: `line-${hd.category}`,
+                                            d: hd.density.path,
+                                            style: { stroke: hd.color, strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" }
+                                        })
+                                    ])
+                                ]),
                                 [
                                     hoverCPU !== null &&
                                         m("div.hover-point.cpu-point", {
@@ -451,23 +506,6 @@ export const MiniOverview = () => {
                                     },
                                     [
                                         m(".tooltip-header", `${t("year")} ${Math.round(displayYear)}`),
-                                        m(".tooltip-row.density-tooltip-row", [
-                                            m("span.tooltip-dot.density-dot"),
-                                            m("span.tooltip-label", "Event Density (±6y)"),
-                                            m("span.tooltip-val", `${hoverOverall.density.toFixed(1)} items/yr (${hoverOverall.itemsInWindow} in window)`)
-                                        ]),
-                                        hoverSearch ? m(".tooltip-row.density-tooltip-row.search-density-row", [
-                                            m("span.tooltip-dot.search-density-dot"),
-                                            m("span.tooltip-label", "Search Density (±6y)"),
-                                            m("span.tooltip-val", `${hoverSearch.density.toFixed(1)} items/yr (${hoverSearch.itemsInWindow} matches)`)
-                                        ]) : null,
-                                        hoverDensities.map((hd) =>
-                                            m(".tooltip-row.density-tooltip-row.category-density-row", { key: `tt-${hd.category}` }, [
-                                                m("span.tooltip-dot.category-density-dot", { style: { backgroundColor: hd.color, boxShadow: `0 0 6px ${hd.color}` } }),
-                                                m("span.tooltip-label", `${hd.label} (±6y)`),
-                                                m("span.tooltip-val", `${hd.metrics.density.toFixed(1)} items/yr (${hd.metrics.itemsInWindow})`)
-                                            ])
-                                        ),
                                         hoverCPU !== null && m(".tooltip-row", [
                                             m("span.tooltip-dot.cpu-dot"),
                                             m("span.tooltip-label", t("cpu")),
@@ -594,37 +632,49 @@ export const MiniOverview = () => {
                                 ]
                             ),
                             m(".data-marker-row", [
-                                markersCache.map((marker) => {
-                                    const isHovered = dataHoverState && dataHoverState.index === marker.index;
-                                    const isActive = marker.index === activeIndex;
-                                    const hoverClass = isHovered ? " marker-hovered" : "";
-                                    const activeClass = isActive ? " marker-active" : "";
+                                m(".data-markers-container", {
+                                    style: {
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        pointerEvents: "none",
+                                    }
+                                },
+                                    markersCache.map((marker) => {
+                                        const isHovered = dataHoverState && dataHoverState.index === marker.index;
+                                        const isActive = marker.index === activeIndex;
+                                        const hoverClass = isHovered ? " marker-hovered" : "";
+                                        const activeClass = isActive ? " marker-active" : "";
 
-                                    return m(`.data-marker.marker-${marker.primaryTag}${hoverClass}${activeClass}`, {
-                                        key: marker.id,
-                                        style: {
-                                            left: `${marker.xPos}%`,
-                                            top: `${marker.yOffset}px`,
-                                        },
-                                        onmouseenter: (e) => {
-                                            e.stopPropagation();
-                                            dataHoverState = {
-                                                active: true,
-                                                title: marker.title,
-                                                date: marker.date,
-                                                x: marker.xPos,
-                                                index: marker.index,
-                                            };
-                                        },
-                                        onmouseleave: () => {
-                                            // Container onmousemove handles clearing naturally, but keeping for precision
-                                        },
-                                        onclick: (e) => {
-                                            e.stopPropagation();
-                                            onJumpToIndex(marker.index);
-                                        },
-                                    });
-                                }),
+                                        return m(`.data-marker.marker-${marker.primaryTag}${hoverClass}${activeClass}`, {
+                                            key: marker.id,
+                                            style: {
+                                                left: `${marker.xPos}%`,
+                                                top: `${marker.yOffset}px`,
+                                                pointerEvents: "auto",
+                                            },
+                                            onmouseenter: (e) => {
+                                                e.stopPropagation();
+                                                dataHoverState = {
+                                                    active: true,
+                                                    title: marker.title,
+                                                    date: marker.date,
+                                                    x: marker.xPos,
+                                                    index: marker.index,
+                                                };
+                                            },
+                                            onmouseleave: () => {
+                                                // Container onmousemove handles clearing naturally, but keeping for precision
+                                            },
+                                            onclick: (e) => {
+                                                e.stopPropagation();
+                                                onJumpToIndex(marker.index);
+                                            },
+                                        });
+                                    })
+                                ),
 
                                 dataHoverState &&
                                     dataHoverState.active &&

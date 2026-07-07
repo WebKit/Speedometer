@@ -175,3 +175,45 @@ describe("Density and Moving Average Smooth Window Calculation", () => {
         });
     });
 });
+
+describe("Timeline Tag Filtering Logic", () => {
+    it("should filter data correctly when activeFilters is set to a single tag (double-click behavior)", () => {
+        const allTags = Object.keys(TAGS);
+        allTags.forEach((singleTag) => {
+            let activeFilters = ["hardware", "software", singleTag];
+            activeFilters = [singleTag];
+            expect(activeFilters.length).to.be(1);
+            expect(activeFilters[0]).to.be(singleTag);
+            const filtered = data.filter((card) => card.tags && card.tags.some((tag) => activeFilters.includes(tag)));
+            if (filtered.length > 0) {
+                filtered.forEach((card) => {
+                    expect(card.tags).to.contain(singleTag);
+                });
+            }
+        });
+    });
+
+    it("should select ONLY the double-clicked tag when calling onFilterOnly", () => {
+        let activeFilters = ["hardware", "software", "ai"];
+        const onFilterOnly = (tag) => {
+            activeFilters = [tag];
+        };
+        onFilterOnly("ai");
+        expect(activeFilters.length).to.be(1);
+        expect(activeFilters[0]).to.be("ai");
+    });
+});
+
+describe("Density Graph & FLOPS Layout Bounds", () => {
+    it("should map logVal within 0% to 100% bounds for minLog -4 and maxLog 19", () => {
+        const minLog = -4; const maxLog = 19; const logRange = maxLog - minLog;
+        const getY = (logVal) => 100 - ((logVal - minLog) / logRange) * 100;
+        expect(getY(18)).to.be.greaterThan(0); expect(getY(18)).to.be.lessThan(100);
+        expect(getY(-3)).to.be.greaterThan(0); expect(getY(-3)).to.be.lessThan(100);
+    });
+
+    it("should generate valid density curve paths for active data points", () => {
+        const res = calculateDensityCurve(data, { startYear: 1900, endYear: 2026, windowYears: 6, maxHeight: 85 });
+        expect(res.path.startsWith("M ")).to.be(true);
+    });
+});

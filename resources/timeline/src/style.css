@@ -788,7 +788,7 @@ button.btn-nav:hover .desc {
 
 /* Ultra-Premium MiniOverview Styles - Futuristic & Flash Interactive */
 #mini-overview-container {
-    height: 200px;
+    height: 250px;
     flex-shrink: 0;
     border-top: 2px solid rgba(56, 189, 248, 0.5);
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(5, 5, 5, 0.98) 100%);
@@ -887,7 +887,7 @@ button.btn-nav:hover .desc {
 }
 
 .data-marker-row {
-    height: 30px;
+    height: 60px;
     position: relative;
     flex-shrink: 0; /* CRITICAL: Prevent flexbox from collapsing marker dots row to 0px height */
 }
@@ -1254,7 +1254,7 @@ button.btn-nav:hover .desc {
 
 .flops-hover-tooltip {
     position: absolute;
-    bottom: 55px; /* sit just above the graph */
+    top: 8px; /* sit above the flops area */
     color: var(--text-color);
     padding: 8px 12px;
     border-radius: 10px;
@@ -1265,13 +1265,11 @@ button.btn-nav:hover .desc {
     flex-direction: column;
     gap: 4px;
     white-space: nowrap;
-    position: absolute;
-    bottom: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 6px 6px 0;
-    border-style: solid;
-    border-color: rgba(56, 189, 248, 0.4) transparent transparent transparent;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(56, 189, 248, 0.05);
 }
 
 .flops-hover-tooltip .tooltip-header {
@@ -1434,4 +1432,27 @@ button.btn-nav:hover .desc {
 
 .category-density-dot {
     border-radius: 50%;
+}
+
+
+/* Container and Connector Styles */
+.flops-dots-container,
+.data-markers-container,
+.density-graph-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.density-graph-svg {
+    z-index: 18;
+    overflow: visible;
+}
+
+.tooltip-connector {
+    pointer-events: none;
+    vector-effect: non-scaling-stroke;
 }

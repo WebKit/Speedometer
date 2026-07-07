@@ -39,6 +39,40 @@ const App = () => {
         filteredData = allData.filter((card) => card.tags.some((tag) => activeFilters.includes(tag)));
     }
 
+    function updateFilterSelection() {
+        let currentCardDate = null;
+        if (filteredData[activeIndex]) {
+            currentCardDate = filteredData[activeIndex].date;
+        }
+
+        applyFilters();
+
+        if (currentCardDate && filteredData.length > 0) {
+            let bestIndex = 0;
+            let minDiff = Infinity;
+            const targetTime = new Date(currentCardDate).getTime();
+            
+            filteredData.forEach((card, idx) => {
+                const cardTime = new Date(card.date).getTime();
+                const diff = Math.abs(cardTime - targetTime);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    bestIndex = idx;
+                }
+            });
+            activeIndex = bestIndex;
+        } else {
+            activeIndex = 0;
+        }
+
+        dataVersion++;
+        setTimeout(() => {
+            if (timelineHandle.scrollToIndex) {
+                timelineHandle.scrollToIndex(activeIndex, "instant");
+            }
+        }, 0);
+    }
+
     // Initial run
     applyFilters();
 
@@ -129,43 +163,17 @@ const App = () => {
                             }
                         }, 0);
                     },
-                    onFilterChange: (tag, checked) => {
-                        let currentCardDate = null;
-                        if (filteredData[activeIndex]) {
-                            currentCardDate = filteredData[activeIndex].date;
-                        }
-
+                    onFilterChange: (tag: string, checked: boolean) => {
                         if (checked) {
                             if (!activeFilters.includes(tag)) activeFilters.push(tag);
                         } else {
                             activeFilters = activeFilters.filter((t) => t !== tag);
                         }
-                        applyFilters();
-
-                        if (currentCardDate && filteredData.length > 0) {
-                            let bestIndex = 0;
-                            let minDiff = Infinity;
-                            const targetTime = new Date(currentCardDate).getTime();
-                            
-                            filteredData.forEach((card, idx) => {
-                                const cardTime = new Date(card.date).getTime();
-                                const diff = Math.abs(cardTime - targetTime);
-                                if (diff < minDiff) {
-                                    minDiff = diff;
-                                    bestIndex = idx;
-                                }
-                            });
-                            activeIndex = bestIndex;
-                        } else {
-                            activeIndex = 0;
-                        }
-
-                        dataVersion++;
-                        setTimeout(() => {
-                            if (timelineHandle.scrollToIndex) {
-                                timelineHandle.scrollToIndex(activeIndex, "instant");
-                            }
-                        }, 0);
+                        updateFilterSelection();
+                    },
+                    onFilterOnly: (tag: string) => {
+                        activeFilters = [tag];
+                        updateFilterSelection();
                     },
                 }),
                 m("#main-content", [
