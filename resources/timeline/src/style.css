@@ -481,9 +481,9 @@ button.btn-nav:hover .desc {
 }
 
 .timeline-card:hover::before {
-    transform: translate(4.02px, 0) translateY(-50%) scale(1.5);
+    transform: translateX(3.2px) translateY(-50%);
     background-color: var(--primary-color);
-    box-shadow: 0 0 25px var(--primary-color), 0 0 0 4px rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 45px var(--primary-color), 0 0 0 4px rgba(15, 23, 42, 0.8);
 }
 
 /* Neon Node Colors */
@@ -493,7 +493,7 @@ button.btn-nav:hover .desc {
 }
 .timeline-card.tag-hardware:hover::before {
     background-color: #38bdf8;
-    box-shadow: 0 0 25px #38bdf8, 0 0 0 4px rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 45px #38bdf8, 0 0 0 4px rgba(15, 23, 42, 0.8);
 }
 
 .timeline-card.tag-software::before {
@@ -502,7 +502,7 @@ button.btn-nav:hover .desc {
 }
 .timeline-card.tag-software:hover::before {
     background-color: #34d399;
-    box-shadow: 0 0 25px #34d399, 0 0 0 4px rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 45px #34d399, 0 0 0 4px rgba(15, 23, 42, 0.8);
 }
 
 .timeline-card.tag-consumer::before {
@@ -511,7 +511,7 @@ button.btn-nav:hover .desc {
 }
 .timeline-card.tag-consumer:hover::before {
     background-color: #c084fc;
-    box-shadow: 0 0 25px #c084fc, 0 0 0 4px rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 45px #c084fc, 0 0 0 4px rgba(15, 23, 42, 0.8);
 }
 
 .timeline-card.tag-networking::before {
@@ -520,7 +520,7 @@ button.btn-nav:hover .desc {
 }
 .timeline-card.tag-networking:hover::before {
     background-color: #fbbf24;
-    box-shadow: 0 0 25px #fbbf24, 0 0 0 4px rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 45px #fbbf24, 0 0 0 4px rgba(15, 23, 42, 0.8);
 }
 
 .timeline-card.tag-milestone::before {
@@ -529,7 +529,7 @@ button.btn-nav:hover .desc {
 }
 .timeline-card.tag-milestone:hover::before {
     background-color: #f87171;
-    box-shadow: 0 0 25px #f87171, 0 0 0 4px rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 45px #f87171, 0 0 0 4px rgba(15, 23, 42, 0.8);
 }
 
 .timeline-card.tag-gaming::before {
@@ -538,7 +538,7 @@ button.btn-nav:hover .desc {
 }
 .timeline-card.tag-gaming:hover::before {
     background-color: #ec4899;
-    box-shadow: 0 0 25px #ec4899, 0 0 0 4px rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 45px #ec4899, 0 0 0 4px rgba(15, 23, 42, 0.8);
 }
 
 .timeline-card.tag-art::before {
@@ -547,7 +547,7 @@ button.btn-nav:hover .desc {
 }
 .timeline-card.tag-art:hover::before {
     background-color: #f97316;
-    box-shadow: 0 0 25px #f97316, 0 0 0 4px rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 45px #f97316, 0 0 0 4px rgba(15, 23, 42, 0.8);
 }
 
 .timeline-card.tag-military::before {
@@ -556,7 +556,7 @@ button.btn-nav:hover .desc {
 }
 .timeline-card.tag-military:hover::before {
     background-color: #64748b;
-    box-shadow: 0 0 25px #64748b, 0 0 0 4px rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 45px #64748b, 0 0 0 4px rgba(15, 23, 42, 0.8);
 }
 
 /* Decade Header Card */
