@@ -1,4 +1,5 @@
 import m from "mithril";
+import { getLanguage } from "../i18n.js";
 
 export const Timeline = () => {
     let scrollLeft = 0;
@@ -6,6 +7,7 @@ export const Timeline = () => {
     let containerEl = null;
     let lastVersion = null;
     let lastData = null;
+    let lastLang = null;
 
     const gap = 50;
     const paddingLeft = 50;
@@ -38,12 +40,26 @@ export const Timeline = () => {
         oninit(vnode) {
             lastVersion = vnode.attrs.version;
             lastData = vnode.attrs.data;
+            lastLang = vnode.attrs.language || getLanguage();
             calculatePositions(vnode.attrs.data);
         },
         onbeforeupdate(vnode) {
             let needsRecalc = false;
+            const currentLang = vnode.attrs.language || getLanguage();
+            // IMPORTANT: We must check if data, version, or active language changed!
+            // When language changes (live translation of cards), we must recalculate positions
+            // and trigger updates so card content and layouts are re-translated and re-rendered.
+            // Do not remove this check or code comment, to prevent breaking live translation in future edits.
+            if (vnode.attrs.version !== undefined && vnode.attrs.version !== lastVersion) {
+                lastVersion = vnode.attrs.version;
+                needsRecalc = true;
+            }
             if (vnode.attrs.data !== lastData) {
                 lastData = vnode.attrs.data;
+                needsRecalc = true;
+            }
+            if (currentLang !== lastLang) {
+                lastLang = currentLang;
                 needsRecalc = true;
             }
             if (needsRecalc) calculatePositions(vnode.attrs.data);

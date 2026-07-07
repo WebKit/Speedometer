@@ -5,7 +5,7 @@ import { Timeline } from "./components/Timeline.js";
 import { Card } from "./components/Card.js";
 import { MiniOverview } from "./components/MiniOverview.js";
 import { TAGS } from "./data/tags.js";
-import { translateContent } from "./i18n.js";
+import { translateContent, getLanguage } from "./i18n.js";
 
 const App = () => {
     const allData = staticData;
@@ -45,9 +45,10 @@ const App = () => {
     return {
         view() {
             let suggestions: Array<{ index: number; year: string; title: string }> = [];
+            let matchingCards: any[] = [];
             if (searchQuery.trim().length > 0) {
                 const query = searchQuery.toLowerCase().trim();
-                suggestions = filteredData.map((card, index) => {
+                const allMatches = filteredData.map((card, index) => {
                     const titleStr = translateContent(card.title).toLowerCase();
                     const descStr = translateContent(card.description).toLowerCase();
                     let score = 0;
@@ -59,13 +60,17 @@ const App = () => {
                     if (yearStr.includes(query)) score += 20;
 
                     return {
+                        card,
                         index,
                         year: yearStr,
                         title: translateContent(card.title),
                         score
                     };
-                })
-                .filter(m => m.score > 0)
+                }).filter(m => m.score > 0);
+
+                matchingCards = allMatches.map(m => m.card);
+
+                suggestions = allMatches
                 .sort((a, b) => b.score - a.score || a.index - b.index)
                 .slice(0, 5);
             }
@@ -167,6 +172,7 @@ const App = () => {
                     m(Timeline as m.ClosureComponent<any>, {
                         data: filteredData,
                         version: dataVersion,
+                        language: getLanguage(),
                         handle: timelineHandle,
                         activeIndex: activeIndex,
                         layoutMode: layoutMode,
@@ -178,12 +184,17 @@ const App = () => {
                             m(Card, {
                                 card: item,
                                 searchQuery: searchQuery,
+                                language: getLanguage(),
                             }),
                     }),
                 ]),
                 m(MiniOverview as m.ClosureComponent<any>, {
                     data: filteredData,
+                    allData: allData,
+                    searchQuery: searchQuery,
+                    matchingCards: matchingCards,
                     activeIndex: activeIndex,
+                    language: getLanguage(),
                     onJumpToIndex: (idx, behavior = "smooth") => {
                         if (timelineHandle.scrollToIndex) timelineHandle.scrollToIndex(idx, behavior);
                     },

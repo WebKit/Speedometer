@@ -6,6 +6,8 @@ let activeLanguage: Language = "DE";
 
 export const getLanguage = (): Language => activeLanguage;
 
+// IMPORTANT: setLanguage updates activeLanguage and calls m.redraw() to trigger live translation of cards across the timeline.
+// Do not remove m.redraw() or alter this state mechanism, as live translation requires Mithril to re-evaluate components on language switch.
 export const setLanguage = (lang: Language) => {
     activeLanguage = lang;
     m.redraw();

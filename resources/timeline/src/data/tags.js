@@ -1,134 +1,47 @@
 // Central source of truth for all timeline category tags, their translations and styling.
 
 export const TAGS = {
-    hardware: {
-        id: "hardware",
-        label: {
-            DE: "Hardware",
-            FR: "Matériel",
-            IT: "Hardware",
-        },
-        color: "#38bdf8", // Sky blue
-        bgColor: "rgba(56, 189, 248, 0.1)",
-    },
-    software: {
-        id: "software",
-        label: {
-            DE: "Software",
-            FR: "Logiciel",
-            IT: "Software",
-        },
-        color: "#34d399", // Emerald green
-        bgColor: "rgba(52, 211, 153, 0.1)",
-    },
-    consumer: {
-        id: "consumer",
-        label: {
-            DE: "Konsumenten",
-            FR: "Grand public",
-            IT: "Consumer",
-        },
-        color: "#c084fc", // Purple/violet
-        bgColor: "rgba(192, 132, 252, 0.1)",
-    },
-    networking: {
-        id: "networking",
-        label: {
-            DE: "Netzwerk",
-            FR: "Réseau",
-            IT: "Networking",
-        },
-        color: "#fbbf24", // Amber/yellow
-        bgColor: "rgba(251, 191, 36, 0.1)",
-    },
-    web: {
-        id: "web",
-        label: {
-            DE: "Web & Internet",
-            FR: "Web & Internet",
-            IT: "Web & Internet",
-        },
-        color: "#06b6d4", // Cyan
-        bgColor: "rgba(6, 182, 212, 0.1)",
-    },
-    milestone: {
-        id: "milestone",
-        label: {
-            DE: "Meilenstein",
-            FR: "Jalon",
-            IT: "Pietra miliare",
-        },
-        color: "#f87171", // Rose/red
-        bgColor: "rgba(248, 113, 113, 0.1)",
-    },
-    gaming: {
-        id: "gaming",
-        label: {
-            DE: "Spiele",
-            FR: "Jeux",
-            IT: "Gaming",
-        },
-        color: "#ec4899", // Pink
-        bgColor: "rgba(236, 72, 153, 0.1)",
-    },
-    art: {
-        id: "art",
-        label: {
-            DE: "Kunst",
-            FR: "Art",
-            IT: "Arte",
-        },
-        color: "#f97316", // Orange
-        bgColor: "rgba(249, 115, 22, 0.1)",
-    },
-    military: {
-        id: "military",
-        label: {
-            DE: "Militär",
-            FR: "Militaire",
-            IT: "Militare",
-        },
-        color: "#64748b", // Slate gray
-        bgColor: "rgba(100, 116, 139, 0.1)",
-    },
-    politics: {
-        id: "politics",
-        label: {
-            DE: "Politik",
-            FR: "Politique",
-            IT: "Politica",
-        },
-        color: "#e11d48", // Dark red/rose
-        bgColor: "rgba(225, 29, 72, 0.1)",
-    },
-    medicine: {
-        id: "medicine",
-        label: {
-            DE: "Medizin",
-            FR: "Médecine",
-            IT: "Medicina",
-        },
-        color: "#10b981", // Teal/light green
-        bgColor: "rgba(16, 185, 129, 0.1)",
-    },
-    science: {
-        id: "science",
-        label: {
-            DE: "Wissenschaft",
-            FR: "Science",
-            IT: "Scienza",
-        },
-        color: "#a855f7", // Bright violet
-        bgColor: "rgba(168, 85, 247, 0.1)",
-    },
-    default: {
-        id: "default",
-        label: {
-            DE: "Allgemein",
-            FR: "Général",
-            IT: "Generale",
-        },
-        color: "#94a3b8", // Muted slate
-        bgColor: "rgba(148, 163, 184, 0.1)",
-    },
+    hardware: { id: "hardware", label: { DE: "Hardware", FR: "Matériel", IT: "Hardware" }, color: "#38bdf8", bgColor: "rgba(56, 189, 248, 0.1)" },
+    software: { id: "software", label: { DE: "Software", FR: "Logiciel", IT: "Software" }, color: "#34d399", bgColor: "rgba(52, 211, 153, 0.1)" },
+    consumer: { id: "consumer", label: { DE: "Konsumenten", FR: "Grand public", IT: "Consumer" }, color: "#c084fc", bgColor: "rgba(192, 132, 252, 0.1)" },
+    networking: { id: "networking", label: { DE: "Netzwerk", FR: "Réseau", IT: "Networking" }, color: "#fbbf24", bgColor: "rgba(251, 191, 36, 0.1)" },
+    web: { id: "web", label: { DE: "Web & Internet", FR: "Web & Internet", IT: "Web & Internet" }, color: "#06b6d4", bgColor: "rgba(6, 182, 212, 0.1)" },
+    milestone: { id: "milestone", label: { DE: "Meilenstein", FR: "Jalon", IT: "Pietra miliare" }, color: "#f87171", bgColor: "rgba(248, 113, 113, 0.1)" },
+    gaming: { id: "gaming", label: { DE: "Spiele", FR: "Jeux", IT: "Gaming" }, color: "#ec4899", bgColor: "rgba(236, 72, 153, 0.1)" },
+    art: { id: "art", label: { DE: "Kunst", FR: "Art", IT: "Arte" }, color: "#f97316", bgColor: "rgba(249, 115, 22, 0.1)" },
+    military: { id: "military", label: { DE: "Militär", FR: "Militaire", IT: "Militare" }, color: "#64748b", bgColor: "rgba(100, 116, 139, 0.1)" },
+    politics: { id: "politics", label: { DE: "Politik", FR: "Politique", IT: "Politica" }, color: "#e11d48", bgColor: "rgba(225, 29, 72, 0.1)" },
+    medicine: { id: "medicine", label: { DE: "Medizin", FR: "Médecine", IT: "Medicina" }, color: "#10b981", bgColor: "rgba(16, 185, 129, 0.1)" },
+    science: { id: "science", label: { DE: "Wissenschaft", FR: "Science", IT: "Scienza" }, color: "#a855f7", bgColor: "rgba(168, 85, 247, 0.1)" },
+    ai: { id: "ai", label: { DE: "Künstliche Intelligenz", FR: "Intelligence Artificielle", IT: "Intelligenza Artificiale" }, color: "#818cf8", bgColor: "rgba(129, 140, 248, 0.1)" },
+    theory: { id: "theory", label: { DE: "Theorie & Konzepte", FR: "Théorie & Concepts", IT: "Teoria & Concetti" }, color: "#f59e0b", bgColor: "rgba(245, 158, 11, 0.1)" },
+    security: { id: "security", label: { DE: "Sicherheit", FR: "Sécurité", IT: "Sicurezza" }, color: "#ef4444", bgColor: "rgba(239, 68, 68, 0.1)" },
+    robotics: { id: "robotics", label: { DE: "Robotik", FR: "Robotique", IT: "Robotica" }, color: "#14b8a6", bgColor: "rgba(20, 184, 166, 0.1)" },
+    space: { id: "space", label: { DE: "Raumfahrt", FR: "Espace", IT: "Spazio" }, color: "#6366f1", bgColor: "rgba(99, 102, 241, 0.1)" },
+    data: { id: "data", label: { DE: "Daten", FR: "Données", IT: "Dati" }, color: "#0ea5e9", bgColor: "rgba(14, 165, 233, 0.1)" },
+    cloud: { id: "cloud", label: { DE: "Cloud", FR: "Cloud", IT: "Cloud" }, color: "#38bdf8", bgColor: "rgba(56, 189, 248, 0.1)" },
+    mobile: { id: "mobile", label: { DE: "Mobil", FR: "Mobile", IT: "Mobile" }, color: "#d946ef", bgColor: "rgba(217, 70, 239, 0.1)" },
+    algorithm: { id: "algorithm", label: { DE: "Algorithmen", FR: "Algorithmes", IT: "Algoritmi" }, color: "#f97316", bgColor: "rgba(249, 115, 22, 0.1)" },
+    language: { id: "language", label: { DE: "Sprache", FR: "Langage", IT: "Linguaggio" }, color: "#84cc16", bgColor: "rgba(132, 204, 22, 0.1)" },
+    math: { id: "math", label: { DE: "Mathematik", FR: "Mathématiques", IT: "Matematica" }, color: "#a855f7", bgColor: "rgba(168, 85, 247, 0.1)" },
+    people: { id: "people", label: { DE: "Personen", FR: "Personnes", IT: "Persone" }, color: "#f43f5e", bgColor: "rgba(244, 63, 94, 0.1)" },
+    company: { id: "company", label: { DE: "Unternehmen", FR: "Entreprise", IT: "Azienda" }, color: "#64748b", bgColor: "rgba(100, 116, 139, 0.1)" },
+    law: { id: "law", label: { DE: "Recht", FR: "Droit", IT: "Legge" }, color: "#e11d48", bgColor: "rgba(225, 29, 72, 0.1)" },
+    business: { id: "business", label: { DE: "Wirtschaft", FR: "Affaires", IT: "Business" }, color: "#10b981", bgColor: "rgba(16, 185, 129, 0.1)" },
+    media: { id: "media", label: { DE: "Medien", FR: "Médias", IT: "Media" }, color: "#ec4899", bgColor: "rgba(236, 72, 153, 0.1)" },
+    entertainment: { id: "entertainment", label: { DE: "Unterhaltung", FR: "Divertissement", IT: "Intrattenimento" }, color: "#d946ef", bgColor: "rgba(217, 70, 239, 0.1)" },
+    music: { id: "music", label: { DE: "Musik", FR: "Musique", IT: "Musica" }, color: "#8b5cf6", bgColor: "rgba(139, 92, 246, 0.1)" },
+    film: { id: "film", label: { DE: "Film", FR: "Film", IT: "Film" }, color: "#f43f5e", bgColor: "rgba(244, 63, 94, 0.1)" },
+    network: { id: "network", label: { DE: "Netzwerk", FR: "Réseau", IT: "Rete" }, color: "#fbbf24", bgColor: "rgba(251, 191, 36, 0.1)" },
+    os: { id: "os", label: { DE: "Betriebssystem", FR: "Système d'exploitation", IT: "Sistema operativo" }, color: "#06b6d4", bgColor: "rgba(6, 182, 212, 0.1)" },
+    internet: { id: "internet", label: { DE: "Internet", FR: "Internet", IT: "Internet" }, color: "#38bdf8", bgColor: "rgba(56, 189, 248, 0.1)" },
+    ethics: { id: "ethics", label: { DE: "Ethik", FR: "Éthique", IT: "Etica" }, color: "#e11d48", bgColor: "rgba(225, 29, 72, 0.1)" },
+    crypto: { id: "crypto", label: { DE: "Kryptografie", FR: "Cryptographie", IT: "Crittografia" }, color: "#6366f1", bgColor: "rgba(99, 102, 241, 0.1)" },
+    quantum: { id: "quantum", label: { DE: "Quanten", FR: "Quantique", IT: "Quantistica" }, color: "#a855f7", bgColor: "rgba(168, 85, 247, 0.1)" },
+    policy: { id: "policy", label: { DE: "Richtlinien", FR: "Politique", IT: "Politica" }, color: "#64748b", bgColor: "rgba(100, 116, 139, 0.1)" },
+    education: { id: "education", label: { DE: "Bildung", FR: "Éducation", IT: "Istruzione" }, color: "#10b981", bgColor: "rgba(16, 185, 129, 0.1)" },
+    research: { id: "research", label: { DE: "Forschung", FR: "Recherche", IT: "Ricerca" }, color: "#84cc16", bgColor: "rgba(132, 204, 22, 0.1)" },
+    default: { id: "default", label: { DE: "Allgemein", FR: "Général", IT: "Generale" }, color: "#94a3b8", bgColor: "rgba(148, 163, 184, 0.1)" },
 };
+
+export { getPreciseYear, calculateDensityCurve, getDensityAtYear } from "./density.js";

@@ -123,6 +123,9 @@ export const Card = {
         }
     },
     view(vnode: any) {
+        // IMPORTANT: Live translation of cards relies on calling translateContent() and t() dynamically inside view()
+        // during Mithril redraws (e.g. when setLanguage is called or when language attribute changes in main.ts).
+        // Do not cache translated strings statically outside view() or remove translateContent() calls, to prevent breaking live translation in future edits.
         const { card, searchQuery } = vnode.attrs;
         const { id, type, date, title, description, tags, stats, width, links } = card;
 
@@ -167,7 +170,7 @@ export const Card = {
                         card.cells.map((row: any[], rIdx: number) =>
                             m(
                                 "tr",
-                                row.map((cell) => (rIdx === 0 ? m("th", cell) : m("td", cell)))
+                                row.map((cell) => (rIdx === 0 ? m("th", translateContent(cell)) : m("td", translateContent(cell))))
                             )
                         )
                     ),

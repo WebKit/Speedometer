@@ -1,6 +1,7 @@
 import m from "mithril";
 import { flopsData } from "../data/processing-speed.js";
 import { t } from "../i18n.js";
+import { TAGS, calculateDensityCurve, getDensityAtYear } from "../data/tags.js";
 
 export const MiniOverview = () => {
     let hoverState: { active: boolean; x: number; y: number; clientX: number; year: number; boundW?: number } = { active: false, x: 0, y: 0, clientX: 0, year: 0 };
@@ -139,8 +140,9 @@ export const MiniOverview = () => {
             }
         },
         view(vnode) {
-            const { data, activeIndex, onJumpToIndex } = vnode.attrs;
+            const { data, activeIndex, onJumpToIndex, searchQuery, matchingCards, allData } = vnode.attrs;
             if (!data || data.length === 0) return null;
+            const sourceData = allData || data;
 
             // Compute actual active year from the active index item
             let activeYear = startYear;
@@ -153,6 +155,47 @@ export const MiniOverview = () => {
             const hoverCPU = getMovingAverageLog(displayYear, cpuPoints);
             const hoverGPU = displayYear >= 1995 ? getMovingAverageLog(displayYear, gpuPoints) : null;
             const hoverTPU = displayYear >= 2015 ? getMovingAverageLog(displayYear, tpuPoints) : null;
+
+            // 1. Always-visible overall baseline density curve (ensures density graph is visible at all times)
+            const overallDensity = calculateDensityCurve(sourceData, { startYear, endYear, windowYears: 6, maxHeight: 85 });
+            const hoverOverall = getDensityAtYear(displayYear, overallDensity, sourceData, 6);
+
+            // 2. On-the-fly search matching cards density curve
+            let searchDensity: { path: string; areaPath: string; maxVal: number } | null = null;
+            let hoverSearch: { density: number; itemsInWindow: number } | null = null;
+            if (searchQuery && typeof searchQuery === "string" && searchQuery.trim().length > 0 && matchingCards && matchingCards.length > 0) {
+                searchDensity = calculateDensityCurve(matchingCards, { startYear, endYear, windowYears: 6, maxHeight: 85 });
+                hoverSearch = getDensityAtYear(displayYear, searchDensity, matchingCards, 6);
+            }
+
+            // 3. Find closest marker across entire chart (responsive hover detection)
+            let closestMarker: any = null;
+            let closestMarkerDist = Infinity;
+            markersCache.forEach((marker) => {
+                const dist = Math.abs(marker.preciseYear - displayYear);
+                if (dist < closestMarkerDist) {
+                    closestMarkerDist = dist;
+                    closestMarker = marker;
+                }
+            });
+
+            // 4. On-the-fly category hover density curves
+            let hoveredTags: string[] = [];
+            if (dataHoverState && dataHoverState.active && dataHoverState.index !== undefined && sourceData[dataHoverState.index]) {
+                hoveredTags = sourceData[dataHoverState.index].tags || [];
+            } else if (hoverState.active && closestMarker) {
+                hoveredTags = sourceData[closestMarker.index]?.tags || [closestMarker.primaryTag];
+            }
+
+            const hoverDensities = hoveredTags.map((category) => {
+                const categoryCards = sourceData.filter((c: any) => c && c.tags && c.tags.includes(category));
+                const density = calculateDensityCurve(categoryCards, { startYear, endYear, windowYears: 6, maxHeight: 85 });
+                const tagInfo = (TAGS as any)[category] || (TAGS as any).default;
+                const color = tagInfo ? tagInfo.color : "#38bdf8";
+                const label = tagInfo && tagInfo.label ? (tagInfo.label[vnode.attrs.language || "DE"] || tagInfo.label.DE || category) : category;
+                const metrics = getDensityAtYear(displayYear, density, categoryCards, 6);
+                return { category, density, color, label, metrics };
+            }).filter((item) => item.density && item.density.maxVal > 0);
 
             // Find closest CPU point
             let closestCpu = null;
@@ -278,6 +321,10 @@ export const MiniOverview = () => {
                                                     m("feMergeNode", { in: "blur" }),
                                                     m("feMergeNode", { in: "SourceGraphic" })
                                                 ])
+                                            ]),
+                                            m("linearGradient", { id: "density-grad-overall", x1: "0%", y1: "0%", x2: "0%", y2: "100%" }, [
+                                                m("stop", { offset: "0%", stopColor: "rgba(56, 189, 248, 0.4)" }),
+                                                m("stop", { offset: "100%", stopColor: "rgba(56, 189, 248, 0.05)" })
                                             ])
                                         ]),
 
@@ -291,6 +338,52 @@ export const MiniOverview = () => {
                                                 y2: 100,
                                             })
                                         ),
+
+                                        // Moving average smooth window highlight band on hover
+                                        hoverState.active && m("rect.hover-window-band", {
+                                            x: `${getX(Math.max(startYear, displayYear - 6))}%`,
+                                            y: 0,
+                                            width: `${Math.max(0.5, getX(Math.min(endYear, displayYear + 6)) - getX(Math.max(startYear, displayYear - 6)))}%`,
+                                            height: "100%",
+                                        }),
+
+                                        // 1. Overall Event Density Graph (always visible baseline in sky blue gradient)
+                                        overallDensity && overallDensity.maxVal > 0 ? [
+                                            m("path.density-area-overall", {
+                                                d: overallDensity.areaPath,
+                                                style: { fill: "url(#density-grad-overall)", opacity: 1.0, transition: "all 0.3s ease" }
+                                            }),
+                                            m("path.density-line-overall", {
+                                                d: overallDensity.path,
+                                                style: { stroke: "#38bdf8", strokeWidth: "3px", fill: "none", filter: "url(#glow)", opacity: 0.85, transition: "all 0.3s ease" }
+                                            })
+                                        ] : null,
+
+                                        // 2. Search matching cards density graph in background
+                                        searchDensity && searchDensity.maxVal > 0 ? [
+                                            m("path.search-density-area", {
+                                                d: searchDensity.areaPath,
+                                                style: { fill: "#fbbf24", opacity: 0.45, transition: "all 0.3s ease" }
+                                            }),
+                                            m("path.search-density-line", {
+                                                d: searchDensity.path,
+                                                style: { stroke: "#fcd34d", strokeWidth: "3.5px", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" }
+                                            })
+                                        ] : null,
+
+                                        // 3. Hovered category moving average smooth window density graph in background
+                                        hoverDensities.map((hd) => [
+                                            m("path.hover-density-area", {
+                                                key: `area-${hd.category}`,
+                                                d: hd.density.areaPath,
+                                                style: { fill: hd.color, opacity: 0.45, transition: "all 0.3s ease" }
+                                            }),
+                                            m("path.hover-density-line", {
+                                                key: `line-${hd.category}`,
+                                                d: hd.density.path,
+                                                style: { stroke: hd.color, strokeWidth: "3.5px", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" }
+                                            })
+                                        ]),
 
                                         m("polyline.cpu-line", { points: cpuPath }),
                                         m("polyline.gpu-line", { points: gpuPath }),
@@ -358,6 +451,23 @@ export const MiniOverview = () => {
                                     },
                                     [
                                         m(".tooltip-header", `${t("year")} ${Math.round(displayYear)}`),
+                                        m(".tooltip-row.density-tooltip-row", [
+                                            m("span.tooltip-dot.density-dot"),
+                                            m("span.tooltip-label", "Event Density (±6y)"),
+                                            m("span.tooltip-val", `${hoverOverall.density.toFixed(1)} items/yr (${hoverOverall.itemsInWindow} in window)`)
+                                        ]),
+                                        hoverSearch ? m(".tooltip-row.density-tooltip-row.search-density-row", [
+                                            m("span.tooltip-dot.search-density-dot"),
+                                            m("span.tooltip-label", "Search Density (±6y)"),
+                                            m("span.tooltip-val", `${hoverSearch.density.toFixed(1)} items/yr (${hoverSearch.itemsInWindow} matches)`)
+                                        ]) : null,
+                                        hoverDensities.map((hd) =>
+                                            m(".tooltip-row.density-tooltip-row.category-density-row", { key: `tt-${hd.category}` }, [
+                                                m("span.tooltip-dot.category-density-dot", { style: { backgroundColor: hd.color, boxShadow: `0 0 6px ${hd.color}` } }),
+                                                m("span.tooltip-label", `${hd.label} (±6y)`),
+                                                m("span.tooltip-val", `${hd.metrics.density.toFixed(1)} items/yr (${hd.metrics.itemsInWindow})`)
+                                            ])
+                                        ),
                                         hoverCPU !== null && m(".tooltip-row", [
                                             m("span.tooltip-dot.cpu-dot"),
                                             m("span.tooltip-label", t("cpu")),

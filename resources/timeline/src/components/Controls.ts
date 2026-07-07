@@ -143,13 +143,19 @@ export const Controls = {
                         }, "Virtual")
                     ])
                 ]),
+                // IMPORTANT: Language selection buttons invoke setLanguage(lang) and trigger onLanguageChange callback
+                // to increment dataVersion in main.ts, ensuring layout recalculations for live translation of cards.
+                // Do not remove onLanguageChange or setLanguage here!
                 m(".action-group.lang-group", [
                     m("span.group-label", "LANG"),
                     m(".lang-selector", { style: { display: "flex", gap: "4px" } },
                         (["DE", "FR", "IT"] as Language[]).map((lang) =>
                             m("button.lang-btn", {
                                 class: getLanguage() === lang ? "active" : "",
-                                onclick: () => setLanguage(lang),
+                                onclick: () => {
+                                    setLanguage(lang);
+                                    if (vnode.attrs.onLanguageChange) vnode.attrs.onLanguageChange(lang);
+                                },
                             }, lang)
                         )
                     )
@@ -158,4 +164,3 @@ export const Controls = {
         ]);
     },
 };
-

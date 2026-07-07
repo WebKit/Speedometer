@@ -1379,3 +1379,59 @@ button.btn-nav:hover .desc {
 #document-content.browser-layout .timeline-card:hover {
     transform: translateY(-16px) scale(1.02);
 }
+
+/* Density Graphs and Highlight Band */
+.hover-window-band {
+    fill: rgba(56, 189, 248, 0.12);
+    stroke: rgba(56, 189, 248, 0.3);
+    stroke-width: 1px;
+    vector-effect: non-scaling-stroke;
+    transition: all 0.2s ease;
+}
+
+.density-area-overall {
+    pointer-events: none;
+}
+
+.density-line-overall {
+    pointer-events: none;
+    vector-effect: non-scaling-stroke;
+}
+
+.search-density-area {
+    pointer-events: none;
+}
+
+.search-density-line {
+    pointer-events: none;
+    vector-effect: non-scaling-stroke;
+}
+
+.hover-density-area {
+    pointer-events: none;
+}
+
+.hover-density-line {
+    pointer-events: none;
+    vector-effect: non-scaling-stroke;
+}
+
+.density-tooltip-row {
+    margin-top: 2px;
+    padding-top: 2px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.density-dot {
+    background: #38bdf8;
+    box-shadow: 0 0 6px rgba(56, 189, 248, 0.8);
+}
+
+.search-density-dot {
+    background: #fbbf24;
+    box-shadow: 0 0 6px rgba(251, 191, 36, 0.8);
+}
+
+.category-density-dot {
+    border-radius: 50%;
+}
