@@ -41,7 +41,6 @@ export class ResourcePreloader {
 
     async _registerServiceWorker() {
         this._registration = await navigator.serviceWorker.register("./sw.mjs", { type: "module" });
-        await this._registration.update();
         await navigator.serviceWorker.ready;
         this._sw = navigator.serviceWorker.controller || this._registration.active;
     }
