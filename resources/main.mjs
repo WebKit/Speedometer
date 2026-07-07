@@ -7,18 +7,23 @@ import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
 const PRELOAD_TIMEOUT_MS = 60_000;
 
-export class PreloadServiceWorker {
+export class ResourcePreloader {
     constructor() {
-        this.registration = null;
-        this.sw = null;
+        this._registration = null;
+        this._sw = null;
+        this._preloadParams = "";
+    }
+
+    isCached() {
+        return params.toSearchParams() === this._preloadParams;
     }
 
     async setup() {
         await this._unregisterOldServiceWorkers();
 
         if (!params.preload) {
-            this.registration = null;
-            this.sw = null;
+            this._registration = null;
+            this._sw = null;
             return false;
         }
 
@@ -35,10 +40,10 @@ export class PreloadServiceWorker {
     }
 
     async _registerServiceWorker() {
-        this.registration = await navigator.serviceWorker.register("./sw.mjs", { type: "module" });
-        await this.registration.update();
+        this._registration = await navigator.serviceWorker.register("./sw.mjs", { type: "module" });
+        await this._registration.update();
         await navigator.serviceWorker.ready;
-        this.sw = navigator.serviceWorker.controller || this.registration.active;
+        this._sw = navigator.serviceWorker.controller || this._registration.active;
     }
 
     _setupMessageListener() {
@@ -49,7 +54,7 @@ export class PreloadServiceWorker {
     }
 
     _sendMessageWithReply(messageData, onProgress, timeoutMs = 0) {
-        if (!this.sw)
+        if (!this._sw)
             return Promise.resolve();
 
         return new Promise((resolve, reject) => {
@@ -86,18 +91,18 @@ export class PreloadServiceWorker {
                 resolve(data);
             };
 
-            this.sw.postMessage(messageData, [channel.port2]);
+            this._sw.postMessage(messageData, [channel.port2]);
         });
     }
 
     async clearSw() {
-        if (!this.sw)
+        if (!this._sw)
             return;
         await this._sendMessageWithReply({ type: SW_MESSAGES.CLEAR_CACHE });
     }
 
     async preloadSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
-        if (!this.sw || suites.length === 0)
+        if (!this._sw || suites.length === 0)
             return;
 
         const suitesData = suites
@@ -120,6 +125,7 @@ export class PreloadServiceWorker {
             const timeSec = (timeTakenMs / 1000).toFixed(2);
             console.log(`Preloaded ${response.count} files (${sizeMB} MB) in ${timeSec}s`);
         }
+        this._preloadParams = params.toSearchParams()
     }
 }
 
@@ -143,7 +149,7 @@ class MainBenchmarkClient {
     _isRunning = false;
     _hasResults = false;
     _metrics = Object.create(null);
-    _preloadServiceWorker = new PreloadServiceWorker();
+    _resourcePreloader = new ResourcePreloader();
     _steppingPromise = null;
     _steppingResolver = null;
     _benchmarkConfiguratorPromise = null;
@@ -200,18 +206,6 @@ class MainBenchmarkClient {
 
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
 
-        await this._preloadServiceWorker.setup();
-
-        if (!this._didInitialPreload)
-            await this._cacheResources(benchmarkConfigurator);
-
-        try {
-            await this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
-        } catch (error) {
-            alert(error.message);
-            return false;
-        }
-
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const totalSuitesCount = enabledSuites.length;
 
@@ -228,6 +222,16 @@ class MainBenchmarkClient {
         }
         if (!this._isStepping())
             this._developerModeContainer?.remove();
+
+        await this._setupResourcePreloader(benchmarkConfigurator)
+
+        try {
+            await this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
+        } catch (error) {
+            alert(error.message);
+            return false;
+        }
+
         this._progressCompleted = document.getElementById("progress-completed");
         if (params.iterationCount < 50) {
             const progressNode = document.getElementById("progress");
@@ -511,15 +515,16 @@ class MainBenchmarkClient {
             document.body.append(this._developerModeContainer);
         }
 
-        await this._setupServiceWorker(benchmarkConfigurator);
+        await this._setupResourcePreloader(benchmarkConfigurator);
 
         if (params.startAutomatically)
             this.start();
     }
 
-    async _setupServiceWorker(benchmarkConfigurator) {
-        await this._preloadServiceWorker.setup();
-        await this._cacheResources(benchmarkConfigurator);
+    async _setupResourcePreloader(benchmarkConfigurator) {
+        await this._resourcePreloader.setup();
+        if (!this._resourcePreloader.isCached())
+            await this._cacheResources(benchmarkConfigurator);
     }
 
     async _cacheResources(benchmarkConfigurator) {
@@ -528,8 +533,7 @@ class MainBenchmarkClient {
         this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
 
         try {
-            await this._preloadServiceWorker.preloadSuites(enabledSuites, params.resourceLoadDelay, clearCache, this._updateCacheProgress.bind(this));
-            this._didInitialPreload = true;
+            await this._resourcePreloader.preloadSuites(enabledSuites, params.resourceLoadDelay, clearCache, this._updateCacheProgress.bind(this));
             this._enableStartButtons();
         } catch (error) {
             console.error("Service Worker preload failed:", error);
@@ -573,7 +577,7 @@ class MainBenchmarkClient {
             document.body.style.removeProperty("--preload-progress");
             startButton.innerHTML = "<div>Start Test</div>";
             if (state !== BENCHMARK_STATE.READY)
-                await this._preloadServiceWorker?.clearSw();
+                await this._resourcePreloader?.clearSw();
         }
     }
 
