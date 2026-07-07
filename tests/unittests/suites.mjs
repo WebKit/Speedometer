@@ -64,7 +64,9 @@ for (const [name, suites] of Object.entries(Suites)) {
                 expect(suite.url.length).to.be.greaterThan(0);
             });
         });
-        it("should have resources.txt listing only valid files", async () => {
+        it("should have resources.txt listing only valid files", async function () {
+            // validating all resource files can take a bit longer than the default timeout.
+            this.timeout(10000);
             const baseUrl = `${window.location.origin}/`;
             const brokenResourcesList = [];
             for (const suite of suites) {
