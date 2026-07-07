@@ -180,6 +180,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-WebComponents-IndexedDB",
         url: "suites-experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=vanilla",
+        resources: "suites-experimental/javascript-wc-indexeddb/dist/resources.txt",
         tags: ["todomvc", "webcomponents", "experimental"],
         async prepare() {},
         type: "remote",
@@ -190,6 +191,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-WebComponents-DexieJS",
         url: "suites-experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=dexie",
+        resources: "suites-experimental/javascript-wc-indexeddb/dist/resources.txt",
         tags: ["todomvc", "webcomponents", "experimental"],
         async prepare() {},
         type: "remote",

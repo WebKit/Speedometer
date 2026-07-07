@@ -192,6 +192,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-React",
         url: "suites/todomvc/architecture-examples/react/dist/index.html#/home",
+        resources: "suites/todomvc/architecture-examples/react/dist/resources.txt",
         tags: ["todomvc"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -221,6 +222,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-React-Complex-DOM",
         url: "suites/todomvc/architecture-examples/react-complex/dist/index.html#/home",
+        resources: "suites/todomvc/architecture-examples/react-complex/dist/resources.txt",
         tags: ["default", "todomvc", "complex", "complex-default"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -546,6 +548,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Preact",
         url: "suites/todomvc/architecture-examples/preact/dist/index.html#/home",
+        resources: "suites/todomvc/architecture-examples/preact/dist/resources.txt",
         tags: ["todomvc"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -574,6 +577,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "TodoMVC-Preact-Complex-DOM",
         url: "suites/todomvc/architecture-examples/preact-complex/dist/index.html#/home",
+        resources: "suites/todomvc/architecture-examples/preact-complex/dist/resources.txt",
         tags: ["default", "todomvc", "complex", "complex-default"],
         async prepare(page) {
             const element = await page.waitForElement(".new-todo");
@@ -806,6 +810,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "Editor-CodeMirror",
         url: "suites/editors/dist/codemirror.html",
+        resources: "suites/editors/dist/resources.txt",
         tags: ["default", "editor"],
         async prepare(page) {},
         tests: [
@@ -824,6 +829,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "Editor-TipTap",
         url: "suites/editors/dist/tiptap.html",
+        resources: "suites/editors/dist/resources.txt",
         tags: ["default", "editor"],
         async prepare(page) {},
         tests: [
@@ -842,6 +848,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "Charts-observable-plot",
         url: "suites/charts/dist/observable-plot.html",
+        resources: "suites/charts/dist/resources.txt",
         tags: ["default", "chart"],
         async prepare(page) {},
         tests: [
@@ -868,6 +875,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "Charts-chartjs",
         url: "suites/charts/dist/chartjs.html",
+        resources: "suites/charts/dist/resources.txt",
         tags: ["default", "chart"],
         async prepare(page) {},
         tests: [
@@ -887,6 +895,7 @@ export const DefaultSuites = freezeSuites([
     {
         name: "React-Stockcharts-SVG",
         url: "suites/react-stockcharts/build/index.html?type=svg",
+        resources: "suites/react-stockcharts/build/resources.txt",
         tags: ["default", "chart", "svg"],
         async prepare(page) {
             await page.waitForElement("#render");
