@@ -1,4 +1,5 @@
 import { SW_MESSAGES } from "./resources/shared/sw-messages.mjs";
+import { RequestLimiter } from "./resources/shared/request-limiter.mjs";
 
 const CACHE_NAME = "speedometer-cache-v4.0";
 const DB_NAME = "SpeedometerStateDB";
@@ -102,26 +103,8 @@ function delayAsync(ms) {
 }
 
 const MAX_CONCURRENT_REQUESTS = 20;
-function createConcurrencyLimiter(limit = MAX_CONCURRENT_REQUESTS) {
-    let active = 0;
-    const queue = [];
-    const next = () => {
-        if (active >= limit || queue.length === 0)
-            return;
-        active++;
-        const task = queue.shift();
-        task().finally(() => {
-            active--;
-            next();
-        });
-    };
-    return (fn) =>
-        new Promise((resolve, reject) => {
-            queue.push(() => fn().then(resolve, reject));
-            next();
-        });
-}
-const requestLimiter = createConcurrencyLimiter(MAX_CONCURRENT_REQUESTS);
+
+const requestLimiter = new RequestLimiter(MAX_CONCURRENT_REQUESTS);
 
 async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay = 0, clearCache = true }) {
     await STORE.getOwner();
@@ -180,9 +163,9 @@ function getResponseSize(response) {
 async function fetchAndCache(cache, url, delayMs) {
     if (delayMs)
         await delayAsync(delayMs);
-    return requestLimiter(async () => {
+    return requestLimiter.schedule(async () => {
         const request = new Request(url, { cache: "no-cache" });
-        const existing = await cache.match(request);
+        const existing = await cache.match(request, { ignoreSearch: true });
         if (existing)
             return getResponseSize(existing);
 
@@ -252,8 +235,7 @@ self.addEventListener("message", (event) => {
 self.addEventListener("fetch", (event) => {
     event.respondWith(
         (async () => {
-            const cache = await caches.open(CACHE_NAME);
-            const cachedResponse = await cache.match(event.request, { ignoreSearch: true });
+            const cachedResponse = await caches.match(event.request, { cacheName: CACHE_NAME, ignoreSearch: true });
             if (cachedResponse)
                 return cachedResponse;
 
