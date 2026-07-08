@@ -207,6 +207,14 @@ function initApp() {
     }
 
     if (typeof window.forceScrollytellingUpdate === "function") window.forceScrollytellingUpdate();
+
+    window.addEventListener(
+        "scroll",
+        () => {
+            if (typeof window.forceScrollytellingUpdate === "function") window.forceScrollytellingUpdate();
+        },
+        { passive: true }
+    );
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initApp);
