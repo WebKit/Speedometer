@@ -1,5 +1,5 @@
 import m from "mithril";
-import { getLanguage } from "../i18n.js";
+import { getLanguage, t } from "../i18n.js";
 
 export const Timeline = () => {
     let scrollLeft = 0;
@@ -173,11 +173,13 @@ export const Timeline = () => {
 
             const visibleItems = [];
             for (let i = startIdx; i <= endIdx; i++) {
-                visibleItems.push({
-                    item: data[i],
-                    index: i,
-                    x: xPositions[i],
-                });
+                if (data[i]) {
+                    visibleItems.push({
+                        item: data[i],
+                        index: i,
+                        x: xPositions[i],
+                    });
+                }
             }
 
             return m(
@@ -192,8 +194,25 @@ export const Timeline = () => {
                     },
                 },
                 [
-                    m(
-                        "#document-content",
+                    data.length === 0
+                        ? m(".empty-state", {
+                              style: {
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  width: "100%",
+                                  height: "100%",
+                                  color: "#94a3b8",
+                                  fontSize: "1.2rem",
+                                  fontWeight: "600",
+                                  letterSpacing: "0.05em",
+                                  position: "absolute",
+                                  top: "0",
+                                  left: "0",
+                              },
+                          }, t("noMatches"))
+                        : m(
+                              "#document-content",
                         {
                             class: isVirtual ? "virtual-layout" : "browser-layout",
                             style: isVirtual ? {

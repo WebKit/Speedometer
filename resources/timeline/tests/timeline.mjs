@@ -1,6 +1,10 @@
 import data from "../src/data/index.js";
 import expect from "expect.js";
 import { TAGS, getPreciseYear, calculateDensityCurve, getDensityAtYear } from "../src/data/tags.js";
+import m from "mithril";
+import { Controls } from "../src/components/Controls.js";
+import { Timeline } from "../src/components/Timeline.js";
+import { t, setLanguage, getLanguage, translations } from "../src/i18n.js";
 
 describe("Timeline Data Validation", () => {
     it("should load data successfully", () => {
@@ -202,6 +206,77 @@ describe("Timeline Tag Filtering Logic", () => {
         expect(activeFilters.length).to.be(1);
         expect(activeFilters[0]).to.be("ai");
     });
+
+    it("should select ALL tags when double-clicking Filter label or calling onSelectAllTags / onResetFilters", () => {
+        let activeFilters = ["hardware"];
+        const onSelectAllTags = () => {
+            activeFilters = Object.keys(TAGS);
+        };
+        onSelectAllTags();
+        expect(activeFilters.length).to.be(Object.keys(TAGS).length);
+        expect(activeFilters).to.contain("hardware");
+        expect(activeFilters).to.contain("software");
+    });
+
+    it("should trigger onSelectAllTags / onResetFilters via ondblclick handler on Controls filter header and panel", () => {
+        let activeFilters = ["hardware"];
+        let selectAllCalled = false;
+        const vnode = {
+            attrs: {
+                activeFilters,
+                onSelectAllTags: () => {
+                    selectAllCalled = true;
+                    activeFilters = Object.keys(TAGS);
+                },
+                searchQuery: "",
+                suggestions: [],
+                showSuggestions: false,
+                layoutMode: "virtual",
+            }
+        };
+        const res = Controls.view(vnode);
+        expect(res).to.be.an("object");
+
+        function findDblClickVnodes(v) {
+            let found = [];
+            if (!v) return found;
+            if (v.attrs && typeof v.attrs.ondblclick === "function") {
+                found.push(v);
+            }
+            if (Array.isArray(v)) {
+                for (const child of v) found = found.concat(findDblClickVnodes(child));
+            } else if (v.children) {
+                found = found.concat(findDblClickVnodes(v.children));
+            }
+            return found;
+        }
+
+        const dblClickNodes = findDblClickVnodes(res);
+        expect(dblClickNodes.length).to.be.greaterThan(0);
+
+        const filterHeaderNode = dblClickNodes.find(n => {
+            const cls = n.attrs ? (n.attrs.class || n.attrs.className || "") : "";
+            const tag = typeof n.tag === "string" ? n.tag : "";
+            return cls.includes("group-label") || cls.includes("filter-group") || tag.includes("group-label");
+        });
+        expect(filterHeaderNode).to.not.be(undefined);
+
+        let stopped = false;
+        filterHeaderNode.attrs.ondblclick({ stopPropagation: () => { stopped = true; } });
+        expect(selectAllCalled).to.be(true);
+        expect(activeFilters.length).to.be(Object.keys(TAGS).length);
+
+        selectAllCalled = false;
+        activeFilters = ["hardware"];
+        const filterPanelNode = dblClickNodes.find(n => {
+            const id = n.attrs ? (n.attrs.id || "") : "";
+            return id === "filter-panel";
+        });
+        expect(filterPanelNode).to.not.be(undefined);
+        filterPanelNode.attrs.ondblclick({ stopPropagation: () => {} });
+        expect(selectAllCalled).to.be(true);
+        expect(activeFilters.length).to.be(Object.keys(TAGS).length);
+    });
 });
 
 describe("Density Graph & FLOPS Layout Bounds", () => {
@@ -215,5 +290,123 @@ describe("Density Graph & FLOPS Layout Bounds", () => {
     it("should generate valid density curve paths for active data points", () => {
         const res = calculateDensityCurve(data, { startYear: 1900, endYear: 2026, windowYears: 6, maxHeight: 85 });
         expect(res.path.startsWith("M ")).to.be(true);
+    });
+});
+
+describe("Timeline Empty State and Translations", () => {
+    function getVnodeText(v) {
+        if (!v) return "";
+        if (typeof v === "string" || typeof v === "number") return String(v);
+        if (Array.isArray(v)) return v.map(getVnodeText).join("");
+        if (v.text !== undefined) return String(v.text);
+        if (v.children) return getVnodeText(v.children);
+        return "";
+    }
+
+    function findVnodes(vnode, predicate) {
+        let results = [];
+        if (!vnode) return results;
+        if (predicate(vnode)) results.push(vnode);
+        if (Array.isArray(vnode)) {
+            for (const child of vnode) {
+                results = results.concat(findVnodes(child, predicate));
+            }
+        } else if (vnode.children) {
+            results = results.concat(findVnodes(vnode.children, predicate));
+        }
+        return results;
+    }
+
+    const isEmptyState = v => {
+        const cls = v && v.attrs ? (v.attrs.class || v.attrs.className || "") : "";
+        return cls.includes("empty-state");
+    };
+
+    it("should provide translation strings for \x27noMatches\x27 across all 6 supported languages in i18n.ts", () => {
+        const supportedLangs = ["DE", "FR", "IT", "EN", "ES", "JA"];
+        const expectedSubstrings = {
+            DE: "Keine Treffer",
+            FR: "Aucun résultat",
+            IT: "Nessun risultato",
+            EN: "No matches",
+            ES: "No se encontraron",
+            JA: "一致する結果"
+        };
+        supportedLangs.forEach(lang => {
+            expect(translations[lang]).to.be.an("object");
+            expect(translations[lang].noMatches).to.be.a("string");
+            expect(translations[lang].noMatches.length).to.be.greaterThan(0);
+            expect(translations[lang].noMatches).to.contain(expectedSubstrings[lang]);
+
+            setLanguage(lang);
+            expect(getLanguage()).to.be(lang);
+            expect(t("noMatches")).to.be(translations[lang].noMatches);
+        });
+    });
+
+    it("should render empty state message with t(\x27noMatches\x27) when 0 cards are displayed on timeline", () => {
+        setLanguage("DE");
+        const timelineComp = Timeline();
+        const vnode = {
+            attrs: {
+                data: [],
+                version: 1,
+                language: "DE",
+                layoutMode: "virtual",
+                renderItem: () => m("div")
+            }
+        };
+        timelineComp.oninit(vnode);
+        const resDE = timelineComp.view(vnode);
+
+        const emptyNodes = findVnodes(resDE, isEmptyState);
+        expect(emptyNodes.length).to.be.greaterThan(0);
+        const textDE = getVnodeText(emptyNodes[0]);
+        expect(textDE).to.contain("Keine Treffer gefunden");
+    });
+
+    it("should dynamically re-evaluate empty state translation on language switch (Mithril safeguard rule)", () => {
+        setLanguage("DE");
+        const timelineComp = Timeline();
+        const vnode = {
+            attrs: {
+                data: [],
+                version: 1,
+                language: "DE",
+                layoutMode: "virtual",
+                renderItem: () => m("div")
+            }
+        };
+        timelineComp.oninit(vnode);
+        let res = timelineComp.view(vnode);
+        let nodes = findVnodes(res, isEmptyState);
+        expect(getVnodeText(nodes[0])).to.contain("Keine Treffer gefunden");
+
+        // Switch to FR
+        setLanguage("FR");
+        vnode.attrs.language = "FR";
+        vnode.attrs.version = 2;
+        timelineComp.onbeforeupdate(vnode);
+        res = timelineComp.view(vnode);
+        nodes = findVnodes(res, isEmptyState);
+        expect(getVnodeText(nodes[0])).to.contain("Aucun résultat trouvé");
+
+        // Switch to IT
+        setLanguage("IT");
+        vnode.attrs.language = "IT";
+        vnode.attrs.version = 3;
+        timelineComp.onbeforeupdate(vnode);
+        res = timelineComp.view(vnode);
+        nodes = findVnodes(res, isEmptyState);
+        expect(getVnodeText(nodes[0])).to.contain("Nessun risultato trovato");
+
+        // Switch to EN
+        setLanguage("EN");
+        vnode.attrs.language = "EN";
+        vnode.attrs.version = 4;
+        timelineComp.onbeforeupdate(vnode);
+        res = timelineComp.view(vnode);
+        nodes = findVnodes(res, isEmptyState);
+        expect(getVnodeText(nodes[0])).to.contain("No matches found");
     });
 });

@@ -394,7 +394,7 @@ export const MiniOverview = () => {
 
                                         targetY !== null && m("line.tooltip-connector", {
                                             x1: getX(displayYear),
-                                            y1: 0,
+                                            y1: -8,
                                             x2: getX(displayYear),
                                             y2: targetY,
                                             style: {
@@ -435,44 +435,6 @@ export const MiniOverview = () => {
                                         })
                                     )
                                 ),
-                                m("svg", {
-                                    viewBox: "0 0 100 100",
-                                    preserveAspectRatio: "none",
-                                    class: "density-graph-svg",
-                                    style: {
-                                        position: "absolute",
-                                        top: 0,
-                                        left: 0,
-                                        width: "100%",
-                                        height: "100%",
-                                        pointerEvents: "none",
-                                        zIndex: 18,
-                                        overflow: "visible"
-                                    }
-                                }, [
-                                    searchDensity && searchDensity.maxVal > 0 ? [
-                                        m("path.search-density-area", {
-                                            d: searchDensity.areaPath,
-                                            style: { fill: "#fbbf24", opacity: 0.45, transition: "all 0.3s ease" }
-                                        }),
-                                        m("path.search-density-line", {
-                                            d: searchDensity.path,
-                                            style: { stroke: "#fcd34d", strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" }
-                                        })
-                                    ] : null,
-                                    hoverDensities.map((hd) => [
-                                        m("path.hover-density-area", {
-                                            key: `area-${hd.category}`,
-                                            d: hd.density.areaPath,
-                                            style: { fill: hd.color, opacity: 0.45, transition: "all 0.3s ease" }
-                                        }),
-                                        m("path.hover-density-line", {
-                                            key: `line-${hd.category}`,
-                                            d: hd.density.path,
-                                            style: { stroke: hd.color, strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" }
-                                        })
-                                    ])
-                                ]),
                                 [
                                     hoverCPU !== null &&
                                         m("div.hover-point.cpu-point", {
@@ -632,6 +594,45 @@ export const MiniOverview = () => {
                                 ]
                             ),
                             m(".data-marker-row", [
+                                m("svg", {
+                                    viewBox: "0 0 100 100",
+                                    preserveAspectRatio: "none",
+                                    class: "density-graph-svg",
+                                    style: {
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        pointerEvents: "none",
+                                        zIndex: 8,
+                                        overflow: "visible"
+                                    }
+                                }, [
+                                    searchDensity && searchDensity.maxVal > 0 ? [
+                                        m("path.search-density-area", {
+                                            d: searchDensity.areaPath,
+                                            style: { fill: "#fbbf24", opacity: 0.45, transition: "all 0.3s ease" }
+                                        }),
+                                        m("path.search-density-line", {
+                                            d: searchDensity.path,
+                                            style: { stroke: "#fcd34d", strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" }
+                                        })
+                                    ] : null,
+                                    hoverDensities.map((hd) => [
+                                        m("path.hover-density-area", {
+                                            key: `area-${hd.category}`,
+                                            d: hd.density.areaPath,
+                                            style: { fill: hd.color, opacity: 0.45, transition: "all 0.3s ease" }
+                                        }),
+                                        m("path.hover-density-line", {
+                                            key: `line-${hd.category}`,
+                                            d: hd.density.path,
+                                            style: { stroke: hd.color, strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" }
+                                        })
+                                    ])
+                                ]),
+
                                 m(".data-markers-container", {
                                     style: {
                                         position: "absolute",

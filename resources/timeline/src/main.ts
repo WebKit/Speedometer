@@ -16,13 +16,13 @@ const App = () => {
             return;
         }
         const identifier = card.id ? `ID: ${card.id}` : `index: ${index}`;
-        if (!card.title) console.error(`Validation Error: Card (${identifier}) is missing a 'title'.`);
+        if (!card.title) console.error(`Validation Error: Card (${identifier}) is missing a \x27title\x27.`);
 
-        if (!Array.isArray(card.tags) || card.tags.length === 0) console.error(`Validation Error: Card (${identifier}) must have at least one tag in the 'tags' array.`);
+        if (!Array.isArray(card.tags) || card.tags.length === 0) console.error(`Validation Error: Card (${identifier}) must have at least one tag in the \x27tags\x27 array.`);
 
-        if (!card.description) console.error(`Validation Error: Card (${identifier}) is missing a 'description'.`);
+        if (!card.description) console.error(`Validation Error: Card (${identifier}) is missing a \x27description\x27.`);
 
-        if (!card.links || !card.links.wikipedia) console.error(`Validation Error: Card (${identifier}) is missing a Wikipedia link in 'links.wikipedia'.`);
+        if (!card.links || !card.links.wikipedia) console.error(`Validation Error: Card (${identifier}) is missing a Wikipedia link in \x27links.wikipedia\x27.`);
     });
     let activeFilters = Object.keys(TAGS);
     let searchQuery = "";
@@ -174,6 +174,17 @@ const App = () => {
                     onFilterOnly: (tag: string) => {
                         activeFilters = [tag];
                         updateFilterSelection();
+                    },
+                    onSelectAllTags: () => {
+                        activeFilters = Object.keys(TAGS);
+                        updateFilterSelection();
+                    },
+                    onResetFilters: () => {
+                        activeFilters = Object.keys(TAGS);
+                        updateFilterSelection();
+                    },
+                    onLanguageChange: (lang: string) => {
+                        dataVersion++;
                     },
                 }),
                 m("#main-content", [

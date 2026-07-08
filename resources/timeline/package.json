@@ -7,7 +7,7 @@
         "dev": "node generate-index.js && vite",
         "build": "node generate-index.js && vite build",
         "preview": "vite preview",
-        "test": "npx mocha tests/"
+        "test": "npx tsc && npx mocha tests/"
     },
     "dependencies": {
         "mithril": "^2.2.0"

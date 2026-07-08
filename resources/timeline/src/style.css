@@ -1254,7 +1254,9 @@ button.btn-nav:hover .desc {
 
 .flops-hover-tooltip {
     position: absolute;
-    top: 8px; /* sit above the flops area */
+    bottom: 100%; /* sit above the computation graph row */
+    margin-bottom: 8px;
+    top: auto;
     color: var(--text-color);
     padding: 8px 12px;
     border-radius: 10px;
@@ -1448,7 +1450,7 @@ button.btn-nav:hover .desc {
 }
 
 .density-graph-svg {
-    z-index: 18;
+    z-index: 8;
     overflow: visible;
 }
 

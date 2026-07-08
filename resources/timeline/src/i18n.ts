@@ -1,6 +1,6 @@
 import m from "mithril";
 
-export type Language = "DE" | "FR" | "IT";
+export type Language = "DE" | "FR" | "IT" | "EN" | "ES" | "JA";
 
 let activeLanguage: Language = "DE";
 
@@ -10,7 +10,11 @@ export const getLanguage = (): Language => activeLanguage;
 // Do not remove m.redraw() or alter this state mechanism, as live translation requires Mithril to re-evaluate components on language switch.
 export const setLanguage = (lang: Language) => {
     activeLanguage = lang;
-    m.redraw();
+    try {
+        m.redraw();
+    } catch (e) {
+        // Ignore error in non-DOM/test environments
+    }
 };
 
 export const translations = {
@@ -42,13 +46,14 @@ export const translations = {
         wikipedia: "Wikipedia ↗",
         searchPlaceholder: "Suchen...",
         suggestionsTitle: "Vorschläge",
+        noMatches: "Keine Treffer gefunden",
     },
     FR: {
-        title: "Histoire de l'informatique",
+        title: "Histoire de l\x27informatique",
         subtitle: "1900 - 2026",
         filter: "Filtrer :",
         transistors: "Transistors :",
-        clockSpeed: "Fréquence d'horloge :",
+        clockSpeed: "Fréquence d\x27horloge :",
         memory: "Mémoire :",
         year: "Année",
         cpu: "Processeur :",
@@ -71,6 +76,7 @@ export const translations = {
         wikipedia: "Wikipédia ↗",
         searchPlaceholder: "Rechercher...",
         suggestionsTitle: "Suggestions",
+        noMatches: "Aucun résultat trouvé",
     },
     IT: {
         title: "Storia del computer",
@@ -100,6 +106,94 @@ export const translations = {
         wikipedia: "Wikipedia ↗",
         searchPlaceholder: "Cerca...",
         suggestionsTitle: "Suggerimenti",
+        noMatches: "Nessun risultato trovato",
+    },
+    EN: {
+        title: "History of Computing",
+        subtitle: "1900 - 2026",
+        filter: "Filter:",
+        transistors: "Transistors:",
+        clockSpeed: "Clock Speed:",
+        memory: "Memory:",
+        year: "Year",
+        cpu: "CPU:",
+        gpu: "GPU:",
+        tpu: "TPU:",
+        cat_hardware: "Hardware",
+        cat_software: "Software",
+        cat_consumer: "Consumer",
+        cat_networking: "Networking",
+        cat_web: "Web & Internet",
+        cat_milestone: "Milestone",
+        cat_gaming: "Gaming",
+        cat_art: "Art",
+        cat_military: "Military",
+        cat_politics: "Politics",
+        cat_medicine: "Medicine",
+        cat_science: "Science",
+        cat_default: "General",
+        wikipedia: "Wikipedia ↗",
+        searchPlaceholder: "Search...",
+        suggestionsTitle: "Suggestions",
+        noMatches: "No matches found",
+    },
+    ES: {
+        title: "Historia de la informática",
+        subtitle: "1900 - 2026",
+        filter: "Filtro:",
+        transistors: "Transistores:",
+        clockSpeed: "Velocidad de reloj:",
+        memory: "Memoria:",
+        year: "Año",
+        cpu: "CPU:",
+        gpu: "GPU:",
+        tpu: "TPU:",
+        cat_hardware: "Hardware",
+        cat_software: "Software",
+        cat_consumer: "Consumidor",
+        cat_networking: "Redes",
+        cat_web: "Web e Internet",
+        cat_milestone: "Hito",
+        cat_gaming: "Videojuegos",
+        cat_art: "Arte",
+        cat_military: "Militar",
+        cat_politics: "Política",
+        cat_medicine: "Medicina",
+        cat_science: "Ciencia",
+        cat_default: "General",
+        wikipedia: "Wikipedia ↗",
+        searchPlaceholder: "Buscar...",
+        suggestionsTitle: "Sugerencias",
+        noMatches: "No se encontraron coincidencias",
+    },
+    JA: {
+        title: "コンピューティングの歴史",
+        subtitle: "1900 - 2026",
+        filter: "フィルター:",
+        transistors: "トランジスタ:",
+        clockSpeed: "クロック周波数:",
+        memory: "メモリ:",
+        year: "年",
+        cpu: "CPU:",
+        gpu: "GPU:",
+        tpu: "TPU:",
+        cat_hardware: "ハードウェア",
+        cat_software: "ソフトウェア",
+        cat_consumer: "消費者",
+        cat_networking: "ネットワーク",
+        cat_web: "ウェブ＆インターネット",
+        cat_milestone: "マイルストーン",
+        cat_gaming: "ゲーム",
+        cat_art: "アート",
+        cat_military: "軍事",
+        cat_politics: "政治",
+        cat_medicine: "医療",
+        cat_science: "科学",
+        cat_default: "一般",
+        wikipedia: "ウィキペディア ↗",
+        searchPlaceholder: "検索...",
+        suggestionsTitle: "提案",
+        noMatches: "一致する結果はありません",
     }
 };
 

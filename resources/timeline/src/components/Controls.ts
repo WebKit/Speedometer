@@ -4,9 +4,14 @@ import { t, getLanguage, setLanguage, Language, translateContent } from "../i18n
 
 export const Controls = {
     view(vnode) {
-        const { activeFilters, onFilterChange, onFilterOnly, searchQuery, suggestions, showSuggestions, layoutMode, onSearchChange, onJumpToCard, onFocusSearch, onCloseSuggestions, onLayoutModeChange } = vnode.attrs;
+        const { activeFilters, onFilterChange, onFilterOnly, onSelectAllTags, onResetFilters, searchQuery, suggestions, showSuggestions, layoutMode, onSearchChange, onJumpToCard, onFocusSearch, onCloseSuggestions, onLayoutModeChange } = vnode.attrs;
 
         const categories = Object.keys(TAGS);
+
+        const resetAllTags = () => {
+            if (onSelectAllTags) onSelectAllTags();
+            else if (onResetFilters) onResetFilters();
+        };
 
         return m("header#app-header", [
             m(".header-title-section", [
@@ -14,10 +19,28 @@ export const Controls = {
                 m("span.subtitle", t("subtitle"))
             ]),
 
-            m(".action-group.filter-group", { style: { width: "100%", height: "auto", padding: "8px 16px" } }, [
-                m("span.group-label", t("filter")),
+            m(".action-group.filter-group", {
+                style: { width: "100%", height: "auto", padding: "8px 16px" },
+                ondblclick: () => {
+                    resetAllTags();
+                },
+            }, [
+                m("span.group-label", {
+                    style: { cursor: "pointer", userSelect: "none" },
+                    title: "Double-click to select all tags",
+                    ondblclick: (e: any) => {
+                        e.stopPropagation();
+                        resetAllTags();
+                    },
+                }, t("filter")),
                 m(
                     "#filter-panel",
+                    {
+                        ondblclick: (e: any) => {
+                            e.stopPropagation();
+                            resetAllTags();
+                        },
+                    },
                     categories.map((cat) => {
                         const tagData = (TAGS as any)[cat];
                         const label = tagData ? translateContent(tagData.label) : cat;
@@ -153,7 +176,7 @@ export const Controls = {
                 m(".action-group.lang-group", [
                     m("span.group-label", "LANG"),
                     m(".lang-selector", { style: { display: "flex", gap: "4px" } },
-                        (["DE", "FR", "IT"] as Language[]).map((lang) =>
+                        (["DE", "FR", "IT", "EN", "ES", "JA"] as Language[]).map((lang) =>
                             m("button.lang-btn", {
                                 class: getLanguage() === lang ? "active" : "",
                                 onclick: () => {
