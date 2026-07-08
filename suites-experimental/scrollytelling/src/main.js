@@ -32,6 +32,7 @@ function renderStageSections() {
         const narrativeHtml = `
             <div class="stage-narrative-column">
                 <article id="step-${idx + 1}" class="step ${idx === 0 ? "is-active" : ""}" data-index="${idx}">
+                    <div class="step-badge-wrap"><span class="step-badge">FIG. 0${idx + 1} // EST. ${stage.year}</span></div>
                     <span class="step-meta">Stage ${idx + 1} // ${stage.year}</span>
                     <h2 class="step-title">${stage.title}: ${stage.subtitle}</h2>
                     <div class="step-body">${descHtml}</div>
@@ -45,6 +46,7 @@ function renderStageSections() {
                 <div class="graphic-sticky-wrapper">
                     <canvas class="graphic-canvas" id="graphic-canvas-${idx}"></canvas>
                     <svg class="graphic-svg" id="graphic-svg-${idx}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet"></svg>
+                    <div class="graphic-texture-overlay"></div>
                     <div class="caption" id="graphic-caption-${idx}">Stage ${idx + 1}: ${stage.title}</div>
                 </div>
             </div>
@@ -52,6 +54,28 @@ function renderStageSections() {
 
         stageEl.innerHTML = narrativeHtml + graphicHtml;
         container.appendChild(stageEl);
+    });
+}
+
+function renderFloatingTOC() {
+    const tocList = document.getElementById("toc-list");
+    if (!tocList) return;
+
+    tocList.innerHTML = `<div id="toc-active-indicator" class="toc-active-indicator"></div>` +
+        STAGES.map((stage, idx) => `
+            <li class="toc-item-wrapper">
+                <button class="toc-item ${idx === 0 ? "is-active" : ""}" data-index="${idx}">
+                    <span class="toc-num">0${idx + 1}</span>
+                    <span class="toc-label">${stage.title}</span>
+                </button>
+            </li>
+        `).join("");
+
+    const buttons = tocList.querySelectorAll(".toc-item");
+    buttons.forEach((btn, idx) => {
+        btn.addEventListener("click", () => {
+            if (typeof window.stepTo === "function") window.stepTo(idx);
+        });
     });
 }
 
@@ -102,6 +126,23 @@ window.forceScrollytellingUpdate = function () {
     const stageLabel = document.getElementById("active-stage-label");
     if (stageLabel && STAGES[activeIndex]) stageLabel.textContent = `STAGE ${activeIndex + 1}: ${STAGES[activeIndex].title.toUpperCase()}`;
 
+    const tocItems = document.querySelectorAll(".toc-item");
+    const indicator = document.getElementById("toc-active-indicator");
+    tocItems.forEach((item, idx) => {
+        if (idx === activeIndex) {
+            if (!item.classList.contains("is-active")) item.classList.add("is-active");
+            if (indicator) {
+                const wrapper = item.closest(".toc-item-wrapper") || item.parentElement || item;
+                const offsetTop = wrapper.offsetTop;
+                const height = wrapper.offsetHeight;
+                indicator.style.transform = `translateY(${offsetTop}px)`;
+                indicator.style.height = `${height}px`;
+            }
+        } else {
+            if (item.classList.contains("is-active")) item.classList.remove("is-active");
+        }
+    });
+
     updateGraphics(activeIndex, activeProgress);
 };
 
@@ -151,6 +192,7 @@ window.scrubBackward = window.scrubPrev;
 
 function initApp() {
     renderStageSections();
+    renderFloatingTOC();
     initGraphics();
 
     const urlParams = new URLSearchParams(window.location.search);

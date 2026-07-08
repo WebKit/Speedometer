@@ -1,11 +1,11 @@
 :root {
-    --bg-color: #0a0a0a;
-    --text-color: #f0f0f0;
-    --text-muted: #a0a0a0;
+    --bg-color: #0c0c0c;
+    --text-color: #f2f2f2;
+    --text-muted: #9c9c9c;
     --border-color: #ffffff;
     --accent-color: #ffffff;
     --card-bg: #141414;
-    --card-active-bg: #202020;
+    --card-active-bg: #1a1a1a;
 }
 
 * {
@@ -17,40 +17,65 @@
 body {
     background-color: var(--bg-color);
     background-image: 
-        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0),
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
-    background-size: 16px 16px, 150px 150px;
+        radial-gradient(#3a3a3a 1.5px, transparent 1.5px),
+        radial-gradient(#222222 1px, transparent 1px),
+        url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.15%22/%3E%3C/svg%3E");
+    background-size: 14px 14px, 28px 28px, 150px 150px;
+    background-position: 0 0, 7px 7px, 0 0;
     color: var(--text-color);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.6;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    overflow-x: hidden;
 }
 
 #app {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 2rem;
+    position: relative;
 }
 
 .page-header {
-    padding: 4rem 0 2rem;
-    border-bottom: 3px solid var(--border-color);
-    margin-bottom: 2rem;
+    padding: 4.5rem 0 2.5rem;
+    border-bottom: 4px solid var(--border-color);
+    margin-bottom: 3rem;
     text-align: center;
+    position: relative;
+}
+
+.page-header::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--border-color);
 }
 
 .page-header h1 {
-    font-size: 3.5rem;
+    font-family: "Impact", "Arial Black", "Futura", "Helvetica Neue", sans-serif;
+    font-size: 4rem;
     font-weight: 900;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
     text-transform: uppercase;
     margin-bottom: 0.5rem;
+    color: #ffffff;
+    text-shadow: 4px 4px 0px #222222;
 }
 
 .subtitle {
     font-size: 1.25rem;
-    color: var(--text-muted);
-    font-family: monospace;
-    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-family: "Courier New", Courier, monospace;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: #222222;
+    border: 1px solid var(--border-color);
 }
 
 .header-status {
@@ -58,18 +83,116 @@ body {
     justify-content: center;
     gap: 1.5rem;
     flex-wrap: wrap;
+    margin-top: 1rem;
 }
 
 .status-tag {
-    font-family: monospace;
-    font-size: 0.875rem;
+    font-family: "Impact", "Arial Black", sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+    padding: 0.5rem 1.25rem;
+    border: 3px solid var(--border-color);
+    background-color: #ffffff;
+    color: #000000;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: 5px 5px 0px #444444;
+    transform: rotate(-1.5deg);
+    display: inline-block;
+}
+
+/* Floating Table of Contents (1950s Magazine Ad Style) */
+.floating-toc {
+    position: fixed;
+    top: 2.5rem;
+    right: 2.5rem;
+    z-index: 1000;
+    background-color: #0a0a0a;
+    border: 3px solid #ffffff;
+    padding: 1rem;
+    box-shadow: 8px 8px 0px #ffffff;
+    width: 250px;
+    transform: rotate(1.2deg);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+}
+
+.floating-toc:hover {
+    transform: rotate(0deg) scale(1.02);
+    box-shadow: 10px 10px 0px #ffffff;
+}
+
+.toc-header {
+    border-bottom: 2px solid #ffffff;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+.toc-title {
+    font-family: "Impact", "Arial Black", sans-serif;
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.toc-list {
+    list-style: none;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.toc-item-wrapper {
+    position: relative;
+    z-index: 10;
+}
+
+.toc-item {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    text-align: left;
+    padding: 0.45rem 0.5rem;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.85rem;
     font-weight: 700;
-    padding: 0.4rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 9999px;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.toc-num {
+    font-weight: 900;
     letter-spacing: 0.05em;
+    opacity: 0.75;
+}
+
+.toc-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+}
+
+.toc-active-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 32px;
+    background-color: #ffffff;
+    mix-blend-mode: difference;
+    pointer-events: none;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.25s ease;
+    z-index: 20;
 }
 
 .scrolly-container {
@@ -79,6 +202,7 @@ body {
     position: relative;
 }
 
+/* Stage Layout & Asymmetric Composition */
 .stage-section {
     display: flex;
     position: relative;
@@ -88,7 +212,7 @@ body {
     min-height: 160vh;
     padding-top: 5vh;
     padding-bottom: 15vh;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 2px dashed rgba(255, 255, 255, 0.2);
 }
 
 .stage-section:last-child {
@@ -124,18 +248,35 @@ body {
     z-index: 5;
 }
 
+/* Irregular Slanted Tilt Angles & Asymmetric Cutouts per Stage */
+#stage-section-0 { --step-tilt: -1.4deg; --graphic-tilt: 1.2deg; --step-clip: polygon(1% 0%, 99% 1%, 100% 98%, 0% 100%); }
+#stage-section-1 { --step-tilt: 1.6deg; --graphic-tilt: -1.4deg; --step-clip: polygon(0% 1%, 100% 0%, 99% 99%, 1% 100%); }
+#stage-section-2 { --step-tilt: -0.9deg; --graphic-tilt: 1.5deg; --step-clip: polygon(0% 0%, 98% 1%, 100% 100%, 1% 98%); }
+#stage-section-3 { --step-tilt: 1.3deg; --graphic-tilt: -0.9deg; --step-clip: polygon(1% 1%, 100% 0%, 99% 100%, 0% 99%); }
+#stage-section-4 { --step-tilt: -1.5deg; --graphic-tilt: 1.3deg; --step-clip: polygon(0% 1%, 99% 0%, 100% 99%, 1% 100%); }
+#stage-section-5 { --step-tilt: 1.0deg; --graphic-tilt: -1.5deg; --step-clip: polygon(1% 0%, 100% 1%, 98% 100%, 0% 98%); }
+#stage-section-6 { --step-tilt: -1.2deg; --graphic-tilt: 1.6deg; --step-clip: polygon(0% 0%, 100% 1%, 99% 100%, 1% 99%); }
+#stage-section-7 { --step-tilt: 1.5deg; --graphic-tilt: -1.1deg; --step-clip: polygon(1% 1%, 99% 0%, 100% 99%, 0% 100%); }
+
+/* Graphic Sticky Wrapper (1950s Print Ad Border) */
 .graphic-sticky-wrapper {
     position: relative;
     width: 100%;
     aspect-ratio: 4 / 3;
-    border: 3px solid var(--border-color);
-    border-radius: 24px;
+    border: 4px solid #ffffff;
+    border-radius: 4px;
     background-color: #000000;
-    box-shadow: 12px 12px 0px rgba(255, 255, 255, 0.15);
+    box-shadow: 14px 14px 0px rgba(255, 255, 255, 0.25);
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: rotateZ(var(--graphic-tilt, 0deg));
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease, border-color 0.3s ease;
+}
+
+.stage-section:hover .graphic-sticky-wrapper {
+    box-shadow: 16px 16px 0px rgba(255, 255, 255, 0.4);
 }
 
 .graphic-canvas,
@@ -160,116 +301,194 @@ body {
     pointer-events: none;
 }
 
-.caption {
+/* B&W Light Watercolor / Ink Wash Texture Overlay */
+.graphic-texture-overlay {
     position: absolute;
-    bottom: 1.25rem;
-    left: 1.25rem;
-    right: 1.25rem;
-    background: rgba(10, 10, 10, 0.9);
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    padding: 0.65rem 1.25rem;
-    font-family: monospace;
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-align: center;
-    z-index: 3;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("./bw_watercolor_texture.jpg"), radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 70%);
+    background-size: cover, 100% 100%;
+    background-position: center;
+    mix-blend-mode: overlay;
+    opacity: 0.35;
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
 }
 
+/* 1950s Graphic Callout Badge Caption */
+.caption {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    background: #ffffff;
+    color: #000000;
+    border: 3px solid #000000;
+    border-radius: 2px;
+    padding: 0.65rem 1.25rem;
+    font-family: "Impact", "Arial Black", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 900;
+    text-align: center;
+    z-index: 3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 5px 5px 0px #222222;
+}
+
+/* Narrative Cards (.step) */
 .step {
     background-color: var(--card-bg);
-    border: 2px solid #333333;
-    border-radius: 20px;
+    border: 3px solid #444444;
+    border-radius: 4px;
     padding: 2.5rem;
-    transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-    opacity: 0.4;
-    transform: scale(0.96);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.35s ease, background-color 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease;
+    opacity: 0.35;
+    transform: perspective(1000px) rotateZ(var(--step-tilt, 0deg)) scale(0.94);
+    clip-path: var(--step-clip, none);
+    box-shadow: 6px 6px 0px rgba(255, 255, 255, 0.08);
+    position: relative;
 }
 
 .step.is-active {
     opacity: 1;
-    border-color: var(--border-color);
+    border-color: #ffffff;
     background-color: var(--card-active-bg);
-    transform: scale(1);
-    border-radius: 20px;
-    box-shadow: 10px 10px 0px rgba(255, 255, 255, 0.18), 0 12px 24px rgba(0, 0, 0, 0.6);
+    transform: perspective(1000px) rotateZ(var(--step-tilt, 0deg)) scale(1.02);
+    box-shadow: 14px 14px 0px #ffffff, 0 20px 40px rgba(0, 0, 0, 0.8);
+    z-index: 15;
+}
+
+.step-badge-wrap {
+    margin-bottom: 1.25rem;
+}
+
+.step-badge {
+    display: inline-block;
+    background-color: #ffffff;
+    color: #000000;
+    font-family: "Impact", "Arial Black", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.85rem;
+    border: 2px solid #000000;
+    box-shadow: 3px 3px 0px #666666;
+    transform: rotate(-2.5deg);
 }
 
 .step-meta {
-    font-family: monospace;
-    font-size: 0.85rem;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     display: block;
     margin-bottom: 0.75rem;
-    border-bottom: 1px dashed #444444;
+    border-bottom: 2px solid #333333;
     padding-bottom: 0.5rem;
 }
 
 .step-title {
-    font-size: 1.75rem;
-    font-weight: 800;
+    font-family: "Impact", "Arial Black", "Futura", sans-serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
     margin-bottom: 1.25rem;
     color: #ffffff;
-    line-height: 1.2;
+    line-height: 1.1;
 }
 
 .step-description {
     font-size: 1.05rem;
-    color: #d0d0d0;
-    margin-bottom: 1.25rem;
+    color: #d8d8d8;
+    margin-bottom: 1.5rem;
     line-height: 1.7;
+    font-weight: 400;
 }
 
 .step-description p {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .step-description p:last-child {
     margin-bottom: 0;
 }
 
+/* Step Specs (Print Ad Table/Grid Box) */
 .step-specs {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    gap: 0.85rem;
     background: #0a0a0a;
-    padding: 1rem;
-    border: 1px solid #444444;
-    border-radius: 14px;
-    margin-top: 1rem;
+    padding: 1.25rem;
+    border: 2px solid #ffffff;
+    border-radius: 2px;
+    margin-top: 1.25rem;
+    box-shadow: 6px 6px 0px rgba(255, 255, 255, 0.15);
 }
 
 .spec-item {
     display: flex;
     flex-direction: column;
+    border-left: 3px solid #333333;
+    padding-left: 0.65rem;
 }
 
 .spec-label {
-    font-family: monospace;
+    font-family: "Courier New", Courier, monospace;
     font-size: 0.75rem;
+    font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .spec-value {
-    font-family: monospace;
-    font-size: 0.85rem;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.9rem;
     font-weight: 700;
     color: #ffffff;
 }
 
 .page-footer {
-    padding: 4rem 0 2rem;
-    border-top: 2px solid #333333;
+    padding: 5rem 0 3rem;
+    border-top: 4px solid var(--border-color);
     margin-top: 4rem;
     text-align: center;
-    font-family: monospace;
-    font-size: 0.9rem;
-    color: var(--text-muted);
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+@media (max-width: 1100px) {
+    .floating-toc {
+        top: auto;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 220px;
+        padding: 0.75rem;
+        transform: rotate(0deg);
+    }
+    .toc-title {
+        font-size: 1rem;
+    }
+    .toc-item {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.4rem;
+    }
+    .step-title {
+        font-size: 1.75rem;
+    }
 }
 
 @media (max-width: 900px) {
