@@ -56,6 +56,7 @@ try {
     ({ values } = parseArgs({
         options: {
             all: { type: "boolean" },
+            check: { type: "boolean" },
             help: { type: "boolean", short: "h" },
         },
         strict: true,
@@ -71,14 +72,34 @@ if (values.help) {
 
 Options:
   --all          Build all workloads instead of just changed workloads
+  --check        Check that no files were modified after building
   -h, --help     Show this help message`);
     process.exit(0);
+}
+
+async function checkGitStatus() {
+    if (!values.check)
+        return;
+    try {
+        await runActionGroup("Checking for uncommitted build changes...", async () => {
+            const status = await sh("git", "status", "--porcelain", "suites", "suites-experimental");
+            if (status.stdoutString.trim() !== "") {
+                console.error(status.stdoutString);
+                throw new Error("Git tree is dirty");
+            }
+        });
+        console.log("Git tree is clean. All build files match the source.");
+    } catch (e) {
+        console.error("Build files have changed or new files were created. Please commit them.");
+        process.exit(1);
+    }
 }
 
 const allWorkloads = getWorkloads();
 
 if (values.all) {
     await buildWorkloads(allWorkloads);
+    await checkGitStatus();
     process.exit(0);
 }
 
@@ -88,6 +109,7 @@ try {
 } catch (e) {
     console.error("Failed to get changed files from git. Falling back to building all workloads.");
     await buildWorkloads(allWorkloads);
+    await checkGitStatus();
     process.exit(0);
 }
 
@@ -103,7 +125,9 @@ for (const file of changedFiles) {
 
 if (changedWorkloads.size === 0) {
     console.log("No workloads changed compared to upstream.");
+    await checkGitStatus();
     process.exit(0);
 }
 
 await buildWorkloads([...changedWorkloads]);
+await checkGitStatus();
