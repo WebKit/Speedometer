@@ -1,9 +1,46 @@
 import { STAGES } from "./content.js";
 
+const IMAGE_SOURCES = {
+    topo1: "public/topo_map_1.webp",
+    topo2: "public/topo_map_2.webp",
+    topo3: "public/topo_map_3.webp",
+    grid: "public/planning_paper_dot_grid.webp",
+    texture: "public/bw_watercolor_texture.webp",
+    stroke1: "public/watercolor_stroke_1.webp",
+    stroke2: "public/watercolor_stroke_2.webp",
+    stroke3: "public/watercolor_stroke_3.webp",
+};
+
+const imageCache = {};
+
+function getOrLoadImage(key) {
+    if (typeof Image === "undefined") return null;
+    if (!imageCache[key] && IMAGE_SOURCES[key]) {
+        const img = new Image();
+        img.src = IMAGE_SOURCES[key];
+        imageCache[key] = img;
+    }
+    return imageCache[key] || null;
+}
+
+function drawImageIfLoaded(ctx, img, x, y, w, h, alpha = 0.35, composite = "overlay") {
+    if (img && img.complete && img.naturalWidth > 0) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.globalCompositeOperation = composite;
+        ctx.drawImage(img, x, y, w, h);
+        ctx.restore();
+    }
+}
+
 let stageGraphics = [];
 
 export function initGraphics() {
     stageGraphics = [];
+
+    for (const key of Object.keys(IMAGE_SOURCES)) {
+        getOrLoadImage(key);
+    }
 
     for (let i = 0; i < STAGES.length; i++) {
         const canvas = document.getElementById(`graphic-canvas-${i}`);
@@ -45,15 +82,24 @@ export function initGraphics() {
     }
 }
 
+function createSVGElement(tag, attrs = {}) {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const [k, v] of Object.entries(attrs)) {
+        el.setAttribute(k, String(v));
+    }
+    return el;
+}
+
 function buildSVGContentForStage(g, stageIndex) {
     const ns = "http://www.w3.org/2000/svg";
-    const path = document.createElementNS(ns, "path");
-    path.setAttribute("fill", "none");
-    path.setAttribute("stroke", "#ffffff");
-    path.setAttribute("stroke-width", "2");
-    path.setAttribute("stroke-linecap", "round");
-    path.setAttribute("stroke-linejoin", "round");
-    path.setAttribute("class", "dynamic-path");
+    const path = createSVGElement("path", {
+        fill: "none",
+        stroke: "#ffffff",
+        "stroke-width": "2",
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round",
+        class: "dynamic-path",
+    });
 
     if (stageIndex === 0) {
         path.setAttribute("d", "M 300 400 L 300 300 L 400 220 L 500 300 L 500 400 Z M 360 400 L 360 330 L 440 330 L 440 400 Z M 150 400 L 200 260 L 250 400 Z M 550 400 L 600 280 L 650 400 Z");
@@ -63,28 +109,368 @@ function buildSVGContentForStage(g, stageIndex) {
         path.setAttribute("d", "M 260 420 L 260 240 L 400 140 L 540 240 L 540 420 Z M 260 330 L 540 330 M 350 420 L 350 240 M 450 420 L 450 240 M 260 240 L 540 240 M 400 140 L 400 420 M 600 420 L 600 200 L 640 200 L 640 420 Z");
     } else if (stageIndex === 3) {
         path.setAttribute("d", "M 150 420 L 150 280 L 300 180 L 450 280 L 450 420 Z M 500 420 L 500 320 L 700 320 L 700 420 Z M 100 450 L 700 450 M 100 480 L 700 480 M 100 510 L 700 510 M 100 450 L 150 510 M 300 450 L 350 510 M 500 450 L 550 510");
-    } else if (stageIndex === 4) {
-        path.setAttribute("d", "M 150 420 L 160 300 Q 300 240 440 300 L 450 420 Z M 200 300 L 180 420 M 380 300 L 400 420 M 250 420 C 240 350 270 320 280 260 M 350 420 C 360 360 330 310 320 250");
-    } else if (stageIndex === 5) {
-        path.setAttribute("d", "M 150 420 L 150 200 L 550 200 L 550 420 Z M 150 310 L 550 310 M 350 200 L 350 420 M 100 200 L 600 200 M 100 420 L 600 420 M 150 150 L 150 470 M 550 150 L 550 470");
+    } else if (stageIndex >= 4) {
+        path.setAttribute("d", "M 100 420 L 700 420 M 150 420 L 150 200 M 650 420 L 650 200");
         path.setAttribute("stroke-dasharray", "8, 4");
-    } else if (stageIndex === 6) {
-        path.setAttribute("d", "M 200 400 L 200 220 L 400 120 L 600 220 L 600 400 Z M 220 380 L 220 235 L 400 145 L 580 235 L 580 380 Z M 320 400 L 320 550 C 320 580 360 580 360 550 L 360 400 M 440 400 L 440 550 C 440 580 480 580 480 550 L 480 400");
-    } else {
-        path.setAttribute("d", "M 180 420 L 180 250 L 450 250 L 450 420 Z M 350 320 L 680 320 L 680 180 L 350 180 Z M 350 320 L 350 420 M 500 180 L 500 320 M 600 180 L 600 320 M 100 420 L 700 420");
-        path.setAttribute("stroke-width", "3");
     }
 
     g.appendChild(path);
 
     for (let j = 0; j < 5; j++) {
-        const circle = document.createElementNS(ns, "circle");
-        circle.setAttribute("cx", String(200 + j * 100));
-        circle.setAttribute("cy", String(150 + (j % 2) * 50));
-        circle.setAttribute("r", "4");
-        circle.setAttribute("fill", "#ffffff");
-        circle.setAttribute("class", "dynamic-node");
+        const circle = createSVGElement("circle", {
+            cx: 200 + j * 100,
+            cy: 150 + (j % 2) * 50,
+            r: 4,
+            fill: "#ffffff",
+            class: "dynamic-node",
+        });
         g.appendChild(circle);
+    }
+
+    if (stageIndex >= 4) {
+        buildTechnicalSVG(g, stageIndex);
+    }
+}
+
+function addSVGCallout(g, x, y, targetX, targetY, text, subtext = "", id = "") {
+    const group = createSVGElement("g", { class: "tech-callout" });
+    if (id) group.setAttribute("id", id);
+
+    const leader = createSVGElement("polyline", {
+        points: `${targetX},${targetY} ${x + (targetX > x ? 20 : -20)},${y} ${x},${y}`,
+        fill: "none",
+        stroke: "rgba(255, 255, 255, 0.85)",
+        "stroke-width": "1.5",
+        "stroke-dasharray": "4, 2",
+    });
+    group.appendChild(leader);
+
+    const targetDot = createSVGElement("circle", {
+        cx: targetX,
+        cy: targetY,
+        r: 3.5,
+        fill: "#ffffff",
+        stroke: "#000000",
+        "stroke-width": "1",
+    });
+    group.appendChild(targetDot);
+
+    const labelBg = createSVGElement("rect", {
+        x: x - (targetX > x ? 0 : 180),
+        y: y - 22,
+        width: 180,
+        height: subtext ? 32 : 22,
+        fill: "rgba(0, 0, 0, 0.85)",
+        stroke: "rgba(255, 255, 255, 0.6)",
+        "stroke-width": "1",
+        rx: "2",
+    });
+    group.appendChild(labelBg);
+
+    const textEl = createSVGElement("text", {
+        x: x - (targetX > x ? -8 : 172),
+        y: y - 8,
+        fill: "#ffffff",
+        "font-family": '"Courier New", Courier, monospace',
+        "font-size": "11",
+        "font-weight": "bold",
+        "letter-spacing": "0.05em",
+    });
+    textEl.textContent = text;
+    group.appendChild(textEl);
+
+    if (subtext) {
+        const subEl = createSVGElement("text", {
+            x: x - (targetX > x ? -8 : 172),
+            y: y + 5,
+            fill: "rgba(255, 255, 255, 0.7)",
+            "font-family": '"Courier New", Courier, monospace',
+            "font-size": "9",
+        });
+        subEl.textContent = subtext;
+        group.appendChild(subEl);
+    }
+
+    g.appendChild(group);
+    return group;
+}
+
+function addSVGStressArrow(g, x1, y1, x2, y2, label, id = "") {
+    const group = createSVGElement("g", { class: "tech-arrow" });
+    if (id) group.setAttribute("id", id);
+    group.setAttribute("data-base-x1", String(x1));
+    group.setAttribute("data-base-y1", String(y1));
+    group.setAttribute("data-base-x2", String(x2));
+    group.setAttribute("data-base-y2", String(y2));
+
+    const line = createSVGElement("line", {
+        x1, y1, x2, y2,
+        stroke: "#ffffff",
+        "stroke-width": "2.5",
+        class: "tech-arrow-line",
+    });
+    group.appendChild(line);
+
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const headLen = 12;
+    const hx1 = x2 - headLen * Math.cos(angle - Math.PI / 6);
+    const hy1 = y2 - headLen * Math.sin(angle - Math.PI / 6);
+    const hx2 = x2 - headLen * Math.cos(angle + Math.PI / 6);
+    const hy2 = y2 - headLen * Math.sin(angle + Math.PI / 6);
+
+    const head = createSVGElement("polygon", {
+        points: `${x2},${y2} ${hx1},${hy1} ${hx2},${hy2}`,
+        fill: "#ffffff",
+        class: "tech-arrow-head",
+    });
+    group.appendChild(head);
+
+    const tx = (x1 + x2) / 2 + 10;
+    const ty = (y1 + y2) / 2;
+    const textEl = createSVGElement("text", {
+        x: tx,
+        y: ty,
+        fill: "#ffffff",
+        "font-family": '"Courier New", Courier, monospace',
+        "font-size": "10",
+        "font-weight": "bold",
+        class: "tech-arrow-label",
+    });
+    textEl.textContent = label;
+    group.appendChild(textEl);
+
+    g.appendChild(group);
+    return group;
+}
+
+function addSVGTitleBlock(g, project, dwgNo, rev, scale) {
+    const box = createSVGElement("g", { class: "tech-title-block" });
+
+    const frame = createSVGElement("rect", {
+        x: 480, y: 510, width: 300, height: 70,
+        fill: "rgba(0, 0, 0, 0.9)",
+        stroke: "#ffffff",
+        "stroke-width": "2",
+    });
+    box.appendChild(frame);
+
+    const div1 = createSVGElement("line", { x1: 480, y1: 535, x2: 780, y2: 535, stroke: "#ffffff", "stroke-width": "1.5" });
+    const div2 = createSVGElement("line", { x1: 480, y1: 558, x2: 780, y2: 558, stroke: "#ffffff", "stroke-width": "1" });
+    const div3 = createSVGElement("line", { x1: 640, y1: 535, x2: 640, y2: 580, stroke: "#ffffff", "stroke-width": "1" });
+    box.append(div1, div2, div3);
+
+    const tProj = createSVGElement("text", { x: 490, y: 528, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "11", "font-weight": "bold" });
+    tProj.textContent = `PROJ: ${project}`;
+
+    const tDwg = createSVGElement("text", { x: 490, y: 550, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "10" });
+    tDwg.textContent = `DWG: ${dwgNo}`;
+
+    const tRev = createSVGElement("text", { x: 650, y: 550, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "10" });
+    tRev.textContent = `REV: ${rev}`;
+
+    const tScale = createSVGElement("text", { x: 490, y: 572, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "9" });
+    tScale.textContent = `SCALE: ${scale}`;
+
+    const tDate = createSVGElement("text", { x: 650, y: 572, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "9" });
+    tDate.textContent = "STUDIO: SAARINEN/MIES";
+
+    box.append(tProj, tDwg, tRev, tScale, tDate);
+
+    const revTri = createSVGElement("polygon", {
+        points: "765,520 775,520 770,511",
+        fill: "none",
+        stroke: "#ffffff",
+        "stroke-width": "1.5",
+    });
+    box.appendChild(revTri);
+
+    g.appendChild(box);
+}
+
+function buildTechnicalSVG(g, stageIndex) {
+    if (stageIndex === 4) {
+        addSVGTitleBlock(g, "HISTORIC HOMESTEAD SURVEY", "EX-101", "1950-COND", "SCALE: 1/4 IN. = 1 FT.");
+
+        const imgTopo = createSVGElement("image", {
+            href: IMAGE_SOURCES.topo1,
+            x: 20, y: 20, width: 760, height: 560,
+            opacity: "0.35",
+            preserveAspectRatio: "none",
+            style: "mix-blend-mode: overlay;",
+        });
+        const imgStroke = createSVGElement("image", {
+            href: IMAGE_SOURCES.stroke1,
+            x: 150, y: 100, width: 500, height: 350,
+            opacity: "0.4",
+            preserveAspectRatio: "xMidYMid slice",
+            style: "mix-blend-mode: screen;",
+        });
+        g.append(imgTopo, imgStroke);
+
+        addSVGStressArrow(g, 260, 100, 260, 190, "DEAD LOAD: 45 LBS/SQ FT", "tech-arrow-5-1");
+        addSVGStressArrow(g, 360, 80, 360, 210, "SNOW ACCUMULATION LOAD", "tech-arrow-5-2");
+        addSVGStressArrow(g, 480, 100, 480, 190, "ROOF DEFLECTION LOAD", "tech-arrow-5-3");
+
+        addSVGCallout(g, 480, 430, 300, 400, "SEVERE MORTAR LEACHING", "REF. SEC 4 / LIME EROSION", "tech-callout-5-1");
+        addSVGCallout(g, 520, 160, 350, 210, "ROOF RAFTER DEFLECTION", "MAX SAG 8.5'' (STRUCTURAL FAILURE)", "tech-deflection-label");
+        addSVGCallout(g, 180, 350, 240, 330, "BOTANICAL RECLAMATION", "VITIS RIPARIA / VIRGINIA CREEPER", "tech-callout-5-3");
+        addSVGCallout(g, 500, 350, 420, 410, "COMPROMISED TIMBER SILLS", "ROT & GROUNDWATER INUNDATION", "tech-callout-5-4");
+
+        const badge = createSVGElement("g", { class: "tech-stamp-badge" });
+        const bRect = createSVGElement("rect", { x: 40, y: 40, width: 220, height: 36, fill: "rgba(0,0,0,0.85)", stroke: "#ffffff", "stroke-width": "2", "stroke-dasharray": "6,3" });
+        const bText = createSVGElement("text", { x: 50, y: 63, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "11", "font-weight": "bold" });
+        bText.textContent = "UNSAFE STRUCTURE // CONDEMNED";
+        badge.append(bRect, bText);
+        g.appendChild(badge);
+    } else if (stageIndex === 5) {
+        addSVGTitleBlock(g, "STRUCTURAL CONSERVATION", "ST-201", "MAY 1980", "SCALE: 3/16 IN. = 1 FT.");
+
+        const imgGrid = createSVGElement("image", {
+            href: IMAGE_SOURCES.grid,
+            x: 10, y: 10, width: 780, height: 580,
+            opacity: "0.35",
+            preserveAspectRatio: "none",
+            style: "mix-blend-mode: overlay;",
+        });
+        const imgTopo = createSVGElement("image", {
+            href: IMAGE_SOURCES.topo2,
+            x: 50, y: 50, width: 700, height: 500,
+            opacity: "0.35",
+            preserveAspectRatio: "xMidYMid meet",
+            style: "mix-blend-mode: overlay;",
+        });
+        g.append(imgGrid, imgTopo);
+
+        addSVGStressArrow(g, 300, 530, 300, 430, "HYDRAULIC LIFT: 12 TONS", "tech-lift-1");
+        addSVGStressArrow(g, 500, 530, 500, 430, "LOAD TRANSFER TO BEDROCK", "tech-lift-2");
+
+        addSVGCallout(g, 500, 240, 380, 300, "STEEL I-BEAM W12x50 LINTEL", "ASTM A36 STRUCTURAL STEEL", "tech-callout-6-1");
+        addSVGCallout(g, 540, 310, 460, 260, "C-CHANNEL REINFORCEMENT GRID", "HIDDEN LOAD-BEARING TRANSFER", "tech-callout-6-2");
+        addSVGCallout(g, 520, 380, 580, 420, "LASER TRANSIT REALIGNMENT", "DATUM ELEV. 0'-0'' (REF A-4)", "tech-callout-6-3");
+        addSVGCallout(g, 180, 460, 270, 420, "EPOXY RESIN SILL SPLICE", "DETAIL 3/A-102 / RECLAIMED OAK", "tech-callout-6-4");
+
+        const datum1 = createSVGElement("g", { class: "tech-datum", transform: "translate(150, 420)" });
+        const d1Circ = createSVGElement("circle", { r: 14, fill: "none", stroke: "#ffffff", "stroke-width": "2" });
+        const d1Line = createSVGElement("line", { x1: -14, y1: 0, x2: 14, y2: 0, stroke: "#ffffff", "stroke-width": "1.5" });
+        const d1T1 = createSVGElement("text", { x: -4, y: -4, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "9", "font-weight": "bold" });
+        d1T1.textContent = "A";
+        const d1T2 = createSVGElement("text", { x: -8, y: 10, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "8" });
+        d1T2.textContent = "101";
+        datum1.append(d1Circ, d1Line, d1T1, d1T2);
+
+        const datum2 = createSVGElement("g", { class: "tech-datum", transform: "translate(650, 420)" });
+        const d2Circ = createSVGElement("circle", { r: 14, fill: "none", stroke: "#ffffff", "stroke-width": "2" });
+        const d2Line = createSVGElement("line", { x1: -14, y1: 0, x2: 14, y2: 0, stroke: "#ffffff", "stroke-width": "1.5" });
+        const d2T1 = createSVGElement("text", { x: -4, y: -4, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "9", "font-weight": "bold" });
+        d2T1.textContent = "B";
+        const d2T2 = createSVGElement("text", { x: -8, y: 10, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "8" });
+        d2T2.textContent = "102";
+        datum2.append(d2Circ, d2Line, d2T1, d2T2);
+
+        g.append(datum1, datum2);
+    } else if (stageIndex === 6) {
+        addSVGTitleBlock(g, "NET-ZERO RETROFIT", "ME-301", "R-45 / NET-0", "SCALE: 3/16 IN. = 1 FT.");
+
+        const imgTopo = createSVGElement("image", {
+            href: IMAGE_SOURCES.topo3,
+            x: 0, y: 350, width: 800, height: 250,
+            opacity: "0.45",
+            preserveAspectRatio: "none",
+            style: "mix-blend-mode: overlay;",
+        });
+        const imgStroke = createSVGElement("image", {
+            href: IMAGE_SOURCES.stroke2,
+            x: 200, y: 150, width: 400, height: 250,
+            opacity: "0.3",
+            preserveAspectRatio: "xMidYMid meet",
+            style: "mix-blend-mode: screen;",
+        });
+        g.append(imgTopo, imgStroke);
+
+        addSVGCallout(g, 500, 130, 330, 160, "CLOSED-CELL VAPOR BARRIER R-45", "THERMAL ENVELOPE / AIRTIGHT SEAL", "tech-callout-7-1");
+        addSVGCallout(g, 520, 270, 480, 280, "TRIPLE-PANE LOW-E ARGON GLAZING", "U-FACTOR 0.12 / NO COLD BRIDGES", "tech-callout-7-2");
+        addSVGCallout(g, 500, 480, 560, 500, "400'-0'' GEOTHERMAL BORE IN BEDROCK", "CLOSED-LOOP RADIATIVE HEAT EXCHANGE", "tech-callout-7-3");
+        addSVGCallout(g, 180, 360, 400, 400, "RADIATIVE FLOOR HEATING MANIFOLD", "HYDRONIC THERMAL DISTRIBUTION", "tech-callout-7-4");
+        addSVGCallout(g, 180, 160, 280, 140, "SOLAR PV ROOF ARRAY", "NET ENERGY -15% (POSITIVE GENERATION)", "tech-callout-7-5");
+
+        const flow1 = createSVGElement("path", {
+            d: "M 340 320 C 340 270 460 270 460 320",
+            fill: "none",
+            stroke: "#ffffff",
+            "stroke-width": "1.5",
+            "stroke-dasharray": "6, 4",
+            class: "tech-flow-arrow",
+        });
+        const flow2 = createSVGElement("path", {
+            d: "M 460 340 C 460 380 340 380 340 340",
+            fill: "none",
+            stroke: "#ffffff",
+            "stroke-width": "1.5",
+            "stroke-dasharray": "6, 4",
+            class: "tech-flow-arrow",
+        });
+        g.append(flow1, flow2);
+
+        const elevTag = createSVGElement("g", { class: "tech-elev-tag", transform: "translate(80, 400)" });
+        const eLine = createSVGElement("line", { x1: 0, y1: 0, x2: 80, y2: 0, stroke: "#ffffff", "stroke-width": "1.5" });
+        const eTri = createSVGElement("polygon", { points: "40,0 35,-10 45,-10", fill: "#ffffff" });
+        const eText = createSVGElement("text", { x: 0, y: -14, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "10", "font-weight": "bold" });
+        eText.textContent = "GRADE ELEV. +420'-0''";
+        elevTag.append(eLine, eTri, eText);
+        g.appendChild(elevTag);
+    } else if (stageIndex === 7) {
+        addSVGTitleBlock(g, "MODERNIST SYNTHESIS", "A-500", "PRESENT", "SCALE: 1/8 IN. = 1 FT.");
+
+        const imgGrid = createSVGElement("image", {
+            href: IMAGE_SOURCES.grid,
+            x: 10, y: 10, width: 780, height: 580,
+            opacity: "0.3",
+            preserveAspectRatio: "none",
+            style: "mix-blend-mode: overlay;",
+        });
+        const imgTexture = createSVGElement("image", {
+            href: IMAGE_SOURCES.texture,
+            x: 100, y: 350, width: 600, height: 220,
+            opacity: "0.35",
+            preserveAspectRatio: "none",
+            style: "mix-blend-mode: overlay;",
+        });
+        const imgStroke = createSVGElement("image", {
+            href: IMAGE_SOURCES.stroke3,
+            x: 400, y: 120, width: 350, height: 240,
+            opacity: "0.35",
+            preserveAspectRatio: "xMidYMid meet",
+            style: "mix-blend-mode: screen;",
+        });
+        g.append(imgGrid, imgTexture, imgStroke);
+
+        const dimGroup = createSVGElement("g", { class: "tech-cantilever-dim", id: "tech-cantilever-dim" });
+        const dimLine = createSVGElement("line", { x1: 380, y1: 110, x2: 720, y2: 110, stroke: "#ffffff", "stroke-width": "1.5" });
+        const tickL = createSVGElement("line", { x1: 375, y1: 115, x2: 385, y2: 105, stroke: "#ffffff", "stroke-width": "2" });
+        const tickR = createSVGElement("line", { x1: 715, y1: 115, x2: 725, y2: 105, stroke: "#ffffff", "stroke-width": "2", class: "dim-tick-right" });
+        const dimText = createSVGElement("text", { x: 550, y: 102, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "11", "font-weight": "bold", "text-anchor": "middle", class: "dim-text-label" });
+        dimText.textContent = "24'-0'' CANTILEVER SPAN";
+        dimGroup.append(dimLine, tickL, tickR, dimText);
+        g.appendChild(dimGroup);
+
+        addSVGStressArrow(g, 380, 360, 380, 260, "SUPPORT REACTION: 45 KIPS", "tech-reaction-arrow");
+        addSVGStressArrow(g, 720, 140, 720, 230, "LIVE LOAD: 100 LBS/SQ FT", "tech-tip-load");
+
+        const momentCurve = createSVGElement("path", {
+            d: "M 380 160 Q 550 100 720 160",
+            fill: "none",
+            stroke: "rgba(255, 255, 255, 0.6)",
+            "stroke-width": "1.5",
+            "stroke-dasharray": "5, 5",
+            id: "tech-moment-curve",
+        });
+        g.appendChild(momentCurve);
+
+        addSVGCallout(g, 520, 70, 550, 160, "CANTILEVERED BLACK STEEL I-BEAM", "W18x86 / STRUCTURAL TENSION FLANGE", "tech-beam-callout");
+        addSVGCallout(g, 520, 340, 600, 240, "FRAMELESS STRUCTURAL GLASS WALL", "CURTAIN WALL / MINIMALIST PROFILE", "tech-glass-callout");
+        addSVGCallout(g, 160, 180, 200, 260, "RESTORED 1780 FIELDSTONE HEARTH", "TACTILE HISTORIC MASONRY MONUMENT", "tech-hearth-callout");
+        addSVGCallout(g, 180, 360, 380, 320, "FIN. FLOOR ELEV. +424'-6'' DATUM", "HIGH-CONTRAST JUNCTION", "tech-floor-callout");
+        addSVGCallout(g, 500, 480, 520, 440, "CURATED RIPARIAN WETLAND", "NATIVE MEADOW GRASSES & ECOLOGY", "tech-meadow-callout");
     }
 }
 
@@ -119,6 +505,10 @@ export function updateGraphics(stageIndex, progress = 0) {
                 node.setAttribute("r", (3 + stageProg * 3).toFixed(2));
             });
 
+            if (i >= 4) {
+                updateTechnicalStageSVG(item.g, i, stageProg);
+            }
+
             item.ctx.clearRect(0, 0, item.canvas.width, item.canvas.height);
             drawProceduralCanvas(item.ctx, i, stageProg, item.canvas.width, item.canvas.height);
 
@@ -127,269 +517,247 @@ export function updateGraphics(stageIndex, progress = 0) {
     }
 }
 
-function drawProceduralCanvas(ctx, stageIndex, prog, width, height) {
-    ctx.save();
-    ctx.strokeStyle = "#ffffff";
-    ctx.fillStyle = "#ffffff";
-    ctx.lineWidth = 1.5;
-
-    ctx.beginPath();
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-    const gridSize = 40;
-    const offset = (prog * 20) % gridSize;
-    for (let x = offset; x < width; x += gridSize) {
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-    }
-    for (let y = offset; y < height; y += gridSize) {
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-    }
-    ctx.stroke();
-
-    ctx.strokeStyle = "#ffffff";
-    if (stageIndex === 0) {
-        ctx.beginPath();
-        ctx.arc(width / 2, height / 2 - 20, 50 + prog * 70, 0, Math.PI * 2);
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-        ctx.stroke();
-
-        for (let i = 0; i < 15; i++) {
-            const angle = (i / 15) * Math.PI * 2 + prog * 2;
-            const dist = 70 + prog * 90 + (i % 5) * 10;
-            const px = width / 2 + Math.cos(angle) * dist;
-            const py = height / 2 - 20 + Math.sin(angle) * dist;
-            ctx.fillRect(px - 2, py - 2, 4, 4);
+function updateTechnicalStageSVG(g, stageIndex, prog) {
+    if (stageIndex === 4) {
+        const defLabel = g.querySelector(".tech-deflection-label text");
+        if (defLabel) {
+            const sag = (2.0 + prog * 6.5).toFixed(1);
+            defLabel.textContent = `ROOF RAFTER DEFLECTION`;
+        }
+        const defSub = g.querySelector(".tech-deflection-label text:last-of-type");
+        if (defSub) {
+            const sag = (2.0 + prog * 6.5).toFixed(1);
+            defSub.textContent = `MAX SAG ${sag}'' (STRUCTURAL FAILURE)`;
         }
 
-        ctx.strokeStyle = "#ffffff";
-        ctx.beginPath();
-        ctx.moveTo(30, height - 30);
-        ctx.lineTo(width - 30, height - 30);
-        ctx.stroke();
-
-        const treeCount = 6;
-        for (let i = 0; i < treeCount; i++) {
-            const x = 70 + i * 110;
-            const threshold = i / treeCount;
-            if (prog > threshold) {
-                ctx.strokeRect(x - 20, height - 45, 60, 15);
-                ctx.beginPath();
-                ctx.moveTo(x + 10, height - 45);
-                ctx.lineTo(x + 15, height - 30);
-                ctx.stroke();
-            } else {
-                ctx.beginPath();
-                ctx.moveTo(x, height - 30);
-                ctx.lineTo(x - 25, height - 90);
-                ctx.lineTo(x + 25, height - 90);
-                ctx.closePath();
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(x, height - 80);
-                ctx.lineTo(x - 20, height - 130);
-                ctx.lineTo(x + 20, height - 130);
-                ctx.closePath();
-                ctx.stroke();
-            }
-        }
-    } else if (stageIndex === 1) {
-        ctx.beginPath();
-        for (let y = 380; y < height - 30; y += 20) {
-            const shift = Math.sin(y * 0.05 + prog * 5) * 12;
-            ctx.moveTo(80 + shift, y);
-            ctx.lineTo(720 + shift, y);
-        }
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-        ctx.stroke();
-
-        ctx.strokeStyle = "#ffffff";
-        const arrows = [200, 400, 600];
-        arrows.forEach((ax, aIdx) => {
-            const ay = 100 + prog * 150 + aIdx * 20;
-            ctx.beginPath();
-            ctx.moveTo(ax, 60);
-            ctx.lineTo(ax, ay);
-            ctx.lineTo(ax - 10, ay - 15);
-            ctx.moveTo(ax, ay);
-            ctx.lineTo(ax + 10, ay - 15);
-            ctx.stroke();
-        });
-    } else if (stageIndex === 2) {
-        drawGear(ctx, width / 2 - 120, height / 2 - 50, 65, 12, prog * Math.PI * 2);
-        drawGear(ctx, width / 2 + 10, height / 2 - 20, 75, 14, -prog * Math.PI * 2 + 0.2);
-        drawGear(ctx, width / 2 - 40, height / 2 + 100, 55, 10, prog * Math.PI * 2 - 0.5);
-
-        ctx.lineWidth = 3;
-        ctx.strokeRect(520, 80, 180 * prog, 40);
-    } else if (stageIndex === 3) {
-        const cols = 8;
-        const rows = 4;
-        const cellW = (width - 160) / cols;
-        const cellH = 160 / rows;
-        for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
-                const x = 80 + c * cellW;
-                const y = 380 + r * cellH;
-                ctx.strokeRect(x, y, cellW - 6, cellH - 6);
-                const cellThreshold = (r * cols + c) / (rows * cols);
-                if (prog > cellThreshold) ctx.fillRect(x + 4, y + 4, cellW - 14, cellH - 14);
-            }
-        }
-
-        for (let r = 0; r < 5; r++) {
-            const yPos = 180 + r * 30;
-            ctx.beginPath();
-            ctx.moveTo(100, yPos);
-            ctx.lineTo(700, yPos);
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
-            ctx.stroke();
-
-            const xPos = 100 + ((prog * 600 + r * 100) % 600);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(xPos, yPos - 4, 16, 8);
-        }
-    } else if (stageIndex === 4) {
-        ctx.strokeRect(100, 60, width - 200, 240);
-        ctx.beginPath();
-        for (let x = 120; x < width - 120; x += 40) {
-            ctx.moveTo(x, 60);
-            ctx.lineTo(x + Math.sin(x) * 15, 300);
-        }
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
-        ctx.stroke();
-
-        ctx.strokeStyle = "#ffffff";
-        const maxVines = 6;
-        for (let v = 0; v < maxVines; v++) {
-            const startY = 350 + v * 35;
-            const endX = 80 + prog * (width - 160);
-            ctx.beginPath();
-            ctx.moveTo(80, startY);
-            ctx.bezierCurveTo(80 + endX * 0.3, startY - 40, 80 + endX * 0.6, startY + 50, 80 + endX, startY);
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            if (prog > 0.35) {
-                ctx.beginPath();
-                ctx.arc(80 + endX * 0.5, startY + 5, 5, 0, Math.PI * 2);
-                ctx.fill();
-            }
+        const arrow3 = g.querySelector("#tech-arrow-5-3 line");
+        const head3 = g.querySelector("#tech-arrow-5-3 polygon");
+        if (arrow3 && head3) {
+            const newY2 = 180 + prog * 25;
+            arrow3.setAttribute("y2", String(newY2));
+            const hx1 = 480 - 12 * Math.cos(-Math.PI / 6);
+            const hy1 = newY2 - 12 * Math.sin(-Math.PI / 6);
+            const hx2 = 480 - 12 * Math.cos(Math.PI / 6);
+            const hy2 = newY2 - 12 * Math.sin(Math.PI / 6);
+            head3.setAttribute("points", `480,${newY2} ${hx1},${hy1} ${hx2},${hy2}`);
         }
     } else if (stageIndex === 5) {
-        ctx.lineWidth = 1;
-        for (let x = 40; x < width; x += 30) {
-            ctx.beginPath();
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, height);
-            ctx.stroke();
+        const lift1 = g.querySelector("#tech-lift-1 line");
+        const lift2 = g.querySelector("#tech-lift-2 line");
+        if (lift1 && lift2) {
+            const offset = Math.sin(prog * Math.PI * 4) * 5;
+            lift1.setAttribute("y2", String(430 + offset));
+            lift2.setAttribute("y2", String(430 + offset));
         }
-        for (let y = 40; y < height; y += 30) {
-            ctx.beginPath();
-            ctx.moveTo(0, y);
-            ctx.lineTo(width, y);
-            ctx.stroke();
-        }
-
-        const targetX = 150 + prog * (width - 300);
-        const targetY = height / 2;
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(targetX, targetY, 45, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(targetX - 65, targetY);
-        ctx.lineTo(targetX + 65, targetY);
-        ctx.moveTo(targetX, targetY - 65);
-        ctx.lineTo(targetX, targetY + 65);
-        ctx.stroke();
-
-        ctx.strokeRect(targetX + 55, targetY - 35, 160, 35);
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 14px monospace";
-        ctx.fillText("DATUM REALIGN", targetX + 65, targetY - 12);
     } else if (stageIndex === 6) {
-        const loopCount = 4;
-        const loopSpacing = (width - 200) / loopCount;
-        for (let l = 0; l < loopCount; l++) {
-            const lx = 100 + l * loopSpacing;
-            const depth = 80 + prog * 380;
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(lx, 40);
-            ctx.lineTo(lx, depth);
-            ctx.arc(lx + 25, depth, 25, Math.PI, 0, true);
-            ctx.lineTo(lx + 50, 40);
-            ctx.stroke();
-
-            const py = 50 + ((prog * 300 + l * 60) % 350);
-            ctx.fillRect(lx - 4, py, 8, 16);
-            ctx.fillRect(lx + 46, 420 - py, 8, 16);
-        }
-    } else {
-        for (let i = 0; i < 80; i++) {
-            const sx = 150 + ((i * 43) % 500);
-            const sy = 380 + ((i * 29) % 180);
-            const size = (i % 3) + 1;
-            ctx.fillRect(sx, sy, size, size);
+        const flows = g.querySelectorAll(".tech-flow-arrow");
+        flows.forEach((flow, idx) => {
+            const dashOffset = Math.round((idx === 0 ? -1 : 1) * prog * 100);
+            flow.setAttribute("stroke-dashoffset", String(dashOffset));
+        });
+    } else if (stageIndex === 7) {
+        const tipX = 380 + 340 * prog;
+        const dimLine = g.querySelector("#tech-cantilever-dim line:first-of-type");
+        const tickR = g.querySelector(".dim-tick-right");
+        const dimText = g.querySelector(".dim-text-label");
+        if (dimLine && tickR && dimText) {
+            dimLine.setAttribute("x2", String(tipX));
+            tickR.setAttribute("x1", String(tipX - 5));
+            tickR.setAttribute("y1", "115");
+            tickR.setAttribute("x2", String(tipX + 5));
+            tickR.setAttribute("y2", "105");
+            dimText.setAttribute("x", String((380 + tipX) / 2));
+            const spanFt = (24 * prog).toFixed(1);
+            dimText.textContent = `${spanFt}'-0'' CANTILEVER SPAN`;
         }
 
-        ctx.lineWidth = 3;
-        ctx.strokeRect(80, 220, 320, 100);
-        const cantileverW = 220 + prog * 340;
-        ctx.strokeRect(200, 120, cantileverW, 100);
-
-        for (let gx = 240; gx < 200 + cantileverW; gx += 50) {
-            ctx.beginPath();
-            ctx.moveTo(gx, 120);
-            ctx.lineTo(gx, 220);
-            ctx.stroke();
+        const tipLoadLine = g.querySelector("#tech-tip-load line");
+        const tipLoadHead = g.querySelector("#tech-tip-load polygon");
+        const tipLoadText = g.querySelector("#tech-tip-load text");
+        if (tipLoadLine && tipLoadHead && tipLoadText) {
+            tipLoadLine.setAttribute("x1", String(tipX));
+            tipLoadLine.setAttribute("x2", String(tipX));
+            const hx1 = tipX - 12 * Math.cos(-Math.PI / 6);
+            const hy1 = 230 - 12 * Math.sin(-Math.PI / 6);
+            const hx2 = tipX - 12 * Math.cos(Math.PI / 6);
+            const hy2 = 230 - 12 * Math.sin(Math.PI / 6);
+            tipLoadHead.setAttribute("points", `${tipX},230 ${hx1},${hy1} ${hx2},${hy2}`);
+            tipLoadText.setAttribute("x", String(tipX + 10));
         }
 
-        if (prog > 0.45) {
-            const figX = 190 + cantileverW - 40;
-            ctx.beginPath();
-            ctx.arc(figX, 95, 6, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.lineWidth = 2.5;
-            ctx.beginPath();
-            ctx.moveTo(figX, 101);
-            ctx.lineTo(figX, 118);
-            ctx.moveTo(figX - 10, 107);
-            ctx.lineTo(figX + 10, 107);
-            ctx.stroke();
+        const momentCurve = g.querySelector("#tech-moment-curve");
+        if (momentCurve) {
+            const midX = (380 + tipX) / 2;
+            const midY = 160 - 50 * prog;
+            momentCurve.setAttribute("d", `M 380 160 Q ${midX} ${midY} ${tipX} 160`);
         }
+
+        const beamLeader = g.querySelector("#tech-beam-callout polyline");
+        const beamDot = g.querySelector("#tech-beam-callout circle");
+        if (beamLeader && beamDot) {
+            const targetX = Math.min(tipX - 20, 550);
+            beamDot.setAttribute("cx", String(targetX));
+            beamLeader.setAttribute("points", `${targetX},160 500,70 520,70`);
+        }
+    }
+}
+
+function drawSketchLine(ctx, x1, y1, x2, y2, overshoot = 4, passes = 1) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    const ux = dx / len;
+    const uy = dy / len;
+
+    ctx.beginPath();
+    ctx.moveTo(x1 - ux * overshoot, y1 - uy * overshoot);
+    ctx.lineTo(x2 + ux * overshoot, y2 + uy * overshoot);
+    ctx.stroke();
+
+    if (passes > 1) {
+        ctx.save();
+        ctx.globalAlpha *= 0.5;
+        ctx.beginPath();
+        ctx.moveTo(x1 - ux * overshoot + 0.5, y1 - uy * overshoot + 0.5);
+        ctx.lineTo(x2 + ux * overshoot + 0.5, y2 + uy * overshoot + 0.5);
+        ctx.stroke();
+        ctx.restore();
+    }
+}
+
+function drawSketchRect(ctx, x, y, w, h, overshoot = 4) {
+    drawSketchLine(ctx, x, y, x + w, y, overshoot);
+    drawSketchLine(ctx, x + w, y, x + w, y + h, overshoot);
+    drawSketchLine(ctx, x + w, y + h, x, y + h, overshoot);
+    drawSketchLine(ctx, x, y + h, x, y, overshoot);
+}
+
+function drawBlueprintGrid(ctx, width, height, prog, stageIndex) {
+    ctx.save();
+    ctx.lineWidth = 1;
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+    ctx.setLineDash([2, 4]);
+    for (let x = 20; x < width - 20; x += 20) {
+        ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, height - 20); ctx.stroke();
+    }
+    for (let y = 20; y < height - 20; y += 20) {
+        ctx.beginPath(); ctx.moveTo(20, y); ctx.lineTo(width - 20, y); ctx.stroke();
+    }
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
+    ctx.setLineDash([]);
+    for (let x = 100; x < width - 20; x += 100) {
+        ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, height - 20); ctx.stroke();
+    }
+    for (let y = 100; y < height - 20; y += 100) {
+        ctx.beginPath(); ctx.moveTo(20, y); ctx.lineTo(width - 20, y); ctx.stroke();
+    }
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(20, 20, width - 40, height - 40);
+
+    const crosses = [
+        [60, 60], [width - 60, 60],
+        [60, height - 60], [width - 60, height - 60],
+        [width / 2, 60], [width / 2, height - 60]
+    ];
+    ctx.lineWidth = 1.5;
+    for (const [cx, cy] of crosses) {
+        ctx.beginPath();
+        ctx.moveTo(cx - 10, cy); ctx.lineTo(cx + 10, cy);
+        ctx.moveTo(cx, cy - 10); ctx.lineTo(cx, cy + 10);
+        ctx.stroke();
     }
 
     ctx.restore();
 }
 
-function drawGear(ctx, x, y, radius, teeth, rotation) {
+function drawMasonryHatch(ctx, x, y, w, h, weathered = false) {
     ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(rotation);
     ctx.beginPath();
-    ctx.arc(0, 0, radius - 8, 0, Math.PI * 2);
-    for (let i = 0; i < teeth; i++) {
-        const angle = (i / teeth) * Math.PI * 2;
-        const nextAngle = ((i + 0.5) / teeth) * Math.PI * 2;
-        const x1 = Math.cos(angle) * (radius - 8);
-        const y1 = Math.sin(angle) * (radius - 8);
-        const x2 = Math.cos(angle) * radius;
-        const y2 = Math.sin(angle) * radius;
-        const x3 = Math.cos(nextAngle) * radius;
-        const y3 = Math.sin(nextAngle) * radius;
-        const x4 = Math.cos(nextAngle) * (radius - 8);
-        const y4 = Math.sin(nextAngle) * (radius - 8);
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.lineTo(x3, y3);
-        ctx.lineTo(x4, y4);
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+    ctx.lineWidth = 1;
+    const spacing = 12;
+    for (let d = -h; d < w + h; d += spacing) {
+        if (weathered && Math.sin(d) > 0.3) continue;
+        ctx.beginPath();
+        ctx.moveTo(x + d, y);
+        ctx.lineTo(x + d - h, y + h);
+        ctx.stroke();
     }
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    ctx.restore();
+}
+
+function drawSteelHatch(ctx, x, y, w, h) {
+    ctx.save();
     ctx.beginPath();
-    ctx.arc(0, 0, radius * 0.3, 0, Math.PI * 2);
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
+    ctx.lineWidth = 1;
+    for (let d = -h; d < w + h; d += 16) {
+        ctx.beginPath();
+        ctx.moveTo(x + d, y);
+        ctx.lineTo(x + d - h, y + h);
+        ctx.moveTo(x + d + 3, y);
+        ctx.lineTo(x + d + 3 - h, y + h);
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+function drawInsulationHatch(ctx, x, y, w, h, prog) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.7)";
+    ctx.lineWidth = 1.5;
+    const loopW = 12;
+    const loops = Math.ceil(w / loopW);
+    const midY = y + h / 2;
+    const amp = (h / 2 - 2) * (0.9 + prog * 0.1);
+
+    ctx.beginPath();
+    ctx.moveTo(x, midY);
+    for (let i = 0; i < loops; i++) {
+        const lx = x + i * loopW;
+        ctx.bezierCurveTo(lx + loopW * 0.25, midY - amp, lx + loopW * 0.75, midY - amp, lx + loopW, midY);
+        ctx.bezierCurveTo(lx + loopW * 0.75, midY + amp, lx + loopW * 0.25, midY + amp, lx, midY);
+    }
     ctx.stroke();
+    ctx.restore();
+}
+
+function drawEarthHatch(ctx, x, y, w, h) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.lineWidth = 1;
+    for (let d = -h; d < w + h; d += 20) {
+        ctx.beginPath();
+        ctx.moveTo(x + d, y);
+        ctx.lineTo(x + d - h, y + h);
+        ctx.stroke();
+    }
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+    for (let ty = y + 15; ty < y + h; ty += 25) {
+        for (let tx = x + 10; tx < x + w; tx += 40) {
+            ctx.beginPath();
+            ctx.moveTo(tx, ty);
+            ctx.lineTo(tx + 12, ty);
+            ctx.stroke();
+        }
+    }
     ctx.restore();
 }
