@@ -128,15 +128,15 @@ export const Timeline = () => {
             const isVirtual = layoutMode === "virtual";
             let firstVisibleIndex = 0;
             if (data.length > 0) {
-                let l = 0,
-                    r = data.length - 1;
+                let l = 0, r = data.length - 1;
                 while (l <= r) {
                     let m_idx = Math.floor((l + r) / 2);
                     let x = xPositions[m_idx];
                     let w = getCardWidth(data[m_idx], m_idx);
                     if (x + w < scrollLeft) {
                         l = m_idx + 1;
-                    } else {
+                    }
+                    else {
                         firstVisibleIndex = m_idx;
                         r = m_idx - 1;
                     }
@@ -148,7 +148,6 @@ export const Timeline = () => {
                 lastVisibleIndex = i;
                 if (x > scrollLeft + clientWidth)
                     break;
-
             }
             const startIdx = isVirtual ? Math.max(0, firstVisibleIndex - cardBuffer) : 0;
             const endIdx = isVirtual ? Math.min(data.length - 1, lastVisibleIndex + cardBuffer) : data.length - 1;
@@ -162,84 +161,72 @@ export const Timeline = () => {
                     });
                 }
             }
-            return m(
-                "#document-container",
-                {
-                    style: {
-                        position: "relative",
-                        overflowX: "auto",
-                        overflowY: "hidden",
-                        width: "100%",
-                        height: "100%",
-                    },
+            return m("#document-container", {
+                style: {
+                    position: "relative",
+                    overflowX: "auto",
+                    overflowY: "hidden",
+                    width: "100%",
+                    height: "100%",
                 },
-                [
-                    data.length === 0
-                        ? m(
-                            ".empty-state",
-                            {
-                                style: {
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    width: "100%",
-                                    height: "100%",
-                                    color: "#94a3b8",
-                                    fontSize: "1.2rem",
-                                    fontWeight: "600",
-                                    letterSpacing: "0.05em",
+            }, [
+                data.length === 0
+                    ? m(".empty-state", {
+                        style: {
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "100%",
+                            height: "100%",
+                            color: "#94a3b8",
+                            fontSize: "1.2rem",
+                            fontWeight: "600",
+                            letterSpacing: "0.05em",
+                            position: "absolute",
+                            top: "0",
+                            left: "0",
+                        },
+                    }, t("noMatches"))
+                    : m("#document-content", {
+                        class: isVirtual ? "virtual-layout" : "browser-layout",
+                        style: isVirtual
+                            ? {
+                                position: "relative",
+                                width: `${totalWidth}px`,
+                                height: "100%",
+                                flexShrink: "0",
+                            }
+                            : {
+                                position: "relative",
+                                display: "flex",
+                                gap: `${gap}px`,
+                                paddingLeft: `${paddingLeft}px`,
+                                paddingRight: `${paddingLeft}px`,
+                                height: "100%",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                width: "max-content",
+                            },
+                    }, [
+                        visibleItems.map((d) => {
+                            const cardId = getCardId(d.item, d.index);
+                            const childVnode = renderItem(d.item);
+                            if (!childVnode.attrs)
+                                childVnode.attrs = {};
+                            if (!childVnode.attrs.style)
+                                childVnode.attrs.style = {};
+                            if (isVirtual) {
+                                childVnode.attrs.style = Object.assign({}, childVnode.attrs.style, {
                                     position: "absolute",
-                                    top: "0",
-                                    left: "0",
-                                },
-                            },
-                            t("noMatches")
-                        )
-                        : m(
-                            "#document-content",
-                            {
-                                class: isVirtual ? "virtual-layout" : "browser-layout",
-                                style: isVirtual
-                                    ? {
-                                        position: "relative",
-                                        width: `${totalWidth}px`,
-                                        height: "100%",
-                                        flexShrink: "0",
-                                    }
-                                    : {
-                                        position: "relative",
-                                        display: "flex",
-                                        gap: `${gap}px`,
-                                        paddingLeft: `${paddingLeft}px`,
-                                        paddingRight: `${paddingLeft}px`,
-                                        height: "100%",
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        width: "max-content",
-                                    },
-                            },
-                            [
-                                visibleItems.map((d) => {
-                                    const cardId = getCardId(d.item, d.index);
-                                    const childVnode = renderItem(d.item);
-                                    if (!childVnode.attrs)
-                                        childVnode.attrs = {};
-                                    if (!childVnode.attrs.style)
-                                        childVnode.attrs.style = {};
-                                    if (isVirtual) {
-                                        childVnode.attrs.style = Object.assign({}, childVnode.attrs.style, {
-                                            position: "absolute",
-                                            top: "50%",
-                                            "--x-pos": `${d.x}px`,
-                                        });
-                                    }
-                                    childVnode.key = cardId;
-                                    return childVnode;
-                                }),
-                            ]
-                        ),
-                ]
-            );
+                                    top: "50%",
+                                    "--x-pos": `${d.x}px`,
+                                });
+                            }
+                            childVnode.key = cardId;
+                            return childVnode;
+                        }),
+                    ]),
+            ]);
         },
     };
 };
