@@ -14,14 +14,10 @@ const App = () => {
             return;
         }
         const identifier = card.id ? `ID: ${card.id}` : `index: ${index}`;
-        if (!card.title)
-            console.error(`Validation Error: Card (${identifier}) is missing a \x27title\x27.`);
-        if (!Array.isArray(card.tags) || card.tags.length === 0)
-            console.error(`Validation Error: Card (${identifier}) must have at least one tag in the \x27tags\x27 array.`);
-        if (!card.description)
-            console.error(`Validation Error: Card (${identifier}) is missing a \x27description\x27.`);
-        if (!card.links || !card.links.wikipedia)
-            console.error(`Validation Error: Card (${identifier}) is missing a Wikipedia link in \x27links.wikipedia\x27.`);
+        if (!card.title) console.error(`Validation Error: Card (${identifier}) is missing a \x27title\x27.`);
+        if (!Array.isArray(card.tags) || card.tags.length === 0) console.error(`Validation Error: Card (${identifier}) must have at least one tag in the \x27tags\x27 array.`);
+        if (!card.description) console.error(`Validation Error: Card (${identifier}) is missing a \x27description\x27.`);
+        if (!card.links || !card.links.wikipedia) console.error(`Validation Error: Card (${identifier}) is missing a Wikipedia link in \x27links.wikipedia\x27.`);
     });
     const tagCounts = {};
     allData.forEach((card) => {
@@ -62,8 +58,7 @@ const App = () => {
                 }
             });
             activeIndex = bestIndex;
-        }
-        else {
+        } else {
             activeIndex = 0;
         }
         dataVersion++;
@@ -76,42 +71,35 @@ const App = () => {
     }
     let lastURLString = "";
     function updateURLParams() {
-        if (typeof window === "undefined" || !window.history || !window.location)
-            return;
+        if (typeof window === "undefined" || !window.history || !window.location) return;
         try {
             const url = new URL(window.location.href);
             if (searchQuery.trim().length > 0) {
                 url.searchParams.set("search", searchQuery.trim());
-            }
-            else {
+            } else {
                 url.searchParams.delete("search");
             }
             if (activeFilters.length > 0 && activeFilters.length < activeCategories.length) {
                 url.searchParams.set("tags", activeFilters.join(","));
-            }
-            else {
+            } else {
                 url.searchParams.delete("tags");
             }
             if (layoutMode !== "virtual") {
                 url.searchParams.set("layout", layoutMode);
-            }
-            else {
+            } else {
                 url.searchParams.delete("layout");
             }
             const currentLang = getLanguage();
             if (currentLang && currentLang !== "DE") {
                 url.searchParams.set("lang", currentLang);
-            }
-            else {
+            } else {
                 url.searchParams.delete("lang");
             }
             if (filteredData[activeIndex] && filteredData[activeIndex].date) {
                 url.searchParams.set("time", filteredData[activeIndex].date.substring(0, 4));
-            }
-            else if (allData[activeIndex] && allData[activeIndex].date) {
+            } else if (allData[activeIndex] && allData[activeIndex].date) {
                 url.searchParams.set("time", allData[activeIndex].date.substring(0, 4));
-            }
-            else {
+            } else {
                 url.searchParams.delete("time");
             }
             const newURLString = url.toString();
@@ -119,8 +107,7 @@ const App = () => {
                 lastURLString = newURLString;
                 window.history.replaceState(null, "", newURLString);
             }
-        }
-        catch (e) {
+        } catch (e) {
             // Ignore in non-browser/test environments
         }
     }
@@ -133,7 +120,10 @@ const App = () => {
             }
             const tabParam = params.get("tab") || params.get("tags") || params.get("tag") || params.get("filter");
             if (tabParam !== null) {
-                const parsedTags = tabParam.split(",").map((t) => t.trim()).filter((t) => activeCategories.includes(t));
+                const parsedTags = tabParam
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter((t) => activeCategories.includes(t));
                 if (parsedTags.length > 0) {
                     activeFilters = parsedTags;
                 }
@@ -170,14 +160,12 @@ const App = () => {
                             }
                         });
                         activeIndex = bestIdx;
-                    }
-                    else if (numVal >= 0 && numVal < filteredData.length) {
+                    } else if (numVal >= 0 && numVal < filteredData.length) {
                         activeIndex = numVal;
                     }
                 }
             }
-        }
-        catch (e) {
+        } catch (e) {
             // Ignore parse errors
         }
     }
@@ -190,34 +178,34 @@ const App = () => {
             let matchingCards = [];
             if (searchQuery.trim().length > 0) {
                 const query = searchQuery.toLowerCase().trim();
-                const allMatches = filteredData.map((card, index) => {
-                    const titleStr = translateContent(card.title).toLowerCase();
-                    const descStr = translateContent(card.description).toLowerCase();
-                    let score = 0;
-                    if (titleStr.startsWith(query))
-                        score += 100;
-                    else if (titleStr.includes(query))
-                        score += 50;
-                    if (descStr.includes(query))
-                        score += 10;
-                    const yearStr = card.date.substring(0, 4);
-                    if (yearStr.includes(query))
-                        score += 20;
-                    return {
-                        card,
-                        index,
-                        year: yearStr,
-                        title: translateContent(card.title),
-                        score
-                    };
-                }).filter(m => m.score > 0);
-                matchingCards = allMatches.map(m => m.card);
-                suggestions = allMatches
-                    .sort((a, b) => b.score - a.score || a.index - b.index)
-                    .slice(0, 5);
+                const allMatches = filteredData
+                    .map((card, index) => {
+                        const titleStr = translateContent(card.title).toLowerCase();
+                        const descStr = translateContent(card.description).toLowerCase();
+                        let score = 0;
+                        if (titleStr.startsWith(query)) score += 100;
+                        else if (titleStr.includes(query)) score += 50;
+                        if (descStr.includes(query)) score += 10;
+                        const yearStr = card.date.substring(0, 4);
+                        if (yearStr.includes(query)) score += 20;
+                        return {
+                            card,
+                            index,
+                            year: yearStr,
+                            title: translateContent(card.title),
+                            score,
+                        };
+                    })
+                    .filter((m) => m.score > 0);
+                matchingCards = allMatches.map((m) => m.card);
+                suggestions = allMatches.sort((a, b) => b.score - a.score || a.index - b.index).slice(0, 5);
             }
             return m("#app-container", [
-                m("style", Object.values(TAGS).map((tag) => `
+                m(
+                    "style",
+                    Object.values(TAGS)
+                        .map(
+                            (tag) => `
                     .tag-${tag.id} {
                         background-color: ${tag.bgColor} !important;
                         color: ${tag.color} !important;
@@ -237,7 +225,10 @@ const App = () => {
                         color: #64748b !important;
                         border-color: rgba(255, 255, 255, 0.1) !important;
                     }
-                `).join("\n")),
+                `
+                        )
+                        .join("\n")
+                ),
                 m(Controls, {
                     activeFilters,
                     tagCounts,
@@ -276,10 +267,8 @@ const App = () => {
                     },
                     onFilterChange: (tag, checked) => {
                         if (checked) {
-                            if (!activeFilters.includes(tag))
-                                activeFilters.push(tag);
-                        }
-                        else {
+                            if (!activeFilters.includes(tag)) activeFilters.push(tag);
+                        } else {
                             activeFilters = activeFilters.filter((t) => t !== tag);
                         }
                         updateFilterSelection();
@@ -314,11 +303,12 @@ const App = () => {
                             activeIndex = idx;
                             updateURLParams();
                         },
-                        renderItem: (item) => m(Card, {
-                            card: item,
-                            searchQuery: searchQuery,
-                            language: getLanguage(),
-                        }),
+                        renderItem: (item) =>
+                            m(Card, {
+                                card: item,
+                                searchQuery: searchQuery,
+                                language: getLanguage(),
+                            }),
                     }),
                 ]),
                 m(MiniOverview, {
@@ -329,8 +319,7 @@ const App = () => {
                     activeIndex: activeIndex,
                     language: getLanguage(),
                     onJumpToIndex: (idx, behavior = "smooth") => {
-                        if (timelineHandle.scrollToIndex)
-                            timelineHandle.scrollToIndex(idx, behavior);
+                        if (timelineHandle.scrollToIndex) timelineHandle.scrollToIndex(idx, behavior);
                     },
                 }),
             ]);

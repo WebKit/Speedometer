@@ -3,11 +3,7 @@
         "target": "ESNext",
         "useDefineForClassFields": true,
         "module": "ESNext",
-        "lib": [
-            "ESNext",
-            "DOM",
-            "DOM.Iterable"
-        ],
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "skipLibCheck": true,
         "moduleResolution": "bundler",
         "allowImportingTsExtensions": false,
@@ -20,7 +16,5 @@
         "noUnusedParameters": false,
         "noFallthroughCasesInSwitch": true
     },
-    "include": [
-        "src"
-    ]
+    "include": ["src"]
 }

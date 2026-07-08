@@ -98,5 +98,5 @@ export default [
                 IT: "https://it.wikipedia.org/wiki/OS/360",
             },
         },
-    }
+    },
 ];

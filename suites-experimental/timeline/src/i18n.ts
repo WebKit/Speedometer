@@ -107,10 +107,10 @@ export const translations = {
         searchPlaceholder: "Cerca...",
         suggestionsTitle: "Suggerimenti",
         noMatches: "Nessun risultato trovato",
-    }
+    },
 };
 
-export type TranslationKey = keyof typeof translations["DE"];
+export type TranslationKey = keyof (typeof translations)["DE"];
 
 export const t = (key: TranslationKey | string): string => {
     return translations[activeLanguage][key as TranslationKey] || translations["DE"][key as TranslationKey] || key;

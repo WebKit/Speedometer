@@ -61,21 +61,18 @@ export class Virtualizer {
             const block = this.data[i];
             const x = this.xPositions[i];
             const width = this.widthCache.get(block.id) || this.defaultWidths[block.type] || 250;
-            if (x + width >= viewportStart && x <= viewportEnd)
-                newVisibleIndices.add(i);
+            if (x + width >= viewportStart && x <= viewportEnd) newVisibleIndices.add(i);
         }
 
         for (const index of this.visibleIndices) {
-            if (!newVisibleIndices.has(index))
-                this.recycleElement(index);
+            if (!newVisibleIndices.has(index)) this.recycleElement(index);
         }
 
         let cacheDirty = false;
         for (const index of newVisibleIndices) {
             if (!this.visibleIndices.has(index) || !this.renderedElements.has(index)) {
                 const widthChanged = this.renderElement(index);
-                if (widthChanged)
-                    cacheDirty = true;
+                if (widthChanged) cacheDirty = true;
             }
         }
 
@@ -92,8 +89,7 @@ export class Virtualizer {
         const type = block.type;
         let node = this.getRecycledNode(type);
 
-        if (!node)
-            node = this.createNewNode(type);
+        if (!node) node = this.createNewNode(type);
 
         this.renderCallback(block, node);
         this.content.appendChild(node);
@@ -132,16 +128,14 @@ export class Virtualizer {
             this.renderedElements.delete(index);
             node.remove();
             const type = this.data[index].type;
-            if (!this.pool[type])
-                this.pool[type] = [];
+            if (!this.pool[type]) this.pool[type] = [];
 
             this.pool[type].push(node);
         }
     }
 
     getRecycledNode(type) {
-        if (this.pool[type] && this.pool[type].length > 0)
-            return this.pool[type].pop();
+        if (this.pool[type] && this.pool[type].length > 0) return this.pool[type].pop();
 
         return null;
     }
@@ -153,8 +147,7 @@ export class Virtualizer {
     }
 
     scrollToIndex(index) {
-        if (index < 0 || index >= this.data.length)
-            return;
+        if (index < 0 || index >= this.data.length) return;
         this.calculatePositions();
         const x = this.xPositions[index];
         this.container.scrollLeft = x;
@@ -167,8 +160,7 @@ export class Virtualizer {
     }
 
     updateData(newData) {
-        for (const index of this.visibleIndices)
-            this.recycleElement(index);
+        for (const index of this.visibleIndices) this.recycleElement(index);
 
         this.visibleIndices.clear();
         this.renderedElements.clear();

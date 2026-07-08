@@ -49,7 +49,7 @@ export function calculateDensityCurve(items, options = {}) {
     const validYears = [];
     for (let i = 0; i < items.length; i++) {
         const item = items[i];
-        const dateVal = item ? (item.date !== undefined ? item.date : (item.year !== undefined ? item.year : item.preciseYear)) : null;
+        const dateVal = item ? (item.date !== undefined ? item.date : item.year !== undefined ? item.year : item.preciseYear) : null;
         const py = getPreciseYear(dateVal);
         if (py !== null && !isNaN(py)) {
             validYears.push(py);
@@ -117,14 +117,14 @@ export function getDensityAtYear(targetYear, curveData, items, windowYears = 6) 
                 closest = curveData.points[i];
             }
         }
-        density = closest.value !== undefined ? closest.value : (closest.density !== undefined ? closest.density : 0);
+        density = closest.value !== undefined ? closest.value : closest.density !== undefined ? closest.density : 0;
     }
 
     let itemsInWindow = 0;
     if (items && Array.isArray(items)) {
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
-            const dateVal = item ? (item.date !== undefined ? item.date : (item.year !== undefined ? item.year : item.preciseYear)) : null;
+            const dateVal = item ? (item.date !== undefined ? item.date : item.year !== undefined ? item.year : item.preciseYear) : null;
             const py = getPreciseYear(dateVal);
             if (py !== null && Math.abs(py - targetYear) <= windowYears) {
                 itemsInWindow++;

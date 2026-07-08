@@ -31,9 +31,12 @@ files.forEach((file) => {
         // Sort items by date
         let modified = false;
         const sortedArr = [...arr].sort((a, b) => {
-            if (!a.date || !b.date) return 0;
-            if (a.date < b.date) return -1;
-            if (a.date > b.date) return 1;
+            if (!a.date || !b.date)
+                return 0;
+            if (a.date < b.date)
+                return -1;
+            if (a.date > b.date)
+                return 1;
             return 0;
         });
 

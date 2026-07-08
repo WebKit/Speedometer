@@ -9,9 +9,15 @@ export const flopsData = [
     { name: "Cray-1", type: "cpu", date: "1976-03-01", flops: 1.6e8, source: "Cray History Museum", mips: 160.0 },
     { name: "Intel 8086", type: "cpu", date: "1978-06-08", flops: 3.3e4, source: "Intel Microprocessor Datasheet", mips: 0.75 },
     { name: "Intel 80286", type: "cpu", date: "1982-02-01", flops: 5e4, source: "Intel Microprocessor Datasheet (with 80287 FPU)", mips: 2.66 },
+    { name: "SGI Geometry Engine (IRIS 1000)", type: "gpu", date: "1982-11-01", flops: 6e6, source: "Stanford / SGI Geometry Engine Specifications" },
     { name: "Cray X-MP", type: "cpu", date: "1982-11-01", flops: 8e8, source: "Cray History Museum", mips: 800.0 },
     { name: "Intel 80386DX", type: "cpu", date: "1985-10-17", flops: 1.2e5, source: "Intel Microprocessor Datasheet (with 80387 FPU)", mips: 4.3 },
+    { name: "TI TMS34010 GSP", type: "gpu", date: "1986-02-01", flops: 1e6, source: "Texas Instruments TMS34010 GSP Datasheet", mips: 6.0 },
+    { name: "TI TMS34020 + TMS34082A FPU", type: "gpu", date: "1988-08-01", flops: 4e7, source: "Texas Instruments TMS34082A Floating-Point Graphics Coprocessor Datasheet", mips: 10.0 },
     { name: "Intel 486", type: "cpu", date: "1989-04-10", flops: 4e7, source: "Intel Microprocessor Datasheet", mips: 40.0 },
+    { name: "Weitek 4167 Graphics Coprocessor", type: "gpu", date: "1989-10-01", flops: 4e6, source: "Weitek 4167 Coprocessor Specifications" },
+    { name: "SGI Indigo Extreme Graphics", type: "gpu", date: "1992-01-01", flops: 2.56e8, source: "Silicon Graphics Indigo Extreme Architecture Specifications" },
+    { name: "SGI RealityEngine2 (Onyx)", type: "gpu", date: "1993-01-01", flops: 1.2e9, source: "Silicon Graphics RealityEngine Architecture Specifications" },
     { name: "Intel Pentium", type: "cpu", date: "1993-03-22", flops: 1e8, source: "Intel Microprocessor Datasheet", mips: 100.0 },
     { name: "NV1", type: "gpu", date: "1995-05-22", flops: 1.2e7, source: "TechPowerUp GPU Database" },
     { name: "Intel Pentium Pro", type: "cpu", date: "1995-11-01", flops: 2e8, source: "Intel Microprocessor Datasheet", mips: 440.0 },
@@ -59,5 +65,5 @@ export const flopsData = [
     { name: "AMD Radeon RX 7900 XTX", type: "gpu", date: "2022-12-13", flops: 6.14e13, source: "TechPowerUp GPU Database" },
     { name: "NVIDIA H100 NVL", type: "tpu", date: "2023-03-21", flops: 1.35e14, source: "NVIDIA Hopper NVL Specifications" },
     { name: "Google TPU v5p", type: "tpu", date: "2023-12-06", flops: 4.59e14, source: "Google Cloud TPU Architecture Specs" },
-    { name: "NVIDIA B200", type: "gpu", date: "2024-03-18", flops: 9e13, source: "NVIDIA Blackwell B200 Specifications" }
+    { name: "NVIDIA B200", type: "gpu", date: "2024-03-18", flops: 9e13, source: "NVIDIA Blackwell B200 Specifications" },
 ];

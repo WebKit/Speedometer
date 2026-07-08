@@ -44,37 +44,34 @@ function formatInlineStyles(str, query) {
         "\\*\\*([^*]+)\\*\\*", // 2. Bold
         "\\*([^*]+)\\*", // 3. Italic
     ];
-    if (escapedQuery) {
+    if (escapedQuery)
         regexParts.push(`(${escapedQuery})`); // 4. Search Highlight
-    }
+
     const masterRegex = new RegExp(regexParts.join("|"), "gi");
     let match;
     let lastIndex = 0;
     const result = [];
     while ((match = masterRegex.exec(str)) !== null) {
         const before = str.substring(lastIndex, match.index);
-        if (before) {
+        if (before)
             result.push(before);
-        }
+
         const [full, code, bold, italic, highlightStr] = match;
-        if (code !== undefined) {
+        if (code !== undefined)
             result.push(m("code", code));
-        }
-        else if (bold !== undefined) {
+        else if (bold !== undefined)
             result.push(m("strong", formatInlineStyles(bold, query)));
-        }
-        else if (italic !== undefined) {
+        else if (italic !== undefined)
             result.push(m("em", formatInlineStyles(italic, query)));
-        }
-        else if (highlightStr !== undefined) {
+        else if (highlightStr !== undefined)
             result.push(m("mark.highlight", highlightStr));
-        }
+
         lastIndex = masterRegex.lastIndex;
     }
     const after = str.substring(lastIndex);
-    if (after) {
+    if (after)
         result.push(after);
-    }
+
     return result;
 }
 function parseMarkdown(text, query) {
@@ -86,30 +83,30 @@ function parseMarkdown(text, query) {
     const parts = [];
     while ((match = linkRegex.exec(text)) !== null) {
         const textBefore = text.substring(lastIndex, match.index);
-        if (textBefore) {
+        if (textBefore)
             parts.push(...formatInlineStyles(textBefore, query));
-        }
+
         const label = match[1];
         const url = match[2];
         parts.push(m("a", { href: url, target: "_blank", rel: "noopener noreferrer" }, formatInlineStyles(label, query)));
         lastIndex = linkRegex.lastIndex;
     }
     const textAfter = text.substring(lastIndex);
-    if (textAfter) {
+    if (textAfter)
         parts.push(...formatInlineStyles(textAfter, query));
-    }
+
     return parts;
 }
 export const Card = {
     oncreate(vnode) {
-        if (vnode.attrs.onResize) {
+        if (vnode.attrs.onResize)
             vnode.attrs.onResize(vnode.dom.offsetWidth);
-        }
+
     },
     onupdate(vnode) {
-        if (vnode.attrs.onResize) {
+        if (vnode.attrs.onResize)
             vnode.attrs.onResize(vnode.dom.offsetWidth);
-        }
+
     },
     view(vnode) {
         // IMPORTANT: Live translation of cards relies on calling translateContent() and t() dynamically inside view()
@@ -120,75 +117,101 @@ export const Card = {
         const titleStr = translateContent(title);
         const descriptionStr = translateContent(description);
         const tagClass = tags.includes("milestone") ? "tag-milestone" : tags[0] ? `tag-${tags[0]}` : "";
-        return m(".timeline-card", {
-            class: `card-${type} ${tagClass}`,
-            id: id,
-            style: Object.assign({
-                width: `${width}px`,
-            }, vnode.attrs.style),
-        }, m(".timeline-card-inner", [
-            m(".card-header", [m("span.card-date", date), m("h3.card-title", formatInlineStyles(titleStr, searchQuery))]),
-            m(".card-tags", tags.map((tag) => {
-                const tagData = TAGS[tag];
-                const label = tagData ? translateContent(tagData.label) : tag;
-                return m("span.tag", { class: `tag-${tag}` }, label);
-            })),
-            m("p.card-desc", parseMarkdown(descriptionStr, searchQuery)),
-            stats &&
-                m(".card-stats-summary", [
-                    stats.transistors && m("div", [m("strong", t("transistors")), ` ${stats.transistors}`]),
-                    stats.clockSpeed && m("div", [m("strong", t("clockSpeed")), ` ${stats.clockSpeed}`]),
-                    stats.memory && m("div", [m("strong", t("memory")), ` ${stats.memory}`]),
-                ]),
-            type === "table" &&
-                card.cells &&
-                m("table.stats-table", card.cells.map((row, rIdx) => m("tr", row.map((cell) => (rIdx === 0 ? m("th", translateContent(cell)) : m("td", translateContent(cell))))))),
-            type === "chart" &&
-                card.chartData &&
-                m(Chart, {
-                    chartData: card.chartData,
-                    width: width,
-                }),
-            links &&
-                Object.keys(links).length > 0 &&
-                m(".card-links", {
-                    style: {
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: "12px",
-                        marginTop: "auto",
-                        paddingTop: "12px",
+        return m(
+            ".timeline-card",
+            {
+                class: `card-${type} ${tagClass}`,
+                id: id,
+                style: Object.assign(
+                    {
+                        width: `${width}px`,
                     },
-                }, Object.keys(links)
-                    .sort((a, b) => {
-                    if (a === "wikipedia")
-                        return -1;
-                    if (b === "wikipedia")
-                        return 1;
-                    return a.localeCompare(b);
-                })
-                    .map((key) => {
-                    const rawUrl = links[key];
-                    if (!rawUrl)
-                        return null;
-                    const url = typeof rawUrl === "object" ? translateContent(rawUrl) : rawUrl;
-                    if (!url)
-                        return null;
-                    const label = key === "wikipedia" ? "Wikipedia" : key.charAt(0).toUpperCase() + key.slice(1);
-                    return m("a.card-link", {
-                        href: url,
-                        target: "_blank",
-                        rel: "noopener noreferrer",
-                        style: {
-                            fontSize: "0.75rem",
-                            color: "var(--primary-color)",
-                            textDecoration: "none",
-                            fontWeight: "600",
-                            display: "inline-flex",
-                            alignItems: "center",
+                    vnode.attrs.style
+                ),
+            },
+            m(".timeline-card-inner", [
+                m(".card-header", [m("span.card-date", date), m("h3.card-title", formatInlineStyles(titleStr, searchQuery))]),
+                m(
+                    ".card-tags",
+                    tags.map((tag) => {
+                        const tagData = TAGS[tag];
+                        const label = tagData ? translateContent(tagData.label) : tag;
+                        return m("span.tag", { class: `tag-${tag}` }, label);
+                    })
+                ),
+                m("p.card-desc", parseMarkdown(descriptionStr, searchQuery)),
+                stats
+                    && m(".card-stats-summary", [
+                        stats.transistors && m("div", [m("strong", t("transistors")), ` ${stats.transistors}`]),
+                        stats.clockSpeed && m("div", [m("strong", t("clockSpeed")), ` ${stats.clockSpeed}`]),
+                        stats.memory && m("div", [m("strong", t("memory")), ` ${stats.memory}`]),
+                    ]),
+                type === "table"
+                    && card.cells
+                    && m(
+                        "table.stats-table",
+                        card.cells.map((row, rIdx) =>
+                            m(
+                                "tr",
+                                row.map((cell) => rIdx === 0 ? m("th", translateContent(cell)) : m("td", translateContent(cell)))
+                            )
+                        )
+                    ),
+                type === "chart"
+                    && card.chartData
+                    && m(Chart, {
+                        chartData: card.chartData,
+                        width: width,
+                    }),
+                links
+                    && Object.keys(links).length > 0
+                    && m(
+                        ".card-links",
+                        {
+                            style: {
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: "12px",
+                                marginTop: "auto",
+                                paddingTop: "12px",
+                            },
                         },
-                    }, `${label} ↗`);
-                })),
-        ]));
+                        Object.keys(links)
+                            .sort((a, b) => {
+                                if (a === "wikipedia")
+                                    return -1;
+                                if (b === "wikipedia")
+                                    return 1;
+                                return a.localeCompare(b);
+                            })
+                            .map((key) => {
+                                const rawUrl = links[key];
+                                if (!rawUrl)
+                                    return null;
+                                const url = typeof rawUrl === "object" ? translateContent(rawUrl) : rawUrl;
+                                if (!url)
+                                    return null;
+                                const label = key === "wikipedia" ? "Wikipedia" : key.charAt(0).toUpperCase() + key.slice(1);
+                                return m(
+                                    "a.card-link",
+                                    {
+                                        href: url,
+                                        target: "_blank",
+                                        rel: "noopener noreferrer",
+                                        style: {
+                                            fontSize: "0.75rem",
+                                            color: "var(--primary-color)",
+                                            textDecoration: "none",
+                                            fontWeight: "600",
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                        },
+                                    },
+                                    `${label} ↗`
+                                );
+                            })
+                    ),
+            ])
+        );
     },
 };

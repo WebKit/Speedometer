@@ -60,7 +60,7 @@ const App = () => {
             let bestIndex = 0;
             let minDiff = Infinity;
             const targetTime = new Date(currentCardDate).getTime();
-            
+
             filteredData.forEach((card, idx) => {
                 const cardTime = new Date(card.date).getTime();
                 const diff = Math.abs(cardTime - targetTime);
@@ -135,7 +135,10 @@ const App = () => {
             }
             const tabParam = params.get("tab") || params.get("tags") || params.get("tag") || params.get("filter");
             if (tabParam !== null) {
-                const parsedTags = tabParam.split(",").map((t) => t.trim()).filter((t) => activeCategories.includes(t));
+                const parsedTags = tabParam
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter((t) => activeCategories.includes(t));
                 if (parsedTags.length > 0) {
                     activeFilters = parsedTags;
                 }
@@ -193,35 +196,39 @@ const App = () => {
             let matchingCards: any[] = [];
             if (searchQuery.trim().length > 0) {
                 const query = searchQuery.toLowerCase().trim();
-                const allMatches = filteredData.map((card, index) => {
-                    const titleStr = translateContent(card.title).toLowerCase();
-                    const descStr = translateContent(card.description).toLowerCase();
-                    let score = 0;
-                    if (titleStr.startsWith(query)) score += 100;
-                    else if (titleStr.includes(query)) score += 50;
-                    if (descStr.includes(query)) score += 10;
-                    
-                    const yearStr = card.date.substring(0, 4);
-                    if (yearStr.includes(query)) score += 20;
+                const allMatches = filteredData
+                    .map((card, index) => {
+                        const titleStr = translateContent(card.title).toLowerCase();
+                        const descStr = translateContent(card.description).toLowerCase();
+                        let score = 0;
+                        if (titleStr.startsWith(query)) score += 100;
+                        else if (titleStr.includes(query)) score += 50;
+                        if (descStr.includes(query)) score += 10;
 
-                    return {
-                        card,
-                        index,
-                        year: yearStr,
-                        title: translateContent(card.title),
-                        score
-                    };
-                }).filter(m => m.score > 0);
+                        const yearStr = card.date.substring(0, 4);
+                        if (yearStr.includes(query)) score += 20;
 
-                matchingCards = allMatches.map(m => m.card);
+                        return {
+                            card,
+                            index,
+                            year: yearStr,
+                            title: translateContent(card.title),
+                            score,
+                        };
+                    })
+                    .filter((m) => m.score > 0);
 
-                suggestions = allMatches
-                .sort((a, b) => b.score - a.score || a.index - b.index)
-                .slice(0, 5);
+                matchingCards = allMatches.map((m) => m.card);
+
+                suggestions = allMatches.sort((a, b) => b.score - a.score || a.index - b.index).slice(0, 5);
             }
 
             return m("#app-container", [
-                m("style", Object.values(TAGS).map((tag: any) => `
+                m(
+                    "style",
+                    Object.values(TAGS)
+                        .map(
+                            (tag: any) => `
                     .tag-${tag.id} {
                         background-color: ${tag.bgColor} !important;
                         color: ${tag.color} !important;
@@ -241,7 +248,10 @@ const App = () => {
                         color: #64748b !important;
                         border-color: rgba(255, 255, 255, 0.1) !important;
                     }
-                `).join("\n")),
+                `
+                        )
+                        .join("\n")
+                ),
                 m(Controls as m.Component<any>, {
                     activeFilters,
                     tagCounts,

@@ -17,7 +17,7 @@ export default [
         tags: ["hardware"],
         id: "card-hardware-1978-01-01-56669",
         links: {
-            wikipedia: {'DE': 'https://de.wikipedia.org/wiki/Intel_8086', 'FR': 'https://fr.wikipedia.org/wiki/Intel_8086', 'IT': 'https://it.wikipedia.org/wiki/Intel_8086'},
+            wikipedia: { DE: "https://de.wikipedia.org/wiki/Intel_8086", FR: "https://fr.wikipedia.org/wiki/Intel_8086", IT: "https://it.wikipedia.org/wiki/Intel_8086" },
         },
     },
     {
@@ -38,7 +38,7 @@ export default [
         tags: ["gaming"],
         id: "card-gaming-1978-01-01-17178",
         links: {
-            wikipedia: {'DE': 'https://de.wikipedia.org/wiki/Space_Invaders', 'FR': 'https://fr.wikipedia.org/wiki/Space_Invaders', 'IT': 'https://it.wikipedia.org/wiki/Space_Invaders'},
+            wikipedia: { DE: "https://de.wikipedia.org/wiki/Space_Invaders", FR: "https://fr.wikipedia.org/wiki/Space_Invaders", IT: "https://it.wikipedia.org/wiki/Space_Invaders" },
         },
     },
     {
@@ -59,7 +59,7 @@ export default [
         tags: ["default"],
         id: "card-default-1978-01-01-33320",
         links: {
-            wikipedia: {'DE': 'https://de.wikipedia.org/wiki/Laserdisc', 'FR': 'https://fr.wikipedia.org/wiki/LaserDisc', 'IT': 'https://it.wikipedia.org/wiki/LaserDisc'},
+            wikipedia: { DE: "https://de.wikipedia.org/wiki/Laserdisc", FR: "https://fr.wikipedia.org/wiki/LaserDisc", IT: "https://it.wikipedia.org/wiki/LaserDisc" },
         },
     },
     {
@@ -70,9 +70,9 @@ export default [
             IT: "Speak & Spell",
         },
         description: {
-            DE: "Speak & Spell ist ein elektronisches Lernspielzeug von Texas Instruments, das 1978 auf den Markt kam und Kindern beim Buchstabieren half. Es war eines der ersten kommerziellen Geräte, das eine integrierte Sprachsynthese nutzte, statt auf voraufgezeichnete Audiobänder zurückzugreifen. Dies wurde durch den revolutionären TI-LPC-Sprachchip TMS5100 ermöglicht, der die Linear Predictive Coding (LPC)-Methode nutzte, um menschliche Sprache mathematisch zu modellieren und zu synthetisieren. Das Gerät verfügte über eine Folientastatur, ein kleines Display und einen Lautsprecher. Es forderte Kinder auf, Wörter zu buchstabieren, und gab direktes Feedback. Speak & Spell war ein großer Verkaufserfolg und wurde zu einer Ikone der 1980er Jahre (unter anderem bekannt durch seinen Auftritt im Film \"E.T.\"). Für Synthesizer-Enthusiasten und Musiker wurde es später zu einem beliebten Objekt für \"Circuit Bending\", um experimentelle Klänge zu erzeugen.",
+            DE: 'Speak & Spell ist ein elektronisches Lernspielzeug von Texas Instruments, das 1978 auf den Markt kam und Kindern beim Buchstabieren half. Es war eines der ersten kommerziellen Geräte, das eine integrierte Sprachsynthese nutzte, statt auf voraufgezeichnete Audiobänder zurückzugreifen. Dies wurde durch den revolutionären TI-LPC-Sprachchip TMS5100 ermöglicht, der die Linear Predictive Coding (LPC)-Methode nutzte, um menschliche Sprache mathematisch zu modellieren und zu synthetisieren. Das Gerät verfügte über eine Folientastatur, ein kleines Display und einen Lautsprecher. Es forderte Kinder auf, Wörter zu buchstabieren, und gab direktes Feedback. Speak & Spell war ein großer Verkaufserfolg und wurde zu einer Ikone der 1980er Jahre (unter anderem bekannt durch seinen Auftritt im Film "E.T."). Für Synthesizer-Enthusiasten und Musiker wurde es später zu einem beliebten Objekt für "Circuit Bending", um experimentelle Klänge zu erzeugen.',
             FR: "Le Speak & Spell (connu sous le nom de \"Dictée Magique\" en France) est un jouet électronique éducatif lancé par Texas Instruments en 1978. Conçu pour aider les enfants à apprendre l'orthographe, il s'agit de l'un des premiers appareils grand public à utiliser la synthèse vocale électronique plutôt que des enregistrements sur bande. Cette prouesse technologique reposait sur le circuit intégré de synthèse vocale TMS5100 de TI, utilisant la technique de codage prédictif linéaire (LPC). L'appareil se composait d'un clavier à membrane, d'un petit affichage et d'un haut-parleur, dictant des mots que l'enfant devait saisir correctement. Le Speak & Spell a rencontré un immense succès commercial et est devenu une icône de la culture pop des années 1980 (notamment utilisé par E.T. pour \"téléphoner maison\"). Plus tard, il est devenu un instrument culte pour les musiciens adeptes du circuit bending, qui modifiaient ses circuits pour créer des sons électroniques étranges.",
-            IT: "Lo Speak & Spell (noto in Italia come \"Il Grillo Parlante\") è un gioco elettronico educativo introdotto da Texas Instruments nel 1978. Progettato per insegnare ai bambini a compitare le parole, è stato uno dei primi dispositivi commerciali a utilizzare la sintesi vocale su chip, anziché registrazioni audio analogiche. Questa innovazione era basata sul chip TMS5100 di TI, che utilizzava la tecnologia di codifica predittiva lineare (LPC) per riprodurre la voce umana. Il dispositivo, dotato di una tastiera a membrana, un piccolo display a LED e un altoparlante, pronunciava le parole che il bambino doveva poi digitare correttamente. Ebbe un enorme successo globale, diventando un'icona degli anni '80 (celebre il suo ruolo nel film \"E.T. l'extra-terrestre\"). In seguito, è diventato molto popolare tra i musicisti sperimentali per la pratica del circuit bending, che modifica i circuiti per generare suoni elettronici insoliti.",
+            IT: 'Lo Speak & Spell (noto in Italia come "Il Grillo Parlante") è un gioco elettronico educativo introdotto da Texas Instruments nel 1978. Progettato per insegnare ai bambini a compitare le parole, è stato uno dei primi dispositivi commerciali a utilizzare la sintesi vocale su chip, anziché registrazioni audio analogiche. Questa innovazione era basata sul chip TMS5100 di TI, che utilizzava la tecnologia di codifica predittiva lineare (LPC) per riprodurre la voce umana. Il dispositivo, dotato di una tastiera a membrana, un piccolo display a LED e un altoparlante, pronunciava le parole che il bambino doveva poi digitare correttamente. Ebbe un enorme successo globale, diventando un\'icona degli anni \'80 (celebre il suo ruolo nel film "E.T. l\'extra-terrestre"). In seguito, è diventato molto popolare tra i musicisti sperimentali per la pratica del circuit bending, che modifica i circuiti per generare suoni elettronici insoliti.',
         },
         type: "text",
         width: 380,
@@ -80,7 +80,7 @@ export default [
         tags: ["default"],
         id: "card-default-1978-01-01-70552",
         links: {
-            wikipedia: {'DE': 'https://de.wikipedia.org/wiki/Speak_%26_Spell', 'FR': 'https://fr.wikipedia.org/wiki/Speak_and_Spell', 'IT': 'https://it.wikipedia.org/wiki/Speak_%26_Spell'},
+            wikipedia: { DE: "https://de.wikipedia.org/wiki/Speak_%26_Spell", FR: "https://fr.wikipedia.org/wiki/Speak_and_Spell", IT: "https://it.wikipedia.org/wiki/Speak_%26_Spell" },
         },
     },
     {
@@ -100,7 +100,7 @@ export default [
         type: "text",
         width: 380,
         links: {
-            wikipedia: {'DE': 'https://en.wikipedia.org/wiki/Basketball_(1978_video_game)', 'FR': 'https://fr.wikipedia.org/wiki/Basketball_(jeu_vid%C3%A9o,_Atari)', 'IT': 'https://it.wikipedia.org/wiki/Basketball_(videogioco_1978)'},
+            wikipedia: { DE: "https://en.wikipedia.org/wiki/Basketball_(1978_video_game)", FR: "https://fr.wikipedia.org/wiki/Basketball_(jeu_vid%C3%A9o,_Atari)", IT: "https://it.wikipedia.org/wiki/Basketball_(videogioco_1978)" },
         },
     },
     {
@@ -120,7 +120,7 @@ export default [
         type: "text",
         width: 380,
         links: {
-            wikipedia: {'DE': 'https://de.wikipedia.org/wiki/Gee_Bee_(Computerspiel)', 'FR': 'https://fr.wikipedia.org/wiki/Gee_Bee_(jeu_vid%C3%A9o)', 'IT': 'https://it.wikipedia.org/wiki/Gee_Bee_(videogioco)'},
+            wikipedia: { DE: "https://de.wikipedia.org/wiki/Gee_Bee_(Computerspiel)", FR: "https://fr.wikipedia.org/wiki/Gee_Bee_(jeu_vid%C3%A9o)", IT: "https://it.wikipedia.org/wiki/Gee_Bee_(videogioco)" },
         },
     },
     {
@@ -140,7 +140,7 @@ export default [
         type: "text",
         width: 380,
         links: {
-            wikipedia: {'DE': 'https://de.wikipedia.org/wiki/Santa_Paravia_en_Fiumaccio', 'FR': 'https://fr.wikipedia.org/wiki/Santa_Paravia_en_Fiumaccio', 'IT': 'https://it.wikipedia.org/wiki/Santa_Paravia_en_Fiumaccio'},
+            wikipedia: { DE: "https://de.wikipedia.org/wiki/Santa_Paravia_en_Fiumaccio", FR: "https://fr.wikipedia.org/wiki/Santa_Paravia_en_Fiumaccio", IT: "https://it.wikipedia.org/wiki/Santa_Paravia_en_Fiumaccio" },
         },
     },
     {
@@ -160,7 +160,7 @@ export default [
         type: "text",
         width: 380,
         links: {
-            wikipedia: {'DE': 'https://de.wikipedia.org/wiki/Cosmic_Conflict', 'FR': 'https://en.wikipedia.org/wiki/Cosmic_Conflict', 'IT': 'https://en.wikipedia.org/wiki/Cosmic_Conflict'},
+            wikipedia: { DE: "https://de.wikipedia.org/wiki/Cosmic_Conflict", FR: "https://en.wikipedia.org/wiki/Cosmic_Conflict", IT: "https://en.wikipedia.org/wiki/Cosmic_Conflict" },
         },
     },
     {
@@ -172,7 +172,7 @@ export default [
             IT: "Fire Truck",
         },
         description: {
-            DE: "[**Fire Truck**](https://de.wikipedia.org/wiki/Fire_Truck_(Computerspiel)) ist ein wegweisendes Arcade-Spiel, das 1978 von [**Atari**](https://de.wikipedia.org/wiki/Atari_Inc.) veröffentlicht wurde. Es gilt als eines der ersten kooperativen Videospiele der Geschichte. Das Spiel simuliert die Fahrt eines großen Feuerwehrfahrzeugs durch eine geschäftige Stadt. Die Besonderheit liegt im Steuerungskonzept für zwei Spieler: Ein Spieler übernimmt die Rolle des Fahrers an der Front (mit Lenkrad und Gaspedal), während der zweite Spieler am Heck das lenkbare Hinterteil des Löschzugs (den sogenannten \"Tiller\") steuert. Nur durch präzise Absprache und Teamwork können die Spieler Hindernissen ausweichen und das Ziel vor Ablauf der Zeit erreichen. Das Spiel wurde in Schwarz-Weiß auf einem Rasterbildschirm dargestellt und bot eine Draufsicht (Vogelperspektive). Trotz der einfachen Grafik bot `Fire Truck` ein hochentwickeltes physikalisches Gefühl für die Trägheit des langen Fahrzeugs. Es konnte auch von einem einzelnen Spieler gespielt werden, wobei der Computer den jeweils anderen Teil des Lkw steuerte.",
+            DE: '[**Fire Truck**](https://de.wikipedia.org/wiki/Fire_Truck_(Computerspiel)) ist ein wegweisendes Arcade-Spiel, das 1978 von [**Atari**](https://de.wikipedia.org/wiki/Atari_Inc.) veröffentlicht wurde. Es gilt als eines der ersten kooperativen Videospiele der Geschichte. Das Spiel simuliert die Fahrt eines großen Feuerwehrfahrzeugs durch eine geschäftige Stadt. Die Besonderheit liegt im Steuerungskonzept für zwei Spieler: Ein Spieler übernimmt die Rolle des Fahrers an der Front (mit Lenkrad und Gaspedal), während der zweite Spieler am Heck das lenkbare Hinterteil des Löschzugs (den sogenannten "Tiller") steuert. Nur durch präzise Absprache und Teamwork können die Spieler Hindernissen ausweichen und das Ziel vor Ablauf der Zeit erreichen. Das Spiel wurde in Schwarz-Weiß auf einem Rasterbildschirm dargestellt und bot eine Draufsicht (Vogelperspektive). Trotz der einfachen Grafik bot `Fire Truck` ein hochentwickeltes physikalisches Gefühl für die Trägheit des langen Fahrzeugs. Es konnte auch von einem einzelnen Spieler gespielt werden, wobei der Computer den jeweils anderen Teil des Lkw steuerte.',
             FR: "[**Fire Truck**](https://fr.wikipedia.org/wiki/Fire_Truck_(jeu_vid%C3%A9o)) est un jeu d'arcade révolutionnaire développé et édité par [**Atari**](https://fr.wikipedia.org/wiki/Atari_Inc.) en 1978. Il est historiquement important comme l'un des tout premiers jeux vidéo à proposer un gameplay coopératif à deux joueurs. Le jeu simule la conduite d'un au long camion de pompiers à travers les rues d'une ville sinueuse. Sa grande originalité réside dans son système de contrôle : un joueur est assis à l'avant pour diriger la cabine (avec un volant et une pédale d'accélérateur), tandis que le second joueur contrôle l'arrière du camion à l'aide d'un volant séparé pour éviter que la remorque ne heurte les obstacles. La coordination parfaite entre les deux joueurs est indispensable pour naviguer avec succès. Affiché en noir et blanc avec une vue de dessus, le jeu offrait une simulation physique impressionnante pour l'époque, reproduisant la difficulté de manœuvrer un véhicule articulé. Bien qu'un mode solo soit disponible, c'est son mode coopération qui a marqué l'histoire.",
             IT: "[**Fire Truck**](https://en.wikipedia.org/wiki/Fire_Truck_(video_game)) è un innovativo videogioco arcade pubblicato da [**Atari**](https://it.wikipedia.org/wiki/Atari_Inc.) nel 1978. È celebre nella storia dei videogiochi per essere stato uno dei primi titoli in assoluto a introdurre una modalità di gioco cooperativa per due giocatori. Il gioco simula la guida di un lungo camion dei vigili del fuoco attraverso un percorso cittadino tortuoso visualizzato con una prospettiva dall'alto. La particolarità risiede nei controlli: un giocatore siede davanti guidando la motrice con volante e acceleratore, mentre il secondo controlla la parte posteriore del veicolo (il carrello posteriore) usando un secondo volante per evitare che rimanga bloccato contro gli ostacoli. Il successo della missione dipende interamente dalla coordinazione e dalla comunicazione tra i due giocatori. Realizzato con grafica in bianco e nero, il gioco offriva una fisica sorprendentemente realistica per l'epoca nella gestione dello snodo del rimorchio. Era possibile giocare anche da soli, con la CPU che assisteva nella guida.",
         },
@@ -180,7 +180,7 @@ export default [
         type: "text",
         width: 380,
         links: {
-            wikipedia: {'DE': 'https://de.wikipedia.org/wiki/Fire_Truck_(Computerspiel)', 'FR': 'https://fr.wikipedia.org/wiki/Fire_Truck_(jeu_vid%C3%A9o)', 'IT': 'https://en.wikipedia.org/wiki/Fire_Truck_(video_game)'},
+            wikipedia: { DE: "https://de.wikipedia.org/wiki/Fire_Truck_(Computerspiel)", FR: "https://fr.wikipedia.org/wiki/Fire_Truck_(jeu_vid%C3%A9o)", IT: "https://en.wikipedia.org/wiki/Fire_Truck_(video_game)" },
         },
     },
 ];

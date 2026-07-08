@@ -139,12 +139,7 @@ describe("Density and Moving Average Smooth Window Calculation", () => {
         });
 
         it("should calculate density correctly for multiple cards in different categories/years", () => {
-            const items = [
-                { date: "1970-01-01" },
-                { date: "1971-01-01" },
-                { date: "1972-01-01" },
-                { date: "2000-01-01" }
-            ];
+            const items = [{ date: "1970-01-01" }, { date: "1971-01-01" }, { date: "1972-01-01" }, { date: "2000-01-01" }];
             const res = calculateDensityCurve(items, { startYear: 1900, endYear: 2026, windowYears: 5, maxHeight: 80 });
             expect(res.maxVal).to.be.greaterThan(1);
 
@@ -157,14 +152,7 @@ describe("Density and Moving Average Smooth Window Calculation", () => {
 
     describe("getDensityAtYear", () => {
         it("should compute higher density and item counts near clustered events", () => {
-            const data = [
-                { date: "1970-01-01" },
-                { date: "1970-06-01" },
-                { date: "1971-01-01" },
-                { date: "1971-06-01" },
-                { date: "1972-01-01" },
-                { date: "1990-01-01" }
-            ];
+            const data = [{ date: "1970-01-01" }, { date: "1970-06-01" }, { date: "1971-01-01" }, { date: "1971-06-01" }, { date: "1972-01-01" }, { date: "1990-01-01" }];
             const res = calculateDensityCurve(data, { startYear: 1900, endYear: 2000, windowYears: 4, maxHeight: 80 });
 
             const density1971 = getDensityAtYear(1971, res, data, 4);
@@ -232,7 +220,7 @@ describe("Timeline Tag Filtering Logic", () => {
                 suggestions: [],
                 showSuggestions: false,
                 layoutMode: "virtual",
-            }
+            },
         };
         const res = Controls.view(vnode);
         expect(res).to.be.an("object");
@@ -254,22 +242,26 @@ describe("Timeline Tag Filtering Logic", () => {
         const dblClickNodes = findDblClickVnodes(res);
         expect(dblClickNodes.length).to.be.greaterThan(0);
 
-        const filterHeaderNode = dblClickNodes.find(n => {
-            const cls = n.attrs ? (n.attrs.class || n.attrs.className || "") : "";
+        const filterHeaderNode = dblClickNodes.find((n) => {
+            const cls = n.attrs ? n.attrs.class || n.attrs.className || "" : "";
             const tag = typeof n.tag === "string" ? n.tag : "";
             return cls.includes("group-label") || cls.includes("filter-group") || tag.includes("group-label");
         });
         expect(filterHeaderNode).to.not.be(undefined);
 
         let stopped = false;
-        filterHeaderNode.attrs.ondblclick({ stopPropagation: () => { stopped = true; } });
+        filterHeaderNode.attrs.ondblclick({
+            stopPropagation: () => {
+                stopped = true;
+            },
+        });
         expect(selectAllCalled).to.be(true);
         expect(activeFilters.length).to.be(Object.keys(TAGS).length);
 
         selectAllCalled = false;
         activeFilters = ["hardware"];
-        const filterPanelNode = dblClickNodes.find(n => {
-            const id = n.attrs ? (n.attrs.id || "") : "";
+        const filterPanelNode = dblClickNodes.find((n) => {
+            const id = n.attrs ? n.attrs.id || "" : "";
             return id === "filter-panel";
         });
         expect(filterPanelNode).to.not.be(undefined);
@@ -281,10 +273,14 @@ describe("Timeline Tag Filtering Logic", () => {
 
 describe("Density Graph & FLOPS Layout Bounds", () => {
     it("should map logVal within 0% to 100% bounds for minLog -4 and maxLog 19", () => {
-        const minLog = -4; const maxLog = 19; const logRange = maxLog - minLog;
+        const minLog = -4;
+        const maxLog = 19;
+        const logRange = maxLog - minLog;
         const getY = (logVal) => 100 - ((logVal - minLog) / logRange) * 100;
-        expect(getY(18)).to.be.greaterThan(0); expect(getY(18)).to.be.lessThan(100);
-        expect(getY(-3)).to.be.greaterThan(0); expect(getY(-3)).to.be.lessThan(100);
+        expect(getY(18)).to.be.greaterThan(0);
+        expect(getY(18)).to.be.lessThan(100);
+        expect(getY(-3)).to.be.greaterThan(0);
+        expect(getY(-3)).to.be.lessThan(100);
     });
 
     it("should generate valid density curve paths for active data points", () => {
@@ -317,8 +313,8 @@ describe("Timeline Empty State and Translations", () => {
         return results;
     }
 
-    const isEmptyState = v => {
-        const cls = v && v.attrs ? (v.attrs.class || v.attrs.className || "") : "";
+    const isEmptyState = (v) => {
+        const cls = v && v.attrs ? v.attrs.class || v.attrs.className || "" : "";
         return cls.includes("empty-state");
     };
 
@@ -327,9 +323,9 @@ describe("Timeline Empty State and Translations", () => {
         const expectedSubstrings = {
             DE: "Keine Treffer",
             FR: "Aucun résultat",
-            IT: "Nessun risultato"
+            IT: "Nessun risultato",
         };
-        supportedLangs.forEach(lang => {
+        supportedLangs.forEach((lang) => {
             expect(translations[lang]).to.be.an("object");
             expect(translations[lang].noMatches).to.be.a("string");
             expect(translations[lang].noMatches.length).to.be.greaterThan(0);
@@ -350,8 +346,8 @@ describe("Timeline Empty State and Translations", () => {
                 version: 1,
                 language: "DE",
                 layoutMode: "virtual",
-                renderItem: () => m("div")
-            }
+                renderItem: () => m("div"),
+            },
         };
         timelineComp.oninit(vnode);
         const resDE = timelineComp.view(vnode);
@@ -371,8 +367,8 @@ describe("Timeline Empty State and Translations", () => {
                 version: 1,
                 language: "DE",
                 layoutMode: "virtual",
-                renderItem: () => m("div")
-            }
+                renderItem: () => m("div"),
+            },
         };
         timelineComp.oninit(vnode);
         let res = timelineComp.view(vnode);

@@ -7,8 +7,7 @@ export const setLanguage = (lang) => {
     activeLanguage = lang;
     try {
         m.redraw();
-    }
-    catch (e) {
+    } catch (e) {
         // Ignore error in non-DOM/test environments
     }
 };
@@ -102,14 +101,13 @@ export const translations = {
         searchPlaceholder: "Cerca...",
         suggestionsTitle: "Suggerimenti",
         noMatches: "Nessun risultato trovato",
-    }
+    },
 };
 export const t = (key) => {
     return translations[activeLanguage][key] || translations["DE"][key] || key;
 };
 export function translateContent(field) {
-    if (!field)
-        return "";
+    if (!field) return "";
     if (typeof field === "object") {
         return field[activeLanguage] || field.DE || Object.values(field)[0] || "";
     }
