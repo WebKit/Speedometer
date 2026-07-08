@@ -23,13 +23,11 @@ export const ExperimentalSuites = freezeSuites([
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
                 const checkboxes = page.querySelectorAll(".toggle");
-                for (let i = 0; i < numberOfItemsToAdd; i++)
-                    checkboxes[i].click();
+                for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
                 const deleteButtons = page.querySelectorAll(".destroy");
-                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
-                    deleteButtons[i].click();
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
             }),
         ],
     },
@@ -93,13 +91,11 @@ export const ExperimentalSuites = freezeSuites([
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
                 const checkboxes = page.querySelectorAll(".toggle");
-                for (let i = 0; i < numberOfItemsToAdd; i++)
-                    checkboxes[i].click();
+                for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
                 const deleteButtons = page.querySelectorAll(".destroy");
-                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
-                    deleteButtons[i].click();
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
             }),
         ],
     },
@@ -122,13 +118,11 @@ export const ExperimentalSuites = freezeSuites([
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
                 const checkboxes = page.querySelectorAll(".toggle");
-                for (let i = 0; i < numberOfItemsToAdd; i++)
-                    checkboxes[i].click();
+                for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
                 const deleteButtons = page.querySelectorAll(".destroy");
-                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
-                    deleteButtons[i].click();
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
             }),
         ],
     },
@@ -204,8 +198,7 @@ export const ExperimentalSuites = freezeSuites([
                 for (const width of widths) {
                     page.setWidth(width);
                     page.layout();
-                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT)
-                        await resizeWorkPromise;
+                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT) await resizeWorkPromise;
                 }
 
                 await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
@@ -263,11 +256,102 @@ export const ExperimentalSuites = freezeSuites([
                 for (const width of widths) {
                     page.setWidth(width);
                     page.layout();
-                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT)
-                        await resizeWorkPromise;
+                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT) await resizeWorkPromise;
                 }
 
                 await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            }),
+        ],
+    },
+    {
+        name: "Scrollytelling-Scrollama",
+        url: "suites-experimental/scrollytelling/dist/index.html?engine=scrollama",
+        tags: ["experimental", "scrollytelling"],
+        async prepare(page) {
+            await page.waitForElement(".scrolly-container");
+            page.call("serviceRAF");
+        },
+        tests: [
+            new BenchmarkTestStep("DiscreteStepTransitions", (page) => {
+                for (let i = 0; i < 8; i++) {
+                    page.call(`stepTo${i}`);
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+                for (let i = 6; i >= 0; i--) {
+                    page.call(`stepTo${i}`);
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+            }),
+            new BenchmarkTestStep("ContinuousScrollScrubbing", (page) => {
+                page.call("resetScrub");
+                page.call("serviceRAF");
+                page.layout();
+                for (let i = 0; i < 30; i++) {
+                    page.call("scrubForward");
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+                for (let i = 0; i < 30; i++) {
+                    page.call("scrubBackward");
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+            }),
+            new BenchmarkTestStep("RapidStepJumps", (page) => {
+                const jumpTargets = [7, 1, 6, 2, 5, 0, 4, 3];
+                for (const target of jumpTargets) {
+                    page.call(`stepTo${target}`);
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+            }),
+        ],
+    },
+    {
+        name: "Scrollytelling-Vanilla",
+        url: "suites-experimental/scrollytelling/dist/index.html?engine=vanilla",
+        tags: ["experimental", "scrollytelling"],
+        async prepare(page) {
+            await page.waitForElement(".scrolly-container");
+            page.call("serviceRAF");
+        },
+        tests: [
+            new BenchmarkTestStep("DiscreteStepTransitions", (page) => {
+                for (let i = 0; i < 8; i++) {
+                    page.call(`stepTo${i}`);
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+                for (let i = 6; i >= 0; i--) {
+                    page.call(`stepTo${i}`);
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+            }),
+            new BenchmarkTestStep("ContinuousScrollScrubbing", (page) => {
+                page.call("resetScrub");
+                page.call("serviceRAF");
+                page.layout();
+                for (let i = 0; i < 30; i++) {
+                    page.call("scrubForward");
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+                for (let i = 0; i < 30; i++) {
+                    page.call("scrubBackward");
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+            }),
+            new BenchmarkTestStep("RapidStepJumps", (page) => {
+                const jumpTargets = [7, 1, 6, 2, 5, 0, 4, 3];
+                for (const target of jumpTargets) {
+                    page.call(`stepTo${target}`);
+                    page.call("serviceRAF");
+                    page.layout();
+                }
             }),
         ],
     },

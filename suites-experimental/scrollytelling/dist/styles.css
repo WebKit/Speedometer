@@ -1,0 +1,302 @@
+:root {
+    --bg-color: #0a0a0a;
+    --text-color: #f0f0f0;
+    --text-muted: #a0a0a0;
+    --border-color: #ffffff;
+    --accent-color: #ffffff;
+    --card-bg: #141414;
+    --card-active-bg: #202020;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 16px 16px, 150px 150px;
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+}
+
+#app {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.page-header {
+    padding: 4rem 0 2rem;
+    border-bottom: 3px solid var(--border-color);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.page-header h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    font-family: monospace;
+    margin-bottom: 1.5rem;
+}
+
+.header-status {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.status-tag {
+    font-family: monospace;
+    font-size: 0.875rem;
+    font-weight: 700;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    letter-spacing: 0.05em;
+}
+
+.scrolly-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+}
+
+.stage-section {
+    display: flex;
+    position: relative;
+    gap: 4rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    min-height: 160vh;
+    padding-top: 5vh;
+    padding-bottom: 15vh;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stage-section:last-child {
+    border-bottom: none;
+}
+
+.stage-section.layout-text-left {
+    flex-direction: row;
+}
+
+.stage-section.layout-text-right {
+    flex-direction: row-reverse;
+}
+
+.stage-graphic-column {
+    flex: 1 1 55%;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 10;
+}
+
+.stage-narrative-column {
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 15vh;
+    padding-bottom: 25vh;
+    z-index: 5;
+}
+
+.graphic-sticky-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 3px solid var(--border-color);
+    border-radius: 24px;
+    background-color: #000000;
+    box-shadow: 12px 12px 0px rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.graphic-canvas,
+.graphic-svg,
+#graphic-canvas,
+#graphic-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.graphic-canvas,
+#graphic-canvas {
+    z-index: 1;
+}
+
+.graphic-svg,
+#graphic-svg {
+    z-index: 2;
+    pointer-events: none;
+}
+
+.caption {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    right: 1.25rem;
+    background: rgba(10, 10, 10, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 0.65rem 1.25rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: center;
+    z-index: 3;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.step {
+    background-color: var(--card-bg);
+    border: 2px solid #333333;
+    border-radius: 20px;
+    padding: 2.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0.4;
+    transform: scale(0.96);
+}
+
+.step.is-active {
+    opacity: 1;
+    border-color: var(--border-color);
+    background-color: var(--card-active-bg);
+    transform: scale(1);
+    border-radius: 20px;
+    box-shadow: 10px 10px 0px rgba(255, 255, 255, 0.18), 0 12px 24px rgba(0, 0, 0, 0.6);
+}
+
+.step-meta {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px dashed #444444;
+    padding-bottom: 0.5rem;
+}
+
+.step-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 1.25rem;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.step-description {
+    font-size: 1.05rem;
+    color: #d0d0d0;
+    margin-bottom: 1.25rem;
+    line-height: 1.7;
+}
+
+.step-description p {
+    margin-bottom: 1.5rem;
+}
+
+.step-description p:last-child {
+    margin-bottom: 0;
+}
+
+.step-specs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    background: #0a0a0a;
+    padding: 1rem;
+    border: 1px solid #444444;
+    border-radius: 14px;
+    margin-top: 1rem;
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.spec-label {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.spec-value {
+    font-family: monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.page-footer {
+    padding: 4rem 0 2rem;
+    border-top: 2px solid #333333;
+    margin-top: 4rem;
+    text-align: center;
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+    .scrolly-container {
+        gap: 4rem;
+    }
+    .stage-section,
+    .stage-section.layout-text-left,
+    .stage-section.layout-text-right {
+        flex-direction: column;
+        gap: 2rem;
+        min-height: auto;
+        padding-top: 2rem;
+        padding-bottom: 4rem;
+    }
+    .stage-graphic-column {
+        position: relative;
+        top: 0;
+        width: 100%;
+        height: auto;
+    }
+    .stage-narrative-column {
+        width: 100%;
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+    }
+    .step-specs {
+        grid-template-columns: 1fr;
+    }
+}

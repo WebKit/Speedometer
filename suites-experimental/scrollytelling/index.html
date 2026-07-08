@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>The Evolution of a House - Speedometer Scrollytelling Workload</title>
+        <link rel="stylesheet" href="./styles.css" />
+        <script>
+            // Speedometer rAF interception and servicing pattern
+            // Intercepts requestAnimationFrame so that Speedometer can synchronously flush
+            // any pending animation/scroll callbacks before invoking page.layout().
+            const rAFCallbacks = new Map();
+            let rAFId = 1;
+
+            window.requestAnimationFrame = function (callback) {
+                const id = rAFId++;
+                rAFCallbacks.set(id, callback);
+                return id;
+            };
+
+            window.cancelAnimationFrame = function (id) {
+                rAFCallbacks.delete(id);
+            };
+
+            window.serviceRAF = function () {
+                // 1. Synchronously execute any queued rAF callbacks (e.g. from scrollama or scroll listeners)
+                let iterations = 0;
+                while (rAFCallbacks.size > 0 && iterations < 10) {
+                    iterations++;
+                    const callbacks = Array.from(rAFCallbacks.values());
+                    rAFCallbacks.clear();
+                    const now = performance.now();
+                    for (const callback of callbacks) {
+                        try {
+                            callback(now);
+                        } catch (e) {
+                            console.error("Error in rAF callback:", e);
+                        }
+                    }
+                }
+                // 2. Synchronously settle all visual mutations and scrollytelling state before page.layout()
+                if (typeof window.forceScrollytellingUpdate === "function") {
+                    window.forceScrollytellingUpdate();
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <div id="app">
+            <header class="page-header">
+                <h1>The Evolution of a House</h1>
+                <p class="subtitle">A Chronological Exploration (1780 – Present)</p>
+                <div class="header-status">
+                    <span id="active-stage-label" class="status-tag">STAGE 1: EARLY SETTLEMENT</span>
+                    <span id="active-progress-label" class="status-tag">PROGRESS: 0.00</span>
+                </div>
+            </header>
+            <main class="scrolly-container" id="scrolly-container">
+                <!-- Stage sections rendered dynamically by app.js from content.js -->
+            </main>
+            <footer class="page-footer">
+                <p>Speedometer Experimental Scrollytelling Benchmark Workload</p>
+            </footer>
+        </div>
+        <script type="module" src="./app.js"></script>
+    </body>
+</html>
