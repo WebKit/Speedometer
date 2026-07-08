@@ -100,10 +100,7 @@ window.forceScrollytellingUpdate = function () {
     });
 
     const stageLabel = document.getElementById("active-stage-label");
-    const progressLabel = document.getElementById("active-progress-label");
     if (stageLabel && STAGES[activeIndex]) stageLabel.textContent = `STAGE ${activeIndex + 1}: ${STAGES[activeIndex].title.toUpperCase()}`;
-
-    if (progressLabel) progressLabel.textContent = `PROGRESS: ${activeProgress.toFixed(2)}`;
 
     updateGraphics(activeIndex, activeProgress);
 };
