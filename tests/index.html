@@ -31,7 +31,7 @@
             await import("./unittests/benchmark-runner.mjs?t=" + cacheBust);
             await import("./unittests/params.mjs?t=" + cacheBust);
             await import("./unittests/suites.mjs?t=" + cacheBust);
-            await import("../resources/timeline/tests/timeline.mjs?t=" + cacheBust);
+            await import("../suites-experimental/timeline/tests/timeline.mjs?t=" + cacheBust);
 
             globalThis.testResults = undefined;
             globalThis.testRunner = mocha.run();

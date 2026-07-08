@@ -1,6 +1,6 @@
 # Sourcing and Methodology for FLOPS Performance Data
 
-This document lists the sources, benchmarks, and references used to compile the historical performance data points of CPUs, GPUs, and TPUs in [flops-data.ts](file:///Users/cbruni/Documents/Speedometer/resources/timeline/src/data/flops-data.ts).
+This document lists the sources, benchmarks, and references used to compile the historical performance data points of CPUs, GPUs, and TPUs in [flops-data.ts](./flops-data.ts).
 
 ---
 

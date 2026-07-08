@@ -6,7 +6,7 @@ import { freezeSuites } from "../resources/suites-helper.mjs";
 export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-LocalStorage",
-        url: "experimental/todomvc-localstorage/dist/index.html",
+        url: "suites-experimental/todomvc-localstorage/dist/index.html",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
@@ -35,7 +35,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-Emoji",
-        url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+        url: "suites/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             await page.waitForElement("todo-app");
@@ -67,7 +67,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-WebComponents-PostMessage",
-        url: "resources/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+        url: "suites/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
         tags: ["experimental", "todomvc", "webcomponents"],
         async prepare() {},
         type: "remote",
@@ -77,7 +77,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-Jaspr-Dart2JS-O4",
-        url: "experimental/todomvc-dart-jaspr/dist/out-dart2js-O4/index.html",
+        url: "suites-experimental/todomvc-dart-jaspr/dist/out-dart2js-O4/index.html",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
@@ -105,7 +105,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-Jaspr-Dart2Wasm-O2",
-        url: "experimental/todomvc-dart-jaspr/dist/out-dart2wasm-O2/index.html",
+        url: "suites-experimental/todomvc-dart-jaspr/dist/out-dart2wasm-O2/index.html",
         tags: ["todomvc", "experimental"],
         disabled: true,
         async prepare(page) {
@@ -134,7 +134,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "NewsSite-PostMessage",
-        url: "resources/newssite/news-next/dist/index.html",
+        url: "suites/newssite/news-next/dist/index.html",
         tags: ["experimental", "newssite", "language"],
         async prepare() {},
         type: "remote",
@@ -144,7 +144,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-WebComponents-IndexedDB",
-        url: "experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=vanilla",
+        url: "suites-experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=vanilla",
         tags: ["todomvc", "webcomponents", "experimental"],
         async prepare() {},
         type: "remote",
@@ -154,7 +154,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "TodoMVC-WebComponents-DexieJS",
-        url: "experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=dexie",
+        url: "suites-experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=dexie",
         tags: ["todomvc", "webcomponents", "experimental"],
         async prepare() {},
         type: "remote",
@@ -164,7 +164,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "Responsive-Design",
-        url: "experimental/responsive-design/dist/index.html",
+        url: "suites-experimental/responsive-design/dist/index.html",
         tags: ["responsive-design", "webcomponents", "experimental"],
         type: "async",
         async prepare(page) {
@@ -273,7 +273,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "Timeline-Mithril",
-        url: "resources/timeline/dist/index.html",
+        url: "suites-experimental/timeline/dist/index.html",
         tags: ["experimental", "timeline", "mithril"],
         async prepare(page) {
             await page.waitForElement("#app-container");
