@@ -4,9 +4,10 @@ import { t, getLanguage, setLanguage, Language, translateContent } from "../i18n
 
 export const Controls = {
     view(vnode) {
-        const { activeFilters, onFilterChange, onFilterOnly, onSelectAllTags, onResetFilters, searchQuery, suggestions, showSuggestions, layoutMode, onSearchChange, onJumpToCard, onFocusSearch, onCloseSuggestions, onLayoutModeChange } = vnode.attrs;
+        const { activeFilters, onFilterChange, onFilterOnly, onSelectAllTags, onResetFilters, searchQuery, suggestions, showSuggestions, layoutMode, onSearchChange, onJumpToCard, onFocusSearch, onCloseSuggestions, onLayoutModeChange, tagCounts = {} } = vnode.attrs;
 
-        const categories = Object.keys(TAGS);
+        const hasCounts = tagCounts && Object.keys(tagCounts).length > 0;
+        const categories = Object.keys(TAGS).filter((cat) => !hasCounts || (tagCounts[cat] || 0) > 0);
 
         const resetAllTags = () => {
             if (onSelectAllTags) onSelectAllTags();
@@ -43,7 +44,9 @@ export const Controls = {
                     },
                     categories.map((cat) => {
                         const tagData = (TAGS as any)[cat];
-                        const label = tagData ? translateContent(tagData.label) : cat;
+                        const baseLabel = tagData ? translateContent(tagData.label) : cat;
+                        const countText = hasCounts && tagCounts[cat] !== undefined ? ` (${tagCounts[cat]})` : "";
+                        const label = `${baseLabel}${countText}`;
                         return m(
                             "span.filter-pill",
                             {
@@ -163,11 +166,11 @@ export const Controls = {
                         m("button.lang-btn", {
                             class: layoutMode === "browser" ? "active" : "",
                             onclick: () => onLayoutModeChange("browser"),
-                        }, "Browser"),
+                        }, "Native Composited"),
                         m("button.lang-btn", {
                             class: layoutMode === "virtual" ? "active" : "",
                             onclick: () => onLayoutModeChange("virtual"),
-                        }, "Virtual")
+                        }, "JS Virtualized")
                     ])
                 ]),
                 // IMPORTANT: Language selection buttons invoke setLanguage(lang) and trigger onLanguageChange callback
@@ -176,7 +179,7 @@ export const Controls = {
                 m(".action-group.lang-group", [
                     m("span.group-label", "LANG"),
                     m(".lang-selector", { style: { display: "flex", gap: "4px" } },
-                        (["DE", "FR", "IT", "EN", "ES", "JA"] as Language[]).map((lang) =>
+                        (["DE", "FR", "IT"] as Language[]).map((lang) =>
                             m("button.lang-btn", {
                                 class: getLanguage() === lang ? "active" : "",
                                 onclick: () => {

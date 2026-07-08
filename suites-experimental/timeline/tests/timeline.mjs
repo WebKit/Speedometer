@@ -322,15 +322,12 @@ describe("Timeline Empty State and Translations", () => {
         return cls.includes("empty-state");
     };
 
-    it("should provide translation strings for \x27noMatches\x27 across all 6 supported languages in i18n.ts", () => {
-        const supportedLangs = ["DE", "FR", "IT", "EN", "ES", "JA"];
+    it("should provide translation strings for \x27noMatches\x27 across all 3 supported languages in i18n.ts", () => {
+        const supportedLangs = ["DE", "FR", "IT"];
         const expectedSubstrings = {
             DE: "Keine Treffer",
             FR: "Aucun résultat",
-            IT: "Nessun risultato",
-            EN: "No matches",
-            ES: "No se encontraron",
-            JA: "一致する結果"
+            IT: "Nessun risultato"
         };
         supportedLangs.forEach(lang => {
             expect(translations[lang]).to.be.an("object");
@@ -399,14 +396,5 @@ describe("Timeline Empty State and Translations", () => {
         res = timelineComp.view(vnode);
         nodes = findVnodes(res, isEmptyState);
         expect(getVnodeText(nodes[0])).to.contain("Nessun risultato trovato");
-
-        // Switch to EN
-        setLanguage("EN");
-        vnode.attrs.language = "EN";
-        vnode.attrs.version = 4;
-        timelineComp.onbeforeupdate(vnode);
-        res = timelineComp.view(vnode);
-        nodes = findVnodes(res, isEmptyState);
-        expect(getVnodeText(nodes[0])).to.contain("No matches found");
     });
 });

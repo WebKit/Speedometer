@@ -5,7 +5,7 @@ import { Timeline } from "./components/Timeline.js";
 import { Card } from "./components/Card.js";
 import { MiniOverview } from "./components/MiniOverview.js";
 import { TAGS } from "./data/tags.js";
-import { translateContent, getLanguage } from "./i18n.js";
+import { translateContent, getLanguage, setLanguage } from "./i18n.js";
 const App = () => {
     const allData = staticData;
     allData.forEach((card, index) => {
@@ -23,7 +23,16 @@ const App = () => {
         if (!card.links || !card.links.wikipedia)
             console.error(`Validation Error: Card (${identifier}) is missing a Wikipedia link in \x27links.wikipedia\x27.`);
     });
-    let activeFilters = Object.keys(TAGS);
+    const tagCounts = {};
+    allData.forEach((card) => {
+        if (card && Array.isArray(card.tags)) {
+            card.tags.forEach((tag) => {
+                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+            });
+        }
+    });
+    const activeCategories = Object.keys(TAGS).filter((cat) => (tagCounts[cat] || 0) > 0);
+    let activeFilters = [...activeCategories];
     let searchQuery = "";
     let showSuggestions = false;
     let activeIndex = 0;
@@ -63,9 +72,118 @@ const App = () => {
                 timelineHandle.scrollToIndex(activeIndex, "instant");
             }
         }, 0);
+        updateURLParams();
+    }
+    let lastURLString = "";
+    function updateURLParams() {
+        if (typeof window === "undefined" || !window.history || !window.location)
+            return;
+        try {
+            const url = new URL(window.location.href);
+            if (searchQuery.trim().length > 0) {
+                url.searchParams.set("search", searchQuery.trim());
+            }
+            else {
+                url.searchParams.delete("search");
+            }
+            if (activeFilters.length > 0 && activeFilters.length < activeCategories.length) {
+                url.searchParams.set("tags", activeFilters.join(","));
+            }
+            else {
+                url.searchParams.delete("tags");
+            }
+            if (layoutMode !== "virtual") {
+                url.searchParams.set("layout", layoutMode);
+            }
+            else {
+                url.searchParams.delete("layout");
+            }
+            const currentLang = getLanguage();
+            if (currentLang && currentLang !== "DE") {
+                url.searchParams.set("lang", currentLang);
+            }
+            else {
+                url.searchParams.delete("lang");
+            }
+            if (filteredData[activeIndex] && filteredData[activeIndex].date) {
+                url.searchParams.set("time", filteredData[activeIndex].date.substring(0, 4));
+            }
+            else if (allData[activeIndex] && allData[activeIndex].date) {
+                url.searchParams.set("time", allData[activeIndex].date.substring(0, 4));
+            }
+            else {
+                url.searchParams.delete("time");
+            }
+            const newURLString = url.toString();
+            if (newURLString !== lastURLString) {
+                lastURLString = newURLString;
+                window.history.replaceState(null, "", newURLString);
+            }
+        }
+        catch (e) {
+            // Ignore in non-browser/test environments
+        }
+    }
+    if (typeof window !== "undefined" && window.location && window.location.search) {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const searchParam = params.get("search") || params.get("q");
+            if (searchParam !== null) {
+                searchQuery = searchParam;
+            }
+            const tabParam = params.get("tab") || params.get("tags") || params.get("tag") || params.get("filter");
+            if (tabParam !== null) {
+                const parsedTags = tabParam.split(",").map((t) => t.trim()).filter((t) => activeCategories.includes(t));
+                if (parsedTags.length > 0) {
+                    activeFilters = parsedTags;
+                }
+            }
+            const layoutParam = params.get("layout") || params.get("mode") || params.get("layoutMode") || params.get("tab");
+            if (layoutParam === "virtual" || layoutParam === "browser") {
+                layoutMode = layoutParam;
+            }
+            const langParam = params.get("lang") || params.get("language") || params.get("l");
+            if (langParam !== null) {
+                const upperLang = langParam.toUpperCase();
+                if (["DE", "FR", "IT"].includes(upperLang)) {
+                    setLanguage(upperLang);
+                }
+            }
+            applyFilters();
+            const timeParam = params.get("time") || params.get("year") || params.get("date") || params.get("position") || params.get("index");
+            if (timeParam !== null && filteredData.length > 0) {
+                const numVal = parseInt(timeParam, 10);
+                if (!isNaN(numVal)) {
+                    if (numVal >= 1900 && numVal <= 2100) {
+                        let bestIdx = 0;
+                        let minDiff = Infinity;
+                        filteredData.forEach((card, idx) => {
+                            if (card && card.date) {
+                                const cardYear = parseInt(card.date.substring(0, 4), 10);
+                                if (!isNaN(cardYear)) {
+                                    const diff = Math.abs(cardYear - numVal);
+                                    if (diff < minDiff) {
+                                        minDiff = diff;
+                                        bestIdx = idx;
+                                    }
+                                }
+                            }
+                        });
+                        activeIndex = bestIdx;
+                    }
+                    else if (numVal >= 0 && numVal < filteredData.length) {
+                        activeIndex = numVal;
+                    }
+                }
+            }
+        }
+        catch (e) {
+            // Ignore parse errors
+        }
     }
     // Initial run
     applyFilters();
+    updateURLParams();
     return {
         view() {
             let suggestions = [];
@@ -122,6 +240,7 @@ const App = () => {
                 `).join("\n")),
                 m(Controls, {
                     activeFilters,
+                    tagCounts,
                     searchQuery,
                     suggestions,
                     showSuggestions,
@@ -129,6 +248,7 @@ const App = () => {
                     onSearchChange: (q) => {
                         searchQuery = q;
                         showSuggestions = q.trim().length > 0;
+                        updateURLParams();
                     },
                     onFocusSearch: () => {
                         if (searchQuery.trim().length > 0) {
@@ -141,11 +261,13 @@ const App = () => {
                     onLayoutModeChange: (mode) => {
                         layoutMode = mode;
                         dataVersion++;
+                        updateURLParams();
                     },
                     onJumpToCard: (idx) => {
                         activeIndex = idx;
                         showSuggestions = false;
                         dataVersion++;
+                        updateURLParams();
                         setTimeout(() => {
                             if (timelineHandle.scrollToIndex) {
                                 timelineHandle.scrollToIndex(idx, "smooth");
@@ -167,15 +289,16 @@ const App = () => {
                         updateFilterSelection();
                     },
                     onSelectAllTags: () => {
-                        activeFilters = Object.keys(TAGS);
+                        activeFilters = [...activeCategories];
                         updateFilterSelection();
                     },
                     onResetFilters: () => {
-                        activeFilters = Object.keys(TAGS);
+                        activeFilters = [...activeCategories];
                         updateFilterSelection();
                     },
                     onLanguageChange: (lang) => {
                         dataVersion++;
+                        updateURLParams();
                     },
                 }),
                 m("#main-content", [
@@ -189,6 +312,7 @@ const App = () => {
                         cardBuffer: 10,
                         onActiveIndexChange: (idx) => {
                             activeIndex = idx;
+                            updateURLParams();
                         },
                         renderItem: (item) => m(Card, {
                             card: item,

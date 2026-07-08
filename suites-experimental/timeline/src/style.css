@@ -303,6 +303,8 @@ button.btn-nav:hover .desc {
     border-right: var(--glass-border);
     padding: 24px;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     z-index: 5;
 }
@@ -364,6 +366,8 @@ button.btn-nav:hover .desc {
     scroll-behavior: smooth;
     display: flex;
     align-items: center;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.2);
 }
 
 /* Modern thin scrollbar */
@@ -684,6 +688,8 @@ button.btn-nav:hover .desc {
     overflow-y: auto;
     flex-grow: 1;
     padding-right: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }
 
 /* Scrollbar for description */
