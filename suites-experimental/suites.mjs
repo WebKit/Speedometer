@@ -279,36 +279,78 @@ export const ExperimentalSuites = freezeSuites([
             await page.waitForElement("#app-container");
         },
         tests: [
-            new BenchmarkTestStep("LoadTOC", (page) => {
-                page.querySelector("#btn-load-toc").click();
-                page.layout();
+            new BenchmarkTestStep("Start", (page) => {
+                const btn = page.querySelector("#btn-explore");
+                if (btn) {
+                    btn.click();
+                    page.layout();
+                }
             }),
-            new BenchmarkTestStep("ScrollToMiddle", (page) => {
-                page.querySelector("#btn-scroll-to-middle").click();
-                page.layout();
+            new BenchmarkTestStep("SearchTimeline", (page) => {
+                const btn = page.querySelector("#btn-explore");
+                if (btn) {
+                    btn.click();
+                    page.layout();
+                }
+                const searchInput = page.querySelector("input.search-input");
+                if (!searchInput) return;
+                const queries = [
+                    "C", "Co", "Com", "Comp", "Compu", "Comput", "Compute", "Computer", "",
+                    "I", "In", "Int", "Inte", "Intel", "",
+                    "A", "Ap", "App", "Appl", "Apple", "",
+                ];
+                for (let round = 0; round < 4; round++) {
+                    for (const q of queries) {
+                        searchInput.setValue(q);
+                        searchInput.dispatchEvent("input");
+                        page.layout();
+                    }
+                }
             }),
-            new BenchmarkTestStep("SearchAndReplace", (page) => {
-                const searchInput = page.querySelector(".search-replace-panel input[placeholder='Suchen...']");
-                const replaceInput = page.querySelector(".search-replace-panel input[placeholder='Ersetzen...']");
-                const replaceBtn = page.querySelector(".search-replace-panel button");
-
-                searchInput.setValue("Computer");
-                searchInput.dispatchEvent("input");
-                replaceInput.setValue("Rechner");
-                replaceInput.dispatchEvent("input");
-                replaceBtn.click();
-                page.layout();
+            new BenchmarkTestStep("FilterByCategory", (page) => {
+                const btn = page.querySelector("#btn-explore");
+                if (btn) {
+                    btn.click();
+                    page.layout();
+                }
+                const filterPills = page.querySelectorAll(".filter-pill");
+                if (!filterPills || filterPills.length === 0) return;
+                const count = Math.min(filterPills.length, 10);
+                for (let round = 0; round < 18; round++) {
+                    for (let i = 0; i < count; i++) {
+                        filterPills[i].click();
+                        page.layout();
+                    }
+                }
             }),
-            new BenchmarkTestStep("FilterCategories", (page) => {
-                const filterCheckboxes = page.querySelectorAll("#filter-panel input[type=checkbox]");
-                filterCheckboxes[2].click();
-                page.layout();
-                filterCheckboxes[3].click();
-                page.layout();
+            new BenchmarkTestStep("SwitchLanguage", (page) => {
+                const btn = page.querySelector("#btn-explore");
+                if (btn) {
+                    btn.click();
+                    page.layout();
+                }
+                const langButtons = page.querySelectorAll(".lang-selector button.lang-btn");
+                if (langButtons && langButtons.length > 2) {
+                    for (let round = 0; round < 18; round++) {
+                        langButtons[1].click();
+                        page.layout();
+                        langButtons[2].click();
+                        page.layout();
+                        langButtons[0].click();
+                        page.layout();
+                    }
+                }
             }),
-            new BenchmarkTestStep("ScrollToBottom", (page) => {
-                page.querySelector("#btn-scroll-to-bottom").click();
-                page.layout();
+            new BenchmarkTestStep("ScrollTimeline", (page) => {
+                const btn = page.querySelector("#btn-explore");
+                if (btn) {
+                    btn.click();
+                    page.layout();
+                }
+                for (let i = 0; i < 2; i++) {
+                    page.call("stepScrollTimeline");
+                    page.layout();
+                }
             }),
         ],
     },

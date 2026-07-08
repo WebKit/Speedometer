@@ -25,10 +25,20 @@ export default defineConfig({
                 if (fs.existsSync(assetsDir)) {
                     const files = fs.readdirSync(assetsDir);
                     for (const file of files) {
-                        if (file.startsWith("index.template.") && (file.endsWith(".css") || file.endsWith(".js"))) {
+                        if (file.startsWith("index.template.")) {
                             const oldPath = resolve(assetsDir, file);
-                            const newPath = resolve(assetsDir, file.replace("index.template.", "index."));
+                            const newFileName = file.replace("index.template.", "index.");
+                            const newPath = resolve(assetsDir, newFileName);
                             fs.renameSync(oldPath, newPath);
+                            if (newFileName.endsWith(".js") || newFileName.endsWith(".css")) {
+                                let content = fs.readFileSync(newPath, "utf-8");
+                                content = content.replace(/index\.template\.(js|css)\.map/g, "index.$1.map");
+                                fs.writeFileSync(newPath, content, "utf-8");
+                            } else if (newFileName.endsWith(".map")) {
+                                let content = fs.readFileSync(newPath, "utf-8");
+                                content = content.replace(/index\.template\.(js|css)/g, "index.$1");
+                                fs.writeFileSync(newPath, content, "utf-8");
+                            }
                         }
                     }
                 }
@@ -38,6 +48,7 @@ export default defineConfig({
     build: {
         outDir: "dist",
         assetsDir: "assets",
+        sourcemap: true,
         rollupOptions: {
             input: resolve(__dirname, "index.template.html"),
             output: {

@@ -468,7 +468,6 @@ export const MiniOverview = () => {
                                                     strokeDasharray: "3 3",
                                                     markerEnd: `url(#arrow-${targetType})`,
                                                     filter: "url(#glow)",
-                                                    transition: "all 0.15s ease",
                                                 },
                                             }),
                                     ]
@@ -587,7 +586,6 @@ export const MiniOverview = () => {
                                                 left: dragPercentage !== null ? `${dragPercentage * 100}%` : `${((activeYear - startYear) / totalYears) * 100}%`,
                                                 cursor: isDraggingSlider ? "grabbing" : "grab",
                                                 pointerEvents: "auto",
-                                                transition: isDraggingSlider ? "none" : "",
                                             },
                                             onpointerdown: (e) => {
                                                 e.preventDefault();
@@ -686,11 +684,11 @@ export const MiniOverview = () => {
                                             ? [
                                                 m("path.search-density-area", {
                                                     d: searchDensity.areaPath,
-                                                    style: { fill: "#fbbf24", opacity: 0.45, transition: "all 0.3s ease" },
+                                                    style: { fill: "#fbbf24", opacity: 0.45 },
                                                 }),
                                                 m("path.search-density-line", {
                                                     d: searchDensity.path,
-                                                    style: { stroke: "#fcd34d", strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" },
+                                                    style: { stroke: "#fcd34d", strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0 },
                                                 }),
                                             ]
                                             : null,
@@ -698,12 +696,12 @@ export const MiniOverview = () => {
                                             m("path.hover-density-area", {
                                                 key: `area-${hd.category}`,
                                                 d: hd.density.areaPath,
-                                                style: { fill: hd.color, opacity: 0.45, transition: "all 0.3s ease" },
+                                                style: { fill: hd.color, opacity: 0.45 },
                                             }),
                                             m("path.hover-density-line", {
                                                 key: `line-${hd.category}`,
                                                 d: hd.density.path,
-                                                style: { stroke: hd.color, strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0, transition: "all 0.3s ease" },
+                                                style: { stroke: hd.color, strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0 },
                                             }),
                                         ]),
                                     ]

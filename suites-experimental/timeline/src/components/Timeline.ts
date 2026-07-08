@@ -70,6 +70,25 @@ export const Timeline = () => {
             clientWidth = containerEl.clientWidth;
             scrollLeft = containerEl.scrollLeft;
 
+            let currentScrollIndex = 0;
+            let scrollDirection = 1;
+            (window as any).stepScrollTimeline = () => {
+                if (!containerEl || !vnode.attrs.data || vnode.attrs.data.length === 0) return;
+                currentScrollIndex += scrollDirection * 12;
+                if (currentScrollIndex >= vnode.attrs.data.length - 1) {
+                    currentScrollIndex = vnode.attrs.data.length - 1;
+                    scrollDirection = -1;
+                } else if (currentScrollIndex <= 0) {
+                    currentScrollIndex = 0;
+                    scrollDirection = 1;
+                }
+                const x = xPositions[currentScrollIndex] || 0;
+                containerEl.scrollLeft = x;
+                scrollLeft = x;
+                clientWidth = containerEl.clientWidth;
+                m.redraw.sync();
+            };
+
             if (vnode.attrs.handle) {
                 vnode.attrs.handle.scrollToIndex = (index, requestedBehavior = "smooth") => {
                     if (index < 0 || index >= vnode.attrs.data.length || !containerEl)
@@ -133,11 +152,9 @@ export const Timeline = () => {
                 m.redraw();
             };
             window.addEventListener("resize", this.onResize);
-
-            // Initial measure
-            m.redraw();
         },
         onremove(vnode) {
+            (window as any).stepScrollTimeline = () => {};
             if (vnode.dom && this.onScroll)
                 vnode.dom.removeEventListener("scroll", this.onScroll);
 

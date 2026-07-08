@@ -119,7 +119,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
     box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
 }
 
 .action-group:focus-within {
@@ -176,7 +175,6 @@ span.filter-pill {
     padding: 6px 12px;
     font-family: inherit;
     font-size: 0.8rem;
-    transition: all 0.3s;
     outline: none;
     width: 140px;
 }
@@ -212,7 +210,6 @@ button {
     font-weight: 700;
     font-size: 0.75rem;
     letter-spacing: 0.02em;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     align-items: center;
     gap: 6px;
@@ -223,7 +220,8 @@ button:hover {
     background: rgba(56, 189, 248, 0.25);
     border-color: rgba(56, 189, 248, 0.8);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     color: #fff;
 }
 
@@ -280,11 +278,11 @@ button.btn-nav .desc {
     color: #94a3b8;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    transition: color 0.3s;
 }
 
 button.btn-nav:hover .desc {
     color: #e2e8f0;
+    transition: color 0.3s;
 }
 
 #main-content {
@@ -305,7 +303,6 @@ button.btn-nav:hover .desc {
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     z-index: 5;
 }
 
@@ -345,7 +342,6 @@ button.btn-nav:hover .desc {
     display: block;
     padding: 8px 12px;
     border-radius: 8px;
-    transition: all 0.3s;
     border: 1px solid transparent;
 }
 
@@ -355,6 +351,7 @@ button.btn-nav:hover .desc {
     border-color: rgba(56, 189, 248, 0.2);
     padding-left: 16px;
     box-shadow: inset 3px 0 0 var(--primary-color);
+    transition: all 0.3s;
 }
 
 /* Horizontal Timeline Layout */
@@ -433,7 +430,6 @@ button.btn-nav:hover .desc {
     box-sizing: border-box;
     flex-shrink: 0;
     justify-content: flex-start;
-    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .virtual-layout .timeline-card {
@@ -457,6 +453,7 @@ button.btn-nav:hover .desc {
 .timeline-card:hover {
     box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.05);
     border-color: rgba(56, 189, 248, 0.4);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
 }
 
 .virtual-layout .timeline-card:hover {
@@ -480,7 +477,6 @@ button.btn-nav:hover .desc {
     border: 3px solid var(--primary-color);
     transform: translateY(-50%);
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.5), 0 0 0 4px rgba(15, 23, 42, 0.8);
-    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
     z-index: 3;
 }
 
@@ -488,6 +484,7 @@ button.btn-nav:hover .desc {
     transform: translateX(3.2px) translateY(-50%);
     background-color: var(--primary-color);
     box-shadow: 0 0 45px var(--primary-color), 0 0 0 4px rgba(15, 23, 42, 0.8);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 /* Neon Node Colors */
@@ -631,12 +628,12 @@ button.btn-nav:hover .desc {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     border: 1px solid transparent;
-    transition: all 0.3s;
 }
 
 .tag:hover {
     filter: brightness(1.2);
     box-shadow: 0 0 10px currentColor;
+    transition: filter 0.3s ease, box-shadow 0.3s ease;
 }
 
 .tag-hardware {
@@ -858,7 +855,6 @@ button.btn-nav:hover .desc {
     color: #94a3b8;
     letter-spacing: 0.1em;
     text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
-    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .tick-label:hover {
@@ -866,6 +862,7 @@ button.btn-nav:hover .desc {
     opacity: 1;
     text-shadow: 0 0 15px #38bdf8, 0 0 30px #c084fc;
     transform: translateX(-50%) scale(1.1);
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .active-slider-pill {
@@ -879,7 +876,6 @@ button.btn-nav:hover .desc {
     font-weight: 900;
     border-radius: 16px;
     box-shadow: 0 0 25px rgba(139, 92, 246, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.5);
-    transition: left 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     pointer-events: none;
     z-index: 5;
     border: 1px solid rgba(255, 255, 255, 0.4);
@@ -953,7 +949,6 @@ button.btn-nav:hover .desc {
     transform: translateX(-50%);
     z-index: 10;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
@@ -961,6 +956,7 @@ button.btn-nav:hover .desc {
 .data-marker.marker-hovered {
     transform: translateX(-50%) translateY(-15px) scale(2.5);
     z-index: 25;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Stunning neon dot colors mapped to tags */
@@ -1319,7 +1315,6 @@ button.btn-nav:hover .desc {
     font-weight: 700;
     cursor: pointer;
     border-radius: 6px;
-    transition: all 0.3s;
     height: 24px;
     box-sizing: border-box;
     display: inline-flex;
@@ -1331,6 +1326,7 @@ button.btn-nav:hover .desc {
     color: #fff;
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s;
 }
 
 .lang-btn.active {
@@ -1348,7 +1344,6 @@ button.btn-nav:hover .desc {
     font-size: 0.8rem;
     outline: none;
     width: 180px;
-    transition: all 0.3s;
     height: 100%;
     padding: 0;
 }
@@ -1362,7 +1357,6 @@ button.btn-nav:hover .desc {
     text-decoration: none;
     font-weight: 600;
     border-bottom: 1px dashed rgba(56, 189, 248, 0.4);
-    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
     padding: 0 2px;
     border-radius: 2px;
 }
@@ -1372,6 +1366,7 @@ button.btn-nav:hover .desc {
     background: rgba(56, 189, 248, 0.15);
     border-bottom: 1px solid var(--primary-color);
     text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* Layout Modes */
@@ -1392,7 +1387,6 @@ button.btn-nav:hover .desc {
     stroke: rgba(56, 189, 248, 0.3);
     stroke-width: 1px;
     vector-effect: non-scaling-stroke;
-    transition: all 0.2s ease;
 }
 
 .density-area-overall {
@@ -1462,4 +1456,76 @@ button.btn-nav:hover .desc {
 .tooltip-connector {
     pointer-events: none;
     vector-effect: non-scaling-stroke;
+}
+
+/* Responsive Layout Optimization for Small Screens (e.g. 800x600 Speedometer Viewport) */
+@media (max-height: 680px), (max-width: 900px) {
+    /* 1. Compact Header Bar & Small Tag Pills */
+    #app-header {
+        padding: 6px 12px;
+        gap: 6px;
+    }
+    #app-header h1 {
+        font-size: 1.1rem;
+    }
+    .header-title-section .subtitle {
+        display: none;
+    }
+    .header-actions {
+        gap: 6px;
+    }
+    .action-group {
+        height: 30px;
+        padding: 0 10px;
+        gap: 6px;
+    }
+    .group-label {
+        font-size: 0.65rem;
+    }
+    #filter-panel {
+        gap: 4px;
+    }
+    span.filter-pill, .tag {
+        padding: 2px 8px;
+        font-size: 0.6rem;
+        margin-bottom: 2px;
+    }
+    .card-tags {
+        margin-bottom: 6px;
+    }
+
+    /* 2. Compact Bottom Overview Graphs (Less Vertical Space) */
+    #mini-overview-container {
+        height: 110px;
+        padding: 6px 30px;
+    }
+    .date-slider-row {
+        height: 24px;
+        margin-bottom: 2px;
+    }
+    .tick-label {
+        top: 14px;
+        font-size: 9px;
+    }
+    .active-slider-pill {
+        padding: 2px 10px;
+        font-size: 10px;
+    }
+    .data-marker-row {
+        height: 28px;
+    }
+
+    /* 3. Maximize Content Area for Timeline Cards */
+    .timeline-card {
+        min-height: 240px;
+        padding: 12px 16px;
+    }
+    .card-title {
+        font-size: 1rem;
+        margin: 4px 0 0 0;
+    }
+    .card-desc {
+        font-size: 0.8rem;
+        margin-top: 8px;
+    }
 }

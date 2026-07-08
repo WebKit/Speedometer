@@ -97,10 +97,8 @@ export const Controls = {
                         onfocus: () => onFocusSearch(),
                         onclick: () => onFocusSearch(),
                         onblur: () => {
-                            setTimeout(() => {
-                                onCloseSuggestions();
-                                m.redraw();
-                            }, 150);
+                            onCloseSuggestions();
+                            m.redraw.sync();
                         },
                         onkeydown: (e: any) => {
                             if (e.key === "Enter" && suggestions.length > 0)
