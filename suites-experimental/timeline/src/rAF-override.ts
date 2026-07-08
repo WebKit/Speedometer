@@ -2,7 +2,7 @@
 if (typeof window !== "undefined") {
     let idCounter = 1;
     const timers = new Map<number, any>();
-    window.requestAnimationFrame = (callback: FrameRequestCallback): number => {
+    window.requestAnimationFrame = (callback: (time: number) => void): number => {
         const id = idCounter++;
         const timerId = setTimeout(() => {
             timers.delete(id);
