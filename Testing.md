@@ -8,7 +8,25 @@ Tests are located in the `/tests` folder.
 
 ## Local Testing
 
-To run this locally you'll need the browsers installed along with the corresponding driver:
+Speedometer supports running unit tests directly in Node.js (without browser DOM dependencies) as well as running browser tests via WebDriver.
+
+### Node.js Unit Testing
+
+You can run the unit tests directly in Node.js using:
+
+```bash
+npm run test
+```
+
+Or directly via the explicit script:
+
+```bash
+npm run test:node
+```
+
+### In-Browser Testing
+
+To run the in-browser tests locally, you'll need the browsers installed along with the corresponding driver:
 
 -   [chromedriver](https://chromedriver.chromium.org/getting-started)
 -   [geckodriver](https://github.com/mozilla/geckodriver/releases)
