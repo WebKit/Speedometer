@@ -1,4 +1,4 @@
-name: CI
+name: Test
 
 on:
     push:
@@ -12,7 +12,7 @@ on:
 jobs:
     linters:
         name: Linters
-        runs-on: macos-latest
+        runs-on: ubuntu-latest
         steps:
             - name: Checkout Branch
               uses: actions/checkout@v4
@@ -41,17 +41,13 @@ jobs:
                       exit 1
                   fi
 
-    build:
-        name: Build
-        runs-on: macos-latest
+    test:
+        name: Test
+        runs-on: ubuntu-latest
         strategy:
             matrix:
-                browser: [chrome, firefox, safari]
+                browser: [chrome, firefox]
         steps:
-            - name: Install Firefox
-              if: ${{ matrix.browser == 'firefox' }}
-              run: brew install --cask firefox
-
             - name: Checkout Branch
               uses: actions/checkout@v4
 

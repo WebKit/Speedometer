@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 import assert from "assert";
-import testSetup from "./helper.mjs";
+import testSetup from "./webdriver-helper.mjs";
 
 const HELP = `
 This script runs the unittests located in tests/unittests/*

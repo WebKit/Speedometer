@@ -1,6 +1,6 @@
 import { execFileSync } from "child_process";
 import { parseArgs } from "util";
-import fs from "fs";
+import { getChangedFiles } from "./helper.mjs";
 
 function formatAll() {
     console.log("Formatting all files...");
@@ -37,16 +37,6 @@ function runEslint(files) {
         console.error("ESLint formatting failed");
         process.exit(1);
     }
-}
-
-function getChangedFiles() {
-    // "--diff-filter=ACMR" => ignore deleted files.
-    const diffOut = execFileSync("git", ["diff", "--name-only", "--diff-filter=ACMR", "@{upstream}"], { encoding: "utf8" });
-    const files = diffOut
-        .split("\n")
-        .map((f) => f.trim())
-        .filter((f) => f.length > 0 && fs.existsSync(f));
-    return [...new Set(files)];
 }
 
 let values;
