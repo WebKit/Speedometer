@@ -40,9 +40,9 @@ export class Params {
     // External config url to override internal tests.
     config = "";
 
-    constructor(searchParams = undefined) {
+    constructor(searchParams = undefined, warnUnused = false) {
         if (searchParams)
-            this._copyFromSearchParams(searchParams);
+            this._copyFromSearchParams(searchParams, warnUnused);
         if (!this.developerMode) {
             Object.freeze(this.viewport);
             Object.freeze(this);
@@ -65,7 +65,7 @@ export class Params {
         return parseInt(number);
     }
 
-    _copyFromSearchParams(searchParams) {
+    _copyFromSearchParams(searchParams, warnUnused) {
         this.viewport = this._parseViewport(searchParams);
         this.startAutomatically = this._parseBooleanParam(searchParams, "startAutomatically");
         this.iterationCount = this._parseIntParam(searchParams, "iterationCount", 1);
@@ -83,9 +83,11 @@ export class Params {
         this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
         this.config = this._parseConfig(searchParams);
 
-        const unused = Array.from(searchParams.keys());
-        if (unused.length > 0)
-            console.error("Got unused search params", unused);
+        if (warnUnused) {
+            const unused = Array.from(searchParams.keys());
+            if (unused.length > 0)
+                console.error(`Got unused search params: ${unused.join(", ")}`);
+        }
     }
 
     _parseBooleanParam(searchParams, paramKey) {
@@ -238,12 +240,14 @@ function isValidJsonUrl(url) {
 
 export const defaultParams = new Params();
 
+export let paramsError = null;
 let maybeCustomParams = defaultParams;
 if (globalThis?.location?.search) {
     const searchParams = new URLSearchParams(globalThis.location.search);
     try {
-        maybeCustomParams = new Params(searchParams);
+        maybeCustomParams = new Params(searchParams, true);
     } catch (e) {
+        paramsError = e;
         console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
     }
 }
