@@ -1,6 +1,6 @@
 import { BenchmarkTestStep } from "../resources/benchmark-runner.mjs";
 import { getTodoText } from "../resources/shared/translations.mjs";
-import { numberOfItemsToAdd } from "../resources/shared/todomvc-utils.mjs";
+import { getNumberOfItemsToAdd } from "../resources/shared/todomvc-utils.mjs";
 import { freezeSuites } from "../resources/suites-helper.mjs";
 
 export const ExperimentalSuites = freezeSuites([
@@ -13,7 +13,8 @@ export const ExperimentalSuites = freezeSuites([
             page.getLocalStorage().getItem("javascript-es5");
         },
         tests: [
-            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            new BenchmarkTestStep(`Adding${getNumberOfItemsToAdd()}Items`, (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const newTodo = page.querySelector(".new-todo");
                 for (let i = 0; i < numberOfItemsToAdd; i++) {
                     newTodo.setValue(getTodoText("ja", i));
@@ -22,11 +23,13 @@ export const ExperimentalSuites = freezeSuites([
                 }
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const checkboxes = page.querySelectorAll(".toggle");
                 for (let i = 0; i < numberOfItemsToAdd; i++)
                     checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const deleteButtons = page.querySelectorAll(".destroy");
                 for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                     deleteButtons[i].click();
@@ -41,7 +44,8 @@ export const ExperimentalSuites = freezeSuites([
             await page.waitForElement("todo-app");
         },
         tests: [
-            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            new BenchmarkTestStep(`Adding${getNumberOfItemsToAdd()}Items`, (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
                 for (let i = 0; i < numberOfItemsToAdd; i++) {
                     input.setValue(getTodoText("emoji", i));
@@ -50,6 +54,7 @@ export const ExperimentalSuites = freezeSuites([
                 }
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
                 for (let i = 0; i < numberOfItemsToAdd; i++) {
                     const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
@@ -57,6 +62,7 @@ export const ExperimentalSuites = freezeSuites([
                 }
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
                 for (let i = numberOfItemsToAdd - 1; i >= 0; i--) {
                     const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
@@ -83,7 +89,8 @@ export const ExperimentalSuites = freezeSuites([
             (await page.waitForElement(".new-todo")).focus();
         },
         tests: [
-            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            new BenchmarkTestStep(`Adding${getNumberOfItemsToAdd()}Items`, (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const newTodo = page.querySelector(".new-todo");
                 for (let i = 0; i < numberOfItemsToAdd; i++) {
                     newTodo.setValue(getTodoText("ja", i));
@@ -92,11 +99,13 @@ export const ExperimentalSuites = freezeSuites([
                 }
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const checkboxes = page.querySelectorAll(".toggle");
                 for (let i = 0; i < numberOfItemsToAdd; i++)
                     checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const deleteButtons = page.querySelectorAll(".destroy");
                 for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                     deleteButtons[i].click();
@@ -112,7 +121,8 @@ export const ExperimentalSuites = freezeSuites([
             (await page.waitForElement(".new-todo")).focus();
         },
         tests: [
-            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            new BenchmarkTestStep(`Adding${getNumberOfItemsToAdd()}Items`, (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const newTodo = page.querySelector(".new-todo");
                 for (let i = 0; i < numberOfItemsToAdd; i++) {
                     newTodo.setValue(getTodoText("ja", i));
@@ -121,11 +131,13 @@ export const ExperimentalSuites = freezeSuites([
                 }
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const checkboxes = page.querySelectorAll(".toggle");
                 for (let i = 0; i < numberOfItemsToAdd; i++)
                     checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const deleteButtons = page.querySelectorAll(".destroy");
                 for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                     deleteButtons[i].click();

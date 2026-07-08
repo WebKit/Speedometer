@@ -1,6 +1,6 @@
 import { params, LAYOUT_MODES, defaultParams } from "./shared/params.mjs";
 import { benchmarkConfigurator } from "./benchmark-configurator.mjs";
-import { handleComplexityChange } from "./tests.mjs";
+import { handleComplexityChange } from "./shared/todomvc-utils.mjs";
 
 const { suites, tags } = benchmarkConfigurator;
 
