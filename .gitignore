@@ -2,11 +2,12 @@
 *.pyc
 .DS_Store
 .directory
-/node_modules
+node_modules/
 
+.agents
+.gemini
 .vscode
 .angular
 
-/suites/**/node_modules/
-/suites-experimental/responsive-design/node_modules/
+
 /suites-experimental/**/build-dev/
