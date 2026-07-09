@@ -57,7 +57,7 @@ export default async function testSetup(helpText) {
             break;
         }
         case "firefox": {
-            builder = new Builder().forBrowser(BROWSER).setFirefoxOptions(new firefox.Options().enableBidi());
+            builder = new Builder().forBrowser(BROWSER);
             break;
         }
         case "chrome": {
@@ -89,7 +89,7 @@ export default async function testSetup(helpText) {
     driver = await builder.build();
     driver.manage().window().setRect({ width: 1200, height: 1000 });
 
-    if (BROWSER !== "safari") {
+    if (BROWSER === "chrome" || BROWSER === "edge") {
         logInspector = await LogInspector(driver);
         await logInspector.onConsoleEntry((log) => {
             console.log(`${log.type}.${log.level}`.toUpperCase(), log.text);
