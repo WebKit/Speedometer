@@ -96,7 +96,7 @@ const filesToMove = [
     { src: "node_modules/todomvc-css/dist/bottombar.constructable.js", dest: "./dist/styles/bottombar.constructable.js" },
     { src: "node_modules/todomvc-css/dist/todo-list.constructable.js", dest: "./dist/styles/todo-list.constructable.js" },
     { src: "node_modules/todomvc-css/dist/todo-item.constructable.js", dest: "./dist/styles/todo-item.constructable.js" },
-    { src: "node_modules/speedometer-utils/step-scheduler.mjs", dest: "./dist/speedometer-utils/test-invoker.mjs" },
+    { src: "node_modules/speedometer-utils/step-scheduler.mjs", dest: "./dist/speedometer-utils/step-scheduler.mjs" },
     { src: "node_modules/speedometer-utils/step-runner.mjs", dest: "./dist/speedometer-utils/step-runner.mjs" },
     { src: "node_modules/speedometer-utils/params.mjs", dest: "./dist/speedometer-utils/params.mjs" },
     { src: "node_modules/speedometer-utils/benchmark.mjs", dest: "./dist/speedometer-utils/benchmark.mjs" },
@@ -112,8 +112,13 @@ const importsToRename = [
         files: ["./dist/index.html"],
     },
     {
+        src: "src=\"src/",
+        dest: "src=\"",
+        files: ["./dist/index.html"],
+    },
+    {
         src: "../../../node_modules/todomvc-css/dist/",
-        dest: "../../../styles/",
+        dest: "../../styles/",
         files: [
             "./dist/components/todo-app/todo-app.component.js",
             "./dist/components/todo-bottombar/todo-bottombar.component.js",
