@@ -1,22 +1,22 @@
 export function initVanillaEngine(onUpdateCallback) {
-    const steps = Array.from(document.querySelectorAll(".step"));
+    const sections = Array.from(document.querySelectorAll(".stage-section"));
 
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    const idx = steps.indexOf(entry.target);
-                    if (idx !== -1) onUpdateCallback(idx, 0.0);
-                }
+                if (entry.isIntersecting && typeof window.forceScrollytellingUpdate === "function")
+                    window.forceScrollytellingUpdate();
+
             });
         },
         { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
     );
 
-    steps.forEach((stepEl) => observer.observe(stepEl));
+    sections.forEach((secEl) => observer.observe(secEl));
 
     const handleScroll = () => {
-        if (typeof window.forceScrollytellingUpdate === "function") window.forceScrollytellingUpdate();
+        if (typeof window.forceScrollytellingUpdate === "function")
+            window.forceScrollytellingUpdate();
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });

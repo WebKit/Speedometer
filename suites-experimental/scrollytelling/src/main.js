@@ -1,3 +1,9 @@
+/**
+ * 1950s Black & White Blueprint / Planning Design
+ * Style reference: STYLE_CONFIG in src/graphics.js
+ * Mandates pure black background (#000000), crisp B&W geometry, slanted borders,
+ * independent drop shadow angles, and gradual organic watercolor animation reveals.
+ */
 import { STAGES } from "./content.js";
 import { initGraphics, updateGraphics } from "./graphics.js";
 import { initScrollamaEngine } from "./engine-scrollama.js";
@@ -5,7 +11,8 @@ import { initVanillaEngine } from "./engine-vanilla.js";
 
 function renderStageSections() {
     const container = document.getElementById("scrolly-container");
-    if (!container) return;
+    if (!container)
+        return;
 
     container.innerHTML = "";
     STAGES.forEach((stage, idx) => {
@@ -26,8 +33,19 @@ function renderStageSections() {
             .join("");
 
         const descHtml = Array.isArray(stage.paragraphs)
-            ? stage.paragraphs.map((p) => `<p class="step-description">${p}</p>`).join("")
-            : `<p class="step-description">${stage.description}</p>`;
+            ? stage.paragraphs
+                .map(
+                    (p, pIdx) => `
+                <div class="step-paragraph-item ${pIdx === 0 ? "is-active-paragraph" : ""}" data-p-index="${pIdx}">
+                    <div class="paragraph-mech-tab">
+                        <span class="mech-tab-indicator">●</span>
+                        <span class="mech-tab-label">SCENE 0${idx + 1}-${String.fromCharCode(65 + pIdx)} // PH. 0${pIdx + 1}</span>
+                    </div>
+                    <p class="step-description">${p}</p>
+                </div>`
+                )
+                .join("")
+            : `<div class="step-paragraph-item is-active-paragraph" data-p-index="0"><p class="step-description">${stage.description}</p></div>`;
 
         const narrativeHtml = `
             <div class="stage-narrative-column">
@@ -54,14 +72,22 @@ function renderStageSections() {
 
         stageEl.innerHTML = narrativeHtml + graphicHtml;
         container.appendChild(stageEl);
+
+        const pItems = stageEl.querySelectorAll(".step-paragraph-item");
+        pItems.forEach((item) => {
+            item.addEventListener("click", () => {
+                item.scrollIntoView({ behavior: "smooth", block: "center" });
+            });
+        });
     });
 }
 
 function renderFloatingTOC() {
     const tocList = document.getElementById("toc-list");
-    if (!tocList) return;
+    if (!tocList)
+        return;
 
-    tocList.innerHTML = `<div id="toc-active-indicator" class="toc-active-indicator"></div>` +
+    tocList.innerHTML = `<div id="toc-active-indicator" class="toc-active-indicator"></div>${
         STAGES.map((stage, idx) => `
             <li class="toc-item-wrapper">
                 <button class="toc-item ${idx === 0 ? "is-active" : ""}" data-index="${idx}">
@@ -69,68 +95,105 @@ function renderFloatingTOC() {
                     <span class="toc-label">${stage.title}</span>
                 </button>
             </li>
-        `).join("");
+        `).join("")}`;
 
     const buttons = tocList.querySelectorAll(".toc-item");
     buttons.forEach((btn, idx) => {
         btn.addEventListener("click", () => {
-            if (typeof window.stepTo === "function") window.stepTo(idx);
+            if (typeof window.stepTo === "function")
+                window.stepTo(idx);
         });
     });
 }
 
 window.forceScrollytellingUpdate = function () {
-    const steps = Array.from(document.querySelectorAll(".step"));
-    if (steps.length === 0) return;
+    const sections = Array.from(document.querySelectorAll(".stage-section"));
+    if (sections.length === 0)
+        return;
 
     const viewportCenter = window.innerHeight * 0.5;
     let activeIndex = -1;
     let activeProgress = 0.0;
 
-    // Phase 1: Check if any step straddles the viewport center
-    steps.forEach((stepEl, idx) => {
-        const rect = stepEl.getBoundingClientRect();
-        if (rect.top <= viewportCenter && rect.bottom >= viewportCenter) {
+    // Phase 1: Check if any section straddles the viewport center
+    for (let idx = 0; idx < sections.length; idx++) {
+        const secEl = sections[idx];
+        const rect = secEl.getBoundingClientRect();
+        if (rect.top <= viewportCenter && rect.bottom > viewportCenter) {
             activeIndex = idx;
             if (rect.height > 0) {
-                const prog = (viewportCenter - rect.top) / rect.height;
-                activeProgress = Math.max(0.0, Math.min(1.0, prog));
+                if (rect.top >= 0) {
+                    activeProgress = 0.0;
+                } else {
+                    const prog = -rect.top / Math.max(1, rect.height - window.innerHeight * 0.5);
+                    activeProgress = Math.max(0.0, Math.min(1.0, prog));
+                }
             }
+            break;
         }
-    });
+    }
 
-    // Phase 2: If in a gap or out of bounds, find the step with the closest center
+    // Phase 2: If in a gap or out of bounds, find the section with the closest center
     if (activeIndex === -1) {
         let minDistance = Infinity;
-        steps.forEach((stepEl, idx) => {
-            const rect = stepEl.getBoundingClientRect();
-            const stepCenter = rect.top + rect.height * 0.5;
-            const dist = Math.abs(stepCenter - viewportCenter);
+        for (let idx = 0; idx < sections.length; idx++) {
+            const secEl = sections[idx];
+            const rect = secEl.getBoundingClientRect();
+            const secCenter = rect.top + rect.height * 0.5;
+            const dist = Math.abs(secCenter - viewportCenter);
             if (dist < minDistance) {
                 minDistance = dist;
                 activeIndex = idx;
-                if (stepCenter < viewportCenter) activeProgress = 1.0;
-                else activeProgress = 0.0;
+                if (secCenter < viewportCenter)
+                    activeProgress = 1.0;
+                else
+                    activeProgress = 0.0;
             }
-        });
+        }
     }
 
+    const steps = Array.from(document.querySelectorAll(".step"));
     steps.forEach((stepEl, idx) => {
         if (idx === activeIndex) {
-            if (!stepEl.classList.contains("is-active")) stepEl.classList.add("is-active");
+            if (!stepEl.classList.contains("is-active"))
+                stepEl.classList.add("is-active");
+
+            const paragraphs = stepEl.querySelectorAll(".step-paragraph-item");
+            if (paragraphs.length > 0) {
+                const activePIdx = Math.min(paragraphs.length - 1, Math.floor(activeProgress * paragraphs.length));
+                paragraphs.forEach((pEl, pIdx) => {
+                    if (pIdx === activePIdx) {
+                        if (!pEl.classList.contains("is-active-paragraph"))
+                            pEl.classList.add("is-active-paragraph");
+                    } else {
+                        if (pEl.classList.contains("is-active-paragraph"))
+                            pEl.classList.remove("is-active-paragraph");
+                    }
+                });
+            }
         } else {
-            if (stepEl.classList.contains("is-active")) stepEl.classList.remove("is-active");
+            if (stepEl.classList.contains("is-active"))
+                stepEl.classList.remove("is-active");
+            const paragraphs = stepEl.querySelectorAll(".step-paragraph-item");
+            paragraphs.forEach((pEl, pIdx) => {
+                if (pIdx === 0 && !pEl.classList.contains("is-active-paragraph"))
+                    pEl.classList.add("is-active-paragraph");
+                else if (pIdx !== 0 && pEl.classList.contains("is-active-paragraph"))
+                    pEl.classList.remove("is-active-paragraph");
+            });
         }
     });
 
     const stageLabel = document.getElementById("active-stage-label");
-    if (stageLabel && STAGES[activeIndex]) stageLabel.textContent = `STAGE ${activeIndex + 1}: ${STAGES[activeIndex].title.toUpperCase()}`;
+    if (stageLabel && STAGES[activeIndex])
+        stageLabel.textContent = `STAGE ${activeIndex + 1}: ${STAGES[activeIndex].title.toUpperCase()}`;
 
     const tocItems = document.querySelectorAll(".toc-item");
     const indicator = document.getElementById("toc-active-indicator");
     tocItems.forEach((item, idx) => {
         if (idx === activeIndex) {
-            if (!item.classList.contains("is-active")) item.classList.add("is-active");
+            if (!item.classList.contains("is-active"))
+                item.classList.add("is-active");
             if (indicator) {
                 const wrapper = item.closest(".toc-item-wrapper") || item.parentElement || item;
                 const offsetTop = wrapper.offsetTop;
@@ -139,7 +202,8 @@ window.forceScrollytellingUpdate = function () {
                 indicator.style.height = `${height}px`;
             }
         } else {
-            if (item.classList.contains("is-active")) item.classList.remove("is-active");
+            if (item.classList.contains("is-active"))
+                item.classList.remove("is-active");
         }
     });
 
@@ -147,11 +211,12 @@ window.forceScrollytellingUpdate = function () {
 };
 
 window.scrollToStep = function (index) {
-    const steps = document.querySelectorAll(".step");
-    if (index >= 0 && index < steps.length) {
-        const stepEl = steps[index];
-        stepEl.scrollIntoView({ behavior: "instant", block: "center" });
-        if (typeof window.forceScrollytellingUpdate === "function") window.forceScrollytellingUpdate();
+    const sections = document.querySelectorAll(".stage-section");
+    if (index >= 0 && index < sections.length) {
+        const secEl = sections[index];
+        secEl.scrollIntoView({ behavior: "instant", block: "start" });
+        if (typeof window.forceScrollytellingUpdate === "function")
+            window.forceScrollytellingUpdate();
     }
 };
 
@@ -170,21 +235,24 @@ window._scrubProgress = 0.0;
 window.resetScrub = function () {
     window._scrubProgress = 0.0;
     window.scrollTo({ top: 0, behavior: "instant" });
-    if (typeof window.forceScrollytellingUpdate === "function") window.forceScrollytellingUpdate();
+    if (typeof window.forceScrollytellingUpdate === "function")
+        window.forceScrollytellingUpdate();
 };
 
 window.scrubNext = function () {
     window._scrubProgress = Math.min(1.0, window._scrubProgress + 1.0 / 30.0);
     const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
     window.scrollTo({ top: maxScroll * window._scrubProgress, behavior: "instant" });
-    if (typeof window.forceScrollytellingUpdate === "function") window.forceScrollytellingUpdate();
+    if (typeof window.forceScrollytellingUpdate === "function")
+        window.forceScrollytellingUpdate();
 };
 
 window.scrubPrev = function () {
     window._scrubProgress = Math.max(0.0, window._scrubProgress - 1.0 / 30.0);
     const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
     window.scrollTo({ top: maxScroll * window._scrubProgress, behavior: "instant" });
-    if (typeof window.forceScrollytellingUpdate === "function") window.forceScrollytellingUpdate();
+    if (typeof window.forceScrollytellingUpdate === "function")
+        window.forceScrollytellingUpdate();
 };
 
 window.scrubForward = window.scrubNext;
@@ -199,15 +267,26 @@ function initApp() {
     const engine = urlParams.get("engine") || "scrollama";
 
     if (engine === "vanilla" || engine === "observer" || engine === "css") {
-        if (engine === "css") console.warn("CSS scroll timelines are disabled for main-thread benchmarking. Falling back to Vanilla JS engine.");
+        if (engine === "css")
+            console.warn("CSS scroll timelines are disabled for main-thread benchmarking. Falling back to Vanilla JS engine.");
 
         initVanillaEngine(updateGraphics);
     } else {
         initScrollamaEngine(updateGraphics);
     }
 
-    if (typeof window.forceScrollytellingUpdate === "function") window.forceScrollytellingUpdate();
+    const handleScroll = () => {
+        if (typeof window.forceScrollytellingUpdate === "function")
+            window.forceScrollytellingUpdate();
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+
+    if (typeof window.forceScrollytellingUpdate === "function")
+        window.forceScrollytellingUpdate();
 }
 
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initApp);
-else initApp();
+if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", initApp);
+else
+    initApp();

@@ -1,3 +1,9 @@
+/**
+ * 1950s Black & White Blueprint / Planning Design Content & Specification Data
+ * Style reference: STYLE_CONFIG in src/graphics.js
+ * All narrative steps, badges, and technical specs conform to the monochrome blueprint drafting theme
+ * on a pure black background (#000000), enhanced by gradual organic watercolor animation reveals.
+ */
 export const STAGES = [
     {
         id: "step-1",

@@ -1,11 +1,32 @@
+/**
+ * 1950s Black & White Blueprint / Planning Design
+ * Reference: STYLE_CONFIG in src/graphics.js
+ * 
+ * Aesthetic Rules:
+ * - Pure black drafting background (#000000) with crisp B&W geometry.
+ * - Negative blueprint drafting theme (light typography & wireframes on dark void).
+ * - Slanted container borders (-2.0deg to +2.0deg) and independent drop shadow angles (Shadow Angle != Box Angle).
+ * - Gradual organic watercolor animation reveals for accent coloring during scroll.
+ */
 :root {
-    --bg-color: #0c0c0c;
-    --text-color: #f2f2f2;
-    --text-muted: #9c9c9c;
+    --bg-color: #000000;
+    --paper-light: #111111;
+    --paper-card: #0a0a0a;
+    --ink-primary: #ffffff;
+    --ink-secondary: #cccccc;
+    --ink-muted: #777777;
+    --accent-dark: #ffffff;
+    --accent-light: #cccccc;
     --border-color: #ffffff;
+    --shadow-solid: #222222;
+    --text-color: var(--ink-primary);
+    --text-muted: var(--ink-muted);
+    --card-bg: var(--paper-light);
+    --card-active-bg: var(--paper-card);
     --accent-color: #ffffff;
-    --card-bg: #141414;
-    --card-active-bg: #1a1a1a;
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -17,14 +38,15 @@
 body {
     background-color: var(--bg-color);
     background-image: 
-        radial-gradient(#3a3a3a 1.5px, transparent 1.5px),
-        radial-gradient(#222222 1px, transparent 1px),
+        radial-gradient(rgba(255, 255, 255, 0.22) 1.5px, transparent 1.5px),
+        radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
         url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.15%22/%3E%3C/svg%3E");
     background-size: 14px 14px, 28px 28px, 150px 150px;
     background-position: 0 0, 7px 7px, 0 0;
-    color: var(--text-color);
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    line-height: 1.65;
+    color: var(--ink-primary);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
     overflow-x: hidden;
 }
 
@@ -35,47 +57,82 @@ body {
     position: relative;
 }
 
+/* 1950s Construction Paper Header Box with Slanted Geometry & Independent Shadow */
 .page-header {
-    padding: 4.5rem 0 2.5rem;
-    border-bottom: 4px solid var(--border-color);
-    margin-bottom: 3rem;
-    text-align: center;
     position: relative;
+    z-index: 1;
+    padding: 4.5rem 2rem 2.5rem;
+    background-color: var(--paper-card);
+    border: 4px solid var(--border-color);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    transform: rotate(-0.6deg);
+    transition: transform 0.3s var(--ease-out-quart);
+    overflow: visible;
 }
 
-.page-header::after {
+.page-header::before {
     content: "";
     position: absolute;
-    bottom: -10px;
-    left: 0;
+    z-index: -1;
+    top: 14px;
+    left: 10px;
     width: 100%;
-    height: 2px;
-    background-color: var(--border-color);
+    height: 100%;
+    background-color: var(--shadow-solid);
+    transform: rotate(1.3deg);
+    transition: transform 0.3s var(--ease-out-quart), top 0.3s ease, left 0.3s ease;
+}
+
+.page-header:hover {
+    transform: rotate(0deg);
+}
+
+.page-header:hover::before {
+    top: 16px;
+    left: 14px;
+    transform: rotate(-0.9deg);
 }
 
 .page-header h1 {
-    font-family: "Impact", "Arial Black", "Futura", "Helvetica Neue", sans-serif;
-    font-size: 4rem;
+    font-family: "Impact", "Arial Black", "Futura", sans-serif;
+    font-size: 3.8rem;
     font-weight: 900;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     text-transform: uppercase;
-    margin-bottom: 0.5rem;
-    color: #ffffff;
-    text-shadow: 4px 4px 0px #222222;
+    margin-bottom: 0.75rem;
+    color: var(--ink-primary);
 }
 
 .subtitle {
-    font-size: 1.25rem;
-    color: var(--text-color);
+    position: relative;
+    z-index: 1;
+    font-size: 1.15rem;
+    color: var(--paper-card);
     font-family: "Courier New", Courier, monospace;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     margin-bottom: 1.25rem;
     display: inline-block;
-    padding: 0.25rem 0.75rem;
-    background-color: #222222;
-    border: 1px solid var(--border-color);
+    padding: 0.4rem 1.2rem;
+    background-color: var(--ink-primary);
+    border: 3px solid var(--border-color);
+    transform: rotate(1deg);
+    overflow: visible;
+}
+
+.subtitle::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 6px;
+    left: -6px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    transform: rotate(-1.7deg);
 }
 
 .header-status {
@@ -83,57 +140,92 @@ body {
     justify-content: center;
     gap: 1.5rem;
     flex-wrap: wrap;
-    margin-top: 1rem;
+    margin-top: 1.25rem;
 }
 
 .status-tag {
+    position: relative;
+    z-index: 1;
     font-family: "Impact", "Arial Black", sans-serif;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 900;
-    padding: 0.5rem 1.25rem;
+    padding: 0.5rem 1.4rem;
     border: 3px solid var(--border-color);
-    background-color: #ffffff;
-    color: #000000;
+    background-color: var(--ink-secondary);
+    color: var(--paper-card);
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    box-shadow: 5px 5px 0px #444444;
     transform: rotate(-1.5deg);
     display: inline-block;
+    overflow: visible;
 }
 
-/* Floating Table of Contents (1950s Magazine Ad Style) */
+.status-tag::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 8px;
+    left: 10px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    transform: rotate(2.3deg);
+}
+
+/* Floating Table of Contents (1950s Slanted Index Banner with Independent Shadow) */
 .floating-toc {
     position: fixed;
     top: 2.5rem;
     right: 2.5rem;
     z-index: 1000;
-    background-color: #0a0a0a;
-    border: 3px solid #ffffff;
+    background-color: var(--paper-card);
+    border: 3px solid var(--border-color);
     padding: 1rem;
-    box-shadow: 8px 8px 0px #ffffff;
-    width: 250px;
+    width: 260px;
     transform: rotate(1.2deg);
-    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+    transition: transform 0.3s var(--ease-out-quart);
+    overflow: visible;
+}
+
+.floating-toc::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 10px;
+    left: 6px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    transform: rotate(-1.1deg);
+    transition: transform 0.3s var(--ease-out-quart), top 0.3s ease, left 0.3s ease;
 }
 
 .floating-toc:hover {
     transform: rotate(0deg) scale(1.02);
-    box-shadow: 10px 10px 0px #ffffff;
+}
+
+.floating-toc:hover::after {
+    top: 12px;
+    left: 10px;
+    transform: rotate(-1.6deg);
 }
 
 .toc-header {
-    border-bottom: 2px solid #ffffff;
+    border-bottom: 3px solid var(--border-color);
     padding-bottom: 0.5rem;
     margin-bottom: 0.75rem;
     text-align: center;
+    background-color: var(--ink-primary);
+    color: var(--paper-card);
+    margin: -1rem -1rem 0.75rem -1rem;
+    padding: 0.65rem 1rem 0.55rem;
 }
 
 .toc-title {
     font-family: "Impact", "Arial Black", sans-serif;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 900;
     letter-spacing: 0.12em;
-    color: #ffffff;
     text-transform: uppercase;
 }
 
@@ -144,7 +236,7 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.3rem;
 }
 
 .toc-item-wrapper {
@@ -156,9 +248,9 @@ body {
     width: 100%;
     background: transparent;
     border: none;
-    color: #ffffff;
+    color: var(--ink-secondary);
     text-align: left;
-    padding: 0.45rem 0.5rem;
+    padding: 0.5rem 0.6rem;
     font-family: "Courier New", Courier, monospace;
     font-size: 0.85rem;
     font-weight: 700;
@@ -169,10 +261,15 @@ body {
     transition: color 0.2s ease;
 }
 
+.toc-item.is-active {
+    color: var(--ink-primary);
+    font-weight: 900;
+}
+
 .toc-num {
     font-weight: 900;
     letter-spacing: 0.05em;
-    opacity: 0.75;
+    opacity: 0.85;
 }
 
 .toc-label {
@@ -187,12 +284,13 @@ body {
     left: 0;
     top: 0;
     width: 100%;
-    height: 32px;
-    background-color: #ffffff;
-    mix-blend-mode: difference;
+    height: 34px;
+    background-color: var(--paper-light);
     pointer-events: none;
-    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.25s ease;
-    z-index: 20;
+    transition: transform 0.25s var(--ease-out-quart), height 0.25s ease;
+    z-index: 5;
+    border: 2px solid var(--ink-primary);
+    border-left: 6px solid var(--ink-primary);
 }
 
 .scrolly-container {
@@ -206,13 +304,13 @@ body {
 .stage-section {
     display: flex;
     position: relative;
-    gap: 4rem;
+    gap: 4.5rem;
     align-items: flex-start;
     justify-content: space-between;
-    min-height: 160vh;
-    padding-top: 5vh;
-    padding-bottom: 15vh;
-    border-bottom: 2px dashed rgba(255, 255, 255, 0.2);
+    min-height: 110vh;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 3px dashed var(--ink-muted);
 }
 
 .stage-section:last-child {
@@ -231,7 +329,8 @@ body {
     flex: 1 1 55%;
     position: sticky;
     top: 0;
-    height: 100vh;
+    max-height: 100vh;
+    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -243,40 +342,73 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: 15vh;
-    padding-bottom: 25vh;
+    padding-top: 0;
+    padding-bottom: 0;
     z-index: 5;
 }
 
-/* Irregular Slanted Tilt Angles & Asymmetric Cutouts per Stage */
-#stage-section-0 { --step-tilt: -1.4deg; --graphic-tilt: 1.2deg; --step-clip: polygon(1% 0%, 99% 1%, 100% 98%, 0% 100%); }
-#stage-section-1 { --step-tilt: 1.6deg; --graphic-tilt: -1.4deg; --step-clip: polygon(0% 1%, 100% 0%, 99% 99%, 1% 100%); }
-#stage-section-2 { --step-tilt: -0.9deg; --graphic-tilt: 1.5deg; --step-clip: polygon(0% 0%, 98% 1%, 100% 100%, 1% 98%); }
-#stage-section-3 { --step-tilt: 1.3deg; --graphic-tilt: -0.9deg; --step-clip: polygon(1% 1%, 100% 0%, 99% 100%, 0% 99%); }
-#stage-section-4 { --step-tilt: -1.5deg; --graphic-tilt: 1.3deg; --step-clip: polygon(0% 1%, 99% 0%, 100% 99%, 1% 100%); }
-#stage-section-5 { --step-tilt: 1.0deg; --graphic-tilt: -1.5deg; --step-clip: polygon(1% 0%, 100% 1%, 98% 100%, 0% 98%); }
-#stage-section-6 { --step-tilt: -1.2deg; --graphic-tilt: 1.6deg; --step-clip: polygon(0% 0%, 100% 1%, 99% 100%, 1% 99%); }
-#stage-section-7 { --step-tilt: 1.5deg; --graphic-tilt: -1.1deg; --step-clip: polygon(1% 1%, 99% 0%, 100% 99%, 0% 100%); }
+/* Irregular Slanted Tilt Angles & Independent Drop Shadow Offsets/Angles per Stage */
+#stage-section-0 {
+    --step-tilt: -1.4deg; --step-shadow-tilt: 0.9deg; --step-shadow-x: 12px; --step-shadow-y: 8px;
+    --graphic-tilt: 1.2deg; --graphic-shadow-tilt: -1.6deg; --graphic-shadow-x: 16px; --graphic-shadow-y: 10px;
+}
+#stage-section-1 {
+    --step-tilt: 1.6deg; --step-shadow-tilt: -1.1deg; --step-shadow-x: -10px; --step-shadow-y: 14px;
+    --graphic-tilt: -1.4deg; --graphic-shadow-tilt: 1.3deg; --graphic-shadow-x: -12px; --graphic-shadow-y: 16px;
+}
+#stage-section-2 {
+    --step-tilt: -1.1deg; --step-shadow-tilt: 1.5deg; --step-shadow-x: 14px; --step-shadow-y: -6px;
+    --graphic-tilt: 1.5deg; --graphic-shadow-tilt: -0.9deg; --graphic-shadow-x: 10px; --graphic-shadow-y: 18px;
+}
+#stage-section-3 {
+    --step-tilt: 1.3deg; --step-shadow-tilt: -1.4deg; --step-shadow-x: 8px; --step-shadow-y: 16px;
+    --graphic-tilt: -1.1deg; --graphic-shadow-tilt: 1.7deg; --graphic-shadow-x: -14px; --graphic-shadow-y: 12px;
+}
+#stage-section-4 {
+    --step-tilt: -1.5deg; --step-shadow-tilt: 1.2deg; --step-shadow-x: -12px; --step-shadow-y: 10px;
+    --graphic-tilt: 1.3deg; --graphic-shadow-tilt: -1.8deg; --graphic-shadow-x: 18px; --graphic-shadow-y: 8px;
+}
+#stage-section-5 {
+    --step-tilt: 1.2deg; --step-shadow-tilt: -1.5deg; --step-shadow-x: 16px; --step-shadow-y: 14px;
+    --graphic-tilt: -1.5deg; --graphic-shadow-tilt: 1.1deg; --graphic-shadow-x: -10px; --graphic-shadow-y: -8px;
+}
+#stage-section-6 {
+    --step-tilt: -1.3deg; --step-shadow-tilt: 1.6deg; --step-shadow-x: 10px; --step-shadow-y: 18px;
+    --graphic-tilt: 1.4deg; --graphic-shadow-tilt: -1.2deg; --graphic-shadow-x: 14px; --graphic-shadow-y: 14px;
+}
+#stage-section-7 {
+    --step-tilt: 1.5deg; --step-shadow-tilt: -1.1deg; --step-shadow-x: -14px; --step-shadow-y: 12px;
+    --graphic-tilt: -1.2deg; --graphic-shadow-tilt: 1.5deg; --graphic-shadow-x: -16px; --graphic-shadow-y: 16px;
+}
 
-/* Graphic Sticky Wrapper (1950s Print Ad Border) */
+/* Graphic Sticky Wrapper (1950s Architectural Drawing Frame with Independent Shadow) */
 .graphic-sticky-wrapper {
     position: relative;
+    z-index: 1;
     width: 100%;
     aspect-ratio: 4 / 3;
-    border: 4px solid #ffffff;
-    border-radius: 4px;
-    background-color: #000000;
-    box-shadow: 14px 14px 0px rgba(255, 255, 255, 0.25);
-    overflow: hidden;
+    border: 4px solid var(--border-color);
+    border-radius: 0px;
+    background-color: var(--paper-light);
+    overflow: visible;
     display: flex;
     align-items: center;
     justify-content: center;
     transform: rotateZ(var(--graphic-tilt, 0deg));
-    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease, border-color 0.3s ease;
+    transition: transform 0.5s var(--ease-out-quart);
 }
 
-.stage-section:hover .graphic-sticky-wrapper {
-    box-shadow: 16px 16px 0px rgba(255, 255, 255, 0.4);
+.graphic-sticky-wrapper::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: var(--graphic-shadow-y, 14px);
+    left: var(--graphic-shadow-x, 14px);
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    transform: rotateZ(var(--graphic-shadow-tilt, -1.5deg));
+    transition: transform 0.5s var(--ease-out-quart), top 0.5s ease, left 0.5s ease;
 }
 
 .graphic-canvas,
@@ -288,6 +420,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
+    clip-path: inset(0px);
 }
 
 .graphic-canvas,
@@ -301,97 +434,143 @@ body {
     pointer-events: none;
 }
 
-/* B&W Light Watercolor / Ink Wash Texture Overlay */
+/* Clean Blueprint Dot Grid / Watercolor Wash Overlay */
 .graphic-texture-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url("./bw_watercolor_texture.webp"), radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 70%);
+    background-image: url("public/bw_watercolor_texture.webp"), radial-gradient(circle at center, rgba(255, 255, 255, 0.15), transparent 70%);
     background-size: cover, 100% 100%;
     background-position: center;
-    mix-blend-mode: overlay;
+    mix-blend-mode: screen;
     opacity: 0.35;
     z-index: 2;
     pointer-events: none;
-    transition: opacity 0.5s ease;
+    clip-path: inset(0px);
 }
 
-/* 1950s Graphic Callout Badge Caption */
+/* 1950s Graphic Callout Badge Caption with Independent Shadow */
 .caption {
     position: absolute;
-    bottom: 1.5rem;
-    left: 1.5rem;
-    right: 1.5rem;
-    background: #ffffff;
-    color: #000000;
-    border: 3px solid #000000;
-    border-radius: 2px;
+    z-index: 5;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    right: 1.25rem;
+    background: var(--ink-primary);
+    color: var(--paper-card);
+    border: 3px solid var(--border-color);
     padding: 0.65rem 1.25rem;
     font-family: "Impact", "Arial Black", sans-serif;
     font-size: 0.95rem;
     font-weight: 900;
     text-align: center;
-    z-index: 3;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    box-shadow: 5px 5px 0px #222222;
+    transform: rotate(-0.8deg);
+    overflow: visible;
 }
 
-/* Narrative Cards (.step) */
+.caption::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 5px;
+    left: 6px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    transform: rotate(1.6deg);
+}
+
+/* Narrative Cards (.step) on Construction Paper with Independent Shadow */
 .step {
-    background-color: var(--card-bg);
-    border: 3px solid #444444;
-    border-radius: 4px;
-    padding: 2.5rem;
-    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.35s ease, background-color 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease;
-    opacity: 0.35;
-    transform: perspective(1000px) rotateZ(var(--step-tilt, 0deg)) scale(0.94);
-    clip-path: var(--step-clip, none);
-    box-shadow: 6px 6px 0px rgba(255, 255, 255, 0.08);
     position: relative;
+    z-index: 1;
+    background-color: var(--paper-card);
+    border: 3px solid var(--ink-muted);
+    border-radius: 0px;
+    padding: 1.35rem 1.75rem;
+    transition: transform 0.35s var(--ease-out-quart), border-color 0.35s ease, background-color 0.35s ease, opacity 0.35s ease;
+    opacity: 0.45;
+    transform: perspective(1000px) rotateZ(var(--step-tilt, 0deg)) scale(0.95);
+    overflow: visible;
+}
+
+.step::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: var(--step-shadow-y, 6px);
+    left: var(--step-shadow-x, 6px);
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    opacity: 0.3;
+    transform: rotateZ(var(--step-shadow-tilt, 1deg));
+    transition: transform 0.35s var(--ease-out-quart), opacity 0.35s ease, top 0.35s ease, left 0.35s ease;
 }
 
 .step.is-active {
     opacity: 1;
-    border-color: #ffffff;
-    background-color: var(--card-active-bg);
+    border: 4px solid var(--ink-primary);
+    background-color: var(--paper-light);
     transform: perspective(1000px) rotateZ(var(--step-tilt, 0deg)) scale(1.02);
-    box-shadow: 14px 14px 0px #ffffff, 0 20px 40px rgba(0, 0, 0, 0.8);
     z-index: 15;
 }
 
+.step.is-active::after {
+    opacity: 1;
+    top: calc(var(--step-shadow-y, 6px) * 1.4);
+    left: calc(var(--step-shadow-x, 6px) * 1.4);
+}
+
 .step-badge-wrap {
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
 }
 
 .step-badge {
+    position: relative;
+    z-index: 1;
     display: inline-block;
-    background-color: #ffffff;
-    color: #000000;
+    background-color: var(--ink-secondary);
+    color: var(--paper-card);
     font-family: "Impact", "Arial Black", sans-serif;
     font-size: 0.85rem;
     font-weight: 900;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 0.3rem 0.85rem;
-    border: 2px solid #000000;
-    box-shadow: 3px 3px 0px #666666;
-    transform: rotate(-2.5deg);
+    padding: 0.35rem 0.85rem;
+    border: 2px solid var(--border-color);
+    transform: rotate(-2deg);
+    overflow: visible;
+}
+
+.step-badge::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 4px;
+    left: 5px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    transform: rotate(2.8deg);
 }
 
 .step-meta {
     font-family: "Courier New", Courier, monospace;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 700;
-    color: var(--text-muted);
+    color: var(--ink-secondary);
     text-transform: uppercase;
     letter-spacing: 0.12em;
     display: block;
-    margin-bottom: 0.75rem;
-    border-bottom: 2px solid #333333;
-    padding-bottom: 0.5rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.35rem;
+    border-bottom: 2px dashed var(--ink-muted);
+    padding-bottom: 0.35rem;
 }
 
 .step-title {
@@ -400,44 +579,134 @@ body {
     font-weight: 900;
     letter-spacing: -0.02em;
     text-transform: uppercase;
-    margin-bottom: 1.25rem;
-    color: #ffffff;
+    margin-bottom: 0.5rem;
+    color: var(--ink-primary);
     line-height: 1.1;
 }
 
-.step-description {
-    font-size: 1.05rem;
-    color: #d8d8d8;
-    margin-bottom: 1.5rem;
-    line-height: 1.7;
-    font-weight: 400;
+/* 1950s Mechanical Diorama Paragraph Tabs (Strict Grayscale & Independent Shadows) */
+.step-paragraph-item {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0.35rem;
+    padding: 0.6rem 1rem;
+    background-color: var(--paper-light);
+    border: 2px dashed var(--ink-muted);
+    transition: all 0.35s var(--ease-out-quart);
+    opacity: 0.35;
+    transform: translateX(0px) rotate(-0.5deg);
+    cursor: pointer;
+    overflow: visible;
 }
 
-.step-description p {
-    margin-bottom: 0.75rem;
+.step-paragraph-item::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 4px;
+    left: 6px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    opacity: 0;
+    transform: rotate(1.4deg);
+    transition: opacity 0.35s var(--ease-out-quart), transform 0.35s ease;
 }
 
-.step-description p:last-child {
+.step-paragraph-item:last-child {
     margin-bottom: 0;
 }
 
-/* Step Specs (Print Ad Table/Grid Box) */
+.step-paragraph-item:hover {
+    opacity: 0.85;
+    border-color: var(--ink-secondary);
+}
+
+.step-paragraph-item.is-active-paragraph {
+    opacity: 1;
+    background-color: var(--bg-color);
+    border: 3px solid var(--ink-primary);
+    transform: translateX(10px) scale(1.02) rotate(0.4deg);
+    z-index: 5;
+}
+
+.step-paragraph-item.is-active-paragraph::after {
+    opacity: 1;
+    top: 6px;
+    left: 8px;
+    transform: rotate(-1.5deg);
+}
+
+.paragraph-mech-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.2rem;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--ink-secondary);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.step-paragraph-item.is-active-paragraph .paragraph-mech-tab {
+    color: var(--ink-primary);
+    font-weight: 900;
+}
+
+.mech-tab-indicator {
+    display: inline-block;
+    color: var(--ink-muted);
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.step-paragraph-item.is-active-paragraph .mech-tab-indicator {
+    color: var(--ink-primary);
+    transform: scale(1.3);
+}
+
+.step-description {
+    margin-bottom: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.05rem;
+    color: var(--ink-primary);
+    line-height: 1.65;
+    font-weight: 400;
+}
+
+/* Step Specs (1950s Slanted Print Data Box with Independent Shadow) */
 .step-specs {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.85rem;
-    background: #0a0a0a;
-    padding: 1.25rem;
-    border: 2px solid #ffffff;
-    border-radius: 2px;
-    margin-top: 1.25rem;
-    box-shadow: 6px 6px 0px rgba(255, 255, 255, 0.15);
+    gap: 0.5rem;
+    background: var(--bg-color);
+    padding: 0.75rem 1rem;
+    border: 3px solid var(--ink-primary);
+    margin-top: 0.6rem;
+    font-family: "Courier New", Courier, monospace;
+    transform: rotate(0.5deg);
+    overflow: visible;
+}
+
+.step-specs::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 6px;
+    left: -6px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    transform: rotate(-1.3deg);
 }
 
 .spec-item {
     display: flex;
     flex-direction: column;
-    border-left: 3px solid #333333;
+    border-left: 3px solid var(--ink-primary);
     padding-left: 0.65rem;
 }
 
@@ -445,7 +714,7 @@ body {
     font-family: "Courier New", Courier, monospace;
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--text-muted);
+    color: var(--ink-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -453,21 +722,39 @@ body {
 .spec-value {
     font-family: "Courier New", Courier, monospace;
     font-size: 0.9rem;
-    font-weight: 700;
-    color: #ffffff;
+    font-weight: 900;
+    color: var(--ink-primary);
 }
 
 .page-footer {
-    padding: 5rem 0 3rem;
-    border-top: 4px solid var(--border-color);
-    margin-top: 4rem;
+    position: relative;
+    z-index: 1;
+    padding: 4.5rem 2rem 3.5rem;
+    background-color: var(--paper-card);
+    border: 4px solid var(--border-color);
+    margin-top: 1rem;
+    margin-bottom: 4rem;
     text-align: center;
     font-family: "Courier New", Courier, monospace;
     font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--text-color);
+    font-weight: 900;
+    color: var(--ink-primary);
     text-transform: uppercase;
     letter-spacing: 0.08em;
+    transform: rotate(0.5deg);
+    overflow: visible;
+}
+
+.page-footer::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 12px;
+    left: 10px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    transform: rotate(-0.9deg);
 }
 
 @media (max-width: 1100px) {
@@ -475,7 +762,7 @@ body {
         top: auto;
         bottom: 1.5rem;
         right: 1.5rem;
-        width: 220px;
+        width: 230px;
         padding: 0.75rem;
         transform: rotate(0deg);
     }
@@ -484,7 +771,7 @@ body {
     }
     .toc-item {
         font-size: 0.75rem;
-        padding: 0.3rem 0.4rem;
+        padding: 0.35rem 0.45rem;
     }
     .step-title {
         font-size: 1.75rem;
@@ -493,16 +780,16 @@ body {
 
 @media (max-width: 900px) {
     .scrolly-container {
-        gap: 4rem;
+        gap: 2.5rem;
     }
     .stage-section,
     .stage-section.layout-text-left,
     .stage-section.layout-text-right {
         flex-direction: column;
-        gap: 2rem;
+        gap: 2.5rem;
         min-height: auto;
-        padding-top: 2rem;
-        padding-bottom: 4rem;
+        padding-top: 1.5rem;
+        padding-bottom: 2rem;
     }
     .stage-graphic-column {
         position: relative;
@@ -512,10 +799,18 @@ body {
     }
     .stage-narrative-column {
         width: 100%;
-        padding-top: 1rem;
-        padding-bottom: 2rem;
+        padding-top: 0;
+        padding-bottom: 0;
     }
     .step-specs {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

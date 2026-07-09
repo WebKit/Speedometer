@@ -5,15 +5,19 @@ export function initScrollamaEngine(onUpdateCallback) {
 
     scroller
         .setup({
-            step: ".step",
+            step: ".stage-section",
             offset: 0.5,
             progress: true,
         })
         .onStepEnter((res) => {
             onUpdateCallback(res.index, 0.0);
+            if (typeof window.forceScrollytellingUpdate === "function")
+                window.forceScrollytellingUpdate();
         })
         .onStepProgress((res) => {
             onUpdateCallback(res.index, res.progress);
+            if (typeof window.forceScrollytellingUpdate === "function")
+                window.forceScrollytellingUpdate();
         });
 
     window.addEventListener(
