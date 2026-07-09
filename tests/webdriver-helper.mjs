@@ -2,7 +2,6 @@ import commandLineUsage from "command-line-usage";
 import commandLineArgs from "command-line-args";
 import serve from "./server.mjs";
 
-import firefox from "selenium-webdriver/firefox.js";
 import chrome from "selenium-webdriver/chrome.js";
 import edge from "selenium-webdriver/edge.js";
 

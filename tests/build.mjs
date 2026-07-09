@@ -5,6 +5,11 @@ import { DefaultSuites } from "../suites/default-suites.mjs";
 import { ExperimentalSuites } from "../suites-experimental/suites.mjs";
 import { getChangedFiles, runActionGroup, sh } from "./helper.mjs";
 
+const EXCLUDES = new Set([
+    // TODO: Re-enable Vue build when the node-ipc/vue-cli issue is resolved for Node 24+
+    "suites/todomvc/architecture-examples/vue",
+]);
+
 function findWorkloadForUrl(suiteUrl) {
     let currentDir = path.dirname(suiteUrl);
     while (currentDir !== "." && currentDir !== "/") {
@@ -25,8 +30,9 @@ function getWorkloads() {
     for (const suite of suites) {
         if (suite.url) {
             const workload = findWorkloadForUrl(suite.url);
-            if (workload)
+            if (workload && !EXCLUDES.has(workload))
                 workloads.add(workload);
+
         }
     }
     return Array.from(workloads);
