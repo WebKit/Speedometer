@@ -32,7 +32,6 @@ function getWorkloads() {
             const workload = findWorkloadForUrl(suite.url);
             if (workload && !EXCLUDES.has(workload))
                 workloads.add(workload);
-
         }
     }
     return Array.from(workloads);
