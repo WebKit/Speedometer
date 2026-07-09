@@ -273,7 +273,7 @@ export const ExperimentalSuites = freezeSuites([
     },
     {
         name: "Terminal-Xterm",
-        url: "suites-experimental/terminal-emulator/dist/index.html",
+        url: "suites-experimental/terminal-xterm/dist/index.html",
         tags: ["terminal", "xterm", "experimental"],
         type: "async",
         async prepare(page) {

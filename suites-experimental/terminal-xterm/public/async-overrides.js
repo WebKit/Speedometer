@@ -26,7 +26,8 @@ window.createImageBitmap = (canvas) => {
 
 // 2. DOM Observers (ResizeObserver, IntersectionObserver, MutationObserver)
 const trackObserver = (ObserverClass) => {
-    if (!ObserverClass) return ObserverClass;
+    if (!ObserverClass)
+        return ObserverClass;
     return class extends ObserverClass {
         constructor(callback) {
             super((entries, observer) => {
@@ -54,11 +55,11 @@ const origClearTimeout = window.clearTimeout.bind(window);
 window.setTimeout = (cb, delay, ...args) => {
     const id = origSetTimeout(() => {
         window.__activeTimers.delete(id);
-        if (typeof cb === "function") {
+        if (typeof cb === "function")
             cb(...args);
-        } else if (typeof cb === "string") {
+        else if (typeof cb === "string")
             eval(cb);
-        }
+
     }, 0);
     window.__activeTimers.add(id);
     return id;

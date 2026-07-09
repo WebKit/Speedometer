@@ -25,72 +25,10 @@ const rendererType = (params.get("renderer") || "canvas").toLowerCase();
  * Initialize all 4 terminal panes and attach addons
  */
 export function initTerminals() {
-    if (isInitialized)
-        return;
+    if (isInitialized) return;
 
     const tabs = ["build", "links", "ncurses", "git"];
-
-    tabs.forEach((tabId) => {
-        const container = document.getElementById(`pane-${tabId}`);
-        if (!container)
-            return;
-
-        const term = new Terminal({
-            theme: {
-                background: "#1e1e1e",
-                foreground: "#d4d4d4",
-                cursor: "#007acc",
-                selectionBackground: "#264f78",
-                black: "#000000",
-                red: "#cd3131",
-                green: "#0dbc79",
-                yellow: "#e5e510",
-                blue: "#2472c8",
-                magenta: "#bc3fbc",
-                cyan: "#11a8cd",
-                white: "#e5e5e5",
-                brightBlack: "#666666",
-                brightRed: "#f14c4c",
-                brightGreen: "#23d18b",
-                brightYellow: "#f5f543",
-                brightBlue: "#3b8eea",
-                brightMagenta: "#d670d6",
-                brightCyan: "#29b8db",
-                brightWhite: "#e5e5e5",
-            },
-            fontFamily: 'Menlo, Monaco, "Courier New", monospace',
-            fontSize: 13,
-            lineHeight: 1.2,
-            scrollback: 5000,
-            cursorBlink: false, // Turn off blinking for deterministic rendering
-            allowTransparency: false,
-        });
-
-        const fitAddon = new FitAddon();
-        const webLinksAddon = new WebLinksAddon();
-
-        term.loadAddon(fitAddon);
-        term.loadAddon(webLinksAddon);
-
-        // Load performance rendering backend
-        if (rendererType === "webgl") {
-            try {
-                const webglAddon = new WebGLAddon();
-                term.loadAddon(webglAddon);
-            } catch (e) {
-                console.warn("WebGL renderer failed to initialize, falling back to Canvas/DOM:", e);
-                tryLoadCanvas(term);
-            }
-        } else if (rendererType === "canvas") {
-            tryLoadCanvas(term);
-        }
-
-        term.open(container);
-        fitAddon.fit();
-
-        terminals[tabId] = term;
-        fitAddons[tabId] = fitAddon;
-    });
+    tabs.forEach((tabId) => initTerminalForTab(tabId));
 
     // Populate Git tab with static sample output
     if (terminals.git) {
@@ -111,18 +49,13 @@ export function initTerminals() {
     // generation, and canvas renderer warmup are covered in the setup phase.
     if (terminals.build && buildLogChunks.length > 0) {
         writeSync(terminals.build, "\x1b[36m⚡ Speedometer Terminal Emulator Suite - Initializing Build Environment...\x1b[0m\r\n\r\n");
-        for (let i = 0; i < Math.min(10, buildLogChunks.length); i++)
-            writeSync(terminals.build, buildLogChunks[i]);
-
+        for (let i = 0; i < Math.min(10, buildLogChunks.length); i++) writeSync(terminals.build, buildLogChunks[i]);
     }
     if (terminals.links && linksChunks.length > 0) {
         writeSync(terminals.links, "\x1b[36m🔗 Speedometer Web Links & Traces - Initializing Link Environment...\x1b[0m\r\n\r\n");
-        for (let i = 0; i < Math.min(10, linksChunks.length); i++)
-            writeSync(terminals.links, linksChunks[i]);
-
+        for (let i = 0; i < Math.min(10, linksChunks.length); i++) writeSync(terminals.links, linksChunks[i]);
     }
-    if (terminals.ncurses && ncursesFrames.length > 0)
-        writeSync(terminals.ncurses, ncursesFrames[0]);
+    if (terminals.ncurses && ncursesFrames.length > 0) writeSync(terminals.ncurses, ncursesFrames[0]);
 
     // Synchronously unpause and flush all terminals during setup so texture atlases
     // and renderer backends are 100% warmed up before benchmark step measurement begins.
@@ -131,12 +64,10 @@ export function initTerminals() {
             const rs = term._core._renderService;
             if (rs._isPaused) {
                 rs._isPaused = false;
-                if (rs._charSizeService && !rs._charSizeService.hasValidSize)
-                    rs._charSizeService.measure();
+                if (rs._charSizeService && !rs._charSizeService.hasValidSize) rs._charSizeService.measure();
 
                 if (rs._needsFullRefresh) {
-                    if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function")
-                        rs._pausedResizeTask.flush();
+                    if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function") rs._pausedResizeTask.flush();
 
                     rs.refreshRows(0, rs._rowCount - 1);
                     rs._needsFullRefresh = false;
@@ -148,6 +79,67 @@ export function initTerminals() {
 
     isInitialized = true;
     switchTab("build");
+}
+
+function initTerminalForTab(tabId) {
+    const container = document.getElementById(`pane-${tabId}`);
+    if (!container) return;
+
+    const term = new Terminal({
+        theme: {
+            background: "#1e1e1e",
+            foreground: "#d4d4d4",
+            cursor: "#007acc",
+            selectionBackground: "#264f78",
+            black: "#000000",
+            red: "#cd3131",
+            green: "#0dbc79",
+            yellow: "#e5e510",
+            blue: "#2472c8",
+            magenta: "#bc3fbc",
+            cyan: "#11a8cd",
+            white: "#e5e5e5",
+            brightBlack: "#666666",
+            brightRed: "#f14c4c",
+            brightGreen: "#23d18b",
+            brightYellow: "#f5f543",
+            brightBlue: "#3b8eea",
+            brightMagenta: "#d670d6",
+            brightCyan: "#29b8db",
+            brightWhite: "#e5e5e5",
+        },
+        fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+        fontSize: 13,
+        lineHeight: 1.2,
+        scrollback: 5000,
+        cursorBlink: false, // Turn off blinking for deterministic rendering
+        allowTransparency: false,
+    });
+
+    const fitAddon = new FitAddon();
+    const webLinksAddon = new WebLinksAddon();
+
+    term.loadAddon(fitAddon);
+    term.loadAddon(webLinksAddon);
+
+    // Load performance rendering backend
+    if (rendererType === "webgl") {
+        try {
+            const webglAddon = new WebGLAddon();
+            term.loadAddon(webglAddon);
+        } catch (e) {
+            console.warn("WebGL renderer failed to initialize, falling back to Canvas/DOM:", e);
+            tryLoadCanvas(term);
+        }
+    } else if (rendererType === "canvas") {
+        tryLoadCanvas(term);
+    }
+
+    term.open(container);
+    fitAddon.fit();
+
+    terminals[tabId] = term;
+    fitAddons[tabId] = fitAddon;
 }
 
 function tryLoadCanvas(term) {
@@ -165,8 +157,7 @@ function tryLoadCanvas(term) {
  * forcing dirty rows and DOM elements to update immediately.
  */
 export function flushSync(term) {
-    if (!term || !term._core)
-        return;
+    if (!term || !term._core) return;
 
     // 1. Flush terminal grid renderer (RenderService / RenderDebouncer)
     if (term._core._renderService) {
@@ -187,9 +178,7 @@ export function flushSync(term) {
             window.cancelAnimationFrame(vp._refreshAnimationFrame);
             vp._refreshAnimationFrame = undefined;
         }
-        if (typeof vp._innerRefresh === "function")
-            vp._innerRefresh();
-
+        if (typeof vp._innerRefresh === "function") vp._innerRefresh();
     }
 
     // 3. Flush selection overlays (SelectionService)
@@ -199,9 +188,7 @@ export function flushSync(term) {
             window.cancelAnimationFrame(sel._refreshAnimationFrame);
             sel._refreshAnimationFrame = undefined;
         }
-        if (typeof sel._refresh === "function")
-            sel._refresh();
-
+        if (typeof sel._refresh === "function") sel._refresh();
     }
 }
 
@@ -210,13 +197,9 @@ export function flushSync(term) {
  * or 12ms chunking, updating grid cells without triggering intermediate canvas redraws.
  */
 export function writeSync(term, data) {
-    if (!term)
-        return;
-    if (term._core && term._core._writeBuffer && typeof term._core._writeBuffer.writeSync === "function")
-        term._core._writeBuffer.writeSync(data);
-    else
-        term.write(data);
-
+    if (!term) return;
+    if (term._core && term._core._writeBuffer && typeof term._core._writeBuffer.writeSync === "function") term._core._writeBuffer.writeSync(data);
+    else term.write(data);
 }
 
 /**
@@ -231,8 +214,7 @@ export function writeAndFlushSync(term, data) {
  * Switch active tab and resize terminal viewport
  */
 export function switchTab(tabId) {
-    if (!terminals[tabId])
-        return;
+    if (!terminals[tabId]) return;
 
     activeTabId = tabId;
 
@@ -247,48 +229,42 @@ export function switchTab(tabId) {
     });
 
     // Reflow and fit terminal to container
-    if (fitAddons[tabId])
-        fitAddons[tabId].fit();
+    fitAddons[tabId].fit();
 
-    if (terminals[tabId]) {
-        terminals[tabId].focus();
-        // Immediately unpause render service and force pending layout/resize tasks
-        // so that terminal operations render synchronously during -Sync instead of
-        // waiting for asynchronous IntersectionObserver callbacks in -Async!
-        const term = terminals[tabId];
-        if (term._core && term._core._renderService) {
-            const rs = term._core._renderService;
-            if (rs._isPaused) {
-                rs._isPaused = false;
-                if (rs._charSizeService && !rs._charSizeService.hasValidSize)
-                    rs._charSizeService.measure();
+    const term = terminals[tabId];
+    term.focus();
 
-                if (rs._needsFullRefresh) {
-                    if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function")
-                        rs._pausedResizeTask.flush();
+    // Immediately unpause render service and force pending layout/resize tasks
+    // so that terminal operations render synchronously during -Sync instead of
+    // waiting for asynchronous IntersectionObserver callbacks in -Async!
+    if (term._core && term._core._renderService) {
+        const rs = term._core._renderService;
+        if (rs._isPaused) {
+            rs._isPaused = false;
+            if (rs._charSizeService && !rs._charSizeService.hasValidSize) rs._charSizeService.measure();
 
-                    rs.refreshRows(0, rs._rowCount - 1);
-                    rs._needsFullRefresh = false;
-                }
+            if (rs._needsFullRefresh) {
+                if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function") rs._pausedResizeTask.flush();
+
+                rs.refreshRows(0, rs._rowCount - 1);
+                rs._needsFullRefresh = false;
             }
         }
-        flushSync(terminals[tabId]);
     }
+    flushSync(term);
 }
 
 async function finishStep() {
     // 1. Give xterm and addons initial microtask ticks to allow any pending
     // DOM observer callbacks or event listeners to push their rendering timers.
-    for (let i = 0; i < 10; i++)
-        await Promise.resolve();
+    for (let i = 0; i < 10; i++) await Promise.resolve();
 
     // 2. Loop until all scheduled xterm rendering passes, texture atlas warmups,
     // macro-task timers (setTimeout/rAF/rIC), DOM observers, and
     // asynchronous GPU texture bitmaps (createImageBitmap) have completely drained.
     let drainLimit = 300;
     while ((window.__activeTimers.size > 0 || window.__activeBitmaps.size > 0 || (window.__activeObservers && window.__activeObservers.size > 0)) && drainLimit-- > 0) {
-        if (window.__activeBitmaps.size > 0)
-            await Promise.all(Array.from(window.__activeBitmaps));
+        if (window.__activeBitmaps.size > 0) await Promise.all(Array.from(window.__activeBitmaps));
 
         Object.values(terminals).forEach((term) => flushSync(term));
         // Yield to the browser's Macro-Task Queue so pending setTimeout(0),
@@ -298,8 +274,7 @@ async function finishStep() {
 
     // 3. Final defensive settling phase: await additional microtask ticks to ensure
     // zero deferred rendering work spills over into subsequent steps or async measurement.
-    for (let i = 0; i < 20; i++)
-        await Promise.resolve();
+    for (let i = 0; i < 20; i++) await Promise.resolve();
 
     // 4. Synchronously flush all terminal renderers, viewports, and selection overlays
     // right before step completion so zero animation frames spill over into -async.
@@ -324,8 +299,7 @@ export async function dumpAndScroll() {
 
     // Write ~50% of build log chunks to target ~50ms workload complexity
     const limit = Math.min(75, buildLogChunks.length);
-    for (let i = 0; i < limit; i++)
-        writeSync(term, buildLogChunks[i]);
+    for (let i = 0; i < limit; i++) writeSync(term, buildLogChunks[i]);
 
     flushSync(term);
 
@@ -363,8 +337,7 @@ export async function hoverInlineLinks() {
     term.clear();
     // Write ~50% of link chunks to target ~15ms workload complexity
     const limit = Math.min(40, linksChunks.length);
-    for (let i = 0; i < limit; i++)
-        writeSync(term, linksChunks[i]);
+    for (let i = 0; i < limit; i++) writeSync(term, linksChunks[i]);
 
     flushSync(term);
 
@@ -407,8 +380,7 @@ export async function ncursesColorUI() {
         return;
     }
 
-    for (let i = 0; i < ncursesFrames.length; i++)
-        writeAndFlushSync(term, ncursesFrames[i]);
+    for (let i = 0; i < ncursesFrames.length; i++) writeAndFlushSync(term, ncursesFrames[i]);
 
     term.refresh(0, term.rows - 1);
     flushSync(term);
@@ -429,20 +401,16 @@ export async function switchTabsAndResize() {
             const tabId = tabs[i];
 
             // Simulate IDE sidebar toggling or panel resizing by mutating width slightly
-            if (container)
-                container.style.width = i === 0 ? "95%" : "100%";
+            container.style.width = i === 0 ? "95%" : "100%";
 
             switchTab(tabId);
 
             // Write a small status ping and synchronously reflow/flush on active tab
-            if (terminals[tabId])
-                writeAndFlushSync(terminals[tabId], `\x1b[2m[Tab switched to ${tabId} at ${Date.now()}]\x1b[0m\r\n`);
-
+            writeAndFlushSync(terminals[tabId], `\x1b[2m[Tab switched to ${tabId} at ${Date.now()}]\x1b[0m\r\n`);
         }
     }
 
-    if (container)
-        container.style.width = "100%";
+    container.style.width = "100%";
 
     switchTab("build");
     await finishStep();
@@ -462,37 +430,20 @@ window.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".tab").forEach((btn) => {
         btn.addEventListener("click", () => {
-            const tabId = btn.getAttribute("data-tab");
-            if (tabId)
-                switchTab(tabId);
+            switchTab(btn.getAttribute("data-tab"));
         });
     });
 
-    const btnInit = document.getElementById("btn-init");
-    const btnDump = document.getElementById("btn-dump-scroll");
-    const btnLinks = document.getElementById("btn-hover-links");
-    const btnNcurses = document.getElementById("btn-ncurses");
-    const btnSwitch = document.getElementById("btn-switch-tabs");
-    const btnLayout = document.getElementById("btn-layout");
-
-    if (btnInit)
-        btnInit.addEventListener("click", initTerminals);
-    if (btnDump)
-        btnDump.addEventListener("click", dumpAndScroll);
-    if (btnLinks)
-        btnLinks.addEventListener("click", hoverInlineLinks);
-    if (btnNcurses)
-        btnNcurses.addEventListener("click", ncursesColorUI);
-    if (btnSwitch)
-        btnSwitch.addEventListener("click", switchTabsAndResize);
-    if (btnLayout)
-        btnLayout.addEventListener("click", layoutCheck);
+    document.getElementById("btn-init").addEventListener("click", initTerminals);
+    document.getElementById("btn-dump-scroll").addEventListener("click", dumpAndScroll);
+    document.getElementById("btn-hover-links").addEventListener("click", hoverInlineLinks);
+    document.getElementById("btn-ncurses").addEventListener("click", ncursesColorUI);
+    document.getElementById("btn-switch-tabs").addEventListener("click", switchTabsAndResize);
+    document.getElementById("btn-layout").addEventListener("click", layoutCheck);
 
     // Handle window resizing
     window.addEventListener("resize", () => {
-        if (fitAddons[activeTabId])
-            fitAddons[activeTabId].fit();
-
+        fitAddons[activeTabId].fit();
     });
 });
 

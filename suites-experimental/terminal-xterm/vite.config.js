@@ -30,11 +30,13 @@ function nodeModulesSourcemaps() {
     };
 }
 
+function renameIndexHtml() { return { name: 'rename-index-html', closeBundle() { const src = resolve(__dirname, 'dist/index.source.html'); const dest = resolve(__dirname, 'dist/index.html'); if (fs.existsSync(src)) fs.renameSync(src, dest); } }; }
+
 export default defineConfig(({ mode }) => {
     const isDev = mode === "development";
     return {
         base: "./",
-        plugins: [nodeModulesSourcemaps()],
+        plugins: [nodeModulesSourcemaps(), renameIndexHtml()],
         build: {
             outDir: "dist",
             modulePreload: { polyfill: false },
@@ -42,7 +44,7 @@ export default defineConfig(({ mode }) => {
             sourcemap: isDev ? "inline" : true,
             rollupOptions: {
                 input: {
-                    main: resolve(__dirname, "index.html"),
+                    main: resolve(__dirname, "index.source.html"),
                 },
                 output: isDev
                     ? {
