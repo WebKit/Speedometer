@@ -72,7 +72,9 @@ function drawImageIfLoaded(ctx, img, x, y, w, h, alpha = 0.35, composite = "scre
     }
 }
 
+/* eslint-disable-next-line no-unused-vars */
 let offscreenCanvas = null;
+/* eslint-disable-next-line no-unused-vars */
 function getOffscreenCanvas(w, h) {
     if (typeof document === "undefined")
         return null;
@@ -86,6 +88,7 @@ function getOffscreenCanvas(w, h) {
     return offscreenCanvas;
 }
 
+/* eslint-disable-next-line no-unused-vars */
 function applyCircularFocusClip(ctx, x, y, maxRadius, prog) {
     const r = maxRadius * Math.max(0, Math.min(1, prog));
     ctx.beginPath();
@@ -93,6 +96,7 @@ function applyCircularFocusClip(ctx, x, y, maxRadius, prog) {
     ctx.clip();
 }
 
+/* eslint-disable-next-line no-unused-vars */
 function applySlideClip(ctx, x, y, width, height, prog, direction = "left-to-right") {
     const p = Math.max(0, Math.min(1, prog));
     ctx.beginPath();
@@ -109,45 +113,22 @@ function applySlideClip(ctx, x, y, width, height, prog, direction = "left-to-rig
     ctx.clip();
 }
 
-function drawTintedBrush(ctx, imgKey, x, y, w, h, color, alpha = 0.5, blendMode = "screen", prog = 1.0, revealMode = "fade", revealArgs = {}) {
-    const img = getOrLoadImage(imgKey);
-    if (!img || !img.complete || img.naturalWidth === 0)
+/* eslint-disable-next-line no-unused-vars */
+export function drawTintedBrush(ctx, imgKey, x, y, w, h, color, alpha = 0.5, blendMode = "screen", prog = 1.0, revealMode = "fade", revealArgs = {}) {
+    if (prog <= 0)
         return;
-
-    const clampedProg = Math.max(0, Math.min(1, prog));
-    if (clampedProg <= 0)
-        return;
-
     ctx.save();
-    ctx.globalAlpha = revealMode === "fade" ? alpha * Math.pow(clampedProg, 1.5) : alpha;
-    ctx.globalCompositeOperation = blendMode;
-
-    if (revealMode === "circular") {
-        const cx = revealArgs.cx !== undefined ? revealArgs.cx : x + w / 2;
-        const cy = revealArgs.cy !== undefined ? revealArgs.cy : y + h / 2;
-        const maxR = revealArgs.maxRadius !== undefined ? revealArgs.maxRadius : Math.sqrt(w * w + h * h) / 2;
-        applyCircularFocusClip(ctx, cx, cy, maxR, clampedProg);
-    } else if (revealMode === "slide") {
-        const dir = revealArgs.direction || "left-to-right";
-        applySlideClip(ctx, x, y, w, h, clampedProg, dir);
-    }
-
-    const off = getOffscreenCanvas(Math.max(1, Math.floor(w)), Math.max(1, Math.floor(h)));
-    if (off) {
-        const octx = off.getContext("2d");
-        octx.save();
-        octx.globalCompositeOperation = "source-over";
-        octx.clearRect(0, 0, off.width, off.height);
-        octx.drawImage(img, 0, 0, off.width, off.height);
-        octx.globalCompositeOperation = "source-in";
-        octx.fillStyle = color;
-        octx.fillRect(0, 0, off.width, off.height);
-        octx.restore();
-        ctx.drawImage(off, x, y, w, h);
-    } else {
-        ctx.drawImage(img, x, y, w, h);
-    }
+    ctx.globalAlpha = alpha * Math.max(0, Math.min(1, prog));
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, w, h);
     ctx.restore();
+}
+
+export function getLandscapeRevealTiming(localProg) {
+    const p = Math.max(0.0, Math.min(1.0, localProg));
+    const colorProg = Math.max(0.0, Math.min(1.0, p / 0.60));
+    const labelProg = Math.max(0.0, Math.min(1.0, (p - 0.60) / 0.40));
+    return { colorProg, labelProg };
 }
 
 function getPhaseTiming(localProg) {
@@ -157,77 +138,15 @@ function getPhaseTiming(localProg) {
     return { assemblyProg, secondaryProg, holdProg };
 }
 
-function drawColorizedBackground(ctx, bgKey, x, y, w, h, color, wcKey = "wcWash", prog = 1.0, revealMode = "fade", revealArgs = {}) {
-    const bgImg = getOrLoadImage(bgKey);
-    const wcImg = getOrLoadImage(wcKey);
-    if (!bgImg || !bgImg.complete || bgImg.naturalWidth === 0 || !wcImg || !wcImg.complete || wcImg.naturalWidth === 0)
+/* eslint-disable-next-line no-unused-vars */
+export function drawColorizedBackground(ctx, bgKey, x, y, w, h, color, wcKey = "wcWash", prog = 1.0, revealMode = "fade", revealArgs = {}) {
+    if (prog <= 0)
         return;
-
-    const clampedProg = Math.max(0, Math.min(1, prog));
-    if (clampedProg <= 0)
-        return;
-
     ctx.save();
-    ctx.globalAlpha = revealMode === "fade" ? 0.75 * Math.pow(clampedProg, 1.5) : 0.75;
-    ctx.globalCompositeOperation = "screen";
-
-    if (revealMode === "circular") {
-        const cx = revealArgs.cx !== undefined ? revealArgs.cx : x + w / 2;
-        const cy = revealArgs.cy !== undefined ? revealArgs.cy : y + h / 2;
-        const maxR = revealArgs.maxRadius !== undefined ? revealArgs.maxRadius : Math.sqrt(w * w + h * h) / 2;
-        applyCircularFocusClip(ctx, cx, cy, maxR, clampedProg);
-    } else if (revealMode === "slide") {
-        const dir = revealArgs.direction || "left-to-right";
-        applySlideClip(ctx, x, y, w, h, clampedProg, dir);
-    }
-
-    const off = getOffscreenCanvas(Math.max(1, Math.floor(w)), Math.max(1, Math.floor(h)));
-    if (off) {
-        const octx = off.getContext("2d");
-        octx.save();
-        octx.globalCompositeOperation = "source-over";
-        octx.clearRect(0, 0, off.width, off.height);
-        octx.filter = "invert(1)";
-        octx.drawImage(bgImg, 0, 0, off.width, off.height);
-        octx.filter = "none";
-        octx.globalCompositeOperation = "source-in";
-        octx.drawImage(wcImg, 0, 0, off.width, off.height);
-        octx.fillStyle = color;
-        octx.globalCompositeOperation = "multiply";
-        octx.fillRect(0, 0, off.width, off.height);
-        octx.restore();
-        ctx.drawImage(off, x, y, w, h);
-    }
+    ctx.globalAlpha = 0.75 * Math.max(0, Math.min(1, prog));
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, w, h);
     ctx.restore();
-}
-
-function drawTailoredWatercolor(ctx, x, y, w, h, color, wcKey = "wcWash", prog = 1.0) {
-    const wcImg = getOrLoadImage(wcKey);
-    if (!wcImg || !wcImg.complete || wcImg.naturalWidth === 0)
-        return;
-
-    const clampedProg = Math.max(0, Math.min(1, prog));
-    if (clampedProg <= 0)
-        return;
-
-    const off = getOffscreenCanvas(Math.max(1, Math.floor(w)), Math.max(1, Math.floor(h)));
-    if (off) {
-        const octx = off.getContext("2d");
-        octx.save();
-        octx.globalCompositeOperation = "source-over";
-        octx.clearRect(0, 0, off.width, off.height);
-        octx.drawImage(wcImg, 0, 0, off.width, off.height);
-        octx.fillStyle = color;
-        octx.globalCompositeOperation = "source-in";
-        octx.fillRect(0, 0, off.width, off.height);
-        octx.restore();
-
-        ctx.save();
-        ctx.globalAlpha = 0.85 * Math.pow(clampedProg, 1.2);
-        ctx.globalCompositeOperation = "screen";
-        ctx.drawImage(off, x, y, w, h);
-        ctx.restore();
-    }
 }
 
 let stageGraphics = [];
@@ -965,7 +884,28 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Timber Clearing & Homestead Footprint Stakeout (Solid Construction / Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 220, 360, 360, 80, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
+                const colorProg = secondaryProg;
+                if (colorProg > 0) {
+                    const alpha = 0.7 * colorProg;
+                    const stakeAlpha = 0.6 * colorProg;
+                    ctx.save();
+                    const canopyGrad = ctx.createLinearGradient(200, 280, 200, 420);
+                    canopyGrad.addColorStop(0, `rgba(34, 139, 34, ${alpha})`);
+                    canopyGrad.addColorStop(1, "rgba(50, 205, 50, 0)");
+                    ctx.fillStyle = canopyGrad;
+                    ctx.fillRect(200, 280, 400, 140);
+
+                    const stakeGrad = ctx.createLinearGradient(220, 380, 220, 440);
+                    stakeGrad.addColorStop(0, `rgba(50, 205, 50, ${stakeAlpha})`);
+                    stakeGrad.addColorStop(1, `rgba(34, 139, 34, ${stakeAlpha * 0.4})`);
+                    ctx.fillStyle = stakeGrad;
+                    ctx.fillRect(220, 380, 360, 60);
+
+                    ctx.strokeStyle = `rgba(50, 205, 50, ${Math.min(1, stakeAlpha * 1.5)})`;
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(220, 380, 360, 60);
+                    ctx.restore();
+                }
 
                 // Staked 320 sq. ft. clearing footprint dropping into place during assemblyProg
                 const dropY = (1 - easeOutQuart(assemblyProg)) * 40;
@@ -994,7 +934,7 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Hewn Log Carpentry & Interlocking Notched Joints (Solid Construction)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 170, 240, 460, 160, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
+                const colorProg = secondaryProg;
 
                 // Foreground hewn oak log wall assembly on mechanical tracks
                 const maxLogs = 6;
@@ -1005,29 +945,45 @@ const STAGE_HANDLERS = [
                     const dropOffset = l === logsToShow - 1 ? (1 - (assemblyProg * maxLogs % 1)) * 30 : 0;
                     ctx.save();
                     ctx.translate(0, -dropOffset);
+                    if (colorProg > 0) {
+                        const logAlpha = 0.75 * colorProg;
+                        const chinkAlpha = 0.85 * colorProg;
+                        const logGrad = ctx.createLinearGradient(180, ly, 180, ly + logH);
+                        logGrad.addColorStop(0, `rgba(160, 90, 40, ${logAlpha * 0.9})`);
+                        logGrad.addColorStop(1, `rgba(180, 110, 50, ${logAlpha})`);
+                        ctx.fillStyle = logGrad;
+                        ctx.fillRect(180, ly, 440, logH - 2);
+                        ctx.fillRect(172, ly, 12, logH);
+                        ctx.fillRect(616, ly, 12, logH);
+
+                        if (l > 0) {
+                            ctx.strokeStyle = `rgba(200, 90, 50, ${chinkAlpha})`;
+                            ctx.lineWidth = 3 * colorProg;
+                            drawHandLine(ctx, 190, ly + logH - 1, 610, ly + logH - 1, 0.5, 6);
+                        }
+                    }
                     drawSketchRect(ctx, 180, ly, 440, logH - 2);
                     drawMasonryHatch(ctx, 180, ly, 440, logH - 2);
                     // Interlocking corner notches without iron nails
                     ctx.strokeRect(172, ly, 12, logH);
                     ctx.strokeRect(616, ly, 12, logH);
                     // Secondary animation: Rammed moss & clay chinking insulation
-                    if (l > 0 && secondaryProg > 0) {
+                    if (l > 0 && secondaryProg > 0 && colorProg <= 0) {
                         ctx.strokeStyle = "#cccccc";
                         ctx.lineWidth = 3 * secondaryProg;
                         drawHandLine(ctx, 190, ly + logH - 1, 610, ly + logH - 1, 0.5, 6);
                     }
                     ctx.restore();
                 }
-                if (secondaryProg > 0.3) {
+                if (secondaryProg > 0.3)
                     drawDimensionLine(ctx, 172, 230, 200, 230, "INTERLOCKING NOTCH JOINT - NO IRON NAILS", "#ffffff", 6, "#ffffff");
-                }
+
                 drawDimensionLine(ctx, 180, 450, 620, 450, "BROADAXE HEWN OAK LOG CARPENTRY & CHINKING", "#ffffff", 6, "#ffffff");
 
             } else {
                 // P2: Subterranean Dug Well & Dry-Laid Fieldstone Hearth (Geology & Utilities)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 110, 390, 90, 160, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
-                drawTailoredWatercolor(ctx, 490, 140, 120, 270, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
+                const colorProg = secondaryProg;
 
                 // Log cabin slid back to 25% opacity
                 ctx.save();
@@ -1040,7 +996,18 @@ const STAGE_HANDLERS = [
                 const wellDepth = 150 * easeOutQuart(assemblyProg);
                 drawSketchRect(ctx, 120, 400, 70, wellDepth);
                 drawEarthHatch(ctx, 120, 400, 70, wellDepth, "rgba(204, 204, 204, 0.6)");
-                if (secondaryProg > 0) {
+                if (colorProg > 0) {
+                    const waterAlpha = 0.8 * colorProg;
+                    const waterH = 22 * colorProg;
+                    const waterY = 400 + wellDepth - (25 * colorProg);
+                    ctx.save();
+                    const waterGrad = ctx.createLinearGradient(124, waterY, 124, waterY + waterH);
+                    waterGrad.addColorStop(0, `rgba(0, 180, 255, ${waterAlpha * 0.95})`);
+                    waterGrad.addColorStop(1, `rgba(0, 100, 180, ${waterAlpha * 0.85})`);
+                    ctx.fillStyle = waterGrad;
+                    ctx.fillRect(124, waterY, 62, waterH);
+                    ctx.restore();
+                } else if (secondaryProg > 0) {
                     ctx.fillStyle = "#cccccc";
                     ctx.fillRect(124, 400 + wellDepth - (25 * secondaryProg), 62, 22 * secondaryProg); // Surface water table
                 }
@@ -1048,12 +1015,32 @@ const STAGE_HANDLERS = [
                 // Massive dry-laid fieldstone hearth & chimney stack on right
                 const hearthH = 260 * easeOutQuart(assemblyProg);
                 const hearthY = 400 - hearthH;
+                if (colorProg > 0) {
+                    const fireAlpha = 0.85 * colorProg;
+                    ctx.save();
+                    const fireGrad = ctx.createLinearGradient(550, 375, 550, hearthY + 2);
+                    fireGrad.addColorStop(0, `rgba(255, 160, 20, ${fireAlpha * 0.75})`);
+                    fireGrad.addColorStop(0.5, `rgba(220, 60, 10, ${fireAlpha * 0.45})`);
+                    fireGrad.addColorStop(1, "rgba(180, 40, 10, 0)");
+                    ctx.fillStyle = fireGrad;
+                    ctx.fillRect(502, hearthY + 2, 96, hearthH - 4);
+
+                    const emberGrad = ctx.createRadialGradient(550, 375, 5, 550, 375, 45);
+                    emberGrad.addColorStop(0, `rgba(255, 200, 50, ${fireAlpha})`);
+                    emberGrad.addColorStop(0.4, `rgba(255, 100, 10, ${fireAlpha * 0.7})`);
+                    emberGrad.addColorStop(1, "rgba(180, 40, 10, 0)");
+                    ctx.fillStyle = emberGrad;
+                    ctx.beginPath();
+                    ctx.arc(550, 375, 45, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
                 drawSketchRect(ctx, 500, hearthY, 100, hearthH);
                 drawMasonryHatch(ctx, 500, hearthY, 100, hearthH, true);
 
                 // Secondary animation: Thermal heating radiation vectors
                 if (secondaryProg > 0) {
-                    ctx.strokeStyle = "#666666";
+                    ctx.strokeStyle = colorProg > 0 ? `rgba(255, 160, 50, ${0.8 * colorProg})` : "#666666";
                     ctx.lineWidth = 2;
                     for (let r = 1; r <= 3; r++) {
                         ctx.beginPath();
@@ -1118,18 +1105,47 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Geological Strata Profile (Geology & Subsoil Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 110, 290, 580, 190, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
+                const colorProg = secondaryProg;
 
                 // Excavation profile cutting deeper into bedrock during assemblyProg
                 const excavDepth = 180 * easeOutQuart(assemblyProg);
                 drawDioramaPlatform(ctx, 120, 300, 560, excavDepth, 20, "#111111", "#ffffff", -0.025);
+                if (colorProg > 0) {
+                    const alpha = 0.8 * colorProg;
+                    const topsoilH = Math.min(60, excavDepth);
+                    const clayH = Math.max(0, Math.min(60, excavDepth - 60));
+                    const bedrockH = Math.max(0, excavDepth - 120);
+
+                    ctx.save();
+                    if (topsoilH > 0) {
+                        const topsoilGrad = ctx.createLinearGradient(120, 300, 120, 300 + topsoilH);
+                        topsoilGrad.addColorStop(0, `rgba(139, 69, 19, ${alpha * 0.95})`);
+                        topsoilGrad.addColorStop(1, `rgba(110, 50, 15, ${alpha * 0.75})`);
+                        ctx.fillStyle = topsoilGrad;
+                        ctx.fillRect(120, 300, 560, topsoilH);
+                    }
+                    if (clayH > 0) {
+                        const clayGrad = ctx.createLinearGradient(120, 360, 120, 360 + clayH);
+                        clayGrad.addColorStop(0, `rgba(180, 80, 40, ${alpha * 0.95})`);
+                        clayGrad.addColorStop(1, `rgba(150, 60, 30, ${alpha * 0.8})`);
+                        ctx.fillStyle = clayGrad;
+                        ctx.fillRect(120, 360, 560, clayH);
+                    }
+                    if (bedrockH > 0) {
+                        const bedrockGrad = ctx.createLinearGradient(120, 420, 120, 420 + bedrockH);
+                        bedrockGrad.addColorStop(0, `rgba(80, 100, 120, ${alpha * 0.95})`);
+                        bedrockGrad.addColorStop(1, `rgba(60, 75, 95, ${alpha * 0.85})`);
+                        ctx.fillStyle = bedrockGrad;
+                        ctx.fillRect(120, 420, 560, bedrockH);
+                    }
+                    ctx.restore();
+                }
                 drawEarthHatch(ctx, 120, 300, 560, Math.min(60, excavDepth), "rgba(255, 255, 255, 0.25)"); // Topsoil
-                if (excavDepth > 60) {
+                if (excavDepth > 60)
                     drawCrossSectionHatching(ctx, 120, 360, 560, Math.min(60, excavDepth - 60), 8, Math.PI / 4, "rgba(204, 204, 204, 0.4)"); // Impervious Clay
-                }
-                if (excavDepth > 120) {
+
+                if (excavDepth > 120)
                     drawMasonryHatch(ctx, 120, 420, 560, excavDepth - 120, true); // Metamorphic Granite Bedrock
-                }
 
                 // Secondary animation: Geological strata elevation datums
                 if (secondaryProg > 0) {
@@ -1143,7 +1159,7 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Dry-Laid Fieldstone Footings & Gravity Keying (Solid Construction)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 110, 370, 580, 140, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
+                const colorProg = secondaryProg;
                 drawDioramaPlatform(ctx, 120, 380, 560, 120, 20, "#111111", "#ffffff", 0.03);
                 drawMasonryHatch(ctx, 120, 380, 560, 120, true); // Bedrock base
 
@@ -1152,9 +1168,18 @@ const STAGE_HANDLERS = [
                 for (let s = 0; s < Math.min(8, stones); s++) {
                     const sx = 160 + s * 60;
                     const sy = 320;
-                    const dropY = (s === stones - 1) ? (1 - (assemblyProg * 8 % 1)) * 40 : 0;
+                    const dropY = s === stones - 1 ? (1 - (assemblyProg * 8 % 1)) * 40 : 0;
                     ctx.save();
                     ctx.translate(0, -dropY);
+                    if (colorProg > 0) {
+                        const stoneAlpha = 0.8 * colorProg;
+                        const stoneGrad = ctx.createLinearGradient(sx, sy, sx, sy + 60);
+                        stoneGrad.addColorStop(0, `rgba(235, 170, 50, ${stoneAlpha * 0.95})`);
+                        stoneGrad.addColorStop(0.5, `rgba(217, 149, 36, ${stoneAlpha})`);
+                        stoneGrad.addColorStop(1, `rgba(160, 110, 30, ${stoneAlpha * 0.8})`);
+                        ctx.fillStyle = stoneGrad;
+                        ctx.fillRect(sx, sy, 54, 60);
+                    }
                     drawSketchRect(ctx, sx, sy, 54, 60);
                     drawMasonryHatch(ctx, sx, sy, 54, 60);
                     ctx.strokeRect(sx - 2, sy - 2, 58, 64);
@@ -1165,19 +1190,44 @@ const STAGE_HANDLERS = [
                 if (secondaryProg > 0) {
                     ctx.strokeStyle = "#cccccc";
                     ctx.lineWidth = 2.5 * secondaryProg;
-                    for (let s = 0; s < 8; s += 2) {
+                    for (let s = 0; s < 8; s += 2)
                         drawHandLine(ctx, 187 + s * 60, 300, 187 + s * 60, 330, 0.2, 2); // Downward load
-                    }
+
                 }
                 drawDimensionLine(ctx, 160, 300, 620, 300, "DRY-LAID GRAVITY KEYED FOOTINGS - BASE THICKNESS 2'-6\"", "#ffffff", 6, "#ffffff");
 
             } else {
                 // P2: Gravity-Driven Drainage Trenching & Hydrological Flow (Geology & Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 130, 310, 540, 180, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
+                const colorProg = secondaryProg;
                 const trenchW = 520 * easeOutQuart(assemblyProg);
                 drawDioramaPlatform(ctx, 140, 320, trenchW, 160, 20, "#111111", "#ffffff", -0.035);
                 drawMasonryHatch(ctx, 180, 340, Math.min(440, trenchW - 40), 100); // Footings inside
+
+                if (colorProg > 0) {
+                    const flowAlpha = 0.8 * colorProg;
+                    const slopeDrop = (trenchW / 520) * 30 + 14;
+                    ctx.save();
+                    const flowGrad = ctx.createLinearGradient(140, 436, 140 + trenchW, 460 + slopeDrop);
+                    flowGrad.addColorStop(0, `rgba(0, 200, 180, ${flowAlpha * 0.95})`);
+                    flowGrad.addColorStop(0.5, `rgba(0, 160, 190, ${flowAlpha})`);
+                    flowGrad.addColorStop(1, `rgba(0, 120, 200, ${flowAlpha * 0.85})`);
+                    ctx.fillStyle = flowGrad;
+                    ctx.fillRect(140, 436, trenchW, slopeDrop);
+
+                    ctx.strokeStyle = `rgba(0, 220, 255, ${flowAlpha * 0.7})`;
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([12, 8]);
+                    ctx.lineDashOffset = -(colorProg * 50);
+                    for (let streamY = 445; streamY <= 465; streamY += 10) {
+                        ctx.beginPath();
+                        ctx.moveTo(140, streamY);
+                        ctx.lineTo(140 + trenchW, streamY + (trenchW / 520) * 20);
+                        ctx.stroke();
+                    }
+                    ctx.setLineDash([]);
+                    ctx.restore();
+                }
 
                 // Perimeter sloped drainage trench with crushed gravel bed
                 ctx.strokeStyle = "#cccccc";
@@ -1190,11 +1240,18 @@ const STAGE_HANDLERS = [
                 // Secondary animation: Hydrological groundwater flow arrows draining away from foundation
                 if (secondaryProg > 0) {
                     const offset = (secondaryProg * 300) % 520;
-                    ctx.fillStyle = "#cccccc";
+                    const flowAlpha = colorProg > 0 ? 0.8 * colorProg : 1.0;
                     for (let w = 0; w < 4; w++) {
                         const wx = 140 + ((offset + w * 130) % 520);
                         if (wx <= 140 + trenchW) {
                             const wy = 460 + ((wx - 140) / 520) * 30;
+                            if (colorProg > 0) {
+                                ctx.fillStyle = `rgba(0, 180, 255, ${flowAlpha * 0.4})`;
+                                ctx.beginPath();
+                                ctx.arc(wx, wy - 6, 8, 0, Math.PI * 2);
+                                ctx.fill();
+                            }
+                            ctx.fillStyle = colorProg > 0 ? `rgba(50, 230, 255, ${flowAlpha})` : "#cccccc";
                             ctx.beginPath();
                             ctx.arc(wx, wy - 6, 6, 0, Math.PI * 2);
                             ctx.fill();
@@ -1242,22 +1299,30 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Steam-Milled Balloon Framing Assembly (Solid Construction)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 110, 180, 580, 280, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 drawDioramaPlatform(ctx, 120, 450, 560, 40, 20, "#111111", "#ffffff", 0.03);
                 // 2x4 vertical studs erecting from 2x6 sill plate to double top plate during assemblyProg
                 const maxStudH = 260;
                 const studH = maxStudH * easeOutQuart(assemblyProg);
+                const lumberAlpha = 0.85 * easeOutQuart(secondaryProg);
                 for (let s = 0; s < 8; s++) {
                     const sx = 150 + s * 70;
+                    if (lumberAlpha > 0) {
+                        const grad = ctx.createLinearGradient(sx - 6, 450 - studH, sx - 6, 450);
+                        grad.addColorStop(0, `rgba(230, 160, 50, ${lumberAlpha})`);
+                        grad.addColorStop(1, `rgba(180, 110, 30, ${lumberAlpha})`);
+                        ctx.fillStyle = grad;
+                        ctx.fillRect(sx - 6, 450 - studH, 12, studH);
+                        ctx.fillStyle = "#ffffff";
+                    }
                     ctx.strokeRect(sx - 6, 450 - studH, 12, studH);
                     drawHandLine(ctx, sx, 450, sx, 450 - studH, 0.2, 2);
                     // Secondary animation: Mass-produced cut wire nails and diagonal wind-bracing
                     if (secondaryProg > 0) {
                         ctx.fillStyle = "#cccccc";
                         ctx.fillRect(sx - 2, 446, 4, 4 * secondaryProg); // Wire nail connection
-                        if (s < 7) {
+                        if (s < 7)
                             drawHandLine(ctx, sx + 6, 450 - studH * 0.6, sx + 64, 450 - studH * 0.4, 0.2, 2 * secondaryProg);
-                        }
+
                         ctx.fillStyle = "#ffffff";
                     }
                 }
@@ -1266,7 +1331,6 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Industrial Metallurgy - Lintel & Tie-Rods (Solid Construction & Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 140, 220, 520, 240, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 // Background studs in 25% opacity
                 ctx.save();
                 ctx.globalAlpha = 0.25;
@@ -1274,8 +1338,25 @@ const STAGE_HANDLERS = [
                     ctx.strokeRect(150 + s * 70 - 6, 190, 12, 260);
                 ctx.restore();
 
-                // Wrought iron tie-rods and cast-iron lintel beam sliding into place during assemblyProg
                 const spanW = 500 * easeOutQuart(assemblyProg);
+                const winProg = easeOutQuart(secondaryProg);
+
+                if (secondaryProg > 0) {
+                    const brickAlpha = 0.85 * winProg;
+                    const steelAlpha = 0.85 * winProg;
+
+                    // Kiln-Fired Red Brick Terracotta Elevations
+                    ctx.fillStyle = `rgba(180, 60, 40, ${brickAlpha})`;
+                    ctx.fillRect(150, 250, 130, 200);
+                    ctx.fillRect(520, 250, 130, 200);
+                    ctx.fillRect(280, 250, 240, 20); // spandrel
+
+                    // Metallic Steel-Blue Highlights along cast-iron lintel
+                    ctx.fillStyle = `rgba(100, 130, 160, ${steelAlpha})`;
+                    ctx.fillRect(150, 230, spanW, 20);
+                }
+
+                // Wrought iron tie-rods and cast-iron lintel beam sliding into place during assemblyProg
                 ctx.strokeStyle = "#cccccc";
                 ctx.lineWidth = 4;
                 ctx.strokeRect(150, 230, spanW, 20);
@@ -1283,13 +1364,26 @@ const STAGE_HANDLERS = [
 
                 // Expansive parlor window opening and turnbuckle tension reinforcement
                 if (secondaryProg > 0) {
-                    const winProg = easeOutQuart(secondaryProg);
+                    const steelAlpha = 0.85 * winProg;
                     drawSketchRect(ctx, 280, 270, 240, 180 * winProg);
-                    // Turnbuckle tension reinforcement vectors
+
+                    // Metallic Steel-Blue Highlights along wrought iron tie-rods
+                    ctx.strokeStyle = `rgba(100, 130, 160, ${steelAlpha})`;
+                    ctx.lineWidth = 6;
                     drawHandLine(ctx, 150, 240, 200, 240, 0.2, 3);
                     drawHandLine(ctx, 600, 240, 650, 240, 0.2, 3);
-                    // Directional natural light flooding parlor
-                    ctx.fillStyle = `rgba(255, 255, 255, ${0.5 * winProg})`;
+
+                    // Turnbuckle tension reinforcement vectors
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 2;
+                    drawHandLine(ctx, 150, 240, 200, 240, 0.2, 3);
+                    drawHandLine(ctx, 600, 240, 650, 240, 0.2, 3);
+
+                    // Directional natural light flooding parlor (Warm Golden Sunlight Rays)
+                    const sunGrad = ctx.createLinearGradient(0, 270, 0, 450);
+                    sunGrad.addColorStop(0, `rgba(255, 220, 100, ${0.55 * winProg})`);
+                    sunGrad.addColorStop(1, "rgba(255, 220, 100, 0.0)");
+                    ctx.fillStyle = sunGrad;
                     ctx.beginPath();
                     ctx.moveTo(280, 270);
                     ctx.lineTo(520, 270);
@@ -1304,8 +1398,17 @@ const STAGE_HANDLERS = [
             } else {
                 // P2: Mechanized Pump & Indoor Copper Plumbing (Infrastructure Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 250, 220, 140, 240, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 drawDioramaPlatform(ctx, 160, 360, 480, 120, 20, "#111111", "#ffffff", -0.03);
+
+                if (secondaryProg > 0) {
+                    const waterAlpha = 0.85 * easeOutQuart(secondaryProg);
+                    const aqGrad = ctx.createLinearGradient(0, 410, 0, 480);
+                    aqGrad.addColorStop(0, "rgba(0, 120, 200, 0.0)");
+                    aqGrad.addColorStop(1, `rgba(0, 120, 200, ${waterAlpha})`);
+                    ctx.fillStyle = aqGrad;
+                    ctx.fillRect(160, 410, 480, 70);
+                    ctx.fillStyle = "#ffffff";
+                }
 
                 // Deep aquifer borehole & pump mechanism assemble during assemblyProg
                 const slideIn = (1 - easeOutQuart(assemblyProg)) * 50;
@@ -1321,6 +1424,14 @@ const STAGE_HANDLERS = [
                 const pistonY = 260 + Math.sin(gearAngle1) * 25;
                 ctx.lineWidth = 3;
                 drawHandLine(ctx, 280, pistonY, 280, 440, 0.2, 2);
+
+                if (secondaryProg > 0) {
+                    const copperAlpha = 0.85 * easeOutQuart(secondaryProg);
+                    ctx.fillStyle = `rgba(210, 120, 60, ${copperAlpha})`;
+                    ctx.fillRect(340, 360, 24, 100);
+                    ctx.fillStyle = "#ffffff";
+                }
+
                 ctx.strokeRect(340, 360, 24, 100);
                 drawSteelHatch(ctx, 340, 360, 24, 100);
                 ctx.restore();
@@ -1328,12 +1439,13 @@ const STAGE_HANDLERS = [
                 // Secondary animation: Water pulses flowing upward from aquifer to indoor fixture
                 if (secondaryProg > 0) {
                     const pulseOffset = (secondaryProg * 250) % 80;
-                    ctx.fillStyle = "#cccccc";
+                    ctx.fillStyle = `rgba(50, 220, 255, ${0.9 * easeOutQuart(secondaryProg)})`;
                     for (let w = 0; w < 3; w++) {
                         const wy = 440 - ((pulseOffset + w * 30) % 80);
                         if (wy > 360)
                             ctx.fillRect(346, wy, 12, 14);
                     }
+                    ctx.fillStyle = "#ffffff";
                 }
                 drawDimensionLine(ctx, 160, 500, 640, 500, "MECHANIZED PUMP & INDOOR COPPER PLUMBING (60' AQUIFER)", "#ffffff", 6, "#ffffff");
             }
@@ -1377,19 +1489,40 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Agrarian Complex Expansion & Site Plan Layout (Solid Construction / Planning)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 130, 260, 540, 130, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
+                const { colorProg } = getLandscapeRevealTiming(phase.localProg);
+                const siteAlpha = easeOutQuart(colorProg);
                 drawDioramaPlatform(ctx, 80, 380, 640, 100, 20, "#111111", "#ffffff", 0.035);
+
+                if (siteAlpha > 0) {
+                    // Regional Land-Use Color Fills: pasture zones & central cultivated grain fields
+                    ctx.fillStyle = `rgba(40, 160, 80, ${0.65 * siteAlpha})`;
+                    ctx.fillRect(90, 390, 180, 80);
+                    ctx.fillRect(530, 390, 180, 80);
+                    ctx.fillStyle = `rgba(220, 180, 50, ${0.75 * siteAlpha})`;
+                    ctx.fillRect(280, 390, 240, 80);
+                    ctx.fillStyle = "#ffffff";
+                }
+
+                const slide = 200 * easeOutQuart(assemblyProg);
+                if (siteAlpha > 0) {
+                    // Rustic barn red/terracotta for central dwelling and assembling outbuildings
+                    ctx.fillStyle = `rgba(160, 50, 40, ${0.8 * siteAlpha})`;
+                    ctx.fillRect(350, 310, 100, 70); // Central dwelling
+                    ctx.fillRect(350 - slide, 270, 110, 110); // Timber Barn
+                    ctx.fillRect(450 + slide - 90, 310, 90, 70); // Granary
+                    ctx.fillStyle = "#ffffff";
+                }
+
                 // Central homestead dwelling
                 drawSketchRect(ctx, 350, 310, 100, 70);
                 drawMasonryHatch(ctx, 350, 310, 100, 70);
 
                 // Outbuildings (Timber Barn & Granary) assembling onto site plan during assemblyProg
-                const slide = 200 * easeOutQuart(assemblyProg);
                 drawSketchRect(ctx, 350 - slide, 270, 110, 110); // Towering Timber Frame Barn left
                 drawCrossSectionHatching(ctx, 350 - slide, 270, 110, 110, 8, Math.PI / 4, "rgba(204, 204, 204, 0.4)");
                 drawSketchRect(ctx, 450 + slide - 90, 310, 90, 70); // Specialized Granary right
                 drawCrossSectionHatching(ctx, 450 + slide - 90, 310, 90, 70, 8, -Math.PI / 4, "rgba(204, 204, 204, 0.4)");
-                
+
                 // Secondary animation: Operational courtyard circulation & site plan boundary dimensions
                 if (secondaryProg > 0) {
                     ctx.strokeStyle = "#cccccc";
@@ -1402,7 +1535,7 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Dry-Stone Boundary Walls & Wildlife Microhabitats (Solid Construction & Ecology)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 110, 380, 580, 40, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
+                const stoneAlpha = easeOutQuart(secondaryProg);
                 // Buildings in soft background
                 ctx.save();
                 ctx.globalAlpha = 0.25;
@@ -1413,10 +1546,24 @@ const STAGE_HANDLERS = [
 
                 // Miles of boundary walls constructing across pasture during assemblyProg
                 const wallLen = 560 * easeOutQuart(assemblyProg);
+                if (stoneAlpha > 0) {
+                    ctx.fillStyle = `rgba(100, 140, 100, ${0.85 * stoneAlpha})`;
+                    ctx.fillRect(120, 396, wallLen, 12);
+                    ctx.fillStyle = "#ffffff";
+                }
+
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 3;
                 drawHandLine(ctx, 120, 400, 120 + wallLen, 400, 0.5, 8);
                 for (let wx = 120; wx < 120 + wallLen; wx += 28) {
+                    if (stoneAlpha > 0) {
+                        const wallGrad = ctx.createLinearGradient(wx, 390, wx, 408);
+                        wallGrad.addColorStop(0, `rgba(100, 140, 100, ${0.85 * stoneAlpha})`);
+                        wallGrad.addColorStop(1, `rgba(130, 130, 140, ${0.85 * stoneAlpha})`);
+                        ctx.fillStyle = wallGrad;
+                        ctx.fillRect(wx, 390, 24, 18);
+                        ctx.fillStyle = "#ffffff";
+                    }
                     ctx.strokeRect(wx, 390, 24, 18);
                     drawMasonryHatch(ctx, wx, 390, 24, 18);
                 }
@@ -1430,19 +1577,29 @@ const STAGE_HANDLERS = [
                         ctx.arc(bx, by, 4, 0, Math.PI * 2);
                         ctx.fill();
                     }
+                    ctx.fillStyle = "#ffffff";
                 }
                 drawDimensionLine(ctx, 120, 450, 680, 450, "FROST-HEAVED DRY-STONE BOUNDARY WALLS & MICROHABITATS", "#ffffff", 6, "#ffffff");
 
             } else {
                 // P2: Structured Irrigation Sluice & Weir Gate Control (Hydraulic Engineering Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 170, 250, 460, 180, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
+                const waterAlpha = easeOutQuart(secondaryProg);
+                const orchardAlpha = easeOutQuart(secondaryProg);
                 drawDioramaPlatform(ctx, 140, 340, 520, 140, 20, "#111111", "#ffffff", -0.03);
 
                 // Stone-lined sluice channel & timber weir gate frame assembling during assemblyProg
                 const dropY = (1 - easeOutQuart(assemblyProg)) * 40;
                 ctx.save();
                 ctx.translate(0, -dropY);
+                if (waterAlpha > 0) {
+                    const waterGrad = ctx.createLinearGradient(180, 350, 620, 350);
+                    waterGrad.addColorStop(0, `rgba(0, 190, 210, ${0.85 * waterAlpha})`);
+                    waterGrad.addColorStop(1, `rgba(0, 140, 180, ${0.85 * waterAlpha})`);
+                    ctx.fillStyle = waterGrad;
+                    ctx.fillRect(180, 350, 440, 60);
+                    ctx.fillStyle = "#ffffff";
+                }
                 ctx.strokeRect(180, 340, 440, 80);
                 drawEarthHatch(ctx, 180, 420, 440, 60, "rgba(255, 255, 255, 0.25)");
                 ctx.restore();
@@ -1452,6 +1609,16 @@ const STAGE_HANDLERS = [
                 ctx.fillStyle = "#cccccc";
                 ctx.fillRect(380, 340 - gateLift, 24, 80);
                 ctx.strokeRect(380, 340 - gateLift, 24, 80);
+
+                if (orchardAlpha > 0) {
+                    ctx.fillStyle = `rgba(240, 180, 40, ${0.75 * orchardAlpha})`;
+                    for (const ox of [160, 240, 310, 450, 530])
+                        ctx.fillRect(ox, 320, 60, 20);
+
+                    ctx.fillStyle = "#ffffff";
+                }
+                for (const ox of [160, 240, 310, 450, 530])
+                    ctx.strokeRect(ox, 320, 60, 20);
 
                 // Hydrological water flow lines in grayscale
                 if (gateLift > 5) {
@@ -1511,12 +1678,19 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Cultivation Ceased & Architectural Weathering (Structural Degradation)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 210, 210, 380, 150, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 350, 520, 120, 20, "#111111", "#ffffff", 0.03);
                 // Building facade moves into position during assemblyProg
                 const dropY = (1 - easeOutQuart(assemblyProg)) * 30;
                 ctx.save();
                 ctx.translate(0, -dropY);
+                const weatherAlpha = Math.min(1.0, phase.localProg / 0.35);
+                if (weatherAlpha > 0) {
+                    ctx.fillStyle = `rgba(140, 80, 40, ${0.45 * weatherAlpha})`;
+                    ctx.fillRect(220, 220, 360, 22 * weatherAlpha);
+                    ctx.fillStyle = `rgba(100, 110, 120, ${0.4 * weatherAlpha})`;
+                    for (let lx = 235; lx < 570; lx += 45)
+                        ctx.fillRect(lx, 242, 14, 108 * weatherAlpha);
+                }
                 drawSketchRect(ctx, 220, 220, 360, 130);
                 drawMasonryHatch(ctx, 220, 220, 360, 130);
                 ctx.restore();
@@ -1537,13 +1711,20 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Roof Sag Deflection & Lime Mortar Leaching (Structural Failure Analysis)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 170, 250, 460, 120, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 360, 520, 120, 20, "#111111", "#ffffff", 0.035);
                 drawSketchRect(ctx, 200, 260, 400, 100);
                 drawMasonryHatch(ctx, 200, 260, 400, 100, true);
 
                 // During assemblyProg: Sagging roof ridge in quadratic curve under dead load
                 const sag = 65 * easeOutQuart(assemblyProg);
+                if (sag > 0) {
+                    ctx.fillStyle = `rgba(140, 80, 40, ${0.55 * assemblyProg})`;
+                    ctx.beginPath();
+                    ctx.moveTo(180, 260);
+                    ctx.quadraticCurveTo(400, 260 + sag, 620, 260);
+                    ctx.closePath();
+                    ctx.fill();
+                }
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 4;
                 ctx.beginPath();
@@ -1553,9 +1734,21 @@ const STAGE_HANDLERS = [
 
                 // Secondary animation: Stepped foundation fissures and lime mortar leaching
                 if (secondaryProg > 0) {
+                    const crack = 80 * secondaryProg;
+                    ctx.fillStyle = `rgba(100, 110, 120, ${0.75 * secondaryProg})`;
+                    ctx.beginPath();
+                    ctx.moveTo(380, 260);
+                    ctx.lineTo(396, 260 + crack * 0.4);
+                    ctx.lineTo(383, 260 + crack * 0.8);
+                    ctx.lineTo(395, 260 + crack);
+                    ctx.lineTo(375, 260 + crack);
+                    ctx.lineTo(367, 260 + crack * 0.8);
+                    ctx.lineTo(384, 260 + crack * 0.4);
+                    ctx.closePath();
+                    ctx.fill();
+
                     ctx.strokeStyle = "#cccccc";
                     ctx.lineWidth = 2.5;
-                    const crack = 80 * secondaryProg;
                     ctx.beginPath();
                     ctx.moveTo(380, 260);
                     ctx.lineTo(390, 260 + crack * 0.4);
@@ -1568,15 +1761,23 @@ const STAGE_HANDLERS = [
             } else {
                 // P2: Ecological Succession & Botanical Reclamation (Ecology & Overgrowth Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 190, 210, 420, 160, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 360, 520, 120, 20, "#111111", "#ffffff", -0.03);
                 drawSketchRect(ctx, 200, 260, 400, 100);
                 drawMasonryHatch(ctx, 200, 260, 400, 100, true);
 
                 // During assemblyProg: roots establish in foundation beds; during secondaryProg: vines creep upward
-                ctx.strokeStyle = "#cccccc";
-                ctx.lineWidth = 3.5;
                 const progressFactor = assemblyProg * 0.3 + secondaryProg * 0.7;
+                let vineStyle = "#cccccc";
+                let leafStyle = "#ffffff";
+                if (progressFactor > 0) {
+                    const ivyGrad = ctx.createLinearGradient(0, 360, 0, 180);
+                    ivyGrad.addColorStop(0, `rgba(40, 180, 60, ${0.85 * progressFactor})`);
+                    ivyGrad.addColorStop(1, `rgba(100, 220, 100, ${0.95 * progressFactor})`);
+                    vineStyle = ivyGrad;
+                    leafStyle = ivyGrad;
+                }
+                ctx.strokeStyle = vineStyle;
+                ctx.lineWidth = 3.5;
                 for (let v = 0; v < 6; v++) {
                     const startX = 220 + v * 65;
                     const maxH = 140 + (v % 3) * 30;
@@ -1586,7 +1787,18 @@ const STAGE_HANDLERS = [
                     ctx.bezierCurveTo(startX - 30, 360 - currH * 0.4, startX + 30, 360 - currH * 0.7, startX - 15, 360 - currH);
                     ctx.stroke();
 
-                    if (currH > 30 && secondaryProg > 0) {
+                    if (currH > 30 && progressFactor > 0) {
+                        ctx.fillStyle = leafStyle;
+                        ctx.beginPath();
+                        ctx.arc(startX - 15, 360 - currH, 6, 0, Math.PI * 2);
+                        ctx.arc(startX - 8, 360 - currH + 6, 5, 0, Math.PI * 2);
+                        ctx.arc(startX - 22, 360 - currH + 5, 5, 0, Math.PI * 2);
+                        if (currH > 70) {
+                            ctx.arc(startX + 12, 360 - currH * 0.5, 5, 0, Math.PI * 2);
+                            ctx.arc(startX + 6, 360 - currH * 0.5 - 5, 4, 0, Math.PI * 2);
+                        }
+                        ctx.fill();
+                    } else if (currH > 30 && secondaryProg > 0) {
                         ctx.fillStyle = "#ffffff";
                         ctx.beginPath();
                         ctx.arc(startX - 15, 360 - currH, 6, 0, Math.PI * 2);
@@ -1654,35 +1866,40 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Technical Blueprint Overlays & Survey Assessment (Diagnostics Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 170, 230, 460, 220, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 360, 520, 100, 20, "#111111", "#ffffff", 0.035);
                 drawSketchRect(ctx, 200, 260, 400, 100);
 
                 // During assemblyProg: Crisp technical blueprint overlay aligning over historic shell
                 const overlayH = 200 * easeOutQuart(assemblyProg);
-                ctx.fillStyle = "rgba(204, 204, 204, 0.25)";
+                if (assemblyProg > 0)
+                    ctx.fillStyle = `rgba(0, 255, 255, ${0.12 * assemblyProg})`;
+                else
+                    ctx.fillStyle = "rgba(204, 204, 204, 0.25)";
                 ctx.fillRect(180, 240, 440, overlayH);
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 2;
                 ctx.strokeRect(180, 240, 440, overlayH);
 
-                // Secondary animation: Pulsing laser transit elevation reference datums in grayscale
+                // Secondary animation: Pulsing laser transit elevation reference datums in grayscale / neon cyan
                 if (secondaryProg > 0) {
-                    ctx.strokeStyle = "#cccccc";
-                    ctx.lineWidth = 1 + 1.5 * secondaryProg;
+                    ctx.save();
+                    ctx.strokeStyle = `rgba(0, 255, 255, ${0.9 * secondaryProg})`;
+                    ctx.shadowColor = `rgba(0, 255, 255, ${0.9 * secondaryProg})`;
+                    ctx.shadowBlur = 14;
+                    ctx.lineWidth = 2 + 1.5 * secondaryProg;
                     ctx.setLineDash([6, 4]);
                     ctx.beginPath();
                     ctx.moveTo(100, 310);
                     ctx.lineTo(100 + 600 * secondaryProg, 310);
                     ctx.stroke();
                     ctx.setLineDash([]);
+                    ctx.restore();
                 }
                 drawDimensionLine(ctx, 180, 460, 620, 460, "CRISP TECHNICAL BLUEPRINT OVERLAY & LASER TRANSIT DATUM (REF A-4)", "#ffffff", 6, "#ffffff");
 
             } else if (phase.idx === 1) {
                 // P1: Hydraulic Jacking & Steel Lintel / C-Channel Insertion (Solid Construction & Engineering)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 170, 250, 460, 140, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 380, 520, 80, 20, "#111111", "#ffffff", 0.03);
 
                 // During assemblyProg: Sagging joists physically lifting back to horizontal level via hydraulic jacks
@@ -1695,8 +1912,13 @@ const STAGE_HANDLERS = [
                 ctx.stroke();
 
                 // 12-ton hydraulic jack cylinders extending upward during assemblyProg
+                const jackAlpha = assemblyProg;
                 const jackH = 40 + (35 - initialSag);
                 for (const jx of [280, 520]) {
+                    if (jackAlpha > 0) {
+                        ctx.fillStyle = `rgba(80, 120, 160, ${0.8 * jackAlpha})`;
+                        ctx.fillRect(jx - 18, 380 - jackH, 36, jackH);
+                    }
                     ctx.strokeRect(jx - 18, 380 - jackH, 36, jackH);
                     drawSteelHatch(ctx, jx - 18, 380 - jackH, 36, jackH);
                 }
@@ -1704,23 +1926,40 @@ const STAGE_HANDLERS = [
                 // Secondary animation: Hidden steel W12x50 I-Beam lintels & C-channel grids locking in
                 if (secondaryProg > 0) {
                     const steelW = 440 * easeOutQuart(secondaryProg);
+                    ctx.fillStyle = `rgba(80, 120, 160, ${0.8 * secondaryProg})`;
+                    ctx.fillRect(180, 260, steelW, 20);
                     ctx.strokeStyle = "#cccccc";
                     ctx.lineWidth = 3;
                     ctx.strokeRect(180, 260, steelW, 20);
                     drawSteelHatch(ctx, 180, 260, steelW, 20);
+
+                    ctx.save();
+                    ctx.strokeStyle = `rgba(0, 255, 255, ${0.7 * secondaryProg})`;
+                    ctx.shadowColor = `rgba(0, 255, 255, ${0.7 * secondaryProg})`;
+                    ctx.shadowBlur = 10;
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([5, 5]);
+                    ctx.beginPath();
+                    ctx.moveTo(140, 340);
+                    ctx.lineTo(140 + 520 * secondaryProg, 340);
+                    ctx.stroke();
+                    ctx.restore();
                 }
                 drawDimensionLine(ctx, 180, 480, 620, 480, "12-TON HYDRAULIC JACK JOIST REALIGNMENT & STEEL W12x50 LINTEL", "#ffffff", 6, "#ffffff");
 
             } else {
                 // P2: Epoxy Resin Splicing & Reclaimed Hardwood Joinery (Solid Construction & Code Compliance)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 210, 270, 380, 100, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
                 drawDioramaPlatform(ctx, 160, 360, 480, 100, 20, "#111111", "#ffffff", -0.035);
 
                 // Macro cutaway of timber sill with rotted section removed; hardwood splice block inserting
                 const dropY = (1 - easeOutQuart(assemblyProg)) * 30;
                 ctx.save();
                 ctx.translate(0, -dropY);
+                if (assemblyProg > 0) {
+                    ctx.fillStyle = `rgba(240, 180, 40, ${0.25 * assemblyProg})`;
+                    ctx.fillRect(220, 280, 360, 80);
+                }
                 ctx.strokeRect(220, 280, 360, 80);
                 drawMasonryHatch(ctx, 220, 280, 200, 80); // Existing timber left
                 ctx.restore();
@@ -1728,7 +1967,10 @@ const STAGE_HANDLERS = [
                 // Secondary animation: Liquid epoxy resin injection bonding the joint under pressure
                 if (secondaryProg > 0) {
                     const fillW = 160 * easeOutQuart(secondaryProg);
-                    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+                    const epoxyGrad = ctx.createLinearGradient(420, 280, 420 + fillW, 280);
+                    epoxyGrad.addColorStop(0, `rgba(240, 180, 40, ${0.85 * secondaryProg})`);
+                    epoxyGrad.addColorStop(1, `rgba(200, 130, 20, ${0.9 * secondaryProg})`);
+                    ctx.fillStyle = epoxyGrad;
                     ctx.fillRect(420, 280, fillW, 80);
                     ctx.strokeRect(420, 280, fillW, 80);
                     drawCrossSectionHatching(ctx, 420 + fillW - 40, 280, Math.min(40, fillW), 80, 6, Math.PI / 4, "#cccccc");
@@ -1781,7 +2023,6 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Closed-Cell Thermal Envelope (High-Performance Insulation Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 170, 210, 440, 160, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 360, 520, 100, 20, "#111111", "#ffffff", 0.035);
 
                 // Wall stud framing cavities move into place during assemblyProg
@@ -1799,8 +2040,11 @@ const STAGE_HANDLERS = [
                     const foamH = 140 * easeOutQuart(secondaryProg);
                     for (let c = 0; c < 5; c++) {
                         const cx = 180 + c * 90;
-                        if (foamH > 5)
+                        if (foamH > 5) {
+                            ctx.fillStyle = `rgba(245, 200, 60, ${0.85 * secondaryProg})`;
+                            ctx.fillRect(cx, 220 + (140 - foamH), 60, foamH);
                             drawInsulationHatch(ctx, cx, 220 + (140 - foamH), 60, foamH, secondaryProg, "#cccccc");
+                        }
                     }
                 }
                 // Grayscale heat-loss arrows bouncing back from airtight barrier
@@ -1817,7 +2061,6 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Triple-Pane Low-E Argon Glazing (Fenestration Engineering Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 320, 210, 200, 180, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 drawDioramaPlatform(ctx, 160, 380, 480, 80, 20, "#111111", "#ffffff", 0.03);
 
                 // During assemblyProg: Old window sash sliding out left, new high-performance window sliding in right
@@ -1828,31 +2071,67 @@ const STAGE_HANDLERS = [
                 ctx.restore();
 
                 const slideIn = 200 * (1 - easeOutQuart(assemblyProg));
+                const winX = 330 + slideIn;
+                const winY = 220;
+                const winW = 180;
+                const winH = 160;
+
+                const argonAlpha = secondaryProg;
+                if (argonAlpha > 0) {
+                    const centerX = winX + winW / 2;
+                    const centerY = winY + winH / 2;
+                    const argonGrad = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, Math.max(winW, winH) * 0.6);
+                    argonGrad.addColorStop(0, `rgba(50, 200, 255, ${0.75 * argonAlpha})`);
+                    argonGrad.addColorStop(1, `rgba(50, 200, 255, ${0.15 * argonAlpha})`);
+                    ctx.fillStyle = argonGrad;
+                    ctx.fillRect(winX + 2, winY + 2, winW - 4, winH - 4);
+                }
+
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 3;
-                ctx.strokeRect(330 + slideIn, 220, 180, 160);
+                ctx.strokeRect(winX, winY, winW, winH);
                 for (let gL = 1; gL <= 2; gL++) {
                     ctx.beginPath();
-                    ctx.moveTo(330 + slideIn + gL * 60, 220);
-                    ctx.lineTo(330 + slideIn + gL * 60, 380);
+                    ctx.moveTo(winX + gL * 60, winY);
+                    ctx.lineTo(winX + gL * 60, winY + winH);
                     ctx.stroke();
                 }
 
-                // Secondary animation: Argon gas insulation barrier illuminating between triple panes
+                // Blocking external red infrared heat vectors that bounce away
                 if (secondaryProg > 0) {
-                    ctx.fillStyle = `rgba(255, 255, 255, ${0.3 * secondaryProg})`;
-                    ctx.fillRect(330 + slideIn + 5, 222, 170, 156);
+                    ctx.strokeStyle = `rgba(255, 80, 50, ${0.85 * secondaryProg})`;
+                    ctx.lineWidth = 2.5;
+                    for (let a = 0; a < 3; a++) {
+                        const ay = 250 + a * 35;
+                        drawHandLine(ctx, 580, ay, 515, ay, 0.2, 2);
+                        if (secondaryProg > 0.3)
+                            drawHandLine(ctx, 515, ay, 560, ay - 25, 0.2, 2);
+
+                    }
                 }
                 drawDimensionLine(ctx, 160, 480, 640, 480, "TRIPLE-PANE LOW-E ARGON GLAZING (U-0.12 / ZERO COLD BRIDGES)", "#ffffff", 6, "#ffffff");
 
             } else {
                 // P2: Geothermal Bedrock Loops & Rooftop Solar PV (Renewable Energy Engineering)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 230, 150, 340, 320, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 280, 520, 60, 20, "#111111", "#ffffff", -0.035);
 
                 // Subterranean 400-ft geothermal bore loop moving into bedrock during assemblyProg
                 const boreDepth = 180 * easeOutQuart(assemblyProg);
+                const geoAlpha = assemblyProg;
+                if (geoAlpha > 0 && boreDepth > 5) {
+                    const geoGrad = ctx.createLinearGradient(0, 280, 0, 280 + boreDepth);
+                    geoGrad.addColorStop(0, `rgba(0, 180, 180, ${0.3 * geoAlpha})`);
+                    geoGrad.addColorStop(1, `rgba(0, 180, 180, ${0.85 * geoAlpha})`);
+                    ctx.fillStyle = geoGrad;
+                    ctx.beginPath();
+                    ctx.moveTo(380, 280);
+                    ctx.lineTo(380, 280 + boreDepth);
+                    ctx.arc(395, 280 + boreDepth, 15, Math.PI, 0, true);
+                    ctx.lineTo(410, 280);
+                    ctx.closePath();
+                    ctx.fill();
+                }
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 3;
                 ctx.beginPath();
@@ -1863,17 +2142,25 @@ const STAGE_HANDLERS = [
                 ctx.stroke();
 
                 // Secondary animation: Circulating heat-exchange fluid particles & solar PV array tilting
-                if (secondaryProg > 0) {
+                if (secondaryProg > 0 && boreDepth > 10) {
                     const offset = (secondaryProg * 400) % (boreDepth * 2 + 40);
-                    ctx.fillStyle = "#666666"; // Down
+                    ctx.save();
+                    ctx.fillStyle = "rgba(0, 220, 255, 0.95)";
+                    ctx.shadowColor = "rgba(0, 255, 255, 0.8)";
+                    ctx.shadowBlur = 8;
                     ctx.fillRect(377, 280 + Math.min(boreDepth, offset), 6, 12);
-                    ctx.fillStyle = "#ffffff"; // Up
+                    ctx.fillStyle = "rgba(220, 255, 255, 0.95)";
+                    ctx.shadowColor = "rgba(100, 255, 255, 0.9)";
+                    ctx.shadowBlur = 10;
                     ctx.fillRect(407, 280 + boreDepth - Math.min(boreDepth, Math.max(0, offset - boreDepth)), 6, 12);
+                    ctx.restore();
                 }
 
                 // Solar PV array tilting on roof
                 drawPopUpProp(ctx, 240, 160, 320, 60, assemblyProg * 0.3 + secondaryProg * 0.7, (c, w, h, eased) => {
-                    c.strokeStyle = "#ffffff";
+                    c.fillStyle = `rgba(20, 80, 180, ${0.85 * eased})`;
+                    c.fillRect(0, 0, w, h);
+                    c.strokeStyle = `rgba(255, 200, 50, ${0.9 * eased})`;
                     c.lineWidth = 2.5;
                     c.strokeRect(0, 0, w, h);
                     for (let pv = 40; pv < w; pv += 40) {
@@ -1891,127 +2178,280 @@ const STAGE_HANDLERS = [
         }
     },
 
-    // Stage 7: Present - Modern Design (Minimalist Synthesis, Cantilever Steel & Glass, Riparian Landscape)
+    // Stage 7: Present Modern Design
     {
-        initSVG: (g, width, height) => {
-            addSVGImage(g, IMAGE_SOURCES.topo2, 0, 0, width, height, 0.25, "screen");
-            addSVGImage(g, IMAGE_SOURCES.grid, 0, 0, width, height, 0.2, "screen");
-
-            addSVGCallout(g, 240, 220, 180, 280, "PRESERVED 1780 FIELDSTONE HEARTH", "TACTILE HISTORIC MONUMENT IN LIGHT", "stage7-p0-1", 0);
-            addSVGCallout(g, 540, 260, 480, 320, "HAND-HEWN TIMBER POSTS", "CENTURIES-OLD CRAFTSMANSHIP", "stage7-p0-2", 0);
-
-            addSVGCallout(g, 240, 180, 180, 240, "CANTILEVERED BLACK STEEL I-BEAM", "W18x86 STRUCTURAL TENSION FLANGE", "stage7-p1-1", 1);
-            addSVGCallout(g, 540, 260, 480, 320, "FRAMELESS GLASS CURTAIN WALL", "24'-0'' CANTILEVER SPAN CURTAIN", "stage7-p1-2", 1);
-            addSVGStressArrow(g, 360, 340, 360, 240, "SUPPORT REACTION: 45 KIPS", "stage7-p1-arr", 1);
-
-            addSVGCallout(g, 240, 200, 180, 260, "3,800 SQ. FT. SYNTHESIZED RESIDENCE", "MINIMALIST ARCHITECTURAL SYNTHESIS", "stage7-p2-1", 2);
-            addSVGCallout(g, 540, 280, 480, 340, "RESTORED RIPARIAN WETLANDS", "NATIVE MEADOW GRASSES & RIPARIAN SITE", "stage7-p2-2", 2);
-
-            addSVGTitleBlock(g, "MODERNIST SYNTHESIS", "A-500", "PRESENT", "SCALE: 1/8\" = 1'-0\"", "PRESENT");
-        },
-        updateSVG: (g, prog, width, height, phase) => {
-            // Handled automatically by setCalloutPhaseVisibility
-        },
+        year: 2026,
         renderCanvas: (ctx, g, prog, width, height, phase) => {
             ctx.fillStyle = "#000000";
             ctx.fillRect(0, 0, width, height);
-            drawImageIfLoaded(ctx, getOrLoadImage("topo2"), 0, 0, width, height, 0.25, "screen");
-            drawImageIfLoaded(ctx, getOrLoadImage("grid"), 0, 0, width, height, 0.2, "screen");
 
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
-            for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.15, 2);
-            for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.15, 2);
+            const planX = 100, planY = 160, planW = 600, planH = 340;
+            const livingX = planX + 160, livingW = planW - 160;
+            const garageW = 160;
 
-            if (phase.idx === 0) {
-                // P0: Minimalist Architectural Synthesis (Historic Hearth Monument in Light)
-                const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 150, 210, 300, 160, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
-                drawDioramaPlatform(ctx, 120, 360, 560, 100, 20, "#111111", "#ffffff", 0.035);
+            drawImageIfLoaded(ctx, getOrLoadImage("grid"), planX, planY, planW, planH, 0.2, "screen");
 
-                // During assemblyProg: Restored 1780 hearth and timbers sliding into gallery spotlight
-                const slide = 150 * easeOutQuart(assemblyProg);
-                drawSketchRect(ctx, 160 + slide, 220, 140, 140);
-                drawMasonryHatch(ctx, 160 + slide, 220, 140, 140, true);
+            if (phase.idx >= 0) {
+                const p0Prog = phase.idx === 0 ? phase.localProg : 1.0;
+                const { secondaryProg } = getPhaseTiming(p0Prog);
 
-                // Secondary animation: Gallery spotlight cone from above in grayscale
-                if (secondaryProg > 0) {
-                    ctx.fillStyle = `rgba(255, 255, 255, ${0.7 * secondaryProg})`;
-                    ctx.beginPath();
-                    ctx.moveTo(230 + slide, 100);
-                    ctx.lineTo(130 + slide, 360);
-                    ctx.lineTo(330 + slide, 360);
-                    ctx.closePath();
-                    ctx.fill();
+                // 1 & 2. Size / Footprint & EV Bay - Procedural Highlights
+                if (p0Prog > 0) {
+                    ctx.save();
+                    // Aspect 1: Living wing perimeter slate/emerald fill (3,800 sq. ft. area)
+                    ctx.fillStyle = `rgba(40, 140, 90, ${0.25 * p0Prog})`;
+                    ctx.fillRect(livingX, planY, livingW, planH);
+                    // Aspect 1: Historic masonry hearth core warm terracotta fill
+                    const coreX_fill = livingX + 60, coreY_fill = planY + 90, coreW_fill = 70, coreH_fill = 60;
+                    ctx.fillStyle = `rgba(180, 70, 40, ${0.55 * p0Prog})`;
+                    ctx.fillRect(coreX_fill, coreY_fill, coreW_fill, coreH_fill);
+                    // Aspect 2: 12 kWh Battery storage stack energy amber fill
+                    const batX_fill = planX + 16, batY_fill = planY + 30, batW_fill = 26, batH_fill = 90;
+                    ctx.fillStyle = `rgba(230, 160, 40, ${0.45 * p0Prog})`;
+                    ctx.fillRect(batX_fill, batY_fill, batW_fill, batH_fill);
+                    // Aspect 2: Level 2 EV charging wall-box electric cyan fill
+                    const evX_fill = planX + 55, evY_fill = planY + 16, evW_fill = 34, evH_fill = 20;
+                    ctx.fillStyle = `rgba(0, 220, 255, ${0.45 * p0Prog})`;
+                    ctx.fillRect(evX_fill, evY_fill, evW_fill, evH_fill);
+                    ctx.restore();
                 }
-                drawDimensionLine(ctx, 120, 480, 680, 480, "HISTORIC 1780 FIELDSTONE HEARTH & TIMBERS AS TACTILE MONUMENTS", "#ffffff", 6, "#ffffff");
 
-            } else if (phase.idx === 1) {
-                // P1: Cantilevered Black Steel & Frameless Glass (Structural Engineering Information)
-                const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 250, 230, 380, 160, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
-                drawDioramaPlatform(ctx, 120, 380, 560, 80, 20, "#111111", "#ffffff", 0.03);
-                drawSketchRect(ctx, 140, 240, 120, 140); // Core masonry left
-
-                // During assemblyProg: Black steel W18x86 I-beam cantilevering horizontally into open space
-                const spanW = 360 * easeOutQuart(assemblyProg);
-                ctx.fillStyle = "#ffffff";
-                ctx.fillRect(260, 240, spanW, 26);
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 2.5;
-                ctx.strokeRect(260, 240, spanW, 26);
-                drawSteelHatch(ctx, 260, 240, spanW, 26);
-
-                // Secondary animation: Frameless glass curtain wall panels descending from cantilever
-                if (secondaryProg > 0) {
-                    const glassH = 114 * easeOutQuart(secondaryProg);
-                    ctx.strokeStyle = "rgba(255, 255, 255, 0.65)";
-                    ctx.lineWidth = 1.5;
-                    ctx.strokeRect(280, 266, spanW - 30, glassH);
-                    for (let gx = 340; gx < 280 + spanW - 30; gx += 60) {
-                        ctx.beginPath();
-                        ctx.moveTo(gx, 266);
-                        ctx.lineTo(gx, 266 + glassH);
-                        ctx.stroke();
-                    }
-                }
-                drawDimensionLine(ctx, 260, 480, 260 + spanW, 480, "24'-0\" CANTILEVER SPAN BLACK STEEL & FRAMELESS GLASS CURTAIN", "#ffffff", 6, "#ffffff");
-
-            } else {
-                // P2: Living Architecture in Riparian Landscape (Site Synthesis Information)
-                const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawTailoredWatercolor(ctx, 150, 250, 460, 160, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
-                drawDioramaPlatform(ctx, 100, 360, 600, 100, 20, "#111111", "#ffffff", -0.035);
-
-                // During assemblyProg: Full residence moves into wide isometric site synthesis view
-                const dropY = (1 - easeOutQuart(assemblyProg)) * 30;
+                // Architectural Floor Plan Perimeter (74'-0" x 52'-0")
                 ctx.save();
-                ctx.translate(0, -dropY);
-                drawSketchRect(ctx, 160, 260, 120, 100); // Historic wing
-                drawMasonryHatch(ctx, 160, 260, 120, 100, true);
-                ctx.fillRect(280, 270, 320, 22); // Cantilever wing
-                drawSteelHatch(ctx, 280, 270, 320, 22);
-                ctx.strokeRect(300, 292, 280, 68); // Glass wall
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 3;
+                ctx.strokeRect(planX, planY, planW, planH);
+                ctx.lineWidth = 1.5;
+                ctx.strokeRect(planX + 12, planY + 12, planW - 24, planH - 24);
+                ctx.beginPath();
+                ctx.moveTo(planX + garageW, planY);
+                ctx.lineTo(planX + garageW, planY + planH);
+                ctx.moveTo(planX + garageW + 8, planY + 12);
+                ctx.lineTo(planX + garageW + 8, planY + planH - 12);
+                ctx.stroke();
                 ctx.restore();
 
-                // Secondary animation: Animated native meadow grasses & riparian wetland currents in grayscale
-                if (secondaryProg > 0) {
-                    ctx.strokeStyle = "#cccccc";
-                    ctx.lineWidth = 2 * secondaryProg;
-                    const ripple = (secondaryProg * 300) % 50;
-                    for (let r = 0; r < 4; r++) {
-                        const ry = 400 + r * 15;
-                        drawHandLine(ctx, 120, ry, 300, ry, 0.3, 2);
-                        drawHandLine(ctx, 350 + ripple, ry, 680, ry, 0.5, 4);
-                    }
+                // Historic Masonry Core Hatching
+                const coreX = livingX + 60, coreY = planY + 90, coreW = 70, coreH = 60;
+                ctx.save();
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2.5;
+                ctx.strokeRect(coreX, coreY, coreW, coreH);
+                drawMasonryHatch(ctx, coreX, coreY, coreW, coreH, true);
+                ctx.restore();
+
+                // Integrated West-wing Garage Bay: Level 2 EV Charger & 12 kWh Battery Storage Stack
+                ctx.save();
+                const batX = planX + 16, batY = planY + 30, batW = 26, batH = 90;
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(batX, batY, batW, batH);
+                drawSteelHatch(ctx, batX, batY, batW, batH);
+                for (let b = 1; b < 4; b++) {
+                    ctx.beginPath();
+                    ctx.moveTo(batX, batY + b * 22.5);
+                    ctx.lineTo(batX + batW, batY + b * 22.5);
+                    ctx.stroke();
                 }
-                drawDimensionLine(ctx, 100, 490, 700, 490, "3,800 SQ. FT. LIVING ARCHITECTURE SYNTHESIS // 1780 – PRESENT", "#ffffff", 6, "#ffffff");
+
+                const evX = planX + 55, evY = planY + 16, evW = 34, evH = 20;
+                ctx.strokeRect(evX, evY, evW, evH);
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 9px monospace";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("EV-L2", evX + evW / 2, evY + evH / 2);
+
+                if (secondaryProg > 0 || phase.idx > 0) {
+                    const carProg = phase.idx === 0 ? secondaryProg : 1.0;
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.7 * carProg})`;
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([6, 4]);
+                    ctx.strokeRect(planX + 28, planY + 80, 64, 140);
+                    ctx.setLineDash([]);
+                    drawHandLine(ctx, evX + evW / 2, evY + evH, planX + 60, planY + 80, 0.3, 3);
+                }
+                ctx.restore();
+
+                drawDimensionLine(ctx, planX, planY - 18, planX + planW, planY - 18, "74'-0\" (OPEN FLOOR PLAN PERIMETER - 3,800 SQ. FT.)", "#ffffff", 6, "#000000");
+                drawDimensionLine(ctx, planX + planW + 18, planY, planX + planW + 18, planY + planH, "52'-0\"", "#ffffff", 6, "#000000");
+                drawDimensionLine(ctx, planX + 16, planY + planH - 35, planX + garageW - 10, planY + planH - 35, "12 kWh BATTERY & EV BAY", "#ffffff", 5, "#000000");
             }
 
-            const titles = ["HISTORIC HEARTH MONUMENT", "CANTILEVER STEEL & GLASS", "RIPARIAN SITE SYNTHESIS"];
-            drawTitleBlock(ctx, width, height, titles[phase.idx], `A-500.${phase.idx + 1}`, "1/8\" = 1'-0\"", "PRESENT", "#ffffff", "#0a0a0a");
+            if (phase.idx >= 1) {
+                const p1Prog = phase.idx === 1 ? phase.localProg : 1.0;
+
+                // 3 & 4. Roof Overhang & Envelope - Procedural Highlights
+                const overhangX = planX - 18, overhangY = planY - 18, overhangW = planW + 36, overhangH = planH + 36;
+                if (p1Prog > 0) {
+                    ctx.save();
+                    const pvX_fill = livingX + 20, pvY_fill = planY + 160, pvW_fill = livingW - 40, pvH_fill = 75;
+                    // Aspect 3: Radiant solar cell sapphire fill across panel array
+                    ctx.fillStyle = `rgba(20, 90, 190, ${0.5 * p1Prog})`;
+                    ctx.fillRect(pvX_fill, pvY_fill, pvW_fill, pvH_fill);
+                    // Aspect 3: Glowing golden busbars along cantilever overhang margin
+                    ctx.fillStyle = `rgba(255, 210, 50, ${0.25 * p1Prog})`;
+                    ctx.fillRect(overhangX, overhangY, overhangW, 18);
+                    ctx.fillRect(overhangX, overhangY + overhangH - 18, overhangW, 18);
+                    // Aspect 4: Insulating envelope golden-yellow cavity fill along north overhang core
+                    ctx.fillStyle = `rgba(240, 190, 50, ${0.45 * p1Prog})`;
+                    ctx.fillRect(livingX, overhangY, livingW, 16);
+                    ctx.restore();
+                }
+
+                ctx.save();
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2;
+                ctx.setLineDash([8, 6]);
+                ctx.strokeRect(overhangX, overhangY, overhangW, overhangH);
+                ctx.setLineDash([]);
+
+                const pvX = livingX + 20, pvY = planY + 160, pvW = livingW - 40, pvH = 75;
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 1.8;
+                ctx.strokeRect(pvX, pvY, pvW, pvH);
+                ctx.lineWidth = 1;
+                for (let px = pvX + 35; px < pvX + pvW; px += 35) {
+                    ctx.beginPath();
+                    ctx.moveTo(px, pvY);
+                    ctx.lineTo(px, pvY + pvH);
+                    ctx.stroke();
+                }
+                for (let py = pvY + 25; py < pvY + pvH; py += 25) {
+                    ctx.beginPath();
+                    ctx.moveTo(pvX, py);
+                    ctx.lineTo(pvX + pvW, py);
+                    ctx.stroke();
+                }
+
+                drawInsulationHatch(ctx, livingX, overhangY, livingW, 16, p1Prog, "#ffffff");
+
+                if (phase.idx > 1 || p1Prog > 0.3) {
+                    const envProg = phase.idx === 1 ? p1Prog : 1.0;
+                    drawInsulationHatch(ctx, planX + 2, planY + 2, planW - 4, 10, envProg, "rgba(204, 204, 204, 0.8)");
+                    drawInsulationHatch(ctx, planX + 2, planY + planH - 12, planW - 4, 10, envProg, "rgba(204, 204, 204, 0.8)");
+                }
+
+                const glazeX = livingX + 30, glazeY = planY + planH - 6, glazeW = livingW - 60, glazeH = 12;
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(glazeX, glazeY - 6, glazeW, glazeH);
+                ctx.lineWidth = 1.2;
+                for (let gP = 0; gP < 3; gP++) {
+                    ctx.beginPath();
+                    ctx.moveTo(glazeX, glazeY - 3 + gP * 3);
+                    ctx.lineTo(glazeX + glazeW, glazeY - 3 + gP * 3);
+                    ctx.stroke();
+                }
+                ctx.fillStyle = `rgba(60, 210, 255, ${0.55 * p1Prog})`;
+                ctx.fillRect(glazeX, glazeY - 4, glazeW, 8);
+                ctx.restore();
+
+                drawDimensionLine(ctx, pvX, pvY - 14, pvX + pvW, pvY - 14, "ROOFTOP SOLAR PV ARRAY & R-60 INSULATION CORE", "#ffffff", 5, "#000000");
+                drawDimensionLine(ctx, glazeX, glazeY + 22, glazeX + glazeW, glazeY + 22, "FRAMELESS TRIPLE-PANE LOW-E ARGON GLAZING (U-0.12)", "#ffffff", 5, "#000000");
+            }
+
+            if (phase.idx >= 2) {
+                const p2Prog = phase.localProg;
+
+                // 5. Geothermal Hydronic & HRV Core - Procedural Highlights
+                const radiantX = livingX + 15, radiantY = planY + 30, radiantW = livingW - 30, radiantH = planH - 60;
+                const hrvX = planX + 25, hrvY = planY + 230, hrvW = 75, hrvH = 55;
+                if (p2Prog > 0) {
+                    ctx.save();
+                    // Aspect 5: Radiant thermal convection linear gradient (Red inlet to Blue outlet)
+                    const slabGrad = ctx.createLinearGradient(radiantX, radiantY, radiantX + radiantW, radiantY + radiantH);
+                    slabGrad.addColorStop(0, `rgba(220, 60, 60, ${0.45 * p2Prog})`);
+                    slabGrad.addColorStop(1, `rgba(40, 140, 220, ${0.45 * p2Prog})`);
+                    ctx.fillStyle = slabGrad;
+                    ctx.fillRect(radiantX, radiantY, radiantW, radiantH);
+
+                    // Aspect 5: HRV air recovery core dual-zone green/amber fill
+                    ctx.fillStyle = `rgba(40, 200, 150, ${0.35 * p2Prog})`;
+                    ctx.fillRect(hrvX, hrvY, hrvW / 2, hrvH);
+                    ctx.fillStyle = `rgba(230, 140, 50, ${0.35 * p2Prog})`;
+                    ctx.fillRect(hrvX + hrvW / 2, hrvY, hrvW / 2, hrvH);
+                    ctx.restore();
+                }
+
+                ctx.save();
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                const loopSpacing = 20;
+                const loops = Math.floor(radiantH / loopSpacing);
+                for (let l = 0; l <= loops; l++) {
+                    const ly = radiantY + l * loopSpacing;
+                    ctx.moveTo(radiantX, ly);
+                    ctx.lineTo(radiantX + radiantW, ly);
+                }
+                ctx.stroke();
+                ctx.lineWidth = 1;
+                for (let l = 0; l < loops; l++) {
+                    const ly1 = radiantY + l * loopSpacing, ly2 = radiantY + (l + 1) * loopSpacing;
+                    ctx.beginPath();
+                    if (l % 2 === 0)
+                        ctx.arc(radiantX + radiantW, (ly1 + ly2) / 2, loopSpacing / 2, -Math.PI / 2, Math.PI / 2);
+                    else
+                        ctx.arc(radiantX, (ly1 + ly2) / 2, loopSpacing / 2, Math.PI / 2, -Math.PI / 2);
+                    ctx.stroke();
+                }
+
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2.5;
+                ctx.strokeRect(hrvX, hrvY, hrvW, hrvH);
+                ctx.lineWidth = 1.5;
+                ctx.strokeRect(hrvX + 6, hrvY + 6, hrvW - 12, hrvH - 12);
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 10px monospace";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("HRV-CORE", hrvX + hrvW / 2, hrvY + hrvH / 2);
+
+                ctx.save();
+                ctx.strokeStyle = `rgba(40, 200, 150, ${0.9 * p2Prog})`; // Fresh intake emerald/cyan
+                ctx.lineWidth = 2.2;
+                drawHandLine(ctx, hrvX - 50, hrvY + 18, hrvX, hrvY + 18, 0.2, 2);
+                ctx.beginPath();
+                ctx.moveTo(hrvX - 8, hrvY + 13);
+                ctx.lineTo(hrvX, hrvY + 18);
+                ctx.lineTo(hrvX - 8, hrvY + 23);
+                ctx.stroke();
+
+                ctx.strokeStyle = `rgba(230, 140, 50, ${0.9 * p2Prog})`; // Warm exhaust amber
+                drawHandLine(ctx, hrvX, hrvY + 38, hrvX - 50, hrvY + 38, 0.2, 2);
+                ctx.beginPath();
+                ctx.moveTo(hrvX - 42, hrvY + 33);
+                ctx.lineTo(hrvX - 50, hrvY + 38);
+                ctx.lineTo(hrvX - 42, hrvY + 43);
+                ctx.stroke();
+
+                ctx.strokeStyle = `rgba(40, 140, 220, ${0.9 * p2Prog})`; // Hydronic exchange blue
+                drawHandLine(ctx, hrvX + hrvW, hrvY + 28, radiantX, hrvY + 28, 0.2, 2);
+                ctx.beginPath();
+                ctx.moveTo(radiantX - 8, hrvY + 23);
+                ctx.lineTo(radiantX, hrvY + 28);
+                ctx.lineTo(radiantX - 8, hrvY + 33);
+                ctx.stroke();
+                ctx.restore();
+
+                drawDimensionLine(ctx, radiantX, radiantY + radiantH - 18, radiantX + radiantW, radiantY + radiantH - 18, "SUBTERRANEAN GEOTHERMAL HYDRONIC HEATING LOOPS (COPPER / PEX)", "#ffffff", 5, "#000000");
+                drawDimensionLine(ctx, hrvX - 50, hrvY + hrvH + 12, hrvX + hrvW, hrvY + hrvH + 12, "BALANCED AIR EXCHANGE RECOVERY CORE (92% EFFICIENCY)", "#ffffff", 5, "#000000");
+            }
+        },
+        updateSVG: (g, prog, width, height, phase) => {
+            if (!phase || phase.idx === undefined)
+                return;
+            const callouts = Array.from(g.querySelectorAll(".tech-callout, .tech-arrow, .tech-stamp-badge"));
+            callouts.forEach(el => {
+                const targetPhase = el.getAttribute("data-phase");
+                const isVisible = targetPhase === null || targetPhase === "" || parseInt(targetPhase, 10) <= phase.idx;
+                el.style.opacity = isVisible ? "1" : "0";
+                el.style.pointerEvents = isVisible ? "auto" : "none";
+            });
+        },
+        updateDOM: (container, prog, width, height, phase) => {
+            // DOM updates handled by sticky layout container
         }
     }
 ];

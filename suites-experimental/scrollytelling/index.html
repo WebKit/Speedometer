@@ -54,9 +54,12 @@
                     <span id="active-stage-label" class="status-tag">STAGE 1: EARLY SETTLEMENT</span>
                 </div>
             </header>
-            <nav id="floating-toc" class="floating-toc" aria-label="Table of Contents">
+            <nav id="floating-toc" class="floating-toc is-hidden" aria-label="Table of Contents">
                 <div class="toc-header">
-                    <span class="toc-title">[INDEX +]</span>
+                    <button id="toc-toggle-btn" class="toc-toggle-btn" type="button" aria-expanded="true" aria-controls="toc-list" aria-label="Toggle Table of Contents">
+                        <span class="toc-title">INDEX</span>
+                        <span id="toc-toggle-symbol" class="toc-toggle-symbol">[ - ]</span>
+                    </button>
                 </div>
                 <ul class="toc-list" id="toc-list"></ul>
             </nav>

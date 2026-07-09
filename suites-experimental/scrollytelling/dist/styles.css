@@ -109,7 +109,8 @@ body {
     position: relative;
     z-index: 1;
     font-size: 1.15rem;
-    color: var(--paper-card);
+    color: var(--ink-primary, #ffffff);
+    background-color: var(--paper-card, #0a0a0a);
     font-family: "Courier New", Courier, monospace;
     font-weight: 700;
     letter-spacing: 0.12em;
@@ -117,8 +118,7 @@ body {
     margin-bottom: 1.25rem;
     display: inline-block;
     padding: 0.4rem 1.2rem;
-    background-color: var(--ink-primary);
-    border: 3px solid var(--border-color);
+    border: 3px solid var(--border-color, #ffffff);
     transform: rotate(1deg);
     overflow: visible;
 }
@@ -150,9 +150,9 @@ body {
     font-size: 0.95rem;
     font-weight: 900;
     padding: 0.5rem 1.4rem;
-    border: 3px solid var(--border-color);
-    background-color: var(--ink-secondary);
-    color: var(--paper-card);
+    border: 2px solid var(--border-color, #ffffff);
+    background-color: var(--paper-card, #0a0a0a);
+    color: var(--ink-primary, #ffffff);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     transform: rotate(-1.5deg);
@@ -210,13 +210,38 @@ body {
     transform: rotate(-1.6deg);
 }
 
+
+/* Visibility Toggling for Floating TOC (Zero Transitions / Instant Synchronous Toggle) */
+.floating-toc.is-hidden { display: none !important; }
+.floating-toc.is-visible { display: block !important; }
+.floating-toc, .floating-toc *, .floating-toc::before, .floating-toc::after {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Table of Contents Interactive Toggle & Collapsed State (1950s Blueprint Style, 0 Transitions) */
+.toc-toggle-btn {
+    background: transparent; border: none; color: inherit; width: 100%;
+    cursor: pointer; padding: 0; margin: 0; display: flex; justify-content: center; align-items: center; gap: 0.4rem;
+}
+.toc-toggle-symbol { font-family: "Courier New", Courier, monospace; font-size: 1rem; font-weight: 700; }
+
+.floating-toc.is-collapsed { width: 160px; padding: 0; }
+.floating-toc.is-collapsed .toc-header { margin: 0; border-bottom: none; padding: 0.65rem 1rem; }
+.floating-toc.is-collapsed .toc-list, .floating-toc.is-collapsed .toc-active-indicator { display: none !important; }
+
+/* Independent Drop Shadow Angle for Collapsed State (Rule 3: Collage/Diorama Rule) */
+.floating-toc.is-collapsed::after {
+    top: 6px; left: 5px; width: 100%; height: 100%;
+    background-color: var(--shadow-solid); transform: rotate(-1.5deg);
+}
+.floating-toc.is-collapsed:hover::after { top: 8px; left: 7px; transform: rotate(-1.8deg); }
+
 .toc-header {
-    border-bottom: 3px solid var(--border-color);
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.75rem;
+    border-bottom: 3px solid var(--border-color, #ffffff);
     text-align: center;
-    background-color: var(--ink-primary);
-    color: var(--paper-card);
+    background-color: var(--paper-card, #0a0a0a);
+    color: var(--ink-primary, #ffffff);
     margin: -1rem -1rem 0.75rem -1rem;
     padding: 0.65rem 1rem 0.55rem;
 }
@@ -307,14 +332,9 @@ body {
     gap: 4.5rem;
     align-items: flex-start;
     justify-content: space-between;
-    min-height: 110vh;
+    min-height: min(650px, 80vh);
     padding-top: 3rem;
     padding-bottom: 3rem;
-    border-bottom: 3px dashed var(--ink-muted);
-}
-
-.stage-section:last-child {
-    border-bottom: none;
 }
 
 .stage-section.layout-text-left {
@@ -342,6 +362,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: stretch;
     padding-top: 0;
     padding-bottom: 0;
     z-index: 5;
@@ -458,9 +479,9 @@ body {
     bottom: 1.25rem;
     left: 1.25rem;
     right: 1.25rem;
-    background: var(--ink-primary);
-    color: var(--paper-card);
-    border: 3px solid var(--border-color);
+    background-color: var(--paper-card, #0a0a0a);
+    color: var(--ink-primary, #ffffff);
+    border: 3px solid var(--border-color, #ffffff);
     padding: 0.65rem 1.25rem;
     font-family: "Impact", "Arial Black", sans-serif;
     font-size: 0.95rem;
@@ -482,6 +503,16 @@ body {
     height: 100%;
     background-color: var(--shadow-solid);
     transform: rotate(1.6deg);
+}
+
+.caption-title {
+    color: var(--ink-secondary, #cccccc);
+    font-weight: 700;
+}
+
+.caption-text {
+    color: var(--ink-primary, #ffffff);
+    font-weight: 900;
 }
 
 /* Narrative Cards (.step) on Construction Paper with Independent Shadow */
@@ -526,39 +557,6 @@ body {
     left: calc(var(--step-shadow-x, 6px) * 1.4);
 }
 
-.step-badge-wrap {
-    margin-bottom: 0.5rem;
-}
-
-.step-badge {
-    position: relative;
-    z-index: 1;
-    display: inline-block;
-    background-color: var(--ink-secondary);
-    color: var(--paper-card);
-    font-family: "Impact", "Arial Black", sans-serif;
-    font-size: 0.85rem;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.35rem 0.85rem;
-    border: 2px solid var(--border-color);
-    transform: rotate(-2deg);
-    overflow: visible;
-}
-
-.step-badge::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    top: 4px;
-    left: 5px;
-    width: 100%;
-    height: 100%;
-    background-color: var(--shadow-solid);
-    transform: rotate(2.8deg);
-}
-
 .step-meta {
     font-family: "Courier New", Courier, monospace;
     font-size: 0.85rem;
@@ -589,8 +587,7 @@ body {
     position: relative;
     z-index: 1;
     margin-bottom: 1.2rem;
-    opacity: 0.45;
-    transition: opacity 0.3s ease;
+    opacity: 1;
     cursor: pointer;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 1.05rem;
@@ -601,14 +598,6 @@ body {
 
 .step-paragraph-item:last-child {
     margin-bottom: 0;
-}
-
-.step-paragraph-item:hover {
-    opacity: 0.8;
-}
-
-.step-paragraph-item.is-active-paragraph {
-    opacity: 1;
 }
 
 /* Step Specs (1950s Slanted Print Data Box with Independent Shadow) */
@@ -650,7 +639,7 @@ body {
     font-family: "Courier New", Courier, monospace;
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--ink-muted);
+    color: var(--ink-secondary, #cccccc);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -701,6 +690,10 @@ body {
         width: 230px;
         padding: 0.75rem;
         transform: rotate(0deg);
+    }
+    .floating-toc.is-collapsed {
+        width: 145px;
+        padding: 0;
     }
     .toc-title {
         font-size: 1rem;

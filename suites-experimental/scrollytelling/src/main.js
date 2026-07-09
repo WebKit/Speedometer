@@ -36,15 +36,14 @@ function renderStageSections() {
             ? stage.paragraphs
                 .map(
                     (p, pIdx) => `
-                <p class="step-paragraph-item step-description ${pIdx === 0 ? "is-active-paragraph" : ""}" data-p-index="${pIdx}">${p}</p>`
+                <p class="step-paragraph-item step-description" data-p-index="${pIdx}">${p}</p>`
                 )
                 .join("")
-            : `<p class="step-paragraph-item step-description is-active-paragraph" data-p-index="0">${stage.description}</p>`;
+            : `<p class="step-paragraph-item step-description" data-p-index="0">${stage.description}</p>`;
 
         const narrativeHtml = `
             <div class="stage-narrative-column">
                 <article id="step-${idx + 1}" class="step ${idx === 0 ? "is-active" : ""}" data-index="${idx}">
-                    <div class="step-badge-wrap"><span class="step-badge">FIG. 0${idx + 1} // EST. ${stage.year}</span></div>
                     <span class="step-meta">Stage ${idx + 1} // ${stage.year}</span>
                     <h2 class="step-title">${stage.title}: ${stage.subtitle}</h2>
                     <div class="step-body">${descHtml}</div>
@@ -98,9 +97,45 @@ function renderFloatingTOC() {
                 window.stepTo(idx);
         });
     });
+
+    const toggleBtn = document.getElementById("toc-toggle-btn");
+    const floatingToc = document.getElementById("floating-toc");
+    const toggleSymbol = document.getElementById("toc-toggle-symbol");
+    if (toggleBtn && floatingToc && !toggleBtn.dataset.listenerAttached) {
+        toggleBtn.dataset.listenerAttached = "true";
+        toggleBtn.addEventListener("click", () => {
+            const isCollapsed = floatingToc.classList.toggle("is-collapsed");
+            toggleBtn.setAttribute("aria-expanded", String(!isCollapsed));
+            if (toggleSymbol)
+                toggleSymbol.textContent = isCollapsed ? "[ + ]" : "[ - ]";
+
+            if (!isCollapsed && typeof window.forceScrollytellingUpdate === "function")
+                window.forceScrollytellingUpdate();
+
+        });
+    }
 }
 
 window.forceScrollytellingUpdate = function () {
+    const floatingToc = document.getElementById("floating-toc");
+    if (floatingToc) {
+        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+        const header = document.querySelector(".page-header");
+        const threshold = header ? header.offsetHeight - 50 : 300;
+        const shouldShowTOC = scrollY > threshold;
+        if (shouldShowTOC) {
+            if (floatingToc.classList.contains("is-hidden")) {
+                floatingToc.classList.remove("is-hidden");
+                floatingToc.classList.add("is-visible");
+            }
+        } else {
+            if (!floatingToc.classList.contains("is-hidden")) {
+                floatingToc.classList.add("is-hidden");
+                floatingToc.classList.remove("is-visible");
+            }
+        }
+    }
+
     const sections = Array.from(document.querySelectorAll(".stage-section"));
     if (sections.length === 0)
         return;
@@ -151,30 +186,9 @@ window.forceScrollytellingUpdate = function () {
         if (idx === activeIndex) {
             if (!stepEl.classList.contains("is-active"))
                 stepEl.classList.add("is-active");
-
-            const paragraphs = stepEl.querySelectorAll(".step-paragraph-item");
-            if (paragraphs.length > 0) {
-                const activePIdx = Math.min(paragraphs.length - 1, Math.floor(activeProgress * paragraphs.length));
-                paragraphs.forEach((pEl, pIdx) => {
-                    if (pIdx === activePIdx) {
-                        if (!pEl.classList.contains("is-active-paragraph"))
-                            pEl.classList.add("is-active-paragraph");
-                    } else {
-                        if (pEl.classList.contains("is-active-paragraph"))
-                            pEl.classList.remove("is-active-paragraph");
-                    }
-                });
-            }
         } else {
             if (stepEl.classList.contains("is-active"))
                 stepEl.classList.remove("is-active");
-            const paragraphs = stepEl.querySelectorAll(".step-paragraph-item");
-            paragraphs.forEach((pEl, pIdx) => {
-                if (pIdx === 0 && !pEl.classList.contains("is-active-paragraph"))
-                    pEl.classList.add("is-active-paragraph");
-                else if (pIdx !== 0 && pEl.classList.contains("is-active-paragraph"))
-                    pEl.classList.remove("is-active-paragraph");
-            });
         }
     });
 

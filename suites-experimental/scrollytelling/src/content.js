@@ -151,10 +151,10 @@ export const STAGES = [
         description:
             "Today, the evolution culminates in a breathtaking synthesis of centuries-old craftsmanship and uncompromising contemporary design. The restored 1780 fieldstone hearth and hand-hewn timbers stand as tactile, historical monuments within an expansive, light-filled spatial layout.\n\nBold architectural interventions define the modern addition, featuring cantilevered black steel structural beams and frameless floor-to-ceiling glass curtain walls. This high-contrast juxtaposition between rough historic masonry and sleek industrial materials creates a dynamic visual dialogue across time.\n\nSet against a curated landscape of native meadow grasses and restored riparian wetlands, the 3,800-square-foot residence exemplifies minimalist elegance. By honoring every layer of its 240-year history while embracing cutting-edge structural and ecological design, the homestead stands as a timeless model of living architecture.",
         specs: [
-            { label: "Architecture", value: "Cantilevered Steel & Glass" },
-            { label: "Preservation", value: "Exposed Historic Fieldstone" },
-            { label: "Aesthetics", value: "High-Contrast Minimalist" },
-            { label: "Footprint", value: "3,800 sq. ft." },
+            { label: "Footprint / EV", value: "3,800 sq. ft. / Level 2 EV Bay" },
+            { label: "Roof System", value: "Cantilever Solar PV / R-60 Core" },
+            { label: "Thermal Envelope", value: "R-45 Closed-Cell / Triple Glazing" },
+            { label: "HVAC Systems", value: "Geothermal Hydronic / HRV Air" },
         ],
     },
 ];
