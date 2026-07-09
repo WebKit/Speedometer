@@ -91,15 +91,31 @@ function createSVGElement(tag, attrs = {}) {
 }
 
 function buildSVGContentForStage(g, stageIndex) {
+
     const ns = "http://www.w3.org/2000/svg";
-    const path = createSVGElement("path", {
-        fill: "none",
-        stroke: "#ffffff",
-        "stroke-width": "2",
-        "stroke-linecap": "round",
-        "stroke-linejoin": "round",
-        class: "dynamic-path",
-    });
+
+    if (stageIndex === 0) {
+        addSVGImage(g, IMAGE_ASSETS.topo1, -20, -20, 840, 640, 0.35, "screen", "invert(1) contrast(1.2)");
+        addSVGImage(g, IMAGE_ASSETS.watercolor, 0, 0, 800, 600, 0.2, "screen", "invert(0.85)");
+    } else if (stageIndex === 1) {
+        addSVGImage(g, IMAGE_ASSETS.topo2, 0, 0, 800, 600, 0.28, "multiply", "contrast(1.3)");
+        addSVGImage(g, IMAGE_ASSETS.stroke1, 80, 300, 640, 260, 0.4, "multiply", "");
+    } else if (stageIndex === 2) {
+        addSVGImage(g, IMAGE_ASSETS.grid, 0, 0, 800, 600, 0.3, "screen", "invert(0.9)");
+        addSVGImage(g, IMAGE_ASSETS.topo3, 320, 40, 460, 380, 0.25, "screen", "invert(1)");
+    } else if (stageIndex === 3) {
+        addSVGImage(g, IMAGE_ASSETS.stroke2, 40, 180, 720, 320, 0.35, "multiply", "");
+        addSVGImage(g, IMAGE_ASSETS.stroke3, 150, 60, 500, 200, 0.3, "multiply", "");
+        addSVGImage(g, IMAGE_ASSETS.watercolor, 0, 0, 800, 600, 0.15, "multiply", "");
+    }
+
+    const path = document.createElementNS(ns, "path");
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", stageIndex === 1 || stageIndex === 3 ? "#142336" : "#ffffff");
+    path.setAttribute("stroke-width", "2");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+    path.setAttribute("class", "dynamic-path");
 
     if (stageIndex === 0) {
         path.setAttribute("d", "M 300 400 L 300 300 L 400 220 L 500 300 L 500 400 Z M 360 400 L 360 330 L 440 330 L 440 400 Z M 150 400 L 200 260 L 250 400 Z M 550 400 L 600 280 L 650 400 Z");
@@ -109,7 +125,31 @@ function buildSVGContentForStage(g, stageIndex) {
         path.setAttribute("d", "M 260 420 L 260 240 L 400 140 L 540 240 L 540 420 Z M 260 330 L 540 330 M 350 420 L 350 240 M 450 420 L 450 240 M 260 240 L 540 240 M 400 140 L 400 420 M 600 420 L 600 200 L 640 200 L 640 420 Z");
     } else if (stageIndex === 3) {
         path.setAttribute("d", "M 150 420 L 150 280 L 300 180 L 450 280 L 450 420 Z M 500 420 L 500 320 L 700 320 L 700 420 Z M 100 450 L 700 450 M 100 480 L 700 480 M 100 510 L 700 510 M 100 450 L 150 510 M 300 450 L 350 510 M 500 450 L 550 510");
-    } else if (stageIndex >= 4) {
+    } else if (stageIndex === 4) {
+        path.setAttribute("d", "M 150 420 L 160 300 Q 300 240 440 300 L 450 420 Z M 200 300 L 180 420 M 380 300 L 400 420 M 250 420 C 240 350 270 320 280 260 M 350 420 C 360 360 330 310 320 250");
+    } else if (stageIndex === 5) {
+        path.setAttribute("d", "M 150 420 L 150 200 L 550 200 L 550 420 Z M 150 310 L 550 310 M 350 200 L 350 420 M 100 200 L 600 200 M 100 420 L 600 420 M 150 150 L 150 470 M 550 150 L 550 470");
+        path.setAttribute("stroke-dasharray", "8, 4");
+    } else if (stageIndex === 6) {
+        path.setAttribute("d", "M 200 400 L 200 220 L 400 120 L 600 220 L 600 400 Z M 220 380 L 220 235 L 400 145 L 580 235 L 580 380 Z M 320 400 L 320 550 C 320 580 360 580 360 550 L 360 400 M 440 400 L 440 550 C 440 580 480 580 480 550 L 480 400");
+    } else {
+        path.setAttribute("d", "M 180 420 L 180 250 L 450 250 L 450 420 Z M 350 320 L 680 320 L 680 180 L 350 180 Z M 350 320 L 350 420 M 500 180 L 500 320 M 600 180 L 600 320 M 100 420 L 700 420");
+        path.setAttribute("stroke-width", "3");
+    }
+
+    g.appendChild(path);
+
+    for (let j = 0; j < 5; j++) {
+        const circle = document.createElementNS(ns, "circle");
+        circle.setAttribute("cx", String(200 + j * 100));
+        circle.setAttribute("cy", String(150 + (j % 2) * 50));
+        circle.setAttribute("r", "4");
+        circle.setAttribute("fill", stageIndex === 1 || stageIndex === 3 ? "#142336" : "#ffffff");
+        circle.setAttribute("class", "dynamic-node");
+        g.appendChild(circle);
+    }
+
+if (stageIndex >= 4) {
         path.setAttribute("d", "M 100 420 L 700 420 M 150 420 L 150 200 M 650 420 L 650 200");
         path.setAttribute("stroke-dasharray", "8, 4");
     }
@@ -759,5 +799,600 @@ function drawEarthHatch(ctx, x, y, w, h) {
             ctx.stroke();
         }
     }
+    ctx.restore();
+}
+
+function drawProceduralCanvas(ctx, stageIndex, prog, width, height) {
+    ctx.save();
+
+    if (stageIndex === 0) {
+        ctx.fillStyle = "#0d1b2a";
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+        ctx.lineWidth = 1;
+        for (let x = 0; x < width; x += 40) {
+            drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+        }
+        for (let y = 0; y < height; y += 40) {
+            drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+        }
+
+        if (loadedImages.watercolor && loadedImages.watercolor.complete && loadedImages.watercolor.naturalWidth > 0) {
+            ctx.save();
+            ctx.globalCompositeOperation = "screen";
+            ctx.globalAlpha = 0.18;
+            ctx.drawImage(loadedImages.watercolor, 0, 0, width, height);
+            ctx.restore();
+        }
+
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 1.8;
+
+        drawHandLine(ctx, 40, 450, 760, 450, 0.5, 4);
+        drawCrossSectionHatching(ctx, 40, 450, 720, 40, 8, -Math.PI / 4, "rgba(255, 255, 255, 0.2)");
+
+        drawCrossSectionHatching(ctx, 470, 180, 80, 270, 6, Math.PI / 6, "rgba(255, 255, 255, 0.35)");
+        ctx.strokeRect(470, 180, 80, 270);
+        for (let sy = 210; sy < 450; sy += 30) {
+            drawHandLine(ctx, 470, sy, 550, sy, 0.4, 2);
+            drawHandLine(ctx, 510 + (sy % 20), sy, 510 + (sy % 20), sy - 30, 0.4, 2);
+        }
+
+        const wallH = 170 * Math.min(1, prog * 1.3);
+        const topY = 450 - wallH;
+        ctx.strokeRect(170, topY, 300, wallH);
+        for (let wy = 450 - 20; wy >= topY; wy -= 20) {
+            drawHandLine(ctx, 155, wy, 470, wy, 0.4, 3);
+            ctx.strokeRect(155, wy - 5, 15, 10);
+        }
+
+        if (prog > 0.3) {
+            const roofProg = (prog - 0.3) / 0.7;
+            const ridgeY = 280 - 120 * roofProg;
+            drawHandLine(ctx, 150, 280, 320, ridgeY, 0.5, 3);
+            drawHandLine(ctx, 490, 280, 320, ridgeY, 0.5, 3);
+            for (let rx = 180; rx < 470; rx += 30) {
+                const rWeight = Math.abs(rx - 320) / 170;
+                const ry = 280 - 120 * roofProg * (1 - rWeight);
+                drawHandLine(ctx, rx, 280, rx, ry, 0.3, 2);
+            }
+        }
+
+        drawDimensionLine(ctx, 170, 485, 470, 485, "30'-0\" CABIN WIDTH", "#ffffff", 6, "#0d1b2a");
+        drawDimensionLine(ctx, 120, 450, 120, 280, "12'-0\" WALL HEIGHT", "#ffffff", 6, "#0d1b2a");
+        drawDimensionLine(ctx, 580, 450, 580, 180, "27'-0\" HEARTH CHIMNEY", "#ffffff", 6, "#0d1b2a");
+
+        drawLeaderCallout(ctx, 250, 360, 140, 350, 60, "HEWN OAK TIMBER 10\"x12\"", "MOSS & CLAY CHINKING", "#ffffff");
+        drawLeaderCallout(ctx, 510, 300, 610, 280, 710, "FIELDSTONE HEARTH", "DRY-LAID / NO MORTAR", "#ffffff");
+        drawLeaderCallout(ctx, 320, 200, 240, 140, 150, "RIDGEPOLE SPAN", "ELEV. 340'-0\" DATUM", "#ffffff");
+
+        drawSurveyReticle(ctx, 90, 100, 24, "BM #101 / 1780", "#ffffff");
+        drawTitleBlock(ctx, width, height, "EARLY SETTLEMENT CABIN", "A-101", "3/8\" = 1'-0\"", "AUG 1952", "#ffffff", "#0d1b2a");
+
+    } else if (stageIndex === 1) {
+        ctx.fillStyle = "#f2ede6";
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.strokeStyle = "rgba(20, 35, 54, 0.12)";
+        ctx.lineWidth = 1;
+        for (let x = 0; x < width; x += 40) {
+            drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+        }
+        for (let y = 0; y < height; y += 40) {
+            drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+        }
+
+        if (loadedImages.stroke1 && loadedImages.stroke1.complete && loadedImages.stroke1.naturalWidth > 0) {
+            ctx.save();
+            ctx.globalCompositeOperation = "multiply";
+            ctx.globalAlpha = 0.35;
+            ctx.drawImage(loadedImages.stroke1, 100, 300, 600, 240);
+            ctx.restore();
+        }
+
+        ctx.strokeStyle = "#142336";
+        ctx.fillStyle = "#142336";
+        ctx.lineWidth = 1.8;
+
+        ctx.beginPath();
+        ctx.moveTo(40, 340);
+        ctx.lineTo(240, 340);
+        ctx.lineTo(280, 410);
+        ctx.lineTo(520, 410);
+        ctx.lineTo(560, 470);
+        ctx.lineTo(760, 470);
+        ctx.stroke();
+
+        drawCrossSectionHatching(ctx, 40, 340, 240, 210, 7, -Math.PI / 3, "rgba(20, 35, 54, 0.22)");
+        drawCrossSectionHatching(ctx, 280, 410, 240, 140, 7, -Math.PI / 3, "rgba(20, 35, 54, 0.22)");
+        drawCrossSectionHatching(ctx, 560, 470, 200, 80, 7, -Math.PI / 3, "rgba(20, 35, 54, 0.22)");
+
+        ctx.strokeRect(280, 240, 40, 170);
+        ctx.strokeRect(480, 240, 40, 170);
+        for (let fy = 270; fy < 410; fy += 25) {
+            drawHandLine(ctx, 280, fy, 320, fy, 0.3, 2);
+            drawHandLine(ctx, 480, fy, 520, fy, 0.3, 2);
+        }
+
+        drawHandLine(ctx, 260, 240, 540, 240, 0.4, 3);
+        drawHandLine(ctx, 320, 240, 320, 390, 0.3, 2);
+        drawHandLine(ctx, 480, 240, 480, 390, 0.3, 2);
+        drawHandLine(ctx, 320, 390, 480, 390, 0.3, 2);
+
+        drawHandLine(ctx, 220, 340, 270, 270, 0.4, 2);
+        drawHandLine(ctx, 530, 270, 580, 410, 0.4, 2);
+
+        const rippleOffset = (prog * 100) % 30;
+        ctx.strokeStyle = "rgba(20, 35, 54, 0.5)";
+        for (let r = 0; r < 3; r++) {
+            const rx = 180 - r * 35 - rippleOffset;
+            drawHandLine(ctx, rx, 335, rx + 15, 340, 0.2, 2);
+            const rx2 = 600 + r * 35 + rippleOffset;
+            drawHandLine(ctx, rx2 - 15, 465, rx2, 470, 0.2, 2);
+        }
+
+        drawDimensionLine(ctx, 320, 210, 480, 210, "16'-0\" CELLAR SPAN", "#142336", 6, "#f2ede6");
+        drawDimensionLine(ctx, 540, 240, 540, 410, "8'-6\" BEDROCK DEPTH", "#142336", 6, "#f2ede6");
+
+        drawLeaderCallout(ctx, 300, 320, 180, 280, 70, "GRANITE BEDROCK STRATA", "KEYED WITHOUT MORTAR", "#142336");
+        drawLeaderCallout(ctx, 240, 310, 160, 230, 60, "GRAVITY DRAINAGE TRENCH", "SLOPE 1:50 AWAY FROM WALL", "#142336");
+        drawLeaderCallout(ctx, 600, 480, 640, 430, 730, "IMPERVIOUS CLAY SUBSOIL", "GEOLOGICAL SURVEY LAYER", "#142336");
+
+        drawSurveyReticle(ctx, 680, 110, 26, "ELEV +420M ASL", "#142336");
+        drawTitleBlock(ctx, width, height, "GEOLOGY & SUBTERRANEAN DRAINAGE", "G-102", "1/2\" = 1'-0\"", "SEP 1953", "#142336", "#f2ede6");
+
+    } else if (stageIndex === 2) {
+        ctx.fillStyle = "#111e2e";
+        ctx.fillRect(0, 0, width, height);
+
+        if (loadedImages.grid && loadedImages.grid.complete && loadedImages.grid.naturalWidth > 0) {
+            ctx.save();
+            ctx.globalCompositeOperation = "screen";
+            ctx.globalAlpha = 0.22;
+            ctx.drawImage(loadedImages.grid, 0, 0, width, height);
+            ctx.restore();
+        }
+
+        ctx.strokeStyle = "#ffffff";
+        ctx.fillStyle = "#ffffff";
+        ctx.lineWidth = 1.5;
+
+        drawHandLine(ctx, 410, 40, 410, 540, 0.2, 2);
+        ctx.font = "bold 10px monospace";
+        ctx.fillText("VIEW A: BALLOON FRAMING", 60, 55);
+        ctx.fillText("VIEW B: MECHANIZED WELL PUMP", 450, 55);
+
+        drawHandLine(ctx, 60, 480, 380, 480, 0.4, 3);
+        const numStuds = 7;
+        for (let s = 0; s < numStuds; s++) {
+            const sx = 80 + s * 45;
+            drawHandLine(ctx, sx, 480, sx, 160, 0.3, 2);
+            ctx.strokeRect(sx - 3, 160, 6, 320);
+        }
+        ctx.strokeRect(70, 310, 300, 12);
+        ctx.lineWidth = 2.2;
+        drawHandLine(ctx, 80, 470, 350, 170, 0.3, 2);
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(205, 310, 20, 10);
+
+        ctx.strokeRect(550, 240, 60, 270);
+        drawCrossSectionHatching(ctx, 550, 240, 60, 270, 8, -Math.PI / 4, "rgba(255, 255, 255, 0.2)");
+
+        drawGear(ctx, 580, 180, 42, 14, prog * Math.PI * 4);
+        drawGear(ctx, 635, 165, 24, 8, -prog * Math.PI * 7);
+
+        ctx.lineWidth = 3;
+        drawHandLine(ctx, 580, 180, 580, 460, 0.2, 2);
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(630, 240, 15, 250);
+
+        const pulseY = 470 - (prog * 220) % 220;
+        ctx.fillRect(633, pulseY, 9, 15);
+        ctx.fillRect(633, pulseY + 40, 9, 15);
+
+        drawDimensionLine(ctx, 80, 515, 350, 515, "24'-0\" FRAMING BAY", "#ffffff", 6, "#111e2e");
+        drawDimensionLine(ctx, 45, 480, 45, 160, "20'-0\" TWO-STORY STUD", "#ffffff", 6, "#111e2e");
+
+        drawLeaderCallout(ctx, 170, 250, 110, 210, 50, "WROUGHT IRON TIE-ROD", "3/4\" DIA. WITH TURNBUCKLE", "#ffffff");
+        drawLeaderCallout(ctx, 260, 316, 330, 280, 390, "STEAM-MILLED 2x4s", "16\" O.C. CUT WIRE NAILS", "#ffffff");
+        drawLeaderCallout(ctx, 580, 138, 510, 110, 430, "MECHANIZED PUMP GEAR", "RATIO 4:1 / CAST IRON", "#ffffff");
+        drawLeaderCallout(ctx, 645, 350, 700, 330, 760, "INDOOR COPPER PLUMBING", "DEEP AQUIFER INTAKE - 60 FT", "#ffffff");
+
+        drawTitleBlock(ctx, width, height, "BALLOON FRAMING & MECHANIZED PUMP", "S-103", "3/4\" = 1'-0\"", "NOV 1954", "#ffffff", "#111e2e");
+
+    } else if (stageIndex === 3) {
+        ctx.fillStyle = "#e9efe8";
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.strokeStyle = "rgba(18, 36, 22, 0.12)";
+        ctx.lineWidth = 1;
+        for (let x = 0; x < width; x += 40) {
+            drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+        }
+        for (let y = 0; y < height; y += 40) {
+            drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+        }
+
+        if (loadedImages.stroke2 && loadedImages.stroke2.complete && loadedImages.stroke2.naturalWidth > 0) {
+            ctx.save();
+            ctx.globalCompositeOperation = "multiply";
+            ctx.globalAlpha = 0.35;
+            ctx.drawImage(loadedImages.stroke2, 60, 250, 640, 180);
+            ctx.restore();
+        }
+
+        ctx.strokeStyle = "#122416";
+        ctx.fillStyle = "#122416";
+        ctx.lineWidth = 1.8;
+
+        ctx.strokeRect(120, 220, 90, 65);
+        drawCrossSectionHatching(ctx, 120, 220, 90, 65, 6, Math.PI / 4, "rgba(18, 36, 22, 0.25)");
+        ctx.strokeRect(90, 110, 110, 70);
+        drawCrossSectionHatching(ctx, 90, 110, 110, 70, 6, -Math.PI / 4, "rgba(18, 36, 22, 0.25)");
+        ctx.strokeRect(240, 130, 50, 45);
+
+        const maxWallX = 100 + prog * 380;
+        drawHandLine(ctx, 50, 195, Math.min(480, maxWallX), 195, 0.6, 6);
+        drawHandLine(ctx, 220, 50, 220, Math.min(450, 50 + prog * 400), 0.6, 6);
+        for (let wx = 60; wx < Math.min(480, maxWallX); wx += 25) {
+            ctx.strokeRect(wx - 4, 192, 8, 6);
+        }
+
+        for (let r = 0; r < 3; r++) {
+            for (let c = 0; c < 4; c++) {
+                const ox = 280 + c * 35;
+                const oy = 60 + r * 35;
+                ctx.beginPath();
+                ctx.arc(ox, oy, 6, 0, Math.PI * 2);
+                ctx.stroke();
+                drawHandLine(ctx, ox - 9, oy, ox + 9, oy, 0.2, 2);
+                drawHandLine(ctx, ox, oy - 9, ox, oy + 9, 0.2, 2);
+            }
+        }
+
+        ctx.strokeRect(500, 180, 270, 230);
+        ctx.font = "bold 10px monospace";
+        ctx.fillText("DETAIL A: SLUICE CHANNEL SECTION", 510, 200);
+
+        drawHandLine(ctx, 520, 260, 570, 350, 0.3, 2);
+        drawHandLine(ctx, 570, 350, 700, 350, 0.3, 2);
+        drawHandLine(ctx, 700, 350, 750, 260, 0.3, 2);
+        drawCrossSectionHatching(ctx, 520, 350, 230, 50, 7, -Math.PI / 4, "rgba(18, 36, 22, 0.2)");
+
+        const gateY = 350 - prog * 70;
+        ctx.lineWidth = 3;
+        drawHandLine(ctx, 635, 250, 635, gateY, 0.2, 2);
+        ctx.lineWidth = 1.8;
+        ctx.fillRect(570, gateY, 65, 350 - gateY);
+
+        drawDimensionLine(ctx, 90, 90, 200, 90, "110'-0\" TIMBER BARN", "#122416", 6, "#e9efe8");
+        drawDimensionLine(ctx, 570, 370, 700, 370, "4'-0\" SLUICE BED", "#122416", 6, "#e9efe8");
+
+        drawLeaderCallout(ctx, 160, 195, 230, 240, 290, "DRY-STONE BOUNDARY WALLS", "FROST-HEAVED FIELDSTONE", "#122416");
+        drawLeaderCallout(ctx, 350, 95, 410, 120, 480, "HEIRLOOM ORCHARD GRID", "45 ACRES CULTIVATED", "#122416");
+        drawLeaderCallout(ctx, 635, 280, 680, 240, 740, "WEIR GATE CONTROL", "STONE-LINED DRAINAGE CULVERT", "#122416");
+
+        drawSurveyReticle(ctx, 70, 400, 26, "TRUE NORTH / N 42° E", "#122416");
+        drawTitleBlock(ctx, width, height, "AGRARIAN SITE PLAN & IRRIGATION", "C-104", "1\" = 100'-0\"", "APR 1955", "#122416", "#e9efe8");
+
+    } else if (stageIndex === 4) {
+        ctx.strokeRect(100, 60, width - 200, 240);
+        ctx.beginPath();
+        for (let x = 120; x < width - 120; x += 40) {
+            ctx.moveTo(x, 60);
+            ctx.lineTo(x + Math.sin(x) * 15, 300);
+        }
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+        ctx.stroke();
+
+        ctx.strokeStyle = "#ffffff";
+        const maxVines = 6;
+        for (let v = 0; v < maxVines; v++) {
+            const startY = 350 + v * 35;
+            const endX = 80 + prog * (width - 160);
+            ctx.beginPath();
+            ctx.moveTo(80, startY);
+            ctx.bezierCurveTo(80 + endX * 0.3, startY - 40, 80 + endX * 0.6, startY + 50, 80 + endX, startY);
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            if (prog > 0.35) {
+                ctx.beginPath();
+                ctx.arc(80 + endX * 0.5, startY + 5, 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+    } else if (stageIndex === 5) {
+        ctx.lineWidth = 1;
+        for (let x = 40; x < width; x += 30) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, height);
+            ctx.stroke();
+        }
+        for (let y = 40; y < height; y += 30) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
+            ctx.stroke();
+        }
+
+        const targetX = 150 + prog * (width - 300);
+        const targetY = height / 2;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, 45, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(targetX - 65, targetY);
+        ctx.lineTo(targetX + 65, targetY);
+        ctx.moveTo(targetX, targetY - 65);
+        ctx.lineTo(targetX, targetY + 65);
+        ctx.stroke();
+
+        ctx.strokeRect(targetX + 55, targetY - 35, 160, 35);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 14px monospace";
+        ctx.fillText("DATUM REALIGN", targetX + 65, targetY - 12);
+    } else if (stageIndex === 6) {
+        const loopCount = 4;
+        const loopSpacing = (width - 200) / loopCount;
+        for (let l = 0; l < loopCount; l++) {
+            const lx = 100 + l * loopSpacing;
+            const depth = 80 + prog * 380;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(lx, 40);
+            ctx.lineTo(lx, depth);
+            ctx.arc(lx + 25, depth, 25, Math.PI, 0, true);
+            ctx.lineTo(lx + 50, 40);
+            ctx.stroke();
+
+            const py = 50 + ((prog * 300 + l * 60) % 350);
+            ctx.fillRect(lx - 4, py, 8, 16);
+            ctx.fillRect(lx + 46, 420 - py, 8, 16);
+        }
+    } else {
+        for (let i = 0; i < 80; i++) {
+            const sx = 150 + ((i * 43) % 500);
+            const sy = 380 + ((i * 29) % 180);
+            const size = (i % 3) + 1;
+            ctx.fillRect(sx, sy, size, size);
+        }
+
+        ctx.lineWidth = 3;
+        ctx.strokeRect(80, 220, 320, 100);
+        const cantileverW = 220 + prog * 340;
+        ctx.strokeRect(200, 120, cantileverW, 100);
+
+        for (let gx = 240; gx < 200 + cantileverW; gx += 50) {
+            ctx.beginPath();
+            ctx.moveTo(gx, 120);
+            ctx.lineTo(gx, 220);
+            ctx.stroke();
+        }
+
+        if (prog > 0.45) {
+            const figX = 190 + cantileverW - 40;
+            ctx.beginPath();
+            ctx.arc(figX, 95, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(figX, 101);
+            ctx.lineTo(figX, 118);
+            ctx.moveTo(figX - 10, 107);
+            ctx.lineTo(figX + 10, 107);
+            ctx.stroke();
+        }
+    }
+
+    ctx.restore();
+}
+
+function drawTitleBlock(ctx, width, height, title, dwgNo, scale, date = "OCT 1954", color = "#ffffff", bgColor = "transparent") {
+    ctx.save();
+    const boxW = 270;
+    const boxH = 55;
+    const bx = width - boxW - 20;
+    const by = height - boxH - 20;
+
+    if (bgColor !== "transparent") {
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(bx, by, boxW, boxH);
+    }
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 1.5;
+
+    ctx.strokeRect(bx, by, boxW, boxH);
+    ctx.beginPath();
+    ctx.moveTo(bx, by + 25);
+    ctx.lineTo(bx + boxW, by + 25);
+    ctx.moveTo(bx + 190, by + 25);
+    ctx.lineTo(bx + 190, by + boxH);
+    ctx.stroke();
+
+    ctx.font = "bold 11px monospace";
+    ctx.textAlign = "left";
+    ctx.fillText(`PROJECT: EVOLUTION OF A HOUSE`, bx + 8, by + 16);
+
+    ctx.font = "bold 10px monospace";
+    ctx.fillText(title, bx + 8, by + 40);
+    ctx.font = "9px monospace";
+    ctx.fillText(`SCALE: ${scale}`, bx + 8, by + 50);
+
+    ctx.font = "bold 11px monospace";
+    ctx.fillText(`DWG ${dwgNo}`, bx + 198, by + 40);
+    ctx.font = "8px monospace";
+    ctx.fillText(`DATE: ${date}`, bx + 198, by + 50);
+    ctx.restore();
+}
+
+function drawHandLine(ctx, x1, y1, x2, y2, roughness = 0.6, steps = 4) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        let nx = x1 + dx * t;
+        let ny = y1 + dy * t;
+        if (i < steps) {
+            const seed = (x1 * 13.1 + y1 * 71.7 + x2 * 19.3 + y2 * 41.9 + i * 17.3) * 0.1;
+            nx += Math.sin(seed) * roughness;
+            ny += Math.cos(seed * 1.3) * roughness;
+        }
+        ctx.lineTo(nx, ny);
+    }
+    ctx.stroke();
+}
+
+function addSVGImage(g, src, x, y, width, height, opacity, blendMode, filterStyle = "") {
+    const ns = "http://www.w3.org/2000/svg";
+    const img = document.createElementNS(ns, "image");
+    img.setAttribute("href", src);
+    img.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", src);
+    img.setAttribute("x", String(x));
+    img.setAttribute("y", String(y));
+    img.setAttribute("width", String(width));
+    img.setAttribute("height", String(height));
+    img.setAttribute("opacity", String(opacity));
+    if (blendMode) img.style.mixBlendMode = blendMode;
+    if (filterStyle) img.style.filter = filterStyle;
+    g.appendChild(img);
+    return img;
+}
+
+function ensureImagesLoaded() {
+    if (typeof Image === "undefined") return;
+    for (const [key, src] of Object.entries(IMAGE_ASSETS)) {
+        if (!loadedImages[key]) {
+            const img = new Image();
+            img.src = src;
+            loadedImages[key] = img;
+        }
+    }
+}
+
+function drawSurveyReticle(ctx, x, y, radius, label, color = "#ffffff") {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 1.2;
+
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(x, y, radius * 0.35, 0, Math.PI * 2);
+    ctx.stroke();
+
+    drawHandLine(ctx, x - radius - 6, y, x + radius + 6, y, 0.2, 2);
+    drawHandLine(ctx, x, y - radius - 6, x, y + radius + 6, 0.2, 2);
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.arc(x, y, radius * 0.35, 0, Math.PI / 2);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.arc(x, y, radius * 0.35, Math.PI, Math.PI * 1.5);
+    ctx.closePath();
+    ctx.fill();
+
+    if (label) {
+        ctx.font = "bold 9px monospace";
+        ctx.textAlign = "center";
+        ctx.fillText(label, x, y + radius + 15);
+    }
+    ctx.restore();
+}
+
+function drawLeaderCallout(ctx, startX, startY, elbowX, elbowY, endX, line1, line2 = "", color = "#ffffff") {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 1.2;
+
+    ctx.beginPath();
+    ctx.arc(startX, startY, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawHandLine(ctx, startX, startY, elbowX, elbowY, 0.3, 2);
+    drawHandLine(ctx, elbowX, elbowY, endX, elbowY, 0.3, 2);
+
+    ctx.font = "bold 11px monospace";
+    const alignLeft = endX > elbowX;
+    ctx.textAlign = alignLeft ? "left" : "right";
+    const textX = alignLeft ? elbowX + 5 : elbowX - 5;
+    ctx.fillText(line1, textX, elbowY - 6);
+    if (line2) {
+        ctx.font = "9px monospace";
+        ctx.fillText(line2, textX, elbowY + 12);
+    }
+    ctx.restore();
+}
+
+function drawCrossSectionHatching(ctx, x, y, w, h, spacing = 8, angle = -Math.PI / 4, color = "rgba(255, 255, 255, 0.3)") {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    const diag = Math.sqrt(w * w + h * h) * 1.5;
+    const cx = x + w / 2;
+    const cy = y + h / 2;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+
+    for (let offset = -diag; offset <= diag; offset += spacing) {
+        const x1 = cx + offset * cos - diag * sin;
+        const y1 = cy + offset * sin + diag * cos;
+        const x2 = cx + offset * cos + diag * sin;
+        const y2 = cy + offset * sin - diag * cos;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+function drawDimensionLine(ctx, x1, y1, x2, y2, label, color = "#ffffff", tickSize = 6, bgColor = "#0d1b2a") {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 1;
+
+    drawHandLine(ctx, x1, y1, x2, y2, 0.3, 2);
+
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const tickAngle = Math.PI / 4;
+    for (const [ptX, ptY] of [[x1, y1], [x2, y2]]) {
+        ctx.beginPath();
+        ctx.moveTo(ptX - Math.cos(angle + tickAngle) * tickSize, ptY - Math.sin(angle + tickAngle) * tickSize);
+        ctx.lineTo(ptX + Math.cos(angle + tickAngle) * tickSize, ptY + Math.sin(angle + tickAngle) * tickSize);
+        ctx.stroke();
+    }
+
+    const midX = (x1 + x2) / 2;
+    const midY = (y1 + y2) / 2;
+    ctx.font = "bold 10px monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "bottom";
+
+    const textW = ctx.measureText(label).width;
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(midX - textW / 2 - 4, midY - 12, textW + 8, 13);
+
+    ctx.fillStyle = color;
+    ctx.fillText(label, midX, midY - 1);
     ctx.restore();
 }
