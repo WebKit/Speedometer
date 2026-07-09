@@ -131,9 +131,12 @@ export function generateNcursesSession() {
                 let barStr = "[";
                 for (let b = 0; b < barWidth; b++) {
                     if (b < filledWidth) {
-                        if (b < 12) barStr += rgbFg(80, 250, 120, "|"); // green
-                        else if (b < 20) barStr += rgbFg(255, 200, 50, "|"); // yellow
-                        else barStr += rgbFg(250, 70, 70, "|"); // red
+                        if (b < 12)
+                            barStr += rgbFg(80, 250, 120, "|"); // green
+                        else if (b < 20)
+                            barStr += rgbFg(255, 200, 50, "|"); // yellow
+                        else
+                            barStr += rgbFg(250, 70, 70, "|"); // red
                     } else {
                         barStr += rgbFg(60, 60, 60, " ");
                     }
@@ -152,14 +155,16 @@ export function generateNcursesSession() {
         const memBarWidth = 63;
         const memFilled = Math.floor((memPct / 100) * memBarWidth);
         let memBar = "[";
-        for (let b = 0; b < memBarWidth; b++) memBar += b < memFilled ? rgbFg(80, 200, 255, "|") : rgbFg(60, 60, 60, " ");
+        for (let b = 0; b < memBarWidth; b++)
+            memBar += b < memFilled ? rgbFg(80, 200, 255, "|") : rgbFg(60, 60, 60, " ");
 
         memBar += `] ${rgbFg(220, 220, 220, "13.6G/32.0G")}`;
         frame += `${rgbFg(100, 220, 255, "Mem  ")}${memBar}\r\n`;
 
         let swapBar = "[";
         const swapFilled = Math.floor((swapPct / 100) * memBarWidth);
-        for (let b = 0; b < memBarWidth; b++) swapBar += b < swapFilled ? rgbFg(255, 100, 200, "|") : rgbFg(60, 60, 60, " ");
+        for (let b = 0; b < memBarWidth; b++)
+            swapBar += b < swapFilled ? rgbFg(255, 100, 200, "|") : rgbFg(60, 60, 60, " ");
 
         swapBar += `] ${rgbFg(220, 220, 220, "1.92G/16.0G")}`;
         frame += `${rgbFg(100, 220, 255, "Swp  ")}${swapBar}\r\n\r\n`;
@@ -173,7 +178,8 @@ export function generateNcursesSession() {
             const proc = procList[pIdx];
             // Mutate CPU slightly
             let curCpu = proc.cpu;
-            if (proc.s === "R") curCpu = Math.max(0.1, (proc.cpu + Math.sin(frameIdx + pIdx) * 5).toFixed(1));
+            if (proc.s === "R")
+                curCpu = Math.max(0.1, (proc.cpu + Math.sin(frameIdx + pIdx) * 5).toFixed(1));
 
             const rowBg = pIdx === frameIdx % procList.length ? "\x1b[48;2;60;80;100m" : "";
             const pidStr = rgbFg(255, 180, 100, proc.pid.toString().padStart(5, " "));

@@ -25,13 +25,15 @@ const rendererType = (params.get("renderer") || "canvas").toLowerCase();
  * Initialize all 4 terminal panes and attach addons
  */
 export function initTerminals() {
-    if (isInitialized) return;
+    if (isInitialized)
+        return;
 
     const tabs = ["build", "links", "ncurses", "git"];
 
     tabs.forEach((tabId) => {
         const container = document.getElementById(`pane-${tabId}`);
-        if (!container) return;
+        if (!container)
+            return;
 
         const term = new Terminal({
             theme: {
@@ -109,19 +111,18 @@ export function initTerminals() {
     // generation, and canvas renderer warmup are covered in the setup phase.
     if (terminals.build && buildLogChunks.length > 0) {
         writeSync(terminals.build, "\x1b[36m⚡ Speedometer Terminal Emulator Suite - Initializing Build Environment...\x1b[0m\r\n\r\n");
-        for (let i = 0; i < Math.min(10, buildLogChunks.length); i++) {
+        for (let i = 0; i < Math.min(10, buildLogChunks.length); i++)
             writeSync(terminals.build, buildLogChunks[i]);
-        }
+
     }
     if (terminals.links && linksChunks.length > 0) {
         writeSync(terminals.links, "\x1b[36m🔗 Speedometer Web Links & Traces - Initializing Link Environment...\x1b[0m\r\n\r\n");
-        for (let i = 0; i < Math.min(10, linksChunks.length); i++) {
+        for (let i = 0; i < Math.min(10, linksChunks.length); i++)
             writeSync(terminals.links, linksChunks[i]);
-        }
+
     }
-    if (terminals.ncurses && ncursesFrames.length > 0) {
+    if (terminals.ncurses && ncursesFrames.length > 0)
         writeSync(terminals.ncurses, ncursesFrames[0]);
-    }
 
     // Synchronously unpause and flush all terminals during setup so texture atlases
     // and renderer backends are 100% warmed up before benchmark step measurement begins.
@@ -130,13 +131,13 @@ export function initTerminals() {
             const rs = term._core._renderService;
             if (rs._isPaused) {
                 rs._isPaused = false;
-                if (rs._charSizeService && !rs._charSizeService.hasValidSize) {
+                if (rs._charSizeService && !rs._charSizeService.hasValidSize)
                     rs._charSizeService.measure();
-                }
+
                 if (rs._needsFullRefresh) {
-                    if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function") {
+                    if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function")
                         rs._pausedResizeTask.flush();
-                    }
+
                     rs.refreshRows(0, rs._rowCount - 1);
                     rs._needsFullRefresh = false;
                 }
@@ -164,7 +165,8 @@ function tryLoadCanvas(term) {
  * forcing dirty rows and DOM elements to update immediately.
  */
 export function flushSync(term) {
-    if (!term || !term._core) return;
+    if (!term || !term._core)
+        return;
 
     // 1. Flush terminal grid renderer (RenderService / RenderDebouncer)
     if (term._core._renderService) {
@@ -185,9 +187,9 @@ export function flushSync(term) {
             window.cancelAnimationFrame(vp._refreshAnimationFrame);
             vp._refreshAnimationFrame = undefined;
         }
-        if (typeof vp._innerRefresh === "function") {
+        if (typeof vp._innerRefresh === "function")
             vp._innerRefresh();
-        }
+
     }
 
     // 3. Flush selection overlays (SelectionService)
@@ -197,9 +199,9 @@ export function flushSync(term) {
             window.cancelAnimationFrame(sel._refreshAnimationFrame);
             sel._refreshAnimationFrame = undefined;
         }
-        if (typeof sel._refresh === "function") {
+        if (typeof sel._refresh === "function")
             sel._refresh();
-        }
+
     }
 }
 
@@ -208,12 +210,13 @@ export function flushSync(term) {
  * or 12ms chunking, updating grid cells without triggering intermediate canvas redraws.
  */
 export function writeSync(term, data) {
-    if (!term) return;
-    if (term._core && term._core._writeBuffer && typeof term._core._writeBuffer.writeSync === "function") {
+    if (!term)
+        return;
+    if (term._core && term._core._writeBuffer && typeof term._core._writeBuffer.writeSync === "function")
         term._core._writeBuffer.writeSync(data);
-    } else {
+    else
         term.write(data);
-    }
+
 }
 
 /**
@@ -228,7 +231,8 @@ export function writeAndFlushSync(term, data) {
  * Switch active tab and resize terminal viewport
  */
 export function switchTab(tabId) {
-    if (!terminals[tabId]) return;
+    if (!terminals[tabId])
+        return;
 
     activeTabId = tabId;
 
@@ -243,9 +247,9 @@ export function switchTab(tabId) {
     });
 
     // Reflow and fit terminal to container
-    if (fitAddons[tabId]) {
+    if (fitAddons[tabId])
         fitAddons[tabId].fit();
-    }
+
     if (terminals[tabId]) {
         terminals[tabId].focus();
         // Immediately unpause render service and force pending layout/resize tasks
@@ -256,13 +260,13 @@ export function switchTab(tabId) {
             const rs = term._core._renderService;
             if (rs._isPaused) {
                 rs._isPaused = false;
-                if (rs._charSizeService && !rs._charSizeService.hasValidSize) {
+                if (rs._charSizeService && !rs._charSizeService.hasValidSize)
                     rs._charSizeService.measure();
-                }
+
                 if (rs._needsFullRefresh) {
-                    if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function") {
+                    if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function")
                         rs._pausedResizeTask.flush();
-                    }
+
                     rs.refreshRows(0, rs._rowCount - 1);
                     rs._needsFullRefresh = false;
                 }
@@ -275,18 +279,17 @@ export function switchTab(tabId) {
 async function finishStep() {
     // 1. Give xterm and addons initial microtask ticks to allow any pending
     // DOM observer callbacks or event listeners to push their rendering timers.
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++)
         await Promise.resolve();
-    }
 
     // 2. Loop until all scheduled xterm rendering passes, texture atlas warmups,
     // macro-task timers (setTimeout/rAF/rIC), DOM observers, and
     // asynchronous GPU texture bitmaps (createImageBitmap) have completely drained.
     let drainLimit = 300;
     while ((window.__activeTimers.size > 0 || window.__activeBitmaps.size > 0 || (window.__activeObservers && window.__activeObservers.size > 0)) && drainLimit-- > 0) {
-        if (window.__activeBitmaps.size > 0) {
+        if (window.__activeBitmaps.size > 0)
             await Promise.all(Array.from(window.__activeBitmaps));
-        }
+
         Object.values(terminals).forEach((term) => flushSync(term));
         // Yield to the browser's Macro-Task Queue so pending setTimeout(0),
         // requestAnimationFrame, and requestIdleCallback callbacks actually execute!
@@ -295,9 +298,8 @@ async function finishStep() {
 
     // 3. Final defensive settling phase: await additional microtask ticks to ensure
     // zero deferred rendering work spills over into subsequent steps or async measurement.
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 20; i++)
         await Promise.resolve();
-    }
 
     // 4. Synchronously flush all terminal renderers, viewports, and selection overlays
     // right before step completion so zero animation frames spill over into -async.
@@ -322,9 +324,9 @@ export async function dumpAndScroll() {
 
     // Write ~50% of build log chunks to target ~50ms workload complexity
     const limit = Math.min(75, buildLogChunks.length);
-    for (let i = 0; i < limit; i++) {
+    for (let i = 0; i < limit; i++)
         writeSync(term, buildLogChunks[i]);
-    }
+
     flushSync(term);
 
     // Force viewport scroll manipulations and text selection
@@ -361,9 +363,9 @@ export async function hoverInlineLinks() {
     term.clear();
     // Write ~50% of link chunks to target ~15ms workload complexity
     const limit = Math.min(40, linksChunks.length);
-    for (let i = 0; i < limit; i++) {
+    for (let i = 0; i < limit; i++)
         writeSync(term, linksChunks[i]);
-    }
+
     flushSync(term);
 
     // Simulate mouse moves across rows to trigger @xterm/addon-web-links regex matching & decorations
@@ -405,9 +407,8 @@ export async function ncursesColorUI() {
         return;
     }
 
-    for (let i = 0; i < ncursesFrames.length; i++) {
+    for (let i = 0; i < ncursesFrames.length; i++)
         writeAndFlushSync(term, ncursesFrames[i]);
-    }
 
     term.refresh(0, term.rows - 1);
     flushSync(term);
@@ -428,22 +429,21 @@ export async function switchTabsAndResize() {
             const tabId = tabs[i];
 
             // Simulate IDE sidebar toggling or panel resizing by mutating width slightly
-            if (container) {
+            if (container)
                 container.style.width = i === 0 ? "95%" : "100%";
-            }
 
             switchTab(tabId);
 
             // Write a small status ping and synchronously reflow/flush on active tab
-            if (terminals[tabId]) {
+            if (terminals[tabId])
                 writeAndFlushSync(terminals[tabId], `\x1b[2m[Tab switched to ${tabId} at ${Date.now()}]\x1b[0m\r\n`);
-            }
+
         }
     }
 
-    if (container) {
+    if (container)
         container.style.width = "100%";
-    }
+
     switchTab("build");
     await finishStep();
 }
@@ -463,7 +463,8 @@ window.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".tab").forEach((btn) => {
         btn.addEventListener("click", () => {
             const tabId = btn.getAttribute("data-tab");
-            if (tabId) switchTab(tabId);
+            if (tabId)
+                switchTab(tabId);
         });
     });
 
@@ -474,18 +475,24 @@ window.addEventListener("DOMContentLoaded", () => {
     const btnSwitch = document.getElementById("btn-switch-tabs");
     const btnLayout = document.getElementById("btn-layout");
 
-    if (btnInit) btnInit.addEventListener("click", initTerminals);
-    if (btnDump) btnDump.addEventListener("click", dumpAndScroll);
-    if (btnLinks) btnLinks.addEventListener("click", hoverInlineLinks);
-    if (btnNcurses) btnNcurses.addEventListener("click", ncursesColorUI);
-    if (btnSwitch) btnSwitch.addEventListener("click", switchTabsAndResize);
-    if (btnLayout) btnLayout.addEventListener("click", layoutCheck);
+    if (btnInit)
+        btnInit.addEventListener("click", initTerminals);
+    if (btnDump)
+        btnDump.addEventListener("click", dumpAndScroll);
+    if (btnLinks)
+        btnLinks.addEventListener("click", hoverInlineLinks);
+    if (btnNcurses)
+        btnNcurses.addEventListener("click", ncursesColorUI);
+    if (btnSwitch)
+        btnSwitch.addEventListener("click", switchTabsAndResize);
+    if (btnLayout)
+        btnLayout.addEventListener("click", layoutCheck);
 
     // Handle window resizing
     window.addEventListener("resize", () => {
-        if (fitAddons[activeTabId]) {
+        if (fitAddons[activeTabId])
             fitAddons[activeTabId].fit();
-        }
+
     });
 });
 

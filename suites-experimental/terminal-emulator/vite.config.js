@@ -16,7 +16,7 @@ function nodeModulesSourcemaps() {
             if (id.endsWith(".js") && id.includes("node_modules")) {
                 try {
                     const code = fs.readFileSync(id, "utf-8");
-                    const mapPath = id + ".map";
+                    const mapPath = `${id }.map`;
                     if (fs.existsSync(mapPath)) {
                         const map = JSON.parse(fs.readFileSync(mapPath, "utf-8"));
                         return { code, map };
@@ -46,10 +46,10 @@ export default defineConfig(({ mode }) => {
                 },
                 output: isDev
                     ? {
-                          entryFileNames: "assets/[name].js",
-                          chunkFileNames: "assets/[name].js",
-                          assetFileNames: "assets/[name].[ext]",
-                      }
+                        entryFileNames: "assets/[name].js",
+                        chunkFileNames: "assets/[name].js",
+                        assetFileNames: "assets/[name].[ext]",
+                    }
                     : undefined,
             },
         },
