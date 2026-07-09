@@ -11,7 +11,7 @@ The workload models a 1950s mid-century architectural journal and technical draf
 - **Allowed Backgrounds**: Only B&W topographic maps (`topo_map_*.webp`) and planning paper dot grids (`planning_paper_dot_grid.webp`) blended with `screen` / `color-dodge` / `overlay` (and inverted where necessary) to render as white linework on black.
 
 ### 2. Slightly Slanted Borders & Geometric Shapes
-- Containers, headers, step cards, paragraph tabs (`.step-paragraph-item`), title blocks, and callout badges must be enclosed in slightly slanted geometric shapes (-2.0° to +2.0° tilt) with asymmetric polygon borders or trapezoidal outlines.
+- Containers, headers, step cards, title blocks, and callout badges must be enclosed in slightly slanted geometric shapes (-2.0° to +2.0° tilt) with asymmetric polygon borders or trapezoidal outlines. (Note: Paragraph text is explicitly exempt from slanting and must remain vertical).
 
 ### 3. Irregular & Independent Drop Shadows (Shadow Angle ≠ Box Angle)
 - **Irregularity**: Every section, card, title block, and text badge must cast a drop shadow at an irregular distance and angle (varying between bottom-right, bottom-left, top-right, and top-left across stages).
@@ -19,8 +19,9 @@ The workload models a 1950s mid-century architectural journal and technical draf
   - In DOM/CSS, drop shadows are constructed as separate `::before` or `::after` pseudo-elements (`background: var(--shadow-solid, #222222)`) with an independent rotation variable (`--shadow-tilt`) that differs from the box rotation (`--graphic-tilt` or `--step-tilt`).
   - In Canvas and SVG, drop shadows are rendered as distinct underlying geometry rotated independently from the foreground box.
 
-### 4. 1950s Mechanical Diorama & Paragraph Tabs
-- Narrative steps use interactive diorama paragraph tabs (`.step-paragraph-item`) with mechanical tab indicators (`[ + ]`, `[ # ]`). Active tabs highlight with pure black `#000000` or `#0a0a0a` backgrounds, white `#ffffff` text/borders, and independent drop shadows.
+### 4. Vertical Standard Paragraph Text (No Separate Boxes or Animations)
+- **Standard Text Styling & Vertical Alignment**: Paragraph text (`.step-paragraph-item`, `.step-description`) must NEVER be broken into visually separate boxes, cards, or tabs. Whether a stage has a single paragraph or multiple paragraphs, all paragraph text must use standard text styling with clean vertical alignment (0° rotation, straight vertical layout).
+- **Zero Layout Animations**: Paragraph text must have 0 layout animations and 0 transforms (no translating on hover/active, no scaling, no rotating, and no drop shadows or background boxes).
 
 ### 5. Three-Tier Typography Hierarchy
 1. **Display / Titles / Badges**: Bold mid-century industrial display fonts (`Impact`, `Arial Black`, `Futura`).

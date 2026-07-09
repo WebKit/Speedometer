@@ -36,16 +36,10 @@ function renderStageSections() {
             ? stage.paragraphs
                 .map(
                     (p, pIdx) => `
-                <div class="step-paragraph-item ${pIdx === 0 ? "is-active-paragraph" : ""}" data-p-index="${pIdx}">
-                    <div class="paragraph-mech-tab">
-                        <span class="mech-tab-indicator">●</span>
-                        <span class="mech-tab-label">SCENE 0${idx + 1}-${String.fromCharCode(65 + pIdx)} // PH. 0${pIdx + 1}</span>
-                    </div>
-                    <p class="step-description">${p}</p>
-                </div>`
+                <p class="step-paragraph-item step-description ${pIdx === 0 ? "is-active-paragraph" : ""}" data-p-index="${pIdx}">${p}</p>`
                 )
                 .join("")
-            : `<div class="step-paragraph-item is-active-paragraph" data-p-index="0"><p class="step-description">${stage.description}</p></div>`;
+            : `<p class="step-paragraph-item step-description is-active-paragraph" data-p-index="0">${stage.description}</p>`;
 
         const narrativeHtml = `
             <div class="stage-narrative-column">

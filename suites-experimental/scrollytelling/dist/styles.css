@@ -584,33 +584,19 @@ body {
     line-height: 1.1;
 }
 
-/* 1950s Mechanical Diorama Paragraph Tabs (Strict Grayscale & Independent Shadows) */
+/* Standard Vertical Paragraph Text (0 Layout Animations, 0 Transforms, No Separate Boxes) */
 .step-paragraph-item {
     position: relative;
     z-index: 1;
-    margin-bottom: 0.35rem;
-    padding: 0.6rem 1rem;
-    background-color: var(--paper-light);
-    border: 2px dashed var(--ink-muted);
-    transition: all 0.35s var(--ease-out-quart);
-    opacity: 0.35;
-    transform: translateX(0px) rotate(-0.5deg);
+    margin-bottom: 1.2rem;
+    opacity: 0.45;
+    transition: opacity 0.3s ease;
     cursor: pointer;
-    overflow: visible;
-}
-
-.step-paragraph-item::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    top: 4px;
-    left: 6px;
-    width: 100%;
-    height: 100%;
-    background-color: var(--shadow-solid);
-    opacity: 0;
-    transform: rotate(1.4deg);
-    transition: opacity 0.35s var(--ease-out-quart), transform 0.35s ease;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.05rem;
+    color: var(--ink-primary);
+    line-height: 1.65;
+    font-weight: 400;
 }
 
 .step-paragraph-item:last-child {
@@ -618,61 +604,11 @@ body {
 }
 
 .step-paragraph-item:hover {
-    opacity: 0.85;
-    border-color: var(--ink-secondary);
+    opacity: 0.8;
 }
 
 .step-paragraph-item.is-active-paragraph {
     opacity: 1;
-    background-color: var(--bg-color);
-    border: 3px solid var(--ink-primary);
-    transform: translateX(10px) scale(1.02) rotate(0.4deg);
-    z-index: 5;
-}
-
-.step-paragraph-item.is-active-paragraph::after {
-    opacity: 1;
-    top: 6px;
-    left: 8px;
-    transform: rotate(-1.5deg);
-}
-
-.paragraph-mech-tab {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.2rem;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--ink-secondary);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-
-.step-paragraph-item.is-active-paragraph .paragraph-mech-tab {
-    color: var(--ink-primary);
-    font-weight: 900;
-}
-
-.mech-tab-indicator {
-    display: inline-block;
-    color: var(--ink-muted);
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.step-paragraph-item.is-active-paragraph .mech-tab-indicator {
-    color: var(--ink-primary);
-    transform: scale(1.3);
-}
-
-.step-description {
-    margin-bottom: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    font-size: 1.05rem;
-    color: var(--ink-primary);
-    line-height: 1.65;
-    font-weight: 400;
 }
 
 /* Step Specs (1950s Slanted Print Data Box with Independent Shadow) */
