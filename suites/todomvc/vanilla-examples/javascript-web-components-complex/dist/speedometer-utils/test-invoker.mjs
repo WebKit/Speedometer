@@ -1,13 +1,11 @@
-class TestInvoker {
+class StepScheduler {
     constructor(syncCallback, asyncCallback, reportCallback, params) {
         this._syncCallback = syncCallback;
         this._asyncCallback = asyncCallback;
         this._reportCallback = reportCallback;
         this._params = params;
     }
-}
 
-class BaseRAFTestInvoker extends TestInvoker {
     start() {
         return new Promise((resolve) => {
             if (this._params.waitBeforeSync)
@@ -18,7 +16,7 @@ class BaseRAFTestInvoker extends TestInvoker {
     }
 }
 
-class RAFTestInvoker extends BaseRAFTestInvoker {
+class RAFStepScheduler extends StepScheduler {
     _scheduleCallbacks(resolve) {
         requestAnimationFrame(() => this._syncCallback());
         requestAnimationFrame(() => {
@@ -33,7 +31,7 @@ class RAFTestInvoker extends BaseRAFTestInvoker {
     }
 }
 
-class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
+class AsyncRAFStepScheduler extends StepScheduler {
     static mc = new MessageChannel();
     _scheduleCallbacks(resolve) {
         let gotTimer = false;
@@ -46,8 +44,8 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
 
             this._asyncCallback();
             setTimeout(async () => {
-                await this._reportCallback();
-                resolve();
+                const results = await this._reportCallback();
+                resolve(results);
             }, 0);
         };
 
@@ -64,7 +62,7 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
                 tryTriggerAsyncCallback();
             });
 
-            AsyncRAFTestInvoker.mc.port1.addEventListener(
+            AsyncRAFStepScheduler.mc.port1.addEventListener(
                 "message",
                 async function () {
                     await Promise.resolve();
@@ -73,14 +71,14 @@ class AsyncRAFTestInvoker extends BaseRAFTestInvoker {
                 },
                 { once: true }
             );
-            AsyncRAFTestInvoker.mc.port1.start();
-            AsyncRAFTestInvoker.mc.port2.postMessage("speedometer");
+            AsyncRAFStepScheduler.mc.port1.start();
+            AsyncRAFStepScheduler.mc.port2.postMessage("speedometer");
         });
     }
 }
 
-export const TEST_INVOKER_LOOKUP = {
+export const STEP_SCHEDULER_LOOKUP = {
     __proto__: null,
-    raf: RAFTestInvoker,
-    async: AsyncRAFTestInvoker,
+    raf: RAFStepScheduler,
+    async: AsyncRAFStepScheduler,
 };

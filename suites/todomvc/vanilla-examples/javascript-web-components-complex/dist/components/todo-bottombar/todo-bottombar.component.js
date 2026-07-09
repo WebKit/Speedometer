@@ -1,7 +1,7 @@
 import template from "./todo-bottombar.template.js";
 
-import globalStyles from "../../styles/global.constructable.js";
-import bottombarStyles from "../../styles/bottombar.constructable.js";
+import globalStyles from "../../../styles/global.constructable.js";
+import bottombarStyles from "../../../styles/bottombar.constructable.js";
 
 const customStyles = new CSSStyleSheet();
 customStyles.replaceSync(`
