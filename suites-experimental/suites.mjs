@@ -23,13 +23,11 @@ export const ExperimentalSuites = freezeSuites([
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
                 const checkboxes = page.querySelectorAll(".toggle");
-                for (let i = 0; i < numberOfItemsToAdd; i++)
-                    checkboxes[i].click();
+                for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
                 const deleteButtons = page.querySelectorAll(".destroy");
-                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
-                    deleteButtons[i].click();
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
             }),
         ],
     },
@@ -93,13 +91,11 @@ export const ExperimentalSuites = freezeSuites([
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
                 const checkboxes = page.querySelectorAll(".toggle");
-                for (let i = 0; i < numberOfItemsToAdd; i++)
-                    checkboxes[i].click();
+                for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
                 const deleteButtons = page.querySelectorAll(".destroy");
-                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
-                    deleteButtons[i].click();
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
             }),
         ],
     },
@@ -122,13 +118,11 @@ export const ExperimentalSuites = freezeSuites([
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
                 const checkboxes = page.querySelectorAll(".toggle");
-                for (let i = 0; i < numberOfItemsToAdd; i++)
-                    checkboxes[i].click();
+                for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
                 const deleteButtons = page.querySelectorAll(".destroy");
-                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
-                    deleteButtons[i].click();
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
             }),
         ],
     },
@@ -204,8 +198,7 @@ export const ExperimentalSuites = freezeSuites([
                 for (const width of widths) {
                     page.setWidth(width);
                     page.layout();
-                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT)
-                        await resizeWorkPromise;
+                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT) await resizeWorkPromise;
                 }
 
                 await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
@@ -263,11 +256,49 @@ export const ExperimentalSuites = freezeSuites([
                 for (const width of widths) {
                     page.setWidth(width);
                     page.layout();
-                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT)
-                        await resizeWorkPromise;
+                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT) await resizeWorkPromise;
                 }
 
                 await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            }),
+        ],
+    },
+    {
+        name: "Terminal-Xterm",
+        url: "suites-experimental/terminal-emulator/dist/index.html",
+        tags: ["terminal", "xterm", "experimental"],
+        type: "async",
+        async prepare(page) {
+            await page.waitForElement("#terminal-container");
+        },
+        tests: [
+            new BenchmarkTestStep("DumpAndScrollOutput", async (page) => {
+                const stepComplete = new Promise((resolve) => {
+                    page.addEventListener("step-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-dump-scroll").click();
+                await stepComplete;
+            }),
+            new BenchmarkTestStep("ParseAndHoverInlineLinks", async (page) => {
+                const stepComplete = new Promise((resolve) => {
+                    page.addEventListener("step-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-hover-links").click();
+                await stepComplete;
+            }),
+            new BenchmarkTestStep("NcursesColorUI", async (page) => {
+                const stepComplete = new Promise((resolve) => {
+                    page.addEventListener("step-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-ncurses").click();
+                await stepComplete;
+            }),
+            new BenchmarkTestStep("SwitchTabsAndResize", async (page) => {
+                const stepComplete = new Promise((resolve) => {
+                    page.addEventListener("step-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-switch-tabs").click();
+                await stepComplete;
             }),
         ],
     },
