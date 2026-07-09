@@ -112,8 +112,8 @@ const importsToRename = [
         files: ["./dist/index.html"],
     },
     {
-        src: "src=\"src/",
-        dest: "src=\"",
+        src: 'src="src/',
+        dest: 'src="',
         files: ["./dist/index.html"],
     },
     {
