@@ -201,6 +201,35 @@ function drawColorizedBackground(ctx, bgKey, x, y, w, h, color, wcKey = "wcWash"
     ctx.restore();
 }
 
+function drawTailoredWatercolor(ctx, x, y, w, h, color, wcKey = "wcWash", prog = 1.0) {
+    const wcImg = getOrLoadImage(wcKey);
+    if (!wcImg || !wcImg.complete || wcImg.naturalWidth === 0)
+        return;
+
+    const clampedProg = Math.max(0, Math.min(1, prog));
+    if (clampedProg <= 0)
+        return;
+
+    const off = getOffscreenCanvas(Math.max(1, Math.floor(w)), Math.max(1, Math.floor(h)));
+    if (off) {
+        const octx = off.getContext("2d");
+        octx.save();
+        octx.globalCompositeOperation = "source-over";
+        octx.clearRect(0, 0, off.width, off.height);
+        octx.drawImage(wcImg, 0, 0, off.width, off.height);
+        octx.fillStyle = color;
+        octx.globalCompositeOperation = "source-in";
+        octx.fillRect(0, 0, off.width, off.height);
+        octx.restore();
+
+        ctx.save();
+        ctx.globalAlpha = 0.85 * Math.pow(clampedProg, 1.2);
+        ctx.globalCompositeOperation = "screen";
+        ctx.drawImage(off, x, y, w, h);
+        ctx.restore();
+    }
+}
+
 let stageGraphics = [];
 
 export function initGraphics() {
@@ -936,7 +965,7 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Timber Clearing & Homestead Footprint Stakeout (Solid Construction / Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 220, 360, 360, 80, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
 
                 // Staked 320 sq. ft. clearing footprint dropping into place during assemblyProg
                 const dropY = (1 - easeOutQuart(assemblyProg)) * 40;
@@ -965,7 +994,7 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Hewn Log Carpentry & Interlocking Notched Joints (Solid Construction)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 170, 240, 460, 160, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
 
                 // Foreground hewn oak log wall assembly on mechanical tracks
                 const maxLogs = 6;
@@ -997,7 +1026,8 @@ const STAGE_HANDLERS = [
             } else {
                 // P2: Subterranean Dug Well & Dry-Laid Fieldstone Hearth (Geology & Utilities)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 110, 390, 90, 160, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
+                drawTailoredWatercolor(ctx, 490, 140, 120, 270, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
 
                 // Log cabin slid back to 25% opacity
                 ctx.save();
@@ -1088,7 +1118,7 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Geological Strata Profile (Geology & Subsoil Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 110, 290, 580, 190, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
 
                 // Excavation profile cutting deeper into bedrock during assemblyProg
                 const excavDepth = 180 * easeOutQuart(assemblyProg);
@@ -1113,7 +1143,7 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Dry-Laid Fieldstone Footings & Gravity Keying (Solid Construction)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 110, 370, 580, 140, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
                 drawDioramaPlatform(ctx, 120, 380, 560, 120, 20, "#111111", "#ffffff", 0.03);
                 drawMasonryHatch(ctx, 120, 380, 560, 120, true); // Bedrock base
 
@@ -1144,7 +1174,7 @@ const STAGE_HANDLERS = [
             } else {
                 // P2: Gravity-Driven Drainage Trenching & Hydrological Flow (Geology & Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 130, 310, 540, 180, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
                 const trenchW = 520 * easeOutQuart(assemblyProg);
                 drawDioramaPlatform(ctx, 140, 320, trenchW, 160, 20, "#111111", "#ffffff", -0.035);
                 drawMasonryHatch(ctx, 180, 340, Math.min(440, trenchW - 40), 100); // Footings inside
@@ -1212,7 +1242,7 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Steam-Milled Balloon Framing Assembly (Solid Construction)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "grid", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 110, 180, 580, 280, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 drawDioramaPlatform(ctx, 120, 450, 560, 40, 20, "#111111", "#ffffff", 0.03);
                 // 2x4 vertical studs erecting from 2x6 sill plate to double top plate during assemblyProg
                 const maxStudH = 260;
@@ -1236,7 +1266,7 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Industrial Metallurgy - Lintel & Tie-Rods (Solid Construction & Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 140, 220, 520, 240, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 // Background studs in 25% opacity
                 ctx.save();
                 ctx.globalAlpha = 0.25;
@@ -1274,7 +1304,7 @@ const STAGE_HANDLERS = [
             } else {
                 // P2: Mechanized Pump & Indoor Copper Plumbing (Infrastructure Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 250, 220, 140, 240, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 drawDioramaPlatform(ctx, 160, 360, 480, 120, 20, "#111111", "#ffffff", -0.03);
 
                 // Deep aquifer borehole & pump mechanism assemble during assemblyProg
@@ -1347,7 +1377,7 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Agrarian Complex Expansion & Site Plan Layout (Solid Construction / Planning)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 130, 260, 540, 130, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
                 drawDioramaPlatform(ctx, 80, 380, 640, 100, 20, "#111111", "#ffffff", 0.035);
                 // Central homestead dwelling
                 drawSketchRect(ctx, 350, 310, 100, 70);
@@ -1372,7 +1402,7 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Dry-Stone Boundary Walls & Wildlife Microhabitats (Solid Construction & Ecology)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 110, 380, 580, 40, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
                 // Buildings in soft background
                 ctx.save();
                 ctx.globalAlpha = 0.25;
@@ -1406,7 +1436,7 @@ const STAGE_HANDLERS = [
             } else {
                 // P2: Structured Irrigation Sluice & Weir Gate Control (Hydraulic Engineering Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 170, 250, 460, 180, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 340, 520, 140, 20, "#111111", "#ffffff", -0.03);
 
                 // Stone-lined sluice channel & timber weir gate frame assembling during assemblyProg
@@ -1481,7 +1511,7 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Cultivation Ceased & Architectural Weathering (Structural Degradation)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 210, 210, 380, 150, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 350, 520, 120, 20, "#111111", "#ffffff", 0.03);
                 // Building facade moves into position during assemblyProg
                 const dropY = (1 - easeOutQuart(assemblyProg)) * 30;
@@ -1507,7 +1537,7 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Roof Sag Deflection & Lime Mortar Leaching (Structural Failure Analysis)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 170, 250, 460, 120, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 360, 520, 120, 20, "#111111", "#ffffff", 0.035);
                 drawSketchRect(ctx, 200, 260, 400, 100);
                 drawMasonryHatch(ctx, 200, 260, 400, 100, true);
@@ -1538,7 +1568,7 @@ const STAGE_HANDLERS = [
             } else {
                 // P2: Ecological Succession & Botanical Reclamation (Ecology & Overgrowth Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 190, 210, 420, 160, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 360, 520, 120, 20, "#111111", "#ffffff", -0.03);
                 drawSketchRect(ctx, 200, 260, 400, 100);
                 drawMasonryHatch(ctx, 200, 260, 400, 100, true);
@@ -1624,7 +1654,7 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Technical Blueprint Overlays & Survey Assessment (Diagnostics Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "grid", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 170, 230, 460, 220, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 360, 520, 100, 20, "#111111", "#ffffff", 0.035);
                 drawSketchRect(ctx, 200, 260, 400, 100);
 
@@ -1652,7 +1682,7 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Hydraulic Jacking & Steel Lintel / C-Channel Insertion (Solid Construction & Engineering)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 170, 250, 460, 140, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 380, 520, 80, 20, "#111111", "#ffffff", 0.03);
 
                 // During assemblyProg: Sagging joists physically lifting back to horizontal level via hydraulic jacks
@@ -1684,7 +1714,7 @@ const STAGE_HANDLERS = [
             } else {
                 // P2: Epoxy Resin Splicing & Reclaimed Hardwood Joinery (Solid Construction & Code Compliance)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 210, 270, 380, 100, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg);
                 drawDioramaPlatform(ctx, 160, 360, 480, 100, 20, "#111111", "#ffffff", -0.035);
 
                 // Macro cutaway of timber sill with rotted section removed; hardwood splice block inserting
@@ -1751,7 +1781,7 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Closed-Cell Thermal Envelope (High-Performance Insulation Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 170, 210, 440, 160, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 360, 520, 100, 20, "#111111", "#ffffff", 0.035);
 
                 // Wall stud framing cavities move into place during assemblyProg
@@ -1787,7 +1817,7 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Triple-Pane Low-E Argon Glazing (Fenestration Engineering Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 320, 210, 200, 180, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 drawDioramaPlatform(ctx, 160, 380, 480, 80, 20, "#111111", "#ffffff", 0.03);
 
                 // During assemblyProg: Old window sash sliding out left, new high-performance window sliding in right
@@ -1818,7 +1848,7 @@ const STAGE_HANDLERS = [
             } else {
                 // P2: Geothermal Bedrock Loops & Rooftop Solar PV (Renewable Energy Engineering)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 230, 150, 340, 320, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg);
                 drawDioramaPlatform(ctx, 140, 280, 520, 60, 20, "#111111", "#ffffff", -0.035);
 
                 // Subterranean 400-ft geothermal bore loop moving into bedrock during assemblyProg
@@ -1898,7 +1928,7 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Minimalist Architectural Synthesis (Historic Hearth Monument in Light)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 150, 210, 300, 160, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
                 drawDioramaPlatform(ctx, 120, 360, 560, 100, 20, "#111111", "#ffffff", 0.035);
 
                 // During assemblyProg: Restored 1780 hearth and timbers sliding into gallery spotlight
@@ -1921,7 +1951,7 @@ const STAGE_HANDLERS = [
             } else if (phase.idx === 1) {
                 // P1: Cantilevered Black Steel & Frameless Glass (Structural Engineering Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 250, 230, 380, 160, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
                 drawDioramaPlatform(ctx, 120, 380, 560, 80, 20, "#111111", "#ffffff", 0.03);
                 drawSketchRect(ctx, 140, 240, 120, 140); // Core masonry left
 
@@ -1952,7 +1982,7 @@ const STAGE_HANDLERS = [
             } else {
                 // P2: Living Architecture in Riparian Landscape (Site Synthesis Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
+                drawTailoredWatercolor(ctx, 150, 250, 460, 160, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg);
                 drawDioramaPlatform(ctx, 100, 360, 600, 100, 20, "#111111", "#ffffff", -0.035);
 
                 // During assemblyProg: Full residence moves into wide isometric site synthesis view
