@@ -934,52 +934,43 @@ const STAGE_HANDLERS = [
             drawMechanicalTrack(ctx, 120, 425, 680, 425, "rgba(255, 255, 255, 0.35)");
 
             if (phase.idx === 0) {
-                // P0: Timber Clearing & Shelter
+                // P0: Timber Clearing & Homestead Footprint Stakeout (Solid Construction / Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "circular", { cx: width / 2, cy: height / 2 });
-                const treesStanding = Math.max(1, 5 - Math.floor(secondaryProg * 4.5));
-                for (let t = 0; t < 5; t++) {
-                    const tx = 150 + t * 110;
-                    const dropY = (1 - easeOutQuart(assemblyProg)) * 60;
-                    ctx.save();
-                    ctx.translate(0, -dropY);
-                    if (t < treesStanding) {
-                        // Standing tree pop-up
-                        ctx.fillStyle = "#cccccc";
-                        ctx.beginPath();
-                        ctx.moveTo(tx, 400);
-                        ctx.lineTo(tx - 35, 290);
-                        ctx.lineTo(tx - 15, 290);
-                        ctx.lineTo(tx - 30, 230);
-                        ctx.lineTo(tx, 160);
-                        ctx.lineTo(tx + 30, 230);
-                        ctx.lineTo(tx + 15, 290);
-                        ctx.lineTo(tx + 35, 290);
-                        ctx.closePath();
-                        ctx.fill();
-                        ctx.stroke();
-                    } else {
-                        // Felled tree folded on guide track
-                        drawSketchRect(ctx, tx - 40, 410, 80, 16);
-                        drawCrossSectionHatching(ctx, tx - 40, 410, 80, 16, 6, Math.PI / 4, "rgba(204, 204, 204, 0.4)");
-                    }
-                    ctx.restore();
+                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
+
+                // Staked 320 sq. ft. clearing footprint dropping into place during assemblyProg
+                const dropY = (1 - easeOutQuart(assemblyProg)) * 40;
+                ctx.save();
+                ctx.translate(0, -dropY);
+                drawSketchRect(ctx, 220, 400, 360, 40);
+                drawEarthHatch(ctx, 220, 400, 360, 40, "rgba(255, 255, 255, 0.25)");
+                ctx.strokeRect(260, 380, 280, 20); // Timber sill layout
+                ctx.restore();
+
+                // Secondary animation: Survey alignment reticles and clearing boundary dimensions
+                if (secondaryProg > 0) {
+                    ctx.strokeStyle = "#cccccc";
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([4, 4]);
+                    ctx.beginPath();
+                    ctx.moveTo(140, 390);
+                    ctx.lineTo(140 + 520 * secondaryProg, 390);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    drawSurveyReticle(ctx, 180, 380, 16 * secondaryProg, "BM #101 / 1780", "#ffffff");
+                    drawSurveyReticle(ctx, 620, 380, 16 * secondaryProg, "CORNER STAKE", "#ffffff");
                 }
-                drawDimensionLine(ctx, 160, 450, 620, 450, "320 SQ. FT. CLEARING", "#ffffff", 6, "#ffffff");
-                drawSurveyReticle(ctx, 110, 140, 24, "BM #101 / 1780", "#ffffff");
+                drawDimensionLine(ctx, 260, 450, 540, 450, "320 SQ. FT. SURVey STAKED HOMESTEAD FOOTPRINT", "#ffffff", 6, "#ffffff");
 
             } else if (phase.idx === 1) {
-                // P1: Hewn Log Carpentry & Chinking
+                // P1: Hewn Log Carpentry & Interlocking Notched Joints (Solid Construction)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc1", secondaryProg, "slide", { direction: "left-to-right" });
-                // Background trees folded
-                for (let t = 0; t < 5; t++)
-                    drawSketchRect(ctx, 150 + t * 110 - 35, 385, 70, 12);
+                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
 
-                // Foreground log cabin assembly on mechanical tracks
+                // Foreground hewn oak log wall assembly on mechanical tracks
                 const maxLogs = 6;
                 const logsToShow = Math.min(maxLogs, Math.floor(assemblyProg * maxLogs) + 1);
-                const logH = 24;
+                const logH = 26;
                 for (let l = 0; l < logsToShow; l++) {
                     const ly = 400 - (l + 1) * logH;
                     const dropOffset = l === logsToShow - 1 ? (1 - (assemblyProg * maxLogs % 1)) * 30 : 0;
@@ -987,55 +978,61 @@ const STAGE_HANDLERS = [
                     ctx.translate(0, -dropOffset);
                     drawSketchRect(ctx, 180, ly, 440, logH - 2);
                     drawMasonryHatch(ctx, 180, ly, 440, logH - 2);
-                    // Interlocking corner notches
-                    ctx.strokeRect(172, ly, 10, logH);
-                    ctx.strokeRect(618, ly, 10, logH);
-                    // Chinking in charcoal grayscale (secondary animation)
+                    // Interlocking corner notches without iron nails
+                    ctx.strokeRect(172, ly, 12, logH);
+                    ctx.strokeRect(616, ly, 12, logH);
+                    // Secondary animation: Rammed moss & clay chinking insulation
                     if (l > 0 && secondaryProg > 0) {
                         ctx.strokeStyle = "#cccccc";
-                        ctx.lineWidth = 2 * secondaryProg;
-                        drawHandLine(ctx, 190, ly + logH - 1, 610, ly + logH - 1, 0.8, 8);
+                        ctx.lineWidth = 3 * secondaryProg;
+                        drawHandLine(ctx, 190, ly + logH - 1, 610, ly + logH - 1, 0.5, 6);
                     }
                     ctx.restore();
                 }
-                drawDimensionLine(ctx, 180, 450, 620, 450, "ISOMETRIC LOG CARPENTRY", "#ffffff", 6, "#ffffff");
+                if (secondaryProg > 0.3) {
+                    drawDimensionLine(ctx, 172, 230, 200, 230, "INTERLOCKING NOTCH JOINT - NO IRON NAILS", "#ffffff", 6, "#ffffff");
+                }
+                drawDimensionLine(ctx, 180, 450, 620, 450, "BROADAXE HEWN OAK LOG CARPENTRY & CHINKING", "#ffffff", 6, "#ffffff");
 
             } else {
-                // P2: Subterranean Well & Fieldstone Hearth
+                // P2: Subterranean Dug Well & Dry-Laid Fieldstone Hearth (Geology & Utilities)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc2", secondaryProg, "fade");
-                // Log cabin slid back to 30% opacity
+                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
+
+                // Log cabin slid back to 25% opacity
                 ctx.save();
-                ctx.globalAlpha = 0.3;
-                drawSketchRect(ctx, 220, 260, 360, 140);
-                drawMasonryHatch(ctx, 220, 260, 360, 140);
+                ctx.globalAlpha = 0.25;
+                drawSketchRect(ctx, 240, 260, 320, 140);
+                drawMasonryHatch(ctx, 240, 260, 320, 140);
                 ctx.restore();
 
-                // Cutaway well shaft on left
+                // Cutaway subterranean well shaft tapping water table on left
                 const wellDepth = 150 * easeOutQuart(assemblyProg);
-                drawSketchRect(ctx, 120, 400, 60, wellDepth);
-                drawEarthHatch(ctx, 120, 400, 60, wellDepth, "rgba(204, 204, 204, 0.6)");
+                drawSketchRect(ctx, 120, 400, 70, wellDepth);
+                drawEarthHatch(ctx, 120, 400, 70, wellDepth, "rgba(204, 204, 204, 0.6)");
                 if (secondaryProg > 0) {
                     ctx.fillStyle = "#cccccc";
-                    ctx.fillRect(124, 400 + wellDepth - (20 * secondaryProg), 52, 18 * secondaryProg); // Water table
+                    ctx.fillRect(124, 400 + wellDepth - (25 * secondaryProg), 62, 22 * secondaryProg); // Surface water table
                 }
 
-                // Dry-laid fieldstone hearth on right
-                const hearthH = 250 * easeOutQuart(assemblyProg);
+                // Massive dry-laid fieldstone hearth & chimney stack on right
+                const hearthH = 260 * easeOutQuart(assemblyProg);
                 const hearthY = 400 - hearthH;
-                drawSketchRect(ctx, 520, hearthY, 90, hearthH);
-                drawMasonryHatch(ctx, 520, hearthY, 90, hearthH, true);
-                // Grayscale radiation lines (secondary animation)
+                drawSketchRect(ctx, 500, hearthY, 100, hearthH);
+                drawMasonryHatch(ctx, 500, hearthY, 100, hearthH, true);
+
+                // Secondary animation: Thermal heating radiation vectors
                 if (secondaryProg > 0) {
                     ctx.strokeStyle = "#666666";
                     ctx.lineWidth = 2;
                     for (let r = 1; r <= 3; r++) {
                         ctx.beginPath();
-                        ctx.arc(565, 380, r * 15 * secondaryProg, Math.PI, 1.5 * Math.PI);
+                        ctx.arc(550, 360, r * 18 * secondaryProg, Math.PI, 1.5 * Math.PI);
                         ctx.stroke();
                     }
                 }
-                drawDimensionLine(ctx, 520, 450, 610, 450, "HEARTH ELEV.", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 120, 460, 190, 460, "DUG WELL WATER TABLE", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 500, 460, 600, 460, "DRY-LAID FIELDSTONE HEARTH", "#ffffff", 6, "#ffffff");
             }
 
             const titles = ["TIMBER CLEARING", "LOG CARPENTRY & CHINKING", "WELL & FIELDSTONE HEARTH"];
@@ -1089,51 +1086,70 @@ const STAGE_HANDLERS = [
                 drawHandLine(ctx, 0, y, width, y, 0.2, 2);
 
             if (phase.idx === 0) {
-                // P0: Subterranean Bedrock & Clay Subsoils
+                // P0: Geological Strata Profile (Geology & Subsoil Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "slide", { direction: "left-to-right" });
-                const split = 60 * (1 - easeOutQuart(assemblyProg));
-                drawDioramaPlatform(ctx, 100 - split, 300, 280, 180, 20, "#111111", "#ffffff", -0.025);
-                drawEarthHatch(ctx, 100 - split, 300, 280, 100, "rgba(255, 255, 255, 0.25)"); // Topsoil
-                if (secondaryProg > 0) {
-                    drawCrossSectionHatching(ctx, 100 - split, 400, 280, 80 * secondaryProg, 8, Math.PI / 4, "rgba(204, 204, 204, 0.4)"); // Clay
+                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
+
+                // Excavation profile cutting deeper into bedrock during assemblyProg
+                const excavDepth = 180 * easeOutQuart(assemblyProg);
+                drawDioramaPlatform(ctx, 120, 300, 560, excavDepth, 20, "#111111", "#ffffff", -0.025);
+                drawEarthHatch(ctx, 120, 300, 560, Math.min(60, excavDepth), "rgba(255, 255, 255, 0.25)"); // Topsoil
+                if (excavDepth > 60) {
+                    drawCrossSectionHatching(ctx, 120, 360, 560, Math.min(60, excavDepth - 60), 8, Math.PI / 4, "rgba(204, 204, 204, 0.4)"); // Impervious Clay
+                }
+                if (excavDepth > 120) {
+                    drawMasonryHatch(ctx, 120, 420, 560, excavDepth - 120, true); // Metamorphic Granite Bedrock
                 }
 
-                drawDioramaPlatform(ctx, 420 + split, 300, 280, 180, 20, "#111111", "#ffffff", 0.04);
-                drawMasonryHatch(ctx, 420 + split, 300, 280, 180, true); // Bedrock granite
-                drawDimensionLine(ctx, 100, 510, 700, 510, "GEOLOGICAL STRATA EXCAVATION MODEL", "#ffffff", 6, "#ffffff");
+                // Secondary animation: Geological strata elevation datums
+                if (secondaryProg > 0) {
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 1.5;
+                    drawHandLine(ctx, 120, 360, 680, 360, 0.2, 2); // Clay contact
+                    drawHandLine(ctx, 120, 420, 680, 420, 0.2, 2); // Bedrock contact
+                }
+                drawDimensionLine(ctx, 120, 510, 680, 510, "GEOLOGICAL STRATA PROFILE EXCAVATION (BEDROCK & CLAY)", "#ffffff", 6, "#ffffff");
 
             } else if (phase.idx === 1) {
-                // P1: Dry-Laid Fieldstone Footings
+                // P1: Dry-Laid Fieldstone Footings & Gravity Keying (Solid Construction)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wc3", secondaryProg, "circular", { cx: width / 2, cy: height / 2 });
+                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 120, 380, 560, 120, 20, "#111111", "#ffffff", 0.03);
                 drawMasonryHatch(ctx, 120, 380, 560, 120, true); // Bedrock base
 
-                // Glacial erratic footings dropping from chutes
+                // Glacial erratics dry-laid and keyed onto bedrock during assemblyProg
                 const stones = Math.floor(assemblyProg * 8) + 1;
                 for (let s = 0; s < Math.min(8, stones); s++) {
                     const sx = 160 + s * 60;
-                    const sy = 330;
+                    const sy = 320;
                     const dropY = (s === stones - 1) ? (1 - (assemblyProg * 8 % 1)) * 40 : 0;
                     ctx.save();
                     ctx.translate(0, -dropY);
-                    drawSketchRect(ctx, sx, sy, 50, 50);
-                    drawMasonryHatch(ctx, sx, sy, 50, 50);
-                    ctx.strokeRect(sx - 2, sy - 2, 54, 54);
+                    drawSketchRect(ctx, sx, sy, 54, 60);
+                    drawMasonryHatch(ctx, sx, sy, 54, 60);
+                    ctx.strokeRect(sx - 2, sy - 2, 58, 64);
                     ctx.restore();
                 }
-                drawDimensionLine(ctx, 160, 310, 620, 310, "DRY-LAID GRAVITY KEYED FOOTINGS", "#ffffff", 6, "#ffffff");
+
+                // Secondary animation: Gravity keying load vectors and frost heave resistance
+                if (secondaryProg > 0) {
+                    ctx.strokeStyle = "#cccccc";
+                    ctx.lineWidth = 2.5 * secondaryProg;
+                    for (let s = 0; s < 8; s += 2) {
+                        drawHandLine(ctx, 187 + s * 60, 300, 187 + s * 60, 330, 0.2, 2); // Downward load
+                    }
+                }
+                drawDimensionLine(ctx, 160, 300, 620, 300, "DRY-LAID GRAVITY KEYED FOOTINGS - BASE THICKNESS 2'-6\"", "#ffffff", 6, "#ffffff");
 
             } else {
-                // P2: Gravity-Driven Drainage Trenching
+                // P2: Gravity-Driven Drainage Trenching & Hydrological Flow (Geology & Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "slide", { direction: "top-to-bottom" });
+                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
                 const trenchW = 520 * easeOutQuart(assemblyProg);
                 drawDioramaPlatform(ctx, 140, 320, trenchW, 160, 20, "#111111", "#ffffff", -0.035);
                 drawMasonryHatch(ctx, 180, 340, Math.min(440, trenchW - 40), 100); // Footings inside
 
-                // Perimeter sloped drainage trench
+                // Perimeter sloped drainage trench with crushed gravel bed
                 ctx.strokeStyle = "#cccccc";
                 ctx.lineWidth = 4;
                 ctx.beginPath();
@@ -1141,7 +1157,7 @@ const STAGE_HANDLERS = [
                 ctx.lineTo(140 + trenchW, 460 + (trenchW / 520) * 30); // Gravity slope
                 ctx.stroke();
 
-                // Animated water flow particles along trench in grayscale (secondary animation)
+                // Secondary animation: Hydrological groundwater flow arrows draining away from foundation
                 if (secondaryProg > 0) {
                     const offset = (secondaryProg * 300) % 520;
                     ctx.fillStyle = "#cccccc";
@@ -1155,7 +1171,7 @@ const STAGE_HANDLERS = [
                         }
                     }
                 }
-                drawDimensionLine(ctx, 140, 520, 660, 520, "GRAVITY DRAINAGE HYDROLOGICAL SLOPE", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 140, 520, 660, 520, "GRAVITY DRAINAGE HYDROLOGICAL SLOPE & RUNOFF DIVERSION", "#ffffff", 6, "#ffffff");
             }
 
             const titles = ["BEDROCK & CLAY SUBSOILS", "DRY-LAID STONE FOOTINGS", "GRAVITY DRAINAGE TRENCHING"];
@@ -1194,99 +1210,102 @@ const STAGE_HANDLERS = [
             ctx.lineWidth = 1.8;
 
             if (phase.idx === 0) {
-                // P0: Steam-Milled Balloon Framing
+                // P0: Steam-Milled Balloon Framing Assembly (Solid Construction)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "grid", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "slide", { direction: "top-to-bottom" });
+                drawColorizedBackground(ctx, "grid", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 120, 450, 560, 40, 20, "#111111", "#ffffff", 0.03);
-                // 8 vertical studs shooting up on tracks during assemblyProg
+                // 2x4 vertical studs erecting from 2x6 sill plate to double top plate during assemblyProg
                 const maxStudH = 260;
                 const studH = maxStudH * easeOutQuart(assemblyProg);
                 for (let s = 0; s < 8; s++) {
                     const sx = 150 + s * 70;
                     ctx.strokeRect(sx - 6, 450 - studH, 12, studH);
                     drawHandLine(ctx, sx, 450, sx, 450 - studH, 0.2, 2);
-                    // Secondary animation: Cut wire nail connection points and bracing
+                    // Secondary animation: Mass-produced cut wire nails and diagonal wind-bracing
                     if (secondaryProg > 0) {
                         ctx.fillStyle = "#cccccc";
-                        ctx.fillRect(sx - 2, 446, 4, 4 * secondaryProg);
+                        ctx.fillRect(sx - 2, 446, 4, 4 * secondaryProg); // Wire nail connection
                         if (s < 7) {
-                            drawHandLine(ctx, sx + 6, 450 - studH * 0.5, sx + 64, 450 - studH * 0.5, 0.2, 2);
+                            drawHandLine(ctx, sx + 6, 450 - studH * 0.6, sx + 64, 450 - studH * 0.4, 0.2, 2 * secondaryProg);
                         }
                         ctx.fillStyle = "#ffffff";
                     }
                 }
-                drawDimensionLine(ctx, 150, 470, 640, 470, "STEAM-MILLED DIMENSIONED BALLOON FRAMING", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 150, 470, 640, 470, "STEAM-MILLED BALLOON FRAMING STUDS @ 16\" O.C.", "#ffffff", 6, "#ffffff");
 
             } else if (phase.idx === 1) {
-                // P1: Industrial Metallurgy & Parlor Expansions
+                // P1: Industrial Metallurgy - Lintel & Tie-Rods (Solid Construction & Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "slide", { direction: "center-out" });
-                // Background studs dimmed
+                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
+                // Background studs in 25% opacity
                 ctx.save();
                 ctx.globalAlpha = 0.25;
                 for (let s = 0; s < 8; s++)
                     ctx.strokeRect(150 + s * 70 - 6, 190, 12, 260);
                 ctx.restore();
 
-                // Wrought iron tie-rods and cast-iron lintels sliding horizontally during assemblyProg
+                // Wrought iron tie-rods and cast-iron lintel beam sliding into place during assemblyProg
                 const spanW = 500 * easeOutQuart(assemblyProg);
                 ctx.strokeStyle = "#cccccc";
                 ctx.lineWidth = 4;
-                ctx.strokeRect(150, 240, spanW, 16);
-                drawSteelHatch(ctx, 150, 240, spanW, 16);
+                ctx.strokeRect(150, 230, spanW, 20);
+                drawSteelHatch(ctx, 150, 230, spanW, 20);
 
-                // Expansive parlor window pop-up and light beams (secondary animation)
+                // Expansive parlor window opening and turnbuckle tension reinforcement
                 if (secondaryProg > 0) {
                     const winProg = easeOutQuart(secondaryProg);
-                    drawSketchRect(ctx, 300, 280, 200, 160 * winProg);
-                    // Grayscale light beams
-                    ctx.fillStyle = `rgba(255, 255, 255, ${0.7 * winProg})`;
+                    drawSketchRect(ctx, 280, 270, 240, 180 * winProg);
+                    // Turnbuckle tension reinforcement vectors
+                    drawHandLine(ctx, 150, 240, 200, 240, 0.2, 3);
+                    drawHandLine(ctx, 600, 240, 650, 240, 0.2, 3);
+                    // Directional natural light flooding parlor
+                    ctx.fillStyle = `rgba(255, 255, 255, ${0.5 * winProg})`;
                     ctx.beginPath();
-                    ctx.moveTo(300, 280);
-                    ctx.lineTo(500, 280);
-                    ctx.lineTo(560, 450);
-                    ctx.lineTo(240, 450);
+                    ctx.moveTo(280, 270);
+                    ctx.lineTo(520, 270);
+                    ctx.lineTo(580, 450);
+                    ctx.lineTo(220, 450);
                     ctx.closePath();
                     ctx.fill();
                     ctx.fillStyle = "#ffffff";
                 }
-                drawDimensionLine(ctx, 150, 470, 650, 470, "METALLURGICAL LINTEL & TIE-ROD REINFORCEMENT", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 150, 470, 650, 470, "CAST-IRON LINTEL BEAM & WROUGHT IRON TIE-ROD REINFORCEMENT", "#ffffff", 6, "#ffffff");
 
             } else {
-                // P2: Mechanized Well Pumping & Copper Plumbing
+                // P2: Mechanized Pump & Indoor Copper Plumbing (Infrastructure Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
+                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 160, 360, 480, 120, 20, "#111111", "#ffffff", -0.03);
 
-                // Gears and pump cylinder move into position during assemblyProg
+                // Deep aquifer borehole & pump mechanism assemble during assemblyProg
                 const slideIn = (1 - easeOutQuart(assemblyProg)) * 50;
                 ctx.save();
                 ctx.translate(slideIn, 0);
-                // Rotating gears in charcoal grayscale driven by secondaryProg
+                // Rotating cast-iron pump gears driven by secondaryProg
                 const gearAngle1 = secondaryProg * Math.PI * 10;
                 const gearAngle2 = -secondaryProg * Math.PI * 18;
-                drawGear(ctx, 280, 260, 50, 18, gearAngle1, "#cccccc");
-                drawGear(ctx, 350, 240, 28, 10, gearAngle2, "#ffffff");
+                drawGear(ctx, 280, 260, 54, 18, gearAngle1, "#cccccc");
+                drawGear(ctx, 354, 238, 30, 10, gearAngle2, "#ffffff");
 
-                // Piston & copper plumbing pipe
+                // Piston cylinder & copper plumbing pipe leading to indoor fixture
                 const pistonY = 260 + Math.sin(gearAngle1) * 25;
                 ctx.lineWidth = 3;
                 drawHandLine(ctx, 280, pistonY, 280, 440, 0.2, 2);
-                ctx.strokeRect(340, 360, 20, 100);
-                drawSteelHatch(ctx, 340, 360, 20, 100);
+                ctx.strokeRect(340, 360, 24, 100);
+                drawSteelHatch(ctx, 340, 360, 24, 100);
                 ctx.restore();
 
-                // Water pulses flowing up pipe into sink basin in grayscale (secondary animation)
+                // Secondary animation: Water pulses flowing upward from aquifer to indoor fixture
                 if (secondaryProg > 0) {
                     const pulseOffset = (secondaryProg * 250) % 80;
                     ctx.fillStyle = "#cccccc";
                     for (let w = 0; w < 3; w++) {
                         const wy = 440 - ((pulseOffset + w * 30) % 80);
                         if (wy > 360)
-                            ctx.fillRect(344, wy, 12, 14);
+                            ctx.fillRect(346, wy, 12, 14);
                     }
                 }
-                drawDimensionLine(ctx, 160, 500, 640, 500, "MECHANIZED PUMP & INDOOR PLUMBING", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 160, 500, 640, 500, "MECHANIZED PUMP & INDOOR COPPER PLUMBING (60' AQUIFER)", "#ffffff", 6, "#ffffff");
             }
 
             const titles = ["STEAM-MILLED BALLOON FRAMING", "METALLURGICAL REINFORCEMENT", "MECHANIZED PUMP & PLUMBING"];
@@ -1326,39 +1345,40 @@ const STAGE_HANDLERS = [
                 drawHandLine(ctx, 0, y, width, y, 0.2, 2);
 
             if (phase.idx === 0) {
-                // P0: Agrarian Complex Expansion
+                // P0: Agrarian Complex Expansion & Site Plan Layout (Solid Construction / Planning)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
                 drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 80, 380, 640, 100, 20, "#111111", "#ffffff", 0.035);
-                // Center homestead
-                drawSketchRect(ctx, 360, 310, 80, 70);
-                drawMasonryHatch(ctx, 360, 310, 80, 70);
+                // Central homestead dwelling
+                drawSketchRect(ctx, 350, 310, 100, 70);
+                drawMasonryHatch(ctx, 350, 310, 100, 70);
 
-                // Outbuildings sliding out on tracks during assemblyProg
-                const slide = 220 * easeOutQuart(assemblyProg);
-                drawSketchRect(ctx, 360 - slide, 280, 100, 100); // Barn left
-                drawCrossSectionHatching(ctx, 360 - slide, 280, 100, 100, 8, Math.PI / 4, "rgba(204, 204, 204, 0.4)");
-                drawSketchRect(ctx, 440 + slide - 80, 320, 80, 60); // Granary right
-                drawCrossSectionHatching(ctx, 440 + slide - 80, 320, 80, 60, 8, -Math.PI / 4, "rgba(204, 204, 204, 0.4)");
-                // Secondary animation: Courtyard pathways and orchard trees
+                // Outbuildings (Timber Barn & Granary) assembling onto site plan during assemblyProg
+                const slide = 200 * easeOutQuart(assemblyProg);
+                drawSketchRect(ctx, 350 - slide, 270, 110, 110); // Towering Timber Frame Barn left
+                drawCrossSectionHatching(ctx, 350 - slide, 270, 110, 110, 8, Math.PI / 4, "rgba(204, 204, 204, 0.4)");
+                drawSketchRect(ctx, 450 + slide - 90, 310, 90, 70); // Specialized Granary right
+                drawCrossSectionHatching(ctx, 450 + slide - 90, 310, 90, 70, 8, -Math.PI / 4, "rgba(204, 204, 204, 0.4)");
+                
+                // Secondary animation: Operational courtyard circulation & site plan boundary dimensions
                 if (secondaryProg > 0) {
                     ctx.strokeStyle = "#cccccc";
-                    ctx.lineWidth = 2 * secondaryProg;
-                    drawHandLine(ctx, 360 - slide + 100, 350, 360, 350, 0.4, 3);
-                    drawHandLine(ctx, 440, 350, 440 + slide - 80, 350, 0.4, 3);
+                    ctx.lineWidth = 2.5 * secondaryProg;
+                    drawHandLine(ctx, 350 - slide + 110, 350, 350, 350, 0.4, 3);
+                    drawHandLine(ctx, 450, 350, 450 + slide - 90, 350, 0.4, 3);
                 }
-                drawDimensionLine(ctx, 100, 500, 700, 500, "MULTI-BUILDING AGRARIAN SITE PLAN (45 ACRES)", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 100, 500, 700, 500, "MULTI-BUILDING AGRARIAN COMPLEX SITE PLAN (45 CULTIVATED ACRES)", "#ffffff", 6, "#ffffff");
 
             } else if (phase.idx === 1) {
-                // P1: Dry-Stone Boundary Walls
+                // P1: Dry-Stone Boundary Walls & Wildlife Microhabitats (Solid Construction & Ecology)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wcWash", secondaryProg, "circular", { cx: width / 2, cy: height / 2 });
+                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
                 // Buildings in soft background
                 ctx.save();
                 ctx.globalAlpha = 0.25;
                 drawSketchRect(ctx, 140, 280, 100, 100);
-                drawSketchRect(ctx, 360, 310, 80, 70);
-                drawSketchRect(ctx, 580, 320, 80, 60);
+                drawSketchRect(ctx, 350, 310, 100, 70);
+                drawSketchRect(ctx, 560, 310, 90, 70);
                 ctx.restore();
 
                 // Miles of boundary walls constructing across pasture during assemblyProg
@@ -1366,11 +1386,11 @@ const STAGE_HANDLERS = [
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 3;
                 drawHandLine(ctx, 120, 400, 120 + wallLen, 400, 0.5, 8);
-                for (let wx = 120; wx < 120 + wallLen; wx += 25) {
-                    ctx.strokeRect(wx, 392, 22, 16);
-                    drawMasonryHatch(ctx, wx, 392, 22, 16);
+                for (let wx = 120; wx < 120 + wallLen; wx += 28) {
+                    ctx.strokeRect(wx, 390, 24, 18);
+                    drawMasonryHatch(ctx, wx, 390, 24, 18);
                 }
-                // Secondary animation: Silhouettes of native pollinators/birds in grayscale
+                // Secondary animation: Silhouettes of native small mammals, birds & pollinators in grayscale
                 if (secondaryProg > 0) {
                     ctx.fillStyle = "#cccccc";
                     for (let b = 0; b < 4; b++) {
@@ -1381,39 +1401,39 @@ const STAGE_HANDLERS = [
                         ctx.fill();
                     }
                 }
-                drawDimensionLine(ctx, 120, 450, 680, 450, "DRY-STONE FIELDSTONE BOUNDARY WALLS & MICROHABITAT", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 120, 450, 680, 450, "FROST-HEAVED DRY-STONE BOUNDARY WALLS & MICROHABITATS", "#ffffff", 6, "#ffffff");
 
             } else {
-                // P2: Water Management & Irrigation Sluice
+                // P2: Structured Irrigation Sluice & Weir Gate Control (Hydraulic Engineering Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "slide", { direction: "left-to-right" });
+                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 140, 340, 520, 140, 20, "#111111", "#ffffff", -0.03);
 
-                // Sluice channel & weir gate frame moving into place during assemblyProg
+                // Stone-lined sluice channel & timber weir gate frame assembling during assemblyProg
                 const dropY = (1 - easeOutQuart(assemblyProg)) * 40;
                 ctx.save();
                 ctx.translate(0, -dropY);
-                ctx.strokeRect(200, 340, 400, 80);
-                drawEarthHatch(ctx, 200, 420, 400, 60, "rgba(255, 255, 255, 0.25)");
+                ctx.strokeRect(180, 340, 440, 80);
+                drawEarthHatch(ctx, 180, 420, 440, 60, "rgba(255, 255, 255, 0.25)");
                 ctx.restore();
 
-                // Secondary animation: Wooden weir gate lifting & rushing water
+                // Secondary animation: Wooden weir gate lifting & rushing water nourishing orchards
                 const gateLift = 50 * easeOutQuart(secondaryProg);
                 ctx.fillStyle = "#cccccc";
-                ctx.fillRect(380, 340 - gateLift, 20, 80);
-                ctx.strokeRect(380, 340 - gateLift, 20, 80);
+                ctx.fillRect(380, 340 - gateLift, 24, 80);
+                ctx.strokeRect(380, 340 - gateLift, 24, 80);
 
-                // Rushing irrigation water in grayscale
+                // Hydrological water flow lines in grayscale
                 if (gateLift > 5) {
                     ctx.strokeStyle = "#666666";
                     ctx.lineWidth = 3;
                     const ripple = (secondaryProg * 300) % 40;
-                    for (let wy = 360; wy < 410; wy += 12) {
-                        drawHandLine(ctx, 210, wy, 375, wy, 0.2, 2);
-                        drawHandLine(ctx, 405 + ripple, wy, 590, wy, 0.5, 4);
+                    for (let wy = 360; wy < 410; wy += 14) {
+                        drawHandLine(ctx, 190, wy, 375, wy, 0.2, 2);
+                        drawHandLine(ctx, 408 + ripple, wy, 610, wy, 0.5, 4);
                     }
                 }
-                drawDimensionLine(ctx, 200, 500, 600, 500, "STRUCTURED IRRIGATION SLUICE & WEIR GATE CONTROL", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 180, 500, 620, 500, "STRUCTURED IRRIGATION SLUICE & TIMBER WEIR GATE CONTROL", "#ffffff", 6, "#ffffff");
             }
 
             const titles = ["AGRARIAN COMPLEX EXPANSION", "DRY-STONE BOUNDARY WALLS", "IRRIGATION SLUICE & WEIR GATE"];
@@ -1459,11 +1479,11 @@ const STAGE_HANDLERS = [
                 drawHandLine(ctx, 0, y, width, y, 0.2, 2);
 
             if (phase.idx === 0) {
-                // P0: Cultivation Ceased & Weathering
+                // P0: Cultivation Ceased & Architectural Weathering (Structural Degradation)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "circular", { cx: width / 2, cy: height / 2 });
+                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 140, 350, 520, 120, 20, "#111111", "#ffffff", 0.03);
-                // Building moves into position during assemblyProg
+                // Building facade moves into position during assemblyProg
                 const dropY = (1 - easeOutQuart(assemblyProg)) * 30;
                 ctx.save();
                 ctx.translate(0, -dropY);
@@ -1471,7 +1491,7 @@ const STAGE_HANDLERS = [
                 drawMasonryHatch(ctx, 220, 220, 360, 130);
                 ctx.restore();
 
-                // Secondary animation: Wind-driven rain and peeling finish animations in grayscale
+                // Secondary animation: Wind-driven rain and peeling finish erosion lines in grayscale
                 if (secondaryProg > 0) {
                     ctx.strokeStyle = "rgba(204, 204, 204, 0.5)";
                     ctx.lineWidth = 1.5;
@@ -1482,17 +1502,17 @@ const STAGE_HANDLERS = [
                         drawHandLine(ctx, rx, ry, rx - 30, ry + 60, 0.2, 2);
                     }
                 }
-                drawDimensionLine(ctx, 140, 490, 660, 490, "ABANDONED HOMESTEAD / ENVIRONMENTAL EXPOSURE", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 140, 490, 660, 490, "ABANDONED HOMESTEAD / ENVIRONMENTAL EXPOSURE & WEATHERING", "#ffffff", 6, "#ffffff");
 
             } else if (phase.idx === 1) {
-                // P1: Roof Sag & Mortar Leaching
+                // P1: Roof Sag Deflection & Lime Mortar Leaching (Structural Failure Analysis)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "slide", { direction: "top-to-bottom" });
+                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 140, 360, 520, 120, 20, "#111111", "#ffffff", 0.035);
                 drawSketchRect(ctx, 200, 260, 400, 100);
                 drawMasonryHatch(ctx, 200, 260, 400, 100, true);
 
-                // During assemblyProg: Sagging roof ridge in quadratic curve (charcoal black)
+                // During assemblyProg: Sagging roof ridge in quadratic curve under dead load
                 const sag = 65 * easeOutQuart(assemblyProg);
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 4;
@@ -1501,7 +1521,7 @@ const STAGE_HANDLERS = [
                 ctx.quadraticCurveTo(400, 260 + sag, 620, 260);
                 ctx.stroke();
 
-                // Secondary animation: Mortar leaching cracks
+                // Secondary animation: Stepped foundation fissures and lime mortar leaching
                 if (secondaryProg > 0) {
                     ctx.strokeStyle = "#cccccc";
                     ctx.lineWidth = 2.5;
@@ -1513,17 +1533,17 @@ const STAGE_HANDLERS = [
                     ctx.lineTo(385, 260 + crack);
                     ctx.stroke();
                 }
-                drawDimensionLine(ctx, 180, 300 + sag, 620, 300 + sag, "DEFLECTED ROOF RIDGE: 8.5\" MAX SAG", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 180, 300 + sag, 620, 300 + sag, "DEFLECTED ROOF RIDGE: 8.5\" MAX SAG (STRUCTURAL FAILURE)", "#ffffff", 6, "#ffffff");
 
             } else {
-                // P2: Botanical Reclamation
+                // P2: Ecological Succession & Botanical Reclamation (Ecology & Overgrowth Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
+                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wcWash", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 140, 360, 520, 120, 20, "#111111", "#ffffff", -0.03);
                 drawSketchRect(ctx, 200, 260, 400, 100);
                 drawMasonryHatch(ctx, 200, 260, 400, 100, true);
 
-                // During assemblyProg: roots establish; during secondaryProg: vines creep upward
+                // During assemblyProg: roots establish in foundation beds; during secondaryProg: vines creep upward
                 ctx.strokeStyle = "#cccccc";
                 ctx.lineWidth = 3.5;
                 const progressFactor = assemblyProg * 0.3 + secondaryProg * 0.7;
@@ -1543,7 +1563,7 @@ const STAGE_HANDLERS = [
                         ctx.fill();
                     }
                 }
-                drawDimensionLine(ctx, 140, 500, 660, 500, "BOTANICAL RECLAMATION // VIRGINIA CREEPER CANOPY", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 140, 500, 660, 500, "BOTANICAL RECLAMATION // VIRGINIA CREEPER & ROOT PENETRATION", "#ffffff", 6, "#ffffff");
             }
 
             const titles = ["WEATHERING & ABANDONMENT", "ROOF SAG & MORTAR LEACHING", "BOTANICAL RECLAMATION"];
@@ -1602,13 +1622,13 @@ const STAGE_HANDLERS = [
                 drawHandLine(ctx, 0, y, width, y, 0.1, 2);
 
             if (phase.idx === 0) {
-                // P0: Architectural Blueprint Overlays & Laser Transit
+                // P0: Technical Blueprint Overlays & Survey Assessment (Diagnostics Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "grid", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "slide", { direction: "center-out" });
+                drawColorizedBackground(ctx, "grid", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 140, 360, 520, 100, 20, "#111111", "#ffffff", 0.035);
                 drawSketchRect(ctx, 200, 260, 400, 100);
 
-                // During assemblyProg: Grayscale overlay sliding down into place
+                // During assemblyProg: Crisp technical blueprint overlay aligning over historic shell
                 const overlayH = 200 * easeOutQuart(assemblyProg);
                 ctx.fillStyle = "rgba(204, 204, 204, 0.25)";
                 ctx.fillRect(180, 240, 440, overlayH);
@@ -1616,7 +1636,7 @@ const STAGE_HANDLERS = [
                 ctx.lineWidth = 2;
                 ctx.strokeRect(180, 240, 440, overlayH);
 
-                // Secondary animation: Pulsing laser transit reference line in grayscale
+                // Secondary animation: Pulsing laser transit elevation reference datums in grayscale
                 if (secondaryProg > 0) {
                     ctx.strokeStyle = "#cccccc";
                     ctx.lineWidth = 1 + 1.5 * secondaryProg;
@@ -1627,15 +1647,15 @@ const STAGE_HANDLERS = [
                     ctx.stroke();
                     ctx.setLineDash([]);
                 }
-                drawDimensionLine(ctx, 180, 460, 620, 460, "BLUEPRINT OVERLAY & LASER TRANSIT DATUM", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 180, 460, 620, 460, "CRISP TECHNICAL BLUEPRINT OVERLAY & LASER TRANSIT DATUM (REF A-4)", "#ffffff", 6, "#ffffff");
 
             } else if (phase.idx === 1) {
-                // P1: Hydraulic Jacking & Steel Reinforcement
+                // P1: Hydraulic Jacking & Steel Lintel / C-Channel Insertion (Solid Construction & Engineering)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.terracotta, "wc2", secondaryProg, "slide", { direction: "left-to-right" });
+                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 140, 380, 520, 80, 20, "#111111", "#ffffff", 0.03);
 
-                // During assemblyProg: Sagging joists physically lifting back to horizontal level
+                // During assemblyProg: Sagging joists physically lifting back to horizontal level via hydraulic jacks
                 const initialSag = 35 * (1 - easeOutQuart(assemblyProg));
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 4;
@@ -1644,14 +1664,14 @@ const STAGE_HANDLERS = [
                 ctx.quadraticCurveTo(400, 340 + initialSag, 620, 340);
                 ctx.stroke();
 
-                // Hydraulic jack cylinders extending upward during assemblyProg
+                // 12-ton hydraulic jack cylinders extending upward during assemblyProg
                 const jackH = 40 + (35 - initialSag);
                 for (const jx of [280, 520]) {
                     ctx.strokeRect(jx - 18, 380 - jackH, 36, jackH);
                     drawSteelHatch(ctx, jx - 18, 380 - jackH, 36, jackH);
                 }
 
-                // Secondary animation: Steel I-Beam lintels sliding in horizontally
+                // Secondary animation: Hidden steel W12x50 I-Beam lintels & C-channel grids locking in
                 if (secondaryProg > 0) {
                     const steelW = 440 * easeOutQuart(secondaryProg);
                     ctx.strokeStyle = "#cccccc";
@@ -1659,23 +1679,23 @@ const STAGE_HANDLERS = [
                     ctx.strokeRect(180, 260, steelW, 20);
                     drawSteelHatch(ctx, 180, 260, steelW, 20);
                 }
-                drawDimensionLine(ctx, 180, 480, 620, 480, "HYDRAULIC JACKING & STEEL REINFORCEMENT", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 180, 480, 620, 480, "12-TON HYDRAULIC JACK JOIST REALIGNMENT & STEEL W12x50 LINTEL", "#ffffff", 6, "#ffffff");
 
             } else {
-                // P2: Epoxy Splicing & Code Compliance
+                // P2: Epoxy Resin Splicing & Reclaimed Hardwood Joinery (Solid Construction & Code Compliance)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc3", secondaryProg, "circular", { cx: width / 2, cy: height / 2 });
+                drawColorizedBackground(ctx, "topo3", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 160, 360, 480, 100, 20, "#111111", "#ffffff", -0.035);
 
-                // Macro cutaway of timber sill moving into place during assemblyProg
+                // Macro cutaway of timber sill with rotted section removed; hardwood splice block inserting
                 const dropY = (1 - easeOutQuart(assemblyProg)) * 30;
                 ctx.save();
                 ctx.translate(0, -dropY);
                 ctx.strokeRect(220, 280, 360, 80);
-                drawMasonryHatch(ctx, 220, 280, 200, 80); // Damaged timber left
+                drawMasonryHatch(ctx, 220, 280, 200, 80); // Existing timber left
                 ctx.restore();
 
-                // Secondary animation: Liquid epoxy injection filling rotted cavity
+                // Secondary animation: Liquid epoxy resin injection bonding the joint under pressure
                 if (secondaryProg > 0) {
                     const fillW = 160 * easeOutQuart(secondaryProg);
                     ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
@@ -1683,7 +1703,7 @@ const STAGE_HANDLERS = [
                     ctx.strokeRect(420, 280, fillW, 80);
                     drawCrossSectionHatching(ctx, 420 + fillW - 40, 280, Math.min(40, fillW), 80, 6, Math.PI / 4, "#cccccc");
                 }
-                drawDimensionLine(ctx, 220, 480, 580, 480, "EPOXY RESIN SPLICING & HARDWOOD JOINERY", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 220, 480, 580, 480, "EPOXY RESIN SPLICING & RECLAIMED HARDWOOD JOINERY (CODE ST-201)", "#ffffff", 6, "#ffffff");
             }
 
             const titles = ["BLUEPRINT OVERLAYS", "HYDRAULIC JACKING & STEEL", "EPOXY SPLICING & CODE"];
@@ -1729,7 +1749,7 @@ const STAGE_HANDLERS = [
                 drawHandLine(ctx, 0, y, width, y, 0.15, 2);
 
             if (phase.idx === 0) {
-                // P0: Closed-Cell Thermal Envelope
+                // P0: Closed-Cell Thermal Envelope (High-Performance Insulation Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
                 drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 140, 360, 520, 100, 20, "#111111", "#ffffff", 0.035);
@@ -1762,15 +1782,15 @@ const STAGE_HANDLERS = [
                     if (secondaryProg > 0.3)
                         drawHandLine(ctx, 175, ay, 140, ay - 15, 0.2, 2); // Bounce back
                 }
-                drawDimensionLine(ctx, 140, 480, 660, 480, "R-45 AIRTIGHT CLOSED-CELL THERMAL ENVELOPE", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 140, 480, 660, 480, "R-45 AIRTIGHT CLOSED-CELL THERMAL ENVELOPE SPRAY FOAM", "#ffffff", 6, "#ffffff");
 
             } else if (phase.idx === 1) {
-                // P1: Triple-Pane Low-E Glazing
+                // P1: Triple-Pane Low-E Argon Glazing (Fenestration Engineering Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "slide", { direction: "left-to-right" });
+                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 160, 380, 480, 80, 20, "#111111", "#ffffff", 0.03);
 
-                // During assemblyProg: Old window sash sliding out left, new window sliding in right
+                // During assemblyProg: Old window sash sliding out left, new high-performance window sliding in right
                 const slideOut = 200 * easeOutQuart(assemblyProg);
                 ctx.save();
                 ctx.globalAlpha = 1 - assemblyProg;
@@ -1788,20 +1808,20 @@ const STAGE_HANDLERS = [
                     ctx.stroke();
                 }
 
-                // Secondary animation: Argon gas insulation barrier illuminating between panes
+                // Secondary animation: Argon gas insulation barrier illuminating between triple panes
                 if (secondaryProg > 0) {
                     ctx.fillStyle = `rgba(255, 255, 255, ${0.3 * secondaryProg})`;
                     ctx.fillRect(330 + slideIn + 5, 222, 170, 156);
                 }
-                drawDimensionLine(ctx, 160, 480, 640, 480, "TRIPLE-PANE LOW-E ARGON GLAZING (U-0.12)", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 160, 480, 640, 480, "TRIPLE-PANE LOW-E ARGON GLAZING (U-0.12 / ZERO COLD BRIDGES)", "#ffffff", 6, "#ffffff");
 
             } else {
-                // P2: Geothermal Loops & Solar PV
+                // P2: Geothermal Bedrock Loops & Rooftop Solar PV (Renewable Energy Engineering)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "circular", { cx: width / 2, cy: height / 2 });
+                drawColorizedBackground(ctx, "topo1", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wc2", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 140, 280, 520, 60, 20, "#111111", "#ffffff", -0.035);
 
-                // Subterranean 400-ft geothermal bore loop moving into place during assemblyProg
+                // Subterranean 400-ft geothermal bore loop moving into bedrock during assemblyProg
                 const boreDepth = 180 * easeOutQuart(assemblyProg);
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 3;
@@ -1833,7 +1853,7 @@ const STAGE_HANDLERS = [
                         c.stroke();
                     }
                 });
-                drawDimensionLine(ctx, 140, 490, 660, 490, "400' GEOTHERMAL LOOP & SOLAR PV ARRAY", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 140, 490, 660, 490, "400' SUBTERRANEAN GEOTHERMAL BEDROCK LOOP & ROOFTOP SOLAR PV", "#ffffff", 6, "#ffffff");
             }
 
             const titles = ["AIRTIGHT THERMAL ENVELOPE", "TRIPLE-PANE LOW-E GLAZING", "GEOTHERMAL & SOLAR PV"];
@@ -1878,7 +1898,7 @@ const STAGE_HANDLERS = [
             if (phase.idx === 0) {
                 // P0: Minimalist Architectural Synthesis (Historic Hearth Monument in Light)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "circular", { cx: width / 2, cy: height / 2 });
+                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 120, 360, 560, 100, 20, "#111111", "#ffffff", 0.035);
 
                 // During assemblyProg: Restored 1780 hearth and timbers sliding into gallery spotlight
@@ -1896,16 +1916,16 @@ const STAGE_HANDLERS = [
                     ctx.closePath();
                     ctx.fill();
                 }
-                drawDimensionLine(ctx, 120, 480, 680, 480, "HISTORIC 1780 HEARTH & TIMBERS AS TACTILE MONUMENTS", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 120, 480, 680, 480, "HISTORIC 1780 FIELDSTONE HEARTH & TIMBERS AS TACTILE MONUMENTS", "#ffffff", 6, "#ffffff");
 
             } else if (phase.idx === 1) {
-                // P1: Cantilevered Black Steel & Frameless Glass
+                // P1: Cantilevered Black Steel & Frameless Glass (Structural Engineering Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.blueprintBlue, "wc1", secondaryProg, "slide", { direction: "left-to-right" });
+                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 120, 380, 560, 80, 20, "#111111", "#ffffff", 0.03);
                 drawSketchRect(ctx, 140, 240, 120, 140); // Core masonry left
 
-                // During assemblyProg: Black steel I-beam cantilevering horizontally into space
+                // During assemblyProg: Black steel W18x86 I-beam cantilevering horizontally into open space
                 const spanW = 360 * easeOutQuart(assemblyProg);
                 ctx.fillStyle = "#ffffff";
                 ctx.fillRect(260, 240, spanW, 26);
@@ -1914,7 +1934,7 @@ const STAGE_HANDLERS = [
                 ctx.strokeRect(260, 240, spanW, 26);
                 drawSteelHatch(ctx, 260, 240, spanW, 26);
 
-                // Secondary animation: Frameless glass curtain wall panels descending
+                // Secondary animation: Frameless glass curtain wall panels descending from cantilever
                 if (secondaryProg > 0) {
                     const glassH = 114 * easeOutQuart(secondaryProg);
                     ctx.strokeStyle = "rgba(255, 255, 255, 0.65)";
@@ -1927,15 +1947,15 @@ const STAGE_HANDLERS = [
                         ctx.stroke();
                     }
                 }
-                drawDimensionLine(ctx, 260, 480, 260 + spanW, 480, "24'-0\" CANTILEVER SPAN & FRAMELESS GLASS", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 260, 480, 260 + spanW, 480, "24'-0\" CANTILEVER SPAN BLACK STEEL & FRAMELESS GLASS CURTAIN", "#ffffff", 6, "#ffffff");
 
             } else {
-                // P2: Living Architecture in Riparian Landscape
+                // P2: Living Architecture in Riparian Landscape (Site Synthesis Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
-                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.amberGold, "wcWash", secondaryProg, "fade");
+                drawColorizedBackground(ctx, "topo2", 0, 0, width, height, STYLE_CONFIG.palette.accents.emerald, "wc3", secondaryProg, "fade");
                 drawDioramaPlatform(ctx, 100, 360, 600, 100, 20, "#111111", "#ffffff", -0.035);
 
-                // During assemblyProg: Full residence moves into wide isometric view
+                // During assemblyProg: Full residence moves into wide isometric site synthesis view
                 const dropY = (1 - easeOutQuart(assemblyProg)) * 30;
                 ctx.save();
                 ctx.translate(0, -dropY);
@@ -1946,7 +1966,7 @@ const STAGE_HANDLERS = [
                 ctx.strokeRect(300, 292, 280, 68); // Glass wall
                 ctx.restore();
 
-                // Secondary animation: Animated native meadow grasses & riparian wetland ripples in grayscale
+                // Secondary animation: Animated native meadow grasses & riparian wetland currents in grayscale
                 if (secondaryProg > 0) {
                     ctx.strokeStyle = "#cccccc";
                     ctx.lineWidth = 2 * secondaryProg;
@@ -1957,7 +1977,7 @@ const STAGE_HANDLERS = [
                         drawHandLine(ctx, 350 + ripple, ry, 680, ry, 0.5, 4);
                     }
                 }
-                drawDimensionLine(ctx, 100, 490, 700, 490, "3,800 SQ. FT. LIVING ARCHITECTURE // 1780 – PRESENT", "#ffffff", 6, "#ffffff");
+                drawDimensionLine(ctx, 100, 490, 700, 490, "3,800 SQ. FT. LIVING ARCHITECTURE SYNTHESIS // 1780 – PRESENT", "#ffffff", 6, "#ffffff");
             }
 
             const titles = ["HISTORIC HEARTH MONUMENT", "CANTILEVER STEEL & GLASS", "RIPARIAN SITE SYNTHESIS"];
