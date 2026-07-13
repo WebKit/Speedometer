@@ -468,7 +468,7 @@ export class BenchmarkRunner {
             }
 
             values.sort((a, b) => a - b); // Avoid the loss of significance for the sum.
-            const total = values.reduce((a, b) => a + b);
+            const total = values.reduce((a, b) => a + b, 0);
             const geomean = Math.pow(product, 1 / values.length);
 
             this._measuredValues.total = total;
