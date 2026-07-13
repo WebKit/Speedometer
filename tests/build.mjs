@@ -6,8 +6,10 @@ import { ExperimentalSuites } from "../suites-experimental/suites.mjs";
 import { getChangedFiles, runActionGroup, sh } from "./helper.mjs";
 
 const EXCLUDES = new Set([
-    // TODO: Re-enable Vue build when the node-ipc/vue-cli issue is resolved for Node 24+
+    // TODO: Re-enable once packages are udpated and node 24 is supported
     "suites/todomvc/architecture-examples/vue",
+    "suites/todomvc/architecture-examples/vue-complex",
+    "suites/newssite/news-nuxt",
 ]);
 
 function findWorkloadForUrl(suiteUrl) {
@@ -43,16 +45,32 @@ async function buildWorkloads(workloads) {
         return;
     }
     console.log(`Building ${workloads.length} workload(s)...`);
+    const failedWorkloads = [];
+    const successfulWorkloads = [];
+
     for (const workload of workloads) {
         try {
             await runActionGroup(`Building ${workload}...`, async () => {
                 await sh("npm", "ci", { cwd: workload });
                 await sh("npm", "run", "build", { cwd: workload });
             });
+            successfulWorkloads.push(workload);
         } catch (e) {
             console.error(`Failed to build workload: ${workload}`);
-            process.exit(1);
+            failedWorkloads.push(workload);
         }
+    }
+
+    console.log("\n================================================================================");
+    console.log(`Build Summary: ${successfulWorkloads.length} succeeded, ${failedWorkloads.length} failed.`);
+    console.log("================================================================================\n");
+
+    if (failedWorkloads.length > 0) {
+        console.error("Failed Workloads:");
+        for (const workload of failedWorkloads)
+            console.error(` - ${workload}`);
+
+        process.exit(1);
     }
 }
 
