@@ -10,6 +10,7 @@ const EXCLUDES = new Set([
     "suites/todomvc/architecture-examples/vue",
     "suites/todomvc/architecture-examples/vue-complex",
     "suites/newssite/news-nuxt",
+    "suites/react-stockcharts",
 ]);
 
 function findWorkloadForUrl(suiteUrl) {
