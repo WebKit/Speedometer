@@ -298,7 +298,6 @@ body {
     background: var(--accent-crimson, #D12B3E) !important;
     color: #ffffff !important;
     border-color: #ffffff !important;
-    font-weight: 900;
 }
 
 .toc-num {
@@ -522,16 +521,16 @@ body {
     font-weight: 900;
 }
 
-/* Narrative Cards (.step) on Construction Paper with Independent Shadow */
+/* Narrative Cards (.step) on Construction Paper with Independent Shadow - Invariant on Scroll */
 .step {
     position: relative;
     z-index: 1;
-    background-color: var(--paper-card);
-    border: 3px solid var(--ink-muted);
+    background-color: var(--paper-light, #111111);
+    border: 3px solid var(--ink-secondary, #cccccc);
     border-radius: 8px;
     padding: 1.35rem 1.75rem;
     opacity: 1 !important;
-    transform: perspective(1000px) rotateZ(var(--step-tilt, 0deg)) scale(0.95);
+    transform: perspective(1000px) rotateZ(var(--step-tilt, 0deg));
     overflow: visible;
 }
 
@@ -543,26 +542,10 @@ body {
     left: var(--step-shadow-x, 6px);
     width: 100%;
     height: 100%;
-    background-color: var(--shadow-solid);
+    background-color: var(--shadow-solid, #222222);
     border-radius: 8px;
-    opacity: 0.3;
-    transform: rotateZ(var(--step-shadow-tilt, 1deg));
-}
-
-.step.is-active {
-    opacity: 1 !important;
-    border: 4px solid var(--accent-crimson, #D12B3E);
-    border-radius: 8px;
-    background-color: var(--paper-light);
-    transform: perspective(1000px) rotateZ(var(--step-tilt, 0deg)) scale(1.02);
-    z-index: 15;
-}
-
-.step.is-active::after {
     opacity: 1;
-    border-radius: 8px;
-    top: calc(var(--step-shadow-y, 6px) * 1.4);
-    left: calc(var(--step-shadow-x, 6px) * 1.4);
+    transform: rotateZ(var(--step-shadow-tilt, 1deg));
 }
 
 .step-meta {
@@ -804,9 +787,9 @@ body {
     background-color: var(--paper-light, #111111); border: 2px solid var(--border-color, #ffffff);
     border-radius: 6px; color: var(--ink-secondary, #cccccc); font-family: "Courier New", Courier, monospace;
     font-size: 0.85rem; font-weight: 700; padding: 0.35rem 0.65rem; cursor: pointer; opacity: 1 !important;
-    transition: none !important; animation: none !important; transform: rotate(0deg);
+    transition: none !important; animation: none !important; transform: rotate(0deg); z-index: 2;
 }
 .timeline-point.is-active {
     background: var(--accent-crimson, #D12B3E) !important; color: #ffffff !important;
-    border-color: #ffffff !important; font-weight: 900; transform: rotate(-1.5deg); z-index: 10;
+    border-color: #ffffff !important;
 }
