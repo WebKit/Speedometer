@@ -6,7 +6,7 @@ import { ExperimentalSuites } from "../suites-experimental/suites.mjs";
 import { getChangedFiles, runActionGroup, sh } from "./helper.mjs";
 
 const EXCLUDES = new Set([
-    // TODO: Re-enable once packages are udpated and node 24 is supported
+    // TODO: Re-enable once packages are updated and node 22 is supported
     "suites/todomvc/architecture-examples/vue",
     "suites/todomvc/architecture-examples/vue-complex",
     "suites/newssite/news-nuxt",
