@@ -431,11 +431,29 @@ function drawGear(ctx, cx, cy, radius, teeth, angle, color = "#ffffff") {
     ctx.restore();
 }
 
+function drawRoundRect(ctx, x, y, w, h, r) {
+    if (typeof ctx.roundRect === "function") {
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, r);
+    } else {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.arcTo(x + w, y, x + w, y + r, r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+        ctx.lineTo(x + r, y + h);
+        ctx.arcTo(x, y + h, x, y + h - r, r);
+        ctx.lineTo(x, y + r);
+        ctx.arcTo(x, y, x + r, y, r);
+    }
+}
+
 /* Dimension Line with Independent & Irregular Shadow Angle */
-function drawDimensionLine(ctx, x1, y1, x2, y2, label, color = "#ffffff", tickSize = 6, bgColor = "#000000") {
+function drawDimensionLine(ctx, x1, y1, x2, y2, label, color = "#ffffff", tickSize = 6, bgColor = "#0a0a0a") {
     ctx.save();
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
+    ctx.strokeStyle = "#D12B3E";
+    ctx.fillStyle = "#D12B3E";
     ctx.lineWidth = 1.4;
 
     drawHandLine(ctx, x1, y1, x2, y2, 0.3, 2);
@@ -464,19 +482,22 @@ function drawDimensionLine(ctx, x1, y1, x2, y2, label, color = "#ffffff", tickSi
     ctx.translate(midX + 5, midY + 4);
     ctx.rotate(0.031); // +1.8 deg
     ctx.fillStyle = "#000000";
-    ctx.fillRect(-boxW / 2, -boxH / 2, boxW, boxH);
+    drawRoundRect(ctx, -boxW / 2, -boxH / 2, boxW, boxH, 4);
+    ctx.fill();
     ctx.restore();
 
     // Foreground box at different angle
     ctx.save();
     ctx.translate(midX, midY);
     ctx.rotate(-0.015); // -0.9 deg
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(-boxW / 2, -boxH / 2, boxW, boxH);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1.2;
-    ctx.strokeRect(-boxW / 2, -boxH / 2, boxW, boxH);
-    ctx.fillStyle = color;
+    const badgeBgColor = bgColor === "#ffffff" || bgColor === "#000000" ? "#0a0a0a" : bgColor;
+    drawRoundRect(ctx, -boxW / 2, -boxH / 2, boxW, boxH, 4);
+    ctx.fillStyle = badgeBgColor;
+    ctx.fill();
+    ctx.strokeStyle = "#D12B3E";
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+    ctx.fillStyle = "#ffffff";
     ctx.fillText(label, 0, 1);
     ctx.restore();
 
@@ -485,8 +506,8 @@ function drawDimensionLine(ctx, x1, y1, x2, y2, label, color = "#ffffff", tickSi
 
 function drawSurveyReticle(ctx, x, y, radius, label, color = "#ffffff") {
     ctx.save();
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
+    ctx.strokeStyle = "#D12B3E";
+    ctx.fillStyle = "#D12B3E";
     ctx.lineWidth = 1.4;
 
     ctx.beginPath();
@@ -513,6 +534,7 @@ function drawSurveyReticle(ctx, x, y, radius, label, color = "#ffffff") {
     ctx.fill();
 
     if (label) {
+        ctx.fillStyle = "#ffffff";
         ctx.font = "bold 9px monospace";
         ctx.textAlign = "center";
         ctx.fillText(label, x, y + radius + 15);
@@ -533,41 +555,53 @@ function drawTitleBlock(ctx, width, height, title, dwgNo, scale, date = "OCT 195
     ctx.translate(bx + boxW / 2 + 10, by + boxH / 2 + 12);
     ctx.rotate(0.026); // +1.5 deg
     ctx.fillStyle = "#000000";
-    ctx.fillRect(-boxW / 2, -boxH / 2, boxW, boxH);
+    drawRoundRect(ctx, -boxW / 2, -boxH / 2, boxW, boxH, 6);
+    ctx.fill();
     ctx.restore();
 
     // Main box
     ctx.save();
     ctx.translate(bx + boxW / 2, by + boxH / 2);
     ctx.rotate(-0.014); // -0.8 deg
+    drawRoundRect(ctx, -boxW / 2, -boxH / 2, boxW, boxH, 6);
     ctx.fillStyle = bgColor;
-    ctx.fillRect(-boxW / 2, -boxH / 2, boxW, boxH);
+    ctx.fill();
 
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.lineWidth = 2;
-    ctx.strokeRect(-boxW / 2, -boxH / 2, boxW, boxH);
-
-    ctx.beginPath();
-    ctx.moveTo(-boxW / 2, -boxH / 2 + 26);
-    ctx.lineTo(-boxW / 2 + boxW, -boxH / 2 + 26);
-    ctx.moveTo(-boxW / 2 + 195, -boxH / 2 + 26);
-    ctx.lineTo(-boxW / 2 + 195, -boxH / 2 + boxH);
+    ctx.strokeStyle = "#D12B3E";
+    ctx.lineWidth = 2.2;
     ctx.stroke();
 
+    ctx.beginPath();
+    ctx.moveTo(-boxW / 2, -boxH / 2 + 24);
+    ctx.lineTo(-boxW / 2 + boxW, -boxH / 2 + 24);
+    ctx.strokeStyle = "#D12B3E";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(-boxW / 2 + 195, -boxH / 2 + 24);
+    ctx.lineTo(-boxW / 2 + 195, -boxH / 2 + boxH);
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffffff";
     ctx.font = "bold 11px monospace";
     ctx.textAlign = "left";
-    ctx.fillText("PROJECT: EVOLUTION OF A HOUSE", -boxW / 2 + 8, -boxH / 2 + 17);
+    ctx.fillText("PROJECT: EVOLUTION OF A HOUSE", -boxW / 2 + 8, -boxH / 2 + 16);
 
     ctx.font = "bold 10px monospace";
-    ctx.fillText(title, -boxW / 2 + 8, -boxH / 2 + 42);
+    ctx.fillText(title, -boxW / 2 + 8, -boxH / 2 + 40);
+    ctx.fillStyle = "#cccccc";
     ctx.font = "9px monospace";
-    ctx.fillText(`SCALE: ${scale}`, -boxW / 2 + 8, -boxH / 2 + 52);
+    ctx.fillText(`SCALE: ${scale}`, -boxW / 2 + 8, -boxH / 2 + 51);
 
+    ctx.fillStyle = "#ffffff";
     ctx.font = "bold 11px monospace";
-    ctx.fillText(`DWG ${dwgNo}`, -boxW / 2 + 203, -boxH / 2 + 42);
+    ctx.fillText(`DWG ${dwgNo}`, -boxW / 2 + 203, -boxH / 2 + 40);
+    ctx.fillStyle = "#cccccc";
     ctx.font = "8px monospace";
-    ctx.fillText(`DATE: ${date}`, -boxW / 2 + 203, -boxH / 2 + 52);
+    ctx.fillText(`DATE: ${date}`, -boxW / 2 + 203, -boxH / 2 + 51);
     ctx.restore();
 
     ctx.restore();
@@ -585,15 +619,15 @@ function addSVGCallout(g, x, y, targetX, targetY, text, subtext = "", id = "", p
     const leader = createSVGElement("polyline", {
         points: `${targetX},${targetY} ${x + (targetX > x ? 20 : -20)},${y} ${x},${y}`,
         fill: "none",
-        stroke: "#ffffff",
-        "stroke-width": "1.5",
+        stroke: "#D12B3E",
+        "stroke-width": "1.8",
         "stroke-dasharray": "4, 2",
     });
     group.appendChild(leader);
 
     const targetDot = createSVGElement("circle", {
-        cx: targetX, cy: targetY, r: 3.5,
-        fill: "#ffffff", stroke: "#ffffff", "stroke-width": "1",
+        cx: targetX, cy: targetY, r: 4,
+        fill: "#D12B3E", stroke: "#ffffff", "stroke-width": "1.2",
     });
     group.appendChild(targetDot);
 
@@ -606,14 +640,14 @@ function addSVGCallout(g, x, y, targetX, targetY, text, subtext = "", id = "", p
 
     const shadowBg = createSVGElement("rect", {
         x: bx + (targetX > x ? 7 : -7), y: by + 8, width: boxW, height: boxH,
-        fill: "#000000",
+        fill: "#000000", rx: "4", ry: "4",
         transform: `rotate(${shadowTilt}, ${bx + boxW / 2}, ${by + boxH / 2})`
     });
     group.appendChild(shadowBg);
 
     const labelBg = createSVGElement("rect", {
         x: bx, y: by, width: boxW, height: boxH,
-        fill: "#0a0a0a", stroke: "#ffffff", "stroke-width": "2", rx: "0",
+        fill: "#0a0a0a", stroke: "#D12B3E", "stroke-width": "2", rx: "4", ry: "4",
         transform: `rotate(${tilt}, ${bx + boxW / 2}, ${by + boxH / 2})`
     });
     group.appendChild(labelBg);
@@ -654,7 +688,7 @@ function addSVGStressArrow(g, x1, y1, x2, y2, label, id = "", phase = null) {
 
     const line = createSVGElement("line", {
         x1, y1, x2, y2,
-        stroke: "#ffffff", "stroke-width": "2.5", class: "tech-arrow-line",
+        stroke: "#D12B3E", "stroke-width": "2.5", class: "tech-arrow-line",
     });
     group.appendChild(line);
 
@@ -667,7 +701,7 @@ function addSVGStressArrow(g, x1, y1, x2, y2, label, id = "", phase = null) {
 
     const head = createSVGElement("polygon", {
         points: `${x2},${y2} ${hx1},${hy1} ${hx2},${hy2}`,
-        fill: "#ffffff", class: "tech-arrow-head",
+        fill: "#D12B3E", class: "tech-arrow-head",
     });
     group.appendChild(head);
 
@@ -686,11 +720,12 @@ function addSVGStressArrow(g, x1, y1, x2, y2, label, id = "", phase = null) {
 
 function addSVGTitleBlock(g, project, dwgNo, rev, scale, date = "OCT 1954") {
     const box = createSVGElement("g", { class: "tech-title-block" });
+    box.style.transition = "none";
 
     // Independent shadow rotated differently (+1.7 deg vs -1.2 deg)
     const shadow = createSVGElement("rect", {
         x: 488, y: 520, width: 300, height: 70,
-        fill: "#000000",
+        fill: "#000000", rx: "6", ry: "6",
         transform: "rotate(1.7, 638, 555)"
     });
     box.appendChild(shadow);
@@ -698,11 +733,11 @@ function addSVGTitleBlock(g, project, dwgNo, rev, scale, date = "OCT 1954") {
     const frameGroup = createSVGElement("g", { transform: "rotate(-1.2, 630, 545)" });
     const frame = createSVGElement("rect", {
         x: 480, y: 510, width: 300, height: 70,
-        fill: "#0a0a0a", stroke: "#ffffff", "stroke-width": "3",
+        fill: "#0a0a0a", stroke: "#D12B3E", "stroke-width": "2.5", rx: "6", ry: "6",
     });
     frameGroup.appendChild(frame);
 
-    const div1 = createSVGElement("line", { x1: 480, y1: 535, x2: 780, y2: 535, stroke: "#ffffff", "stroke-width": "1.5" });
+    const div1 = createSVGElement("line", { x1: 480, y1: 535, x2: 780, y2: 535, stroke: "#D12B3E", "stroke-width": "1.5" });
     const div2 = createSVGElement("line", { x1: 480, y1: 558, x2: 780, y2: 558, stroke: "#ffffff", "stroke-width": "1" });
     const div3 = createSVGElement("line", { x1: 640, y1: 535, x2: 640, y2: 580, stroke: "#ffffff", "stroke-width": "1" });
     frameGroup.append(div1, div2, div3);
@@ -742,7 +777,7 @@ function setCalloutPhaseVisibility(g, phaseIdx) {
     const callouts = g.querySelectorAll(".tech-callout, .tech-arrow, .tech-stamp-badge, .tech-datum");
     callouts.forEach((el) => {
         const targetPhase = el.getAttribute("data-phase");
-        if (targetPhase === null || targetPhase === "" || parseInt(targetPhase, 10) === phaseIdx) {
+        if (targetPhase === null || targetPhase === "" || parseInt(targetPhase, 10) <= phaseIdx) {
             el.style.opacity = "1";
             el.style.pointerEvents = "auto";
         } else {
@@ -1645,7 +1680,7 @@ const STAGE_HANDLERS = [
 
             addSVGCallout(g, 260, 200, 200, 250, "PROLONGED WEATHERING & EXPOSURE", "MAINTENANCE CEASED / ABANDONED", "stage4-p0-1", 0);
             const badge = createSVGElement("g", { class: "tech-stamp-badge", transform: "rotate(-3, 480, 180)", "data-phase": "0" });
-            const bRect = createSVGElement("rect", { x: 0, y: 0, width: 260, height: 44, fill: "#0a0a0a", stroke: "#ffffff", "stroke-width": "3" });
+            const bRect = createSVGElement("rect", { x: 0, y: 0, width: 260, height: 44, fill: "#0a0a0a", stroke: "#D12B3E", "stroke-width": "3", rx: "4", ry: "4" });
             const bText = createSVGElement("text", { x: 14, y: 28, fill: "#ffffff", "font-family": '"Impact", "Arial Black", sans-serif', "font-size": "14", "font-weight": "900", "letter-spacing": "0.08em" });
             bText.textContent = "CONDEMNED // ABANDONED 1950";
             badge.append(bRect, bText);
@@ -1831,7 +1866,7 @@ const STAGE_HANDLERS = [
             addSVGCallout(g, 540, 280, 480, 340, "RECLAIMED PERIOD HARDWOOD", "BRIDGING 18TH-C. AESTHETIC WITH CODE", "stage5-p2-2", 2);
 
             const badge = createSVGElement("g", { class: "tech-stamp-badge", transform: "rotate(-2, 480, 180)", "data-phase": "2" });
-            const bRect = createSVGElement("rect", { x: 0, y: 0, width: 280, height: 44, fill: "#0a0a0a", stroke: "#ffffff", "stroke-width": "3" });
+            const bRect = createSVGElement("rect", { x: 0, y: 0, width: 280, height: 44, fill: "#0a0a0a", stroke: "#D12B3E", "stroke-width": "3", rx: "4", ry: "4" });
             const bText = createSVGElement("text", { x: 12, y: 27, fill: "#ffffff", "font-family": '"Impact", "Arial Black", sans-serif', "font-size": "13", "font-weight": "900", "letter-spacing": "0.06em" });
             bText.textContent = "RESIDENTIAL CODE COMPLIANT";
             badge.append(bRect, bText);
@@ -2278,7 +2313,10 @@ const STAGE_HANDLERS = [
                     ctx.setLineDash([6, 4]);
                     ctx.strokeRect(planX + 28, planY + 80, 64, 140);
                     ctx.setLineDash([]);
+                    ctx.save();
+                    ctx.strokeStyle = "#D12B3E";
                     drawHandLine(ctx, evX + evW / 2, evY + evH, planX + 60, planY + 80, 0.3, 3);
+                    ctx.restore();
                 }
 
                 if (p0Prog > 0) {
