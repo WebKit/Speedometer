@@ -57,7 +57,6 @@ function renderStageSections() {
                 <div class="graphic-sticky-wrapper">
                     <canvas class="graphic-canvas" id="graphic-canvas-${idx}"></canvas>
                     <svg class="graphic-svg" id="graphic-svg-${idx}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet"></svg>
-                    <div class="graphic-texture-overlay"></div>
                     <div class="caption" id="graphic-caption-${idx}">Stage ${idx + 1}: ${stage.title}</div>
                 </div>
             </div>
@@ -112,6 +111,28 @@ function renderFloatingTOC() {
             if (!isCollapsed && typeof window.forceScrollytellingUpdate === "function")
                 window.forceScrollytellingUpdate();
 
+        });
+    }
+}
+
+function renderBottomTimeline() {
+    const timelinePoints = document.getElementById("timeline-points");
+    if (timelinePoints) {
+        timelinePoints.innerHTML = "";
+        STAGES.forEach((stage, idx) => {
+            const li = document.createElement("li");
+            const btn = document.createElement("button");
+            btn.className = "timeline-point";
+            btn.type = "button";
+            btn.textContent = `${stage.year}`;
+            btn.setAttribute("aria-label", `Jump to Stage ${idx + 1}: ${stage.year}`);
+            btn.addEventListener("click", () => {
+                const targetEl = document.getElementById(`stage-section-${idx}`);
+                if (targetEl)
+                    targetEl.scrollIntoView({ behavior: "smooth" });
+            });
+            li.appendChild(btn);
+            timelinePoints.appendChild(li);
         });
     }
 }
@@ -215,6 +236,24 @@ window.forceScrollytellingUpdate = function () {
         }
     });
 
+    const bottomTimeline = document.getElementById("bottom-timeline-overlay");
+    if (bottomTimeline) {
+        if (bottomTimeline.classList.contains("is-hidden")) {
+            bottomTimeline.classList.remove("is-hidden");
+            bottomTimeline.classList.add("is-visible");
+        }
+        const points = bottomTimeline.querySelectorAll(".timeline-point");
+        points.forEach((pt, idx) => {
+            if (idx === activeIndex) {
+                if (!pt.classList.contains("is-active"))
+                    pt.classList.add("is-active");
+            } else {
+                if (pt.classList.contains("is-active"))
+                    pt.classList.remove("is-active");
+            }
+        });
+    }
+
     updateGraphics(activeIndex, activeProgress);
 };
 
@@ -269,6 +308,7 @@ window.scrubBackward = window.scrubPrev;
 function initApp() {
     renderStageSections();
     renderFloatingTOC();
+    renderBottomTimeline();
     initGraphics();
 
     const urlParams = new URLSearchParams(window.location.search);

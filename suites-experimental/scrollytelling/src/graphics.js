@@ -176,7 +176,7 @@ export function initGraphics() {
             g.setAttribute("id", `svg-stage-${i}`);
             g.setAttribute("opacity", "1");
             g.setAttribute("transform", "scale(1)");
-            g.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+            g.style.transition = "none";
 
             const handler = STAGE_HANDLERS[i];
             if (handler && typeof handler.initSVG === "function")
@@ -580,7 +580,7 @@ function addSVGCallout(g, x, y, targetX, targetY, text, subtext = "", id = "", p
         group.setAttribute("id", id);
     if (phase !== null)
         group.setAttribute("data-phase", String(phase));
-    group.style.transition = "opacity 0.35s ease";
+    group.style.transition = "none";
 
     const leader = createSVGElement("polyline", {
         points: `${targetX},${targetY} ${x + (targetX > x ? 20 : -20)},${y} ${x},${y}`,
@@ -646,7 +646,7 @@ function addSVGStressArrow(g, x1, y1, x2, y2, label, id = "", phase = null) {
         group.setAttribute("id", id);
     if (phase !== null)
         group.setAttribute("data-phase", String(phase));
-    group.style.transition = "opacity 0.35s ease";
+    group.style.transition = "none";
     group.setAttribute("data-base-x1", String(x1));
     group.setAttribute("data-base-y1", String(y1));
     group.setAttribute("data-base-x2", String(x2));
@@ -2198,20 +2198,29 @@ const STAGE_HANDLERS = [
                 // 1 & 2. Size / Footprint & EV Bay - Procedural Highlights
                 if (p0Prog > 0) {
                     ctx.save();
-                    // Aspect 1: Living wing perimeter slate/emerald fill (3,800 sq. ft. area)
-                    ctx.fillStyle = `rgba(40, 140, 90, ${0.25 * p0Prog})`;
+                    // Aspect 1: Pulsing Emerald Survey Perimeter Glow (3,800 sq. ft. area)
+                    ctx.fillStyle = `rgba(50, 205, 50, ${0.45 * p0Prog})`;
                     ctx.fillRect(livingX, planY, livingW, planH);
+                    ctx.shadowColor = "rgba(50, 205, 50, 0.8)";
+                    ctx.shadowBlur = 10;
+                    ctx.strokeStyle = `rgba(50, 205, 50, ${0.85 * p0Prog})`;
+                    ctx.lineWidth = 2.5;
+                    ctx.strokeRect(livingX, planY, livingW, planH);
+                    ctx.shadowBlur = 0;
+
                     // Aspect 1: Historic masonry hearth core warm terracotta fill
                     const coreX_fill = livingX + 60, coreY_fill = planY + 90, coreW_fill = 70, coreH_fill = 60;
-                    ctx.fillStyle = `rgba(180, 70, 40, ${0.55 * p0Prog})`;
+                    ctx.fillStyle = `rgba(180, 70, 40, ${0.7 * p0Prog})`;
                     ctx.fillRect(coreX_fill, coreY_fill, coreW_fill, coreH_fill);
+
                     // Aspect 2: 12 kWh Battery storage stack energy amber fill
                     const batX_fill = planX + 16, batY_fill = planY + 30, batW_fill = 26, batH_fill = 90;
-                    ctx.fillStyle = `rgba(230, 160, 40, ${0.45 * p0Prog})`;
+                    ctx.fillStyle = `rgba(230, 160, 40, ${0.65 * p0Prog})`;
                     ctx.fillRect(batX_fill, batY_fill, batW_fill, batH_fill);
+
                     // Aspect 2: Level 2 EV charging wall-box electric cyan fill
                     const evX_fill = planX + 55, evY_fill = planY + 16, evW_fill = 34, evH_fill = 20;
-                    ctx.fillStyle = `rgba(0, 220, 255, ${0.45 * p0Prog})`;
+                    ctx.fillStyle = `rgba(0, 220, 255, ${0.65 * p0Prog})`;
                     ctx.fillRect(evX_fill, evY_fill, evW_fill, evH_fill);
                     ctx.restore();
                 }
@@ -2271,6 +2280,45 @@ const STAGE_HANDLERS = [
                     ctx.setLineDash([]);
                     drawHandLine(ctx, evX + evW / 2, evY + evH, planX + 60, planY + 80, 0.3, 3);
                 }
+
+                if (p0Prog > 0) {
+                    ctx.fillStyle = `rgba(0, 255, 255, ${0.95 * p0Prog})`;
+                    ctx.shadowColor = "rgba(0, 255, 255, 0.9)";
+                    ctx.shadowBlur = 8;
+
+                    // Pulses from battery stack to EV wall-box
+                    const seg1X1 = batX + batW, seg1Y1 = batY + 10, seg1X2 = evX, seg1Y2 = evY + 10;
+                    const dist1 = Math.hypot(seg1X2 - seg1X1, seg1Y2 - seg1Y1);
+                    for (let i = 0; i < 3; i++) {
+                        const offset1 = ((prog * 600 + i * (dist1 / 3)) % dist1) / dist1;
+                        const px1 = seg1X1 + (seg1X2 - seg1X1) * offset1;
+                        const py1 = seg1Y1 + (seg1Y2 - seg1Y1) * offset1;
+                        ctx.beginPath();
+                        ctx.arc(px1, py1, 2.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    // Pulses along conduit line into EV charging bay
+                    const seg2X1 = evX + evW / 2, seg2Y1 = evY + evH, seg2X2 = planX + 60, seg2Y2 = planY + 80;
+                    const dist2 = Math.hypot(seg2X2 - seg2X1, seg2Y2 - seg2Y1);
+                    for (let i = 0; i < 4; i++) {
+                        const offset2 = ((prog * 800 + i * (dist2 / 4)) % dist2) / dist2;
+                        const px2 = seg2X1 + (seg2X2 - seg2X1) * offset2;
+                        const py2 = seg2Y1 + (seg2Y2 - seg2Y1) * offset2;
+                        ctx.beginPath();
+                        ctx.arc(px2, py2, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    // Pulsing LED indicator on EV charging wall-box
+                    const ledPulse = 0.5 + 0.5 * Math.sin(prog * Math.PI * 16);
+                    ctx.fillStyle = `rgba(50, 255, 150, ${(0.4 + 0.6 * ledPulse) * p0Prog})`;
+                    ctx.shadowColor = "rgba(50, 255, 150, 0.9)";
+                    ctx.shadowBlur = 6;
+                    ctx.beginPath();
+                    ctx.arc(evX + evW - 7, evY + 7, 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
                 ctx.restore();
 
                 drawDimensionLine(ctx, planX, planY - 18, planX + planW, planY - 18, "74'-0\" (OPEN FLOOR PLAN PERIMETER - 3,800 SQ. FT.)", "#ffffff", 6, "#000000");
@@ -2287,14 +2335,21 @@ const STAGE_HANDLERS = [
                     ctx.save();
                     const pvX_fill = livingX + 20, pvY_fill = planY + 160, pvW_fill = livingW - 40, pvH_fill = 75;
                     // Aspect 3: Radiant solar cell sapphire fill across panel array
-                    ctx.fillStyle = `rgba(20, 90, 190, ${0.5 * p1Prog})`;
+                    ctx.fillStyle = `rgba(20, 90, 190, ${0.7 * p1Prog})`;
                     ctx.fillRect(pvX_fill, pvY_fill, pvW_fill, pvH_fill);
+
                     // Aspect 3: Glowing golden busbars along cantilever overhang margin
-                    ctx.fillStyle = `rgba(255, 210, 50, ${0.25 * p1Prog})`;
+                    ctx.shadowColor = "rgba(255, 210, 50, 0.6)";
+                    ctx.shadowBlur = 8;
+                    ctx.fillStyle = `rgba(255, 210, 50, ${0.5 * p1Prog})`;
                     ctx.fillRect(overhangX, overhangY, overhangW, 18);
                     ctx.fillRect(overhangX, overhangY + overhangH - 18, overhangW, 18);
-                    // Aspect 4: Insulating envelope golden-yellow cavity fill along north overhang core
-                    ctx.fillStyle = `rgba(240, 190, 50, ${0.45 * p1Prog})`;
+                    ctx.shadowBlur = 0;
+
+                    // Aspect 4: Expanding R-60 Thermal Envelope Cavity Glow along north overhang core
+                    ctx.shadowColor = "rgba(245, 200, 50, 0.7)";
+                    ctx.shadowBlur = 8;
+                    ctx.fillStyle = `rgba(245, 200, 50, ${0.65 * p1Prog})`;
                     ctx.fillRect(livingX, overhangY, livingW, 16);
                     ctx.restore();
                 }
@@ -2347,12 +2402,71 @@ const STAGE_HANDLERS = [
                 ctx.fillRect(glazeX, glazeY - 4, glazeW, 8);
                 ctx.restore();
 
+                if (p1Prog > 0) {
+                    ctx.save();
+                    const pvX_anim = livingX + 20, pvY_anim = planY + 160, pvW_anim = livingW - 40, pvH_anim = 75;
+                    // Golden Sunlight Photons striking the solar array
+                    for (let i = 0; i < 6; i++) {
+                        const photonProg = ((prog * 500 + i * 50) % 65) / 65;
+                        const px = pvX_anim + 25 + i * ((pvW_anim - 50) / 5);
+                        const py = pvY_anim - 35 + photonProg * 55;
+                        if (py <= pvY_anim + pvH_anim - 5) {
+                            ctx.fillStyle = `rgba(255, 240, 100, ${0.85 * p1Prog})`;
+                            ctx.shadowColor = "rgba(255, 240, 100, 0.9)";
+                            ctx.shadowBlur = 8;
+                            ctx.beginPath();
+                            ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.strokeStyle = `rgba(255, 240, 100, ${0.55 * p1Prog})`;
+                            ctx.lineWidth = 1.5;
+                            ctx.beginPath();
+                            ctx.moveTo(px + 6, py - 12);
+                            ctx.lineTo(px, py);
+                            ctx.stroke();
+                        }
+                    }
+
+                    // Flowing Electric Sapphire & Golden Energy Streams along Busbars
+                    for (let i = 0; i < 8; i++) {
+                        const streamOffset = (prog * 600 + i * (overhangW / 8)) % overhangW;
+                        const isGold = i % 2 === 0;
+                        ctx.fillStyle = isGold ? `rgba(255, 240, 100, ${0.85 * p1Prog})` : `rgba(20, 140, 255, ${0.85 * p1Prog})`;
+                        ctx.shadowColor = isGold ? "rgba(255, 240, 100, 0.9)" : "rgba(20, 140, 255, 0.9)";
+                        ctx.shadowBlur = 8;
+                        ctx.strokeStyle = isGold ? `rgba(255, 240, 100, ${0.65 * p1Prog})` : `rgba(20, 140, 255, ${0.65 * p1Prog})`;
+                        ctx.lineWidth = 2;
+
+                        // Top busbar (flowing right)
+                        const bxTop = overhangX + streamOffset;
+                        const byTop = overhangY + 9;
+                        ctx.beginPath();
+                        ctx.arc(bxTop, byTop, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.moveTo(Math.max(overhangX, bxTop - 15), byTop);
+                        ctx.lineTo(bxTop, byTop);
+                        ctx.stroke();
+
+                        // Bottom busbar (flowing left)
+                        const bxBot = overhangX + overhangW - streamOffset;
+                        const byBot = overhangY + overhangH - 9;
+                        ctx.beginPath();
+                        ctx.arc(bxBot, byBot, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.moveTo(Math.min(overhangX + overhangW, bxBot + 15), byBot);
+                        ctx.lineTo(bxBot, byBot);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+
                 drawDimensionLine(ctx, pvX, pvY - 14, pvX + pvW, pvY - 14, "ROOFTOP SOLAR PV ARRAY & R-60 INSULATION CORE", "#ffffff", 5, "#000000");
                 drawDimensionLine(ctx, glazeX, glazeY + 22, glazeX + glazeW, glazeY + 22, "FRAMELESS TRIPLE-PANE LOW-E ARGON GLAZING (U-0.12)", "#ffffff", 5, "#000000");
             }
 
             if (phase.idx >= 2) {
-                const p2Prog = phase.localProg;
+                const p2Prog = phase.idx === 2 ? phase.localProg : 1.0;
 
                 // 5. Geothermal Hydronic & HRV Core - Procedural Highlights
                 const radiantX = livingX + 15, radiantY = planY + 30, radiantW = livingW - 30, radiantH = planH - 60;
@@ -2361,15 +2475,15 @@ const STAGE_HANDLERS = [
                     ctx.save();
                     // Aspect 5: Radiant thermal convection linear gradient (Red inlet to Blue outlet)
                     const slabGrad = ctx.createLinearGradient(radiantX, radiantY, radiantX + radiantW, radiantY + radiantH);
-                    slabGrad.addColorStop(0, `rgba(220, 60, 60, ${0.45 * p2Prog})`);
-                    slabGrad.addColorStop(1, `rgba(40, 140, 220, ${0.45 * p2Prog})`);
+                    slabGrad.addColorStop(0, `rgba(220, 60, 60, ${0.6 * p2Prog})`);
+                    slabGrad.addColorStop(1, `rgba(40, 140, 220, ${0.6 * p2Prog})`);
                     ctx.fillStyle = slabGrad;
                     ctx.fillRect(radiantX, radiantY, radiantW, radiantH);
 
                     // Aspect 5: HRV air recovery core dual-zone green/amber fill
-                    ctx.fillStyle = `rgba(40, 200, 150, ${0.35 * p2Prog})`;
+                    ctx.fillStyle = `rgba(40, 200, 150, ${0.5 * p2Prog})`;
                     ctx.fillRect(hrvX, hrvY, hrvW / 2, hrvH);
-                    ctx.fillStyle = `rgba(230, 140, 50, ${0.35 * p2Prog})`;
+                    ctx.fillStyle = `rgba(230, 140, 50, ${0.5 * p2Prog})`;
                     ctx.fillRect(hrvX + hrvW / 2, hrvY, hrvW / 2, hrvH);
                     ctx.restore();
                 }
@@ -2434,6 +2548,80 @@ const STAGE_HANDLERS = [
                 ctx.lineTo(radiantX - 8, hrvY + 33);
                 ctx.stroke();
                 ctx.restore();
+
+                if (p2Prog > 0) {
+                    ctx.save();
+                    // Circulating Radiant Thermal Convection Fluid Particles
+                    const loopSpacing_anim = 20;
+                    const loops_anim = Math.floor(radiantH / loopSpacing_anim);
+                    for (let l = 0; l <= loops_anim; l++) {
+                        const ly = radiantY + l * loopSpacing_anim;
+                        const isOdd = l % 2 === 1;
+                        const numParticles = 3;
+                        for (let i = 0; i < numParticles; i++) {
+                            const offset = (prog * 800 + i * (radiantW / numParticles)) % radiantW;
+                            const px = isOdd ? radiantX + radiantW - offset : radiantX + offset;
+                            ctx.fillStyle = isOdd ? `rgba(255, 60, 60, ${0.9 * p2Prog})` : `rgba(40, 160, 255, ${0.9 * p2Prog})`;
+                            ctx.shadowColor = isOdd ? "rgba(255, 60, 60, 0.9)" : "rgba(40, 160, 255, 0.9)";
+                            ctx.shadowBlur = 6;
+                            ctx.beginPath();
+                            ctx.arc(px, ly, 3, 0, Math.PI * 2);
+                            ctx.fill();
+
+                            ctx.strokeStyle = isOdd ? `rgba(255, 60, 60, ${0.6 * p2Prog})` : `rgba(40, 160, 255, ${0.6 * p2Prog})`;
+                            ctx.lineWidth = 1.5;
+                            ctx.beginPath();
+                            if (isOdd) {
+                                ctx.moveTo(Math.min(radiantX + radiantW, px + 12), ly);
+                                ctx.lineTo(px, ly);
+                            } else {
+                                ctx.moveTo(Math.max(radiantX, px - 12), ly);
+                                ctx.lineTo(px, ly);
+                            }
+                            ctx.stroke();
+                        }
+                    }
+
+                    // HRV Air Recovery Core Directional Airflow Arrows
+                    const intakeLen = 80; // from hrvX - 45 to hrvX + 35 (inside core)
+                    for (let i = 0; i < 3; i++) {
+                        const offset = (prog * 250 + i * (intakeLen / 3)) % intakeLen;
+                        const ax = (hrvX - 45) + offset;
+                        const ay = hrvY + 18;
+                        ctx.strokeStyle = `rgba(40, 255, 200, ${0.9 * p2Prog})`;
+                        ctx.fillStyle = `rgba(40, 255, 200, ${0.9 * p2Prog})`;
+                        ctx.shadowColor = "rgba(40, 255, 200, 0.9)";
+                        ctx.shadowBlur = 6;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(ax - 12, ay);
+                        ctx.lineTo(ax, ay);
+                        ctx.moveTo(ax - 5, ay - 4);
+                        ctx.lineTo(ax, ay);
+                        ctx.lineTo(ax - 5, ay + 4);
+                        ctx.stroke();
+                    }
+
+                    const exhaustLen = 80; // from hrvX + 35 (inside core) to hrvX - 45
+                    for (let i = 0; i < 3; i++) {
+                        const offset = (prog * 250 + i * (exhaustLen / 3)) % exhaustLen;
+                        const ax = (hrvX + 35) - offset;
+                        const ay = hrvY + 38;
+                        ctx.strokeStyle = `rgba(255, 180, 50, ${0.9 * p2Prog})`;
+                        ctx.fillStyle = `rgba(255, 180, 50, ${0.9 * p2Prog})`;
+                        ctx.shadowColor = "rgba(255, 180, 50, 0.9)";
+                        ctx.shadowBlur = 6;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(ax + 12, ay);
+                        ctx.lineTo(ax, ay);
+                        ctx.moveTo(ax + 5, ay - 4);
+                        ctx.lineTo(ax, ay);
+                        ctx.lineTo(ax + 5, ay + 4);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
 
                 drawDimensionLine(ctx, radiantX, radiantY + radiantH - 18, radiantX + radiantW, radiantY + radiantH - 18, "SUBTERRANEAN GEOTHERMAL HYDRONIC HEATING LOOPS (COPPER / PEX)", "#ffffff", 5, "#000000");
                 drawDimensionLine(ctx, hrvX - 50, hrvY + hrvH + 12, hrvX + hrvW, hrvY + hrvH + 12, "BALANCED AIR EXCHANGE RECOVERY CORE (92% EFFICIENCY)", "#ffffff", 5, "#000000");

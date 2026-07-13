@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+    <!-- Fine dotted connecting lines (~1mm / 4px apart) along horizontal and vertical borders -->
+    <!-- Horizontal top border (y=0) and bottom border (y=36 joins with top of next tile) -->
+    <rect x="3.5" y="-0.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="7.5" y="-0.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="11.5" y="-0.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="15.5" y="-0.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="19.5" y="-0.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="23.5" y="-0.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="27.5" y="-0.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="31.5" y="-0.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <!-- Vertical left border (x=0) and right border (x=36 joins with left of next tile) -->
+    <rect x="-0.5" y="3.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="-0.5" y="7.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="-0.5" y="11.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="-0.5" y="15.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="-0.5" y="19.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="-0.5" y="23.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="-0.5" y="27.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <rect x="-0.5" y="31.5" width="1" height="1" fill="rgba(255, 255, 255, 0.12)" />
+    <!-- Large major intersection dots (~1cm / 36px apart) at the 4 tile corners so 4-way tiling forms an unclipped 3x3 dot -->
+    <rect x="-1.5" y="-1.5" width="3" height="3" fill="rgba(255, 255, 255, 0.28)" />
+    <rect x="34.5" y="-1.5" width="3" height="3" fill="rgba(255, 255, 255, 0.28)" />
+    <rect x="-1.5" y="34.5" width="3" height="3" fill="rgba(255, 255, 255, 0.28)" />
+    <rect x="34.5" y="34.5" width="3" height="3" fill="rgba(255, 255, 255, 0.28)" />
+</svg>

@@ -8,6 +8,12 @@
  * - Slanted container borders (-2.0deg to +2.0deg) and independent drop shadow angles (Shadow Angle != Box Angle).
  * - Gradual organic watercolor animation reveals for accent coloring during scroll.
  */
+
+*, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+}
+
 :root {
     --bg-color: #000000;
     --paper-light: #111111;
@@ -68,7 +74,6 @@ body {
     margin-bottom: 1rem;
     text-align: center;
     transform: rotate(-0.6deg);
-    transition: transform 0.3s var(--ease-out-quart);
     overflow: visible;
 }
 
@@ -82,7 +87,6 @@ body {
     height: 100%;
     background-color: var(--shadow-solid);
     transform: rotate(1.3deg);
-    transition: transform 0.3s var(--ease-out-quart), top 0.3s ease, left 0.3s ease;
 }
 
 .page-header:hover {
@@ -183,7 +187,6 @@ body {
     padding: 1rem;
     width: 260px;
     transform: rotate(1.2deg);
-    transition: transform 0.3s var(--ease-out-quart);
     overflow: visible;
 }
 
@@ -197,7 +200,6 @@ body {
     height: 100%;
     background-color: var(--shadow-solid);
     transform: rotate(-1.1deg);
-    transition: transform 0.3s var(--ease-out-quart), top 0.3s ease, left 0.3s ease;
 }
 
 .floating-toc:hover {
@@ -214,10 +216,6 @@ body {
 /* Visibility Toggling for Floating TOC (Zero Transitions / Instant Synchronous Toggle) */
 .floating-toc.is-hidden { display: none !important; }
 .floating-toc.is-visible { display: block !important; }
-.floating-toc, .floating-toc *, .floating-toc::before, .floating-toc::after {
-    transition: none !important;
-    animation: none !important;
-}
 
 /* Table of Contents Interactive Toggle & Collapsed State (1950s Blueprint Style, 0 Transitions) */
 .toc-toggle-btn {
@@ -283,7 +281,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: color 0.2s ease;
+    opacity: 1 !important;
 }
 
 .toc-item.is-active {
@@ -294,7 +292,7 @@ body {
 .toc-num {
     font-weight: 900;
     letter-spacing: 0.05em;
-    opacity: 0.85;
+    opacity: 1 !important;
 }
 
 .toc-label {
@@ -312,7 +310,6 @@ body {
     height: 34px;
     background-color: var(--paper-light);
     pointer-events: none;
-    transition: transform 0.25s var(--ease-out-quart), height 0.25s ease;
     z-index: 5;
     border: 2px solid var(--ink-primary);
     border-left: 6px solid var(--ink-primary);
@@ -416,7 +413,6 @@ body {
     align-items: center;
     justify-content: center;
     transform: rotateZ(var(--graphic-tilt, 0deg));
-    transition: transform 0.5s var(--ease-out-quart);
 }
 
 .graphic-sticky-wrapper::after {
@@ -429,7 +425,6 @@ body {
     height: 100%;
     background-color: var(--shadow-solid);
     transform: rotateZ(var(--graphic-shadow-tilt, -1.5deg));
-    transition: transform 0.5s var(--ease-out-quart), top 0.5s ease, left 0.5s ease;
 }
 
 .graphic-canvas,
@@ -523,8 +518,7 @@ body {
     border: 3px solid var(--ink-muted);
     border-radius: 0px;
     padding: 1.35rem 1.75rem;
-    transition: transform 0.35s var(--ease-out-quart), border-color 0.35s ease, background-color 0.35s ease, opacity 0.35s ease;
-    opacity: 0.45;
+    opacity: 1 !important;
     transform: perspective(1000px) rotateZ(var(--step-tilt, 0deg)) scale(0.95);
     overflow: visible;
 }
@@ -540,11 +534,10 @@ body {
     background-color: var(--shadow-solid);
     opacity: 0.3;
     transform: rotateZ(var(--step-shadow-tilt, 1deg));
-    transition: transform 0.35s var(--ease-out-quart), opacity 0.35s ease, top 0.35s ease, left 0.35s ease;
 }
 
 .step.is-active {
-    opacity: 1;
+    opacity: 1 !important;
     border: 4px solid var(--ink-primary);
     background-color: var(--paper-light);
     transform: perspective(1000px) rotateZ(var(--step-tilt, 0deg)) scale(1.02);
@@ -569,6 +562,7 @@ body {
     margin-bottom: 0.35rem;
     border-bottom: 2px dashed var(--ink-muted);
     padding-bottom: 0.35rem;
+    opacity: 1 !important;
 }
 
 .step-title {
@@ -587,7 +581,7 @@ body {
     position: relative;
     z-index: 1;
     margin-bottom: 1.2rem;
-    opacity: 1;
+    opacity: 1 !important;
     cursor: pointer;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 1.05rem;
@@ -642,6 +636,7 @@ body {
     color: var(--ink-secondary, #cccccc);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    opacity: 1 !important;
 }
 
 .spec-value {
@@ -733,13 +728,5 @@ body {
     }
     .step-specs {
         grid-template-columns: 1fr;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    *, ::before, ::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
     }
 }
