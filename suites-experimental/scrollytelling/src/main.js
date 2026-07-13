@@ -7,7 +7,6 @@
 import { STAGES } from "./content.js";
 import { initGraphics, updateGraphics } from "./graphics.js";
 import { initScrollamaEngine } from "./engine-scrollama.js";
-import { initVanillaEngine } from "./engine-vanilla.js";
 
 function renderStageSections() {
     const container = document.getElementById("scrolly-container");
@@ -311,17 +310,7 @@ function initApp() {
     renderBottomTimeline();
     initGraphics();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const engine = urlParams.get("engine") || "scrollama";
-
-    if (engine === "vanilla" || engine === "observer" || engine === "css") {
-        if (engine === "css")
-            console.warn("CSS scroll timelines are disabled for main-thread benchmarking. Falling back to Vanilla JS engine.");
-
-        initVanillaEngine(updateGraphics);
-    } else {
-        initScrollamaEngine(updateGraphics);
-    }
+    initScrollamaEngine(updateGraphics);
 
     const handleScroll = () => {
         if (typeof window.forceScrollytellingUpdate === "function")
