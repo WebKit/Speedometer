@@ -3,7 +3,10 @@
 This document records the concise design decisions and architectural rules for the **The Evolution of a House** scrollytelling benchmark workload in Speedometer.
 
 ## Executive Design Decision
-The workload models a 1950s mid-century architectural journal and technical drafting print advertisement. To maintain visual harmony and benchmark performance consistency, all layout components, CSS styles, Canvas procedural renderings, and SVG overlays must follow these five foundational rules:
+The workload models a 1950s/1960s mid-century architectural journal, technical drafting blueprint, and precision print instruction manual (such as the classic 1968 Canon Autozoom 518 instruction manual). To maintain visual harmony and benchmark performance consistency, all layout components, CSS styles, Canvas procedural renderings, and SVG overlays must follow these foundational rules:
+
+### Aesthetic Reference: Inverted 1968 Canon Autozoom 518 Graphic & Layout Style
+Our visual identity adapts the utilitarian yet refined late-1960s Japanese industrial technical print design of the Canon Autozoom 518 manual, inverted for a negative dark-mode drafting void (`#000000` pure black background, `#111111` drafting canvas, `#ffffff` primary white text and linework). The typography establishes a strict hierarchy combining bold, condensed mid-century display lettering with clean, airy geometric sans-serifs (resembling Futura/Helvetica) and typewriter monospace engineering tables. Section headers and step sequences (`1`, `2`, `3`) leap from the dark canvas in high-contrast **crimson-ruby accent red** (`#D12B3E`), paired with crisp red leader-line callouts (`---→`) targeting mechanical and structural components. The layout balances technical precision and human warmth through asymmetric grids, slanted geometric shapes, rounded rectangular diagram frames, and high-contrast duotone architectural line art.
 
 ### 1. 1950s Black & White Blueprint / Planning Design with Organic Watercolor Accents
 - **Pure Black Background & B&W UI**: The UI theme is negative blueprint drafting (light on dark void). Body background is `#000000`. Inactive cards and drafting canvas are `#111111`, active cards are `#0a0a0a`. Primary drafting ink and typography is `#ffffff`. Secondary lines are `#cccccc` and `#777777`.
