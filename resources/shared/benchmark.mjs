@@ -31,16 +31,6 @@ export class BenchmarkSuite {
         this.steps = steps;
     }
 
-    record(_step, syncTime, asyncTime) {
-        const total = syncTime + asyncTime;
-        const results = {
-            tests: { Sync: syncTime, Async: asyncTime },
-            total: total,
-        };
-
-        return results;
-    }
-
     async runAndRecordSuite(params, onProgress) {
         const measuredValues = {
             tests: {},
@@ -53,9 +43,16 @@ export class BenchmarkSuite {
         performance.mark(suiteStartLabel);
 
         for (const step of this.steps) {
-            const result = await step.runAndRecordStep(params, this, step, this.record);
-            measuredValues.tests[step.name] = result;
-            measuredValues.total += result.total;
+            const { syncTime, asyncTime } = await step.runAndRecordStep(params, this, step);
+            const total = syncTime + asyncTime;
+            const result = {
+                tests: { Sync: syncTime, Async: asyncTime },
+                total: total,
+            };
+            if (!step.ignoreResult) {
+                measuredValues.tests[step.name] = result;
+                measuredValues.total += total;
+            }
             onProgress?.(step.name);
         }
 

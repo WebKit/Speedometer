@@ -52,9 +52,16 @@ export class BenchmarkSuite {
         performance.mark(suiteStartLabel);
 
         for (const test of this.tests) {
-            const result = await test.runAndRecord(params, this, test, this.record);
-            measuredValues.tests[test.name] = result;
-            measuredValues.total += result.total;
+            const { syncTime, asyncTime } = await test.runAndRecord(params, this, test);
+            const total = syncTime + asyncTime;
+            const result = {
+                tests: { Sync: syncTime, Async: asyncTime },
+                total: total,
+            };
+            if (!test.ignoreResult) {
+                measuredValues.tests[test.name] = result;
+                measuredValues.total += total;
+            }
             onProgress?.(test.name);
         }
 
