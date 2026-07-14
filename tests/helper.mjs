@@ -65,6 +65,9 @@ export default async function testSetup(helpText) {
     let builder;
     switch (BROWSER) {
         case "safari": {
+            if (isHeadless)
+                console.warn("Warning: --headless is not supported with safari, running in windowed mode.");
+
             builder = new Builder().forBrowser(BROWSER);
             // No bidi and log support in safari.
             break;
