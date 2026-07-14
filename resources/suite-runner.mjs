@@ -2,6 +2,12 @@ import { STEP_RUNNER_LOOKUP } from "./shared/step-runner.mjs";
 import { MESSAGE_TYPE } from "./shared/benchmark.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
 
+function delay(ms) {
+    if (ms > 0)
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    return undefined;
+}
+
 export class SuiteRunner {
     #frame;
     #page;
@@ -73,6 +79,8 @@ export class SuiteRunner {
         const suiteStartLabel = `suite-${suiteName}-start`;
         const suiteEndLabel = `suite-${suiteName}-end`;
 
+        await delay(this.#params.waitAfterSetup);
+
         performance.mark(suiteStartLabel);
         for (const step of this.#suite.tests) {
             if (this.#client?.willRunTest)
@@ -84,6 +92,8 @@ export class SuiteRunner {
             await stepRunner.runStep();
         }
         performance.mark(suiteEndLabel);
+
+        await delay(this.#params.waitAfterSuite);
 
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
         this._validateSuiteResults();
@@ -106,8 +116,10 @@ export class SuiteRunner {
             const frame = this.#frame;
             frame.onload = () => resolve();
             frame.onerror = () => reject();
-            const splitUrl = this.#suite.url.split("?");
-            frame.src = `${splitUrl[0]}?${splitUrl[1] ?? ""}&${this.#params.toSearchParams()}`;
+            const url = new URL(this.#suite.url, document.baseURI);
+            for (const [key, value] of this.#params.toSearchParamsObject())
+                url.searchParams.append(key, value);
+            frame.src = url.href;
         });
     }
 
@@ -177,10 +189,14 @@ export class RemoteSuiteRunner extends SuiteRunner {
     }
 
     async _runSuite() {
+        await delay(this.params.waitAfterSetup);
+
         // Ask workload to run its own tests.
         this._sendMessage(MESSAGE_TYPE.suiteStart, { name: this.suite.config?.name || "default" });
         // Capture metrics from the completed tests.
         const { result } = await this._subscribeOnce(MESSAGE_TYPE.suiteComplete);
+
+        await delay(this.params.waitAfterSuite);
 
         this.suiteResults.tests = {
             ...this.suiteResults.tests,
