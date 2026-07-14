@@ -3,6 +3,7 @@
     "private": true,
     "scripts": {
         "build": "nuxt build",
+        "postbuild": "node -e 'import(\"../../../../resources/shared/generate-resources.mjs\").then(m => m.generateResourcesFile(require(\"path\").join(process.cwd(), \"dist\")))'",
         "dev": "nuxt dev",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
