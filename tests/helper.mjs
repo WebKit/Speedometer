@@ -13,8 +13,9 @@ export const DEFAULT_RETRIES = 1;
 
 const optionDefinitions = [
     { name: "browser", type: String, description: "Set the browser to test, choices are [safari, firefox, chrome]. By default the $BROWSER env variable is used." },
-    { name: "port", type: Number, defaultValue: 8010, description: "Set the test-server port, The default value is 8010." },
+    { name: "port", type: Number, defaultValue: 0, description: "Set the test-server port. The default value is 0 (dynamic port)." },
     { name: "retry", type: Number, defaultValue: DEFAULT_RETRIES, description: "Number of retries for the tests on failure." },
+    { name: "headless", type: Boolean, description: "Run browser in headless mode. Automatically enabled on Linux when $DISPLAY and $WAYLAND_DISPLAY are unset." },
     { name: "help", alias: "h", description: "Print this help text." },
 ];
 
@@ -36,18 +37,24 @@ function printHelp(message = "", exitStatus = 0) {
     process.exit(exitStatus);
 }
 
+export function detectHeadless(options) {
+    return Boolean(options?.headless || (process.platform === "linux" && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY));
+}
+
 export default async function testSetup(helpText) {
     const options = commandLineArgs(optionDefinitions);
 
     if ("help" in options)
         printHelp(helpText);
 
-    const BROWSER = options?.browser;
+    const BROWSER = options?.browser || process.env.BROWSER;
     if (!BROWSER)
         printHelp("No browser specified, use $BROWSER or --browser", 1);
 
     if (options.retry < 0)
         printHelp("Number of retries cannot be negative", 1);
+
+    const isHeadless = detectHeadless(options);
 
     let builder;
     switch (BROWSER) {
@@ -57,23 +64,34 @@ export default async function testSetup(helpText) {
             break;
         }
         case "firefox": {
-            builder = new Builder().forBrowser(BROWSER).setFirefoxOptions(new firefox.Options().enableBidi());
+            const firefoxOptions = new firefox.Options().enableBidi();
+            if (isHeadless)
+                firefoxOptions.addArguments("--headless");
+
+            builder = new Builder().forBrowser(BROWSER).setFirefoxOptions(firefoxOptions);
             break;
         }
         case "chrome": {
-            builder = new Builder().forBrowser(BROWSER).setChromeOptions(new chrome.Options().enableBidi());
+            const chromeOptions = new chrome.Options().enableBidi();
+            if (isHeadless)
+                chromeOptions.addArguments("--headless");
+
+            builder = new Builder().forBrowser(BROWSER).setChromeOptions(chromeOptions);
             break;
         }
         case "edge": {
-            builder = new Builder().forBrowser(BROWSER).setEdgeOptions(new edge.Options().enableBidi());
+            const edgeOptions = new edge.Options().enableBidi();
+            if (isHeadless)
+                edgeOptions.addArguments("--headless");
+
+            builder = new Builder().forBrowser(BROWSER).setEdgeOptions(edgeOptions);
             break;
         }
         default: {
             printHelp(`Invalid browser "${BROWSER}", choices are: "safari", "firefox", "chrome", "edge"`);
         }
     }
-    const PORT = options.port;
-    const server = await serve(PORT);
+    const { server, port } = await serve(options.port);
     let driver, logInspector;
 
     process.on("unhandledRejection", (err) => {
@@ -100,8 +118,9 @@ export default async function testSetup(helpText) {
         server.close();
         if (logInspector)
             await logInspector.close();
+
         if (driver)
             driver.close();
     }
-    return { driver, PORT, stop, retry: options.retry };
+    return { driver, port, stop, retry: options.retry };
 }
