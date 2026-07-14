@@ -59,8 +59,9 @@ export class BenchmarkSuite {
         performance.mark(suiteStartLabel);
 
         for (const step of this.steps) {
-<<<<<<< HEAD
-            const { syncTime, asyncTime } = await step.runAndRecordStep(params, this, step);
+            const rawResult = await step.runAndRecordStep(params, this, step);
+            console.assert(rawResult, "Missing test return value", step);
+            const { syncTime, asyncTime } = rawResult;
             const total = syncTime + asyncTime;
             const result = {
                 tests: { Sync: syncTime, Async: asyncTime },
@@ -70,12 +71,6 @@ export class BenchmarkSuite {
                 measuredValues.tests[step.name] = result;
                 measuredValues.total += total;
             }
-=======
-            const result = await step.runAndRecordStep(params, this, step, this.record);
-            console.assert(result, "Missing test return value", step);
-            measuredValues.tests[step.name] = result;
-            measuredValues.total += result.total;
->>>>>>> main
             onProgress?.(step.name);
         }
 
