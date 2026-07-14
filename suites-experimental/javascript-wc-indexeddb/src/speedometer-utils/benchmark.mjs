@@ -14,19 +14,11 @@ export class BenchmarkStep {
         this.ignoreResult = ignoreResult;
     }
 
-<<<<<<< HEAD
     async runAndRecord(params, suite, test) {
-        const TestRunnerClass = params.useAsyncSteps ? AsyncTestRunner : TestRunner;
-        const type = params.useAsyncSteps ? "async" : "sync";
-        const testRunner = new TestRunnerClass(null, null, params, suite, test, type);
-        const result = await testRunner.runTest();
-=======
-    async runAndRecord(params, suite, test, callback) {
         const StepRunnerClass = params.useAsyncSteps ? AsyncStepRunner : StepRunner;
         const type = params.useAsyncSteps ? "async" : "sync";
-        const stepRunner = new StepRunnerClass(null, null, params, suite, test, callback, type);
+        const stepRunner = new StepRunnerClass(null, null, params, suite, test, type);
         const result = await stepRunner.runStep();
->>>>>>> main
         return result;
     }
 }
