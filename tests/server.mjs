@@ -16,6 +16,7 @@ export default async function serve(port) {
         throw new Error("Port is required");
     const ws = await LocalWebServer.create({
         port: port,
+        hostname: "127.0.0.1",
         directory: ROOT_DIR,
         corsOpenerPolicy: "same-origin",
         corsEmbedderPolicy: "require-corp",
