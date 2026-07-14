@@ -53,3 +53,9 @@ export function forceLayout(body, layoutMode = "getBoundingRectAndElementFromPoi
             throw Error(`Invalid layoutMode: ${layoutMode}`);
     }
 }
+
+export function skipInShell(context) {
+    if (typeof window === "undefined" || typeof document === "undefined")
+        // Skip in non-browser environments
+        context.skip();
+}
