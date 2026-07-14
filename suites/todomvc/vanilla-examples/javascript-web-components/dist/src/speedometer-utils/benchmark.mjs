@@ -13,8 +13,8 @@ export class BenchmarkStep {
         this.run = run;
     }
 
-    async runAndRecord(params, suite, test, callback) {
-        const testRunner = new TestRunner(null, null, params, suite, test, callback);
+    async runAndRecord(params, suite, test) {
+        const testRunner = new TestRunner(null, null, params, suite, test);
         const result = await testRunner.runTest();
         return result;
     }

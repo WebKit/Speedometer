@@ -14,10 +14,10 @@ export class BenchmarkStep {
         this.ignoreResult = ignoreResult;
     }
 
-    async runAndRecord(params, suite, test, callback) {
+    async runAndRecord(params, suite, test) {
         const TestRunnerClass = params.useAsyncSteps ? AsyncTestRunner : TestRunner;
         const type = params.useAsyncSteps ? "async" : "sync";
-        const testRunner = new TestRunnerClass(null, null, params, suite, test, callback, type);
+        const testRunner = new TestRunnerClass(null, null, params, suite, test, type);
         const result = await testRunner.runTest();
         return result;
     }
