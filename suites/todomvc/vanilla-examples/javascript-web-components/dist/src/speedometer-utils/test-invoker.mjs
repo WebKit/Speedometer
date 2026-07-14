@@ -1,8 +1,7 @@
 class TestInvoker {
-    constructor(syncCallback, asyncCallback, reportCallback, params) {
+    constructor(syncCallback, asyncCallback, params) {
         this._syncCallback = syncCallback;
         this._asyncCallback = asyncCallback;
-        this._reportCallback = reportCallback;
         this._params = params;
     }
 }
@@ -24,10 +23,7 @@ class RAFTestInvoker extends BaseRAFTestInvoker {
         requestAnimationFrame(() => {
             setTimeout(() => {
                 this._asyncCallback();
-                setTimeout(async () => {
-                    const result = await this._reportCallback();
-                    resolve(result);
-                }, 0);
+                setTimeout(resolve, 0);
             }, 0);
         });
     }
