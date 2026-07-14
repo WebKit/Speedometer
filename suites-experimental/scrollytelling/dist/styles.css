@@ -45,14 +45,28 @@
 
 body {
     background-color: var(--bg-color);
-    background-image: url("public/drafting_grid_tiling.svg");
-    background-repeat: repeat;
-    background-size: 36px 36px;
     color: var(--ink-primary);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 1rem;
     line-height: 1.6;
     overflow-x: hidden;
+    position: relative;
+    z-index: 0;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-color: var(--bg-color, #000000);
+    background-image: url("public/planning_paper_dot_grid.webp");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+    pointer-events: none;
 }
 
 #app {
@@ -414,7 +428,7 @@ body {
     aspect-ratio: 4 / 3;
     border: 4px solid var(--border-color);
     border-radius: 10px;
-    background-color: var(--paper-light);
+    background-color: transparent;
     overflow: visible;
     display: flex;
     align-items: center;
