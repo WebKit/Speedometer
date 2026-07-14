@@ -3,8 +3,7 @@ import { MESSAGE_TYPE } from "./shared/benchmark.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
 
 function delay(ms) {
-    if (ms > 0)
-        return new Promise((resolve) => setTimeout(resolve, ms));
+    if (ms > 0) return new Promise((resolve) => setTimeout(resolve, ms));
     return undefined;
 }
 
@@ -83,8 +82,7 @@ export class SuiteRunner {
 
         performance.mark(suiteStartLabel);
         for (const step of this.#suite.tests) {
-            if (this.#client?.willRunTest)
-                await this.#client.willRunTest(this.#suite, step);
+            if (this.#client?.willRunTest) await this.#client.willRunTest(this.#suite, step);
 
             const stepRunnerType = this.#suite.type ?? this.params.useAsyncSteps ? "async" : "default";
             const stepRunnerClass = STEP_RUNNER_LOOKUP[stepRunnerType];
@@ -106,10 +104,8 @@ export class SuiteRunner {
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
         const { suiteTotal, suitePrepare } = this.#suiteResults.total;
-        if (suiteTotal === 0)
-            throw new Error(`Got invalid 0-time total for suite ${this.#suite.name}: ${suiteTotal}`);
-        if (this.#params.measurePrepare && suitePrepare === 0)
-            throw new Error(`Got invalid 0-time prepare time for suite ${this.#suite.name}: ${suitePrepare}`);
+        if (suiteTotal === 0) throw new Error(`Got invalid 0-time total for suite ${this.#suite.name}: ${suiteTotal}`);
+        if (this.#params.measurePrepare && suitePrepare === 0) throw new Error(`Got invalid 0-time prepare time for suite ${this.#suite.name}: ${suitePrepare}`);
     }
 
     async _loadFrame() {
@@ -118,16 +114,14 @@ export class SuiteRunner {
             frame.onload = () => resolve();
             frame.onerror = () => reject();
             const url = new URL(this.#suite.url, document.baseURI);
-            for (const [key, value] of this.#params.toSearchParamsObject())
-                url.searchParams.append(key, value);
+            for (const [key, value] of this.#params.toSearchParamsObject()) url.searchParams.append(key, value);
             frame.src = url.href;
         });
     }
 
     async _recordTestResults(step, syncTime, asyncTime) {
         // Skip reporting updates for the warmup suite.
-        if (this.#suite === WarmupSuite)
-            return;
+        if (this.#suite === WarmupSuite) return;
 
         let total = syncTime + asyncTime;
         this.#suiteResults.tests[step.name] = {
@@ -139,8 +133,7 @@ export class SuiteRunner {
     }
 
     async _updateClient(suite = this.#suite) {
-        if (this.#client?.didFinishSuite)
-            await this.#client.didFinishSuite(suite);
+        if (this.#client?.didFinishSuite) await this.#client.didFinishSuite(suite);
     }
 }
 
@@ -224,20 +217,17 @@ export class RemoteSuiteRunner extends SuiteRunner {
     _handlePostMessage(event) {
         const message = event.data;
         const callback = this.postMessageCallbacks.get(message.type);
-        if (callback)
-            callback(event);
+        if (callback) callback(event);
     }
 
     _startSubscription(type, callback) {
-        if (this.postMessageCallbacks.has(type))
-            throw new Error("Callback exists already");
+        if (this.postMessageCallbacks.has(type)) throw new Error("Callback exists already");
 
         this.postMessageCallbacks.set(type, callback);
     }
 
     _stopSubscription(type) {
-        if (!this.postMessageCallbacks.has(type))
-            throw new Error("Callback does not exist");
+        if (!this.postMessageCallbacks.has(type)) throw new Error("Callback does not exist");
 
         this.postMessageCallbacks.delete(type);
     }
@@ -246,8 +236,7 @@ export class RemoteSuiteRunner extends SuiteRunner {
         return new Promise((resolve) => {
             this._startSubscription(type, (e) => {
                 const message = e.data;
-                if (type !== MESSAGE_TYPE.appReady && message.appId !== this.appId)
-                    throw new Error(`Got message for invalid app: ${message.appId} instead of ${this.appId}`);
+                if (type !== MESSAGE_TYPE.appReady && message.appId !== this.appId) throw new Error(`Got message for invalid app: ${message.appId} instead of ${this.appId}`);
                 this._stopSubscription(type);
                 resolve(message.payload);
             });
