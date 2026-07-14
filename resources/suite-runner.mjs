@@ -1,5 +1,12 @@
 import { STEP_RUNNER_LOOKUP } from "./shared/step-runner.mjs";
+import { MESSAGE_TYPE } from "./shared/benchmark.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
+
+function delay(ms) {
+    if (ms > 0)
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    return undefined;
+}
 
 export class SuiteRunner {
     #frame;
@@ -72,6 +79,8 @@ export class SuiteRunner {
         const suiteStartLabel = `suite-${suiteName}-start`;
         const suiteEndLabel = `suite-${suiteName}-end`;
 
+        await delay(this.#params.waitAfterSetup);
+
         performance.mark(suiteStartLabel);
         for (const step of this.#suite.tests) {
             if (this.#client?.willRunTest)
@@ -83,6 +92,8 @@ export class SuiteRunner {
             await stepRunner.runStep();
         }
         performance.mark(suiteEndLabel);
+
+        await delay(this.#params.waitAfterSuite);
 
         performance.measure(`suite-${suiteName}`, suiteStartLabel, suiteEndLabel);
         this._validateSuiteResults();
@@ -162,43 +173,56 @@ export class RemoteSuiteRunner extends SuiteRunner {
         const suiteName = this.suite.name;
         const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
         const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
-
         performance.mark(suitePrepareStartLabel);
 
         // Wait for the app-ready message from the workload.
-        const appReadyPromise = this._subscribeOnce("app-ready");
+        const appReadyPromise = this._subscribeOnce(MESSAGE_TYPE.appReady);
         await this._loadFrame(this.suite);
+        // The suite will send out the app-ready message.
         const response = await appReadyPromise;
+        this._initializeAppId(response.appId);
         await this.suite.prepare?.(this.page);
-        // Capture appId to pass along with messages.
-        this.appId = response?.appId;
 
         performance.mark(suitePrepareEndLabel);
-
         const entry = performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
         this.#prepareTime = entry.duration;
     }
 
     async _runSuite() {
+        await delay(this.params.waitAfterSetup);
+
         // Ask workload to run its own tests.
-        this.frame.contentWindow.postMessage({ id: this.appId, key: "benchmark-connector", type: "benchmark-suite", name: this.suite.config?.name || "default" }, "*");
+        this._sendMessage(MESSAGE_TYPE.suiteStart, { name: this.suite.config?.name || "default" });
         // Capture metrics from the completed tests.
-        const response = await this._subscribeOnce("suite-complete");
+        const { result } = await this._subscribeOnce(MESSAGE_TYPE.suiteComplete);
+
+        await delay(this.params.waitAfterSuite);
 
         this.suiteResults.tests = {
             ...this.suiteResults.tests,
-            ...response.result.tests,
+            ...result.tests,
         };
 
         this.suiteResults.prepare = this.#prepareTime;
-        this.suiteResults.total = response.result.total;
+        this.suiteResults.total = result.total;
 
         this._validateSuiteResults();
         await this._updateClient();
     }
 
+    _sendMessage(type, payload) {
+        const message = {
+            appId: this.appId,
+            key: "benchmark-connector",
+            type: type,
+            payload: payload,
+        };
+        this.frame.contentWindow.postMessage(message, "*");
+    }
+
     _handlePostMessage(event) {
-        const callback = this.postMessageCallbacks.get(event.data.type);
+        const message = event.data;
+        const callback = this.postMessageCallbacks.get(message.type);
         if (callback)
             callback(event);
     }
@@ -220,10 +244,19 @@ export class RemoteSuiteRunner extends SuiteRunner {
     _subscribeOnce(type) {
         return new Promise((resolve) => {
             this._startSubscription(type, (e) => {
+                const message = e.data;
+                if (type !== MESSAGE_TYPE.appReady && message.appId !== this.appId)
+                    throw new Error(`Got message for invalid app: ${message.appId} instead of ${this.appId}`);
                 this._stopSubscription(type);
-                resolve(e.data);
+                resolve(message.payload);
             });
         });
+    }
+
+    _initializeAppId(appId) {
+        console.assert(!this.appId, `Cannot receive ${MESSAGE_TYPE.appReady} twice`);
+        console.assert(appId, `${MESSAGE_TYPE.appReady} sent no appId`);
+        this.appId = appId;
     }
 }
 

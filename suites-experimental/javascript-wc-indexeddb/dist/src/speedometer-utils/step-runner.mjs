@@ -1,18 +1,18 @@
-import { TEST_INVOKER_LOOKUP } from "./test-invoker.mjs";
+import { STEP_SCHEDULER_LOOKUP } from "./step-scheduler.mjs";
 import { forceLayout } from "./helpers.mjs";
 
-export class TestRunner {
+export class StepRunner {
     #frame;
     #page;
     #params;
     #suite;
-    #test;
+    #step;
     #callback;
     #type;
 
-    constructor(frame, page, params, suite, test, callback, type) {
+    constructor(frame, page, params, suite, step, callback, type) {
         this.#suite = suite;
-        this.#test = test;
+        this.#step = step;
         this.#params = params;
         this.#callback = callback;
         this.#page = page;
@@ -24,21 +24,21 @@ export class TestRunner {
         return this.#page;
     }
 
-    get test() {
-        return this.#test;
+    get step() {
+        return this.#step;
     }
 
-    _runSyncStep(test, page) {
-        test.run(page);
+    _runSyncStep(step, page) {
+        step.run(page);
     }
 
-    async runTest() {
+    async runStep() {
         // Prepare all mark labels outside the measuring loop.
         const suiteName = this.#suite.name;
-        const testName = this.#test.name;
-        const syncStartLabel = `${suiteName}.${testName}-start`;
-        const syncEndLabel = `${suiteName}.${testName}-sync-end`;
-        const asyncEndLabel = `${suiteName}.${testName}-async-end`;
+        const stepName = this.#step.name;
+        const syncStartLabel = `${suiteName}.${stepName}-start`;
+        const syncEndLabel = `${suiteName}.${stepName}-sync-end`;
+        const asyncEndLabel = `${suiteName}.${stepName}-async-end`;
 
         let syncTime;
         let asyncStartTime;
@@ -57,9 +57,9 @@ export class TestRunner {
             const syncStartTime = performance.now();
 
             if (this.#type === "async")
-                await this._runSyncStep(this.test, this.page);
+                await this._runSyncStep(this.step, this.page);
             else
-                this._runSyncStep(this.test, this.page);
+                this._runSyncStep(this.step, this.page);
 
             const mark = performance.mark(syncEndLabel);
             const syncEndTime = mark.startTime;
@@ -85,32 +85,32 @@ export class TestRunner {
 
             if (this.#params.warmupBeforeSync)
                 performance.measure("warmup", "warmup-start", "warmup-end");
-            performance.measure(`${suiteName}.${testName}-sync`, syncStartLabel, syncEndLabel);
-            performance.measure(`${suiteName}.${testName}-async`, syncEndLabel, asyncEndLabel);
+            performance.measure(`${suiteName}.${stepName}-sync`, syncStartLabel, syncEndLabel);
+            performance.measure(`${suiteName}.${stepName}-async`, syncEndLabel, asyncEndLabel);
         };
 
-        const report = () => this.#callback(this.#test, syncTime, asyncTime);
-        const invokerType = this.#suite.type === "async" || this.#params.useAsyncSteps ? "async" : this.#params.measurementMethod;
-        const invokerClass = TEST_INVOKER_LOOKUP[invokerType];
-        const invoker = new invokerClass(runSync, measureAsync, report, this.#params);
+        const report = () => this.#callback(this.#step, syncTime, asyncTime);
+        const schedulerType = this.#suite.type === "async" || this.#params.useAsyncSteps ? "async" : this.#params.measurementMethod;
+        const schedulerClass = STEP_SCHEDULER_LOOKUP[schedulerType];
+        const scheduler = new schedulerClass(runSync, measureAsync, report, this.#params);
 
-        return invoker.start();
+        return scheduler.start();
     }
 }
 
-export class AsyncTestRunner extends TestRunner {
-    constructor(frame, page, params, suite, test, callback, type) {
-        super(frame, page, params, suite, test, callback, type);
+export class AsyncStepRunner extends StepRunner {
+    constructor(frame, page, params, suite, step, callback, type) {
+        super(frame, page, params, suite, step, callback, type);
     }
 
-    async _runSyncStep(test, page) {
-        await test.run(page);
+    async _runSyncStep(step, page) {
+        await step.run(page);
     }
 }
 
-export const TEST_RUNNER_LOOKUP = {
+export const STEP_RUNNER_LOOKUP = {
     __proto__: null,
-    default: TestRunner,
-    async: AsyncTestRunner,
-    remote: TestRunner,
+    default: StepRunner,
+    async: AsyncStepRunner,
+    remote: StepRunner,
 };

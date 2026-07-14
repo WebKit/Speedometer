@@ -24,10 +24,12 @@ export function createDeveloperModeContainer() {
     settings.append(createUIForMeasurePrepare());
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
+    settings.append(createUIForWaitAfterSetup());
     settings.append(createUIForSyncStepDelay());
-    settings.append(createUIForComplexity());
+    settings.append(createUIForWaitAfterSuite());
     settings.append(createUIForAsyncSteps());
     settings.append(createUIForLayoutMode());
+    settings.append(createUIForComplexity());
 
     content.append(document.createElement("hr"));
     content.append(settings);
@@ -91,17 +93,26 @@ function createUIForSyncStepDelay() {
     return createLinearRangeUI("Sync step delay: ", "waitBeforeSync");
 }
 
+function createUIForWaitAfterSetup() {
+    return createLinearRangeUI("Post setup delay: ", "waitAfterSetup");
+}
+
+function createUIForWaitAfterSuite() {
+    return createLinearRangeUI("Post suite delay: ", "waitAfterSuite");
+}
+
 function createUIForComplexity() {
     return createExpRangeUI("Relative complexity: ", "complexity", "x", 0.01, 100, 0.01);
 }
 
 function createLinearRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000, step = 1) {
+    const initialValue = params[paramKey];
     const linearMap = (value) => value;
     const { range, label } = createTimeRangeUI(labelText, paramKey, unit, linearMap, 0);
     range.min = min;
     range.max = max;
     range.step = step;
-    range.value = params[paramKey];
+    range.value = initialValue;
     return label;
 }
 
