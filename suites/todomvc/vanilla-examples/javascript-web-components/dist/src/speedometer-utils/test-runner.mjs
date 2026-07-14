@@ -6,14 +6,12 @@ export class TestRunner {
     #params;
     #suite;
     #test;
-    #callback;
     #type;
 
-    constructor(frame, page, params, suite, test, callback, type) {
+    constructor(frame, page, params, suite, test, type) {
         this.#suite = suite;
         this.#test = test;
         this.#params = params;
-        this.#callback = callback;
         this.#page = page;
         this.#frame = frame;
         this.#type = type;
@@ -85,20 +83,15 @@ export class TestRunner {
             performance.measure(`${suiteName}.${testName}-async`, syncEndLabel, asyncEndLabel);
         };
 
-        const report = () => this.#callback(this.#test, syncTime, asyncTime);
         const invokerType = this.#suite.type === "async" || this.#params.useAsyncSteps ? "async" : this.#params.measurementMethod;
         const invokerClass = TEST_INVOKER_LOOKUP[invokerType];
-        const invoker = new invokerClass(runSync, measureAsync, report, this.#params);
-
-        return invoker.start();
+        const invoker = new invokerClass(runSync, measureAsync, this.#params);
+        await invoker.start();
+        return { syncTime, asyncTime };
     }
 }
 
 export class AsyncTestRunner extends TestRunner {
-    constructor(frame, page, params, suite, test, callback, type) {
-        super(frame, page, params, suite, test, callback, type);
-    }
-
     async _runSyncStep(test, page) {
         await test.run(page);
     }

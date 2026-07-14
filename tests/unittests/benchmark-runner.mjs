@@ -147,7 +147,7 @@ describe("BenchmarkRunner", () => {
             before(async () => {
                 _prepareSuiteSpy = spy(SuiteRunner.prototype, "_prepareSuite");
                 _loadFrameStub = stub(SuiteRunner.prototype, "_loadFrame").callsFake(async () => null);
-                _runTestStub = stub(StepRunner.prototype, "runStep").callsFake(async () => null);
+                _runTestStub = stub(StepRunner.prototype, "runStep").callsFake(async () => ({ syncTime: 0, asyncTime: 0 }));
                 _validateSuiteResultsStub = stub(SuiteRunner.prototype, "_validateSuiteResults").callsFake(async () => null);
                 performanceMarkSpy = spy(window.performance, "mark");
                 _suitePrepareSpy = spy(suite, "prepare");
