@@ -1,6 +1,6 @@
 # Scrollytelling Workload: Layout & Design Decision Document
 
-This document records the concise design decisions and architectural rules for the **The Evolution of a House** scrollytelling benchmark workload in Speedometer.
+This document records the concise design decisions and architectural rules for the **Project A-101: The Homestead Dossier** scrollytelling benchmark workload in Speedometer.
 
 ## Executive Design Decision
 The workload models a 1950s/1960s mid-century architectural journal, technical drafting blueprint, and precision print instruction manual (such as the classic 1968 Canon Autozoom 518 instruction manual). To maintain visual harmony and benchmark performance consistency, all layout components, CSS styles, Canvas procedural renderings, and SVG overlays must follow these foundational rules:

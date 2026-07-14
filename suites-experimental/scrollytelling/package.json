@@ -1,7 +1,7 @@
 {
     "name": "scrollytelling",
     "version": "1.0.0",
-    "description": "Scrollytelling benchmark suite featuring The Evolution of a House.",
+    "description": "Scrollytelling benchmark suite featuring Project A-101: The Homestead Dossier.",
     "private": true,
     "type": "module",
     "scripts": {

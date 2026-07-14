@@ -470,7 +470,7 @@ function drawDimensionLine(ctx, x1, y1, x2, y2, label, color = "#ffffff", tickSi
 
     const midX = (x1 + x2) / 2;
     const midY = (y1 + y2) / 2;
-    ctx.font = "bold 10px monospace";
+    ctx.font = "bold 11px system-ui, -apple-system, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
@@ -536,7 +536,7 @@ function drawSurveyReticle(ctx, x, y, radius, label, color = "#ffffff") {
 
     if (label) {
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 9px monospace";
+        ctx.font = "bold 10px system-ui, -apple-system, sans-serif";
         ctx.textAlign = "center";
         ctx.fillText(label, x, y + radius + 15);
     }
@@ -587,21 +587,21 @@ function drawTitleBlock(ctx, width, height, title, dwgNo, scale, date = "OCT 195
     ctx.stroke();
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 11px monospace";
+    ctx.font = "bold 11px system-ui, -apple-system, sans-serif";
     ctx.textAlign = "left";
-    ctx.fillText("PROJECT: EVOLUTION OF A HOUSE", -boxW / 2 + 8, -boxH / 2 + 16);
+    ctx.fillText("PROJECT A-101: THE HOMESTEAD DOSSIER", -boxW / 2 + 8, -boxH / 2 + 16);
 
-    ctx.font = "bold 10px monospace";
+    ctx.font = "bold 11px system-ui, -apple-system, sans-serif";
     ctx.fillText(title, -boxW / 2 + 8, -boxH / 2 + 40);
     ctx.fillStyle = "#cccccc";
-    ctx.font = "9px monospace";
+    ctx.font = "10px system-ui, -apple-system, sans-serif";
     ctx.fillText(`SCALE: ${scale}`, -boxW / 2 + 8, -boxH / 2 + 51);
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 11px monospace";
+    ctx.font = "bold 11px system-ui, -apple-system, sans-serif";
     ctx.fillText(`DWG ${dwgNo}`, -boxW / 2 + 203, -boxH / 2 + 40);
     ctx.fillStyle = "#cccccc";
-    ctx.font = "8px monospace";
+    ctx.font = "10px system-ui, -apple-system, sans-serif";
     ctx.fillText(`DATE: ${date}`, -boxW / 2 + 203, -boxH / 2 + 51);
     ctx.restore();
 
@@ -634,7 +634,9 @@ function addSVGCallout(g, x, y, targetX, targetY, text, subtext = "", id = "", p
 
     const tilt = targetX > x ? -1.5 : 1.5;
     const shadowTilt = targetX > x ? 1.4 : -1.7; /* Independent irregular shadow angle! */
-    const boxW = 185;
+    const estTextW = text ? text.length * 6.8 + 24 : 0;
+    const estSubW = subtext ? subtext.length * 5.9 + 24 : 0;
+    const boxW = Math.max(190, Math.ceil(Math.max(estTextW, estSubW)));
     const boxH = subtext ? 36 : 26;
     const bx = x - (targetX > x ? 0 : boxW);
     const by = y - 24;
@@ -655,7 +657,7 @@ function addSVGCallout(g, x, y, targetX, targetY, text, subtext = "", id = "", p
 
     const textEl = createSVGElement("text", {
         x: bx + 8, y: by + 16,
-        fill: "#ffffff", "font-family": '"Courier New", Courier, monospace', "font-size": "11", "font-weight": "bold",
+        fill: "#ffffff", "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', "font-size": "11", "font-weight": "bold",
         transform: `rotate(${tilt}, ${bx + boxW / 2}, ${by + boxH / 2})`
     });
     textEl.textContent = text;
@@ -664,7 +666,7 @@ function addSVGCallout(g, x, y, targetX, targetY, text, subtext = "", id = "", p
     if (subtext) {
         const subEl = createSVGElement("text", {
             x: bx + 8, y: by + 28,
-            fill: "#cccccc", "font-family": '"Courier New", Courier, monospace', "font-size": "9",
+            fill: "#cccccc", "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', "font-size": "10",
             transform: `rotate(${tilt}, ${bx + boxW / 2}, ${by + boxH / 2})`
         });
         subEl.textContent = subtext;
@@ -710,7 +712,7 @@ function addSVGStressArrow(g, x1, y1, x2, y2, label, id = "", phase = null) {
     const ty = (y1 + y2) / 2;
     const textEl = createSVGElement("text", {
         x: tx, y: ty,
-        fill: "#ffffff", "font-family": '"Courier New", Courier, monospace', "font-size": "10", "font-weight": "bold", class: "tech-arrow-label",
+        fill: "#ffffff", "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', "font-size": "11", "font-weight": "bold", class: "tech-arrow-label",
     });
     textEl.textContent = label;
     group.appendChild(textEl);
@@ -743,19 +745,19 @@ function addSVGTitleBlock(g, project, dwgNo, rev, scale, date = "OCT 1954") {
     const div3 = createSVGElement("line", { x1: 640, y1: 535, x2: 640, y2: 580, stroke: "#ffffff", "stroke-width": "1" });
     frameGroup.append(div1, div2, div3);
 
-    const tProj = createSVGElement("text", { x: 490, y: 528, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "11", "font-weight": "bold" });
+    const tProj = createSVGElement("text", { x: 490, y: 528, fill: "#ffffff", "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', "font-size": "11", "font-weight": "bold" });
     tProj.textContent = `PROJ: ${project}`;
 
-    const tDwg = createSVGElement("text", { x: 490, y: 550, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "10", "font-weight": "bold" });
+    const tDwg = createSVGElement("text", { x: 490, y: 550, fill: "#ffffff", "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', "font-size": "10", "font-weight": "bold" });
     tDwg.textContent = `DWG: ${dwgNo}`;
 
-    const tRev = createSVGElement("text", { x: 650, y: 550, fill: "#ffffff", "font-family": '"Courier New", monospace', "font-size": "10", "font-weight": "bold" });
+    const tRev = createSVGElement("text", { x: 650, y: 550, fill: "#ffffff", "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', "font-size": "10", "font-weight": "bold" });
     tRev.textContent = `REV: ${rev}`;
 
-    const tScale = createSVGElement("text", { x: 490, y: 572, fill: "#cccccc", "font-family": '"Courier New", monospace', "font-size": "9" });
+    const tScale = createSVGElement("text", { x: 490, y: 572, fill: "#cccccc", "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', "font-size": "10" });
     tScale.textContent = `SCALE: ${scale}`;
 
-    const tDate = createSVGElement("text", { x: 650, y: 572, fill: "#cccccc", "font-family": '"Courier New", monospace', "font-size": "9" });
+    const tDate = createSVGElement("text", { x: 650, y: 572, fill: "#cccccc", "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', "font-size": "10" });
     tDate.textContent = `DATE: ${date}`;
 
     frameGroup.append(tProj, tDwg, tRev, tScale, tDate);
@@ -884,15 +886,15 @@ const STAGE_HANDLERS = [
 
             // P0 callouts
             addSVGCallout(g, 25, 50, 180, 260, "OLD-GROWTH VIRGIN CANOPY", "HEMLOCK, OAK & MAPLE CLEARING", "stage0-callout1", 0);
-            addSVGCallout(g, 490, 50, 420, 430, "320 SQ. FT. CLEARING", "SURVEY STAKED HOMESTEAD", "stage0-callout2", 0);
+            addSVGCallout(g, 775, 50, 520, 320, "320 SQ. FT. CLEARING", "SURVEY STAKED HOMESTEAD", "stage0-callout2", 0);
 
             // P1 callouts
-            addSVGCallout(g, 25, 210, 180, 380, "INTERLOCKING NOTCHED JOINTS", "BROADAXE HEWN / NO IRON NAILS", "stage0-callout3", 1);
-            addSVGCallout(g, 520, 240, 460, 390, "RAMMED MOSS & CLAY CHINKING", "WINDBREAK INSULATION", "stage0-callout4", 1);
+            addSVGCallout(g, 25, 235, 220, 360, "INTERLOCKING NOTCHED JOINTS", "BROADAXE HEWN / NO IRON NAILS", "stage0-callout3", 1);
+            addSVGCallout(g, 775, 250, 540, 370, "RAMMED MOSS & CLAY CHINKING", "WINDBREAK INSULATION", "stage0-callout4", 1);
 
             // P2 callouts
-            addSVGCallout(g, 25, 380, 160, 470, "SUBTERRANEAN DUG WELL", "TAPPING SURFACE WATER TABLE", "stage0-callout5", 2);
-            addSVGCallout(g, 480, 410, 560, 350, "DRY-LAID FIELDSTONE HEARTH", "SOLE THERMAL HEATING & ILLUM.", "stage0-callout6", 2);
+            addSVGCallout(g, 25, 420, 160, 470, "SUBTERRANEAN DUG WELL", "TAPPING SURFACE WATER TABLE", "stage0-callout5", 2);
+            addSVGCallout(g, 775, 420, 560, 440, "DRY-LAID FIELDSTONE HEARTH", "SOLE THERMAL HEATING & ILLUM.", "stage0-callout6", 2);
 
             addSVGTitleBlock(g, "EARLY SETTLEMENT HOMESTEAD", "A-101", "1780", "SCALE: 3/8\" = 1'-0\"", "AUG 1952");
         },
@@ -1126,15 +1128,15 @@ const STAGE_HANDLERS = [
         initSVG: (g, width, height) => {
 
             addSVGCallout(g, 25, 50, 180, 320, "METAMORPHIC GRANITE BEDROCK", "SUBTERRANEAN STRATA SHELF", "stage1-p0-1", 0);
-            addSVGCallout(g, 490, 50, 480, 410, "IMPERVIOUS DENSE CLAY SUBSOIL", "EXCAVATION PROFILE", "stage1-p0-2", 0);
+            addSVGCallout(g, 775, 50, 560, 360, "IMPERVIOUS DENSE CLAY SUBSOIL", "EXCAVATION PROFILE", "stage1-p0-2", 0);
 
             addSVGStressArrow(g, 300, 240, 300, 380, "GRAVITY KEYING LOAD", "stage1-p1-arr1", 1);
             addSVGStressArrow(g, 500, 240, 500, 380, "FROST HEAVE RESISTANCE", "stage1-p1-arr2", 1);
-            addSVGCallout(g, 25, 210, 260, 350, "DRY-LAID FIELDSTONE FOOTINGS", "KEYED TO BEDROCK WITHOUT MORTAR", "stage1-p1-1", 1);
-            addSVGCallout(g, 520, 240, 420, 320, "GLACIAL ERRATICS", "GEOMETRIC FRICTION LOCKING", "stage1-p1-2", 1);
+            addSVGCallout(g, 25, 235, 260, 350, "DRY-LAID FIELDSTONE FOOTINGS", "KEYED TO BEDROCK WITHOUT MORTAR", "stage1-p1-1", 1);
+            addSVGCallout(g, 775, 250, 540, 330, "GLACIAL ERRATICS", "GEOMETRIC FRICTION LOCKING", "stage1-p1-2", 1);
 
-            addSVGCallout(g, 25, 380, 210, 450, "PERIMETER TRENCH", "RUNOFF DIVERSION", "stage1-p2-2", 2);
-            addSVGCallout(g, 480, 410, 280, 460, "GRAVITY DRAINAGE TRENCHING", "HYDROLOGICAL FLOW MAPPING", "stage1-p2-1", 2);
+            addSVGCallout(g, 25, 420, 210, 450, "PERIMETER TRENCH", "RUNOFF DIVERSION", "stage1-p2-2", 2);
+            addSVGCallout(g, 775, 420, 560, 460, "GRAVITY DRAINAGE TRENCHING", "HYDROLOGICAL FLOW MAPPING", "stage1-p2-1", 2);
 
             addSVGTitleBlock(g, "GEOLOGY & DRAINAGE", "G-102", "1810", "SCALE: 1/2\" = 1'-0\"", "SEP 1953");
         },
@@ -1371,14 +1373,14 @@ const STAGE_HANDLERS = [
     {
         initSVG: (g, width, height) => {
 
-            addSVGCallout(g, 25, 50, 140, 260, "STEAM-MILLED DIMENSIONED LUMBER", "STANDARDIZED 2x4 BALLOON FRAMING", "stage2-p0-1", 0);
-            addSVGCallout(g, 490, 50, 480, 270, "MASS-PRODUCED CUT WIRE NAILS", "RAPID INDUSTRIAL ASSEMBLY", "stage2-p0-2", 0);
+            addSVGCallout(g, 25, 50, 160, 260, "STEAM-MILLED DIMENSIONED LUMBER", "STANDARDIZED 2x4 BALLOON FRAMING", "stage2-p0-1", 0);
+            addSVGCallout(g, 775, 50, 560, 270, "MASS-PRODUCED CUT WIRE NAILS", "RAPID INDUSTRIAL ASSEMBLY", "stage2-p0-2", 0);
 
-            addSVGCallout(g, 25, 210, 160, 250, "WROUGHT IRON TIE-RODS", "TURNBUCKLE TENSION REINFORCEMENT", "stage2-p1-1", 1);
-            addSVGCallout(g, 520, 240, 500, 240, "CAST-IRON LINTEL REINFORCEMENT", "EXPANSIVE PARLOR WINDOW OPENING", "stage2-p1-2", 1);
+            addSVGCallout(g, 25, 235, 180, 300, "WROUGHT IRON TIE-RODS", "TURNBUCKLE TENSION REINFORCEMENT", "stage2-p1-1", 1);
+            addSVGCallout(g, 775, 250, 540, 310, "CAST-IRON LINTEL REINFORCEMENT", "EXPANSIVE PARLOR WINDOW OPENING", "stage2-p1-2", 1);
 
-            addSVGCallout(g, 25, 380, 200, 280, "MECHANIZED WATER PUMP", "CAST-IRON 4:1 GEAR RATIO", "stage2-p2-1", 2);
-            addSVGCallout(g, 480, 410, 420, 420, "INDOOR COPPER PLUMBING", "DEEP AQUIFER INTAKE - 60 FT", "stage2-p2-2", 2);
+            addSVGCallout(g, 25, 420, 200, 450, "MECHANIZED WATER PUMP", "CAST-IRON 4:1 GEAR RATIO", "stage2-p2-1", 2);
+            addSVGCallout(g, 775, 420, 560, 460, "INDOOR COPPER PLUMBING", "DEEP AQUIFER INTAKE - 60 FT", "stage2-p2-2", 2);
 
             addSVGTitleBlock(g, "BALLOON FRAMING & PUMP", "S-103", "1860", "SCALE: 3/4\" = 1'-0\"", "NOV 1954");
         },
@@ -1551,11 +1553,11 @@ const STAGE_HANDLERS = [
         initSVG: (g, width, height) => {
 
             addSVGCallout(g, 25, 50, 200, 270, "TIMBER FRAME BARN", "POST & BEAM STRUCTURE", "stage3-callout1", 0);
-            addSVGCallout(g, 490, 50, 260, 220, "GRAIN GRANARY", "SILO STORAGE SYSTEM", "stage3-callout3", 0);
-            addSVGCallout(g, 25, 210, 430, 290, "FROST-HEAVED WALLS", "DRY-STONE FIELDSTONE", "stage3-callout2", 1);
-            addSVGCallout(g, 520, 240, 520, 310, "MICROHABITATS", "NATIVE POLLINATORS", "stage3-callout4", 1);
-            addSVGCallout(g, 25, 380, 330, 380, "IRRIGATION SLUICE", "WATER MANAGEMENT", "stage3-callout5", 2);
-            addSVGCallout(g, 480, 410, 480, 400, "ADJUSTABLE WEIR", "WATER DIVERSION", "stage3-callout6", 2);
+            addSVGCallout(g, 775, 50, 560, 220, "GRAIN GRANARY", "SILO STORAGE SYSTEM", "stage3-callout3", 0);
+            addSVGCallout(g, 25, 235, 260, 330, "FROST-HEAVED WALLS", "DRY-STONE FIELDSTONE", "stage3-callout2", 1);
+            addSVGCallout(g, 775, 250, 540, 310, "MICROHABITATS", "NATIVE POLLINATORS", "stage3-callout4", 1);
+            addSVGCallout(g, 25, 420, 330, 440, "IRRIGATION SLUICE", "WATER MANAGEMENT", "stage3-callout5", 2);
+            addSVGCallout(g, 775, 420, 540, 440, "ADJUSTABLE WEIR", "WATER DIVERSION", "stage3-callout6", 2);
 
             addSVGTitleBlock(g, "AGRARIAN COMPLEX & IRRIGATION", "C-104", "1900", "SCALE: 1\" = 100'-0\"", "APR 1955");
         },
@@ -1730,7 +1732,7 @@ const STAGE_HANDLERS = [
         initSVG: (g, width, height) => {
 
             addSVGCallout(g, 25, 50, 200, 250, "PROLONGED WEATHERING & EXPOSURE", "MAINTENANCE CEASED / ABANDONED", "stage4-callout1", 0);
-            addSVGCallout(g, 490, 50, 400, 240, "CONDEMNED // ABANDONED 1950", "STRUCTURAL COMPROMISE SURVEY", "stage4-callout2", 0);
+            addSVGCallout(g, 775, 50, 540, 240, "CONDEMNED // ABANDONED 1950", "STRUCTURAL COMPROMISE SURVEY", "stage4-callout2", 0);
             const badge = createSVGElement("g", { class: "tech-stamp-badge", transform: "rotate(-2, 480, 160)", "data-phase": "0" });
             const bRect = createSVGElement("rect", { x: 480, y: 160, width: 260, height: 44, fill: "#0a0a0a", stroke: "#D12B3E", "stroke-width": "3", rx: "4", ry: "4" });
             const bText = createSVGElement("text", { x: 494, y: 188, fill: "#ffffff", "font-family": '"Impact", "Arial Black", sans-serif', "font-size": "14", "font-weight": "900", "letter-spacing": "0.08em" });
@@ -1739,11 +1741,11 @@ const STAGE_HANDLERS = [
             g.appendChild(badge);
 
             addSVGStressArrow(g, 300, 160, 300, 280, "DEAD LOAD: 45 LBS/SQ FT", "stage4-p1-arr1", 1);
-            addSVGCallout(g, 25, 210, 280, 310, "ROOF RAFTER DEFLECTION", "8.5\" MAX SAG (STRUCTURAL FAILURE)", "stage4-callout3", 1);
-            addSVGCallout(g, 520, 240, 460, 340, "SEVERE MORTAR LEACHING", "LIME EROSION & MASONRY FISSURES", "stage4-callout4", 1);
+            addSVGCallout(g, 25, 235, 280, 310, "ROOF RAFTER DEFLECTION", "8.5\" MAX SAG (STRUCTURAL FAILURE)", "stage4-callout3", 1);
+            addSVGCallout(g, 775, 250, 540, 340, "SEVERE MORTAR LEACHING", "LIME EROSION & MASONRY FISSURES", "stage4-callout4", 1);
 
-            addSVGCallout(g, 25, 380, 220, 300, "BOTANICAL RECLAMATION", "WILD GRAPEVINE & VIRGINIA CREEPER", "stage4-callout5", 2);
-            addSVGCallout(g, 480, 410, 480, 380, "PIONEER TREE ROOTS", "ROOT EXPANSION IN FOUNDATION BEDS", "stage4-callout6", 2);
+            addSVGCallout(g, 25, 420, 220, 440, "BOTANICAL RECLAMATION", "WILD GRAPEVINE & VIRGINIA CREEPER", "stage4-callout5", 2);
+            addSVGCallout(g, 775, 420, 540, 440, "PIONEER TREE ROOTS", "ROOT EXPANSION IN FOUNDATION BEDS", "stage4-callout6", 2);
 
             addSVGTitleBlock(g, "HOMESTEAD SURVEY & CONDEMNATION", "EX-101", "1950", "SCALE: 1/4\" = 1'-0\"", "1950-COND");
         },
@@ -2033,19 +2035,19 @@ const STAGE_HANDLERS = [
         initSVG: (g, width, height) => {
 
             addSVGCallout(g, 25, 50, 180, 240, "CRISP BLUEPRINT OVERLAYS", "HERITAGE CONSERVATION ASSESSMENT", "stage5-callout1", 0);
-            addSVGCallout(g, 490, 50, 480, 270, "LASER TRANSIT REALIGNMENT", "PRECISION ELEVATION SURVEY (REF A-4)", "stage5-callout2", 0);
+            addSVGCallout(g, 775, 50, 540, 270, "LASER TRANSIT REALIGNMENT", "PRECISION ELEVATION SURVEY (REF A-4)", "stage5-callout2", 0);
 
             addSVGStressArrow(g, 300, 480, 300, 380, "12-TON HYDRAULIC LIFT", "stage5-p1-arr1", 1);
             addSVGStressArrow(g, 500, 480, 500, 380, "LOAD TRANSFER TO BEDROCK", "stage5-p1-arr2", 1);
-            addSVGCallout(g, 25, 210, 280, 360, "12-TON HYDRAULIC JACKS", "LIFTING SAGGING FLOOR JOISTS TO LEVEL", "stage5-callout3", 1);
-            addSVGCallout(g, 520, 240, 440, 270, "STEEL W12x50 LINTELS", "HIDDEN STRUCTURAL I-BEAM REINFORCEMENT", "stage5-callout4", 1);
+            addSVGCallout(g, 25, 235, 280, 360, "12-TON HYDRAULIC JACKS", "LIFTING SAGGING FLOOR JOISTS TO LEVEL", "stage5-callout3", 1);
+            addSVGCallout(g, 775, 250, 540, 340, "STEEL W12x50 LINTELS", "HIDDEN STRUCTURAL I-BEAM REINFORCEMENT", "stage5-callout4", 1);
 
-            addSVGCallout(g, 25, 380, 300, 320, "EPOXY RESIN INJECTION", "CONSERVATION JOINERY PRESSURE INJECTION", "stage5-callout5", 2);
-            addSVGCallout(g, 480, 410, 480, 320, "HARDWOOD JOINERY SPLICE", "BRIDGING 18TH-C. AESTHETIC WITH CODE", "stage5-callout6", 2);
+            addSVGCallout(g, 25, 420, 300, 440, "EPOXY RESIN INJECTION", "CONSERVATION JOINERY PRESSURE INJECTION", "stage5-callout5", 2);
+            addSVGCallout(g, 775, 420, 540, 440, "HARDWOOD JOINERY SPLICE", "BRIDGING 18TH-C. AESTHETIC WITH CODE", "stage5-callout6", 2);
 
             const badge = createSVGElement("g", { class: "tech-stamp-badge", transform: "rotate(-2, 480, 160)", "data-phase": "2" });
             const bRect = createSVGElement("rect", { x: 480, y: 160, width: 280, height: 44, fill: "#0a0a0a", stroke: "#D12B3E", "stroke-width": "3", rx: "4", ry: "4" });
-            const bText = createSVGElement("text", { x: 492, y: 187, fill: "#ffffff", "font-family": '"Impact", "Arial Black", sans-serif', "font-size": "13", "font-weight": "900", "letter-spacing": "0.06em" });
+            const bText = createSVGElement("text", { x: 492, y: 187, fill: "#ffffff", "font-family": '"Impact", "Arial Black", sans-serif', "font-size": "14", "font-weight": "900", "letter-spacing": "0.06em" });
             bText.textContent = "RESIDENTIAL CODE COMPLIANT";
             badge.append(bRect, bText);
             g.appendChild(badge);
@@ -2146,7 +2148,7 @@ const STAGE_HANDLERS = [
                         ctx.moveTo(cx, 440);
                         ctx.lineTo(cx, 440 - caliperH);
                         ctx.stroke();
-                        ctx.font = "bold 10px monospace";
+                        ctx.font = "bold 11px system-ui, -apple-system, sans-serif";
                         ctx.fillStyle = "#ffffff";
                         ctx.fillText(cx === 160 ? "REF-A" : "REF-B", cx - 12, 440 - caliperH - 8);
                         for (let tickY = 440; tickY >= 440 - caliperH; tickY -= 20)
@@ -2289,7 +2291,7 @@ const STAGE_HANDLERS = [
                     ctx.moveTo(portX, portY - 24);
                     ctx.lineTo(portX + Math.cos(needleAngle) * 9, portY - 24 + Math.sin(needleAngle) * 9);
                     ctx.stroke();
-                    ctx.font = "bold 8px monospace";
+                    ctx.font = "bold 10px system-ui, -apple-system, sans-serif";
                     ctx.fillStyle = "#ffffff";
                     ctx.fillText("PSI", portX - 7, portY - 38);
                 }
@@ -2306,13 +2308,13 @@ const STAGE_HANDLERS = [
         initSVG: (g, width, height) => {
 
             addSVGCallout(g, 25, 50, 180, 260, "CLOSED-CELL SPRAY FOAM R-45", "HIGH-DENSITY CAVITY INSULATION", "stage6-callout1", 0);
-            addSVGCallout(g, 490, 50, 480, 290, "AIRTIGHT THERMAL ENVELOPE", "ELIMINATES UNCONTROLLED AIR INFILTRATION", "stage6-callout2", 0);
+            addSVGCallout(g, 775, 50, 540, 290, "AIRTIGHT THERMAL ENVELOPE", "ELIMINATES UNCONTROLLED AIR INFILTRATION", "stage6-callout2", 0);
 
-            addSVGCallout(g, 25, 210, 180, 250, "TRIPLE-PANE LOW-E GLAZING", "U-FACTOR 0.12 / ZERO COLD BRIDGES", "stage6-callout3", 1);
-            addSVGCallout(g, 520, 240, 480, 290, "ARGON GAS THERMAL BARRIER", "PULSING INERT GAS INTERSPACE", "stage6-callout4", 1);
+            addSVGCallout(g, 25, 235, 180, 330, "TRIPLE-PANE LOW-E GLAZING", "U-FACTOR 0.12 / ZERO COLD BRIDGES", "stage6-callout3", 1);
+            addSVGCallout(g, 775, 250, 540, 340, "ARGON GAS THERMAL BARRIER", "PULSING INERT GAS INTERSPACE", "stage6-callout4", 1);
 
-            addSVGCallout(g, 25, 380, 180, 310, "400' GEOTHERMAL BEDROCK LOOP", "CLOSED-LOOP RADIATIVE HEAT EXCHANGE", "stage6-callout5", 2);
-            addSVGCallout(g, 480, 410, 480, 240, "SOLAR PV ROOF ARRAY (-15% NET ENERGY)", "NET-POSITIVE RENEWABLE GENERATION", "stage6-callout6", 2);
+            addSVGCallout(g, 25, 420, 180, 440, "400' GEOTHERMAL BEDROCK LOOP", "CLOSED-LOOP RADIATIVE HEAT EXCHANGE", "stage6-callout5", 2);
+            addSVGCallout(g, 775, 420, 540, 440, "SOLAR PV ROOF ARRAY (-15% NET ENERGY)", "NET-POSITIVE RENEWABLE GENERATION", "stage6-callout6", 2);
 
             addSVGTitleBlock(g, "NET-ZERO RETROFIT", "ME-301", "2010", "SCALE: 3/16\" = 1'-0\"", "OCT 2010");
         },
@@ -2552,16 +2554,16 @@ const STAGE_HANDLERS = [
         initSVG: (g, width, height) => {
 
             // Phase 0 Callouts
-            addSVGCallout(g, 25, 50, 400, 160, "3,800 SQ. FT. MINIMALIST SYNTHESIS", "OPEN FLOOR PLAN PERIMETER", "stage7-callout1", 0);
-            addSVGCallout(g, 490, 50, 355, 280, "RESTORED 1780 FIELDSTONE HEARTH", "THERMAL MASS & TIMBER MANTEL", "stage7-callout2", 0);
+            addSVGCallout(g, 25, 50, 260, 240, "3,800 SQ. FT. MINIMALIST SYNTHESIS", "OPEN FLOOR PLAN PERIMETER", "stage7-callout1", 0);
+            addSVGCallout(g, 775, 50, 540, 280, "RESTORED 1780 FIELDSTONE HEARTH", "THERMAL MASS & TIMBER MANTEL", "stage7-callout2", 0);
 
             // Phase 1 Callouts
-            addSVGCallout(g, 25, 210, 480, 200, "CANTILEVERED BLACK STEEL BEAMS", "STRUCTURAL W12x50 SPAN OVERHANG", "stage7-callout3", 1);
-            addSVGCallout(g, 520, 240, 480, 494, "FRAMELESS GLASS CURTAIN WALLS", "TRIPLE-PANE LOW-E ARGON GLAZING", "stage7-callout4", 1);
+            addSVGCallout(g, 25, 235, 280, 330, "CANTILEVERED BLACK STEEL BEAMS", "STRUCTURAL W12x50 SPAN OVERHANG", "stage7-callout3", 1);
+            addSVGCallout(g, 775, 250, 540, 350, "FRAMELESS GLASS CURTAIN WALLS", "TRIPLE-PANE LOW-E ARGON GLAZING", "stage7-callout4", 1);
 
             // Phase 2 Callouts
-            addSVGCallout(g, 25, 380, 350, 540, "NATIVE MEADOW & RIPARIAN WETLANDS", "ECOLOGICAL LANDSCAPE RESTORATION", "stage7-callout5", 2);
-            addSVGCallout(g, 480, 410, 155, 200, "LEVEL 2 EV CHARGING BAY", "BI-DIRECTIONAL V2H 12 kWh BATTERY", "stage7-callout6", 2);
+            addSVGCallout(g, 25, 420, 350, 460, "NATIVE MEADOW & RIPARIAN WETLANDS", "ECOLOGICAL LANDSCAPE RESTORATION", "stage7-callout5", 2);
+            addSVGCallout(g, 775, 420, 540, 440, "LEVEL 2 EV CHARGING BAY", "BI-DIRECTIONAL V2H 12 kWh BATTERY", "stage7-callout6", 2);
 
             addSVGTitleBlock(g, "MINIMALIST SYNTHESIS", "A-701", "2026", "SCALE: 3/16\" = 1'-0\"", "JUL 2026");
         },
@@ -2676,7 +2678,7 @@ const STAGE_HANDLERS = [
                 const evX = planX + 55, evY = planY + 16, evW = 34, evH = 20;
                 ctx.strokeRect(evX, evY, evW, evH);
                 ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 9px monospace";
+                ctx.font = "bold 10px system-ui, -apple-system, sans-serif";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 ctx.fillText("EV-L2", evX + evW / 2, evY + evH / 2);
@@ -2873,7 +2875,7 @@ const STAGE_HANDLERS = [
                 drawSteelHatch(ctx, batX, batY, batW, batH);
                 ctx.strokeRect(evX, evY, evW, evH);
                 ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 9px monospace";
+                ctx.font = "bold 10px system-ui, -apple-system, sans-serif";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 ctx.fillText("EV-L2", evX + evW / 2, evY + evH / 2);
