@@ -38,7 +38,13 @@ function printHelp(message = "", exitStatus = 0) {
 }
 
 export function detectHeadless(options) {
-    return Boolean(options?.headless || (process.platform === "linux" && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY));
+    if (options?.headless)
+        return true;
+
+    if (process.platform === "linux" && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY)
+        return true;
+
+    return false;
 }
 
 export default async function testSetup(helpText) {
@@ -47,7 +53,7 @@ export default async function testSetup(helpText) {
     if ("help" in options)
         printHelp(helpText);
 
-    const BROWSER = options?.browser || process.env.BROWSER;
+    const BROWSER = options?.browser;
     if (!BROWSER)
         printHelp("No browser specified, use $BROWSER or --browser", 1);
 
