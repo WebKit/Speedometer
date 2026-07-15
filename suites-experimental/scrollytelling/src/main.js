@@ -78,15 +78,16 @@ function renderFloatingTOC() {
     if (!tocList)
         return;
 
-    tocList.innerHTML = `<div id="toc-active-indicator" class="toc-active-indicator"></div>${
-        STAGES.map((stage, idx) => `
+    tocList.innerHTML = `<div id="toc-active-indicator" class="toc-active-indicator"></div>${STAGES.map(
+        (stage, idx) => `
             <li class="toc-item-wrapper">
                 <button class="toc-item ${idx === 0 ? "is-active" : ""}" data-index="${idx}">
                     <span class="toc-num">0${idx + 1}</span>
                     <span class="toc-label">${stage.title}</span>
                 </button>
             </li>
-        `).join("")}`;
+        `
+    ).join("")}`;
 
     const buttons = tocList.querySelectorAll(".toc-item");
     buttons.forEach((btn, idx) => {
@@ -109,7 +110,6 @@ function renderFloatingTOC() {
 
             if (!isCollapsed && typeof window.forceScrollytellingUpdate === "function")
                 window.forceScrollytellingUpdate();
-
         });
     }
 }

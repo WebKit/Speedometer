@@ -126,15 +126,15 @@ export function drawTintedBrush(ctx, imgKey, x, y, w, h, color, alpha = 0.5, ble
 
 export function getLandscapeRevealTiming(localProg) {
     const p = Math.max(0.0, Math.min(1.0, localProg));
-    const colorProg = Math.max(0.0, Math.min(1.0, p / 0.60));
-    const labelProg = Math.max(0.0, Math.min(1.0, (p - 0.60) / 0.40));
+    const colorProg = Math.max(0.0, Math.min(1.0, p / 0.6));
+    const labelProg = Math.max(0.0, Math.min(1.0, (p - 0.6) / 0.4));
     return { colorProg, labelProg };
 }
 
 function getPhaseTiming(localProg) {
     const assemblyProg = Math.min(1.0, localProg / 0.35);
     const secondaryProg = Math.max(0.0, Math.min(1.0, (localProg - 0.35) / 0.35));
-    const holdProg = Math.max(0.0, Math.min(1.0, (localProg - 0.70) / 0.30));
+    const holdProg = Math.max(0.0, Math.min(1.0, (localProg - 0.7) / 0.3));
     return { assemblyProg, secondaryProg, holdProg };
 }
 
@@ -211,11 +211,10 @@ export function updateGraphics(stageIndex, progress = 0) {
         const stageProg = i === idx ? prog : i < idx ? 1.0 : 0.0;
 
         if (i === idx || item.lastProg !== stageProg) {
-            const scale = 0.98 + stageProg * 0.04;
-            item.g.setAttribute("transform", `scale(${scale.toFixed(4)})`);
+            item.g.setAttribute("transform", "scale(1)");
 
             const phase = getParagraphPhase(stageProg, 3);
-            setCalloutPhaseVisibility(item.g, phase.idx);
+            setCalloutPhaseVisibility(item.g, phase);
 
             const handler = STAGE_HANDLERS[i];
             if (handler) {
@@ -225,6 +224,7 @@ export function updateGraphics(stageIndex, progress = 0) {
                 if (typeof handler.renderCanvas === "function") {
                     item.ctx.clearRect(0, 0, item.canvas.width, item.canvas.height);
                     handler.renderCanvas(item.ctx, item.g, stageProg, item.canvas.width, item.canvas.height, phase);
+                    drawTopMiddleWidget(item.ctx, i, stageProg, phase);
                 }
             }
 
@@ -461,7 +461,10 @@ function drawDimensionLine(ctx, x1, y1, x2, y2, label, color = "#ffffff", tickSi
 
     const angle = Math.atan2(y2 - y1, x2 - x1);
     const tickAngle = Math.PI / 4;
-    for (const [ptX, ptY] of [[x1, y1], [x2, y2]]) {
+    for (const [ptX, ptY] of [
+        [x1, y1],
+        [x2, y2],
+    ]) {
         ctx.beginPath();
         ctx.moveTo(ptX - Math.cos(angle + tickAngle) * tickSize, ptY - Math.sin(angle + tickAngle) * tickSize);
         ctx.lineTo(ptX + Math.cos(angle + tickAngle) * tickSize, ptY + Math.sin(angle + tickAngle) * tickSize);
@@ -627,8 +630,12 @@ function addSVGCallout(g, x, y, targetX, targetY, text, subtext = "", id = "", p
     group.appendChild(leader);
 
     const targetDot = createSVGElement("circle", {
-        cx: targetX, cy: targetY, r: 4,
-        fill: "#D12B3E", stroke: "#ffffff", "stroke-width": "1.2",
+        cx: targetX,
+        cy: targetY,
+        r: 4,
+        fill: "#D12B3E",
+        stroke: "#ffffff",
+        "stroke-width": "1.2",
     });
     group.appendChild(targetDot);
 
@@ -641,38 +648,65 @@ function addSVGCallout(g, x, y, targetX, targetY, text, subtext = "", id = "", p
     const bx = x - (targetX > x ? 0 : boxW);
     const by = y - 24;
 
+    const calloutBox = createSVGElement("g", { class: "tech-callout-box" });
+    calloutBox.style.transition = "none";
+    const boxCenterX = bx + boxW / 2;
+    const boxCenterY = by + boxH / 2;
+    calloutBox.setAttribute("data-center-x", String(boxCenterX));
+    calloutBox.setAttribute("data-center-y", String(boxCenterY));
+
     const shadowBg = createSVGElement("rect", {
-        x: bx + (targetX > x ? 7 : -7), y: by + 8, width: boxW, height: boxH,
-        fill: "#000000", rx: "4", ry: "4",
-        transform: `rotate(${shadowTilt}, ${bx + boxW / 2}, ${by + boxH / 2})`
+        x: bx + (targetX > x ? 7 : -7),
+        y: by + 8,
+        width: boxW,
+        height: boxH,
+        fill: "#000000",
+        rx: "4",
+        ry: "4",
+        transform: `rotate(${shadowTilt}, ${boxCenterX}, ${boxCenterY})`,
     });
-    group.appendChild(shadowBg);
+    calloutBox.appendChild(shadowBg);
 
     const labelBg = createSVGElement("rect", {
-        x: bx, y: by, width: boxW, height: boxH,
-        fill: "#0a0a0a", stroke: "#D12B3E", "stroke-width": "2", rx: "4", ry: "4",
-        transform: `rotate(${tilt}, ${bx + boxW / 2}, ${by + boxH / 2})`
+        x: bx,
+        y: by,
+        width: boxW,
+        height: boxH,
+        fill: "#0a0a0a",
+        stroke: "#D12B3E",
+        "stroke-width": "2",
+        rx: "4",
+        ry: "4",
+        transform: `rotate(${tilt}, ${boxCenterX}, ${boxCenterY})`,
     });
-    group.appendChild(labelBg);
+    calloutBox.appendChild(labelBg);
 
     const textEl = createSVGElement("text", {
-        x: bx + 8, y: by + 16,
-        fill: "#ffffff", "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', "font-size": "11", "font-weight": "bold",
-        transform: `rotate(${tilt}, ${bx + boxW / 2}, ${by + boxH / 2})`
+        x: bx + 8,
+        y: by + 16,
+        fill: "#ffffff",
+        "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+        "font-size": "11",
+        "font-weight": "bold",
+        transform: `rotate(${tilt}, ${boxCenterX}, ${boxCenterY})`,
     });
     textEl.textContent = text;
-    group.appendChild(textEl);
+    calloutBox.appendChild(textEl);
 
     if (subtext) {
         const subEl = createSVGElement("text", {
-            x: bx + 8, y: by + 28,
-            fill: "#cccccc", "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', "font-size": "10",
-            transform: `rotate(${tilt}, ${bx + boxW / 2}, ${by + boxH / 2})`
+            x: bx + 8,
+            y: by + 28,
+            fill: "#cccccc",
+            "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+            "font-size": "10",
+            transform: `rotate(${tilt}, ${boxCenterX}, ${boxCenterY})`,
         });
         subEl.textContent = subtext;
-        group.appendChild(subEl);
+        calloutBox.appendChild(subEl);
     }
 
+    group.appendChild(calloutBox);
     g.appendChild(group);
     return group;
 }
@@ -690,8 +724,13 @@ function addSVGStressArrow(g, x1, y1, x2, y2, label, id = "", phase = null) {
     group.setAttribute("data-base-y2", String(y2));
 
     const line = createSVGElement("line", {
-        x1, y1, x2, y2,
-        stroke: "#D12B3E", "stroke-width": "2.5", class: "tech-arrow-line",
+        x1,
+        y1,
+        x2,
+        y2,
+        stroke: "#D12B3E",
+        "stroke-width": "2.5",
+        class: "tech-arrow-line",
     });
     group.appendChild(line);
 
@@ -704,15 +743,21 @@ function addSVGStressArrow(g, x1, y1, x2, y2, label, id = "", phase = null) {
 
     const head = createSVGElement("polygon", {
         points: `${x2},${y2} ${hx1},${hy1} ${hx2},${hy2}`,
-        fill: "#D12B3E", class: "tech-arrow-head",
+        fill: "#D12B3E",
+        class: "tech-arrow-head",
     });
     group.appendChild(head);
 
     const tx = (x1 + x2) / 2 + 10;
     const ty = (y1 + y2) / 2;
     const textEl = createSVGElement("text", {
-        x: tx, y: ty,
-        fill: "#ffffff", "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', "font-size": "11", "font-weight": "bold", class: "tech-arrow-label",
+        x: tx,
+        y: ty,
+        fill: "#ffffff",
+        "font-family": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+        "font-size": "11",
+        "font-weight": "bold",
+        class: "tech-arrow-label",
     });
     textEl.textContent = label;
     group.appendChild(textEl);
@@ -727,16 +772,28 @@ function addSVGTitleBlock(g, project, dwgNo, rev, scale, date = "OCT 1954") {
 
     // Independent shadow rotated differently (+1.7 deg vs -1.2 deg)
     const shadow = createSVGElement("rect", {
-        x: 488, y: 520, width: 300, height: 70,
-        fill: "#000000", rx: "6", ry: "6",
-        transform: "rotate(1.7, 638, 555)"
+        x: 488,
+        y: 520,
+        width: 300,
+        height: 70,
+        fill: "#000000",
+        rx: "6",
+        ry: "6",
+        transform: "rotate(1.7, 638, 555)",
     });
     box.appendChild(shadow);
 
     const frameGroup = createSVGElement("g", { transform: "rotate(-1.2, 630, 545)" });
     const frame = createSVGElement("rect", {
-        x: 480, y: 510, width: 300, height: 70,
-        fill: "#0a0a0a", stroke: "#D12B3E", "stroke-width": "2.5", rx: "6", ry: "6",
+        x: 480,
+        y: 510,
+        width: 300,
+        height: 70,
+        fill: "#0a0a0a",
+        stroke: "#D12B3E",
+        "stroke-width": "2.5",
+        rx: "6",
+        ry: "6",
     });
     frameGroup.appendChild(frame);
 
@@ -772,20 +829,80 @@ function addSVGTitleBlock(g, project, dwgNo, rev, scale, date = "OCT 1954") {
 function getParagraphPhase(progress, numParagraphs = 3) {
     const p = Math.max(0, Math.min(0.9999, progress));
     const idx = Math.floor(p * numParagraphs);
-    const localProg = (p * numParagraphs) - idx;
+    const localProg = p * numParagraphs - idx;
     return { idx, localProg };
 }
 
-function setCalloutPhaseVisibility(g, phaseIdx) {
-    const callouts = g.querySelectorAll(".tech-callout, .tech-arrow, .tech-stamp-badge, .tech-datum");
+function setCalloutPhaseVisibility(g, phaseInput) {
+    const phaseIdx = typeof phaseInput === "object" && phaseInput !== null && typeof phaseInput.idx === "number" ? phaseInput.idx : typeof phaseInput === "number" ? phaseInput : 0;
+    const localProg = typeof phaseInput === "object" && phaseInput !== null && typeof phaseInput.localProg === "number" ? phaseInput.localProg : 1.0;
+
+    const callouts = Array.from(g.querySelectorAll(".tech-callout, .tech-arrow, .tech-stamp-badge, .tech-datum"));
+    const phaseCounters = {};
+
     callouts.forEach((el) => {
-        const targetPhase = el.getAttribute("data-phase");
-        if (targetPhase === null || targetPhase === "" || parseInt(targetPhase, 10) <= phaseIdx) {
+        const targetPhaseAttr = el.getAttribute("data-phase");
+        const targetPhase = targetPhaseAttr === null || targetPhaseAttr === "" ? 0 : parseInt(targetPhaseAttr, 10);
+
+        if (phaseCounters[targetPhase] === undefined)
+            phaseCounters[targetPhase] = 0;
+
+        const itemIndex = phaseCounters[targetPhase]++;
+
+        if (targetPhase < phaseIdx) {
             el.style.opacity = "1";
             el.style.pointerEvents = "auto";
-        } else {
+            const box = el.querySelector(".tech-callout-box");
+            if (box) {
+                const cx = parseFloat(box.getAttribute("data-center-x")) || 0;
+                const cy = parseFloat(box.getAttribute("data-center-y")) || 0;
+                box.setAttribute("transform", `translate(${cx}, ${cy}) scale(1) translate(${-cx}, ${-cy})`);
+            }
+        } else if (targetPhase > phaseIdx) {
             el.style.opacity = "0";
             el.style.pointerEvents = "none";
+            const box = el.querySelector(".tech-callout-box");
+            if (box) {
+                const cx = parseFloat(box.getAttribute("data-center-x")) || 0;
+                const cy = parseFloat(box.getAttribute("data-center-y")) || 0;
+                box.setAttribute("transform", `translate(${cx}, ${cy}) scale(0.35) translate(${-cx}, ${-cy})`);
+            }
+        } else {
+            const stagger = 0.18;
+            const duration = 0.45;
+            const start = itemIndex * stagger;
+            const t = (localProg - start) / duration;
+
+            if (t <= 0) {
+                el.style.opacity = "0";
+                el.style.pointerEvents = "none";
+                const box = el.querySelector(".tech-callout-box");
+                if (box) {
+                    const cx = parseFloat(box.getAttribute("data-center-x")) || 0;
+                    const cy = parseFloat(box.getAttribute("data-center-y")) || 0;
+                    box.setAttribute("transform", `translate(${cx}, ${cy}) scale(0.35) translate(${-cx}, ${-cy})`);
+                }
+            } else if (t >= 1) {
+                el.style.opacity = "1";
+                el.style.pointerEvents = "auto";
+                const box = el.querySelector(".tech-callout-box");
+                if (box) {
+                    const cx = parseFloat(box.getAttribute("data-center-x")) || 0;
+                    const cy = parseFloat(box.getAttribute("data-center-y")) || 0;
+                    box.setAttribute("transform", `translate(${cx}, ${cy}) scale(1) translate(${-cx}, ${-cy})`);
+                }
+            } else {
+                const opacity = Math.min(1, t * 2.0);
+                el.style.opacity = String(opacity.toFixed(4));
+                el.style.pointerEvents = opacity > 0.1 ? "auto" : "none";
+                const box = el.querySelector(".tech-callout-box");
+                if (box) {
+                    const popScale = 0.35 + 0.65 * easeOutBack(t);
+                    const cx = parseFloat(box.getAttribute("data-center-x")) || 0;
+                    const cy = parseFloat(box.getAttribute("data-center-y")) || 0;
+                    box.setAttribute("transform", `translate(${cx}, ${cy}) scale(${popScale.toFixed(4)}) translate(${-cx}, ${-cy})`);
+                }
+            }
         }
     });
 }
@@ -876,6 +993,327 @@ function drawPopUpProp(ctx, x, y, w, h, prog, drawContentCallback) {
     ctx.restore();
 }
 
+function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
+    ctx.save();
+    const cx = 400,
+        cy = 76,
+        w = 280,
+        h = 104;
+    const boxTilt = ((stageIndex % 2 === 0 ? -1.2 : 1.4) * Math.PI) / 180;
+    const shadowTilt = ((stageIndex % 2 === 0 ? 1.6 : -1.5) * Math.PI) / 180;
+
+    // 1. Independent drop shadow (Rule 3)
+    ctx.save();
+    ctx.translate(cx + 6, cy + 8);
+    ctx.rotate(shadowTilt);
+    ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
+    ctx.fillRect(-w / 2, -h / 2, w, h);
+    ctx.restore();
+
+    // 2. Main slanted geometric panel (Rule 2)
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(boxTilt);
+    ctx.fillStyle = "#0a0a0a";
+    ctx.fillRect(-w / 2, -h / 2, w, h);
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 1.8;
+    ctx.strokeRect(-w / 2, -h / 2, w, h);
+
+    // Title / Header divider line inside panel
+    drawHandLine(ctx, -w / 2 + 10, -h / 2 + 20, w / 2 - 10, -h / 2 + 20, 0.2, 1.2);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = 'bold 11px "Impact", "Arial Black", sans-serif';
+    ctx.letterSpacing = "0.06em";
+
+    // Stage-specific schematics & moving indicators inside panel
+    const fontStyle = '10px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+    if (stageIndex === 0) {
+        ctx.fillText("SPEC: FRONTIER COMPASS & WIND ROSE", -w / 2 + 12, -h / 2 + 14);
+
+        const rx = -90,
+            ry = 13;
+        ctx.strokeStyle = "#cccccc";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(rx, ry, 28, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(rx, ry, 18, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(rx, ry, 9, 0, Math.PI * 2);
+        ctx.stroke();
+
+        const angle = -Math.PI / 4 + prog * Math.PI * 0.6;
+        const nx = rx + Math.cos(angle) * 26;
+        const ny = ry + Math.sin(angle) * 26;
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        drawHandLine(ctx, rx - Math.cos(angle) * 11, ry - Math.sin(angle) * 11, nx, ny, 0.1, 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(nx, ny, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.font = fontStyle;
+        ctx.letterSpacing = "0em";
+        ctx.fillStyle = "#cccccc";
+        ctx.fillText("ELEVATION : +1,420 FT ASL", -35, -12);
+        ctx.fillText("MAG DECL  : 14°12' W", -35, 3);
+        ctx.fillText(`WIND VEL  : ${(25 + prog * 20).toFixed(1)} KTS NW`, -35, 18);
+        ctx.fillText(`CANOPY DEN: ${(98 - prog * 15).toFixed(0)}% VIRGIN`, -35, 33);
+    } else if (stageIndex === 1) {
+        ctx.fillText("SPEC: GEOLOGICAL BORE LOG & WATER TABLE", -w / 2 + 12, -h / 2 + 14);
+
+        const bx = -115,
+            by = -15,
+            bw = 50,
+            bh = 56;
+        ctx.strokeStyle = "#cccccc";
+        ctx.lineWidth = 1.2;
+        ctx.strokeRect(bx, by, bw, bh);
+
+        drawEarthHatch(ctx, bx, by + 28, bw, 28, 8);
+
+        const waterY = by + 42 - prog * 24;
+        if (waterY < by + bh) {
+            ctx.save();
+            ctx.fillStyle = "rgba(60, 200, 240, 0.35)";
+            ctx.fillRect(bx + 1, Math.max(by + 1, waterY), bw - 2, by + bh - Math.max(by + 1, waterY));
+            ctx.restore();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 1.5;
+            drawHandLine(ctx, bx, waterY, bx + bw, waterY, 0.1, 1.5);
+        }
+
+        ctx.font = fontStyle;
+        ctx.letterSpacing = "0em";
+        ctx.fillStyle = "#cccccc";
+        ctx.fillText("STRATA DEPTH: 12.4 FT GRANITE", -50, -12);
+        ctx.fillText("BEARING CAP : 8.5 TONS/SQ.FT", -50, 3);
+        ctx.fillText(`HYDRO PRESS : ${(12 + prog * 4.5).toFixed(1)} PSI`, -50, 18);
+        ctx.fillText(`TRENCH FLOW : ${(2.1 + prog * 1.8).toFixed(2)} GPM`, -50, 33);
+    } else if (stageIndex === 2) {
+        ctx.fillText("SPEC: STEAM GEAR RATIO & PUMP KINEMATICS", -w / 2 + 12, -h / 2 + 14);
+
+        const gxA = -105,
+            gyA = 13,
+            rA = 19;
+        const gxB = -67,
+            gyB = 13,
+            rB = 11;
+        const angleA = prog * Math.PI * 4;
+        const angleB = -angleA * (rA / rB);
+
+        const drawGear = (gx, gy, r, ang, teeth) => {
+            ctx.save();
+            ctx.translate(gx, gy);
+            ctx.rotate(ang);
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(0, 0, r - 3, 0, Math.PI * 2);
+            ctx.stroke();
+            for (let t = 0; t < teeth; t++) {
+                const ta = (t / teeth) * Math.PI * 2;
+                const tx1 = Math.cos(ta) * (r - 3),
+                    ty1 = Math.sin(ta) * (r - 3);
+                const tx2 = Math.cos(ta) * (r + 2),
+                    ty2 = Math.sin(ta) * (r + 2);
+                drawHandLine(ctx, tx1, ty1, tx2, ty2, 0.1, 1.5);
+            }
+            ctx.restore();
+        };
+        drawGear(gxA, gyA, rA, angleA, 12);
+        drawGear(gxB, gyB, rB, angleB, 8);
+
+        const rodY = gyA + Math.sin(angleA) * 10;
+        drawHandLine(ctx, gxA, rodY, gxA + 16, rodY, 0.1, 2);
+
+        ctx.font = fontStyle;
+        ctx.letterSpacing = "0em";
+        ctx.fillStyle = "#cccccc";
+        ctx.fillText("GEAR TRAIN  : 4:1 CAST-IRON", -38, -12);
+        ctx.fillText("PUMP STROKE : 6.25 INCHES", -38, 3);
+        ctx.fillText("HEAD LIFT   : 60.0 FT AQUIFER", -38, 18);
+        ctx.fillText(`DISCHARGE   : ${(110 + prog * 45).toFixed(0)} GAL/HOUR`, -38, 33);
+    } else if (stageIndex === 3) {
+        ctx.fillText("SPEC: IRRIGATION SLUICE & WEIR REGULATOR", -w / 2 + 12, -h / 2 + 14);
+
+        const wx = -115,
+            wy = -15,
+            ww = 45,
+            wh = 56;
+        ctx.strokeStyle = "#cccccc";
+        ctx.lineWidth = 1.2;
+        ctx.strokeRect(wx, wy, ww, wh);
+
+        const hx = -92,
+            hy = -4;
+        const wheelAng = prog * Math.PI * 6;
+        ctx.beginPath();
+        ctx.arc(hx, hy, 9, 0, Math.PI * 2);
+        ctx.stroke();
+        drawHandLine(ctx, hx - Math.cos(wheelAng) * 9, hy - Math.sin(wheelAng) * 9, hx + Math.cos(wheelAng) * 9, hy + Math.sin(wheelAng) * 9, 0.1, 1);
+
+        const bladeY = wy + 14 + prog * 24;
+        ctx.fillStyle = "rgba(0, 220, 255, 0.35)";
+        ctx.fillRect(wx + 1, bladeY, ww - 2, wy + wh - bladeY);
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        drawHandLine(ctx, wx, bladeY, wx + ww, bladeY, 0.1, 2);
+
+        ctx.font = fontStyle;
+        ctx.letterSpacing = "0em";
+        ctx.fillStyle = "#cccccc";
+        ctx.fillText("WEIR CREST  : +4.8 FT DATUM", -52, -12);
+        ctx.fillText(`SLUICE OPEN : ${(prog * 100).toFixed(0)}% FULL FLOW`, -52, 3);
+        ctx.fillText(`DISCHARGE   : ${(14 + prog * 12.5).toFixed(1)} CU.FT/SEC`, -52, 18);
+        ctx.fillText("IRRIG. AREA : 45.0 ACRES", -52, 33);
+    } else if (stageIndex === 4) {
+        ctx.fillText("SPEC: STRUCTURAL STRAIN & DEFLECTION", -w / 2 + 12, -h / 2 + 14);
+
+        const rx1 = -125,
+            rx2 = -55,
+            ry = 10;
+        ctx.strokeStyle = "#777777";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+        drawHandLine(ctx, rx1, ry, rx2, ry, 0, 1);
+        ctx.setLineDash([]);
+
+        const sag = prog * 15;
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(rx1, ry);
+        ctx.quadraticCurveTo((rx1 + rx2) / 2, ry + sag * 2, rx2, ry);
+        ctx.stroke();
+
+        ctx.fillStyle = "#D12B3E";
+        ctx.beginPath();
+        ctx.moveTo((rx1 + rx2) / 2, ry - 14);
+        ctx.lineTo((rx1 + rx2) / 2 - 4, ry - 22);
+        ctx.lineTo((rx1 + rx2) / 2 + 4, ry - 22);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.font = fontStyle;
+        ctx.letterSpacing = "0em";
+        ctx.fillStyle = "#cccccc";
+        ctx.fillText("ROOF LOAD   : 45.0 LBS/SQ.FT", -38, -12);
+        ctx.fillText(`MAX SAG     : ${(2.5 + prog * 6.0).toFixed(1)} IN (LIMIT 1.5")`, -38, 3);
+        ctx.fillText(`SAFETY FACT : ${(1.4 - prog * 0.8).toFixed(2)} [CRITICAL]`, -38, 18);
+        ctx.fillText("STATUS      : CONDEMNED (1950)", -38, 33);
+    } else if (stageIndex === 5) {
+        ctx.fillText("SPEC: 12-TON HYDRAULIC LIFT CALIBRATION", -w / 2 + 12, -h / 2 + 14);
+
+        const jx1 = -115,
+            jx2 = -65,
+            baseY = 33;
+        const ramLift = prog * 15;
+        ctx.strokeStyle = "#cccccc";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(jx1 - 6, baseY - 14, 12, 14);
+        ctx.strokeRect(jx2 - 6, baseY - 14, 12, 14);
+
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 3;
+        drawHandLine(ctx, jx1, baseY - 14, jx1, baseY - 14 - ramLift, 0.1, 3);
+        drawHandLine(ctx, jx2, baseY - 14, jx2, baseY - 14 - ramLift, 0.1, 3);
+
+        const beamY = baseY - 14 - ramLift;
+        const tiltAng = ((-6 + prog * 6) * Math.PI) / 180;
+        ctx.save();
+        ctx.translate((jx1 + jx2) / 2, beamY);
+        ctx.rotate(tiltAng);
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2.5;
+        drawHandLine(ctx, -30, 0, 30, 0, 0.1, 2.5);
+        ctx.restore();
+
+        ctx.font = fontStyle;
+        ctx.letterSpacing = "0em";
+        ctx.fillStyle = "#cccccc";
+        ctx.fillText(`CYL A PRESS : ${(1800 + prog * 650).toFixed(0)} PSI`, -40, -12);
+        ctx.fillText(`CYL B PRESS : ${(1820 + prog * 660).toFixed(0)} PSI`, -40, 3);
+        ctx.fillText(`RAM LIFT    : +${(prog * 4.25).toFixed(2)} INCHES`, -40, 18);
+        ctx.fillText(`BEAM LEVEL  : ${(-2.4 + prog * 2.4).toFixed(2)}° (TARGET 0.0°)`, -40, 33);
+    } else if (stageIndex === 6) {
+        ctx.fillText("SPEC: THERMODYNAMIC ENERGY EXCHANGE", -w / 2 + 12, -h / 2 + 14);
+
+        const lx = -90,
+            ly = 12,
+            lr = 23;
+        ctx.strokeStyle = "#cccccc";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(lx, ly, lr, 0, Math.PI * 2);
+        ctx.stroke();
+
+        for (let k = 0; k < 3; k++) {
+            const pAng = prog * Math.PI * 4 + (k * Math.PI * 2) / 3;
+            const px = lx + Math.cos(pAng) * lr;
+            const py = ly + Math.sin(pAng) * lr;
+            ctx.fillStyle = k === 0 ? "#00F0FF" : "#ffffff";
+            ctx.beginPath();
+            ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.font = fontStyle;
+        ctx.letterSpacing = "0em";
+        ctx.fillStyle = "#cccccc";
+        ctx.fillText(`SOLAR PV GEN: ${(8.2 + prog * 6.8).toFixed(1)} kW PEAK`, -45, -12);
+        ctx.fillText(`GEOTHERM COP: ${(4.1 + prog * 0.75).toFixed(2)} RATIO`, -45, 3);
+        ctx.fillText("ENVELOPE    : R-45 FOAM / 0.12 U", -45, 18);
+        ctx.fillText(`NET BALANCE : -${(5 + prog * 10).toFixed(0)}% (SURPLUS)`, -45, 33);
+    } else if (stageIndex === 7) {
+        ctx.fillText("SPEC: CANTILEVER MOMENT & V2H BATTERY", -w / 2 + 12, -h / 2 + 14);
+
+        const mx1 = -125,
+            mx2 = -65,
+            my = 5;
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        drawHandLine(ctx, mx1, my, mx2, my, 0.1, 2);
+
+        const momentSag = prog * 15;
+        ctx.strokeStyle = "rgba(0, 240, 255, 0.7)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(mx1, my);
+        ctx.quadraticCurveTo(mx1 + 15, my + momentSag * 1.5, mx2, my);
+        ctx.stroke();
+
+        const bx = -95,
+            by = 30;
+        ctx.strokeStyle = "#cccccc";
+        ctx.beginPath();
+        ctx.arc(bx, by, 10, 0, Math.PI * 2);
+        ctx.stroke();
+        const fillAng = prog * Math.PI * 2 * 0.88;
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(bx, by, 10, -Math.PI / 2, -Math.PI / 2 + fillAng);
+        ctx.stroke();
+
+        ctx.font = fontStyle;
+        ctx.letterSpacing = "0em";
+        ctx.fillStyle = "#cccccc";
+        ctx.fillText("SPAN RATIO  : 1:4.5 W12x50 STEEL", -38, -12);
+        ctx.fillText(`MOMENT LOAD : ${(32 + prog * 10.5).toFixed(1)} KIPS-FT`, -38, 3);
+        ctx.fillText("V2H STORAGE : 12.0 kWh BI-DIR", -38, 18);
+        ctx.fillText(`BIODIVERSITY: +${(70 + prog * 15).toFixed(0)}% MEADOW`, -38, 33);
+    }
+
+    ctx.restore();
+    ctx.restore();
+}
+
 /* =========================================================================
    INDIVIDUAL STAGE HANDLERS (STRICT B&W / GRAYSCALE DRAFTING ON PAPER)
    ========================================================================= */
@@ -883,7 +1321,6 @@ const STAGE_HANDLERS = [
     // Stage 0: 1780 - Early Settlement (Timber Clearing, Hewn Logs, Well & Hearth)
     {
         initSVG: (g, width, height) => {
-
             // P0 callouts
             addSVGCallout(g, 25, 50, 180, 260, "OLD-GROWTH VIRGIN CANOPY", "HEMLOCK, OAK & MAPLE CLEARING", "stage0-callout1", 0);
             addSVGCallout(g, 775, 50, 520, 320, "320 SQ. FT. CLEARING", "SURVEY STAKED HOMESTEAD", "stage0-callout2", 0);
@@ -896,7 +1333,7 @@ const STAGE_HANDLERS = [
             addSVGCallout(g, 25, 420, 160, 470, "SUBTERRANEAN DUG WELL", "TAPPING SURFACE WATER TABLE", "stage0-callout5", 2);
             addSVGCallout(g, 775, 420, 560, 440, "DRY-LAID FIELDSTONE HEARTH", "SOLE THERMAL HEATING & ILLUM.", "stage0-callout6", 2);
 
-            addSVGTitleBlock(g, "EARLY SETTLEMENT HOMESTEAD", "A-101", "1780", "SCALE: 3/8\" = 1'-0\"", "AUG 1952");
+            addSVGTitleBlock(g, "EARLY SETTLEMENT HOMESTEAD", "A-101", "1780", 'SCALE: 3/8" = 1\'-0"', "AUG 1952");
         },
         updateSVG: (g, prog, width, height, phase) => {
             // Handled automatically by setCalloutPhaseVisibility
@@ -960,15 +1397,23 @@ const STAGE_HANDLERS = [
                 for (let i = 0; i < 12; i++) {
                     const tx = 160 + i * 40;
                     const ty = 340 - (i % 3) * 15;
-                    const fall = Math.min(1, Math.max(0, (assemblyProg * 2.5) - (i * 0.1)));
+                    const fall = Math.min(1, Math.max(0, assemblyProg * 2.5 - i * 0.1));
                     const easedFall = easeOutQuart(fall);
                     ctx.save();
                     ctx.translate(tx, ty);
-                    ctx.rotate(easedFall * Math.PI / 2);
+                    ctx.rotate((easedFall * Math.PI) / 2);
                     ctx.strokeStyle = `rgba(180, 180, 180, ${1 - easedFall * 0.8})`;
                     ctx.lineWidth = 1.5;
-                    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -25); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(-8, -15); ctx.lineTo(0, -35); ctx.lineTo(8, -15); ctx.closePath(); ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(0, -25);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(-8, -15);
+                    ctx.lineTo(0, -35);
+                    ctx.lineTo(8, -15);
+                    ctx.closePath();
+                    ctx.stroke();
                     ctx.restore();
                 }
 
@@ -994,7 +1439,6 @@ const STAGE_HANDLERS = [
                     drawSurveyReticle(ctx, 620, 380, 16 * secondaryProg, "CORNER STAKE", "#ffffff");
                 }
                 drawDimensionLine(ctx, 260, 450, 540, 450, "320 SQ. FT. SURVEY STAKED HOMESTEAD FOOTPRINT", "#ffffff", 6, "#ffffff");
-
             } else if (phase.idx === 1) {
                 // P1: Hewn Log Carpentry & Interlocking Notched Joints
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
@@ -1008,7 +1452,7 @@ const STAGE_HANDLERS = [
                 const logH = 20;
                 for (let l = 0; l < logsToShow; l++) {
                     const ly = 400 - (l + 1) * logH;
-                    const dropOffset = l === logsToShow - 1 ? (1 - (assemblyProg * maxLogs % 1)) * 30 : 0;
+                    const dropOffset = l === logsToShow - 1 ? (1 - ((assemblyProg * maxLogs) % 1)) * 30 : 0;
                     ctx.save();
                     ctx.translate(0, -dropOffset);
                     if (colorProg > 0) {
@@ -1043,7 +1487,6 @@ const STAGE_HANDLERS = [
                     drawDimensionLine(ctx, 172, 230, 200, 230, "INTERLOCKING NOTCH JOINT - NO IRON NAILS", "#ffffff", 6, "#ffffff");
 
                 drawDimensionLine(ctx, 180, 450, 620, 450, "BROADAXE HEWN OAK LOG CARPENTRY & CHINKING", "#ffffff", 6, "#ffffff");
-
             } else {
                 // P2: Subterranean Dug Well & Dry-Laid Fieldstone Hearth
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
@@ -1064,7 +1507,7 @@ const STAGE_HANDLERS = [
                 if (colorProg > 0) {
                     const waterAlpha = 0.8 * colorProg;
                     const waterH = 22 * colorProg;
-                    const waterY = 400 + wellDepth - (25 * colorProg);
+                    const waterY = 400 + wellDepth - 25 * colorProg;
                     ctx.save();
                     const waterGrad = ctx.createLinearGradient(124, waterY, 124, waterY + waterH);
                     waterGrad.addColorStop(0, `rgba(0, 180, 255, ${waterAlpha * 0.95})`);
@@ -1074,7 +1517,7 @@ const STAGE_HANDLERS = [
                     ctx.restore();
                 } else if (secondaryProg > 0) {
                     ctx.fillStyle = "#cccccc";
-                    ctx.fillRect(124, 400 + wellDepth - (25 * secondaryProg), 62, 22 * secondaryProg);
+                    ctx.fillRect(124, 400 + wellDepth - 25 * secondaryProg, 62, 22 * secondaryProg);
                 }
 
                 const hearthH = 260 * easeOutQuart(assemblyProg);
@@ -1119,14 +1562,13 @@ const STAGE_HANDLERS = [
             }
 
             const titles = ["TIMBER CLEARING", "LOG CARPENTRY & CHINKING", "WELL & FIELDSTONE HEARTH"];
-            drawTitleBlock(ctx, width, height, titles[phase.idx], `A-101.${phase.idx + 1}`, "3/8\" = 1'-0\"", "AUG 1952", "#ffffff", "#0a0a0a");
-        }
+            drawTitleBlock(ctx, width, height, titles[phase.idx], `A-101.${phase.idx + 1}`, '3/8" = 1\'-0"', "AUG 1952", "#ffffff", "#0a0a0a");
+        },
     },
 
     // Stage 1: 1810 - Geology & Landscape (Bedrock, Footings, Drainage)
     {
         initSVG: (g, width, height) => {
-
             addSVGCallout(g, 25, 50, 180, 320, "METAMORPHIC GRANITE BEDROCK", "SUBTERRANEAN STRATA SHELF", "stage1-p0-1", 0);
             addSVGCallout(g, 775, 50, 560, 360, "IMPERVIOUS DENSE CLAY SUBSOIL", "EXCAVATION PROFILE", "stage1-p0-2", 0);
 
@@ -1138,7 +1580,7 @@ const STAGE_HANDLERS = [
             addSVGCallout(g, 25, 420, 210, 450, "PERIMETER TRENCH", "RUNOFF DIVERSION", "stage1-p2-2", 2);
             addSVGCallout(g, 775, 420, 560, 460, "GRAVITY DRAINAGE TRENCHING", "HYDROLOGICAL FLOW MAPPING", "stage1-p2-1", 2);
 
-            addSVGTitleBlock(g, "GEOLOGY & DRAINAGE", "G-102", "1810", "SCALE: 1/2\" = 1'-0\"", "SEP 1953");
+            addSVGTitleBlock(g, "GEOLOGY & DRAINAGE", "G-102", "1810", 'SCALE: 1/2" = 1\'-0"', "SEP 1953");
         },
         updateSVG: (g, prog, width, height, phase) => {
             if (phase.idx === 1) {
@@ -1212,7 +1654,7 @@ const STAGE_HANDLERS = [
                     ctx.lineWidth = 2;
                     for (let i = 0; i < 5; i++) {
                         const probX = 180 + i * 80;
-                        const probY = 300 + (excavDepth * (0.8 + i * 0.04));
+                        const probY = 300 + excavDepth * (0.8 + i * 0.04);
                         drawHandLine(ctx, probX, 280, probX, probY, 0.2, 2);
                         ctx.beginPath();
                         ctx.arc(probX, probY, 4, 0, Math.PI * 2);
@@ -1246,7 +1688,6 @@ const STAGE_HANDLERS = [
                 }
 
                 drawDimensionLine(ctx, 120, 510, 680, 510, "GEOLOGICAL STRATA PROFILE EXCAVATION (BEDROCK & CLAY)", "#ffffff", 6, "#ffffff");
-
             } else if (phase.idx === 1) {
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
                 const colorProg = secondaryProg;
@@ -1258,7 +1699,7 @@ const STAGE_HANDLERS = [
                 for (let s = 0; s < Math.min(numStones, stones); s++) {
                     const sx = 130 + s * 45;
                     const sy = 320 + (s % 2) * 5;
-                    const dropY = s === stones - 1 ? (1 - (assemblyProg * numStones % 1)) * 50 : 0;
+                    const dropY = s === stones - 1 ? (1 - ((assemblyProg * numStones) % 1)) * 50 : 0;
                     ctx.save();
                     ctx.translate(0, -dropY);
                     if (colorProg > 0) {
@@ -1302,7 +1743,6 @@ const STAGE_HANDLERS = [
                 }
 
                 drawDimensionLine(ctx, 160, 300, 620, 300, "DRY-LAID GRAVITY KEYED FOOTINGS - BASE THICKNESS 2'-6\"", "#ffffff", 6, "#ffffff");
-
             } else {
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
                 const colorProg = secondaryProg;
@@ -1346,7 +1786,6 @@ const STAGE_HANDLERS = [
                     ctx.lineWidth = 1.5 * secondaryProg;
                     for (let x = 160; x < 140 + trenchW; x += 30)
                         drawHandLine(ctx, x, 450 + ((x - 140) / 520) * 30, x, 465 + ((x - 140) / 520) * 30, 0.2, 2);
-
                 }
 
                 if (colorProg > 0) {
@@ -1365,14 +1804,13 @@ const STAGE_HANDLERS = [
             }
 
             const titles = ["GEOLOGICAL EXCAVATION", "DRY-LAID FOOTINGS", "GRAVITY DRAINAGE TRENCHING"];
-            drawTitleBlock(ctx, width, height, titles[phase.idx], `G-102.${phase.idx + 1}`, "1/2\" = 1'-0\"", "SEP 1953", "#ffffff", "#0a0a0a");
-        }
+            drawTitleBlock(ctx, width, height, titles[phase.idx], `G-102.${phase.idx + 1}`, '1/2" = 1\'-0"', "SEP 1953", "#ffffff", "#0a0a0a");
+        },
     },
 
     // Stage 2: 1860 - Industrial Revolution (Balloon Framing, Metallurgy, Mechanized Pump)
     {
         initSVG: (g, width, height) => {
-
             addSVGCallout(g, 25, 50, 160, 260, "STEAM-MILLED DIMENSIONED LUMBER", "STANDARDIZED 2x4 BALLOON FRAMING", "stage2-p0-1", 0);
             addSVGCallout(g, 775, 50, 560, 270, "MASS-PRODUCED CUT WIRE NAILS", "RAPID INDUSTRIAL ASSEMBLY", "stage2-p0-2", 0);
 
@@ -1382,7 +1820,7 @@ const STAGE_HANDLERS = [
             addSVGCallout(g, 25, 420, 200, 450, "MECHANIZED WATER PUMP", "CAST-IRON 4:1 GEAR RATIO", "stage2-p2-1", 2);
             addSVGCallout(g, 775, 420, 560, 460, "INDOOR COPPER PLUMBING", "DEEP AQUIFER INTAKE - 60 FT", "stage2-p2-2", 2);
 
-            addSVGTitleBlock(g, "BALLOON FRAMING & PUMP", "S-103", "1860", "SCALE: 3/4\" = 1'-0\"", "NOV 1954");
+            addSVGTitleBlock(g, "BALLOON FRAMING & PUMP", "S-103", "1860", 'SCALE: 3/4" = 1\'-0"', "NOV 1954");
         },
         updateSVG: (g, prog, width, height, phase) => {
             // Handled automatically by setCalloutPhaseVisibility
@@ -1445,11 +1883,9 @@ const STAGE_HANDLERS = [
                         ctx.fillRect(sx + 6, sillY - 2, 4, 4 * secondaryProg);
                         if (s < 7)
                             drawHandLine(ctx, sx + 12, sillY - studH * 0.5 * secondaryProg, sx + 60, sillY - studH * 0.8 * secondaryProg, 0.2, 2);
-
                     }
                 }
-                drawDimensionLine(ctx, 150, 530, 640, 530, "STEAM-MILLED BALLOON FRAMING STUDS @ 16\" O.C.", "#ffffff", 6, "#ffffff");
-
+                drawDimensionLine(ctx, 150, 530, 640, 530, 'STEAM-MILLED BALLOON FRAMING STUDS @ 16" O.C.', "#ffffff", 6, "#ffffff");
             } else if (phase.idx === 1) {
                 ctx.save();
                 ctx.globalAlpha = 0.25;
@@ -1494,7 +1930,6 @@ const STAGE_HANDLERS = [
                     ctx.fill();
                 }
                 drawDimensionLine(ctx, 150, 530, 650, 530, "CAST-IRON LINTEL & WROUGHT IRON TIE-ROD REINFORCEMENT", "#ffffff", 6, "#ffffff");
-
             } else {
                 drawDioramaPlatform(ctx, 160, 380, 480, 120, 20, "#111111", "#ffffff", -0.03);
 
@@ -1529,7 +1964,6 @@ const STAGE_HANDLERS = [
                         const wy = 440 - ((pulseOffset + w * 40) % 160);
                         if (wy > 280)
                             ctx.fillRect(384, wy, 10, 12);
-
                     }
 
                     const aqGrad = ctx.createLinearGradient(0, 420, 0, 500);
@@ -1544,14 +1978,13 @@ const STAGE_HANDLERS = [
             }
 
             const titles = ["STEAM-MILLED BALLOON FRAMING", "METALLURGICAL REINFORCEMENT", "MECHANIZED PUMP & PLUMBING"];
-            drawTitleBlock(ctx, width, height, titles[phase.idx], `S-103.${phase.idx + 1}`, "3/4\" = 1'-0\"", "NOV 1954", "#ffffff", "#0a0a0a");
-        }
+            drawTitleBlock(ctx, width, height, titles[phase.idx], `S-103.${phase.idx + 1}`, '3/4" = 1\'-0"', "NOV 1954", "#ffffff", "#0a0a0a");
+        },
     },
 
     // Stage 3: 1900 - Gradual Farm Improvements (Agrarian Complex, Boundary Walls, Irrigation Sluice)
     {
         initSVG: (g, width, height) => {
-
             addSVGCallout(g, 25, 50, 200, 270, "TIMBER FRAME BARN", "POST & BEAM STRUCTURE", "stage3-callout1", 0);
             addSVGCallout(g, 775, 50, 560, 220, "GRAIN GRANARY", "SILO STORAGE SYSTEM", "stage3-callout3", 0);
             addSVGCallout(g, 25, 235, 260, 330, "FROST-HEAVED WALLS", "DRY-STONE FIELDSTONE", "stage3-callout2", 1);
@@ -1559,7 +1992,7 @@ const STAGE_HANDLERS = [
             addSVGCallout(g, 25, 420, 330, 440, "IRRIGATION SLUICE", "WATER MANAGEMENT", "stage3-callout5", 2);
             addSVGCallout(g, 775, 420, 540, 440, "ADJUSTABLE WEIR", "WATER DIVERSION", "stage3-callout6", 2);
 
-            addSVGTitleBlock(g, "AGRARIAN COMPLEX & IRRIGATION", "C-104", "1900", "SCALE: 1\" = 100'-0\"", "APR 1955");
+            addSVGTitleBlock(g, "AGRARIAN COMPLEX & IRRIGATION", "C-104", "1900", 'SCALE: 1" = 100\'-0"', "APR 1955");
         },
         updateSVG: (g, prog, width, height, phase) => {
             // Handled automatically by setCalloutPhaseVisibility
@@ -1638,7 +2071,6 @@ const STAGE_HANDLERS = [
                 }
 
                 drawDimensionLine(ctx, 100, 500, 700, 500, "MULTI-BUILDING AGRARIAN COMPLEX SITE PLAN", "#ffffff", 6, "#ffffff");
-
             } else if (phase.idx === 1) {
                 ctx.save();
                 ctx.globalAlpha = 0.25;
@@ -1649,7 +2081,7 @@ const STAGE_HANDLERS = [
                 const wallLen = 560 * easeOutQuart(assemblyProg);
 
                 for (let i = 0; i < 3; i++) {
-                    const bx = 120 + wallLen * (i + 1) / 3;
+                    const bx = 120 + (wallLen * (i + 1)) / 3;
                     ctx.fillStyle = "#ffffff";
                     ctx.beginPath();
                     ctx.arc(bx, 385, 3 + 2 * Math.sin(assemblyProg * 20 + i), 0, Math.PI * 2);
@@ -1676,7 +2108,6 @@ const STAGE_HANDLERS = [
                     }
                 }
                 drawDimensionLine(ctx, 120, 450, 680, 450, "FROST-HEAVED DRY-STONE BOUNDARY WALLS", "#ffffff", 6, "#ffffff");
-
             } else {
                 drawDioramaPlatform(ctx, 140, 340, 520, 140, 20, "#111111", "#ffffff", -0.03);
 
@@ -1724,13 +2155,12 @@ const STAGE_HANDLERS = [
             }
 
             const titles = ["AGRARIAN COMPLEX", "BOUNDARY WALLS", "IRRIGATION SLUICE"];
-            drawTitleBlock(ctx, width, height, titles[phase.idx], `C-104.${phase.idx + 1}`, "1\" = 100'-0\"", "APR 1955", "#ffffff", "#0a0a0a");
-        }
+            drawTitleBlock(ctx, width, height, titles[phase.idx], `C-104.${phase.idx + 1}`, '1" = 100\'-0"', "APR 1955", "#ffffff", "#0a0a0a");
+        },
     },
     // Stage 4: 1950 - Decline & Abandonment (Weathering, Roof Sag, Botanical Reclamation)
     {
         initSVG: (g, width, height) => {
-
             addSVGCallout(g, 25, 50, 200, 250, "PROLONGED WEATHERING & EXPOSURE", "MAINTENANCE CEASED / ABANDONED", "stage4-callout1", 0);
             addSVGCallout(g, 775, 50, 540, 240, "CONDEMNED // ABANDONED 1950", "STRUCTURAL COMPROMISE SURVEY", "stage4-callout2", 0);
             const badge = createSVGElement("g", { class: "tech-stamp-badge", transform: "rotate(-2, 480, 160)", "data-phase": "0" });
@@ -1741,13 +2171,13 @@ const STAGE_HANDLERS = [
             g.appendChild(badge);
 
             addSVGStressArrow(g, 300, 160, 300, 280, "DEAD LOAD: 45 LBS/SQ FT", "stage4-p1-arr1", 1);
-            addSVGCallout(g, 25, 235, 280, 310, "ROOF RAFTER DEFLECTION", "8.5\" MAX SAG (STRUCTURAL FAILURE)", "stage4-callout3", 1);
+            addSVGCallout(g, 25, 235, 280, 310, "ROOF RAFTER DEFLECTION", '8.5" MAX SAG (STRUCTURAL FAILURE)', "stage4-callout3", 1);
             addSVGCallout(g, 775, 250, 540, 340, "SEVERE MORTAR LEACHING", "LIME EROSION & MASONRY FISSURES", "stage4-callout4", 1);
 
             addSVGCallout(g, 25, 420, 220, 440, "BOTANICAL RECLAMATION", "WILD GRAPEVINE & VIRGINIA CREEPER", "stage4-callout5", 2);
             addSVGCallout(g, 775, 420, 540, 440, "PIONEER TREE ROOTS", "ROOT EXPANSION IN FOUNDATION BEDS", "stage4-callout6", 2);
 
-            addSVGTitleBlock(g, "HOMESTEAD SURVEY & CONDEMNATION", "EX-101", "1950", "SCALE: 1/4\" = 1'-0\"", "1950-COND");
+            addSVGTitleBlock(g, "HOMESTEAD SURVEY & CONDEMNATION", "EX-101", "1950", 'SCALE: 1/4" = 1\'-0"', "1950-COND");
         },
         updateSVG: (g, prog, width, height, phase) => {
             // Handled automatically by setCalloutPhaseVisibility
@@ -1816,7 +2246,10 @@ const STAGE_HANDLERS = [
                 // Moving Part 4: Pulsing condemnation survey crosshairs / structural stress markers on corners
                 if (secondaryProg > 0) {
                     const pulseRad = 12 + Math.sin(secondaryProg * Math.PI * 4) * 3;
-                    const corners = [[235, 235], [565, 235]];
+                    const corners = [
+                        [235, 235],
+                        [565, 235],
+                    ];
                     ctx.save();
                     ctx.strokeStyle = `rgba(209, 43, 62, ${0.8 * secondaryProg})`;
                     ctx.lineWidth = 2;
@@ -1830,7 +2263,6 @@ const STAGE_HANDLERS = [
                     ctx.restore();
                 }
                 drawDimensionLine(ctx, 140, 490, 660, 490, "ABANDONED HOMESTEAD / ENVIRONMENTAL EXPOSURE & WEATHERING", "#ffffff", 6, "#ffffff");
-
             } else if (phase.idx === 1) {
                 // P1: Roof Sag Deflection & Lime Mortar Leaching (Structural Failure Analysis)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
@@ -1931,8 +2363,7 @@ const STAGE_HANDLERS = [
                         ctx.fill();
                     }
                 }
-                drawDimensionLine(ctx, 180, 300 + sag, 620, 300 + sag, "DEFLECTED ROOF RIDGE: 8.5\" MAX SAG (STRUCTURAL FAILURE)", "#ffffff", 6, "#ffffff");
-
+                drawDimensionLine(ctx, 180, 300 + sag, 620, 300 + sag, 'DEFLECTED ROOF RIDGE: 8.5" MAX SAG (STRUCTURAL FAILURE)', "#ffffff", 6, "#ffffff");
             } else {
                 // P2: Ecological Succession & Botanical Reclamation (Ecology & Overgrowth Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
@@ -2026,14 +2457,13 @@ const STAGE_HANDLERS = [
             }
 
             const titles = ["WEATHERING & ABANDONMENT", "ROOF SAG & MORTAR LEACHING", "BOTANICAL RECLAMATION"];
-            drawTitleBlock(ctx, width, height, titles[phase.idx], `EX-101.${phase.idx + 1}`, "1/4\" = 1'-0\"", "1950-COND", "#ffffff", "#0a0a0a");
-        }
+            drawTitleBlock(ctx, width, height, titles[phase.idx], `EX-101.${phase.idx + 1}`, '1/4" = 1\'-0"', "1950-COND", "#ffffff", "#0a0a0a");
+        },
     },
 
     // Stage 5: 1980 - Modernization Planning (Blueprint Overlays, Hydraulic Jacking, Epoxy Splicing)
     {
         initSVG: (g, width, height) => {
-
             addSVGCallout(g, 25, 50, 180, 240, "CRISP BLUEPRINT OVERLAYS", "HERITAGE CONSERVATION ASSESSMENT", "stage5-callout1", 0);
             addSVGCallout(g, 775, 50, 540, 270, "LASER TRANSIT REALIGNMENT", "PRECISION ELEVATION SURVEY (REF A-4)", "stage5-callout2", 0);
 
@@ -2052,7 +2482,7 @@ const STAGE_HANDLERS = [
             badge.append(bRect, bText);
             g.appendChild(badge);
 
-            addSVGTitleBlock(g, "STRUCTURAL CONSERVATION", "ST-201", "1980", "SCALE: 3/16\" = 1'-0\"", "MAY 1980");
+            addSVGTitleBlock(g, "STRUCTURAL CONSERVATION", "ST-201", "1980", 'SCALE: 3/16" = 1\'-0"', "MAY 1980");
         },
         updateSVG: (g, prog, width, height, phase) => {
             if (phase.idx === 1) {
@@ -2157,7 +2587,6 @@ const STAGE_HANDLERS = [
                 }
 
                 drawDimensionLine(ctx, 180, 470, 620, 470, "CRISP TECHNICAL BLUEPRINT OVERLAYS & LASER TRANSIT DATUM SURVEY", "#ffffff", 6, "#ffffff");
-
             } else if (phase.idx === 1) {
                 // P1: Hydraulic Jacking & Steel W12x50 Lintel / C-Channel Reinforcement
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
@@ -2179,8 +2608,8 @@ const STAGE_HANDLERS = [
 
                     const pistonY = 340 + (jx === 400 ? initialSag : initialSag * 0.4);
                     ctx.fillStyle = "#cccccc";
-                    ctx.fillRect(jx - 8, pistonY, 16, (380 - jackH) - pistonY);
-                    ctx.strokeRect(jx - 8, pistonY, 16, (380 - jackH) - pistonY);
+                    ctx.fillRect(jx - 8, pistonY, 16, 380 - jackH - pistonY);
+                    ctx.strokeRect(jx - 8, pistonY, 16, 380 - jackH - pistonY);
                 }
 
                 ctx.strokeStyle = "#ffffff";
@@ -2221,7 +2650,6 @@ const STAGE_HANDLERS = [
                 }
 
                 drawDimensionLine(ctx, 180, 480, 620, 480, "12-TON HYDRAULIC JACK REALIGNMENT & STEEL W12x50 STRUCTURAL LINTEL", "#ffffff", 6, "#ffffff");
-
             } else {
                 // P2: Epoxy Resin Splicing & Reclaimed Hardwood Joinery
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
@@ -2284,7 +2712,7 @@ const STAGE_HANDLERS = [
                     ctx.lineWidth = 2;
                     ctx.stroke();
 
-                    const needleAngle = -Math.PI / 3 + (Math.PI * 2 / 3) * easeOutQuart(secondaryProg);
+                    const needleAngle = -Math.PI / 3 + ((Math.PI * 2) / 3) * easeOutQuart(secondaryProg);
                     ctx.strokeStyle = "#D12B3E";
                     ctx.lineWidth = 1.8;
                     ctx.beginPath();
@@ -2300,13 +2728,12 @@ const STAGE_HANDLERS = [
             }
 
             const titles = ["BLUEPRINT OVERLAYS", "HYDRAULIC JACKING & STEEL", "EPOXY SPLICING & CODE"];
-            drawTitleBlock(ctx, width, height, titles[phase.idx], `ST-201.${phase.idx + 1}`, "3/16\" = 1'-0\"", "MAY 1980", "#ffffff", "#0a0a0a");
-        }
+            drawTitleBlock(ctx, width, height, titles[phase.idx], `ST-201.${phase.idx + 1}`, '3/16" = 1\'-0"', "MAY 1980", "#ffffff", "#0a0a0a");
+        },
     },
     // Stage 6: 2010 - Ecological Insulation (Thermal Envelope, Triple Glazing, Geothermal & Solar PV)
     {
         initSVG: (g, width, height) => {
-
             addSVGCallout(g, 25, 50, 180, 260, "CLOSED-CELL SPRAY FOAM R-45", "HIGH-DENSITY CAVITY INSULATION", "stage6-callout1", 0);
             addSVGCallout(g, 775, 50, 540, 290, "AIRTIGHT THERMAL ENVELOPE", "ELIMINATES UNCONTROLLED AIR INFILTRATION", "stage6-callout2", 0);
 
@@ -2316,7 +2743,7 @@ const STAGE_HANDLERS = [
             addSVGCallout(g, 25, 420, 180, 440, "400' GEOTHERMAL BEDROCK LOOP", "CLOSED-LOOP RADIATIVE HEAT EXCHANGE", "stage6-callout5", 2);
             addSVGCallout(g, 775, 420, 540, 440, "SOLAR PV ROOF ARRAY (-15% NET ENERGY)", "NET-POSITIVE RENEWABLE GENERATION", "stage6-callout6", 2);
 
-            addSVGTitleBlock(g, "NET-ZERO RETROFIT", "ME-301", "2010", "SCALE: 3/16\" = 1'-0\"", "OCT 2010");
+            addSVGTitleBlock(g, "NET-ZERO RETROFIT", "ME-301", "2010", 'SCALE: 3/16" = 1\'-0"', "OCT 2010");
         },
         updateSVG: (g, prog, width, height, phase) => {
             if (phase.idx === 2) {
@@ -2410,7 +2837,6 @@ const STAGE_HANDLERS = [
                 ctx.restore();
 
                 drawDimensionLine(ctx, 140, 480, 660, 480, "R-45 AIRTIGHT CLOSED-CELL THERMAL ENVELOPE SPRAY FOAM", "#ffffff", 6, "#ffffff");
-
             } else if (phase.idx === 1) {
                 // P1: Triple-Pane Low-E Argon Glazing (Fenestration Engineering Information)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
@@ -2472,7 +2898,6 @@ const STAGE_HANDLERS = [
                     }
                 }
                 drawDimensionLine(ctx, 160, 480, 640, 480, "TRIPLE-PANE LOW-E ARGON GLAZING (U-0.12 / ZERO COLD BRIDGES)", "#ffffff", 6, "#ffffff");
-
             } else {
                 // P2: Geothermal Bedrock Loops & Rooftop Solar PV (Renewable Energy Engineering)
                 const { assemblyProg, secondaryProg } = getPhaseTiming(phase.localProg);
@@ -2545,14 +2970,13 @@ const STAGE_HANDLERS = [
             }
 
             const titles = ["AIRTIGHT THERMAL ENVELOPE", "TRIPLE-PANE LOW-E GLAZING", "GEOTHERMAL & SOLAR PV"];
-            drawTitleBlock(ctx, width, height, titles[phase.idx], `ME-301.${phase.idx + 1}`, "3/16\" = 1'-0\"", "OCT 2010", "#ffffff", "#0a0a0a");
-        }
+            drawTitleBlock(ctx, width, height, titles[phase.idx], `ME-301.${phase.idx + 1}`, '3/16" = 1\'-0"', "OCT 2010", "#ffffff", "#0a0a0a");
+        },
     },
     // Stage 7: Present Modern Design
     {
         year: 2026,
         initSVG: (g, width, height) => {
-
             // Phase 0 Callouts
             addSVGCallout(g, 25, 50, 260, 240, "3,800 SQ. FT. MINIMALIST SYNTHESIS", "OPEN FLOOR PLAN PERIMETER", "stage7-callout1", 0);
             addSVGCallout(g, 775, 50, 540, 280, "RESTORED 1780 FIELDSTONE HEARTH", "THERMAL MASS & TIMBER MANTEL", "stage7-callout2", 0);
@@ -2565,18 +2989,10 @@ const STAGE_HANDLERS = [
             addSVGCallout(g, 25, 420, 350, 460, "NATIVE MEADOW & RIPARIAN WETLANDS", "ECOLOGICAL LANDSCAPE RESTORATION", "stage7-callout5", 2);
             addSVGCallout(g, 775, 420, 540, 440, "LEVEL 2 EV CHARGING BAY", "BI-DIRECTIONAL V2H 12 kWh BATTERY", "stage7-callout6", 2);
 
-            addSVGTitleBlock(g, "MINIMALIST SYNTHESIS", "A-701", "2026", "SCALE: 3/16\" = 1'-0\"", "JUL 2026");
+            addSVGTitleBlock(g, "MINIMALIST SYNTHESIS", "A-701", "2026", 'SCALE: 3/16" = 1\'-0"', "JUL 2026");
         },
         updateSVG: (g, prog, width, height, phase) => {
-            if (!phase || phase.idx === undefined)
-                return;
-            const callouts = Array.from(g.querySelectorAll(".tech-callout, .tech-arrow, .tech-stamp-badge"));
-            callouts.forEach(el => {
-                const targetPhase = el.getAttribute("data-phase");
-                const isVisible = targetPhase === null || targetPhase === "" || parseInt(targetPhase, 10) <= phase.idx;
-                el.style.opacity = isVisible ? "1" : "0";
-                el.style.pointerEvents = isVisible ? "auto" : "none";
-            });
+            // Handled automatically by setCalloutPhaseVisibility
         },
         renderCanvas: (ctx, g, prog, width, height, phase) => {
             ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
@@ -2610,8 +3026,12 @@ const STAGE_HANDLERS = [
             drawCalloutBlur(ctx, 350, 540, 100, "rgba(34, 190, 140, 0.55)", "rgba(20, 120, 90, 0.2)", phase.idx >= 2);
             drawCalloutBlur(ctx, 155, 200, 90, "rgba(0, 240, 255, 0.55)", "rgba(0, 150, 200, 0.2)", phase.idx >= 2);
 
-            const planX = 100, planY = 160, planW = 600, planH = 340;
-            const livingX = planX + 160, livingW = planW - 160;
+            const planX = 100,
+                planY = 160,
+                planW = 600,
+                planH = 340;
+            const livingX = planX + 160,
+                livingW = planW - 160;
             const garageW = 160;
 
             // Base Diorama Platform with independent shadow angle (Rule 3)
@@ -2642,7 +3062,10 @@ const STAGE_HANDLERS = [
                 ctx.restore();
 
                 // Part 3 & Part 1: Restored 1780 fieldstone hearth core & thermal radiation vectors
-                const coreX = livingX + 60, coreY = planY + 90, coreW = 70, coreH = 60;
+                const coreX = livingX + 60,
+                    coreY = planY + 90,
+                    coreW = 70,
+                    coreH = 60;
                 ctx.save();
                 if (secondaryProg > 0) {
                     ctx.fillStyle = `rgba(180, 70, 40, ${0.75 * secondaryProg})`;
@@ -2669,13 +3092,19 @@ const STAGE_HANDLERS = [
 
                 // West-wing Garage Bay: Level 2 EV Charger & Battery Rack
                 ctx.save();
-                const batX = planX + 16, batY = planY + 30, batW = 26, batH = 90 * assemblyProg;
+                const batX = planX + 16,
+                    batY = planY + 30,
+                    batW = 26,
+                    batH = 90 * assemblyProg;
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 2;
                 ctx.strokeRect(batX, batY, batW, batH);
                 if (assemblyProg > 0.5)
                     drawSteelHatch(ctx, batX, batY, batW, batH);
-                const evX = planX + 55, evY = planY + 16, evW = 34, evH = 20;
+                const evX = planX + 55,
+                    evY = planY + 16,
+                    evW = 34,
+                    evH = 20;
                 ctx.strokeRect(evX, evY, evW, evH);
                 ctx.fillStyle = "#ffffff";
                 ctx.font = "bold 10px system-ui, -apple-system, sans-serif";
@@ -2794,7 +3223,10 @@ const STAGE_HANDLERS = [
                 ctx.restore();
 
                 // Rooftop solar PV array with golden photon highlights and busbar energy streams
-                const pvX = livingX + 20, pvY = planY + 145, pvW = livingW - 40, pvH = 75;
+                const pvX = livingX + 20,
+                    pvY = planY + 145,
+                    pvW = livingW - 40,
+                    pvH = 75;
                 ctx.save();
                 if (secondaryProg > 0) {
                     ctx.fillStyle = `rgba(20, 90, 190, ${0.75 * secondaryProg})`;
@@ -2841,9 +3273,16 @@ const STAGE_HANDLERS = [
                 ctx.restore();
 
                 // Subterranean Geothermal Hydronic Loops & HRV Recovery Core
-                const radiantX = livingX + 15, radiantY = planY + 70, radiantW = livingW - 30, radiantH = planH - 100;
-                /* eslint-disable-next-line no-unused-vars */
-                const hrvX = planX + 25, hrvY = planY + 230, hrvW = 75, hrvH = 55;
+                const radiantX = livingX + 15,
+                    radiantY = planY + 70,
+                    radiantW = livingW - 30,
+                    radiantH = planH - 100;
+                /* eslint-disable no-unused-vars */
+                const hrvX = planX + 25,
+                    hrvY = planY + 230,
+                    hrvW = 75,
+                    hrvH = 55;
+                /* eslint-enable no-unused-vars */
                 ctx.save();
                 if (secondaryProg > 0) {
                     const slabGrad = ctx.createLinearGradient(radiantX, radiantY, radiantX + radiantW, radiantY + radiantH);
@@ -2867,8 +3306,14 @@ const STAGE_HANDLERS = [
 
                 // Part 13: Level 2 EV charging grid flow vectors pulsing near the garage bay
                 ctx.save();
-                const batX = planX + 16, batY = planY + 30, batW = 26, batH = 90;
-                const evX = planX + 55, evY = planY + 16, evW = 34, evH = 20;
+                const batX = planX + 16,
+                    batY = planY + 30,
+                    batW = 26,
+                    batH = 90;
+                const evX = planX + 55,
+                    evY = planY + 16,
+                    evW = 34,
+                    evH = 20;
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 2;
                 ctx.strokeRect(batX, batY, batW, batH);
@@ -2884,20 +3329,20 @@ const STAGE_HANDLERS = [
                     ctx.fillStyle = `rgba(0, 255, 255, ${0.95 * secondaryProg})`;
                     ctx.shadowColor = "rgba(0, 255, 255, 0.9)";
                     ctx.shadowBlur = 8;
-                    const dist1 = Math.hypot(evX - (batX + batW), (evY + 10) - (batY + 10));
+                    const dist1 = Math.hypot(evX - (batX + batW), evY + 10 - (batY + 10));
                     for (let i = 0; i < 4; i++) {
                         const offset1 = ((prog * 700 + i * (dist1 / 4)) % dist1) / dist1;
-                        const px1 = (batX + batW) + (evX - (batX + batW)) * offset1;
-                        const py1 = (batY + 10) + ((evY + 10) - (batY + 10)) * offset1;
+                        const px1 = batX + batW + (evX - (batX + batW)) * offset1;
+                        const py1 = batY + 10 + (evY + 10 - (batY + 10)) * offset1;
                         ctx.beginPath();
                         ctx.arc(px1, py1, 3, 0, Math.PI * 2);
                         ctx.fill();
                     }
-                    const dist2 = Math.hypot((planX + 60) - (evX + evW / 2), (planY + 90) - (evY + evH));
+                    const dist2 = Math.hypot(planX + 60 - (evX + evW / 2), planY + 90 - (evY + evH));
                     for (let i = 0; i < 5; i++) {
                         const offset2 = ((prog * 900 + i * (dist2 / 5)) % dist2) / dist2;
-                        const px2 = (evX + evW / 2) + ((planX + 60) - (evX + evW / 2)) * offset2;
-                        const py2 = (evY + evH) + ((planY + 90) - (evY + evH)) * offset2;
+                        const px2 = evX + evW / 2 + (planX + 60 - (evX + evW / 2)) * offset2;
+                        const py2 = evY + evH + (planY + 90 - (evY + evH)) * offset2;
                         ctx.beginPath();
                         ctx.arc(px2, py2, 3.5, 0, Math.PI * 2);
                         ctx.fill();
@@ -2993,10 +3438,10 @@ const STAGE_HANDLERS = [
             }
 
             const titles = ["3,800 SQ. FT. MINIMALIST SYNTHESIS", "CANTILEVERED STEEL & GLASS SPAN", "NATIVE LANDSCAPE & EV BAY"];
-            drawTitleBlock(ctx, width, height, titles[phase.idx], `A-701.${phase.idx + 1}`, "3/16\" = 1'-0\"", "JUL 2026", "#ffffff", "#0a0a0a");
+            drawTitleBlock(ctx, width, height, titles[phase.idx], `A-701.${phase.idx + 1}`, '3/16" = 1\'-0"', "JUL 2026", "#ffffff", "#0a0a0a");
         },
         updateDOM: (container, prog, width, height, phase) => {
             // DOM updates handled by sticky layout container
-        }
-    }
+        },
+    },
 ];
