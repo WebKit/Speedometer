@@ -1,6 +1,0 @@
-app.bundle.js
-app.bundle.js.LICENSE.txt
-app.bundle.js.map
-app.css
-app.css.map
-index.html

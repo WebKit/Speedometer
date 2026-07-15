@@ -1,4 +1,4 @@
-import { generateResourcesFile } from "../../../../shared/generate-resources.mjs";
+import { generateResourcesFile } from "../../../../../resources/shared/generate-resources.mjs";
 import fs from "fs/promises";
 import path from "path";
 

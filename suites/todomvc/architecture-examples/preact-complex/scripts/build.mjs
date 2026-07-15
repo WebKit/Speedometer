@@ -1,4 +1,4 @@
-import { generateResourcesFile } from "../../../../shared/generate-resources.mjs";
+import { generateResourcesFile } from "../../../../../resources/shared/generate-resources.mjs";
 /**
  * Build the TodoMVC Preact Complex DOM example.
  */
