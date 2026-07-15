@@ -1,6 +1,11 @@
+// Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted under the terms of the BSD 2-Clause License (see root LICENSE file).
+
 import m from "mithril";
 
-export type Language = "DE" | "FR" | "IT";
+export type Language = "DE" | "FR" | "IT" | "TW" | "JP";
 
 let activeLanguage: Language = "DE";
 
@@ -108,18 +113,87 @@ export const translations = {
         suggestionsTitle: "Suggerimenti",
         noMatches: "Nessun risultato trovato",
     },
+    TW: {
+        title: "電腦歷史",
+        subtitle: "1900 - 2026",
+        filter: "篩選：",
+        transistors: "電晶體：",
+        clockSpeed: "時脈頻率：",
+        memory: "記憶體：",
+        year: "年份",
+        cpu: "CPU：",
+        gpu: "GPU：",
+        tpu: "TPU：",
+        // Category tags
+        cat_hardware: "硬體",
+        cat_software: "軟體",
+        cat_consumer: "消費級",
+        cat_networking: "網路",
+        cat_web: "Web 與網際網路",
+        cat_milestone: "里程碑",
+        cat_gaming: "遊戲",
+        cat_art: "藝術",
+        cat_military: "軍事",
+        cat_politics: "政治",
+        cat_medicine: "醫療",
+        cat_science: "科學",
+        cat_default: "常規",
+        wikipedia: "維基百科 ↗",
+        searchPlaceholder: "搜尋...",
+        suggestionsTitle: "建議",
+        noMatches: "沒有找到匹配項",
+    },
+    JP: {
+        title: "コンピューターの歴史",
+        subtitle: "1900 - 2026",
+        filter: "フィルター:",
+        transistors: "トランジスタ:",
+        clockSpeed: "クロック周波数:",
+        memory: "メモリ:",
+        year: "年",
+        cpu: "CPU:",
+        gpu: "GPU:",
+        tpu: "TPU:",
+        // Category tags
+        cat_hardware: "ハードウェア",
+        cat_software: "ソフトウェア",
+        cat_consumer: "コンシューマー",
+        cat_networking: "ネットワーク",
+        cat_web: "Web & インターネット",
+        cat_milestone: "マイルストーン",
+        cat_gaming: "ゲーム",
+        cat_art: "アート",
+        cat_military: "軍事",
+        cat_politics: "政治",
+        cat_medicine: "医療",
+        cat_science: "科学",
+        cat_default: "一般",
+        wikipedia: "Wikipedia ↗",
+        searchPlaceholder: "検索...",
+        suggestionsTitle: "候補",
+        noMatches: "一致する結果が見つかりません",
+    },
 };
 
 export type TranslationKey = keyof (typeof translations)["DE"];
 
 export const t = (key: TranslationKey | string): string => {
-    return translations[activeLanguage][key as TranslationKey] || translations["DE"][key as TranslationKey] || key;
+    const langObj = translations[activeLanguage] || translations["DE"];
+    return langObj[key as TranslationKey] || translations["DE"][key as TranslationKey] || key;
 };
 
 export function translateContent(field: any): string {
-    if (!field) return "";
+    if (!field)
+        return "";
     if (typeof field === "object") {
-        return field[activeLanguage] || field.DE || Object.values(field)[0] || "";
+        const lang = activeLanguage;
+        if (field[lang])
+            return field[lang];
+        if (lang === "JP" && field.JA)
+            return field.JA;
+        if (field.TW)
+            return field.TW;
+        return field.DE || Object.values(field)[0] || "";
     }
     return String(field);
 }

@@ -464,6 +464,21 @@ button.btn-nav:hover .desc {
     transform: scale(1.02);
 }
 
+/* Active and Focused Card Styling */
+.timeline-card.card-active,
+.timeline-card:focus {
+    box-shadow: 0 0 35px var(--primary-color), inset 0 0 25px rgba(56, 189, 248, 0.2) !important;
+    border-color: var(--primary-color) !important;
+    transform: scale(1.02);
+    outline: 2px solid var(--primary-color);
+    outline-offset: 4px;
+}
+
+.virtual-layout .timeline-card.card-active,
+.virtual-layout .timeline-card:focus {
+    transform: translateY(-50%) scale(1.02);
+}
+
 /* Node on Timeline */
 .timeline-card::before {
     content: "";
@@ -610,6 +625,9 @@ button.btn-nav:hover .desc {
     font-weight: 800;
     line-height: 1.4;
     color: #f8fafc;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    line-break: strict;
 }
 
 .card-tags {
@@ -628,6 +646,9 @@ button.btn-nav:hover .desc {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     border: 1px solid transparent;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    line-break: strict;
 }
 
 .tag:hover {
@@ -687,6 +708,9 @@ button.btn-nav:hover .desc {
     padding-right: 8px;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    line-break: strict;
 }
 
 /* Scrollbar for description */
@@ -1485,7 +1509,8 @@ button.btn-nav:hover .desc {
     #filter-panel {
         gap: 4px;
     }
-    span.filter-pill, .tag {
+    span.filter-pill,
+    .tag {
         padding: 2px 8px;
         font-size: 0.6rem;
         margin-bottom: 2px;

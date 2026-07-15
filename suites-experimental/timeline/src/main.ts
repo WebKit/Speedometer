@@ -1,3 +1,8 @@
+// Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted under the terms of the BSD 2-Clause License (see root LICENSE file).
+
 import "./rAF-override.js";
 import m from "mithril";
 import staticData from "./data/index.js";
@@ -22,9 +27,8 @@ const App = () => {
     let dataVersion = 1;
     const timelineHandle: { scrollToIndex?: (idx: number, behavior?: string) => void } = {};
 
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined")
         (window as any).stepScrollTimeline = () => {};
-    }
 
     function startDataProcessing() {
         allData.forEach((card, index) => {
@@ -33,10 +37,14 @@ const App = () => {
                 return;
             }
             const identifier = card.id ? `ID: ${card.id}` : `index: ${index}`;
-            if (!card.title) console.error(`Validation Error: Card (${identifier}) is missing a 'title'.`);
-            if (!Array.isArray(card.tags) || card.tags.length === 0) console.error(`Validation Error: Card (${identifier}) must have at least one tag in the 'tags' array.`);
-            if (!card.description) console.error(`Validation Error: Card (${identifier}) is missing a 'description'.`);
-            if (!card.links || !card.links.wikipedia) console.error(`Validation Error: Card (${identifier}) is missing a Wikipedia link in 'links.wikipedia'.`);
+            if (!card.title)
+                console.error(`Validation Error: Card (${identifier}) is missing a 'title'.`);
+            if (!Array.isArray(card.tags) || card.tags.length === 0)
+                console.error(`Validation Error: Card (${identifier}) must have at least one tag in the 'tags' array.`);
+            if (!card.description)
+                console.error(`Validation Error: Card (${identifier}) is missing a 'description'.`);
+            if (!card.links || !card.links.wikipedia)
+                console.error(`Validation Error: Card (${identifier}) is missing a Wikipedia link in 'links.wikipedia'.`);
         });
 
         tagCounts = {};
@@ -55,29 +63,27 @@ const App = () => {
             try {
                 const params = new URLSearchParams(window.location.search);
                 const searchParam = params.get("search") || params.get("q");
-                if (searchParam !== null) {
+                if (searchParam !== null)
                     searchQuery = searchParam;
-                }
+
                 const tabParam = params.get("tab") || params.get("tags") || params.get("tag") || params.get("filter");
                 if (tabParam !== null) {
                     const parsedTags = tabParam
                         .split(",")
                         .map((t) => t.trim())
                         .filter((t) => activeCategories.includes(t));
-                    if (parsedTags.length > 0) {
+                    if (parsedTags.length > 0)
                         activeFilters = parsedTags;
-                    }
                 }
                 const layoutParam = params.get("layout") || params.get("mode") || params.get("layoutMode");
-                if (layoutParam === "virtual" || layoutParam === "browser") {
+                if (layoutParam === "virtual" || layoutParam === "browser")
                     layoutMode = layoutParam;
-                }
+
                 const langParam = params.get("lang") || params.get("language") || params.get("l");
                 if (langParam !== null) {
                     const upperLang = langParam.toUpperCase() as any;
-                    if (["DE", "FR", "IT"].includes(upperLang)) {
+                    if (["DE", "FR", "IT", "TW", "JP"].includes(upperLang))
                         setLanguage(upperLang);
-                    }
                 }
                 applyFilters();
 
@@ -121,9 +127,8 @@ const App = () => {
 
     function updateFilterSelection() {
         let currentCardDate = null;
-        if (filteredData[activeIndex]) {
+        if (filteredData[activeIndex])
             currentCardDate = filteredData[activeIndex].date;
-        }
 
         applyFilters();
 
@@ -146,45 +151,46 @@ const App = () => {
         }
 
         dataVersion++;
-        if (timelineHandle.scrollToIndex) {
+        if (timelineHandle.scrollToIndex)
             timelineHandle.scrollToIndex(activeIndex, "instant");
-        }
+
         updateURLParams();
     }
 
     let lastURLString = "";
     function updateURLParams() {
-        if (!isStarted || typeof window === "undefined" || !window.history || !window.location) return;
+        if (!isStarted || typeof window === "undefined" || !window.history || !window.location)
+            return;
         try {
             const url = new URL(window.location.href);
-            if (searchQuery.trim().length > 0) {
+            if (searchQuery.trim().length > 0)
                 url.searchParams.set("search", searchQuery.trim());
-            } else {
+            else
                 url.searchParams.delete("search");
-            }
-            if (activeFilters.length > 0 && activeFilters.length < activeCategories.length) {
+
+            if (activeFilters.length > 0 && activeFilters.length < activeCategories.length)
                 url.searchParams.set("tags", activeFilters.join(","));
-            } else {
+            else
                 url.searchParams.delete("tags");
-            }
-            if (layoutMode !== "virtual") {
+
+            if (layoutMode !== "virtual")
                 url.searchParams.set("layout", layoutMode);
-            } else {
+            else
                 url.searchParams.delete("layout");
-            }
+
             const currentLang = getLanguage();
-            if (currentLang && currentLang !== "DE") {
+            if (currentLang && currentLang !== "DE")
                 url.searchParams.set("lang", currentLang);
-            } else {
+            else
                 url.searchParams.delete("lang");
-            }
-            if (filteredData[activeIndex] && filteredData[activeIndex].date) {
+
+            if (filteredData[activeIndex] && filteredData[activeIndex].date)
                 url.searchParams.set("time", filteredData[activeIndex].date.substring(0, 4));
-            } else if (allData[activeIndex] && allData[activeIndex].date) {
+            else if (allData[activeIndex] && allData[activeIndex].date)
                 url.searchParams.set("time", allData[activeIndex].date.substring(0, 4));
-            } else {
+            else
                 url.searchParams.delete("time");
-            }
+
             const newURLString = url.toString();
             if (newURLString !== lastURLString) {
                 lastURLString = newURLString;
@@ -198,71 +204,91 @@ const App = () => {
     return {
         view() {
             if (!isStarted) {
-                return m("#app-container", {
-                    style: {
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: "100vh",
-                        width: "100vw",
-                        background: "radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 50%, #020617 100%)",
-                        boxSizing: "border-box",
-                        overflow: "hidden",
-                    },
-                }, [
-                    m("div", {
+                return m(
+                    "#app-container",
+                    {
                         style: {
-                            textAlign: "center",
-                            padding: "48px 64px",
-                            background: "rgba(30, 41, 59, 0.5)",
-                            border: "1px solid rgba(56, 189, 248, 0.3)",
-                            borderRadius: "24px",
-                            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(56, 189, 248, 0.15)",
-                            backdropFilter: "blur(20px)",
-                            maxWidth: "90vw",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100vh",
+                            width: "100vw",
+                            background: "radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 50%, #020617 100%)",
+                            boxSizing: "border-box",
+                            overflow: "hidden",
                         },
-                    }, [
-                        m("h1", {
-                            style: {
-                                fontSize: "2.8rem",
-                                fontWeight: "900",
-                                margin: "0 0 12px 0",
-                                background: "linear-gradient(135deg, #38bdf8, #818cf8, #c084fc)",
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
-                                letterSpacing: "-0.02em",
+                    },
+                    [
+                        m(
+                            "div",
+                            {
+                                style: {
+                                    textAlign: "center",
+                                    padding: "48px 64px",
+                                    background: "rgba(30, 41, 59, 0.5)",
+                                    border: "1px solid rgba(56, 189, 248, 0.3)",
+                                    borderRadius: "24px",
+                                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(56, 189, 248, 0.15)",
+                                    backdropFilter: "blur(20px)",
+                                    maxWidth: "90vw",
+                                },
                             },
-                        }, "Speedometer Timeline"),
-                        m("p", {
-                            style: {
-                                color: "#94a3b8",
-                                margin: "0 0 36px 0",
-                                fontSize: "1.1rem",
-                                fontWeight: "500",
-                            },
-                        }, "Interactive History of Computing & Hardware Performance"),
-                        m("button#btn-explore.explore-btn", {
-                            onclick: () => {
-                                startDataProcessing();
-                                isStarted = true;
-                                m.redraw.sync();
-                            },
-                            style: {
-                                padding: "16px 40px",
-                                fontSize: "1.25rem",
-                                fontWeight: "800",
-                                color: "#ffffff",
-                                background: "linear-gradient(135deg, #0284c7, #6366f1, #9333ea)",
-                                border: "1px solid rgba(255, 255, 255, 0.3)",
-                                borderRadius: "9999px",
-                                cursor: "pointer",
-                                boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.3)",
-                                letterSpacing: "0.05em",
-                                textTransform: "uppercase",
-                            },
-                        }, "Explore Timeline"),
-                    ]),
-                ]);
+                            [
+                                m(
+                                    "h1",
+                                    {
+                                        style: {
+                                            fontSize: "2.8rem",
+                                            fontWeight: "900",
+                                            margin: "0 0 12px 0",
+                                            background: "linear-gradient(135deg, #38bdf8, #818cf8, #c084fc)",
+                                            WebkitBackgroundClip: "text",
+                                            WebkitTextFillColor: "transparent",
+                                            letterSpacing: "-0.02em",
+                                        },
+                                    },
+                                    "Speedometer Timeline"
+                                ),
+                                m(
+                                    "p",
+                                    {
+                                        style: {
+                                            color: "#94a3b8",
+                                            margin: "0 0 36px 0",
+                                            fontSize: "1.1rem",
+                                            fontWeight: "500",
+                                        },
+                                    },
+                                    "Interactive History of Computing & Hardware Performance"
+                                ),
+                                m(
+                                    "button#btn-explore.explore-btn",
+                                    {
+                                        onclick: () => {
+                                            startDataProcessing();
+                                            isStarted = true;
+                                            m.redraw.sync();
+                                        },
+                                        style: {
+                                            padding: "16px 40px",
+                                            fontSize: "1.25rem",
+                                            fontWeight: "800",
+                                            color: "#ffffff",
+                                            background: "linear-gradient(135deg, #0284c7, #6366f1, #9333ea)",
+                                            border: "1px solid rgba(255, 255, 255, 0.3)",
+                                            borderRadius: "9999px",
+                                            cursor: "pointer",
+                                            boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.3)",
+                                            letterSpacing: "0.05em",
+                                            textTransform: "uppercase",
+                                        },
+                                    },
+                                    "Explore Timeline"
+                                ),
+                            ]
+                        ),
+                    ]
+                );
             }
 
             let suggestions: Array<{ index: number; year: string; title: string }> = [];
@@ -274,12 +300,16 @@ const App = () => {
                         const titleStr = translateContent(card.title).toLowerCase();
                         const descStr = translateContent(card.description).toLowerCase();
                         let score = 0;
-                        if (titleStr.startsWith(query)) score += 100;
-                        else if (titleStr.includes(query)) score += 50;
-                        if (descStr.includes(query)) score += 10;
+                        if (titleStr.startsWith(query))
+                            score += 100;
+                        else if (titleStr.includes(query))
+                            score += 50;
+                        if (descStr.includes(query))
+                            score += 10;
 
                         const yearStr = card.date.substring(0, 4);
-                        if (yearStr.includes(query)) score += 20;
+                        if (yearStr.includes(query))
+                            score += 20;
 
                         return {
                             card,
@@ -338,9 +368,8 @@ const App = () => {
                         updateURLParams();
                     },
                     onFocusSearch: () => {
-                        if (searchQuery.trim().length > 0) {
+                        if (searchQuery.trim().length > 0)
                             showSuggestions = true;
-                        }
                     },
                     onCloseSuggestions: () => {
                         showSuggestions = false;
@@ -355,13 +384,13 @@ const App = () => {
                         showSuggestions = false;
                         dataVersion++;
                         updateURLParams();
-                        if (timelineHandle.scrollToIndex) {
+                        if (timelineHandle.scrollToIndex)
                             timelineHandle.scrollToIndex(idx, "instant");
-                        }
                     },
                     onFilterChange: (tag: string, checked: boolean) => {
                         if (checked) {
-                            if (!activeFilters.includes(tag)) activeFilters.push(tag);
+                            if (!activeFilters.includes(tag))
+                                activeFilters.push(tag);
                         } else {
                             activeFilters = activeFilters.filter((t) => t !== tag);
                         }
@@ -402,6 +431,7 @@ const App = () => {
                                 card: item,
                                 searchQuery: searchQuery,
                                 language: getLanguage(),
+                                isActive: (filteredData[activeIndex] && item.id === filteredData[activeIndex].id) || (allData[activeIndex] && item.id === allData[activeIndex].id),
                             }),
                     }),
                 ]),
@@ -413,7 +443,8 @@ const App = () => {
                     activeIndex: activeIndex,
                     language: getLanguage(),
                     onJumpToIndex: (idx, behavior = "smooth") => {
-                        if (timelineHandle.scrollToIndex) timelineHandle.scrollToIndex(idx, behavior);
+                        if (timelineHandle.scrollToIndex)
+                            timelineHandle.scrollToIndex(idx, behavior);
                     },
                 }),
             ]);

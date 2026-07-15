@@ -1,3 +1,8 @@
+// Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted under the terms of the BSD 2-Clause License (see root LICENSE file).
+
 import m from "mithril";
 import { TAGS } from "../data/tags.js";
 import { t, getLanguage, setLanguage, Language, translateContent } from "../i18n.js";
@@ -39,7 +44,9 @@ export const Controls = {
                 ".action-group.filter-group",
                 {
                     style: { width: "100%", height: "auto", padding: "8px 16px" },
-                    ondblclick: () => {
+                    ondblclick: (e: any) => {
+                        if (e && e.stopPropagation)
+                            e.stopPropagation();
                         resetAllTags();
                     },
                 },
@@ -97,15 +104,16 @@ export const Controls = {
                         onfocus: () => onFocusSearch(),
                         onclick: () => onFocusSearch(),
                         onblur: () => {
-                            onCloseSuggestions();
-                            m.redraw.sync();
+                            setTimeout(() => {
+                                onCloseSuggestions();
+                                m.redraw();
+                            }, 200);
                         },
                         onkeydown: (e: any) => {
                             if (e.key === "Enter" && suggestions.length > 0)
                                 onJumpToCard(suggestions[0].index);
                             else if (e.key === "Escape")
                                 onCloseSuggestions();
-
                         },
                     }),
                     showSuggestions
@@ -159,8 +167,12 @@ export const Controls = {
                                                     color: "#64748b",
                                                     padding: "2px 6px",
                                                 },
-                                                onmouseover: (e: any) => e.target.style.color = "#fff",
-                                                onmouseout: (e: any) => e.target.style.color = "#64748b",
+                                                onmouseover: (e: any) => {
+                                                    e.target.style.color = "#fff";
+                                                },
+                                                onmouseout: (e: any) => {
+                                                    e.target.style.color = "#64748b";
+                                                },
                                             },
                                             "×"
                                         ),
@@ -171,6 +183,10 @@ export const Controls = {
                                         ".suggestion-item",
                                         {
                                             key: s.index,
+                                            onmousedown: (e: any) => {
+                                                e.preventDefault();
+                                                onJumpToCard(s.index);
+                                            },
                                             onclick: () => {
                                                 onJumpToCard(s.index);
                                             },
@@ -192,7 +208,7 @@ export const Controls = {
                                                 e.target.style.color = "";
                                             },
                                         },
-                                        [m("strong", { style: { color: "#fff", marginRight: "4px" } }, `${s.year }:`), s.title]
+                                        [m("strong", { style: { color: "#fff", marginRight: "4px" } }, `${s.year}:`), s.title]
                                     )
                                 ),
                             ]
@@ -227,7 +243,7 @@ export const Controls = {
                     m(
                         ".lang-selector",
                         { style: { display: "flex", gap: "4px" } },
-                        (["DE", "FR", "IT"] as Language[]).map((lang) =>
+                        (["DE", "FR", "IT", "TW", "JP"] as Language[]).map((lang) =>
                             m(
                                 "button.lang-btn",
                                 {

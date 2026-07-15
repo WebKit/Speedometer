@@ -302,12 +302,9 @@ export const ExperimentalSuites = freezeSuites([
                     page.layout();
                 }
                 const searchInput = page.querySelector("input.search-input");
-                if (!searchInput) return;
-                const queries = [
-                    "C", "Co", "Com", "Comp", "Compu", "Comput", "Compute", "Computer", "",
-                    "I", "In", "Int", "Inte", "Intel", "",
-                    "A", "Ap", "App", "Appl", "Apple", "",
-                ];
+                if (!searchInput)
+                    return;
+                const queries = ["C", "Co", "Com", "Comp", "Compu", "Comput", "Compute", "Computer", "", "I", "In", "Int", "Inte", "Intel", "", "A", "Ap", "App", "Appl", "Apple", ""];
                 for (let round = 0; round < 4; round++) {
                     for (const q of queries) {
                         searchInput.setValue(q);
@@ -323,7 +320,8 @@ export const ExperimentalSuites = freezeSuites([
                     page.layout();
                 }
                 const filterPills = page.querySelectorAll(".filter-pill");
-                if (!filterPills || filterPills.length === 0) return;
+                if (!filterPills || filterPills.length === 0)
+                    return;
                 const count = Math.min(filterPills.length, 10);
                 for (let round = 0; round < 18; round++) {
                     for (let i = 0; i < count; i++) {

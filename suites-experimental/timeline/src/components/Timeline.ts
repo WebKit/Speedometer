@@ -1,3 +1,8 @@
+// Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted under the terms of the BSD 2-Clause License (see root LICENSE file).
+
 import m from "mithril";
 import { getLanguage, t } from "../i18n.js";
 
@@ -73,7 +78,8 @@ export const Timeline = () => {
             let currentScrollIndex = 0;
             let scrollDirection = 1;
             (window as any).stepScrollTimeline = () => {
-                if (!containerEl || !vnode.attrs.data || vnode.attrs.data.length === 0) return;
+                if (!containerEl || !vnode.attrs.data || vnode.attrs.data.length === 0)
+                    return;
                 currentScrollIndex += scrollDirection * 12;
                 if (currentScrollIndex >= vnode.attrs.data.length - 1) {
                     currentScrollIndex = vnode.attrs.data.length - 1;
@@ -101,10 +107,29 @@ export const Timeline = () => {
                         const currentClientWidth = containerEl.clientWidth;
                         const targetScrollLeft = Math.max(0, x - (currentClientWidth - width) / 2);
 
+                        scrollLeft = targetScrollLeft;
+                        try {
+                            m.redraw.sync();
+                        } catch (e) {
+                            void e;
+                        }
+
                         containerEl.scrollTo({
                             left: targetScrollLeft,
                             behavior,
                         });
+
+                        setTimeout(() => {
+                            const cardId = getCardId(card, index);
+                            const cardEl = containerEl.querySelector(`[id="${CSS.escape(String(cardId))}"]`) || containerEl.querySelector(".card-active");
+                            if (cardEl && typeof cardEl.focus === "function") {
+                                try {
+                                    cardEl.focus({ preventScroll: true });
+                                } catch (e) {
+                                    void e;
+                                }
+                            }
+                        }, 50);
                     };
 
                     doScroll(requestedBehavior);
@@ -188,7 +213,6 @@ export const Timeline = () => {
                 lastVisibleIndex = i;
                 if (x > scrollLeft + clientWidth)
                     break;
-
             }
 
             const startIdx = isVirtual ? Math.max(0, firstVisibleIndex - cardBuffer) : 0;

@@ -1,3 +1,8 @@
+// Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted under the terms of the BSD 2-Clause License (see root LICENSE file).
+
 import data from "../src/data/index.js";
 import expect from "expect.js";
 import { TAGS, getPreciseYear, calculateDensityCurve, getDensityAtYear } from "../src/data/tags.js";
@@ -20,35 +25,37 @@ describe("Timeline Data Validation", () => {
             try {
                 expect(item).to.be.an("object");
                 expect(item.id).to.be.a("string");
-                if (ids.has(item.id)) throw new Error("Duplicate ID: " + item.id);
+                if (ids.has(item.id))
+                    throw new Error(`Duplicate ID: ${item.id}`);
                 ids.add(item.id);
 
                 expect(item.date).to.be.a("string");
                 expect(/^\d{4}-\d{2}-\d{2}$/.test(item.date)).to.be(true);
 
                 expect(item.title).to.be.an("object");
-                ["DE", "FR", "IT"].forEach((lang) => {
+                ["DE", "FR", "IT", "TW", "JP"].forEach((lang) => {
                     expect(item.title[lang]).to.be.a("string");
                     expect(item.title[lang].length).to.be.greaterThan(0);
                 });
-                if (titles.has(item.title.DE)) throw new Error("Duplicate Title: " + item.title.DE);
+                if (titles.has(item.title.DE))
+                    throw new Error(`Duplicate Title: ${item.title.DE}`);
                 titles.add(item.title.DE);
 
                 expect(item.description).to.be.an("object");
-                ["DE", "FR", "IT"].forEach((lang) => {
+                ["DE", "FR", "IT", "TW", "JP"].forEach((lang) => {
                     expect(item.description[lang]).to.be.a("string");
                     const minLength = 10;
                     expect(item.description[lang].length).to.be.greaterThan(minLength);
                 });
-                if (descriptions.has(item.description.DE)) throw new Error("Duplicate Description: " + item.description.DE);
+                if (descriptions.has(item.description.DE))
+                    throw new Error(`Duplicate Description: ${item.description.DE}`);
                 descriptions.add(item.description.DE);
 
                 expect(item.tags).to.be.an("array");
                 expect(item.tags.length).to.be.greaterThan(0);
                 item.tags.forEach((tag) => {
-                    if (!TAGS[tag]) {
+                    if (!TAGS[tag])
                         throw new Error(`Tag "${tag}" is not in the preset allowed list of tags.`);
-                    }
                 });
 
                 if (item.width !== undefined) {
@@ -60,7 +67,7 @@ describe("Timeline Data Validation", () => {
 
                 expect(item.links).to.be.an("object");
                 expect(item.links.wikipedia).to.be.an("object");
-                ["DE", "FR", "IT"].forEach((lang) => {
+                ["DE", "FR", "IT", "TW", "JP"].forEach((lang) => {
                     expect(item.links.wikipedia[lang]).to.be.a("string");
                     expect(item.links.wikipedia[lang].startsWith("https://")).to.be(true);
                 });
@@ -71,7 +78,8 @@ describe("Timeline Data Validation", () => {
     });
 
     it("should be chronologically sorted", () => {
-        for (let i = 1; i < data.length; i++) expect(data[i].date >= data[i - 1].date).to.be(true);
+        for (let i = 1; i < data.length; i++)
+            expect(data[i].date >= data[i - 1].date).to.be(true);
     });
 
     it("should fit within MiniOverview range 1900 to 2026", () => {
@@ -227,15 +235,18 @@ describe("Timeline Tag Filtering Logic", () => {
 
         function findDblClickVnodes(v) {
             let found = [];
-            if (!v) return found;
-            if (v.attrs && typeof v.attrs.ondblclick === "function") {
+            if (!v)
+                return found;
+            if (v.attrs && typeof v.attrs.ondblclick === "function")
                 found.push(v);
-            }
+
             if (Array.isArray(v)) {
-                for (const child of v) found = found.concat(findDblClickVnodes(child));
+                for (const child of v)
+                    found = found.concat(findDblClickVnodes(child));
             } else if (v.children) {
                 found = found.concat(findDblClickVnodes(v.children));
             }
+
             return found;
         }
 
@@ -255,6 +266,7 @@ describe("Timeline Tag Filtering Logic", () => {
                 stopped = true;
             },
         });
+        expect(stopped).to.be(true);
         expect(selectAllCalled).to.be(true);
         expect(activeFilters.length).to.be(Object.keys(TAGS).length);
 
@@ -291,25 +303,32 @@ describe("Density Graph & FLOPS Layout Bounds", () => {
 
 describe("Timeline Empty State and Translations", () => {
     function getVnodeText(v) {
-        if (!v) return "";
-        if (typeof v === "string" || typeof v === "number") return String(v);
-        if (Array.isArray(v)) return v.map(getVnodeText).join("");
-        if (v.text !== undefined) return String(v.text);
-        if (v.children) return getVnodeText(v.children);
+        if (!v)
+            return "";
+        if (typeof v === "string" || typeof v === "number")
+            return String(v);
+        if (Array.isArray(v))
+            return v.map(getVnodeText).join("");
+        if (v.text !== undefined)
+            return String(v.text);
+        if (v.children)
+            return getVnodeText(v.children);
         return "";
     }
 
     function findVnodes(vnode, predicate) {
         let results = [];
-        if (!vnode) return results;
-        if (predicate(vnode)) results.push(vnode);
+        if (!vnode)
+            return results;
+        if (predicate(vnode))
+            results.push(vnode);
         if (Array.isArray(vnode)) {
-            for (const child of vnode) {
+            for (const child of vnode)
                 results = results.concat(findVnodes(child, predicate));
-            }
         } else if (vnode.children) {
             results = results.concat(findVnodes(vnode.children, predicate));
         }
+
         return results;
     }
 
@@ -318,12 +337,14 @@ describe("Timeline Empty State and Translations", () => {
         return cls.includes("empty-state");
     };
 
-    it("should provide translation strings for \x27noMatches\x27 across all 3 supported languages in i18n.ts", () => {
-        const supportedLangs = ["DE", "FR", "IT"];
+    it("should provide translation strings for \x27noMatches\x27 across all 5 supported languages in i18n.ts", () => {
+        const supportedLangs = ["DE", "FR", "IT", "TW", "JP"];
         const expectedSubstrings = {
             DE: "Keine Treffer",
             FR: "Aucun résultat",
             IT: "Nessun risultato",
+            TW: "沒有找到",
+            JP: "見つかりません",
         };
         supportedLangs.forEach((lang) => {
             expect(translations[lang]).to.be.an("object");
@@ -392,5 +413,23 @@ describe("Timeline Empty State and Translations", () => {
         res = timelineComp.view(vnode);
         nodes = findVnodes(res, isEmptyState);
         expect(getVnodeText(nodes[0])).to.contain("Nessun risultato trovato");
+
+        // Switch to TW
+        setLanguage("TW");
+        vnode.attrs.language = "TW";
+        vnode.attrs.version = 5;
+        timelineComp.onbeforeupdate(vnode);
+        res = timelineComp.view(vnode);
+        nodes = findVnodes(res, isEmptyState);
+        expect(getVnodeText(nodes[0])).to.contain("沒有找到匹配項");
+
+        // Switch to JP
+        setLanguage("JP");
+        vnode.attrs.language = "JP";
+        vnode.attrs.version = 6;
+        timelineComp.onbeforeupdate(vnode);
+        res = timelineComp.view(vnode);
+        nodes = findVnodes(res, isEmptyState);
+        expect(getVnodeText(nodes[0])).to.contain("一致する結果が見つかりません");
     });
 });

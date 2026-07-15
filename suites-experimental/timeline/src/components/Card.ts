@@ -1,3 +1,8 @@
+// Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted under the terms of the BSD 2-Clause License (see root LICENSE file).
+
 import m from "mithril";
 import { TAGS } from "../data/tags.js";
 import { t, translateContent } from "../i18n.js";
@@ -62,7 +67,7 @@ function formatInlineStyles(str: string, query: string): any[] {
         if (before)
             result.push(before);
 
-        const [full, code, bold, italic, highlightStr] = match;
+        const [, code, bold, italic, highlightStr] = match;
 
         if (code !== undefined)
             result.push(m("code", code));
@@ -113,18 +118,30 @@ export const Card = {
     oncreate(vnode: any) {
         if (vnode.attrs.onResize)
             vnode.attrs.onResize(vnode.dom.offsetWidth);
-
+        if (vnode.attrs.isActive && vnode.dom) {
+            try {
+                vnode.dom.focus({ preventScroll: true });
+            } catch (e) {
+                void e;
+            }
+        }
     },
     onupdate(vnode: any) {
         if (vnode.attrs.onResize)
             vnode.attrs.onResize(vnode.dom.offsetWidth);
-
+        if (vnode.attrs.isActive && vnode.dom && document.activeElement !== vnode.dom) {
+            try {
+                vnode.dom.focus({ preventScroll: true });
+            } catch (e) {
+                void e;
+            }
+        }
     },
     view(vnode: any) {
         // IMPORTANT: Live translation of cards relies on calling translateContent() and t() dynamically inside view()
         // during Mithril redraws (e.g. when setLanguage is called or when language attribute changes in main.ts).
         // Do not cache translated strings statically outside view() or remove translateContent() calls, to prevent breaking live translation in future edits.
-        const { card, searchQuery } = vnode.attrs;
+        const { card, searchQuery, isActive } = vnode.attrs;
         const { id, type, date, title, description, tags, stats, width, links } = card;
 
         const titleStr = translateContent(title);
@@ -135,8 +152,9 @@ export const Card = {
         return m(
             ".timeline-card",
             {
-                class: `card-${type} ${tagClass}`,
+                class: `card-${type} ${tagClass} ${isActive ? "card-active" : ""}`,
                 id: id,
+                tabindex: 0,
                 style: Object.assign(
                     {
                         width: `${width}px`,
