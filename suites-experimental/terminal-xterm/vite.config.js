@@ -1,3 +1,7 @@
+// Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted under the terms of the BSD 2-Clause License (see root LICENSE file).
 import { resolve } from "path";
 import { defineConfig } from "vite";
 import fs from "fs";
@@ -16,7 +20,7 @@ function nodeModulesSourcemaps() {
             if (id.endsWith(".js") && id.includes("node_modules")) {
                 try {
                     const code = fs.readFileSync(id, "utf-8");
-                    const mapPath = `${id }.map`;
+                    const mapPath = `${id}.map`;
                     if (fs.existsSync(mapPath)) {
                         const map = JSON.parse(fs.readFileSync(mapPath, "utf-8"));
                         return { code, map };
@@ -30,7 +34,17 @@ function nodeModulesSourcemaps() {
     };
 }
 
-function renameIndexHtml() { return { name: 'rename-index-html', closeBundle() { const src = resolve(__dirname, 'dist/index.source.html'); const dest = resolve(__dirname, 'dist/index.html'); if (fs.existsSync(src)) fs.renameSync(src, dest); } }; }
+function renameIndexHtml() {
+    return {
+        name: "rename-index-html",
+        closeBundle() {
+            const src = resolve(__dirname, "dist/index.source.html");
+            const dest = resolve(__dirname, "dist/index.html");
+            if (fs.existsSync(src))
+                fs.renameSync(src, dest);
+        },
+    };
+}
 
 export default defineConfig(({ mode }) => {
     const isDev = mode === "development";

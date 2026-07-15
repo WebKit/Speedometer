@@ -1,3 +1,7 @@
+// Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted under the terms of the BSD 2-Clause License (see root LICENSE file).
 import "@xterm/xterm/css/xterm.css";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
@@ -25,7 +29,8 @@ const rendererType = (params.get("renderer") || "canvas").toLowerCase();
  * Initialize all 4 terminal panes and attach addons
  */
 export function initTerminals() {
-    if (isInitialized) return;
+    if (isInitialized)
+        return;
 
     const tabs = ["build", "links", "ncurses", "git"];
     tabs.forEach((tabId) => initTerminalForTab(tabId));
@@ -49,13 +54,16 @@ export function initTerminals() {
     // generation, and canvas renderer warmup are covered in the setup phase.
     if (terminals.build && buildLogChunks.length > 0) {
         writeSync(terminals.build, "\x1b[36m⚡ Speedometer Terminal Emulator Suite - Initializing Build Environment...\x1b[0m\r\n\r\n");
-        for (let i = 0; i < Math.min(10, buildLogChunks.length); i++) writeSync(terminals.build, buildLogChunks[i]);
+        for (let i = 0; i < Math.min(10, buildLogChunks.length); i++)
+            writeSync(terminals.build, buildLogChunks[i]);
     }
     if (terminals.links && linksChunks.length > 0) {
         writeSync(terminals.links, "\x1b[36m🔗 Speedometer Web Links & Traces - Initializing Link Environment...\x1b[0m\r\n\r\n");
-        for (let i = 0; i < Math.min(10, linksChunks.length); i++) writeSync(terminals.links, linksChunks[i]);
+        for (let i = 0; i < Math.min(10, linksChunks.length); i++)
+            writeSync(terminals.links, linksChunks[i]);
     }
-    if (terminals.ncurses && ncursesFrames.length > 0) writeSync(terminals.ncurses, ncursesFrames[0]);
+    if (terminals.ncurses && ncursesFrames.length > 0)
+        writeSync(terminals.ncurses, ncursesFrames[0]);
 
     // Synchronously unpause and flush all terminals during setup so texture atlases
     // and renderer backends are 100% warmed up before benchmark step measurement begins.
@@ -64,10 +72,12 @@ export function initTerminals() {
             const rs = term._core._renderService;
             if (rs._isPaused) {
                 rs._isPaused = false;
-                if (rs._charSizeService && !rs._charSizeService.hasValidSize) rs._charSizeService.measure();
+                if (rs._charSizeService && !rs._charSizeService.hasValidSize)
+                    rs._charSizeService.measure();
 
                 if (rs._needsFullRefresh) {
-                    if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function") rs._pausedResizeTask.flush();
+                    if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function")
+                        rs._pausedResizeTask.flush();
 
                     rs.refreshRows(0, rs._rowCount - 1);
                     rs._needsFullRefresh = false;
@@ -83,7 +93,8 @@ export function initTerminals() {
 
 function initTerminalForTab(tabId) {
     const container = document.getElementById(`pane-${tabId}`);
-    if (!container) return;
+    if (!container)
+        return;
 
     const term = new Terminal({
         theme: {
@@ -157,7 +168,8 @@ function tryLoadCanvas(term) {
  * forcing dirty rows and DOM elements to update immediately.
  */
 export function flushSync(term) {
-    if (!term || !term._core) return;
+    if (!term || !term._core)
+        return;
 
     // 1. Flush terminal grid renderer (RenderService / RenderDebouncer)
     if (term._core._renderService) {
@@ -178,7 +190,8 @@ export function flushSync(term) {
             window.cancelAnimationFrame(vp._refreshAnimationFrame);
             vp._refreshAnimationFrame = undefined;
         }
-        if (typeof vp._innerRefresh === "function") vp._innerRefresh();
+        if (typeof vp._innerRefresh === "function")
+            vp._innerRefresh();
     }
 
     // 3. Flush selection overlays (SelectionService)
@@ -188,7 +201,8 @@ export function flushSync(term) {
             window.cancelAnimationFrame(sel._refreshAnimationFrame);
             sel._refreshAnimationFrame = undefined;
         }
-        if (typeof sel._refresh === "function") sel._refresh();
+        if (typeof sel._refresh === "function")
+            sel._refresh();
     }
 }
 
@@ -197,9 +211,12 @@ export function flushSync(term) {
  * or 12ms chunking, updating grid cells without triggering intermediate canvas redraws.
  */
 export function writeSync(term, data) {
-    if (!term) return;
-    if (term._core && term._core._writeBuffer && typeof term._core._writeBuffer.writeSync === "function") term._core._writeBuffer.writeSync(data);
-    else term.write(data);
+    if (!term)
+        return;
+    if (term._core && term._core._writeBuffer && typeof term._core._writeBuffer.writeSync === "function")
+        term._core._writeBuffer.writeSync(data);
+    else
+        term.write(data);
 }
 
 /**
@@ -214,7 +231,8 @@ export function writeAndFlushSync(term, data) {
  * Switch active tab and resize terminal viewport
  */
 export function switchTab(tabId) {
-    if (!terminals[tabId]) return;
+    if (!terminals[tabId])
+        return;
 
     activeTabId = tabId;
 
@@ -241,10 +259,12 @@ export function switchTab(tabId) {
         const rs = term._core._renderService;
         if (rs._isPaused) {
             rs._isPaused = false;
-            if (rs._charSizeService && !rs._charSizeService.hasValidSize) rs._charSizeService.measure();
+            if (rs._charSizeService && !rs._charSizeService.hasValidSize)
+                rs._charSizeService.measure();
 
             if (rs._needsFullRefresh) {
-                if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function") rs._pausedResizeTask.flush();
+                if (rs._pausedResizeTask && typeof rs._pausedResizeTask.flush === "function")
+                    rs._pausedResizeTask.flush();
 
                 rs.refreshRows(0, rs._rowCount - 1);
                 rs._needsFullRefresh = false;
@@ -257,14 +277,16 @@ export function switchTab(tabId) {
 async function finishStep() {
     // 1. Give xterm and addons initial microtask ticks to allow any pending
     // DOM observer callbacks or event listeners to push their rendering timers.
-    for (let i = 0; i < 10; i++) await Promise.resolve();
+    for (let i = 0; i < 10; i++)
+        await Promise.resolve();
 
     // 2. Loop until all scheduled xterm rendering passes, texture atlas warmups,
     // macro-task timers (setTimeout/rAF/rIC), DOM observers, and
     // asynchronous GPU texture bitmaps (createImageBitmap) have completely drained.
     let drainLimit = 300;
     while ((window.__activeTimers.size > 0 || window.__activeBitmaps.size > 0 || (window.__activeObservers && window.__activeObservers.size > 0)) && drainLimit-- > 0) {
-        if (window.__activeBitmaps.size > 0) await Promise.all(Array.from(window.__activeBitmaps));
+        if (window.__activeBitmaps.size > 0)
+            await Promise.all(Array.from(window.__activeBitmaps));
 
         Object.values(terminals).forEach((term) => flushSync(term));
         // Yield to the browser's Macro-Task Queue so pending setTimeout(0),
@@ -274,7 +296,8 @@ async function finishStep() {
 
     // 3. Final defensive settling phase: await additional microtask ticks to ensure
     // zero deferred rendering work spills over into subsequent steps or async measurement.
-    for (let i = 0; i < 20; i++) await Promise.resolve();
+    for (let i = 0; i < 20; i++)
+        await Promise.resolve();
 
     // 4. Synchronously flush all terminal renderers, viewports, and selection overlays
     // right before step completion so zero animation frames spill over into -async.
@@ -299,7 +322,8 @@ export async function dumpAndScroll() {
 
     // Write ~50% of build log chunks to target ~50ms workload complexity
     const limit = Math.min(75, buildLogChunks.length);
-    for (let i = 0; i < limit; i++) writeSync(term, buildLogChunks[i]);
+    for (let i = 0; i < limit; i++)
+        writeSync(term, buildLogChunks[i]);
 
     flushSync(term);
 
@@ -337,7 +361,8 @@ export async function hoverInlineLinks() {
     term.clear();
     // Write ~50% of link chunks to target ~15ms workload complexity
     const limit = Math.min(40, linksChunks.length);
-    for (let i = 0; i < limit; i++) writeSync(term, linksChunks[i]);
+    for (let i = 0; i < limit; i++)
+        writeSync(term, linksChunks[i]);
 
     flushSync(term);
 
@@ -380,7 +405,8 @@ export async function ncursesColorUI() {
         return;
     }
 
-    for (let i = 0; i < ncursesFrames.length; i++) writeAndFlushSync(term, ncursesFrames[i]);
+    for (let i = 0; i < ncursesFrames.length; i++)
+        writeAndFlushSync(term, ncursesFrames[i]);
 
     term.refresh(0, term.rows - 1);
     flushSync(term);
