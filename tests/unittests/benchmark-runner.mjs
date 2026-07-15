@@ -2,6 +2,7 @@ import { BenchmarkRunner } from "../../resources/benchmark-runner.mjs";
 import { SuiteRunner } from "../../resources/suite-runner.mjs";
 import { StepRunner } from "../../resources/shared/step-runner.mjs";
 import { defaultParams } from "../../resources/shared/params.mjs";
+import { skipInShell } from "../../resources/shared/helpers.mjs";
 
 function TEST_FIXTURE(name) {
     return {
@@ -35,7 +36,8 @@ describe("BenchmarkRunner", () => {
     const { spy, stub, assert } = sinon;
     let runner;
 
-    before(() => {
+    before(function () {
+        skipInShell(this);
         runner = new BenchmarkRunner(SUITES_FIXTURE, CLIENT_FIXTURE);
     });
 

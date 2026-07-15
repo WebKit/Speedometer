@@ -41,6 +41,25 @@ jobs:
                       exit 1
                   fi
 
+    test-node:
+        name: Node Unit Tests
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Branch
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: "package.json"
+                  cache: "npm"
+
+            - name: Install Node Packages
+              run: npm ci
+
+            - name: Run Node Unit Tests
+              run: npm test
+
     build:
         name: Build
         runs-on: macos-latest
