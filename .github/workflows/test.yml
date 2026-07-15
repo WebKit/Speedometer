@@ -41,15 +41,6 @@ jobs:
                       exit 1
                   fi
 
-<<<<<<< HEAD
-    test:
-        name: Test
-        runs-on: ubuntu-latest
-||||||| 9ea7e71a
-    build:
-        name: Build
-        runs-on: macos-latest
-=======
     test-node:
         name: Node Unit Tests
         runs-on: ubuntu-latest
@@ -69,10 +60,9 @@ jobs:
             - name: Run Node Unit Tests
               run: npm test
 
-    build:
-        name: Build
+    test:
+        name: Test
         runs-on: macos-latest
->>>>>>> main
         strategy:
             matrix:
                 browser: [chrome, firefox]
