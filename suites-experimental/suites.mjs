@@ -1,19 +1,21 @@
 import { BenchmarkTestStep } from "../resources/benchmark-runner.mjs";
 import { getTodoText } from "../resources/shared/translations.mjs";
-import { numberOfItemsToAdd } from "../resources/shared/todomvc-utils.mjs";
+import { getNumberOfItemsToAdd } from "../resources/shared/todomvc-utils.mjs";
 import { freezeSuites } from "../resources/suites-helper.mjs";
 
 export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-LocalStorage",
         url: "suites-experimental/todomvc-localstorage/dist/index.html",
+        resources: "suites-experimental/todomvc-localstorage/dist/resources.txt",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
             page.getLocalStorage().getItem("javascript-es5");
         },
         tests: [
-            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            new BenchmarkTestStep(`Adding${getNumberOfItemsToAdd()}Items`, (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const newTodo = page.querySelector(".new-todo");
                 for (let i = 0; i < numberOfItemsToAdd; i++) {
                     newTodo.setValue(getTodoText("ja", i));
@@ -22,11 +24,13 @@ export const ExperimentalSuites = freezeSuites([
                 }
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const checkboxes = page.querySelectorAll(".toggle");
                 for (let i = 0; i < numberOfItemsToAdd; i++)
                     checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const deleteButtons = page.querySelectorAll(".destroy");
                 for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                     deleteButtons[i].click();
@@ -36,12 +40,14 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-Emoji",
         url: "suites/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+        resources: "suites/todomvc/vanilla-examples/javascript-web-components/dist/resources.txt",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             await page.waitForElement("todo-app");
         },
         tests: [
-            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            new BenchmarkTestStep(`Adding${getNumberOfItemsToAdd()}Items`, (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const input = page.querySelector(".new-todo-input", ["todo-app", "todo-topbar"]);
                 for (let i = 0; i < numberOfItemsToAdd; i++) {
                     input.setValue(getTodoText("emoji", i));
@@ -50,6 +56,7 @@ export const ExperimentalSuites = freezeSuites([
                 }
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
                 for (let i = 0; i < numberOfItemsToAdd; i++) {
                     const item = items[i].querySelectorInShadowRoot(".toggle-todo-input");
@@ -57,6 +64,7 @@ export const ExperimentalSuites = freezeSuites([
                 }
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const items = page.querySelectorAll("todo-item", ["todo-app", "todo-list"]);
                 for (let i = numberOfItemsToAdd - 1; i >= 0; i--) {
                     const item = items[i].querySelectorInShadowRoot(".remove-todo-button");
@@ -68,6 +76,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-WebComponents-PostMessage",
         url: "suites/todomvc/vanilla-examples/javascript-web-components/dist/index.html",
+        resources: "suites/todomvc/vanilla-examples/javascript-web-components/dist/resources.txt",
         tags: ["experimental", "todomvc", "webcomponents"],
         async prepare() {},
         type: "remote",
@@ -78,12 +87,14 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-Jaspr-Dart2JS-O4",
         url: "suites-experimental/todomvc-dart-jaspr/dist/out-dart2js-O4/index.html",
+        resources: "suites-experimental/todomvc-dart-jaspr/dist/out-dart2js-O4/resources.txt",
         tags: ["todomvc", "experimental"],
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
         },
         tests: [
-            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            new BenchmarkTestStep(`Adding${getNumberOfItemsToAdd()}Items`, (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const newTodo = page.querySelector(".new-todo");
                 for (let i = 0; i < numberOfItemsToAdd; i++) {
                     newTodo.setValue(getTodoText("ja", i));
@@ -92,11 +103,13 @@ export const ExperimentalSuites = freezeSuites([
                 }
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const checkboxes = page.querySelectorAll(".toggle");
                 for (let i = 0; i < numberOfItemsToAdd; i++)
                     checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const deleteButtons = page.querySelectorAll(".destroy");
                 for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                     deleteButtons[i].click();
@@ -106,13 +119,15 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-Jaspr-Dart2Wasm-O2",
         url: "suites-experimental/todomvc-dart-jaspr/dist/out-dart2wasm-O2/index.html",
+        resources: "suites-experimental/todomvc-dart-jaspr/dist/out-dart2wasm-O2/resources.txt",
         tags: ["todomvc", "experimental"],
         disabled: true,
         async prepare(page) {
             (await page.waitForElement(".new-todo")).focus();
         },
         tests: [
-            new BenchmarkTestStep(`Adding${numberOfItemsToAdd}Items`, (page) => {
+            new BenchmarkTestStep(`Adding${getNumberOfItemsToAdd()}Items`, (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const newTodo = page.querySelector(".new-todo");
                 for (let i = 0; i < numberOfItemsToAdd; i++) {
                     newTodo.setValue(getTodoText("ja", i));
@@ -121,11 +136,13 @@ export const ExperimentalSuites = freezeSuites([
                 }
             }),
             new BenchmarkTestStep("CompletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const checkboxes = page.querySelectorAll(".toggle");
                 for (let i = 0; i < numberOfItemsToAdd; i++)
                     checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
+                const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const deleteButtons = page.querySelectorAll(".destroy");
                 for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
                     deleteButtons[i].click();
@@ -135,6 +152,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "NewsSite-PostMessage",
         url: "suites/newssite/news-next/dist/index.html",
+        resources: "suites/newssite/news-next/dist/resources.txt",
         tags: ["experimental", "newssite", "language"],
         async prepare() {},
         type: "remote",
@@ -145,6 +163,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-WebComponents-IndexedDB",
         url: "suites-experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=vanilla",
+        resources: "suites-experimental/javascript-wc-indexeddb/dist/resources.txt",
         tags: ["todomvc", "webcomponents", "experimental"],
         async prepare() {},
         type: "remote",
@@ -155,6 +174,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-WebComponents-DexieJS",
         url: "suites-experimental/javascript-wc-indexeddb/dist/index.html?useAsyncSteps=true&storageType=dexie",
+        resources: "suites-experimental/javascript-wc-indexeddb/dist/resources.txt",
         tags: ["todomvc", "webcomponents", "experimental"],
         async prepare() {},
         type: "remote",
@@ -165,6 +185,7 @@ export const ExperimentalSuites = freezeSuites([
     {
         name: "Responsive-Design",
         url: "suites-experimental/responsive-design/dist/index.html",
+        resources: "suites-experimental/responsive-design/dist/resources.txt",
         tags: ["responsive-design", "webcomponents", "experimental"],
         type: "async",
         async prepare(page) {
