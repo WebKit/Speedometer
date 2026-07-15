@@ -58,7 +58,8 @@ const opaqueCheckBox = document.getElementById("opaque-color");
 
 let currentChart = null;
 function drawScattered(data) {
-    if (!preparedData) throw new Error("Please prepare the data first.");
+    if (!preparedData)
+        throw new Error("Please prepare the data first.");
 
     reset();
 
@@ -127,7 +128,8 @@ function drawScattered(data) {
 }
 
 function openTooltip() {
-    if (!currentChart) throw new Error("No chart is present, please draw a chart first");
+    if (!currentChart)
+        throw new Error("No chart is present, please draw a chart first");
 
     const renderedDataset = currentChart.getDatasetMeta(0);
     const node = currentChart.canvas;
@@ -168,4 +170,5 @@ document.getElementById("open-tooltip").addEventListener("click", openTooltip);
 document.getElementById("reset").addEventListener("click", reset);
 document.getElementById("run-all").addEventListener("click", runAllTheThings);
 
-if (import.meta.env.DEV) runAllTheThings();
+if (import.meta.env.DEV)
+    runAllTheThings();

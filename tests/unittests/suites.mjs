@@ -71,7 +71,8 @@ for (const [name, suites] of Object.entries(Suites)) {
             const baseUrl = isNode ? new URL("../../", import.meta.url).href : `${window.location.origin}/`;
             const brokenResourcesList = [];
             for (const suite of suites) {
-                if (!suite.resources) continue;
+                if (!suite.resources)
+                    continue;
                 const resourcesUrl = new URL(suite.resources, baseUrl).href;
                 let text;
                 if (isNode) {
@@ -83,14 +84,17 @@ for (const [name, suites] of Object.entries(Suites)) {
                     }
                 } else {
                     const res = await fetch(resourcesUrl);
-                    if (!res.ok) throw new Error(`Failed to load resources.txt for ${suite.name} at ${resourcesUrl}`);
+                    if (!res.ok)
+                        throw new Error(`Failed to load resources.txt for ${suite.name} at ${resourcesUrl}`);
                     text = await res.text();
                 }
 
-                if (text.trim().length === 0) throw new Error(`resources.txt for ${suite.name} is empty`);
+                if (text.trim().length === 0)
+                    throw new Error(`resources.txt for ${suite.name} is empty`);
 
                 const files = text.trim().split("\n");
-                for (const file of files) expect(file.trim().length).to.be.greaterThan(0, `Found empty line in resources.txt for ${suite.name}`);
+                for (const file of files)
+                    expect(file.trim().length).to.be.greaterThan(0, `Found empty line in resources.txt for ${suite.name}`);
 
                 await Promise.all(
                     files.map(async (file) => {
@@ -105,13 +109,16 @@ for (const [name, suites] of Object.entries(Suites)) {
                             }
                         } else {
                             const fileRes = await fetch(fileUrl, { method: "HEAD" });
-                            if (!fileRes.ok) brokenResourcesList.push(`${fileUrl} (listed in ${resourcesUrl})`);
-                            else expect(fileRes.ok).to.be(true);
+                            if (!fileRes.ok)
+                                brokenResourcesList.push(`${fileUrl} (listed in ${resourcesUrl})`);
+                            else
+                                expect(fileRes.ok).to.be(true);
                         }
                     })
                 );
             }
-            if (brokenResourcesList.length > 0) throw new Error(`Failed to load the following resources:\n${brokenResourcesList.join("\n")}`);
+            if (brokenResourcesList.length > 0)
+                throw new Error(`Failed to load the following resources:\n${brokenResourcesList.join("\n")}`);
         });
     });
 }

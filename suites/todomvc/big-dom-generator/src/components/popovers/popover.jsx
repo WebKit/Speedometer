@@ -11,11 +11,11 @@ export const PopOver = ({ children, className, startRight }) => {
 };
 
 export const VerticalPopOver = ({ children, className, startRight }) => {
-    const actionItems = Children.toArray(children).map((child, index) => (
+    const actionItems = Children.toArray(children).map((child, index) =>
         <div key={index} className="spectrum-ActionGroup-item">
             {child}
         </div>
-    ));
+    );
     return (
         <PopOver className={className} startRight={startRight}>
             <div className="spectrum-ActionGroup spectrum-ActionGroup--vertical spectrum-ActionGroup--sizeS">{actionItems}</div>

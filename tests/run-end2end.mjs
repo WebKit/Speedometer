@@ -18,8 +18,10 @@ async function testPage(url) {
     await driver.get(`http://localhost:${PORT}/${url}`);
 
     await driver.executeAsyncScript((callback) => {
-        if (globalThis.benchmarkClient) callback();
-        else globalThis.addEventListener("SpeedometerReady", () => callback(), { once: true });
+        if (globalThis.benchmarkClient)
+            callback();
+        else
+            globalThis.addEventListener("SpeedometerReady", () => callback(), { once: true });
     });
 
     console.log("    - Awaiting Benchmark");
@@ -49,14 +51,16 @@ async function testPage(url) {
         globalThis.benchmarkClient.start();
     });
 
-    if (error) throw new Error(error.message + (error?.stack ?? ""));
+    if (error)
+        throw new Error(error.message + (error?.stack ?? ""));
 
     validateMetrics(metrics);
     return metrics;
 }
 
 function validateMetrics(metrics) {
-    for (const [name, metric] of Object.entries(metrics)) validateMetric(name, metric);
+    for (const [name, metric] of Object.entries(metrics))
+        validateMetric(name, metric);
     assert(metrics.Geomean.mean > 0);
     assert(metrics.Score.mean > 0);
 }
@@ -123,7 +127,8 @@ async function testWithRetries(retries = DEFAULT_RETRIES) {
             return;
         } catch (e) {
             console.error(`\nTests failed on attempt ${attempt}!`);
-            if (attempt === maxAttempts) throw e;
+            if (attempt === maxAttempts)
+                throw e;
 
             console.log(`Retrying... (${attempt}/${maxAttempts})`);
             await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));

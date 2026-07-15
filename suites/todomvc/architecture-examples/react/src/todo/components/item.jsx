@@ -21,8 +21,10 @@ export const Item = memo(function Item({ todo, dispatch, index }) {
 
     const handleUpdate = useCallback(
         (title) => {
-            if (title.length === 0) removeItem(id);
-            else updateItem(id, title);
+            if (title.length === 0)
+                removeItem(id);
+            else
+                updateItem(id, title);
 
             setIsWritable(false);
         },

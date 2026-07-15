@@ -31,7 +31,8 @@ Backbone.sync = (function (method, model, options) {
             size += 1;
 
             // if a success callback was provided, execute it.
-            if (options.success) options.success(model, model.toJSON(), options);
+            if (options.success)
+                options.success(model, model.toJSON(), options);
 
             // resolve the deferred.
             deferred.resolve(model);
@@ -44,13 +45,15 @@ Backbone.sync = (function (method, model, options) {
                 cache[model.id] = model;
 
                 // if a success callback was provided, execute it.
-                if (options.success) options.success(model, model.toJSON(), options);
+                if (options.success)
+                    options.success(model, model.toJSON(), options);
 
                 deferred.resolve(model);
 
                 // if this model doesn't exist yet, we can't update it
             } else {
-                if (options.error) options.error(model, "Model not found");
+                if (options.error)
+                    options.error(model, "Model not found");
                 deferred.reject(model);
             }
 
@@ -59,12 +62,14 @@ Backbone.sync = (function (method, model, options) {
             // as long as it exists
             if (cache[model.id]) {
                 // if a success callback was provided, execute it.
-                if (options.success) options.success(model, cache[model.id].toJSON(), options);
+                if (options.success)
+                    options.success(model, cache[model.id].toJSON(), options);
 
                 // resolve
                 deferred.resolve(model);
             } else {
-                if (options.error) options.error(model, "Model not found");
+                if (options.error)
+                    options.error(model, "Model not found");
                 deferred.reject(model);
             }
 
@@ -78,14 +83,16 @@ Backbone.sync = (function (method, model, options) {
                 // and trigger the success callback. Note we're passing an
                 // empty object as the second argument, because a deletion
                 // would result in an empty return from the server.
-                if (options.success) options.success(model, {}, options);
+                if (options.success)
+                    options.success(model, {}, options);
 
                 // resolve the deferred
                 deferred.resolve(model);
 
                 // otherwise, error that the model doesn't exist.
             } else {
-                if (options.error) options.error(model, "Model not found");
+                if (options.error)
+                    options.error(model, "Model not found");
                 deferred.reject(model);
             }
         }

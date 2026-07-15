@@ -114,7 +114,8 @@ class IndexedDBManager extends BaseStorageManager {
         getRequest.onsuccess = (event) => {
             const todoItem = getRequest.result;
 
-            if (!todoItem) throw new Error(`Todo item with itemNumber '${itemNumber}' not found`);
+            if (!todoItem)
+                throw new Error(`Todo item with itemNumber '${itemNumber}' not found`);
 
             todoItem.completed = completed;
             const updateRequest = store.put(todoItem);

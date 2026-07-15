@@ -19,7 +19,8 @@ const hasValidMin = (value, min) => {
 
 export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
     const handleBlur = useCallback(() => {
-        if (onBlur) onBlur();
+        if (onBlur)
+            onBlur();
     }, [onBlur]);
 
     const handleKeyDown = useCallback(
@@ -27,7 +28,8 @@ export function Input({ onSubmit, placeholder, label, defaultValue, onBlur }) {
             if (e.key === "Enter") {
                 const value = e.target.value.trim();
 
-                if (!hasValidMin(value, 2)) return;
+                if (!hasValidMin(value, 2))
+                    return;
 
                 onSubmit(sanitize(value));
                 e.target.value = "";

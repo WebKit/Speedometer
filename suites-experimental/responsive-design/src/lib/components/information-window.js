@@ -33,20 +33,23 @@ class InformationWindow extends LitElement {
 
         if (this.hasUpdated && this.chatWindow) {
             const chatWindowInner = this.chatWindow.shadowRoot.querySelector("#chat-window");
-            if (chatWindowInner) this._resizeObserver.observe(chatWindowInner);
+            if (chatWindowInner)
+                this._resizeObserver.observe(chatWindowInner);
         }
     }
 
     firstUpdated() {
         if (this.chatWindow) {
             const chatWindowInner = this.chatWindow.shadowRoot.querySelector("#chat-window");
-            if (chatWindowInner) this._resizeObserver.observe(chatWindowInner);
+            if (chatWindowInner)
+                this._resizeObserver.observe(chatWindowInner);
         }
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        if (this._resizeObserver) this._resizeObserver.disconnect();
+        if (this._resizeObserver)
+            this._resizeObserver.disconnect();
     }
 
     handleChatResize(event) {

@@ -16,7 +16,8 @@ class BaseStorageManager {
     }
 
     _ensureDbConnection() {
-        if (!this.db) throw new Error("Database connection is not established");
+        if (!this.db)
+            throw new Error("Database connection is not established");
     }
 
     // When runner in Speedometer, additions, completions and removals are
@@ -25,11 +26,13 @@ class BaseStorageManager {
     // of that type are complete.
 
     _handleAddComplete() {
-        if (++this.finishedAdditions === numberOfItemsToAdd) window.dispatchEvent(new CustomEvent(promisesEventsNames.add, {}));
+        if (++this.finishedAdditions === numberOfItemsToAdd)
+            window.dispatchEvent(new CustomEvent(promisesEventsNames.add, {}));
     }
 
     _handleToggleComplete() {
-        if (++this.finishedToggles === numberOfItemsToAdd) window.dispatchEvent(new CustomEvent(promisesEventsNames.toggle, {}));
+        if (++this.finishedToggles === numberOfItemsToAdd)
+            window.dispatchEvent(new CustomEvent(promisesEventsNames.toggle, {}));
     }
 
     _handleRemoveComplete() {

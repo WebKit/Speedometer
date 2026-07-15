@@ -15,7 +15,8 @@ class ChatMessages extends LightDOMLitElement {
     }
 
     updated(changedProperties) {
-        if (changedProperties.has("messages")) this._scrollToLastMessage();
+        if (changedProperties.has("messages"))
+            this._scrollToLastMessage();
     }
 
     _scrollToLastMessage() {
@@ -33,7 +34,7 @@ class ChatMessages extends LightDOMLitElement {
             (message) => html`
                 <li class="${message.user ? "justify-end" : "justify-start"} flex items-start">
                     ${message.user
-                        ? html` <div class="flex items-center space-x-2">
+        ? html` <div class="flex items-center space-x-2">
                               <div class="text-pretty rounded-md bg-teal-600 px-3 py-2 text-xs text-white lg:text-base">
                                   ${message.user} ${when(message.imageUrl, () => html`<img src="${message.imageUrl}" alt="${message.imageAlt}" class="mt-2 h-32 w-full rounded-md" />`)}
                               </div>
@@ -42,7 +43,7 @@ class ChatMessages extends LightDOMLitElement {
                                   <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
                               </svg>
                           </div>`
-                        : html`
+        : html`
                               <div class="flex items-center space-x-2">
                                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                                       <rect x="6" y="4" width="12" height="12" rx="2" />

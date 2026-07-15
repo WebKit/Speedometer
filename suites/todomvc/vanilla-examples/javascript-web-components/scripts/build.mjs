@@ -25,7 +25,8 @@ async function createDirectory(directory) {
  */
 async function copyDirectory(src, dest) {
     await fs.cp(src, dest, { recursive: true }, (err) => {
-        if (err) console.error(err);
+        if (err)
+            console.error(err);
     });
 }
 
@@ -50,7 +51,8 @@ async function copyFile(src, dest) {
  * @param {string[]} files Array of files to copy.
  */
 async function copyFiles(files) {
-    for (const file of files) await copyFile(file.src, file.dest);
+    for (const file of files)
+        await copyFile(file.src, file.dest);
 }
 
 /**
@@ -80,7 +82,8 @@ async function updateImportsInFile({ file, src, dest }) {
  * @param {string} config.file - Files to read from.
  */
 async function updateImports({ files, src, dest }) {
-    for (const file of files) await updateImportsInFile({ file, src, dest });
+    for (const file of files)
+        await updateImportsInFile({ file, src, dest });
 }
 
 const filesToMove = [

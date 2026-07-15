@@ -26,9 +26,9 @@ export default function Page({ id }) {
     return (
         <>
             <Layout id={id}>
-                {content[id].sections.map((section) => (
+                {content[id].sections.map((section) =>
                     <Section key={section.id} section={section} />
-                ))}
+                )}
             </Layout>
             {showPortal && content[id].notification ? createPortal(<Toast notification={content[id].notification} onAccept={onAccept} onReject={onReject} onClose={onReject} />, document.getElementById("notifications-container")) : null}
         </>

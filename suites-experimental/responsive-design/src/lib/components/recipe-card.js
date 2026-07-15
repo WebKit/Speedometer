@@ -82,7 +82,8 @@ class RecipeCard extends LightDOMLitElement {
         const lowerTag = tag.toLowerCase();
 
         for (const theme of Object.values(colorThemes)) {
-            if (theme.tags.includes(lowerTag)) return theme.classes;
+            if (theme.tags.includes(lowerTag))
+                return theme.classes;
         }
 
         return "bg-slate-100 text-slate-800 border-slate-200";

@@ -75,7 +75,8 @@ class ChatWindow extends LitElement {
     }
 
     _getContentTemplate() {
-        if (!this._isExpanded) return nothing;
+        if (!this._isExpanded)
+            return nothing;
         return this._showOptions ? this._getOptionsTemplate() : this._getChatTemplate();
     }
 

@@ -5,8 +5,10 @@ const random = new LCG(DEFAULT_SEED_FOR_RANDOM_NUMBER_GENERATOR);
 
 // Recursively depth-first computing subTreeWeight.
 const fillSubtreeWeights = (node, expandableItemWeight, nonExpandableItemWeight) => {
-    if (node.type === "expandableItem") node.subTreeWeight = node.children.reduce((acc, child) => acc + fillSubtreeWeights(child, expandableItemWeight, nonExpandableItemWeight), expandableItemWeight);
-    else node.subTreeWeight = nonExpandableItemWeight;
+    if (node.type === "expandableItem")
+        node.subTreeWeight = node.children.reduce((acc, child) => acc + fillSubtreeWeights(child, expandableItemWeight, nonExpandableItemWeight), expandableItemWeight);
+    else
+        node.subTreeWeight = nonExpandableItemWeight;
 
     return node.subTreeWeight;
 };
@@ -46,7 +48,8 @@ const markDisplayNoneNodes = (node, expandableItemWeight, nonExpandableItemWeigh
         currentIndex++;
     }
     nodeQueue.forEach((node) => {
-        if (node) node.isDisplayNone = true;
+        if (node)
+            node.isDisplayNone = true;
     });
 };
 

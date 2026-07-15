@@ -95,7 +95,8 @@
     Controller.prototype.addItem = function (title) {
         var self = this;
 
-        if (title.trim() === "") return;
+        if (title.trim() === "")
+            return;
 
         self.model.create(title, function () {
             self.view.render("clearNewTodo");
@@ -187,7 +188,8 @@
             });
         });
 
-        if (!silent) self._filter();
+        if (!silent)
+            self._filter();
     };
 
     /**
@@ -236,7 +238,8 @@
         // If the last active route isn't "All", or we're switching routes, we
         // re-create the todo item elements, calling:
         //   this.show[All|Active|Completed]();
-        if (force || this._lastActiveRoute !== "All" || this._lastActiveRoute !== activeRoute) this[`show${activeRoute}`]();
+        if (force || this._lastActiveRoute !== "All" || this._lastActiveRoute !== activeRoute)
+            this[`show${activeRoute}`]();
 
         this._lastActiveRoute = activeRoute;
     };
@@ -249,7 +252,8 @@
         // items as they are marked complete or incomplete.
         this._activeRoute = currentPage;
 
-        if (currentPage === "") this._activeRoute = "All";
+        if (currentPage === "")
+            this._activeRoute = "All";
 
         this._filter();
 

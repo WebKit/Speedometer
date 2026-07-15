@@ -3,7 +3,8 @@ import classNames from "classnames";
 import styles from "news-site-css/dist/message.module.css";
 
 export function Message({ message, onClose }) {
-    if (!message) return null;
+    if (!message)
+        return null;
 
     const { title, description } = message;
     return (
@@ -16,11 +17,11 @@ export function Message({ message, onClose }) {
                     </span>
                 </div>
             </button>
-            {title ? (
-                <header className={styles["message-header"]}>
+            {title
+                ? <header className={styles["message-header"]}>
                     <h2>{title}</h2>
                 </header>
-            ) : null}
+                : null}
             <section className={styles["message-body"]}>
                 <div className={styles["message-description"]}>{description}</div>
             </section>

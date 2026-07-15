@@ -14,7 +14,8 @@ export class TodoHeaderComponent {
     addTodo() {
         const title = this.titleFormControl.getRawValue()?.trim();
 
-        if (!title) return;
+        if (!title)
+            return;
 
         this.todosService.addItem(title);
         this.titleFormControl.setValue("");

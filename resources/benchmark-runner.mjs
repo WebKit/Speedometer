@@ -41,7 +41,8 @@ class Page {
             const resolveIfReady = () => {
                 const element = this.querySelector(selector);
                 let callback = resolveIfReady;
-                if (element) callback = () => resolve(element);
+                if (element)
+                    callback = () => resolve(element);
                 window.requestAnimationFrame(callback);
             };
             resolveIfReady();
@@ -67,7 +68,8 @@ class Page {
         const lookupStartNode = this._frame.contentDocument;
         const element = getParent(lookupStartNode, path).querySelector(selector);
 
-        if (element === null) return null;
+        if (element === null)
+            return null;
         return this._wrapElement(element);
     }
 
@@ -89,13 +91,15 @@ class Page {
     querySelectorAll(selector, path = []) {
         const lookupStartNode = this._frame.contentDocument;
         const elements = Array.from(getParent(lookupStartNode, path).querySelectorAll(selector));
-        for (let i = 0; i < elements.length; i++) elements[i] = this._wrapElement(elements[i]);
+        for (let i = 0; i < elements.length; i++)
+            elements[i] = this._wrapElement(elements[i]);
         return elements;
     }
 
     getElementById(id) {
         const element = this._frame.contentDocument.getElementById(id);
-        if (element === null) return null;
+        if (element === null)
+            return null;
         return this._wrapElement(element);
     }
 
@@ -163,7 +167,8 @@ class PageElement {
         if (eventName === "submit")
             // FIXME FireFox doesn't like `new Event('submit')
             this._dispatchSubmitEvent();
-        else this.#node.dispatchEvent(new eventType(eventName, options));
+        else
+            this.#node.dispatchEvent(new eventType(eventName, options));
     }
 
     _dispatchSubmitEvent() {
@@ -179,7 +184,8 @@ class PageElement {
 
     dispatchKeyEvent(type, keyCode, key, options) {
         let eventOptions = { bubbles: true, cancelable: true, keyCode, which: keyCode, key };
-        if (options !== undefined) eventOptions = Object.assign(eventOptions, options);
+        if (options !== undefined)
+            eventOptions = Object.assign(eventOptions, options);
         const event = new KeyboardEvent(type, eventOptions);
         this.#node.dispatchEvent(event);
     }
@@ -192,7 +198,8 @@ class PageElement {
         const screenX = clientX + contentWindow.screenX;
         const screenY = clientY + contentWindow.screenY;
         let eventOptions = { bubbles: true, cancelable: true, clientX, clientY, screenX, screenY };
-        if (options !== undefined) eventOptions = Object.assign(eventOptions, options);
+        if (options !== undefined)
+            eventOptions = Object.assign(eventOptions, options);
         const event = new contentWindow.MouseEvent(type, eventOptions);
         this.#node.dispatchEvent(event);
     }
@@ -209,14 +216,16 @@ class PageElement {
         const lookupStartNode = this.#node.shadowRoot ?? this.#node;
         const element = getParent(lookupStartNode, path).querySelector(selector);
 
-        if (element === null) return null;
+        if (element === null)
+            return null;
         return new PageElement(element);
     }
 
     querySelector(selector) {
         const element = this.#node.querySelector(selector);
 
-        if (element === null) return null;
+        if (element === null)
+            return null;
         return new PageElement(element);
     }
 }
@@ -275,7 +284,7 @@ export const WarmupSuite = {
 // https://stackoverflow.com/a/47593316
 function seededHashRandomNumberGenerator(a) {
     return function () {
-        var t = (a += 0x6d2b79f5);
+        var t = a += 0x6d2b79f5;
         t = Math.imul(t ^ (t >>> 15), t | 1);
         t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
         return (t ^ (t >>> 14)) >>> 0;
@@ -285,7 +294,8 @@ function seededHashRandomNumberGenerator(a) {
 class WakeLock {
     #wakeLockSentinel = undefined;
     async request() {
-        if (!navigator.wakeLock) return;
+        if (!navigator.wakeLock)
+            return;
         try {
             this.#wakeLockSentinel = await navigator.wakeLock.request("screen");
         } catch (err) {
@@ -294,7 +304,8 @@ class WakeLock {
     }
 
     async release() {
-        if (!this.#wakeLockSentinel) return;
+        if (!this.#wakeLockSentinel)
+            return;
         try {
             await this.#wakeLockSentinel.release();
         } catch (err) {
@@ -308,18 +319,21 @@ class WakeLock {
 export class BenchmarkRunner {
     constructor(suites, client) {
         this._suites = suites;
-        if (params.useWarmupSuite) this._suites = [WarmupSuite, ...suites];
+        if (params.useWarmupSuite)
+            this._suites = [WarmupSuite, ...suites];
         this._client = client;
         this._page = null;
         this._metrics = null;
         this._iterationCount = params.iterationCount;
-        if (params.shuffleSeed !== "off") this._suiteOrderRandomNumberGenerator = seededHashRandomNumberGenerator(params.shuffleSeed);
+        if (params.shuffleSeed !== "off")
+            this._suiteOrderRandomNumberGenerator = seededHashRandomNumberGenerator(params.shuffleSeed);
         this._wakeLock = new WakeLock();
     }
 
     async runMultipleIterations(iterationCount) {
         this._iterationCount = iterationCount;
-        if (this._client?.willStartFirstIteration) await this._client.willStartFirstIteration(iterationCount);
+        if (this._client?.willStartFirstIteration)
+            await this._client.willStartFirstIteration(iterationCount);
 
         try {
             await this._runMultipleIterations();
@@ -331,7 +345,8 @@ export class BenchmarkRunner {
             }
         }
 
-        if (this._client?.didFinishLastIteration) await this._client.didFinishLastIteration(this._metrics);
+        if (this._client?.didFinishLastIteration)
+            await this._client.didFinishLastIteration(this._metrics);
     }
 
     async _runMultipleIterations() {
@@ -365,7 +380,8 @@ export class BenchmarkRunner {
         style.top = "50%";
         style.transform = "translate(-50%, -50%)";
 
-        if (this._client?.willAddTestFrame) await this._client.willAddTestFrame(frame);
+        if (this._client?.willAddTestFrame)
+            await this._client.willAddTestFrame(frame);
 
         document.body.insertBefore(frame, document.body.firstChild);
         this._frame = frame;
@@ -381,7 +397,8 @@ export class BenchmarkRunner {
 
         performance.mark(prepareStartLabel);
         let suites = [...this._suites];
-        if (this._suiteOrderRandomNumberGenerator) this._shuffleSuites(suites);
+        if (this._suiteOrderRandomNumberGenerator)
+            this._shuffleSuites(suites);
 
         performance.mark(prepareEndLabel);
         performance.measure("runner-prepare", prepareStartLabel, prepareEndLabel);
@@ -404,7 +421,8 @@ export class BenchmarkRunner {
         const suites = await this._prepareAllSuites();
         try {
             for (const suite of suites) {
-                if (!suite.enabled) continue;
+                if (!suite.enabled)
+                    continue;
                 try {
                     await this._appendFrame();
                     this._page = new Page(this._frame);
@@ -464,7 +482,8 @@ export class BenchmarkRunner {
     _appendIterationMetrics() {
         const getMetric = (name, unit = "ms") => this._metrics[name] || (this._metrics[name] = new Metric(name, unit));
         const iterationMetric = (i, name) => {
-            if (i >= params.iterationCount) throw new Error(`Requested iteration=${i} does not exist.`);
+            if (i >= params.iterationCount)
+                throw new Error(`Requested iteration=${i} does not exist.`);
             return getMetric(`Iteration-${i}-${name}`);
         };
 
@@ -473,12 +492,15 @@ export class BenchmarkRunner {
                 const results = items[name];
                 const metric = getMetric(prefix + name);
                 metric.add(results.total ?? results);
-                if (metric.parent !== parent) parent.addChild(metric);
-                if (results.tests) collectSubMetrics(`${metric.name}${Metric.separator}`, results.tests, metric);
+                if (metric.parent !== parent)
+                    parent.addChild(metric);
+                if (results.tests)
+                    collectSubMetrics(`${metric.name}${Metric.separator}`, results.tests, metric);
             }
         };
         const initializeMetrics = this._metrics === null;
-        if (initializeMetrics) this._metrics = { __proto__: null };
+        if (initializeMetrics)
+            this._metrics = { __proto__: null };
 
         const iterationResults = this._measuredValues.tests;
         collectSubMetrics("", iterationResults);
@@ -486,29 +508,34 @@ export class BenchmarkRunner {
         if (initializeMetrics) {
             // Prepare all iteration metrics so they are listed at the end of
             // of the _metrics object, before "Total" and "Score".
-            for (let i = 0; i < this._iterationCount; i++) iterationMetric(i, "Total").description = `Test totals for iteration ${i}`;
+            for (let i = 0; i < this._iterationCount; i++)
+                iterationMetric(i, "Total").description = `Test totals for iteration ${i}`;
             getMetric("Geomean", "ms").description = "Geomean of test totals";
             getMetric("Score", "score").description = "Scaled inverse of the Geomean";
-            if (params.measurePrepare) getMetric("Prepare", "ms").description = "Geomean of workload prepare times";
+            if (params.measurePrepare)
+                getMetric("Prepare", "ms").description = "Geomean of workload prepare times";
         }
 
         const geomean = getMetric("Geomean");
         const iteration = geomean.length;
         const iterationTotal = iterationMetric(iteration, "Total");
-        for (const results of Object.values(iterationResults)) iterationTotal.add(results.total);
+        for (const results of Object.values(iterationResults))
+            iterationTotal.add(results.total);
         iterationTotal.computeAggregatedMetrics();
         geomean.add(iterationTotal.geomean);
         getMetric("Score").add(geomeanToScore(iterationTotal.geomean));
 
         if (params.measurePrepare) {
             const iterationPrepare = iterationMetric(iteration, "Prepare");
-            for (const results of Object.values(iterationResults)) iterationPrepare.add(results.prepare);
+            for (const results of Object.values(iterationResults))
+                iterationPrepare.add(results.prepare);
             iterationPrepare.computeAggregatedMetrics();
             const prepare = getMetric("Prepare");
             prepare.add(iterationPrepare.geomean);
         }
 
-        for (const metric of Object.values(this._metrics)) metric.computeAggregatedMetrics();
+        for (const metric of Object.values(this._metrics))
+            metric.computeAggregatedMetrics();
     }
 
     _initializeMetrics() {}

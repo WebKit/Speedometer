@@ -16,7 +16,8 @@ const ProgressBar = ({ teamNumber, value, index }) => {
 export const AnalyticsPopOver = ({ className }) => {
     const children = [];
     const numProgressBars = 5;
-    for (let i = 0; i < numProgressBars; i++) children.push(<ProgressBar key={i} teamNumber={i} value={(i * 20) % 100} index={i} />);
+    for (let i = 0; i < numProgressBars; i++)
+        children.push(<ProgressBar key={i} teamNumber={i} value={(i * 20) % 100} index={i} />);
 
     return <VerticalPopOver className={className}>{children}</VerticalPopOver>;
 };

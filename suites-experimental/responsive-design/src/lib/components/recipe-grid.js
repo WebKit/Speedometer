@@ -30,7 +30,8 @@ class RecipeGrid extends LightDOMLitElement {
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        if (this._compactQuery && this._boundHandleLayoutChange) this._compactQuery.removeEventListener("change", this._boundHandleLayoutChange);
+        if (this._compactQuery && this._boundHandleLayoutChange)
+            this._compactQuery.removeEventListener("change", this._boundHandleLayoutChange);
     }
 
     async _handleLayoutChange(event) {
@@ -43,8 +44,10 @@ class RecipeGrid extends LightDOMLitElement {
 
     _handleToggleExpand(event) {
         const { index, isExpanded } = event.detail;
-        if (isExpanded) this._expandedCardIndices = [...this._expandedCardIndices, index];
-        else this._expandedCardIndices = this._expandedCardIndices.filter((i) => i !== index);
+        if (isExpanded)
+            this._expandedCardIndices = [...this._expandedCardIndices, index];
+        else
+            this._expandedCardIndices = this._expandedCardIndices.filter((i) => i !== index);
     }
 
     _getRecipeCardsTemplate() {
