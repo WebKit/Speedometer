@@ -22,7 +22,6 @@ export function getPreciseYear(dateVal) {
             const parsedMonth = parseInt(parts[1], 10);
             if (!isNaN(parsedMonth) && parsedMonth >= 1 && parsedMonth <= 12)
                 month = parsedMonth;
-
         }
         return year + (month - 1) / 12;
     }
@@ -58,7 +57,6 @@ export function calculateDensityCurve(items, options = {}) {
         const py = getPreciseYear(dateVal);
         if (py !== null && !isNaN(py))
             validYears.push(py);
-
     }
 
     if (validYears.length === 0)
@@ -131,7 +129,6 @@ export function getDensityAtYear(targetYear, curveData, items, windowYears = 6) 
             const py = getPreciseYear(dateVal);
             if (py !== null && Math.abs(py - targetYear) <= windowYears)
                 itemsInWindow++;
-
         }
     } else {
         itemsInWindow = Math.round(density * 1.5);
