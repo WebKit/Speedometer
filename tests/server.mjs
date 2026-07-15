@@ -12,8 +12,7 @@ import "lws-static";
 const ROOT_DIR = path.join(process.cwd(), "./");
 
 export default async function serve(port) {
-    if (!port)
-        throw new Error("Port is required");
+    if (!port) throw new Error("Port is required");
     const ws = await LocalWebServer.create({
         port: port,
         hostname: "127.0.0.1",
@@ -56,5 +55,4 @@ function main() {
     serve(options.port);
 }
 
-if (esMain(import.meta))
-    main();
+if (esMain(import.meta)) main();

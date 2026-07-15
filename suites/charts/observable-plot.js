@@ -124,8 +124,7 @@ function isReady() {
 }
 
 function addStackedBars() {
-    if (!isReady())
-        throw new Error("Please prepare the data first.");
+    if (!isReady()) throw new Error("Please prepare the data first.");
 
     const options = {
         ...DEFAULT_OPTIONS,
@@ -149,8 +148,7 @@ function addStackedBars() {
 }
 
 function addDottedBars() {
-    if (!isReady())
-        throw new Error("Please prepare the data first.");
+    if (!isReady()) throw new Error("Please prepare the data first.");
 
     const data = [...preparedData.flightsByAirport]
         .flatMap(([iata, { origin, destination }]) => {
@@ -229,5 +227,4 @@ document.getElementById("run-all").addEventListener("click", runAllTheThings);
 document.getElementById("airport-group-size-input").addEventListener("input", onGroupSizeInputChange);
 onGroupSizeInputChange();
 
-if (import.meta.env.DEV)
-    runAllTheThings();
+if (import.meta.env.DEV) runAllTheThings();

@@ -77,17 +77,14 @@ class TodoList extends HTMLElement {
 
     removeCompletedItems() {
         Array.from(this.listNode.children).forEach((element) => {
-            if (element.itemcompleted === "true")
-                element.removeItem();
+            if (element.itemcompleted === "true") element.removeItem();
         });
     }
 
     toggleItems(completed) {
         Array.from(this.listNode.children).forEach((element) => {
-            if (completed && element.itemcompleted === "false")
-                element.toggleInput.click();
-            else if (!completed && element.itemcompleted === "true")
-                element.toggleInput.click();
+            if (completed && element.itemcompleted === "false") element.toggleInput.click();
+            else if (!completed && element.itemcompleted === "true") element.toggleInput.click();
         });
     }
 
@@ -97,10 +94,8 @@ class TodoList extends HTMLElement {
     }
 
     updateStyles() {
-        if (parseInt(this["total-items"]) !== 0)
-            this.listNode.style.display = "block";
-        else
-            this.listNode.style.display = "none";
+        if (parseInt(this["total-items"]) !== 0) this.listNode.style.display = "block";
+        else this.listNode.style.display = "none";
     }
 
     updateRoute(route) {
@@ -118,11 +113,9 @@ class TodoList extends HTMLElement {
     }
 
     attributeChangedCallback(property, oldValue, newValue) {
-        if (oldValue === newValue)
-            return;
+        if (oldValue === newValue) return;
         this[property] = newValue;
-        if (this.isConnected)
-            this.updateStyles();
+        if (this.isConnected) this.updateStyles();
     }
 
     connectedCallback() {
@@ -132,8 +125,7 @@ class TodoList extends HTMLElement {
     moveToNextPage() {
         for (let i = 0; i < MAX_ON_SCREEN_ITEMS; i++) {
             const child = this.listNode.firstChild;
-            if (!child)
-                break;
+            if (!child) break;
             child.remove();
         }
         this.#firstItemIndexOnScreen = this.listNode.firstChild.itemIndex;

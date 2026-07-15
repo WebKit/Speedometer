@@ -85,11 +85,10 @@ export class TodoFooter extends LitElement {
 
     @updateOnEvent("change")
     @property({ attribute: false })
-        todoList?: Todos;
+    todoList?: Todos;
 
     override render() {
-        if (this.todoList === undefined || this.todoList.all.length === 0)
-            return nothing;
+        if (this.todoList === undefined || this.todoList.all.length === 0) return nothing;
 
         const allFilter = filterLink({
             text: "All",

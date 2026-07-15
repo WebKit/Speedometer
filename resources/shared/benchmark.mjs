@@ -124,8 +124,7 @@ export class BenchmarkConnector {
         this.name = name;
         this.version = version;
 
-        if (!name || !version)
-            console.warn("No name or version supplied, to create a unique appId");
+        if (!name || !version) console.warn("No name or version supplied, to create a unique appId");
 
         this.appId = name && version ? `${name}-${version}` : -1;
         this.onMessage = this.onMessage.bind(this);
@@ -143,8 +142,7 @@ export class BenchmarkConnector {
                 const params = new Params(new URLSearchParams(window.location.search));
                 const { name } = message.payload;
                 const suite = this.suites[name];
-                if (!suite)
-                    console.error(`Suite with the name of "${name}" not found!`);
+                if (!suite) console.error(`Suite with the name of "${name}" not found!`);
                 const onProgress = (step) => this._sendMessage(MESSAGE_TYPE.stepComplete, { name: this.name, step });
                 const { result } = await suite.runAndRecordSuite(params, onProgress);
                 this._sendMessage(MESSAGE_TYPE.suiteComplete, { result });

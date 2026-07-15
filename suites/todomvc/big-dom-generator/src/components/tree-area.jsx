@@ -17,23 +17,24 @@ const TreeItem = (props) => {
 
     return (
         <li className={classNames("spectrum-TreeView-item", { "display-none": treeNode.isDisplayNone, "is-open": treeViewItemIsOpen }, `nodetype-${treeNode.type}`)}>
-            {isExpandableItem
-                ? <>
+            {isExpandableItem ? (
+                <>
                     <a className="spectrum-TreeView-itemLink">
                         <ChevronRight className="spectrum-Icon spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon" />
                         <span className="just-span spectrum-TreeView-itemLabel">Sprint</span>
                     </a>
                     <ul className="spectrum-TreeView spectrum-TreeView--sizeS">
-                        {treeNode.children.map((child) =>
+                        {treeNode.children.map((child) => (
                             <TreeItem treeNode={child} currentDepth={currentDepth + 1} />
-                        )}
+                        ))}
                     </ul>
                 </>
-                : <a className="spectrum-TreeView-itemLink">
+            ) : (
+                <a className="spectrum-TreeView-itemLink">
                     <TaskListIcon className="task-list-icon spectrum-Icon spectrum-TreeView-itemIndicator spectrum-TreeView-itemIcon spectrum-Icon--sizeM" />
                     <span className="just-span spectrum-TreeView-itemLabel">Todo List</span>
                 </a>
-            }
+            )}
         </li>
     );
 };

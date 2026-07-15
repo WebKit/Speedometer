@@ -55,8 +55,7 @@ class TodoItem extends HTMLElement {
         args.forEach((argument) => {
             switch (argument) {
                 case "itemid":
-                    if (this.itemid !== undefined)
-                        this.item.id = `todo-item-${this.itemid}`;
+                    if (this.itemid !== undefined) this.item.id = `todo-item-${this.itemid}`;
                     break;
                 case "itemtitle":
                     if (this.itemtitle !== undefined) {
@@ -112,10 +111,8 @@ class TodoItem extends HTMLElement {
 
     updateItem(event) {
         if (event.target.value !== this.itemtitle) {
-            if (!event.target.value.length)
-                this.removeItem();
-            else
-                this.setAttribute("itemtitle", event.target.value);
+            if (!event.target.value.length) this.removeItem();
+            else this.setAttribute("itemtitle", event.target.value);
         }
 
         this.cancelEdit();
@@ -140,12 +137,10 @@ class TodoItem extends HTMLElement {
     }
 
     attributeChangedCallback(property, oldValue, newValue) {
-        if (oldValue === newValue)
-            return;
+        if (oldValue === newValue) return;
         this[property] = newValue;
 
-        if (this.isConnected)
-            this.update(property);
+        if (this.isConnected) this.update(property);
     }
 
     connectedCallback() {

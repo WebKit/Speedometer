@@ -13,8 +13,7 @@ async function create(src, dest) {
 }
 
 function constructableCSS({ src, dest = "dist/", hook = "generateBundle" } = {}) {
-    if (!src)
-        throw new Error("src option missing");
+    if (!src) throw new Error("src option missing");
 
     return {
         name: "constructable-css",

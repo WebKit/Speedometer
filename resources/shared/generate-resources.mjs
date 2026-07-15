@@ -5,10 +5,8 @@ function walkDir(dir, fileList = []) {
     const files = fs.readdirSync(dir);
     for (const file of files) {
         const filePath = path.join(dir, file);
-        if (fs.statSync(filePath).isDirectory())
-            walkDir(filePath, fileList);
-        else
-            fileList.push(filePath);
+        if (fs.statSync(filePath).isDirectory()) walkDir(filePath, fileList);
+        else fileList.push(filePath);
     }
     return fileList;
 }

@@ -33,10 +33,8 @@ export default function (element, value) {
             element.scrollTop = 0;
         },
         format(on) {
-            if (on)
-                editor.chain().focus().selectAll().setBold().setTextSelection(0).run();
-            else
-                editor.chain().focus().selectAll().unsetBold().setTextSelection(0).run();
+            if (on) editor.chain().focus().selectAll().setBold().setTextSelection(0).run();
+            else editor.chain().focus().selectAll().unsetBold().setTextSelection(0).run();
         },
     };
 }

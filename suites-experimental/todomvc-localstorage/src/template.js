@@ -28,14 +28,14 @@
      * @constructor
      */
     function Template() {
-        this.defaultTemplate
-            = '<li data-id="{{id}}" class="{{completed}}" data-priority="{{priority}}">'
-            + '<div class="view">'
-            + '<input class="toggle" type="checkbox" {{checked}}>'
-            + "<label>{{title}}</label>"
-            + '<button class="destroy"></button>'
-            + "</div>"
-            + "</li>";
+        this.defaultTemplate =
+            '<li data-id="{{id}}" class="{{completed}}" data-priority="{{priority}}">' +
+            '<div class="view">' +
+            '<input class="toggle" type="checkbox" {{checked}}>' +
+            "<label>{{title}}</label>" +
+            '<button class="destroy"></button>' +
+            "</div>" +
+            "</li>";
     }
 
     /**
@@ -100,10 +100,8 @@
      * @returns {string} String containing the count
      */
     Template.prototype.clearCompletedButton = function (completedTodos) {
-        if (completedTodos > 0)
-            return "Clear completed";
-        else
-            return "";
+        if (completedTodos > 0) return "Clear completed";
+        else return "";
     };
 
     // Export to window

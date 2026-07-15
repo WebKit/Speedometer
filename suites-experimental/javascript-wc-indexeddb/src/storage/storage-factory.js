@@ -8,8 +8,7 @@ import DexieDBManager from "./dexieDB-manager.js";
 export function createStorageManager() {
     const params = new URLSearchParams(window.location.search);
     let storageType = params.get("storageType");
-    if (storageType && storageType !== "vanilla" && storageType !== "dexie")
-        throw new Error(`Invalid storage type specified in URL parameter: ${storageType}`);
+    if (storageType && storageType !== "vanilla" && storageType !== "dexie") throw new Error(`Invalid storage type specified in URL parameter: ${storageType}`);
 
     storageType = storageType || "vanilla";
 

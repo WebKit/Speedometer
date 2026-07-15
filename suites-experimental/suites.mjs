@@ -26,14 +26,12 @@ export const ExperimentalSuites = freezeSuites([
             new BenchmarkTestStep("CompletingAllItems", (page) => {
                 const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const checkboxes = page.querySelectorAll(".toggle");
-                for (let i = 0; i < numberOfItemsToAdd; i++)
-                    checkboxes[i].click();
+                for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
                 const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const deleteButtons = page.querySelectorAll(".destroy");
-                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
-                    deleteButtons[i].click();
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
             }),
         ],
     },
@@ -105,14 +103,12 @@ export const ExperimentalSuites = freezeSuites([
             new BenchmarkTestStep("CompletingAllItems", (page) => {
                 const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const checkboxes = page.querySelectorAll(".toggle");
-                for (let i = 0; i < numberOfItemsToAdd; i++)
-                    checkboxes[i].click();
+                for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
                 const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const deleteButtons = page.querySelectorAll(".destroy");
-                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
-                    deleteButtons[i].click();
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
             }),
         ],
     },
@@ -138,14 +134,12 @@ export const ExperimentalSuites = freezeSuites([
             new BenchmarkTestStep("CompletingAllItems", (page) => {
                 const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const checkboxes = page.querySelectorAll(".toggle");
-                for (let i = 0; i < numberOfItemsToAdd; i++)
-                    checkboxes[i].click();
+                for (let i = 0; i < numberOfItemsToAdd; i++) checkboxes[i].click();
             }),
             new BenchmarkTestStep("DeletingAllItems", (page) => {
                 const numberOfItemsToAdd = getNumberOfItemsToAdd();
                 const deleteButtons = page.querySelectorAll(".destroy");
-                for (let i = numberOfItemsToAdd - 1; i >= 0; i--)
-                    deleteButtons[i].click();
+                for (let i = numberOfItemsToAdd - 1; i >= 0; i--) deleteButtons[i].click();
             }),
         ],
     },
@@ -225,8 +219,7 @@ export const ExperimentalSuites = freezeSuites([
                 for (const width of widths) {
                     page.setWidth(width);
                     page.layout();
-                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT)
-                        await resizeWorkPromise;
+                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT) await resizeWorkPromise;
                 }
 
                 await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
@@ -284,8 +277,7 @@ export const ExperimentalSuites = freezeSuites([
                 for (const width of widths) {
                     page.setWidth(width);
                     page.layout();
-                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT)
-                        await resizeWorkPromise;
+                    if (width === MATCH_MEDIA_QUERY_BREAKPOINT) await resizeWorkPromise;
                 }
 
                 await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));

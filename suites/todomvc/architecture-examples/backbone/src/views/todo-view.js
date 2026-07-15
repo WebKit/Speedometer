@@ -45,8 +45,7 @@ var app = app || {};
             // `id` change.  It's known Backbone LocalStorage bug, therefore
             // we've to create a workaround.
             // https://github.com/tastejs/todomvc/issues/469
-            if (this.model.changed.id !== undefined)
-                return null;
+            if (this.model.changed.id !== undefined) return null;
 
             this.$el.html(this.template(this.model.toJSON()));
             this.$el.toggleClass("completed", this.model.get("completed"));
@@ -85,21 +84,17 @@ var app = app || {};
             // longer being edited. Relying on the CSS class here has the
             // benefit of us not having to maintain state in the DOM and the
             // JavaScript logic.
-            if (!this.$el.hasClass("editing"))
-                return;
+            if (!this.$el.hasClass("editing")) return;
 
-            if (trimmedValue)
-                this.model.save({ title: trimmedValue });
-            else
-                this.clear();
+            if (trimmedValue) this.model.save({ title: trimmedValue });
+            else this.clear();
 
             this.$el.removeClass("editing");
         },
 
         // If you hit `enter`, we're through editing the item.
         updateOnEnter: function (e) {
-            if (e.which === ENTER_KEY)
-                this.close();
+            if (e.which === ENTER_KEY) this.close();
         },
 
         // If you're pressing `escape` we revert your change by simply leaving

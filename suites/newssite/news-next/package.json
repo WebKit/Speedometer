@@ -4,8 +4,8 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
-        "postbuild": "node -e 'import(\"../../../../resources/shared/generate-resources.mjs\").then(m => m.generateResourcesFile(require(\"path\").join(process.cwd(), \"dist\")))'",
+        "build": "node scripts/build.mjs",
+        "build:next": "next build",
         "start": "next start",
         "lint": "next lint",
         "serve": "http-server ./dist -p 7002 -c-1 --cors"

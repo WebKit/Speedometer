@@ -39,10 +39,8 @@ class TodoBottombar extends HTMLElement {
 
     updateRoute(route) {
         this.filterLinks.forEach((link) => {
-            if (link.dataset.route === route)
-                link.classList.add("selected");
-            else
-                link.classList.remove("selected");
+            if (link.dataset.route === route) link.classList.add("selected");
+            else link.classList.remove("selected");
         });
     }
 
@@ -59,12 +57,10 @@ class TodoBottombar extends HTMLElement {
     }
 
     attributeChangedCallback(property, oldValue, newValue) {
-        if (oldValue === newValue)
-            return;
+        if (oldValue === newValue) return;
         this[property] = newValue;
 
-        if (this.isConnected)
-            this.updateDisplay();
+        if (this.isConnected) this.updateDisplay();
     }
 
     connectedCallback() {

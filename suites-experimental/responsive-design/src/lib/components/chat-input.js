@@ -21,8 +21,7 @@ class ChatInput extends LightDOMLitElement {
     }
 
     _sendMessage() {
-        if (this.value.trim())
-            this.dispatchEvent(new CustomEvent("send-chat"));
+        if (this.value.trim()) this.dispatchEvent(new CustomEvent("send-chat"));
     }
 
     render() {

@@ -14,11 +14,11 @@ export default function Toast({ onClose, notification, onAccept, onReject }) {
                     </span>
                 </div>
             </button>
-            {title
-                ? <header className={toastStyles["toast-header"]}>
+            {title ? (
+                <header className={toastStyles["toast-header"]}>
                     <h2>{title}</h2>
                 </header>
-                : null}
+            ) : null}
             <section className={toastStyles["toast-body"]}>
                 <div className={toastStyles["toast-description"]}>{description}</div>
                 <div className={toastStyles["toast-actions"]}>

@@ -28,8 +28,7 @@ function Todo(name) {
 /* HOT MODULE SPECIFIC */
 if (module.hot) {
     module.hot.accept(function (err) {});
-    if (document.readyState === "complete")
-        onLoad();
+    if (document.readyState === "complete") onLoad();
 }
 
 window.addEventListener("load", onLoad);

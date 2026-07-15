@@ -8,10 +8,8 @@ class StepScheduler {
 
     start() {
         return new Promise((resolve) => {
-            if (this._params.waitBeforeSync)
-                setTimeout(() => this._scheduleCallbacks(resolve), this._params.waitBeforeSync);
-            else
-                this._scheduleCallbacks(resolve);
+            if (this._params.waitBeforeSync) setTimeout(() => this._scheduleCallbacks(resolve), this._params.waitBeforeSync);
+            else this._scheduleCallbacks(resolve);
         });
     }
 }
@@ -39,8 +37,7 @@ class AsyncRAFStepScheduler extends StepScheduler {
         let gotPromise = false;
 
         const tryTriggerAsyncCallback = () => {
-            if (!gotTimer || !gotMessage || !gotPromise)
-                return;
+            if (!gotTimer || !gotMessage || !gotPromise) return;
 
             this._asyncCallback();
             setTimeout(async () => {

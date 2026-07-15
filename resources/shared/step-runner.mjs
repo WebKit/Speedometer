@@ -49,17 +49,14 @@ export class StepRunner {
                 performance.mark("warmup-start");
                 const startTime = performance.now();
                 // Infinite loop for the specified ms.
-                while (performance.now() - startTime < this.#params.warmupBeforeSync)
-                    continue;
+                while (performance.now() - startTime < this.#params.warmupBeforeSync) continue;
                 performance.mark("warmup-end");
             }
             performance.mark(syncStartLabel);
             const syncStartTime = performance.now();
 
-            if (this.#type === "async")
-                await this._runSyncStep(this.step, this.page);
-            else
-                this._runSyncStep(this.step, this.page);
+            if (this.#type === "async") await this._runSyncStep(this.step, this.page);
+            else this._runSyncStep(this.step, this.page);
 
             const mark = performance.mark(syncEndLabel);
             const syncEndTime = mark.startTime;
@@ -83,8 +80,7 @@ export class StepRunner {
 
             asyncTime = asyncEndTime - asyncStartTime;
 
-            if (this.#params.warmupBeforeSync)
-                performance.measure("warmup", "warmup-start", "warmup-end");
+            if (this.#params.warmupBeforeSync) performance.measure("warmup", "warmup-start", "warmup-end");
             performance.measure(`${suiteName}.${stepName}-sync`, syncStartLabel, syncEndLabel);
             performance.measure(`${suiteName}.${stepName}-async`, syncEndLabel, asyncEndLabel);
         };

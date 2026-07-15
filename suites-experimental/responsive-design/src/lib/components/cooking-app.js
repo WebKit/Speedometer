@@ -18,8 +18,7 @@ export class CookingApp extends LitElement {
     firstUpdated() {
         const chatWindow = this.shadowRoot.querySelector("chat-window");
         const infoWindow = this.shadowRoot.querySelector("information-window");
-        if (chatWindow && infoWindow)
-            infoWindow.chatWindow = chatWindow;
+        if (chatWindow && infoWindow) infoWindow.chatWindow = chatWindow;
     }
 
     render() {

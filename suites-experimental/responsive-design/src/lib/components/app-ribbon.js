@@ -16,10 +16,8 @@ class AppRibbon extends LightDOMLitElement {
         this.visibleButtons = this.buttons;
         this._resizeObserver = new ResizeObserver((entries) => {
             for (const entry of entries) {
-                if (entry.contentBoxSize && entry.contentBoxSize[0])
-                    this._updateVisibleButtons(entry.contentBoxSize[0].inlineSize);
-                else
-                    this._updateVisibleButtons(entry.contentRect.width);
+                if (entry.contentBoxSize && entry.contentBoxSize[0]) this._updateVisibleButtons(entry.contentBoxSize[0].inlineSize);
+                else this._updateVisibleButtons(entry.contentRect.width);
             }
         });
     }
@@ -27,8 +25,7 @@ class AppRibbon extends LightDOMLitElement {
     connectedCallback() {
         super.connectedCallback();
 
-        if (this.hasUpdated)
-            this._resizeObserver.observe(this);
+        if (this.hasUpdated) this._resizeObserver.observe(this);
     }
 
     firstUpdated() {
@@ -37,8 +34,7 @@ class AppRibbon extends LightDOMLitElement {
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        if (this._resizeObserver)
-            this._resizeObserver.disconnect();
+        if (this._resizeObserver) this._resizeObserver.disconnect();
     }
 
     _updateVisibleButtons(width) {
@@ -60,8 +56,7 @@ class AppRibbon extends LightDOMLitElement {
         const breakpoint = breakpoints.find((bp) => width >= bp.minWidth);
         const newButtonCount = breakpoint ? breakpoint.buttons : 2;
 
-        if (this.visibleButtons.length !== newButtonCount)
-            this.visibleButtons = this.buttons.slice(0, newButtonCount);
+        if (this.visibleButtons.length !== newButtonCount) this.visibleButtons = this.buttons.slice(0, newButtonCount);
     }
 
     _getVisibleButtonsTemplate() {

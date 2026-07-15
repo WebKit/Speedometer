@@ -20,10 +20,8 @@ class RecipeCarousel extends LightDOMLitElement {
         // ResizeObserver is used primarily to exercise this API as part of the benchmark.
         this._resizeObserver = new ResizeObserver((entries) => {
             for (const entry of entries) {
-                if (entry.contentBoxSize && entry.contentBoxSize[0])
-                    this._carouselWidth = entry.contentBoxSize[0].inlineSize;
-                else
-                    this._carouselWidth = entry.contentRect.width;
+                if (entry.contentBoxSize && entry.contentBoxSize[0]) this._carouselWidth = entry.contentBoxSize[0].inlineSize;
+                else this._carouselWidth = entry.contentRect.width;
             }
         });
     }
@@ -33,21 +31,18 @@ class RecipeCarousel extends LightDOMLitElement {
 
         if (this.hasUpdated) {
             const carousel = this.querySelector(".carousel");
-            if (carousel)
-                this._resizeObserver.observe(carousel);
+            if (carousel) this._resizeObserver.observe(carousel);
         }
     }
 
     firstUpdated() {
         const carousel = this.querySelector(".carousel");
-        if (carousel)
-            this._resizeObserver.observe(carousel);
+        if (carousel) this._resizeObserver.observe(carousel);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        if (this._resizeObserver)
-            this._resizeObserver.disconnect();
+        if (this._resizeObserver) this._resizeObserver.disconnect();
     }
 
     previousItem() {

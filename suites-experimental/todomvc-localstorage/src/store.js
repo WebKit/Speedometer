@@ -7,13 +7,11 @@
         _name: "",
         init: function (name, data = {}) {
             this._name = name;
-            if (!this.getData())
-                this.setData(data);
+            if (!this.getData()) this.setData(data);
         },
         getData: function () {
             const data = this._data[this._name];
-            if (!data)
-                return null;
+            if (!data) return null;
 
             return JSON.parse(data);
         },
@@ -26,13 +24,11 @@
         _name: "",
         init: function (name, data = {}) {
             this._name = name;
-            if (!this.getData())
-                this.setData(data);
+            if (!this.getData()) this.setData(data);
         },
         getData: function () {
             const data = window.localStorage.getItem(this._name);
-            if (!data)
-                return null;
+            if (!data) return null;
 
             return JSON.parse(data);
         },
@@ -76,8 +72,7 @@
      * });
      */
     Store.prototype.find = function (query, callback) {
-        if (!callback)
-            return;
+        if (!callback) return;
 
         var todos = this.storage.getData();
 
@@ -85,8 +80,7 @@
             this,
             todos.filter(function (todo) {
                 for (var q in query) {
-                    if (query[q] !== todo[q])
-                        return false;
+                    if (query[q] !== todo[q]) return false;
                 }
 
                 return true;
@@ -121,8 +115,7 @@
         if (id) {
             for (var i = 0; i < todos.length; i++) {
                 if (todos[i].id === id) {
-                    for (var key in updateData)
-                        todos[i][key] = updateData[key];
+                    for (var key in updateData) todos[i][key] = updateData[key];
 
                     break;
                 }

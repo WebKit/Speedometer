@@ -60,17 +60,14 @@ class TodoList extends HTMLElement {
 
     removeCompletedItems() {
         Array.from(this.listNode.children).forEach((element) => {
-            if (element.itemcompleted === "true")
-                element.removeItem();
+            if (element.itemcompleted === "true") element.removeItem();
         });
     }
 
     toggleItems(completed) {
         Array.from(this.listNode.children).forEach((element) => {
-            if (completed && element.itemcompleted === "false")
-                element.toggleInput.click();
-            else if (!completed && element.itemcompleted === "true")
-                element.toggleInput.click();
+            if (completed && element.itemcompleted === "false") element.toggleInput.click();
+            else if (!completed && element.itemcompleted === "true") element.toggleInput.click();
         });
     }
 

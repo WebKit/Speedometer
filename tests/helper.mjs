@@ -39,15 +39,12 @@ function printHelp(message = "", exitStatus = 0) {
 export default async function testSetup(helpText) {
     const options = commandLineArgs(optionDefinitions);
 
-    if ("help" in options)
-        printHelp(helpText);
+    if ("help" in options) printHelp(helpText);
 
     const BROWSER = options?.browser;
-    if (!BROWSER)
-        printHelp("No browser specified, use $BROWSER or --browser", 1);
+    if (!BROWSER) printHelp("No browser specified, use $BROWSER or --browser", 1);
 
-    if (options.retry < 0)
-        printHelp("Number of retries cannot be negative", 1);
+    if (options.retry < 0) printHelp("Number of retries cannot be negative", 1);
 
     let builder;
     switch (BROWSER) {
@@ -98,10 +95,8 @@ export default async function testSetup(helpText) {
 
     async function stop() {
         server.close();
-        if (logInspector)
-            await logInspector.close();
-        if (driver)
-            driver.close();
+        if (logInspector) await logInspector.close();
+        if (driver) driver.close();
     }
     return { driver, PORT, stop, retry: options.retry };
 }

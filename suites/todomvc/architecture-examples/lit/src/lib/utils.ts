@@ -18,7 +18,7 @@ export const updateOnEvent = (eventName: string) => (target: ListenerCarryingEle
     const newDescriptor = {
         ...descriptor,
         set(this: ListenerCarryingElement, v: EventTarget) {
-            const listener = this.__updateOnEventListener ??= () => this.requestUpdate();
+            const listener = (this.__updateOnEventListener ??= () => this.requestUpdate());
             const oldValue = get!.call(this);
             oldValue?.removeEventListener?.(eventName, listener);
             v?.addEventListener?.(eventName, listener);

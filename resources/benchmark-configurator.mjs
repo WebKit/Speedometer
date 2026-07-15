@@ -29,8 +29,7 @@ export class BenchmarkConfigurator {
      * @returns {boolean} True if the URL is valid (absolute or relative), false otherwise.
      */
     _isValidUrl(url) {
-        if (typeof url !== "string" || url.length === 0)
-            return false;
+        if (typeof url !== "string" || url.length === 0) return false;
 
         try {
             new URL(url, "http://www.example.com");
@@ -54,12 +53,9 @@ export class BenchmarkConfigurator {
     _freezeSuites() {
         Object.freeze(this.#suites);
         this.#suites.forEach((suite) => {
-            if (!suite.tags)
-                suite.tags = [];
-            if (suite.url.startsWith("experimental/"))
-                suite.tags.unshift("all", "experimental");
-            else
-                suite.tags.unshift("all");
+            if (!suite.tags) suite.tags = [];
+            if (suite.url.startsWith("experimental/")) suite.tags.unshift("all", "experimental");
+            else suite.tags.unshift("all");
             suite.enabled = suite.tags.includes("default");
             Object.freeze(suite.tags);
             Object.freeze(suite.steps);
@@ -82,20 +78,16 @@ export class BenchmarkConfigurator {
 
                 const response = await fetch(params.config);
 
-                if (!response.ok)
-                    throw new Error(`Could not fetch config: ${response.status}`);
+                if (!response.ok) throw new Error(`Could not fetch config: ${response.status}`);
 
                 const config = await response.json();
 
-                if (!config || !Array.isArray(config.suites))
-                    throw new Error("Could not find a valid config structure!");
+                if (!config || !Array.isArray(config.suites)) throw new Error("Could not find a valid config structure!");
 
                 config.suites.flatMap((suite) => suite.tags || []).forEach((tag) => this.#tags.add(tag));
                 config.suites.forEach((suite) => {
-                    if (suite && suite.url && this._isValidUrl(suite.url))
-                        this.#suites.push(suite);
-                    else
-                        throw new Error("Invalid suite data");
+                    if (suite && suite.url && this._isValidUrl(suite.url)) this.#suites.push(suite);
+                    else throw new Error("Invalid suite data");
                 });
             } catch (error) {
                 console.warn(`Error loading custom configuration: ${error.message}. Loading default suites.`);
@@ -127,8 +119,7 @@ export class BenchmarkConfigurator {
             });
         } else if (tags?.length) {
             tags.forEach((tag) => {
-                if (!this.#tags.has(tag))
-                    console.error(`Unknown Suites tag: "${tag}"`);
+                if (!this.#tags.has(tag)) console.error(`Unknown Suites tag: "${tag}"`);
             });
             const tagsSet = new Set(tags);
             this.#suites.forEach((suite) => {
@@ -140,8 +131,7 @@ export class BenchmarkConfigurator {
                 suite.enabled = suite.tags.includes("default");
             });
         }
-        if (this.#suites.some((suite) => suite.enabled))
-            return;
+        if (this.#suites.some((suite) => suite.enabled)) return;
 
         if (names?.length) {
             this._reportError(`Suites "${names}" does not match any Suite. No tests to run.`, {

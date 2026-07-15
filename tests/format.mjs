@@ -28,8 +28,7 @@ function runPrettier(files) {
 
 function runEslint(files) {
     const jsTsFiles = files.filter((f) => /\.(js|mjs|jsx|ts|tsx)$/.test(f));
-    if (jsTsFiles.length === 0)
-        return;
+    if (jsTsFiles.length === 0) return;
     try {
         console.log(`Running eslint on ${jsTsFiles.length} file(s)`);
         execFileSyncInBatches("eslint", ["--fix"], jsTsFiles);

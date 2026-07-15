@@ -17,10 +17,8 @@ export default function Dialog({ onClose }) {
     function toggleMotion(e) {
         setReduceMotion(e.target.checked);
 
-        if (e.target.checked)
-            document.documentElement.classList.add("reduced-motion");
-        else
-            document.documentElement.classList.remove("reduced-motion");
+        if (e.target.checked) document.documentElement.classList.add("reduced-motion");
+        else document.documentElement.classList.remove("reduced-motion");
     }
 
     return (
