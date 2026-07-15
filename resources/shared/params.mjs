@@ -20,8 +20,12 @@ export class Params {
     // "timer": The classic (as in Speedometer 2.x) way using setTimeout
     // "raf":   Using rAF callbacks, both for triggering the sync part and for measuring async time.
     measurementMethod = "raf";
+    // Wait time after suite preparation in ms.
+    waitAfterSetup = 0;
     // Wait time before the sync step in ms.
     waitBeforeSync = 0;
+    // Wait after running a suite.
+    waitAfterSuite = 0;
     // Warmup time before the sync step in ms.
     warmupBeforeSync = 0;
     // Seed for shuffling the execution order of suites.
@@ -29,6 +33,10 @@ export class Params {
     // "generate": generate a random seed
     // <integer>: use the provided integer as a seed
     shuffleSeed = "off";
+    // Param to tweak the relative complexity of all suites.
+    // The default is 1.0, and for suites supporting this param, the duration
+    // roughly scales with the complexity.
+    complexity = 1.0;
     // Choices: "getBoundingClientRect" or "getBoundingRectAndElementFromPoint"
     layoutMode = LAYOUT_MODES[0];
     // Measure more workload prepare time.
@@ -49,8 +57,17 @@ export class Params {
         }
     }
 
-    _parseInt(value, errorMessage) {
+    _parseNumber(value, errorMessage, minValue = 0) {
         const number = Number(value);
+        if (!Number.isFinite(number) && errorMessage)
+            throw new Error(`Invalid ${errorMessage} param: '${value}', expected Number.`);
+        if (number < minValue)
+            throw new Error(`Invalid ${errorMessage} param: '${value}', value must be >= ${minValue}.`);
+        return number;
+    }
+
+    _parseInt(value, errorMessage, minValue = 0) {
+        const number = this._parseNumber(value, errorMessage, minValue);
         if (!Number.isInteger(number) && errorMessage)
             throw new Error(`Invalid ${errorMessage} param: '${value}', expected int.`);
         return parseInt(number);
@@ -65,10 +82,13 @@ export class Params {
         this.developerMode = this._parseBooleanParam(searchParams, "developerMode");
         this.useWarmupSuite = this._parseBooleanParam(searchParams, "useWarmupSuite");
         this.useAsyncSteps = this._parseBooleanParam(searchParams, "useAsyncSteps");
+        this.waitAfterSetup = this._parseIntParam(searchParams, "waitAfterSetup", 0);
         this.waitBeforeSync = this._parseIntParam(searchParams, "waitBeforeSync", 0);
+        this.waitAfterSuite = this._parseIntParam(searchParams, "waitAfterSuite", 0);
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseEnumParam(searchParams, "measurementMethod", ["raf"]);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
+        this.complexity = this._parserNumberParam(searchParams, "complexity", 0);
         this.layoutMode = this._parseEnumParam(searchParams, "layoutMode", LAYOUT_MODES);
         this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
         this.config = this._parseConfig(searchParams);
@@ -89,13 +109,18 @@ export class Params {
         return true;
     }
 
+    _parserNumberParam(searchParams, paramKey, minValue) {
+        if (!searchParams.has(paramKey))
+            return defaultParams[paramKey];
+        const parsedValue = this._parseNumber(searchParams.get(paramKey), "waitBeforeSync", minValue);
+        searchParams.delete(paramKey);
+        return parsedValue;
+    }
+
     _parseIntParam(searchParams, paramKey, minValue) {
         if (!searchParams.has(paramKey))
             return defaultParams[paramKey];
-
-        const parsedValue = this._parseInt(searchParams.get(paramKey), "waitBeforeSync");
-        if (parsedValue < minValue)
-            throw new Error(`Invalid ${paramKey} param: '${parsedValue}', value must be >= ${minValue}.`);
+        const parsedValue = this._parseInt(searchParams.get(paramKey), "waitBeforeSync", minValue);
         searchParams.delete(paramKey);
         return parsedValue;
     }

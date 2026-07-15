@@ -1,5 +1,6 @@
-import { params, LAYOUT_MODES } from "./shared/params.mjs";
+import { params, LAYOUT_MODES, defaultParams } from "./shared/params.mjs";
 import { benchmarkConfigurator } from "./benchmark-configurator.mjs";
+import { handleComplexityChange } from "./shared/todomvc-utils.mjs";
 
 const { suites, tags } = benchmarkConfigurator;
 
@@ -23,10 +24,13 @@ export function createDeveloperModeContainer() {
     settings.append(createUIForMeasurePrepare());
     settings.append(createUIForWarmupSuite());
     settings.append(createUIForWarmupBeforeSync());
+    settings.append(createUIForWaitAfterSetup());
     settings.append(createUIForSyncStepDelay());
+    settings.append(createUIForWaitAfterSuite());
     settings.append(createUIForAsyncSteps());
     settings.append(createUIForLayoutMode());
     settings.append(createUIForPreload());
+    settings.append(createUIForComplexity());
 
     content.append(document.createElement("hr"));
     content.append(settings);
@@ -75,7 +79,7 @@ function createCheckboxUI(labelValue, initialValue, paramsUpdateCallback) {
     checkbox.checked = !!initialValue;
     checkbox.onchange = () => {
         paramsUpdateCallback(checkbox.checked);
-        updateURL();
+        handleParamsChange();
     };
 
     const label = document.createElement("label");
@@ -85,23 +89,57 @@ function createCheckboxUI(labelValue, initialValue, paramsUpdateCallback) {
 }
 
 function createUIForIterationCount() {
-    return createTimeRangeUI("Iterations: ", "iterationCount", "#", 1, 200);
+    return createLinearRangeUI("Iterations: ", "iterationCount", "#", 1, 200);
 }
 
 function createUIForWarmupBeforeSync() {
-    return createTimeRangeUI("Warmup time: ", "warmupBeforeSync");
+    return createLinearRangeUI("Warmup time: ", "warmupBeforeSync");
 }
 
 function createUIForSyncStepDelay() {
-    return createTimeRangeUI("Sync step delay: ", "waitBeforeSync");
+    return createLinearRangeUI("Sync step delay: ", "waitBeforeSync");
 }
 
-function createTimeRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000) {
-    const range = document.createElement("input");
-    range.type = "range";
+function createUIForWaitAfterSetup() {
+    return createLinearRangeUI("Post setup delay: ", "waitAfterSetup");
+}
+
+function createUIForWaitAfterSuite() {
+    return createLinearRangeUI("Post suite delay: ", "waitAfterSuite");
+}
+
+function createUIForComplexity() {
+    return createExpRangeUI("Relative complexity: ", "complexity", "x", 0.01, 100, 0.01);
+}
+
+function createLinearRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000, step = 1) {
+    const initialValue = params[paramKey];
+    const linearMap = (value) => value;
+    const { range, label } = createTimeRangeUI(labelText, paramKey, unit, linearMap, 0);
     range.min = min;
     range.max = max;
-    range.value = params[paramKey];
+    range.step = step;
+    range.value = initialValue;
+    return label;
+}
+
+function createExpRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000, step = 1) {
+    const defaultValue = defaultParams[paramKey];
+    const initialValue = params[paramKey];
+    const b = defaultValue - 1;
+    const a = -Math.log(min - b);
+    const logMap = (value) => Math.round((Math.exp(value * a) + b) / step) * step;
+    const { range, label } = createTimeRangeUI(labelText, paramKey, unit, logMap, 2);
+    range.min = -1;
+    range.max = Math.log(max - b) / a;
+    range.step = 0.01;
+    range.value = Math.log(initialValue - b) / a;
+    return label;
+}
+
+function createTimeRangeUI(labelText, paramKey, unit = "ms", map, decimals) {
+    const range = document.createElement("input");
+    range.type = "range";
 
     const rangeValueAndUnit = document.createElement("span");
     rangeValueAndUnit.className = "range-label-data";
@@ -114,14 +152,14 @@ function createTimeRangeUI(labelText, paramKey, unit = "ms", min = 0, max = 1000
     label.append(span(labelText), range, rangeValueAndUnit);
 
     range.oninput = () => {
-        rangeValue.textContent = range.value;
+        rangeValue.textContent = map(Number(range.value)).toFixed(decimals);
     };
     range.onchange = () => {
-        params[paramKey] = parseInt(range.value);
-        updateURL();
+        params[paramKey] = map(Number(range.value));
+        handleParamsChange();
     };
 
-    return label;
+    return { range, label };
 }
 
 function createUIForLayoutMode() {
@@ -134,7 +172,7 @@ function createSelectUI(labelValue, initialValue, choices, paramsUpdateCallback)
     const select = document.createElement("select");
     select.onchange = () => {
         paramsUpdateCallback(select.value);
-        updateURL();
+        handleParamsChange();
     };
 
     choices.forEach((choice) => {
@@ -169,7 +207,7 @@ function createUIForSuites() {
         checkbox.checked = suite.enabled;
         checkbox.onchange = () => {
             suite.enabled = checkbox.checked;
-            updateURL();
+            handleParamsChange();
         };
         checkboxes.push(checkbox);
 
@@ -205,7 +243,7 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
         for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++)
             setSuiteEnabled(suiteIndex, true);
 
-        updateURL();
+        handleParamsChange();
     };
     buttons.appendChild(button);
 
@@ -216,7 +254,7 @@ function createSuitesGlobalSelectButtons(setSuiteEnabled) {
         for (let suiteIndex = 0; suiteIndex < suites.length; suiteIndex++)
             setSuiteEnabled(suiteIndex, false);
 
-        updateURL();
+        handleParamsChange();
     };
     buttons.appendChild(button);
     return buttons;
@@ -252,7 +290,7 @@ function createSuitesTagsButton(setSuiteEnabled) {
                     continue;
                 setSuiteEnabled(suiteIndex, enabled);
             }
-            updateURL();
+            handleParamsChange();
         };
         buttons.appendChild(button);
     }
@@ -302,8 +340,9 @@ function updateParamsSuitesAndTags() {
         params.suites = selectedSuites.map((suite) => suite.name);
 }
 
-function updateURL() {
+function handleParamsChange() {
     updateParamsSuitesAndTags();
+    handleComplexityChange();
 
     const url = new URL(window.location.href);
     url.search = params.toSearchParams();
