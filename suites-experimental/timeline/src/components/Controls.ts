@@ -243,7 +243,7 @@ export const Controls = {
                     m(
                         ".lang-selector",
                         { style: { display: "flex", gap: "4px" } },
-                        (["DE", "FR", "IT", "TW", "JP"] as Language[]).map((lang) =>
+                        (["DE", "FR", "IT", "ZH", "JP"] as Language[]).map((lang) =>
                             m(
                                 "button.lang-btn",
                                 {

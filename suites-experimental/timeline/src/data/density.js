@@ -7,20 +7,22 @@
 // Uses C1-continuous Hann cosine kernel smoothing for smooth, prominent density curves.
 
 export function getPreciseYear(dateVal) {
-    if (dateVal === null || dateVal === undefined) return null;
-    if (typeof dateVal === "number") {
+    if (dateVal === null || dateVal === undefined)
+        return null;
+    if (typeof dateVal === "number")
         return isNaN(dateVal) ? null : dateVal;
-    }
+
     if (typeof dateVal === "string") {
         const parts = dateVal.trim().split("-");
         const year = parseInt(parts[0], 10);
-        if (isNaN(year)) return null;
+        if (isNaN(year))
+            return null;
         let month = 1;
         if (parts.length > 1) {
             const parsedMonth = parseInt(parts[1], 10);
-            if (!isNaN(parsedMonth) && parsedMonth >= 1 && parsedMonth <= 12) {
+            if (!isNaN(parsedMonth) && parsedMonth >= 1 && parsedMonth <= 12)
                 month = parsedMonth;
-            }
+
         }
         return year + (month - 1) / 12;
     }
@@ -40,30 +42,27 @@ export function calculateDensityCurve(items, options = {}) {
     const windowYears = options.windowYears !== undefined ? options.windowYears : 6;
     const maxHeight = options.maxHeight !== undefined ? options.maxHeight : 85;
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
+    if (!items || !Array.isArray(items) || items.length === 0)
         return { points: [], path: "", areaPath: "", maxVal: 0 };
-    }
 
     const totalYears = endYear - startYear;
-    if (totalYears <= 0) {
+    if (totalYears <= 0)
         return { points: [], path: "", areaPath: "", maxVal: 0 };
-    }
 
     const getX = (year) => ((year - startYear) / totalYears) * 100;
 
     const validYears = [];
     for (let i = 0; i < items.length; i++) {
         const item = items[i];
-        const dateVal = item ? (item.date !== undefined ? item.date : item.year !== undefined ? item.year : item.preciseYear) : null;
+        const dateVal = item ? item.date !== undefined ? item.date : item.year !== undefined ? item.year : item.preciseYear : null;
         const py = getPreciseYear(dateVal);
-        if (py !== null && !isNaN(py)) {
+        if (py !== null && !isNaN(py))
             validYears.push(py);
-        }
+
     }
 
-    if (validYears.length === 0) {
+    if (validYears.length === 0)
         return { points: [], path: "", areaPath: "", maxVal: 0 };
-    }
 
     const densities = [];
     let maxVal = 0;
@@ -77,15 +76,14 @@ export function calculateDensityCurve(items, options = {}) {
                 weightedSum += 0.5 * (1 + Math.cos((Math.PI * dist) / windowYears));
             }
         }
-        if (weightedSum > maxVal) {
+        if (weightedSum > maxVal)
             maxVal = weightedSum;
-        }
+
         densities.push({ year: y, value: weightedSum });
     }
 
-    if (maxVal === 0) {
+    if (maxVal === 0)
         return { points: [], path: "", areaPath: "", maxVal: 0 };
-    }
 
     const points = densities.map((d) => {
         const x = getX(d.year);
@@ -129,11 +127,11 @@ export function getDensityAtYear(targetYear, curveData, items, windowYears = 6) 
     if (items && Array.isArray(items)) {
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
-            const dateVal = item ? (item.date !== undefined ? item.date : item.year !== undefined ? item.year : item.preciseYear) : null;
+            const dateVal = item ? item.date !== undefined ? item.date : item.year !== undefined ? item.year : item.preciseYear : null;
             const py = getPreciseYear(dateVal);
-            if (py !== null && Math.abs(py - targetYear) <= windowYears) {
+            if (py !== null && Math.abs(py - targetYear) <= windowYears)
                 itemsInWindow++;
-            }
+
         }
     } else {
         itemsInWindow = Math.round(density * 1.5);

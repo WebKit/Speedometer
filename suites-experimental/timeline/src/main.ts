@@ -82,7 +82,7 @@ const App = () => {
                 const langParam = params.get("lang") || params.get("language") || params.get("l");
                 if (langParam !== null) {
                     const upperLang = langParam.toUpperCase() as any;
-                    if (["DE", "FR", "IT", "TW", "JP"].includes(upperLang))
+                    if (["DE", "FR", "IT", "ZH", "JP"].includes(upperLang))
                         setLanguage(upperLang);
                 }
                 applyFilters();

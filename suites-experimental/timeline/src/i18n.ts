@@ -5,7 +5,7 @@
 
 import m from "mithril";
 
-export type Language = "DE" | "FR" | "IT" | "TW" | "JP";
+export type Language = "DE" | "FR" | "IT" | "ZH" | "JP";
 
 let activeLanguage: Language = "DE";
 
@@ -113,7 +113,7 @@ export const translations = {
         suggestionsTitle: "Suggerimenti",
         noMatches: "Nessun risultato trovato",
     },
-    TW: {
+    ZH: {
         title: "電腦歷史",
         subtitle: "1900 - 2026",
         filter: "篩選：",
@@ -191,6 +191,10 @@ export function translateContent(field: any): string {
             return field[lang];
         if (lang === "JP" && field.JA)
             return field.JA;
+        if (lang === "ZH" && field.TW)
+            return field.TW;
+        if (field.ZH)
+            return field.ZH;
         if (field.TW)
             return field.TW;
         return field.DE || Object.values(field)[0] || "";

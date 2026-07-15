@@ -6,7 +6,7 @@
 import m from "mithril";
 import { flopsData } from "../data/processing-speed.js";
 import { t } from "../i18n.js";
-import { TAGS, calculateDensityCurve, getDensityAtYear } from "../data/tags.js";
+import { TAGS, calculateDensityCurve } from "../data/tags.js";
 
 export const MiniOverview = () => {
     let hoverState: { active: boolean; x: number; y: number; clientX: number; year: number; boundW?: number } = { active: false, x: 0, y: 0, clientX: 0, year: 0 };
@@ -543,7 +543,8 @@ export const MiniOverview = () => {
                                                 m(
                                                     "span.tooltip-val",
                                                     `${formatFlops(hoverCPU)}${closestCpu && closestCpuDist <= 2.5 ? ` (${closestCpu.name})` : ""}${
-                                                        closestCpu && closestCpuDist <= 2.5 && closestCpu.mips ? ` / ${closestCpu.mips >= 1000 ? `${(closestCpu.mips / 1000).toFixed(1) } GIPS` : `${closestCpu.mips.toFixed(2) } MIPS`}` : ""}`
+                                                        closestCpu && closestCpuDist <= 2.5 && closestCpu.mips ? ` / ${closestCpu.mips >= 1000 ? `${(closestCpu.mips / 1000).toFixed(1)} GIPS` : `${closestCpu.mips.toFixed(2)} MIPS`}` : ""
+                                                    }`
                                                 ),
                                             ]),
                                         hoverGPU !== null

@@ -33,7 +33,7 @@ describe("Timeline Data Validation", () => {
                 expect(/^\d{4}-\d{2}-\d{2}$/.test(item.date)).to.be(true);
 
                 expect(item.title).to.be.an("object");
-                ["DE", "FR", "IT", "TW", "JP"].forEach((lang) => {
+                ["DE", "FR", "IT", "ZH", "JP"].forEach((lang) => {
                     expect(item.title[lang]).to.be.a("string");
                     expect(item.title[lang].length).to.be.greaterThan(0);
                 });
@@ -42,7 +42,7 @@ describe("Timeline Data Validation", () => {
                 titles.add(item.title.DE);
 
                 expect(item.description).to.be.an("object");
-                ["DE", "FR", "IT", "TW", "JP"].forEach((lang) => {
+                ["DE", "FR", "IT", "ZH", "JP"].forEach((lang) => {
                     expect(item.description[lang]).to.be.a("string");
                     const minLength = 10;
                     expect(item.description[lang].length).to.be.greaterThan(minLength);
@@ -67,7 +67,7 @@ describe("Timeline Data Validation", () => {
 
                 expect(item.links).to.be.an("object");
                 expect(item.links.wikipedia).to.be.an("object");
-                ["DE", "FR", "IT", "TW", "JP"].forEach((lang) => {
+                ["DE", "FR", "IT", "ZH", "JP"].forEach((lang) => {
                     expect(item.links.wikipedia[lang]).to.be.a("string");
                     expect(item.links.wikipedia[lang].startsWith("https://")).to.be(true);
                 });
@@ -338,12 +338,12 @@ describe("Timeline Empty State and Translations", () => {
     };
 
     it("should provide translation strings for \x27noMatches\x27 across all 5 supported languages in i18n.ts", () => {
-        const supportedLangs = ["DE", "FR", "IT", "TW", "JP"];
+        const supportedLangs = ["DE", "FR", "IT", "ZH", "JP"];
         const expectedSubstrings = {
             DE: "Keine Treffer",
             FR: "Aucun résultat",
             IT: "Nessun risultato",
-            TW: "沒有找到",
+            ZH: "沒有找到",
             JP: "見つかりません",
         };
         supportedLangs.forEach((lang) => {
@@ -414,9 +414,9 @@ describe("Timeline Empty State and Translations", () => {
         nodes = findVnodes(res, isEmptyState);
         expect(getVnodeText(nodes[0])).to.contain("Nessun risultato trovato");
 
-        // Switch to TW
-        setLanguage("TW");
-        vnode.attrs.language = "TW";
+        // Switch to ZH
+        setLanguage("ZH");
+        vnode.attrs.language = "ZH";
         vnode.attrs.version = 5;
         timelineComp.onbeforeupdate(vnode);
         res = timelineComp.view(vnode);
