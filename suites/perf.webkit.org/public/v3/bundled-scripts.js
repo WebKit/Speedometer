@@ -2623,7 +2623,8 @@ serializedItems.push(this._serializeHashQueryValue(item));return'('+serializedIt
 if(value instanceof Set)
 return Array.from(value).sort().join('|');console.assert(value===null||value===undefined||typeof(value)==='number'||/[0-9]*/.test(value));return value===null||value===undefined?'null':value;}
 _deserializeHashQueryValue(value)
-{if(value.charAt(0)=='('){let nestingLevel=0;let end=0;let start=1;const result=[];for(const character of value){if(character=='(')
+{if(value===undefined||value===null||value==='')
+return value;if(value.charAt(0)=='('){let nestingLevel=0;let end=0;let start=1;const result=[];for(const character of value){if(character=='(')
 nestingLevel++;else if(character==')'){nestingLevel--;if(!nestingLevel)
 break;}else if(nestingLevel==1&&character=='-'){result.push(this._deserializeHashQueryValue(value.substring(start,end)));start=end+1;}
 end++;}
