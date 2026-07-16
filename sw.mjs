@@ -114,7 +114,7 @@ class RequestLimiter {
             } catch (e) {
                 // Individual task errors are handled by their respective promises
             }
-            await new Promise(r => setTimeout(r, 1));
+            await new Promise((r) => setTimeout(r, 1));
         }
         this.active--;
     }
@@ -122,6 +122,7 @@ class RequestLimiter {
     schedule(fn) {
         return new Promise((resolve, reject) => {
             const task = () => fn().then(resolve, reject);
+            task.resolve = resolve;
             this.queue.push(task);
 
             if (this.active < this.limit) {
@@ -129,6 +130,15 @@ class RequestLimiter {
                 this._processQueue();
             }
         });
+    }
+
+    clear() {
+        for (const task of this.queue) {
+            if (task.resolve)
+                task.resolve(0);
+        }
+
+        this.queue = [];
     }
 }
 
@@ -138,14 +148,15 @@ let currentPreloadEvent = null;
 let currentPreloadId = 0;
 
 function handleResetPreloadingMessage(event) {
-    if (currentPreloadEvent) {
+    if (currentPreloadEvent)
         replyToClient(currentPreloadEvent, "PRELOAD_ABORTED");
-    }
+
     currentPreloadEvent = null;
     currentPreloadId++;
-    if (event) {
+    requestLimiter.clear();
+    if (event)
         replyToClient(event, SW_MESSAGES.RESET_PRELOADING);
-    }
+
 }
 
 async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay = 0, clearCache = true }) {
@@ -175,9 +186,11 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay 
 
     const total = urlsToCache.length;
     const promises = urlsToCache.map(async (item, index) => {
-        if (preloadId !== currentPreloadId) return;
+        if (preloadId !== currentPreloadId)
+            return;
         const size = await fetchAndCache(cache, item.url, delay * index);
-        if (preloadId !== currentPreloadId) return;
+        if (preloadId !== currentPreloadId)
+            return;
         transferredSize += size;
         loaded++;
         replyToClient(event, SW_MESSAGES.PRELOAD_PROGRESS, { loaded, total, url: item.url, suiteName: item.suiteName });
@@ -185,15 +198,18 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay 
 
     await Promise.all(promises);
 
-    if (preloadId !== currentPreloadId) return;
+    if (preloadId !== currentPreloadId)
+        return;
 
     if (!await STORE.hasLock(clientId)) {
         replyError(event, "Speedometer aborted: Another tab took over.");
-        if (currentPreloadEvent === event) currentPreloadEvent = null;
+        if (currentPreloadEvent === event)
+            currentPreloadEvent = null;
         return;
     }
     replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { transferredSize, count: urlsToCache.length });
-    if (currentPreloadEvent === event) currentPreloadEvent = null;
+    if (currentPreloadEvent === event)
+        currentPreloadEvent = null;
 }
 
 async function parseSuiteResources(suite) {
@@ -294,23 +310,23 @@ self.addEventListener("message", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-    if (event.request.cache === "only-if-cached" && event.request.mode !== "same-origin") {
+    if (event.request.cache === "only-if-cached" && event.request.mode !== "same-origin")
         return;
-    }
-    
-    event.respondWith((async () => {
-        let requestToMatch = event.request;
-        const urlObj = new URL(event.request.url);
-        if (urlObj.pathname.endsWith("/")) {
-            urlObj.pathname += "index.html";
-            requestToMatch = urlObj.href;
-        }
 
-        const cachedResponse = await caches.match(requestToMatch, { cacheName: CACHE_NAME, ignoreSearch: true, ignoreVary: true });
-        if (cachedResponse) {
-            return cachedResponse;
-        }
+    event.respondWith(
+        (async () => {
+            let requestToMatch = event.request;
+            const urlObj = new URL(event.request.url);
+            if (urlObj.pathname.endsWith("/")) {
+                urlObj.pathname += "index.html";
+                requestToMatch = urlObj.href;
+            }
 
-        return fetch(event.request);
-    })());
+            const cachedResponse = await caches.match(requestToMatch, { cacheName: CACHE_NAME, ignoreSearch: true, ignoreVary: true });
+            if (cachedResponse)
+                return cachedResponse;
+
+            return fetch(event.request);
+        })()
+    );
 });

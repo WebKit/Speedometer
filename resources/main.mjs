@@ -110,9 +110,9 @@ export class ResourcePreloader {
         if (!this._sw)
             return;
         await this._sendMessageWithReply({ type: SW_MESSAGES.RESET_PRELOADING });
-        if (this._activePreloadPromise) {
+        if (this._activePreloadPromise)
             await this._activePreloadPromise;
-        }
+
     }
 
     async preloadSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
@@ -135,9 +135,8 @@ export class ResourcePreloader {
         const response = await this._activePreloadPromise;
         this._activePreloadPromise = null;
 
-        if (response?.type === "PRELOAD_ABORTED") {
+        if (response?.type === "PRELOAD_ABORTED")
             return "ABORTED";
-        }
 
         if (response?.type === SW_MESSAGES.PRELOAD_DONE) {
             const timeTakenMs = performance.now() - startTime;
@@ -245,7 +244,8 @@ class MainBenchmarkClient {
 
         await this._resourcePreloader.resetPreloading();
         const preloadResult = await this._setupResourcePreloader(benchmarkConfigurator);
-        if (preloadResult === "ABORTED") return false;
+        if (preloadResult === "ABORTED")
+            return false;
 
         try {
             await this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
@@ -547,7 +547,8 @@ class MainBenchmarkClient {
 
         await this._resourcePreloader.resetPreloading();
         const preloadResult = await this._setupResourcePreloader(benchmarkConfigurator);
-        if (preloadResult === "ABORTED") return;
+        if (preloadResult === "ABORTED")
+            return;
 
         if (params.startAutomatically)
             this.start();
@@ -555,21 +556,21 @@ class MainBenchmarkClient {
 
     async _setupResourcePreloader(benchmarkConfigurator) {
         await this._resourcePreloader.setup();
-        if (!this._resourcePreloader.isCached()) {
+        if (!this._resourcePreloader.isCached())
             return await this._cacheResources(benchmarkConfigurator);
-        } else {
+        else
             this._enableStartButtons();
-        }
+
     }
 
     async _cacheResources(benchmarkConfigurator) {
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const clearCache = !params.isDefault();
-        
+
         this._resetPreloadUI();
         this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
-        await new Promise(resolve => requestAnimationFrame(resolve));
-        
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+
         this._preloadGeneration = (this._preloadGeneration || 0) + 1;
         const currentGeneration = this._preloadGeneration;
         const onProgress = (data) => {
@@ -579,7 +580,8 @@ class MainBenchmarkClient {
 
         try {
             const result = await this._resourcePreloader.preloadSuites(enabledSuites, params.resourceLoadDelay, clearCache, onProgress);
-            if (result === "ABORTED") return "ABORTED";
+            if (result === "ABORTED")
+                return "ABORTED";
             this._enableStartButtons();
         } catch (error) {
             console.error("Service Worker preload failed:", error);
@@ -591,6 +593,7 @@ class MainBenchmarkClient {
     }
 
     _resetPreloadUI() {
+        this._latestProgressData = null;
         document.getElementById("preload-progress-completed").value = 0;
         document.getElementById("preload-info-label").textContent = "";
         document.getElementById("preload-info-progress").textContent = "";
@@ -599,21 +602,24 @@ class MainBenchmarkClient {
 
     _updateCacheProgress(progressData) {
         this._latestProgressData = progressData;
-        if (this._progressUpdateScheduled) return;
+        if (this._progressUpdateScheduled)
+            return;
         this._progressUpdateScheduled = true;
-        
+
         requestAnimationFrame(() => {
             this._progressUpdateScheduled = false;
             const data = this._latestProgressData;
-            if (!data) return;
+            if (!data)
+                return;
             const { loaded, total, url, suiteName } = data;
-            
+
             document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
             const progress = document.getElementById("preload-progress-completed");
             progress.max = total;
             progress.value = loaded;
             let filename = url ? url.substring(url.lastIndexOf("/") + 1) : "";
-            if (!filename && url) filename = url.substring(url.lastIndexOf("/", url.length - 2) + 1);
+            if (!filename && url)
+                filename = url.substring(url.lastIndexOf("/", url.length - 2) + 1);
             const labelText = suiteName ? `${suiteName}: ${filename}` : filename;
             document.getElementById("preload-info-label").textContent = labelText;
             document.getElementById("preload-info-progress").textContent = `${loaded} / ${total}`;
