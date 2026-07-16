@@ -206,13 +206,15 @@ button,
     user-select: none;
 }
 
-.buttons button:active {
+.buttons button:active,
+.buttons .button:active {
     background-color: var(--foreground);
     color: var(--background);
     border-color: var(--foreground) !important;
 }
 
-.buttons button:focus {
+.buttons button:focus,
+.buttons .button:focus {
     outline: none;
     border-color: var(--highlight);
 }
@@ -425,8 +427,6 @@ section#home .content {
 }
 
 .fixed-footer .button-row {
-    display: flex;
-    justify-content: space-around;
     align-items: center;
     width: 100%;
     margin: 0;
@@ -439,32 +439,12 @@ section#instructions .section-content {
 
 .fixed-footer a,
 .fixed-footer .button {
-    appearance: none;
-    border: 2px solid var(--foreground);
+    border-width: 2px;
     border-radius: 8px;
     min-width: 160px;
     padding: 6px 15px;
     margin: 0 10px;
     font-size: 16px;
-    color: var(--foreground);
-    background-color: transparent;
-    cursor: pointer;
-    user-select: none;
-    box-sizing: border-box;
-    text-decoration: none;
-}
-
-.fixed-footer a:active,
-.fixed-footer .button:active {
-    background-color: var(--foreground);
-    color: var(--background);
-    border-color: var(--foreground) !important;
-}
-
-.fixed-footer a:focus,
-.fixed-footer .button:focus {
-    outline: none;
-    border-color: var(--highlight);
 }
 
 section#home .buttons:not(.section-footer) {
