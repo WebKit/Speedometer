@@ -20,8 +20,12 @@ export class Params {
     // "timer": The classic (as in Speedometer 2.x) way using setTimeout
     // "raf":   Using rAF callbacks, both for triggering the sync part and for measuring async time.
     measurementMethod = "raf";
+    // Wait time after suite preparation in ms.
+    waitAfterSetup = 0;
     // Wait time before the sync step in ms.
     waitBeforeSync = 0;
+    // Wait after running a suite.
+    waitAfterSuite = 0;
     // Warmup time before the sync step in ms.
     warmupBeforeSync = 0;
     // Seed for shuffling the execution order of suites.
@@ -36,9 +40,9 @@ export class Params {
     // External config url to override internal tests.
     config = "";
 
-    constructor(searchParams = undefined) {
+    constructor(searchParams = undefined, warnUnused = false) {
         if (searchParams)
-            this._copyFromSearchParams(searchParams);
+            this._copyFromSearchParams(searchParams, warnUnused);
         if (!this.developerMode) {
             Object.freeze(this.viewport);
             Object.freeze(this);
@@ -52,7 +56,7 @@ export class Params {
         return parseInt(number);
     }
 
-    _copyFromSearchParams(searchParams) {
+    _copyFromSearchParams(searchParams, warnUnused) {
         this.viewport = this._parseViewport(searchParams);
         this.startAutomatically = this._parseBooleanParam(searchParams, "startAutomatically");
         this.iterationCount = this._parseIntParam(searchParams, "iterationCount", 1);
@@ -61,7 +65,9 @@ export class Params {
         this.developerMode = this._parseBooleanParam(searchParams, "developerMode");
         this.useWarmupSuite = this._parseBooleanParam(searchParams, "useWarmupSuite");
         this.useAsyncSteps = this._parseBooleanParam(searchParams, "useAsyncSteps");
+        this.waitAfterSetup = this._parseIntParam(searchParams, "waitAfterSetup", 0);
         this.waitBeforeSync = this._parseIntParam(searchParams, "waitBeforeSync", 0);
+        this.waitAfterSuite = this._parseIntParam(searchParams, "waitAfterSuite", 0);
         this.warmupBeforeSync = this._parseIntParam(searchParams, "warmupBeforeSync", 0);
         this.measurementMethod = this._parseEnumParam(searchParams, "measurementMethod", ["raf"]);
         this.shuffleSeed = this._parseShuffleSeed(searchParams);
@@ -69,9 +75,11 @@ export class Params {
         this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
         this.config = this._parseConfig(searchParams);
 
-        const unused = Array.from(searchParams.keys());
-        if (unused.length > 0)
-            console.error("Got unused search params", unused);
+        if (warnUnused) {
+            const unused = Array.from(searchParams.keys());
+            if (unused.length > 0)
+                console.error(`Got unused search params: ${unused.join(", ")}`);
+        }
     }
 
     _parseBooleanParam(searchParams, paramKey) {
@@ -219,12 +227,14 @@ function isValidJsonUrl(url) {
 
 export const defaultParams = new Params();
 
+export let paramsError = null;
 let maybeCustomParams = defaultParams;
 if (globalThis?.location?.search) {
     const searchParams = new URLSearchParams(globalThis.location.search);
     try {
-        maybeCustomParams = new Params(searchParams);
+        maybeCustomParams = new Params(searchParams, true);
     } catch (e) {
+        paramsError = e;
         console.error("Invalid URL Param", e, "\nUsing defaults as fallback:", maybeCustomParams);
     }
 }

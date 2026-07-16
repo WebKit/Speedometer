@@ -306,7 +306,7 @@ class MainBenchmarkClient {
     }
 
     _populateNonStandardParams() {
-        if (params === defaultParams)
+        if (params.isDefault())
             return;
         const paramsDiff = [];
         const usedSearchparams = params.toSearchParamsObject();
