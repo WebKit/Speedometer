@@ -326,6 +326,14 @@ button,
     text-align: right;
 }
 
+.suites li {
+    display: flex;
+    justify-content: space-between;
+}
+.suites a {
+    text-decoration: none;
+}
+
 .developer-mode-content li + li {
     margin-top: 0px;
 }

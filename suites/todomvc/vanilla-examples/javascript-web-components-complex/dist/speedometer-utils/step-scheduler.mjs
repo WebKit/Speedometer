@@ -1,8 +1,7 @@
 class StepScheduler {
-    constructor(syncCallback, asyncCallback, reportCallback, params) {
+    constructor(syncCallback, asyncCallback, params) {
         this._syncCallback = syncCallback;
         this._asyncCallback = asyncCallback;
-        this._reportCallback = reportCallback;
         this._params = params;
     }
 
@@ -22,10 +21,7 @@ class RAFStepScheduler extends StepScheduler {
         requestAnimationFrame(() => {
             setTimeout(() => {
                 this._asyncCallback();
-                setTimeout(async () => {
-                    const result = await this._reportCallback();
-                    resolve(result);
-                }, 0);
+                setTimeout(resolve, 0);
             }, 0);
         });
     }
@@ -43,10 +39,7 @@ class AsyncRAFStepScheduler extends StepScheduler {
                 return;
 
             this._asyncCallback();
-            setTimeout(async () => {
-                const results = await this._reportCallback();
-                resolve(results);
-            }, 0);
+            setTimeout(resolve, 0);
         };
 
         requestAnimationFrame(async () => {

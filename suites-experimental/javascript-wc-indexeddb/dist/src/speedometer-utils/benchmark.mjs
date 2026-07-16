@@ -14,10 +14,10 @@ export class BenchmarkStep {
         this.ignoreResult = ignoreResult;
     }
 
-    async runAndRecord(params, suite, test, callback) {
+    async runAndRecord(params, suite, test) {
         const StepRunnerClass = params.useAsyncSteps ? AsyncStepRunner : StepRunner;
         const type = params.useAsyncSteps ? "async" : "sync";
-        const stepRunner = new StepRunnerClass(null, null, params, suite, test, callback, type);
+        const stepRunner = new StepRunnerClass(null, null, params, suite, test, type);
         const result = await stepRunner.runStep();
         return result;
     }
@@ -34,15 +34,6 @@ export class BenchmarkSuite {
         this.tests = tests;
     }
 
-    record(_test, syncTime, asyncTime) {
-        const total = syncTime + asyncTime;
-        const results = {
-            tests: { Sync: syncTime, Async: asyncTime },
-            total: total,
-        };
-
-        return results;
-    }
 
     async runAndRecord(params, onProgress) {
         const measuredValues = {
@@ -55,10 +46,15 @@ export class BenchmarkSuite {
         performance.mark(suiteStartLabel);
 
         for (const test of this.tests) {
-            const result = await test.runAndRecord(params, this, test, this.record);
+            const { syncTime, asyncTime } = await test.runAndRecord(params, this, test);
+            const total = syncTime + asyncTime;
+            const result = {
+                tests: { Sync: syncTime, Async: asyncTime },
+                total: total,
+            };
             if (!test.ignoreResult) {
                 measuredValues.tests[test.name] = result;
-                measuredValues.total += result.total;
+                measuredValues.total += total;
             }
             onProgress?.(test.name);
         }
