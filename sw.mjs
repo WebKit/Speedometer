@@ -156,7 +156,6 @@ function handleResetPreloadingMessage(event) {
     requestLimiter.clear();
     if (event)
         replyToClient(event, SW_MESSAGES.RESET_PRELOADING);
-
 }
 
 async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay = 0, clearCache = true }) {

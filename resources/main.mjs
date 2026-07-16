@@ -112,12 +112,11 @@ export class ResourcePreloader {
         await this._sendMessageWithReply({ type: SW_MESSAGES.RESET_PRELOADING });
         if (this._activePreloadPromise)
             await this._activePreloadPromise;
-
     }
 
     async preloadSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
         if (!this._sw || suites.length === 0)
-            return;
+            return undefined;
 
         const suitesData = suites
             .filter((s) => s.resources)
@@ -128,7 +127,7 @@ export class ResourcePreloader {
             }));
 
         if (suitesData.length === 0)
-            return;
+            return undefined;
 
         const startTime = performance.now();
         this._activePreloadPromise = this._sendMessageWithReply({ type: SW_MESSAGES.PRELOAD_SUITES, suites: suitesData, delay: resourceLoadDelay, clearCache }, onProgress, PRELOAD_TIMEOUT_MS);
@@ -557,11 +556,11 @@ class MainBenchmarkClient {
 
     async _setupResourcePreloader(benchmarkConfigurator) {
         await this._resourcePreloader.setup();
-        if (!this._resourcePreloader.isCached()) {
+        if (!this._resourcePreloader.isCached())
             return this._cacheResources(benchmarkConfigurator);
-        } else {
+        else
             this._enableStartButtons();
-        }
+
         return undefined;
     }
 
@@ -642,10 +641,14 @@ class MainBenchmarkClient {
         const startButtons = document.querySelectorAll(".start-tests-button");
         if (state === BENCHMARK_STATE.PRELOADING) {
             this._resetPreloadUI();
-            startButtons.forEach((btn) => { btn.innerHTML = "<div>Preloading</div>"; });
+            startButtons.forEach((btn) => {
+                btn.innerHTML = "<div>Preloading</div>";
+            });
         } else if (state !== BENCHMARK_STATE.RUNNING) {
             document.body.style.removeProperty("--preload-progress");
-            startButtons.forEach((btn) => { btn.innerHTML = "<div>Start Test</div>"; });
+            startButtons.forEach((btn) => {
+                btn.innerHTML = "<div>Start Test</div>";
+            });
             if (state !== BENCHMARK_STATE.READY)
                 await this._resourcePreloader?.clearSw();
         }
