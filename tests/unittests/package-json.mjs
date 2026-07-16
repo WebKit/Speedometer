@@ -15,9 +15,9 @@ function getCheckedInPackageJsonFiles() {
 }
 
 function assertPkg(relPath, condition, message) {
-    if (!condition) {
+    if (!condition)
         throw new Error(`[${relPath}] ${message}`);
-    }
+
 }
 
 describe("package.json validation", () => {
@@ -45,14 +45,15 @@ describe("package.json validation", () => {
     });
 
     it("should contain valid JSON syntax for all checked-in package.json files", () => {
-        for (const { relPath, parseError } of packages) {
+        for (const { relPath, parseError } of packages)
             assertPkg(relPath, parseError === null, `Failed to parse JSON: ${parseError}`);
-        }
+
     });
 
     it("should pass normalize-package-data schema validation when present", () => {
         for (const { relPath, pkg } of packages) {
-            if (!pkg) continue;
+            if (!pkg)
+                continue;
             const clone = structuredClone(pkg);
             let normalizeError = null;
             try {
