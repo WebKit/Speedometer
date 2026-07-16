@@ -8,7 +8,7 @@ export class Params {
     // Enable a detailed developer menu to change the current Params.
     developerMode = false;
     startAutomatically = false;
-    iterationCount = 2;
+    iterationCount = 10;
     suites = [];
     // A list of tags to filter suites
     tags = ["default"];
