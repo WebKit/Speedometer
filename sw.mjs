@@ -311,21 +311,20 @@ self.addEventListener("fetch", (event) => {
             if (cachedResponse)
                 return cachedResponse;
 
-            if (event.request.url.includes("/suites")) {
-                if (event.request.url.includes("perf.webkit.org/public/v3/index.html")) {
-                    const cache = await caches.open(CACHE_NAME);
-                    const keys = await cache.keys();
-                    console.error("Cache MISS for index.html! Dump of cache keys containing 'index.html':");
-                    for (const req of keys) {
-                        if (req.url.includes("index.html")) {
-                            console.error("In cache:", req.url);
-                        }
-                    }
-                }
-                if (event.request.url.includes("/suites") &&
-                !event.request.url.includes("default-suites.mjs") &&
-                !event.request.url.includes("experimental-suites.mjs") &&
-                !event.request.url.includes("suites-helper.mjs")) {
+        await ensureState();
+
+        if (currentState !== BENCHMARK_STATE.RUNNING) {
+            try {
+                return await fetch(event.request);
+            } catch (error) {
+                console.error(`SW fetch failed for: ${event.request.url}`, error);
+                return new Response("Network error or aborted request", { status: 503 });
+            }
+        }
+
+        for (const prefix of cachedSuitesPrefixes) {
+            if (event.request.url.startsWith(prefix) || event.request.referrer.startsWith(prefix)) {
+                console.warn(`Blocked uncached request for cached suite: ${event.request.url} (referrer: ${event.request.referrer})`);
                 failedRequests.add(event.request.url);
                 return new Response("Not found in cache", { 
                     status: 404, 
@@ -335,15 +334,9 @@ self.addEventListener("fetch", (event) => {
                         "Cross-Origin-Opener-Policy": "same-origin"
                     }
                 });
-                }
             }
-
-            try {
-                return await fetch(event.request);
-            } catch (error) {
-                console.error(`SW fetch failed for: ${event.request.url}`, error);
-                return new Response("Network error or aborted request", { status: 503 });
-            }
-        })()
-    );
+        }
+        
+        return fetch(event.request);
+    })());
 });
