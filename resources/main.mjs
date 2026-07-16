@@ -12,6 +12,7 @@ export class ResourcePreloader {
         this._registration = null;
         this._sw = null;
         this._preloadParams = "";
+        this._clientId = typeof crypto?.randomUUID === "function" ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36);
     }
 
     isCached() {
@@ -21,9 +22,8 @@ export class ResourcePreloader {
     }
 
     async setup() {
-        await this._unregisterOldServiceWorkers();
-
         if (!params.preload) {
+            await this._unregisterOldServiceWorkers();
             this._registration = null;
             this._sw = null;
             return false;
@@ -58,13 +58,20 @@ export class ResourcePreloader {
         if (!this._sw)
             return Promise.resolve();
 
+        messageData.clientId = this._clientId;
+
         return new Promise((resolve, reject) => {
             const channel = new MessageChannel();
             const port = channel.port1;
             let timeoutId = null;
 
+            // Prevent GC in Safari
+            this._activeChannels = this._activeChannels || new Set();
+            this._activeChannels.add(channel);
+
             const cleanup = () => {
                 port.onmessage = null;
+                this._activeChannels.delete(channel);
                 if (timeoutId)
                     clearTimeout(timeoutId);
             };
@@ -95,6 +102,7 @@ export class ResourcePreloader {
 
                 resolve(data);
             };
+            port.start();
 
             this._sw.postMessage(messageData, [channel.port2]);
         });
@@ -115,9 +123,6 @@ export class ResourcePreloader {
     }
 
     async preloadSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
-        if (!this._sw || suites.length === 0)
-            return undefined;
-
         const suitesData = suites
             .filter((s) => s.resources)
             .map((s) => ({
@@ -126,7 +131,7 @@ export class ResourcePreloader {
                 resources: new URL(s.resources, window.location.href).href,
             }));
 
-        if (suitesData.length === 0)
+        if (!this._sw || suitesData.length === 0)
             return undefined;
 
         const startTime = performance.now();
@@ -546,9 +551,13 @@ class MainBenchmarkClient {
         }
 
         await this._resourcePreloader.resetPreloading();
-        const preloadResult = await this._setupResourcePreloader(benchmarkConfigurator);
-        if (preloadResult === "ABORTED")
-            return;
+        if (params.developerMode) {
+            this._enableStartButtons();
+        } else {
+            const preloadResult = await this._setupResourcePreloader(benchmarkConfigurator);
+            if (preloadResult === "ABORTED")
+                return;
+        }
 
         if (params.startAutomatically)
             this.start();
@@ -596,6 +605,7 @@ class MainBenchmarkClient {
 
     _resetPreloadUI() {
         this._latestProgressData = null;
+        this._progressUpdateScheduled = false;
         document.getElementById("preload-progress-completed").value = 0;
         document.getElementById("preload-info-label").textContent = "";
         document.getElementById("preload-info-progress").textContent = "";

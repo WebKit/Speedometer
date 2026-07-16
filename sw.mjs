@@ -31,48 +31,32 @@ class LockStore {
         return this.dbPromise;
     }
 
-    async getOwner() {
+    async _runTransaction(mode, callback) {
         try {
             const db = await this._openDB();
-            const data = await new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, "readonly");
-                const req = tx.objectStore(STORE_NAME).get("stateData");
+            return await new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, mode);
+                const req = callback(tx.objectStore(STORE_NAME));
                 req.onsuccess = () => resolve(req.result);
                 req.onerror = () => reject(req.error);
             });
-            return data?.clientId || null;
         } catch (e) {
-            console.warn("IndexedDB read failed", e);
+            console.warn(`IndexedDB ${mode} failed`, e);
             return null;
         }
     }
 
+    async getOwner() {
+        const data = await this._runTransaction("readonly", (store) => store.get("stateData"));
+        return data?.clientId || null;
+    }
+
     async setOwner(clientId) {
-        try {
-            const db = await this._openDB();
-            await new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, "readwrite");
-                const req = tx.objectStore(STORE_NAME).put({ clientId }, "stateData");
-                req.onsuccess = () => resolve();
-                req.onerror = () => reject(req.error);
-            });
-        } catch (e) {
-            console.warn("IndexedDB write failed", e);
-        }
+        await this._runTransaction("readwrite", (store) => store.put({ clientId }, "stateData"));
     }
 
     async clear() {
-        try {
-            const db = await this._openDB();
-            await new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, "readwrite");
-                const req = tx.objectStore(STORE_NAME).delete("stateData");
-                req.onsuccess = () => resolve();
-                req.onerror = () => reject(req.error);
-            });
-        } catch (e) {
-            console.warn("IndexedDB clear failed", e);
-        }
+        await this._runTransaction("readwrite", (store) => store.delete("stateData"));
     }
 
     async hasLock(clientId) {
@@ -86,7 +70,10 @@ class LockStore {
 const STORE = new LockStore();
 
 function replyToClient(event, type, msg = {}) {
-    event.ports?.[0]?.postMessage({ type, ...msg });
+    if (event.ports?.[0]) {
+        event.ports[0].start?.();
+        event.ports[0].postMessage({ type, ...msg });
+    }
 }
 
 function replyError(event, message) {
@@ -114,7 +101,7 @@ class RequestLimiter {
             } catch (e) {
                 // Individual task errors are handled by their respective promises
             }
-            await new Promise((r) => setTimeout(r, 1));
+            await delayAsync(1); // Yield to event loop
         }
         this.active--;
     }
@@ -127,18 +114,16 @@ class RequestLimiter {
 
             if (this.active < this.limit) {
                 this.active++;
-                this._processQueue();
+                this._processQueue(); // Intentionally not awaited
             }
         });
     }
 
     clear() {
-        for (const task of this.queue) {
-            if (task.resolve)
-                task.resolve(0);
-        }
+        for (const task of this.queue)
+            task.resolve?.(0);
 
-        this.queue = [];
+        this.queue.length = 0;
     }
 }
 
@@ -159,56 +144,64 @@ function handleResetPreloadingMessage(event) {
 }
 
 async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay = 0, clearCache = true }) {
-    await STORE.getOwner();
-    await updateActiveClient(clientId);
+    try {
+        await STORE.getOwner();
+        await updateActiveClient(clientId);
 
-    handleResetPreloadingMessage(); // Call it without event to avoid replying to the PRELOAD_SUITES channel!
+        handleResetPreloadingMessage(); // Call it without event to avoid replying to the PRELOAD_SUITES channel!
 
-    currentPreloadEvent = event;
-    const preloadId = currentPreloadId;
+        currentPreloadEvent = event;
+        const preloadId = currentPreloadId;
 
-    failedRequests.clear();
+        failedRequests.clear();
+        if (clearCache)
+            await caches.delete(CACHE_NAME);
 
-    if (clearCache)
-        await caches.delete(CACHE_NAME);
+        const cache = await caches.open(CACHE_NAME);
+        const urlsToCache = await getUrlsToCache(suites);
+        const total = urlsToCache.length;
 
-    const cache = await caches.open(CACHE_NAME);
-    let loaded = 0;
-    let transferredSize = 0;
-    const urlsToCache = [];
+        let loaded = 0;
+        let transferredSize = 0;
 
-    for (const suite of suites) {
-        if (!suite.resources)
-            continue;
-        urlsToCache.push(...await parseSuiteResources(suite));
-    }
+        const promises = urlsToCache.map(async (item, index) => {
+            if (preloadId !== currentPreloadId)
+                return;
+            const size = await fetchAndCache(cache, item.url, delay * index);
+            if (preloadId !== currentPreloadId)
+                return;
+            transferredSize += size;
+            loaded++;
+            replyToClient(event, SW_MESSAGES.PRELOAD_PROGRESS, { loaded, total, url: item.url, suiteName: item.suiteName });
+        });
 
-    const total = urlsToCache.length;
-    const promises = urlsToCache.map(async (item, index) => {
+        await Promise.all(promises);
+
         if (preloadId !== currentPreloadId)
             return;
-        const size = await fetchAndCache(cache, item.url, delay * index);
-        if (preloadId !== currentPreloadId)
+
+        if (!await STORE.hasLock(clientId)) {
+            replyError(event, "Speedometer aborted: Another tab took over.");
             return;
-        transferredSize += size;
-        loaded++;
-        replyToClient(event, SW_MESSAGES.PRELOAD_PROGRESS, { loaded, total, url: item.url, suiteName: item.suiteName });
-    });
-
-    await Promise.all(promises);
-
-    if (preloadId !== currentPreloadId)
-        return;
-
-    if (!await STORE.hasLock(clientId)) {
-        replyError(event, "Speedometer aborted: Another tab took over.");
+        }
+        replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { transferredSize, count: urlsToCache.length });
+    } catch (error) {
+        console.error("Error during preload:", error);
+        replyError(event, error.message || "Failed to preload resources.");
+    } finally {
         if (currentPreloadEvent === event)
             currentPreloadEvent = null;
-        return;
     }
-    replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { transferredSize, count: urlsToCache.length });
-    if (currentPreloadEvent === event)
-        currentPreloadEvent = null;
+}
+
+async function getUrlsToCache(suites) {
+    const urlsToCache = [];
+    for (const suite of suites) {
+        if (suite.resources)
+            urlsToCache.push(...await parseSuiteResources(suite));
+    }
+
+    return urlsToCache;
 }
 
 async function parseSuiteResources(suite) {
@@ -237,7 +230,7 @@ async function fetchAndCache(cache, url, delayMs) {
         await delayAsync(delayMs);
     return requestLimiter.schedule(async () => {
         const request = new Request(url, { cache: "no-cache" });
-        const existing = await cache.match(request, { ignoreSearch: true, ignoreVary: true });
+        const existing = await cache.match(request, { ignoreSearch: true });
         if (existing)
             return getResponseSize(existing);
 
@@ -278,12 +271,16 @@ async function updateActiveClient(newClientId) {
 }
 
 async function handleClearCacheMessage(event, clientId) {
-    if (!await STORE.hasLock(clientId)) {
-        replyError(event, "Cannot clear SW: You do not own the lock.");
-        return;
+    try {
+        if (!await STORE.hasLock(clientId)) {
+            replyError(event, "Cannot clear SW: You do not own the lock.");
+            return;
+        }
+        await STORE.clear();
+        replyToClient(event, "SUCCESS");
+    } catch (e) {
+        replyError(event, e.message || "Failed to clear cache");
     }
-    await STORE.clear();
-    replyToClient(event, "SUCCESS");
 }
 
 async function handleGetFailedRequestsMessage(event, clientId) {
@@ -301,9 +298,10 @@ self.addEventListener("message", (event) => {
     const { data } = event;
     if (!data)
         return;
+    const clientId = data.clientId || event.source?.id;
     const handler = MESSAGE_HANDLERS[data.type];
     if (handler)
-        event.waitUntil(handler(event, event.source?.id, data));
+        event.waitUntil(handler(event, clientId, data));
     else
         console.error("Unknown service worker message type:", data.type);
 });
@@ -321,7 +319,7 @@ self.addEventListener("fetch", (event) => {
                 requestToMatch = urlObj.href;
             }
 
-            const cachedResponse = await caches.match(requestToMatch, { cacheName: CACHE_NAME, ignoreSearch: true, ignoreVary: true });
+            const cachedResponse = await caches.match(requestToMatch, { cacheName: CACHE_NAME, ignoreSearch: true });
             if (cachedResponse)
                 return cachedResponse;
 
