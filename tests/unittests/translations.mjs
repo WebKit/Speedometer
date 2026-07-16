@@ -20,7 +20,6 @@ describe("Translations & Localization (`resources/shared/translations.mjs`)", ()
 
             for (const lang of supportedLanguages)
                 expect(todos[lang].length).to.be(baseLength, `Expected language '${lang}' to have exactly ${baseLength} translations, found ${todos[lang].length}`);
-
         });
 
         it("should contain only valid non-empty strings in all dictionaries", () => {

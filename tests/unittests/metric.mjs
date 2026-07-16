@@ -1,5 +1,5 @@
 import expect from "expect.js";
-import { Metric, MILLISECONDS_PER_MINUTE } from "../../resources/metric.mjs";
+import { Metric } from "../../resources/metric.mjs";
 
 describe("Metric (Data Trees & Serialization)", () => {
     describe("constructor & property enumeration", () => {
