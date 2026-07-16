@@ -21,9 +21,9 @@ export class BenchmarkStep {
 }
 
 export class AsyncBenchmarkStep extends BenchmarkStep {
-    async runAndRecord(params, suite, test, callback) {
-        const testRunner = new AsyncStepRunner(null, null, params, suite, test, callback);
-        const result = await testRunner.runTest();
+    async runAndRecordStep(params, suite, step) {
+        const stepRunner = new AsyncStepRunner(null, null, params, suite, step);
+        const result = await stepRunner.runStep();
         return result;
     }
 }

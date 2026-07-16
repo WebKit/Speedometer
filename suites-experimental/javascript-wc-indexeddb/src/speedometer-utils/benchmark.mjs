@@ -34,16 +34,6 @@ export class BenchmarkSuite {
         this.tests = tests;
     }
 
-    record(_test, syncTime, asyncTime) {
-        const total = syncTime + asyncTime;
-        const results = {
-            tests: { Sync: syncTime, Async: asyncTime },
-            total: total,
-        };
-
-        return results;
-    }
-
     async runAndRecord(params, onProgress) {
         const measuredValues = {
             tests: {},
