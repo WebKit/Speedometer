@@ -4,7 +4,6 @@
 
 This workload simulates an interactive developer terminal environment using [xterm.js](https://xtermjs.org/) and its official addons (`@xterm/addon-fit`, `@xterm/addon-web-links`, `@xterm/addon-canvas`, and `@xterm/addon-webgl`).
 
-
 ## Implementation Details
 
 The application maintains four distinct terminal sessions organized into tabs (`Build Log`, `Links & Traces`, `Ncurses Monitor`, and `Git Status`). To ensure deterministic timing and repeatable results during benchmark runs, the workload incorporates universal asynchronous overrides (`async-overrides.js`) that intercept and synchronize `setTimeout`, `requestAnimationFrame`, `createImageBitmap`, and DOM observers (`ResizeObserver`, `IntersectionObserver`, `MutationObserver`).
