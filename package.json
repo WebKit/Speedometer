@@ -18,7 +18,7 @@
         "dev": "node tests/server.mjs",
         "lint:check": "eslint \"**/*.{js,mjs,jsx,ts,tsx}\"",
         "lint:fix": "eslint \"**/*.{js,mjs,jsx,ts,tsx}\" --fix",
-        "lint:pkg": "npm-package-json-lint \"**/package.json\" --ignore-pattern \"**/node_modules/**\"",
+        "lint:pkg": "npmPkgJsonLint \"**/package.json\" --ignore-pattern \"**/node_modules/**\"",
         "pretty:check": "prettier --check ./",
         "pretty:fix": "prettier --write ./",
         "format": "node tests/format.mjs",
