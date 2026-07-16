@@ -989,6 +989,11 @@ section#about .note {
     pointer-events: none;
 }
 
+[data-benchmark-state="PRELOADING"] .developer-mode .start-tests-button {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
 [data-benchmark-state="PRELOADING"] .start-tests-button > div {
     background-color: var(--background);
     border-radius: 10px;

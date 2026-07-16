@@ -1006,7 +1006,8 @@ export const DefaultSuites = freezeSuites([
     },
     {
         name: "Perf-Dashboard",
-        url: "suites/perf.webkit.org/public/v3/#/charts/?since=1678991819934&paneList=((55-1974-null-null-(5-2.5-500)))",
+        url: "suites/perf.webkit.org/public/v3/index.html#/charts/?since=1678991819934&paneList=((55-1974-null-null-(5-2.5-500)))",
+        resources: "suites/perf.webkit.org/public/v3/resources.txt",
         tags: ["default", "chart", "webcomponents"],
         async prepare(page) {
             await page.waitForElement("#app-is-ready");

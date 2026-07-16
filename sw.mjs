@@ -4,6 +4,7 @@ const CACHE_NAME = "speedometer-cache-v4.0";
 const DB_NAME = "SpeedometerStateDB";
 const STORE_NAME = "SpeedometerSWState";
 const DB_VERSION = 2;
+let failedRequests = new Set();
 
 class LockStore {
     constructor() {
@@ -113,6 +114,7 @@ class RequestLimiter {
             } catch (e) {
                 // Individual task errors are handled by their respective promises
             }
+            await new Promise(r => setTimeout(r, 1));
         }
         this.active--;
     }
@@ -132,9 +134,30 @@ class RequestLimiter {
 
 const requestLimiter = new RequestLimiter(MAX_CONCURRENT_REQUESTS);
 
+let currentPreloadEvent = null;
+let currentPreloadId = 0;
+
+function handleResetPreloadingMessage(event) {
+    if (currentPreloadEvent) {
+        replyToClient(currentPreloadEvent, "PRELOAD_ABORTED");
+    }
+    currentPreloadEvent = null;
+    currentPreloadId++;
+    if (event) {
+        replyToClient(event, SW_MESSAGES.RESET_PRELOADING);
+    }
+}
+
 async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay = 0, clearCache = true }) {
     await STORE.getOwner();
     await updateActiveClient(clientId);
+
+    handleResetPreloadingMessage(); // Call it without event to avoid replying to the PRELOAD_SUITES channel!
+
+    currentPreloadEvent = event;
+    const preloadId = currentPreloadId;
+
+    failedRequests.clear();
 
     if (clearCache)
         await caches.delete(CACHE_NAME);
@@ -152,7 +175,9 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay 
 
     const total = urlsToCache.length;
     const promises = urlsToCache.map(async (item, index) => {
+        if (preloadId !== currentPreloadId) return;
         const size = await fetchAndCache(cache, item.url, delay * index);
+        if (preloadId !== currentPreloadId) return;
         transferredSize += size;
         loaded++;
         replyToClient(event, SW_MESSAGES.PRELOAD_PROGRESS, { loaded, total, url: item.url, suiteName: item.suiteName });
@@ -160,17 +185,23 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay 
 
     await Promise.all(promises);
 
+    if (preloadId !== currentPreloadId) return;
+
     if (!await STORE.hasLock(clientId)) {
         replyError(event, "Speedometer aborted: Another tab took over.");
+        if (currentPreloadEvent === event) currentPreloadEvent = null;
         return;
     }
     replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { transferredSize, count: urlsToCache.length });
+    if (currentPreloadEvent === event) currentPreloadEvent = null;
 }
 
 async function parseSuiteResources(suite) {
     const response = await fetch(suite.resources);
-    if (!response.ok)
+    if (!response.ok) {
+        console.error(`Failed to load resources for suite ${suite.name}: ${suite.resources} returned ${response.status}`);
         throw new Error(`Failed to load resources for suite ${suite.name}: ${suite.resources} returned ${response.status}`);
+    }
     const text = await response.text();
     return text
         .trim()
@@ -240,10 +271,15 @@ async function handleClearCacheMessage(event, clientId) {
     replyToClient(event, "SUCCESS");
 }
 
+async function handleGetFailedRequestsMessage(event, clientId) {
+    replyToClient(event, SW_MESSAGES.FAILED_REQUESTS, { requests: Array.from(failedRequests) });
+}
+
 const MESSAGE_HANDLERS = Object.freeze({
-    __proto__: null,
     [SW_MESSAGES.PRELOAD_SUITES]: handlePreloadSuitesMessage,
+    [SW_MESSAGES.RESET_PRELOADING]: handleResetPreloadingMessage,
     [SW_MESSAGES.CLEAR_CACHE]: handleClearCacheMessage,
+    [SW_MESSAGES.GET_FAILED_REQUESTS]: handleGetFailedRequestsMessage,
 });
 
 self.addEventListener("message", (event) => {
@@ -258,13 +294,56 @@ self.addEventListener("message", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+    if (event.request.cache === "only-if-cached" && event.request.mode !== "same-origin") {
+        return;
+    }
+    
     event.respondWith(
         (async () => {
-            const cachedResponse = await caches.match(event.request, { cacheName: CACHE_NAME, ignoreSearch: true, ignoreVary: true });
+            let requestToMatch = event.request;
+            const urlObj = new URL(event.request.url);
+            if (urlObj.pathname.endsWith("/")) {
+                urlObj.pathname += "index.html";
+                requestToMatch = urlObj.href;
+            }
+
+            const cachedResponse = await caches.match(requestToMatch, { cacheName: CACHE_NAME, ignoreSearch: true, ignoreVary: true });
             if (cachedResponse)
                 return cachedResponse;
 
-            return fetch(event.request);
+            if (event.request.url.includes("/suites")) {
+                if (event.request.url.includes("perf.webkit.org/public/v3/index.html")) {
+                    const cache = await caches.open(CACHE_NAME);
+                    const keys = await cache.keys();
+                    console.error("Cache MISS for index.html! Dump of cache keys containing 'index.html':");
+                    for (const req of keys) {
+                        if (req.url.includes("index.html")) {
+                            console.error("In cache:", req.url);
+                        }
+                    }
+                }
+                if (event.request.url.includes("/suites") &&
+                !event.request.url.includes("default-suites.mjs") &&
+                !event.request.url.includes("experimental-suites.mjs") &&
+                !event.request.url.includes("suites-helper.mjs")) {
+                failedRequests.add(event.request.url);
+                return new Response("Not found in cache", { 
+                    status: 404, 
+                    statusText: "Not Found",
+                    headers: {
+                        "Cross-Origin-Embedder-Policy": "require-corp",
+                        "Cross-Origin-Opener-Policy": "same-origin"
+                    }
+                });
+                }
+            }
+
+            try {
+                return await fetch(event.request);
+            } catch (error) {
+                console.error(`SW fetch failed for: ${event.request.url}`, error);
+                return new Response("Network error or aborted request", { status: 503 });
+            }
         })()
     );
 });

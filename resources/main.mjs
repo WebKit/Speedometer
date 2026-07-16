@@ -82,6 +82,10 @@ export class ResourcePreloader {
                     return;
                 }
                 cleanup();
+                if (data.type === "PRELOAD_ABORTED") {
+                    resolve({ type: "PRELOAD_ABORTED" });
+                    return;
+                }
                 if (data.type === "ERROR") {
                     reject(new Error(data.message || "Unknown SW Error"));
                     return;
@@ -98,6 +102,12 @@ export class ResourcePreloader {
         if (!this._sw)
             return;
         await this._sendMessageWithReply({ type: SW_MESSAGES.CLEAR_CACHE });
+    }
+
+    async resetPreloading() {
+        if (!this._sw)
+            return;
+        await this._sendMessageWithReply({ type: SW_MESSAGES.RESET_PRELOADING });
     }
 
     async preloadSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
@@ -117,6 +127,10 @@ export class ResourcePreloader {
 
         const startTime = performance.now();
         const response = await this._sendMessageWithReply({ type: SW_MESSAGES.PRELOAD_SUITES, suites: suitesData, delay: resourceLoadDelay, clearCache }, onProgress, PRELOAD_TIMEOUT_MS);
+
+        if (response?.type === "PRELOAD_ABORTED") {
+            return "ABORTED";
+        }
 
         if (response?.type === SW_MESSAGES.PRELOAD_DONE) {
             const timeTakenMs = performance.now() - startTime;
@@ -222,7 +236,9 @@ class MainBenchmarkClient {
         if (!this._isStepping())
             this._developerModeContainer?.remove();
 
-        await this._setupResourcePreloader(benchmarkConfigurator);
+        await this._resourcePreloader.resetPreloading();
+        const preloadResult = await this._setupResourcePreloader(benchmarkConfigurator);
+        if (preloadResult === "ABORTED") return false;
 
         try {
             await this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
@@ -285,9 +301,17 @@ class MainBenchmarkClient {
         this._finishedTestCount = 0;
     }
 
-    didFinishLastIteration(metrics) {
+    async didFinishLastIteration(metrics) {
         console.assert(this._isRunning);
         this._isRunning = false;
+
+        const response = await this._resourcePreloader._sendMessageWithReply({ type: SW_MESSAGES.GET_FAILED_REQUESTS });
+        if (response?.requests && response.requests.length > 0) {
+            console.warn("The following requests failed during the benchmark and bypassed the cache:");
+            console.warn(response.requests.join("\n"));
+            alert("Warning: The benchmark had missing resources that were not cached. Check the console for details.");
+        }
+
         this._hasResults = true;
         this._metrics = metrics;
         this._setBenchmarkState(BENCHMARK_STATE.DONE);
@@ -514,7 +538,9 @@ class MainBenchmarkClient {
             document.body.append(this._developerModeContainer);
         }
 
-        await this._setupResourcePreloader(benchmarkConfigurator);
+        await this._resourcePreloader.resetPreloading();
+        const preloadResult = await this._setupResourcePreloader(benchmarkConfigurator);
+        if (preloadResult === "ABORTED") return;
 
         if (params.startAutomatically)
             this.start();
@@ -523,16 +549,24 @@ class MainBenchmarkClient {
     async _setupResourcePreloader(benchmarkConfigurator) {
         await this._resourcePreloader.setup();
         if (!this._resourcePreloader.isCached())
-            await this._cacheResources(benchmarkConfigurator);
+            return await this._cacheResources(benchmarkConfigurator);
     }
 
     async _cacheResources(benchmarkConfigurator) {
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const clearCache = !params.isDefault();
         this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
+        
+        this._preloadGeneration = (this._preloadGeneration || 0) + 1;
+        const currentGeneration = this._preloadGeneration;
+        const onProgress = (data) => {
+            if (this._preloadGeneration === currentGeneration)
+                this._updateCacheProgress(data);
+        };
 
         try {
-            await this._resourcePreloader.preloadSuites(enabledSuites, params.resourceLoadDelay, clearCache, this._updateCacheProgress.bind(this));
+            const result = await this._resourcePreloader.preloadSuites(enabledSuites, params.resourceLoadDelay, clearCache, onProgress);
+            if (result === "ABORTED") return "ABORTED";
             this._enableStartButtons();
         } catch (error) {
             console.error("Service Worker preload failed:", error);
@@ -543,13 +577,21 @@ class MainBenchmarkClient {
         }
     }
 
+    _resetPreloadUI() {
+        document.getElementById("preload-progress-completed").value = 0;
+        document.getElementById("preload-info-label").textContent = "";
+        document.getElementById("preload-info-progress").textContent = "";
+        document.body.style.setProperty("--preload-progress", "0%");
+    }
+
     _updateCacheProgress(progressData) {
         const { loaded, total, url, suiteName } = progressData;
         document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
         const progress = document.getElementById("preload-progress-completed");
         progress.max = total;
         progress.value = loaded;
-        const filename = url ? url.substring(url.lastIndexOf("/") + 1) : "";
+        let filename = url ? url.substring(url.lastIndexOf("/") + 1) : "";
+        if (!filename && url) filename = url.substring(url.lastIndexOf("/", url.length - 2) + 1);
         const labelText = suiteName ? `${suiteName}: ${filename}` : filename;
         document.getElementById("preload-info-label").textContent = labelText;
         document.getElementById("preload-info-progress").textContent = `${loaded} / ${total}`;
@@ -565,16 +607,13 @@ class MainBenchmarkClient {
     async _setBenchmarkState(state) {
         document.body.setAttribute("data-benchmark-state", state);
 
-        const startButton = document.querySelector(".start-tests-button");
+        const startButtons = document.querySelectorAll(".start-tests-button");
         if (state === BENCHMARK_STATE.PRELOADING) {
-            document.getElementById("preload-progress-completed").value = 0;
-            document.getElementById("preload-info-label").textContent = "";
-            document.getElementById("preload-info-progress").textContent = "";
-            document.body.style.setProperty("--preload-progress", "0%");
-            startButton.innerHTML = "<div>Preloading</div>";
+            this._resetPreloadUI();
+            startButtons.forEach((btn) => btn.innerHTML = "<div>Preloading</div>");
         } else if (state !== BENCHMARK_STATE.RUNNING) {
             document.body.style.removeProperty("--preload-progress");
-            startButton.innerHTML = "<div>Start Test</div>";
+            startButtons.forEach((btn) => btn.innerHTML = "<div>Start Test</div>");
             if (state !== BENCHMARK_STATE.READY)
                 await this._resourcePreloader?.clearSw();
         }
