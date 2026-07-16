@@ -311,25 +311,6 @@ self.addEventListener("fetch", (event) => {
             return cachedResponse;
         }
 
-        await ensureState();
-
-        if (currentState === BENCHMARK_STATE.RUNNING) {
-            for (const prefix of cachedSuitesPrefixes) {
-                if (event.request.url.startsWith(prefix) || event.request.referrer.startsWith(prefix)) {
-                    console.warn(`Blocked uncached request for cached suite: ${event.request.url} (referrer: ${event.request.referrer})`);
-                    failedRequests.add(event.request.url);
-                    return new Response("Not found in cache", { 
-                        status: 404, 
-                        statusText: "Not Found",
-                        headers: {
-                            "Cross-Origin-Embedder-Policy": "require-corp",
-                            "Cross-Origin-Opener-Policy": "same-origin"
-                        }
-                    });
-                }
-            }
-        }
-        
         return fetch(event.request);
     })());
 });
