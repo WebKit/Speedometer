@@ -15,6 +15,8 @@ export class ResourcePreloader {
     }
 
     isCached() {
+        if (!params.preload)
+            return true;
         return params.toSearchParams() === this._preloadParams;
     }
 
@@ -553,8 +555,11 @@ class MainBenchmarkClient {
 
     async _setupResourcePreloader(benchmarkConfigurator) {
         await this._resourcePreloader.setup();
-        if (!this._resourcePreloader.isCached())
+        if (!this._resourcePreloader.isCached()) {
             return await this._cacheResources(benchmarkConfigurator);
+        } else {
+            this._enableStartButtons();
+        }
     }
 
     async _cacheResources(benchmarkConfigurator) {
