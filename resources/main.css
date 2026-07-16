@@ -409,7 +409,7 @@ section#home .content {
     text-align: center;
 }
 
-section:not(#details) .buttons.section-footer {
+.fixed-footer {
     position: absolute;
     bottom: var(--padding-width);
     left: var(--padding-width);
@@ -424,7 +424,7 @@ section:not(#details) .buttons.section-footer {
     z-index: 10;
 }
 
-section:not(#details) .buttons.section-footer .button-row {
+.fixed-footer .button-row {
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -437,8 +437,8 @@ section#instructions .section-content {
     padding-bottom: 70px;
 }
 
-section:not(#details) .buttons.section-footer a,
-section:not(#details) .buttons.section-footer .button {
+.fixed-footer a,
+.fixed-footer .button {
     appearance: none;
     border: 2px solid var(--foreground);
     border-radius: 8px;
@@ -454,20 +454,20 @@ section:not(#details) .buttons.section-footer .button {
     text-decoration: none;
 }
 
-section:not(#details) .buttons.section-footer a:active,
-section:not(#details) .buttons.section-footer .button:active {
+.fixed-footer a:active,
+.fixed-footer .button:active {
     background-color: var(--foreground);
     color: var(--background);
     border-color: var(--foreground) !important;
 }
 
-section:not(#details) .buttons.section-footer a:focus,
-section:not(#details) .buttons.section-footer .button:focus {
+.fixed-footer a:focus,
+.fixed-footer .button:focus {
     outline: none;
     border-color: var(--highlight);
 }
 
-section#home > .buttons:not(.section-footer) {
+section#home .buttons:not(.section-footer) {
     position: absolute;
     top: 50%;
     left: 50%;
