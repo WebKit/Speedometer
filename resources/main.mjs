@@ -108,6 +108,9 @@ export class ResourcePreloader {
         if (!this._sw)
             return;
         await this._sendMessageWithReply({ type: SW_MESSAGES.RESET_PRELOADING });
+        if (this._activePreloadPromise) {
+            await this._activePreloadPromise;
+        }
     }
 
     async preloadSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
@@ -126,7 +129,9 @@ export class ResourcePreloader {
             return;
 
         const startTime = performance.now();
-        const response = await this._sendMessageWithReply({ type: SW_MESSAGES.PRELOAD_SUITES, suites: suitesData, delay: resourceLoadDelay, clearCache }, onProgress, PRELOAD_TIMEOUT_MS);
+        this._activePreloadPromise = this._sendMessageWithReply({ type: SW_MESSAGES.PRELOAD_SUITES, suites: suitesData, delay: resourceLoadDelay, clearCache }, onProgress, PRELOAD_TIMEOUT_MS);
+        const response = await this._activePreloadPromise;
+        this._activePreloadPromise = null;
 
         if (response?.type === "PRELOAD_ABORTED") {
             return "ABORTED";
@@ -555,6 +560,10 @@ class MainBenchmarkClient {
     async _cacheResources(benchmarkConfigurator) {
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const clearCache = !params.isDefault();
+        
+        if (this._state === BENCHMARK_STATE.PRELOADING) {
+            this._resetPreloadUI();
+        }
         this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
         
         this._preloadGeneration = (this._preloadGeneration || 0) + 1;
