@@ -298,42 +298,35 @@ self.addEventListener("fetch", (event) => {
         return;
     }
     
-    event.respondWith(
-        (async () => {
-            let requestToMatch = event.request;
-            const urlObj = new URL(event.request.url);
-            if (urlObj.pathname.endsWith("/")) {
-                urlObj.pathname += "index.html";
-                requestToMatch = urlObj.href;
-            }
+    event.respondWith((async () => {
+        let requestToMatch = event.request;
+        const urlObj = new URL(event.request.url);
+        if (urlObj.pathname.endsWith("/")) {
+            urlObj.pathname += "index.html";
+            requestToMatch = urlObj.href;
+        }
 
-            const cachedResponse = await caches.match(requestToMatch, { cacheName: CACHE_NAME, ignoreSearch: true, ignoreVary: true });
-            if (cachedResponse)
-                return cachedResponse;
+        const cachedResponse = await caches.match(requestToMatch, { cacheName: CACHE_NAME, ignoreSearch: true, ignoreVary: true });
+        if (cachedResponse) {
+            return cachedResponse;
+        }
 
         await ensureState();
 
-        if (currentState !== BENCHMARK_STATE.RUNNING) {
-            try {
-                return await fetch(event.request);
-            } catch (error) {
-                console.error(`SW fetch failed for: ${event.request.url}`, error);
-                return new Response("Network error or aborted request", { status: 503 });
-            }
-        }
-
-        for (const prefix of cachedSuitesPrefixes) {
-            if (event.request.url.startsWith(prefix) || event.request.referrer.startsWith(prefix)) {
-                console.warn(`Blocked uncached request for cached suite: ${event.request.url} (referrer: ${event.request.referrer})`);
-                failedRequests.add(event.request.url);
-                return new Response("Not found in cache", { 
-                    status: 404, 
-                    statusText: "Not Found",
-                    headers: {
-                        "Cross-Origin-Embedder-Policy": "require-corp",
-                        "Cross-Origin-Opener-Policy": "same-origin"
-                    }
-                });
+        if (currentState === BENCHMARK_STATE.RUNNING) {
+            for (const prefix of cachedSuitesPrefixes) {
+                if (event.request.url.startsWith(prefix) || event.request.referrer.startsWith(prefix)) {
+                    console.warn(`Blocked uncached request for cached suite: ${event.request.url} (referrer: ${event.request.referrer})`);
+                    failedRequests.add(event.request.url);
+                    return new Response("Not found in cache", { 
+                        status: 404, 
+                        statusText: "Not Found",
+                        headers: {
+                            "Cross-Origin-Embedder-Policy": "require-corp",
+                            "Cross-Origin-Opener-Policy": "same-origin"
+                        }
+                    });
+                }
             }
         }
         
