@@ -12,7 +12,8 @@
         "build": "webpack --config webpack.prod.mjs && npm run sanitize",
         "dev": "webpack serve --open --config webpack.dev.mjs",
         "serve": "http-server ./dist -p 7002 -c-1 --cors",
-        "test": "jest"
+        "test": "jest",
+        "postbuild": "node ../../../../resources/shared/generate-resources.mjs dist"
     },
     "devDependencies": {
         "@babel/core": "^7.21.0",

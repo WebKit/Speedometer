@@ -13,7 +13,8 @@
         "build": "wireit",
         "tsc": "wireit",
         "rollup": "wireit",
-        "copy-index-html": "wireit"
+        "copy-index-html": "wireit",
+        "postbuild": "node ../../../../resources/shared/generate-resources.mjs dist"
     },
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^15.1.0",

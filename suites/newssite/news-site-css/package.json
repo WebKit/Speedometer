@@ -10,7 +10,8 @@
     },
     "scripts": {
         "lint": "stylelint \"src/css/*.css\"",
-        "build": "rollup -c --bundleConfigAsCjs"
+        "build": "rollup -c --bundleConfigAsCjs",
+        "postbuild": "node ../../../resources/shared/generate-resources.mjs dist"
     },
     "devDependencies": {
         "@rollup/plugin-babel": "^6.0.3",

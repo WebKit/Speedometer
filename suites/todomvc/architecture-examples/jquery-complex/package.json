@@ -1,14 +1,15 @@
 {
-  "name": "todomvc-jquery-complex",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "build": "node scripts/build.mjs",
-    "serve": "http-server ./dist -p 7002 -c-1 --cors"
-  },
-  "devDependencies": {
-    "big-dom-generator": "file:../../big-dom-generator",
-    "http-server": "^14.1.1",
-    "todomvc-jquery": "file:../jquery"
-  }
+    "name": "todomvc-jquery-complex",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "build": "node scripts/build.mjs",
+        "serve": "http-server ./dist -p 7002 -c-1 --cors",
+        "postbuild": "node ../../../../resources/shared/generate-resources.mjs dist"
+    },
+    "devDependencies": {
+        "big-dom-generator": "file:../../big-dom-generator",
+        "http-server": "^14.1.1",
+        "todomvc-jquery": "file:../jquery"
+    }
 }

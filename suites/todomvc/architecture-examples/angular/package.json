@@ -12,7 +12,8 @@
         "dev": "ng serve",
         "build": "ng build --source-map=true",
         "watch": "ng build --watch --configuration development",
-        "test": "ng test"
+        "test": "ng test",
+        "postbuild": "node ../../../../resources/shared/generate-resources.mjs dist"
     },
     "dependencies": {
         "@angular/animations": "^14.2.0",

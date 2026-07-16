@@ -14,7 +14,8 @@
         "build": "rollup -c --bundleConfigAsCjs",
         "reference": "http-server ./_reference/ -p 7006 -c-1 --cors -o",
         "serve": "http-server ./dist/ -p 7007 -c-1 --cors -o",
-        "prepublish": "npm run build"
+        "prepublish": "npm run build",
+        "postbuild": "node ../../../resources/shared/generate-resources.mjs dist"
     },
     "devDependencies": {
         "@rollup/plugin-babel": "^6.0.3",

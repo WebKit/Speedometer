@@ -18,7 +18,8 @@
         "dev:main-css": "npx tailwindcss -i ./src/input.css -o ./src/tailwind.generated.css --watch",
         "dev:chat-window-css": "npx tailwindcss -c ./tailwind.chat-window.config.js -i ./src/input.css -o ./src/tailwind.chat-window.generated.css --watch",
         "dev:rollup": "rollup --config rollup.config.js --watch",
-        "dev:serve": "web-dev-server --config web-dev-server.dev.config.mjs"
+        "dev:serve": "web-dev-server --config web-dev-server.dev.config.mjs",
+        "postbuild": "node ../../resources/shared/generate-resources.mjs dist"
     },
     "dependencies": {
         "lit": "^3.3.0"

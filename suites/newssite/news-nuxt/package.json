@@ -12,7 +12,8 @@
         "lint:fix": "eslint . --fix",
         "pretty:check": "prettier --check ./",
         "pretty:fix": "prettier --write ./",
-        "format": "npm run pretty:fix ; npm run lint:fix"
+        "format": "npm run pretty:fix ; npm run lint:fix",
+        "postbuild": "node ../../../resources/shared/generate-resources.mjs dist"
     },
     "devDependencies": {
         "@nuxt/eslint-config": "^0.1.1",

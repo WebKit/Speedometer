@@ -9,7 +9,8 @@
     "private": true,
     "scripts": {
         "build": "node scripts/build.mjs",
-        "serve": "http-server ./dist -p 7006 -c-1 --cors -o"
+        "serve": "http-server ./dist -p 7006 -c-1 --cors -o",
+        "postbuild": "node ../../../../resources/shared/generate-resources.mjs dist"
     },
     "keywords": [],
     "author": "",

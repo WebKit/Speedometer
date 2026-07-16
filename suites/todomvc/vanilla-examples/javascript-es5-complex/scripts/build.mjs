@@ -1,4 +1,3 @@
-import { generateResourcesFile } from "../../../../../resources/shared/generate-resources.mjs";
 /**
  * Builds the TodoMVC JavaScript Es5 Complex DOM.
  */
@@ -19,4 +18,3 @@ const options = {
 };
 
 buildComplex(options);
-await generateResourcesFile(path.join(import.meta.dirname, "../dist"));

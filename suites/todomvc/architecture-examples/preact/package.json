@@ -11,7 +11,8 @@
         "build": "rollup -c --bundleConfigAsCjs",
         "dev": "npm-run-all --parallel serve watch",
         "serve": "http-server ./dist -p 7002 -c-1 --cors -o",
-        "watch": "ROLLUP_WATCH=true rollup -c -w --bundleConfigAsCjs"
+        "watch": "ROLLUP_WATCH=true rollup -c -w --bundleConfigAsCjs",
+        "postbuild": "node ../../../../resources/shared/generate-resources.mjs dist"
     },
     "devDependencies": {
         "@babel/plugin-transform-react-jsx": "^7.21.0",
