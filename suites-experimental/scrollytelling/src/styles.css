@@ -1,3 +1,16 @@
+/*
+ * Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ */
+
 /**
  * 1950s Black & White Blueprint / Planning Design
  * Reference: STYLE_CONFIG in src/graphics.js
@@ -699,6 +712,29 @@ article.is-active,
 
 .step-paragraph-item:last-child {
     margin-bottom: 0;
+}
+
+/* Inline Transparent Illustrations Between Paragraphs (Strict Defense-in-Depth Guardrails) */
+.step-inline-illustration {
+    opacity: 1 !important;
+    transition: none !important;
+    animation: none !important;
+    background: transparent !important;
+    border: 2px solid var(--ink-secondary);
+    border-radius: 6px;
+    margin: 16px 0;
+    padding: 12px;
+    text-align: center;
+}
+
+.step-inline-illustration-img {
+    opacity: 1 !important;
+    transition: none !important;
+    animation: none !important;
+    background: transparent !important;
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
 }
 
 /* Step Specs (1950s Slanted Print Data Box with Independent Shadow) */

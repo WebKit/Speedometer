@@ -1,17 +1,40 @@
+/*
+ * Copyright (C) 2014 Apple Inc. All rights reserved.
+ * Copyright (C) 2024 Google Inc. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY APPLE INC. AND ITS CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL APPLE INC. OR ITS CONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+ * THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 /**
  * 1950s Black & White Blueprint / Planning Design with Gradual Organic Watercolor Animation Reveals
+ * Enhanced with Organic Hand-Drafted Fuzzy Pencil Linework, Offscreen Sprite Caching, & High-Contrast Pure Black
  *
  * Core Style & Aesthetic Rules:
  * - Theme: Negative blueprint drafting / technical planning print on a pure black background (#000000).
  * - Palette: Strictly high-contrast B&W for all structural UI, wireframes, typography, and procedural line art.
  *   Primary drafting ink is pure white (#ffffff), secondary lines/specifications are light gray (#cccccc), and hatching/grids are muted gray (#777777).
- * - Background Assets: B&W topographic maps and planning paper dot grids rendered with screen/color-dodge/overlay blend modes (and inverted) so linework appears light on black.
- * - Watercolor Accents: Re-introduced organic watercolor brush textures (wcWash, wc1, wc2, wc3) are used EXCLUSIVELY as dynamic coloring elements during scroll animations.
- *   Vibrant mid-century architectural accent colors (Blueprint Blue #00a8ff, Amber Gold #fbc531, Terracotta #e84118, Emerald #4cd137) appear gradually as scroll progress advances.
- * - Reveal Modes: Watercolor coloring is revealed via clamped scroll progress (prog or phase.localProg) using:
- *   1. circular: Radial iris wipe expanding from an element center (applyCircularFocusClip).
- *   2. slide: Directional curtain wipe across a structural span (applySlideClip).
- *   3. fade: Smooth alpha opacity transition (fade wash).
+ * - Background Assets: Strictly planning paper dot grid (no static watercolor or grayscale bitmap background textures).
+ * - Linework: All vector paths and geometric primitives use dual-pass, irregular, wobbly, and fuzzy pencil strokes with corner overruns.
+ * - Performance: Repeating hatchings and complex geometric elements are cached to offscreen sprites and procedural patterns.
  */
 import { STAGES } from "./content.js";
 
@@ -36,16 +59,12 @@ export const STYLE_CONFIG = {
 };
 
 const IMAGE_SOURCES = {
-    topo1: "public/topo_map_1.webp",
-    topo2: "public/topo_map_2.webp",
-    topo3: "public/topo_map_3.webp",
     grid: "public/planning_paper_dot_grid.webp",
-    wc1: "public/watercolor_stroke_1.webp",
-    wc2: "public/watercolor_stroke_2.webp",
-    wc3: "public/watercolor_stroke_3.webp",
 };
 
 const imageCache = {};
+const spriteCache = {};
+const patternCache = {};
 
 function getOrLoadImage(key) {
     if (typeof Image === "undefined")
@@ -86,6 +105,36 @@ function getOffscreenCanvas(w, h) {
         offscreenCanvas.height = h;
     }
     return offscreenCanvas;
+}
+
+function getCachedSprite(key, width, height, renderFunc) {
+    if (typeof document === "undefined" && typeof OffscreenCanvas === "undefined")
+        return null;
+    if (!spriteCache[key]) {
+        let canvas = null;
+        if (typeof OffscreenCanvas !== "undefined") {
+            canvas = new OffscreenCanvas(width, height);
+        } else if (typeof document !== "undefined") {
+            canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+        }
+        if (canvas) {
+            const ctx = canvas.getContext("2d");
+            renderFunc(ctx, width, height);
+            spriteCache[key] = canvas;
+        }
+    }
+    return spriteCache[key] || null;
+}
+
+function getCachedPattern(ctx, key, width, height, renderFunc) {
+    if (!patternCache[key]) {
+        const sprite = getCachedSprite(`pattern_${key}`, width, height, renderFunc);
+        if (sprite && ctx && typeof ctx.createPattern === "function")
+            patternCache[key] = ctx.createPattern(sprite, "repeat");
+    }
+    return patternCache[key] || null;
 }
 
 /* eslint-disable-next-line no-unused-vars */
@@ -237,7 +286,7 @@ export function updateGraphics(stageIndex, progress = 0) {
 }
 
 /* =========================================================================
-   1950s STRICT GRAYSCALE & B&W DRAFTING UTILITIES
+   1950s STRICT GRAYSCALE & B&W ORGANIC FUZZY PENCIL DRAFTING UTILITIES
    ========================================================================= */
 
 function createSVGElement(tag, attrs = {}) {
@@ -269,42 +318,121 @@ function addSVGImage(g, src, x, y, width, height, opacity = 0.35, blendMode = "s
     return img;
 }
 
-function drawHandLine(ctx, x1, y1, x2, y2, roughness = 0.6, steps = 4) {
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
+/**
+ * Core Organic Fuzzy Pencil Line Primitive
+ * Draws dual-pass, high-resolution scanned pencil strokes with natural human drafting wobble,
+ * uneven line pressure, and quirky drafting errors (overshooting corners by ±1.5..3.0px).
+ */
+function drawFuzzyPencilLine(ctx, x1, y1, x2, y2, roughness = 0.8, width = 1.2, options = {}) {
     const dx = x2 - x1;
     const dy = y2 - y1;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 0.1)
+        return;
+
+    const ux = dx / dist;
+    const uy = dy / dist;
+    const nx = -uy;
+    const ny = ux;
+
+    let sx = x1,
+        sy = y1,
+        ex = x2,
+        ey = y2;
+
+    if (options.overshoot !== false && options.overshoot !== 0) {
+        const seedOvershoot = ((x1 * 3.1 + y1 * 7.7 + x2 * 5.3 + y2 * 11.1) % 1.5) + 1.5;
+        const os = typeof options.overshoot === "number" ? options.overshoot : seedOvershoot;
+        sx = x1 - ux * os;
+        sy = y1 - uy * os;
+        ex = x2 + ux * os;
+        ey = y2 + uy * os;
+    }
+
+    const steps = Math.max(3, Math.ceil(dist / 14));
+    const color = options.color || ctx.strokeStyle || "#ffffff";
+    const secondaryColor = options.secondaryColor || "rgba(255, 255, 255, 0.45)";
+
+    // Pass 1: Fuzzy secondary underlying stroke (soft pencil lead scatter)
+    ctx.save();
+    ctx.strokeStyle = secondaryColor;
+    ctx.lineWidth = width * 1.4;
+    ctx.shadowBlur = options.shadowBlur || 2.2;
+    ctx.shadowColor = options.shadowColor || "rgba(255, 255, 255, 0.65)";
+    ctx.beginPath();
+    ctx.moveTo(sx + nx * 0.5, sy + ny * 0.5);
     for (let i = 1; i <= steps; i++) {
         const t = i / steps;
-        let nx = x1 + dx * t;
-        let ny = y1 + dy * t;
+        let px = sx + (ex - sx) * t;
+        let py = sy + (ey - sy) * t;
         if (i < steps) {
             const seed = (x1 * 13.1 + y1 * 71.7 + x2 * 19.3 + y2 * 41.9 + i * 17.3) * 0.1;
-            nx += Math.sin(seed) * roughness;
-            ny += Math.cos(seed * 1.3) * roughness;
+            px += Math.sin(seed) * roughness * 1.2;
+            py += Math.cos(seed * 1.3) * roughness * 1.2;
         }
-        ctx.lineTo(nx, ny);
+        ctx.lineTo(px, py);
     }
     ctx.stroke();
+    ctx.restore();
+
+    // Pass 2: Primary sharp/wobbly core pencil line
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        let px = sx + (ex - sx) * t;
+        let py = sy + (ey - sy) * t;
+        if (i < steps) {
+            const seed = (x1 * 17.3 + y1 * 53.1 + x2 * 23.9 + y2 * 31.7 + i * 29.3) * 0.12;
+            px += Math.sin(seed * 1.1) * roughness;
+            py += Math.cos(seed * 0.9) * roughness;
+        }
+        ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Optional double-stroked overlapping middle segment for human uneven pressure
+    if (options.doubleStroke !== false && dist > 25) {
+        ctx.strokeStyle = color;
+        ctx.globalAlpha = 0.55;
+        ctx.lineWidth = Math.max(0.8, width * 0.85);
+        ctx.beginPath();
+        const midT1 = 0.2 + ((x1 + y1) % 0.2);
+        const midT2 = 0.65 + ((x2 + y2) % 0.2);
+        ctx.moveTo(sx + (ex - sx) * midT1 + nx * roughness * 0.6, sy + (ey - sy) * midT1 + ny * roughness * 0.6);
+        ctx.lineTo(sx + (ex - sx) * midT2 + nx * roughness * 0.4, sy + (ey - sy) * midT2 + ny * roughness * 0.4);
+        ctx.stroke();
+    }
+    ctx.restore();
 }
 
-// eslint-disable-next-line no-unused-vars
-function drawSketchRect(ctx, x, y, w, h, overshoot = 3) {
-    drawHandLine(ctx, x - overshoot, y, x + w + overshoot, y, 0.4, 3);
-    drawHandLine(ctx, x + w, y - overshoot, x + w, y + h + overshoot, 0.4, 3);
-    drawHandLine(ctx, x + w + overshoot, y + h, x - overshoot, y + h, 0.4, 3);
-    drawHandLine(ctx, x, y + h + overshoot, x, y - overshoot, 0.4, 3);
+/* eslint-disable-next-line no-unused-vars */
+function drawHandLine(ctx, x1, y1, x2, y2, roughness = 0.6, steps = 4) {
+    drawFuzzyPencilLine(ctx, x1, y1, x2, y2, roughness, ctx.lineWidth || 1, {
+        overshoot: 2.2,
+        doubleStroke: typeof steps === "number" && steps > 3,
+    });
 }
 
-// eslint-disable-next-line no-unused-vars
+function drawSketchRect(ctx, x, y, w, h, overshoot = 2.8, options = {}) {
+    drawFuzzyPencilLine(ctx, x, y, x + w, y, options.roughness || 0.6, ctx.lineWidth || 1, { ...options, overshoot });
+    drawFuzzyPencilLine(ctx, x + w, y, x + w, y + h, options.roughness || 0.6, ctx.lineWidth || 1, { ...options, overshoot });
+    drawFuzzyPencilLine(ctx, x + w, y + h, x, y + h, options.roughness || 0.6, ctx.lineWidth || 1, { ...options, overshoot });
+    drawFuzzyPencilLine(ctx, x, y + h, x, y, options.roughness || 0.6, ctx.lineWidth || 1, { ...options, overshoot });
+}
+
+/* eslint-disable-next-line no-unused-vars */
 function drawCrossSectionHatching(ctx, x, y, w, h, spacing = 8, angle = -Math.PI / 4, color = "rgba(255, 255, 255, 0.35)") {
+    if (w <= 0 || h <= 0)
+        return;
     ctx.save();
     ctx.beginPath();
     ctx.rect(x, y, w, h);
     ctx.clip();
 
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1;
     const diag = Math.sqrt(w * w + h * h) * 1.5;
     const cx = x + w / 2;
     const cy = y + h / 2;
@@ -316,168 +444,310 @@ function drawCrossSectionHatching(ctx, x, y, w, h, spacing = 8, angle = -Math.PI
         const y1 = cy + offset * sin + diag * cos;
         const x2 = cx + offset * cos + diag * sin;
         const y2 = cy + offset * sin - diag * cos;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
+        drawFuzzyPencilLine(ctx, x1, y1, x2, y2, 0.4, 1, {
+            color,
+            secondaryColor: "rgba(255, 255, 255, 0.18)",
+            overshoot: false,
+            doubleStroke: false,
+        });
     }
     ctx.restore();
 }
 
 function drawMasonryHatch(ctx, x, y, w, h, weathered = false) {
+    if (w <= 0 || h <= 0)
+        return;
     ctx.save();
     ctx.beginPath();
     ctx.rect(x, y, w, h);
     ctx.clip();
 
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
-    ctx.lineWidth = 1;
-    const spacing = 14;
-    for (let d = -h; d < w + h; d += spacing) {
-        if (weathered && Math.sin(d * 0.5) > 0.3)
-            continue;
-        ctx.beginPath();
-        ctx.moveTo(x + d, y);
-        ctx.lineTo(x + d - h, y + h);
-        ctx.stroke();
+    const tileKey = weathered ? "masonry_weathered_tile" : "masonry_clean_tile";
+    const pattern = getCachedPattern(ctx, tileKey, 64, 64, (sCtx, sw, sh) => {
+        sCtx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+        sCtx.lineWidth = 1;
+        const spacing = 14;
+        for (let d = -sh; d < sw + sh; d += spacing) {
+            if (weathered && Math.sin(d * 0.5) > 0.3)
+                continue;
+            drawFuzzyPencilLine(sCtx, d, 0, d - sh, sh, 0.4, 1, {
+                color: "rgba(255, 255, 255, 0.45)",
+                secondaryColor: "rgba(255, 255, 255, 0.2)",
+                overshoot: false,
+                doubleStroke: false,
+            });
+        }
+    });
+
+    if (pattern) {
+        ctx.fillStyle = pattern;
+        ctx.fillRect(x - 20, y - 20, w + 40, h + 40);
+    } else {
+        const spacing = 14;
+        for (let d = -h; d < w + h; d += spacing) {
+            if (weathered && Math.sin(d * 0.5) > 0.3)
+                continue;
+            drawFuzzyPencilLine(ctx, x + d, y, x + d - h, y + h, 0.4, 1, {
+                color: "rgba(255, 255, 255, 0.45)",
+                secondaryColor: "rgba(255, 255, 255, 0.2)",
+                overshoot: false,
+                doubleStroke: false,
+            });
+        }
     }
     ctx.restore();
 }
 
 function drawSteelHatch(ctx, x, y, w, h) {
+    if (w <= 0 || h <= 0)
+        return;
     ctx.save();
     ctx.beginPath();
     ctx.rect(x, y, w, h);
     ctx.clip();
 
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.55)";
-    ctx.lineWidth = 1;
-    for (let d = -h; d < w + h; d += 16) {
-        ctx.beginPath();
-        ctx.moveTo(x + d, y);
-        ctx.lineTo(x + d - h, y + h);
-        ctx.moveTo(x + d + 4, y);
-        ctx.lineTo(x + d + 4 - h, y + h);
-        ctx.stroke();
+    const pattern = getCachedPattern(ctx, "steel_hatch_tile", 64, 64, (sCtx, sw, sh) => {
+        for (let d = -sh; d < sw + sh; d += 16) {
+            drawFuzzyPencilLine(sCtx, d, 0, d - sh, sh, 0.3, 1, {
+                color: "rgba(255, 255, 255, 0.55)",
+                secondaryColor: "rgba(255, 255, 255, 0.25)",
+                overshoot: false,
+                doubleStroke: false,
+            });
+            drawFuzzyPencilLine(sCtx, d + 4, 0, d + 4 - sh, sh, 0.3, 1, {
+                color: "rgba(255, 255, 255, 0.55)",
+                secondaryColor: "rgba(255, 255, 255, 0.25)",
+                overshoot: false,
+                doubleStroke: false,
+            });
+        }
+    });
+
+    if (pattern) {
+        ctx.fillStyle = pattern;
+        ctx.fillRect(x - 20, y - 20, w + 40, h + 40);
+    } else {
+        for (let d = -h; d < w + h; d += 16) {
+            drawFuzzyPencilLine(ctx, x + d, y, x + d - h, y + h, 0.3, 1, {
+                color: "rgba(255, 255, 255, 0.55)",
+                secondaryColor: "rgba(255, 255, 255, 0.25)",
+                overshoot: false,
+                doubleStroke: false,
+            });
+            drawFuzzyPencilLine(ctx, x + d + 4, y, x + d + 4 - h, y + h, 0.3, 1, {
+                color: "rgba(255, 255, 255, 0.55)",
+                secondaryColor: "rgba(255, 255, 255, 0.25)",
+                overshoot: false,
+                doubleStroke: false,
+            });
+        }
     }
     ctx.restore();
 }
 
 function drawInsulationHatch(ctx, x, y, w, h, prog = 1.0, color = "rgba(204, 204, 204, 0.7)") {
+    if (w <= 0 || h <= 0)
+        return;
     ctx.save();
     ctx.beginPath();
     ctx.rect(x, y, w, h);
     ctx.clip();
 
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1.5;
     const loopW = 12;
     const loops = Math.ceil(w / loopW);
     const midY = y + h / 2;
     const amp = (h / 2 - 3) * Math.min(1.0, prog * 1.2);
 
-    ctx.beginPath();
-    ctx.moveTo(x, midY);
-    for (let i = 0; i < loops; i++) {
-        const lx = x + i * loopW;
-        ctx.bezierCurveTo(lx + loopW * 0.25, midY - amp, lx + loopW * 0.75, midY - amp, lx + loopW, midY);
-        ctx.bezierCurveTo(lx + loopW * 0.75, midY + amp, lx + loopW * 0.25, midY + amp, lx, midY);
+    for (let pass = 0; pass < 2; pass++) {
+        ctx.strokeStyle = pass === 0 ? "rgba(255, 255, 255, 0.3)" : color;
+        ctx.lineWidth = pass === 0 ? 2.2 : 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x, midY);
+        for (let i = 0; i < loops; i++) {
+            const lx = x + i * loopW;
+            const jx = (i % 2 === 0 ? 0.6 : -0.6) * (pass === 0 ? 1 : 0);
+            ctx.bezierCurveTo(lx + loopW * 0.25 + jx, midY - amp, lx + loopW * 0.75 + jx, midY - amp, lx + loopW, midY);
+            ctx.bezierCurveTo(lx + loopW * 0.75 - jx, midY + amp, lx + loopW * 0.25 - jx, midY + amp, lx, midY);
+        }
+        ctx.stroke();
     }
-    ctx.stroke();
     ctx.restore();
 }
 
 function drawEarthHatch(ctx, x, y, w, h, color = "rgba(255, 255, 255, 0.35)") {
+    if (w <= 0 || h <= 0)
+        return;
     ctx.save();
     ctx.beginPath();
     ctx.rect(x, y, w, h);
     ctx.clip();
 
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1;
-    for (let d = -h; d < w + h; d += 20) {
-        ctx.beginPath();
-        ctx.moveTo(x + d, y);
-        ctx.lineTo(x + d - h, y + h);
-        ctx.stroke();
-    }
-    ctx.strokeStyle = color;
-    for (let ty = y + 15; ty < y + h; ty += 25) {
-        for (let tx = x + 10; tx < x + w; tx += 40) {
-            ctx.beginPath();
-            ctx.moveTo(tx, ty);
-            ctx.lineTo(tx + 14, ty);
-            ctx.stroke();
+    const pattern = getCachedPattern(ctx, "earth_hatch_tile", 80, 80, (sCtx, sw, sh) => {
+        for (let d = -sh; d < sw + sh; d += 20) {
+            drawFuzzyPencilLine(sCtx, d, 0, d - sh, sh, 0.4, 1, {
+                color,
+                secondaryColor: "rgba(255, 255, 255, 0.15)",
+                overshoot: false,
+                doubleStroke: false,
+            });
+        }
+        for (let ty = 15; ty < sh; ty += 25) {
+            for (let tx = 10; tx < sw; tx += 40) {
+                drawFuzzyPencilLine(sCtx, tx, ty, tx + 14, ty, 0.5, 1.2, {
+                    color,
+                    secondaryColor: "rgba(255, 255, 255, 0.15)",
+                    overshoot: false,
+                    doubleStroke: false,
+                });
+            }
+        }
+    });
+
+    if (pattern) {
+        ctx.fillStyle = pattern;
+        ctx.fillRect(x - 20, y - 20, w + 40, h + 40);
+    } else {
+        for (let d = -h; d < w + h; d += 20) {
+            drawFuzzyPencilLine(ctx, x + d, y, x + d - h, y + h, 0.4, 1, {
+                color,
+                secondaryColor: "rgba(255, 255, 255, 0.15)",
+                overshoot: false,
+                doubleStroke: false,
+            });
+        }
+        for (let ty = y + 15; ty < y + h; ty += 25) {
+            for (let tx = x + 10; tx < x + w; tx += 40) {
+                drawFuzzyPencilLine(ctx, tx, ty, tx + 14, ty, 0.5, 1.2, {
+                    color,
+                    secondaryColor: "rgba(255, 255, 255, 0.15)",
+                    overshoot: false,
+                    doubleStroke: false,
+                });
+            }
         }
     }
     ctx.restore();
 }
 
 function drawWoodGrainHatch(ctx, x, y, w, h, density = 4, count = 3) {
+    if (w <= 0 || h <= 0)
+        return;
     ctx.save();
     ctx.beginPath();
     ctx.rect(x, y, w, h);
     ctx.clip();
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
-    ctx.lineWidth = 1.2;
+
     const spacing = Math.max(4, h / (density + 1));
     for (let i = 1; i <= density; i++) {
         const py = y + i * spacing;
-        ctx.beginPath();
-        ctx.moveTo(x, py);
-        for (let c = 0; c < count; c++) {
-            const cx1 = x + (w / count) * (c + 0.3);
-            const cy1 = py + (i % 2 === 0 ? -3 : 3) * (c + 1);
-            const cx2 = x + (w / count) * (c + 0.7);
-            const cy2 = py + (i % 2 === 0 ? 3 : -3) * (c + 1);
-            const ex = x + (w / count) * (c + 1);
-            ctx.bezierCurveTo(cx1, cy1, cx2, cy2, ex, py);
+        for (let pass = 0; pass < 2; pass++) {
+            ctx.strokeStyle = pass === 0 ? "rgba(255, 255, 255, 0.14)" : "rgba(255, 255, 255, 0.28)";
+            ctx.lineWidth = pass === 0 ? 1.6 : 1.1;
+            ctx.beginPath();
+            ctx.moveTo(x, py);
+            for (let c = 0; c < count; c++) {
+                const j = pass === 0 ? 0.8 : 0;
+                const cx1 = x + (w / count) * (c + 0.3);
+                const cy1 = py + (i % 2 === 0 ? -3 : 3) * (c + 1) + j;
+                const cx2 = x + (w / count) * (c + 0.7);
+                const cy2 = py + (i % 2 === 0 ? 3 : -3) * (c + 1) - j;
+                const ex = x + (w / count) * (c + 1);
+                ctx.bezierCurveTo(cx1, cy1, cx2, cy2, ex, py);
+            }
+            ctx.stroke();
         }
-        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+function drawFuzzyGearGeometry(ctx, cx, cy, radius, teeth, color = "#ffffff") {
+    ctx.save();
+    const pts = [];
+    for (let i = 0; i < teeth * 2; i++) {
+        const r = i % 2 === 0 ? radius : radius * 0.75;
+        const a = (i * Math.PI) / teeth;
+        pts.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]);
+    }
+    for (let i = 0; i < pts.length; i++) {
+        const p1 = pts[i];
+        const p2 = pts[(i + 1) % pts.length];
+        drawFuzzyPencilLine(ctx, p1[0], p1[1], p2[0], p2[1], 0.5, 1.6, {
+            color,
+            secondaryColor: "rgba(255, 255, 255, 0.4)",
+            overshoot: 1.6,
+            doubleStroke: true,
+        });
+    }
+
+    const innerPts = 12;
+    for (let i = 0; i < innerPts; i++) {
+        const a1 = (i * Math.PI * 2) / innerPts;
+        const a2 = ((i + 1) * Math.PI * 2) / innerPts;
+        drawFuzzyPencilLine(ctx, cx + Math.cos(a1) * (radius * 0.32), cy + Math.sin(a1) * (radius * 0.32), cx + Math.cos(a2) * (radius * 0.32), cy + Math.sin(a2) * (radius * 0.32), 0.4, 1.4, {
+            color,
+            secondaryColor: "rgba(255, 255, 255, 0.4)",
+            overshoot: 0.8,
+        });
     }
     ctx.restore();
 }
 
 function drawGear(ctx, cx, cy, radius, teeth, angle, color = "#ffffff") {
     ctx.save();
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.lineWidth = 1.8;
-    ctx.beginPath();
-    for (let i = 0; i < teeth * 2; i++) {
-        const r = i % 2 === 0 ? radius : radius * 0.75;
-        const a = angle + (i * Math.PI) / teeth;
-        const x = cx + Math.cos(a) * r;
-        const y = cy + Math.sin(a) * r;
-        if (i === 0)
-            ctx.moveTo(x, y);
-        else
-            ctx.lineTo(x, y);
-    }
-    ctx.closePath();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(cx, cy, radius * 0.3, 0, Math.PI * 2);
-    ctx.stroke();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+
+    const spriteW = Math.ceil(radius * 2.8);
+    const spriteH = Math.ceil(radius * 2.8);
+    const spriteKey = `gear_${teeth}_${Math.round(radius)}_${color}`;
+
+    const sprite = getCachedSprite(spriteKey, spriteW, spriteH, (sCtx, sw, sh) => {
+        drawFuzzyGearGeometry(sCtx, sw / 2, sh / 2, radius, teeth, color);
+    });
+
+    if (sprite)
+        ctx.drawImage(sprite, -spriteW / 2, -spriteH / 2);
+    else
+        drawFuzzyGearGeometry(ctx, 0, 0, radius, teeth, color);
+
     ctx.restore();
 }
 
-function drawRoundRect(ctx, x, y, w, h, r) {
-    if (typeof ctx.roundRect === "function") {
-        ctx.beginPath();
-        ctx.roundRect(x, y, w, h, r);
-    } else {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + w - r, y);
-        ctx.arcTo(x + w, y, x + w, y + r, r);
-        ctx.lineTo(x + w, y + h - r);
-        ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
-        ctx.lineTo(x + r, y + h);
-        ctx.arcTo(x, y + h, x, y + h - r, r);
-        ctx.lineTo(x, y + r);
-        ctx.arcTo(x, y, x + r, y, r);
+function drawRoundRect(ctx, x, y, w, h, r, options = {}) {
+    ctx.save();
+    drawFuzzyPencilLine(ctx, x + r, y, x + w - r, y, options.roughness || 0.6, ctx.lineWidth || 1.2, options);
+    drawFuzzyPencilLine(ctx, x + w, y + r, x + w, y + h - r, options.roughness || 0.6, ctx.lineWidth || 1.2, options);
+    drawFuzzyPencilLine(ctx, x + w - r, y + h, x + r, y + h, options.roughness || 0.6, ctx.lineWidth || 1.2, options);
+    drawFuzzyPencilLine(ctx, x, y + h - r, x, y + r, options.roughness || 0.6, ctx.lineWidth || 1.2, options);
+
+    const corners = [
+        [x + w - r, y + r, 0],
+        [x + w - r, y + h - r, Math.PI / 2],
+        [x + r, y + h - r, Math.PI],
+        [x + r, y + r, Math.PI * 1.5],
+    ];
+    for (const [cx, cy, startA] of corners) {
+        for (let pass = 0; pass < 2; pass++) {
+            ctx.strokeStyle = pass === 0 ? "rgba(255, 255, 255, 0.4)" : options.color || "#ffffff";
+            ctx.lineWidth = pass === 0 ? (ctx.lineWidth || 1.2) * 1.4 : ctx.lineWidth || 1.2;
+            ctx.beginPath();
+            for (let s = 0; s <= 4; s++) {
+                const a = startA + (s / 4) * (Math.PI / 2);
+                let px = cx + Math.cos(a) * r;
+                let py = cy + Math.sin(a) * r;
+                if (s > 0 && s < 4) {
+                    px += Math.sin(s + startA) * 0.6;
+                    py += Math.cos(s + startA) * 0.6;
+                }
+                if (s === 0)
+                    ctx.moveTo(px, py);
+                else
+                    ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+        }
     }
+    ctx.restore();
 }
 
 /* Dimension Line with Independent & Irregular Shadow Angle */
@@ -487,7 +757,11 @@ function drawDimensionLine(ctx, x1, y1, x2, y2, label, color = "#ffffff", tickSi
     ctx.fillStyle = "#D12B3E";
     ctx.lineWidth = 1.4;
 
-    drawHandLine(ctx, x1, y1, x2, y2, 0.3, 2);
+    drawFuzzyPencilLine(ctx, x1, y1, x2, y2, 0.4, 1.4, {
+        color: "#D12B3E",
+        secondaryColor: "rgba(209, 43, 62, 0.45)",
+        overshoot: 2.2,
+    });
 
     const angle = Math.atan2(y2 - y1, x2 - x1);
     const tickAngle = Math.PI / 4;
@@ -495,10 +769,11 @@ function drawDimensionLine(ctx, x1, y1, x2, y2, label, color = "#ffffff", tickSi
         [x1, y1],
         [x2, y2],
     ]) {
-        ctx.beginPath();
-        ctx.moveTo(ptX - Math.cos(angle + tickAngle) * tickSize, ptY - Math.sin(angle + tickAngle) * tickSize);
-        ctx.lineTo(ptX + Math.cos(angle + tickAngle) * tickSize, ptY + Math.sin(angle + tickAngle) * tickSize);
-        ctx.stroke();
+        drawFuzzyPencilLine(ctx, ptX - Math.cos(angle + tickAngle) * tickSize, ptY - Math.sin(angle + tickAngle) * tickSize, ptX + Math.cos(angle + tickAngle) * tickSize, ptY + Math.sin(angle + tickAngle) * tickSize, 0.3, 1.5, {
+            color: "#D12B3E",
+            secondaryColor: "rgba(209, 43, 62, 0.45)",
+            overshoot: 1.5,
+        });
     }
 
     const midX = (x1 + x2) / 2;
@@ -511,26 +786,25 @@ function drawDimensionLine(ctx, x1, y1, x2, y2, label, color = "#ffffff", tickSi
     const boxW = textW + 14;
     const boxH = 18;
 
-    // Independent shadow at different angle (+1.8 deg vs -0.9 deg)
     ctx.save();
     ctx.translate(midX + 5, midY + 4);
-    ctx.rotate(0.031); // +1.8 deg
+    ctx.rotate(0.031);
     ctx.fillStyle = "#000000";
-    drawRoundRect(ctx, -boxW / 2, -boxH / 2, boxW, boxH, 4);
+    ctx.beginPath();
+    ctx.rect(-boxW / 2, -boxH / 2, boxW, boxH);
     ctx.fill();
     ctx.restore();
 
-    // Foreground box at different angle
     ctx.save();
     ctx.translate(midX, midY);
-    ctx.rotate(-0.015); // -0.9 deg
+    ctx.rotate(-0.015);
     const badgeBgColor = bgColor === "#ffffff" || bgColor === "#000000" ? "#0a0a0a" : bgColor;
-    drawRoundRect(ctx, -boxW / 2, -boxH / 2, boxW, boxH, 4);
     ctx.fillStyle = badgeBgColor;
+    ctx.beginPath();
+    ctx.rect(-boxW / 2, -boxH / 2, boxW, boxH);
     ctx.fill();
-    ctx.strokeStyle = "#D12B3E";
     ctx.lineWidth = 1.4;
-    ctx.stroke();
+    drawRoundRect(ctx, -boxW / 2, -boxH / 2, boxW, boxH, 4, { color: "#D12B3E", secondaryColor: "rgba(209, 43, 62, 0.45)" });
     ctx.fillStyle = "#ffffff";
     ctx.fillText(label, 0, 1);
     ctx.restore();
@@ -544,16 +818,32 @@ function drawSurveyReticle(ctx, x, y, radius, label, color = "#ffffff") {
     ctx.fillStyle = "#D12B3E";
     ctx.lineWidth = 1.4;
 
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.stroke();
+    const ringPts = 16;
+    for (let rFactor of [1.0, 0.35]) {
+        const r = radius * rFactor;
+        for (let pass = 0; pass < 2; pass++) {
+            ctx.strokeStyle = pass === 0 ? "rgba(209, 43, 62, 0.4)" : "#D12B3E";
+            ctx.lineWidth = pass === 0 ? 2.0 : 1.4;
+            ctx.beginPath();
+            for (let i = 0; i <= ringPts; i++) {
+                const a = (i * Math.PI * 2) / ringPts;
+                let px = x + Math.cos(a) * r;
+                let py = y + Math.sin(a) * r;
+                if (i > 0 && i < ringPts) {
+                    px += Math.sin(i * 1.7 + x) * 0.6;
+                    py += Math.cos(i * 1.3 + y) * 0.6;
+                }
+                if (i === 0)
+                    ctx.moveTo(px, py);
+                else
+                    ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+        }
+    }
 
-    ctx.beginPath();
-    ctx.arc(x, y, radius * 0.35, 0, Math.PI * 2);
-    ctx.stroke();
-
-    drawHandLine(ctx, x - radius - 6, y, x + radius + 6, y, 0.2, 2);
-    drawHandLine(ctx, x, y - radius - 6, x, y + radius + 6, 0.2, 2);
+    drawFuzzyPencilLine(ctx, x - radius - 6, y, x + radius + 6, y, 0.3, 1.4, { color: "#D12B3E", secondaryColor: "rgba(209, 43, 62, 0.45)" });
+    drawFuzzyPencilLine(ctx, x, y - radius - 6, x, y + radius + 6, 0.3, 1.4, { color: "#D12B3E", secondaryColor: "rgba(209, 43, 62, 0.45)" });
 
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -585,40 +875,28 @@ function drawTitleBlock(ctx, width, height, title, dwgNo, scale, date = "OCT 195
     const bx = width - boxW - 20;
     const by = height - boxH - 20;
 
-    // Independent shadow rotated differently (+1.5 deg vs -0.8 deg)
     ctx.save();
     ctx.translate(bx + boxW / 2 + 10, by + boxH / 2 + 12);
-    ctx.rotate(0.026); // +1.5 deg
+    ctx.rotate(0.026);
     ctx.fillStyle = "#000000";
-    drawRoundRect(ctx, -boxW / 2, -boxH / 2, boxW, boxH, 6);
+    ctx.beginPath();
+    ctx.rect(-boxW / 2, -boxH / 2, boxW, boxH);
     ctx.fill();
     ctx.restore();
 
-    // Main box
     ctx.save();
     ctx.translate(bx + boxW / 2, by + boxH / 2);
-    ctx.rotate(-0.014); // -0.8 deg
-    drawRoundRect(ctx, -boxW / 2, -boxH / 2, boxW, boxH, 6);
+    ctx.rotate(-0.014);
     ctx.fillStyle = bgColor;
+    ctx.beginPath();
+    ctx.rect(-boxW / 2, -boxH / 2, boxW, boxH);
     ctx.fill();
 
-    ctx.strokeStyle = "#D12B3E";
     ctx.lineWidth = 2.2;
-    ctx.stroke();
+    drawRoundRect(ctx, -boxW / 2, -boxH / 2, boxW, boxH, 6, { color: "#D12B3E", secondaryColor: "rgba(209, 43, 62, 0.45)" });
 
-    ctx.beginPath();
-    ctx.moveTo(-boxW / 2, -boxH / 2 + 24);
-    ctx.lineTo(-boxW / 2 + boxW, -boxH / 2 + 24);
-    ctx.strokeStyle = "#D12B3E";
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(-boxW / 2 + 195, -boxH / 2 + 24);
-    ctx.lineTo(-boxW / 2 + 195, -boxH / 2 + boxH);
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    drawFuzzyPencilLine(ctx, -boxW / 2, -boxH / 2 + 24, -boxW / 2 + boxW, -boxH / 2 + 24, 0.3, 1.5, { color: "#D12B3E", secondaryColor: "rgba(209, 43, 62, 0.45)", overshoot: 1.8 });
+    drawFuzzyPencilLine(ctx, -boxW / 2 + 195, -boxH / 2 + 24, -boxW / 2 + 195, -boxH / 2 + boxH, 0.3, 1, { color: "#ffffff", secondaryColor: "rgba(255, 255, 255, 0.4)", overshoot: 1.8 });
 
     ctx.fillStyle = "#ffffff";
     ctx.font = "bold 11px system-ui, -apple-system, sans-serif";
@@ -671,7 +949,7 @@ function addSVGCallout(g, x, y, targetX, targetY, text, subtext = "", id = "", p
     group.appendChild(targetDot);
 
     const tilt = targetX > x ? -1.5 : 1.5;
-    const shadowTilt = targetX > x ? 1.4 : -1.7; /* Independent irregular shadow angle! */
+    const shadowTilt = targetX > x ? 1.4 : -1.7;
     const estTextW = text ? text.length * 6.8 + 24 : 0;
     const estSubW = subtext ? subtext.length * 5.9 + 24 : 0;
     const boxW = Math.max(190, Math.ceil(Math.max(estTextW, estSubW)));
@@ -802,7 +1080,6 @@ function addSVGTitleBlock(g, project, dwgNo, rev, scale, date = "OCT 1954") {
     const box = createSVGElement("g", { class: "tech-title-block", transform: "translate(0, -50)" });
     box.style.transition = "none";
 
-    // Independent shadow rotated differently (+1.7 deg vs -1.2 deg)
     const shadow = createSVGElement("rect", {
         x: 488,
         y: 520,
@@ -853,10 +1130,6 @@ function addSVGTitleBlock(g, project, dwgNo, rev, scale, date = "OCT 1954") {
     box.appendChild(frameGroup);
     g.appendChild(box);
 }
-
-/* =========================================================================
-   2.5D MECHANICAL DIORAMA HELPER FUNCTIONS (STRICT B&W / GRAYSCALE)
-   ========================================================================= */
 
 function getParagraphPhase(progress, numParagraphs = 5) {
     const p = Math.max(0, Math.min(0.9999, progress));
@@ -952,26 +1225,35 @@ function easeOutBack(t) {
 
 function drawMechanicalTrack(ctx, x1, y1, x2, y2, color = "#ffffff") {
     ctx.save();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2.5;
-    drawHandLine(ctx, x1, y1, x2, y2, 0.2, 2);
-    ctx.lineWidth = 1;
+    drawFuzzyPencilLine(ctx, x1, y1, x2, y2, 0.3, 2.5, { color, secondaryColor: "rgba(255, 255, 255, 0.45)", overshoot: 3.0 });
     const angle = Math.atan2(y2 - y1, x2 - x1);
     const dist = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
     const steps = Math.floor(dist / 22);
     for (let i = 0; i <= steps; i++) {
         const tx = x1 + Math.cos(angle) * (i * 22);
         const ty = y1 + Math.sin(angle) * (i * 22);
-        ctx.beginPath();
-        ctx.arc(tx, ty, 2.5, 0, Math.PI * 2);
-        ctx.stroke();
+        for (let pass = 0; pass < 2; pass++) {
+            ctx.strokeStyle = pass === 0 ? "rgba(255, 255, 255, 0.4)" : color;
+            ctx.lineWidth = pass === 0 ? 1.8 : 1.2;
+            ctx.beginPath();
+            const r = 2.5;
+            for (let s = 0; s <= 8; s++) {
+                const a = (s * Math.PI * 2) / 8;
+                const px = tx + Math.cos(a) * r + (s > 0 && s < 8 ? Math.sin(s + i) * 0.4 : 0);
+                const py = ty + Math.sin(a) * r + (s > 0 && s < 8 ? Math.cos(s + i) * 0.4 : 0);
+                if (s === 0)
+                    ctx.moveTo(px, py);
+                else
+                    ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+        }
     }
     ctx.restore();
 }
 
 function drawDioramaPlatform(ctx, x, y, w, h, depth = 18, color = "#0a0a0a", borderColor = "#ffffff", shadowTilt = 0.03) {
     ctx.save();
-    // Independent drop shadow polygon (Rule 3)
     ctx.save();
     ctx.translate(x + 12, y + 14);
     ctx.rotate(shadowTilt);
@@ -981,11 +1263,9 @@ function drawDioramaPlatform(ctx, x, y, w, h, depth = 18, color = "#0a0a0a", bor
 
     ctx.fillStyle = color;
     ctx.fillRect(x, y, w, h);
-    ctx.strokeStyle = borderColor;
     ctx.lineWidth = 2.2;
-    ctx.strokeRect(x, y, w, h);
+    drawSketchRect(ctx, x, y, w, h, 3.2, { color: borderColor, secondaryColor: "rgba(255, 255, 255, 0.45)" });
 
-    // Front lip
     ctx.fillStyle = "#e5e5e5";
     ctx.beginPath();
     ctx.moveTo(x, y + h);
@@ -994,9 +1274,11 @@ function drawDioramaPlatform(ctx, x, y, w, h, depth = 18, color = "#0a0a0a", bor
     ctx.lineTo(x + w, y + h);
     ctx.closePath();
     ctx.fill();
-    ctx.stroke();
 
-    // Right lip
+    drawFuzzyPencilLine(ctx, x, y + h, x + depth, y + h + depth, 0.4, 1.8, { color: borderColor, overshoot: 2.0 });
+    drawFuzzyPencilLine(ctx, x + depth, y + h + depth, x + w + depth, y + h + depth, 0.4, 1.8, { color: borderColor, overshoot: 2.0 });
+    drawFuzzyPencilLine(ctx, x + w + depth, y + h + depth, x + w, y + h, 0.4, 1.8, { color: borderColor, overshoot: 2.0 });
+
     ctx.fillStyle = "#cccccc";
     ctx.beginPath();
     ctx.moveTo(x + w, y);
@@ -1005,7 +1287,9 @@ function drawDioramaPlatform(ctx, x, y, w, h, depth = 18, color = "#0a0a0a", bor
     ctx.lineTo(x + w, y + h);
     ctx.closePath();
     ctx.fill();
-    ctx.stroke();
+
+    drawFuzzyPencilLine(ctx, x + w, y, x + w + depth, y + depth, 0.4, 1.8, { color: borderColor, overshoot: 2.0 });
+    drawFuzzyPencilLine(ctx, x + w + depth, y + depth, x + w + depth, y + h + depth, 0.4, 1.8, { color: borderColor, overshoot: 2.0 });
     ctx.restore();
 }
 
@@ -1036,7 +1320,6 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
     const boxTilt = ((stageIndex % 2 === 0 ? -1.2 : 1.4) * Math.PI) / 180;
     const shadowTilt = ((stageIndex % 2 === 0 ? 1.6 : -1.5) * Math.PI) / 180;
 
-    // 1. Independent drop shadow (Rule 3)
     ctx.save();
     ctx.translate(cx + 6, cy + 8);
     ctx.rotate(shadowTilt);
@@ -1044,18 +1327,16 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
     ctx.fillRect(-w / 2, -h / 2, w, h);
     ctx.restore();
 
-    // 2. Main slanted geometric panel (Rule 2)
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(boxTilt);
     ctx.fillStyle = "#0a0a0a";
     ctx.fillRect(-w / 2, -h / 2, w, h);
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 1.8;
-    ctx.strokeRect(-w / 2, -h / 2, w, h);
 
-    // Title / Header divider line inside panel
-    drawHandLine(ctx, -w / 2 + 10, -h / 2 + 20, w / 2 - 10, -h / 2 + 20, 0.2, 1.2);
+    ctx.lineWidth = 1.8;
+    drawSketchRect(ctx, -w / 2, -h / 2, w, h, 3.0, { color: "#ffffff", secondaryColor: "rgba(255, 255, 255, 0.45)" });
+
+    drawFuzzyPencilLine(ctx, -w / 2 + 10, -h / 2 + 20, w / 2 - 10, -h / 2 + 20, 0.3, 1.3, { color: "#ffffff", overshoot: 2.0 });
 
     ctx.fillStyle = "#ffffff";
     ctx.font = 'bold 11px "Impact", "Arial Black", sans-serif';
@@ -1067,24 +1348,32 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
 
         const rx = -90,
             ry = 13;
-        ctx.strokeStyle = "#cccccc";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.arc(rx, ry, 28, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(rx, ry, 18, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(rx, ry, 9, 0, Math.PI * 2);
-        ctx.stroke();
+        for (let r of [28, 18, 9]) {
+            for (let pass = 0; pass < 2; pass++) {
+                ctx.strokeStyle = pass === 0 ? "rgba(204, 204, 204, 0.35)" : "#cccccc";
+                ctx.lineWidth = pass === 0 ? 1.6 : 1.0;
+                ctx.beginPath();
+                for (let s = 0; s <= 16; s++) {
+                    const a = (s * Math.PI * 2) / 16;
+                    let px = rx + Math.cos(a) * r;
+                    let py = ry + Math.sin(a) * r;
+                    if (s > 0 && s < 16) {
+                        px += Math.sin(s + r) * 0.4;
+                        py += Math.cos(s + r) * 0.4;
+                    }
+                    if (s === 0)
+                        ctx.moveTo(px, py);
+                    else
+                        ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+            }
+        }
 
         const angle = -Math.PI / 4 + prog * Math.PI * 0.6;
         const nx = rx + Math.cos(angle) * 26;
         const ny = ry + Math.sin(angle) * 26;
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2;
-        drawHandLine(ctx, rx - Math.cos(angle) * 11, ry - Math.sin(angle) * 11, nx, ny, 0.1, 2);
+        drawFuzzyPencilLine(ctx, rx - Math.cos(angle) * 11, ry - Math.sin(angle) * 11, nx, ny, 0.3, 2, { color: "#ffffff" });
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
         ctx.arc(nx, ny, 3, 0, Math.PI * 2);
@@ -1119,15 +1408,11 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
             by = -15,
             bw = 50,
             bh = 56;
-        ctx.strokeStyle = "#cccccc";
-        ctx.lineWidth = 1.2;
-        ctx.strokeRect(bx, by, bw, bh);
+        drawSketchRect(ctx, bx, by, bw, bh, 2.0, { color: "#cccccc" });
         drawEarthHatch(ctx, bx, by + 28, bw, 28, "rgba(255, 255, 255, 0.3)");
 
         const waterY = by + 42 - prog * 24;
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2;
-        drawHandLine(ctx, bx, waterY, bx + bw, waterY, 0.3, 2);
+        drawFuzzyPencilLine(ctx, bx, waterY, bx + bw, waterY, 0.4, 2, { color: "#ffffff", overshoot: 2.2 });
 
         ctx.font = fontStyle;
         ctx.letterSpacing = "0em";
@@ -1142,11 +1427,21 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
         const wx = -95,
             wy = 12;
         drawGear(ctx, wx, wy, 26, 16, prog * Math.PI * 3, "#ffffff");
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(wx, wy, 12, 0, Math.PI * 2);
-        ctx.stroke();
+        for (let pass = 0; pass < 2; pass++) {
+            ctx.strokeStyle = pass === 0 ? "rgba(255, 255, 255, 0.4)" : "#ffffff";
+            ctx.lineWidth = pass === 0 ? 2.0 : 1.5;
+            ctx.beginPath();
+            for (let s = 0; s <= 12; s++) {
+                const a = (s * Math.PI * 2) / 12;
+                const px = wx + Math.cos(a) * 12 + (s > 0 && s < 12 ? Math.sin(s) * 0.4 : 0);
+                const py = wy + Math.sin(a) * 12 + (s > 0 && s < 12 ? Math.cos(s) * 0.4 : 0);
+                if (s === 0)
+                    ctx.moveTo(px, py);
+                else
+                    ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+        }
 
         ctx.font = fontStyle;
         ctx.letterSpacing = "0em";
@@ -1175,13 +1470,23 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
 
         const lx = -95,
             ly = 12;
-        ctx.strokeStyle = "#cccccc";
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.arc(lx, ly, 24, 0, Math.PI * 2);
-        ctx.stroke();
-        drawHandLine(ctx, lx - 20, ly, lx + 20, ly, 0.1, 1.5);
-        drawHandLine(ctx, lx, ly - 20, lx, ly + 20, 0.1, 1.5);
+        for (let pass = 0; pass < 2; pass++) {
+            ctx.strokeStyle = pass === 0 ? "rgba(204, 204, 204, 0.4)" : "#cccccc";
+            ctx.lineWidth = pass === 0 ? 1.8 : 1.2;
+            ctx.beginPath();
+            for (let s = 0; s <= 14; s++) {
+                const a = (s * Math.PI * 2) / 14;
+                const px = lx + Math.cos(a) * 24 + (s > 0 && s < 14 ? Math.sin(s) * 0.5 : 0);
+                const py = ly + Math.sin(a) * 24 + (s > 0 && s < 14 ? Math.cos(s) * 0.5 : 0);
+                if (s === 0)
+                    ctx.moveTo(px, py);
+                else
+                    ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+        }
+        drawFuzzyPencilLine(ctx, lx - 20, ly, lx + 20, ly, 0.3, 1.5, { color: "#ffffff", overshoot: 1.6 });
+        drawFuzzyPencilLine(ctx, lx, ly - 20, lx, ly + 20, 0.3, 1.5, { color: "#ffffff", overshoot: 1.6 });
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
         ctx.arc(lx + Math.cos(prog * Math.PI * 6) * 14, ly + Math.sin(prog * Math.PI * 6) * 14, 4, 0, Math.PI * 2);
@@ -1201,15 +1506,11 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
             sy = -12,
             sw = 45,
             sh = 52;
-        ctx.strokeStyle = "#cccccc";
-        ctx.lineWidth = 1.2;
-        ctx.strokeRect(sx, sy, sw, sh);
+        drawSketchRect(ctx, sx, sy, sw, sh, 2.0, { color: "#cccccc" });
         const gateY = sy + sh - prog * 36;
         ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
         ctx.fillRect(sx, gateY, sw, sh - (gateY - sy));
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2;
-        drawHandLine(ctx, sx, gateY, sx + sw, gateY, 0.2, 2);
+        drawFuzzyPencilLine(ctx, sx, gateY, sx + sw, gateY, 0.4, 2, { color: "#ffffff", overshoot: 2.2 });
 
         ctx.font = fontStyle;
         ctx.letterSpacing = "0em";
@@ -1223,11 +1524,21 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
 
         const mx = -95,
             my = 12;
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(mx, my, 22, 0, Math.PI * 2);
-        ctx.stroke();
+        for (let pass = 0; pass < 2; pass++) {
+            ctx.strokeStyle = pass === 0 ? "rgba(255, 255, 255, 0.4)" : "#ffffff";
+            ctx.lineWidth = pass === 0 ? 2.0 : 1.5;
+            ctx.beginPath();
+            for (let s = 0; s <= 14; s++) {
+                const a = (s * Math.PI * 2) / 14;
+                const px = mx + Math.cos(a) * 22 + (s > 0 && s < 14 ? Math.sin(s) * 0.4 : 0);
+                const py = my + Math.sin(a) * 22 + (s > 0 && s < 14 ? Math.cos(s) * 0.4 : 0);
+                if (s === 0)
+                    ctx.moveTo(px, py);
+                else
+                    ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+        }
         drawGear(ctx, mx, my, 14, 8, prog * Math.PI * 8, "#cccccc");
 
         ctx.font = fontStyle;
@@ -1242,18 +1553,22 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
 
         const rx = -110,
             ry = 12;
-        ctx.strokeStyle = "#cccccc";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(rx - 20, ry);
-        ctx.lineTo(rx + 20, ry);
-        ctx.stroke();
+        drawFuzzyPencilLine(ctx, rx - 20, ry, rx + 20, ry, 0.3, 1, { color: "#cccccc", overshoot: 1.5 });
+        ctx.save();
         ctx.strokeStyle = "#ffffff";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(rx - 20, ry);
-        ctx.quadraticCurveTo(rx, ry + prog * 18, rx + 20, ry);
+        for (let s = 0; s <= 6; s++) {
+            const t = s / 6;
+            const px = rx - 20 + 40 * t;
+            const py = ry + Math.sin(t * Math.PI) * prog * 18 + (s > 0 && s < 6 ? Math.sin(s * 2) * 0.5 : 0);
+            if (s === 0)
+                ctx.moveTo(px, py);
+            else
+                ctx.lineTo(px, py);
+        }
         ctx.stroke();
+        ctx.restore();
 
         ctx.font = fontStyle;
         ctx.letterSpacing = "0em";
@@ -1267,9 +1582,7 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
 
         const jx = -95,
             jy = 12;
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(jx - 12, jy - 22, 24, 44);
+        drawSketchRect(ctx, jx - 12, jy - 22, 24, 44, 2.0, { color: "#ffffff" });
         drawSteelHatch(ctx, jx - 12, jy - 22, 24, 44);
 
         ctx.font = fontStyle;
@@ -1298,11 +1611,21 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
 
         const vx = -95,
             vy = 12;
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(vx, vy, 22, 0, Math.PI * 2);
-        ctx.stroke();
+        for (let pass = 0; pass < 2; pass++) {
+            ctx.strokeStyle = pass === 0 ? "rgba(255, 255, 255, 0.4)" : "#ffffff";
+            ctx.lineWidth = pass === 0 ? 2.0 : 1.5;
+            ctx.beginPath();
+            for (let s = 0; s <= 14; s++) {
+                const a = (s * Math.PI * 2) / 14;
+                const px = vx + Math.cos(a) * 22 + (s > 0 && s < 14 ? Math.sin(s) * 0.4 : 0);
+                const py = vy + Math.sin(a) * 22 + (s > 0 && s < 14 ? Math.cos(s) * 0.4 : 0);
+                if (s === 0)
+                    ctx.moveTo(px, py);
+                else
+                    ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+        }
         drawGear(ctx, vx, vy, 15, 6, prog * Math.PI * 6, "#cccccc");
 
         ctx.font = fontStyle;
@@ -1319,9 +1642,7 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
             ty = -15,
             tw = 45,
             th = 50;
-        ctx.strokeStyle = "#cccccc";
-        ctx.lineWidth = 1.2;
-        ctx.strokeRect(tx, ty, tw, th);
+        drawSketchRect(ctx, tx, ty, tw, th, 2.0, { color: "#cccccc" });
         drawInsulationHatch(ctx, tx, ty, tw, th, prog, "rgba(255, 255, 255, 0.45)");
 
         ctx.font = fontStyle;
@@ -1336,9 +1657,7 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
 
         const mx = -110,
             my = 10;
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2;
-        drawHandLine(ctx, mx - 15, my + 15, mx + 15, my - 15, 0.2, 2);
+        drawFuzzyPencilLine(ctx, mx - 15, my + 15, mx + 15, my - 15, 0.4, 2, { color: "#ffffff", overshoot: 2.0 });
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
         ctx.arc(mx, my, 4, 0, Math.PI * 2);
@@ -1356,12 +1675,26 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
 
         const sx = -95,
             sy = 12;
-        ctx.strokeStyle = "#cccccc";
-        ctx.lineWidth = 1;
         for (let r = 8; r <= 24; r += 8) {
-            ctx.beginPath();
-            ctx.arc(sx, sy, r, 0, Math.PI);
-            ctx.stroke();
+            for (let pass = 0; pass < 2; pass++) {
+                ctx.strokeStyle = pass === 0 ? "rgba(204, 204, 204, 0.35)" : "#cccccc";
+                ctx.lineWidth = pass === 0 ? 1.6 : 1.0;
+                ctx.beginPath();
+                for (let s = 0; s <= 10; s++) {
+                    const a = (s * Math.PI) / 10;
+                    let px = sx + Math.cos(a) * r;
+                    let py = sy + Math.sin(a) * r;
+                    if (s > 0 && s < 10) {
+                        px += Math.sin(s + r) * 0.4;
+                        py += Math.cos(s + r) * 0.4;
+                    }
+                    if (s === 0)
+                        ctx.moveTo(px, py);
+                    else
+                        ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+            }
         }
 
         ctx.font = fontStyle;
@@ -1376,9 +1709,7 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
 
         const dx = -95,
             dy = 12;
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(dx - 16, dy - 16, 32, 32);
+        drawSketchRect(ctx, dx - 16, dy - 16, 32, 32, 2.0, { color: "#ffffff" });
         drawInsulationHatch(ctx, dx - 16, dy - 16, 32, 32, prog, "rgba(255, 255, 255, 0.4)");
 
         ctx.font = fontStyle;
@@ -1393,10 +1724,8 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
 
         const kx = -95,
             ky = 12;
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2;
-        drawHandLine(ctx, kx - 18, ky + 18, kx + prog * 18, ky - 18, 0.2, 2);
-        ctx.strokeRect(kx - 6, ky - 6, 12, 12);
+        drawFuzzyPencilLine(ctx, kx - 18, ky + 18, kx + prog * 18, ky - 18, 0.4, 2, { color: "#ffffff", overshoot: 2.0 });
+        drawSketchRect(ctx, kx - 6, ky - 6, 12, 12, 1.5, { color: "#ffffff" });
 
         ctx.font = fontStyle;
         ctx.letterSpacing = "0em";
@@ -1411,13 +1740,17 @@ function drawTopMiddleWidget(ctx, stageIndex, prog, phase) {
     ctx.restore();
 }
 
+/* =========================================================================
+   ALL 17 STAGE HANDLERS (STAGE 0 .. STAGE 16)
+   ========================================================================= */
+
 const STAGE_HANDLERS = [
     // Stage 0: 1780 - Early Settlement
     {
         initSVG: (g, width, height) => {
             addSVGCallout(g, 25, 50, 240, 270, "VIRGIN HEMLOCK CANOPY", "98% OLD-GROWTH DENSITY", "stage0-callout1", 0);
             addSVGCallout(g, 775, 50, 560, 280, "FIELDSTONE DRY-STACK", "GLACIAL ERRATIC CLEARING", "stage0-callout2", 0);
-            addSVGCallout(g, 25, 235, 280, 360, "HAND-HEWN TIMBER SILLS", "BROADAXE MORTISE JOINTING", "stage0-callout3", 1);
+            addSVGCallout(g, 25, 235, 280, 360, "HAND-HEWN TIMBER SILLS", "BROADAXE MORTISE JOINING", "stage0-callout3", 1);
             addSVGCallout(g, 775, 250, 520, 370, "CLAY & STRAW CHINKING", "THERMAL MASS INSULATION", "stage0-callout4", 1);
             addSVGCallout(g, 25, 420, 160, 470, "SUBTERRANEAN DUG WELL", "TAPPING SURFACE WATER TABLE", "stage0-callout5", 2);
             addSVGCallout(g, 775, 420, 500, 470, "PITCH-ROOF SHAKES", "HAND-SPLIT WHITE CEDAR", "stage0-callout6", 2);
@@ -1427,12 +1760,10 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 100, 360, 600, 140, 24, "#0a0a0a", "#ffffff", -0.02);
             drawEarthHatch(ctx, 100, 360, 600, 140, "rgba(255, 255, 255, 0.25)");
@@ -1440,14 +1771,23 @@ const STAGE_HANDLERS = [
             const { assemblyProg } = getPhaseTiming(phase.localProg);
             const wallH = 100 * assemblyProg;
             drawMasonryHatch(ctx, 250, 340 - wallH, 300, wallH, false);
+            drawSketchRect(ctx, 250, 340 - wallH, 300, wallH, 2.5, { color: "#ffffff" });
+
+            if (phase.idx >= 1) {
+                for (let k = 0; k < 5; k++) {
+                    const bx = 260 + k * 65;
+                    drawRoundRect(ctx, bx, 340 - Math.min(wallH, 25), 45, 20, 5, { color: "#cccccc" });
+                }
+            }
 
             if (phase.idx >= 2)
                 drawDimensionLine(ctx, 250, 350, 550, 350, "30'-0\" FRONTAGE", "#ffffff", 12, "#000000");
 
             if (phase.idx >= 3) {
                 const roofY = 340 - wallH - 60 * assemblyProg;
-                drawHandLine(ctx, 230, 340 - wallH, 400, roofY, 0.2, 2);
-                drawHandLine(ctx, 570, 340 - wallH, 400, roofY, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 230, 340 - wallH, 400, roofY, 0.4, 2, { color: "#ffffff", overshoot: 2.8 });
+                drawFuzzyPencilLine(ctx, 570, 340 - wallH, 400, roofY, 0.4, 2, { color: "#ffffff", overshoot: 2.8 });
+                drawFuzzyPencilLine(ctx, 230, 340 - wallH, 570, 340 - wallH, 0.4, 1.8, { color: "#cccccc", overshoot: 2.2 });
             }
         },
     },
@@ -1465,45 +1805,44 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 140, 320, 520, 160, 28, "#111111", "#ffffff", 0.025);
             drawMechanicalTrack(ctx, 160, 360, 640, 360, "rgba(255, 255, 255, 0.35)");
 
             const { assemblyProg } = getPhaseTiming(phase.localProg);
             drawWoodGrainHatch(ctx, 220, 250, 90, 200, 6, 3);
+            drawSketchRect(ctx, 220, 250, 90, 200, 2.5, { color: "#ffffff" });
+
             drawWoodGrainHatch(ctx, 490, 250, 90, 200, 6, 3);
+            drawSketchRect(ctx, 490, 250, 90, 200, 2.5, { color: "#ffffff" });
 
             if (phase.idx >= 1) {
                 drawGear(ctx, 360, 310, 28, 8, prog * Math.PI * 6, "#ffffff");
-                drawHandLine(ctx, 360, 310, 360, 370 + assemblyProg * 30, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 360, 310, 360, 370 + assemblyProg * 30, 0.4, 2, { color: "#ffffff", overshoot: 1.6 });
             }
             if (phase.idx >= 2) {
                 const tenonX = 310 + assemblyProg * 90;
                 drawWoodGrainHatch(ctx, tenonX, 290, 100, 40, 4, 2);
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 2;
-                ctx.strokeRect(tenonX, 290, 100, 40);
+                drawSketchRect(ctx, tenonX, 290, 100, 40, 2.2, { color: "#ffffff" });
             }
             if (phase.idx >= 3) {
                 for (let p = 0; p < 6; p++) {
                     const px = 330 + p * 25;
                     const py = 260 + assemblyProg * 45;
-                    ctx.fillStyle = "#ffffff";
+                    ctx.fillStyle = "#0a0a0a";
                     ctx.fillRect(px, py, 6, 22);
-                    drawHandLine(ctx, px, py, px + 6, py + 22, 0.1, 1);
+                    drawSketchRect(ctx, px, py, 6, 22, 1.2, { color: "#ffffff" });
                 }
             }
             if (phase.idx >= 4) {
                 for (let b = 0; b < 5; b++) {
                     const bx = 180 + b * 90;
                     const by = 220 - assemblyProg * 40;
-                    drawHandLine(ctx, bx, by, bx + 60, by - 30, 0.2, 2);
+                    drawFuzzyPencilLine(ctx, bx, by, bx + 60, by - 30, 0.4, 2, { color: "#cccccc", overshoot: 2.2 });
                 }
             }
         },
@@ -1523,12 +1862,10 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 120, 280, 560, 220, 32, "#080808", "#ffffff", 0.03);
             drawEarthHatch(ctx, 120, 350, 560, 150, "rgba(255, 255, 255, 0.35)");
@@ -1536,6 +1873,13 @@ const STAGE_HANDLERS = [
             const { assemblyProg } = getPhaseTiming(phase.localProg);
             const strataH = 120 * assemblyProg;
             drawMasonryHatch(ctx, 300, 420 - strataH, 200, strataH, true);
+            drawSketchRect(ctx, 300, 420 - strataH, 200, strataH, 2.5, { color: "#ffffff" });
+
+            if (phase.idx >= 1) {
+                drawFuzzyPencilLine(ctx, 280, 380, 520, 380, 0.4, 2, { color: "#cccccc", overshoot: 2.4 });
+                for (let k = 0; k < 6; k++)
+                    drawRoundRect(ctx, 290 + k * 35, 385, 30, 28, 4, { color: "#cccccc" });
+            }
 
             if (phase.idx >= 2)
                 drawDimensionLine(ctx, 140, 350, 140, 470, "12'-0\" STRATA DEPTH", "#ffffff", -16, "#000000");
@@ -1555,15 +1899,14 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 100, 360, 600, 150, 26, "#0a0a0a", "#ffffff", -0.025);
             drawWoodGrainHatch(ctx, 120, 230, 220, 40, 4, 3);
+            drawSketchRect(ctx, 120, 230, 220, 40, 2.2, { color: "#ffffff" });
 
             drawGear(ctx, 260, 380, 85, 16, prog * Math.PI * 4, "#ffffff");
             drawGear(ctx, 260, 380, 28, 8, prog * Math.PI * 4, "#cccccc");
@@ -1573,12 +1916,11 @@ const STAGE_HANDLERS = [
             for (let w = 0; w < 8; w++) {
                 const wy = 270 + w * 14;
                 const wx = 240 + Math.sin(prog * 15 + w) * 10;
-                drawHandLine(ctx, 220, 250, wx, wy, 0.3, 1.5);
+                drawFuzzyPencilLine(ctx, 220, 250, wx, wy, 0.4, 1.5, { color: "#ffffff", overshoot: 1.5 });
             }
+
             const sawY = 280 + Math.sin(prog * 20) * 35;
-            ctx.strokeStyle = "#ffffff";
-            ctx.lineWidth = 2.5;
-            ctx.strokeRect(600, sawY - 40, 16, 80);
+            drawSketchRect(ctx, 600, sawY - 40, 16, 80, 2.5, { color: "#ffffff" });
             drawSteelHatch(ctx, 600, sawY - 40, 16, 80);
         },
     },
@@ -1597,12 +1939,10 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 140, 340, 520, 160, 26, "#0a0a0a", "#ffffff", 0.025);
             drawMechanicalTrack(ctx, 160, 380, 640, 380, "rgba(255, 255, 255, 0.35)");
@@ -1612,9 +1952,12 @@ const STAGE_HANDLERS = [
             for (let i = 0; i < numStuds; i++) {
                 const sx = 200 + i * 35;
                 drawWoodGrainHatch(ctx, sx, 220, 12, 120, 2, 2);
+                drawSketchRect(ctx, sx, 220, 12, 120, 1.8, { color: "#ffffff" });
             }
-            if (phase.idx >= 1)
+            if (phase.idx >= 1) {
                 drawSteelHatch(ctx, 450, 280, 60, 80);
+                drawSketchRect(ctx, 450, 280, 60, 80, 2.2, { color: "#ffffff" });
+            }
         },
     },
     // Stage 5: 1885 - Victorian Expansion
@@ -1631,26 +1974,26 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 120, 350, 560, 150, 24, "#111111", "#ffffff", 0.03);
             drawMasonryHatch(ctx, 160, 250, 180, 130, false);
+            drawSketchRect(ctx, 160, 250, 180, 130, 2.5, { color: "#ffffff" });
+
             drawWoodGrainHatch(ctx, 380, 240, 50, 180, 6, 2);
+            drawSketchRect(ctx, 380, 240, 50, 180, 2.5, { color: "#ffffff" });
 
             for (let b = 0; b < 6; b++) {
                 const bx = 460 + b * 28;
                 const by = 310 + Math.sin(prog * 12 + b) * 4;
-                drawRoundRect(ctx, bx, by, 14, 65, 4);
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
+                drawRoundRect(ctx, bx, by, 14, 65, 4, { color: "#ffffff" });
             }
             drawSteelHatch(ctx, 220, 390, 360, 25);
+            drawSketchRect(ctx, 220, 390, 360, 25, 2.0, { color: "#ffffff" });
+
             for (let g = 0; g < 5; g++) {
                 const gx = 250 + g * 75;
                 drawSurveyReticle(ctx, gx, 330, 16 + Math.sin(prog * 8 + g) * 4, "GAS LUX", "#ffffff");
@@ -1672,22 +2015,21 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 110, 350, 580, 150, 25, "#0a0a0a", "#ffffff", -0.025);
 
             const { assemblyProg } = getPhaseTiming(phase.localProg);
             const barnW = 240 * assemblyProg;
             drawWoodGrainHatch(ctx, 200, 230, barnW, 120, 4, 3);
+            drawSketchRect(ctx, 200, 230, barnW, 120, 2.5, { color: "#ffffff" });
 
             if (phase.idx >= 1) {
                 drawGear(ctx, 540, 260, 45, 12, prog * Math.PI * 4, "#ffffff");
-                drawHandLine(ctx, 540, 260, 540, 350, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 540, 260, 540, 350, 0.4, 2, { color: "#ffffff", overshoot: 2.0 });
             }
         },
     },
@@ -1705,30 +2047,26 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 110, 360, 580, 145, 25, "#0a0a0a", "#ffffff", -0.028);
             drawSteelHatch(ctx, 180, 320, 140, 90);
+            drawSketchRect(ctx, 180, 320, 140, 90, 2.5, { color: "#ffffff" });
 
             drawGear(ctx, 520, 320, 38, 12, prog * Math.PI * 10, "#ffffff");
             for (let k = 0; k < 6; k++) {
                 const kx = 220 + k * 55;
-                drawRoundRect(ctx, kx, 260, 18, 28, 6);
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 2;
-                ctx.stroke();
+                drawRoundRect(ctx, kx, 260, 18, 28, 6, { color: "#ffffff" });
                 if (phase.idx >= 1)
-                    drawHandLine(ctx, kx + 9, 274, kx + 55 + 9, 274 + Math.sin(prog * 20 + k) * 6, 0.6, 2);
+                    drawFuzzyPencilLine(ctx, kx + 9, 274, kx + 55 + 9, 274 + Math.sin(prog * 20 + k) * 6, 0.6, 2, { color: "#ffffff", overshoot: 1.6 });
             }
             for (let r = 0; r < 7; r++) {
                 const rx = 200 + r * 16;
                 const ry = 310 - prog * 40;
-                drawHandLine(ctx, rx, 320, rx + Math.sin(prog * 10 + r) * 12, ry, 0.3, 1.5);
+                drawFuzzyPencilLine(ctx, rx, 320, rx + Math.sin(prog * 10 + r) * 12, ry, 0.4, 1.5, { color: "#cccccc", overshoot: 1.5 });
             }
         },
     },
@@ -1747,21 +2085,22 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 130, 360, 540, 150, 26, "#0a0a0a", "#ffffff", 0.02);
 
             const { assemblyProg } = getPhaseTiming(phase.localProg);
             const sag = 40 * assemblyProg;
             drawWoodGrainHatch(ctx, 200, 250 + sag, 400, 100 - sag * 0.5, 5, 2);
+            drawSketchRect(ctx, 200, 250 + sag, 400, 100 - sag * 0.5, 2.5, { color: "#ffffff" });
 
-            if (phase.idx >= 1)
+            if (phase.idx >= 1) {
                 drawEarthHatch(ctx, 180, 360, 120, 60, "rgba(255, 255, 255, 0.4)");
+                drawSketchRect(ctx, 180, 360, 120, 60, 2.0, { color: "#cccccc" });
+            }
         },
     },
     // Stage 9: 1965 - Emergency Shoring & Stabilization
@@ -1778,28 +2117,29 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 130, 370, 540, 140, 22, "#111111", "#ffffff", 0.028);
             drawWoodGrainHatch(ctx, 180, 250, 440, 45, 5, 3);
+            drawSketchRect(ctx, 180, 250, 440, 45, 2.5, { color: "#ffffff" });
+
             drawEarthHatch(ctx, 280, 460, 240, 35);
+            drawSketchRect(ctx, 280, 460, 240, 35, 2.0, { color: "#cccccc" });
 
             for (let j = 0; j < 4; j++) {
                 const jx = 290 + j * 75;
                 const colH = 155 + prog * 15;
                 drawSteelHatch(ctx, jx, 460 - colH, 26, colH);
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 2;
-                ctx.strokeRect(jx, 460 - colH, 26, colH);
+                drawSketchRect(ctx, jx, 460 - colH, 26, colH, 2.0, { color: "#ffffff" });
                 drawGear(ctx, jx + 13, 460 - colH + 20, 22, 8, prog * Math.PI * 6, "#ffffff");
             }
-            if (phase.idx >= 3)
+            if (phase.idx >= 3) {
                 drawMasonryHatch(ctx, 180, 200, 440, 35, true);
+                drawSketchRect(ctx, 180, 200, 440, 35, 2.2, { color: "#cccccc" });
+            }
         },
     },
     // Stage 10: 1980 - Modernization Planning
@@ -1817,18 +2157,17 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 120, 350, 560, 150, 26, "#0a0a0a", "#ffffff", -0.025);
 
             const { assemblyProg } = getPhaseTiming(phase.localProg);
             const liftH = 30 * assemblyProg;
             drawSteelHatch(ctx, 220, 330 - liftH, 360, 20);
+            drawSketchRect(ctx, 220, 330 - liftH, 360, 20, 2.5, { color: "#ffffff" });
 
             if (phase.idx >= 1)
                 drawSurveyReticle(ctx, 400, 280 - liftH, 20, "DATUM +0.00", "#ffffff");
@@ -1848,29 +2187,26 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 100, 260, 600, 250, 30, "#0a0a0a", "#ffffff", -0.025);
             drawEarthHatch(ctx, 120, 420, 560, 90);
             drawMasonryHatch(ctx, 360, 420, 80, 60, false);
+            drawSketchRect(ctx, 360, 420, 80, 60, 2.2, { color: "#ffffff" });
 
             drawGear(ctx, 400, 290, 32, 12, prog * Math.PI * 12, "#ffffff");
             for (let a = 0; a < 8; a++) {
                 const ay = 410 - a * 15;
                 const ax = 400 + Math.sin(prog * 12 + a) * 8;
-                drawHandLine(ctx, ax, ay + 10, ax, ay - 10, 0.2, 1.5);
+                drawFuzzyPencilLine(ctx, ax, ay + 10, ax, ay - 10, 0.4, 1.5, { color: "#ffffff", overshoot: 1.5 });
             }
             drawEarthHatch(ctx, 140, 390, 90, 45);
             drawEarthHatch(ctx, 570, 390, 90, 45);
-            ctx.strokeStyle = "#ffffff";
-            ctx.lineWidth = 2;
             for (let p = 0; p < 5; p++)
-                drawHandLine(ctx, 150 + p * 15, 410, 150 + p * 15 + prog * 20, 410, 0.1, 2);
+                drawFuzzyPencilLine(ctx, 150 + p * 15, 410, 150 + p * 15 + prog * 20, 410, 0.3, 2, { color: "#ffffff", overshoot: 1.5 });
         },
     },
     // Stage 12: 2010 - Ecological Insulation
@@ -1888,18 +2224,17 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 110, 340, 580, 150, 25, "#0a0a0a", "#ffffff", 0.02);
 
             const { assemblyProg } = getPhaseTiming(phase.localProg);
             const foamW = 200 * assemblyProg;
             drawWoodGrainHatch(ctx, 180, 240, foamW, 100, 4, 2);
+            drawSketchRect(ctx, 180, 240, foamW, 100, 2.5, { color: "#ffffff" });
 
             if (phase.idx >= 1)
                 drawGear(ctx, 500, 280, 35, 12, prog * Math.PI * 4, "#ffffff");
@@ -1920,17 +2255,16 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 120, 350, 560, 150, 24, "#0a0a0a", "#ffffff", -0.02);
 
             const { assemblyProg } = getPhaseTiming(phase.localProg);
             drawSteelHatch(ctx, 200, 260, 400 * assemblyProg, 80);
+            drawSketchRect(ctx, 200, 260, 400 * assemblyProg, 80, 2.5, { color: "#ffffff" });
 
             if (phase.idx >= 1)
                 drawDimensionLine(ctx, 200, 360, 600, 360, "MODERN HOMESTEAD", "#ffffff", -20, "#000000");
@@ -1950,23 +2284,37 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 110, 250, 580, 260, 32, "#111111", "#ffffff", 0.035);
             drawEarthHatch(ctx, 130, 270, 540, 240);
             drawMasonryHatch(ctx, 350, 250, 100, 40, false);
+            drawSketchRect(ctx, 350, 250, 100, 40, 2.2, { color: "#ffffff" });
 
-            ctx.strokeStyle = "#ffffff";
-            ctx.lineWidth = 1.8;
             for (let r = 1; r <= 6; r++) {
-                ctx.beginPath();
-                ctx.arc(400, 290, r * 30 * prog, 0, Math.PI);
-                ctx.stroke();
+                for (let pass = 0; pass < 2; pass++) {
+                    ctx.strokeStyle = pass === 0 ? "rgba(255, 255, 255, 0.35)" : "#ffffff";
+                    ctx.lineWidth = pass === 0 ? 2.2 : 1.6;
+                    ctx.beginPath();
+                    const rad = r * 30 * prog;
+                    for (let s = 0; s <= 16; s++) {
+                        const a = (s * Math.PI) / 16;
+                        let px = 400 + Math.cos(a) * rad;
+                        let py = 290 + Math.sin(a) * rad;
+                        if (s > 0 && s < 16) {
+                            px += Math.sin(s + r) * 0.5;
+                            py += Math.cos(s + r) * 0.5;
+                        }
+                        if (s === 0)
+                            ctx.moveTo(px, py);
+                        else
+                            ctx.lineTo(px, py);
+                    }
+                    ctx.stroke();
+                }
             }
             for (let h = 0; h < 6; h++) {
                 const hy = 320 + h * 30;
@@ -1988,26 +2336,25 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 120, 260, 560, 240, 28, "#0a0a0a", "#ffffff", -0.025);
             drawWoodGrainHatch(ctx, 140, 280, 140, 200, 5, 2);
-            drawInsulationHatch(ctx, 420, 280, 240, 200, prog, "rgba(255, 255, 255, 0.45)");
+            drawSketchRect(ctx, 140, 280, 140, 200, 2.5, { color: "#ffffff" });
 
-            ctx.strokeStyle = "#ffffff";
-            ctx.lineWidth = 3;
-            drawHandLine(ctx, 400, 270, 400, 490, 0.1, 3);
+            drawInsulationHatch(ctx, 420, 280, 240, 200, prog, "rgba(255, 255, 255, 0.45)");
+            drawSketchRect(ctx, 420, 280, 240, 200, 2.5, { color: "#ffffff" });
+
+            drawFuzzyPencilLine(ctx, 400, 270, 400, 490, 0.3, 3, { color: "#ffffff", overshoot: 3.0 });
             for (let f = 0; f < 8; f++) {
                 const fy = 290 + f * 24;
                 const fx = 420 - prog * 60;
-                drawHandLine(ctx, 560, fy, fx, fy, 0.2, 1.5);
+                drawFuzzyPencilLine(ctx, 560, fy, fx, fy, 0.4, 1.5, { color: "#ffffff", overshoot: 1.8 });
                 ctx.fillStyle = "#ffffff";
-                ctx.fillRect(fx - 4, fy - 3, 6, 6);
+                drawSketchRect(ctx, fx - 4, fy - 3, 6, 6, 1.2, { color: "#ffffff" });
             }
         },
     },
@@ -2025,16 +2372,15 @@ const STAGE_HANDLERS = [
         },
         updateSVG: (g, prog, width, height, phase) => {},
         renderCanvas: (ctx, g, prog, width, height, phase) => {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-            ctx.lineWidth = 1;
             for (let x = 0; x < width; x += 40)
-                drawHandLine(ctx, x, 0, x, height, 0.2, 2);
+                drawFuzzyPencilLine(ctx, x, 0, x, height, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
             for (let y = 0; y < height; y += 40)
-                drawHandLine(ctx, 0, y, width, y, 0.2, 2);
+                drawFuzzyPencilLine(ctx, 0, y, width, y, 0.3, 1, { color: "rgba(255, 255, 255, 0.12)", secondaryColor: "rgba(255, 255, 255, 0.05)", overshoot: false });
 
             drawDioramaPlatform(ctx, 100, 350, 600, 160, 28, "#0a0a0a", "#ffffff", -0.03);
             const driftX = prog * 20;
             drawSteelHatch(ctx, 220 + driftX, 220, 360, 130);
+            drawSketchRect(ctx, 220 + driftX, 220, 360, 130, 2.5, { color: "#ffffff" });
 
             for (let a = 0; a < 6; a++) {
                 const ax = 250 + a * 60 + driftX;
