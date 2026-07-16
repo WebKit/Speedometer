@@ -13,17 +13,17 @@ export class BenchmarkStep {
         this.run = run;
     }
 
-    async runAndRecordStep(params, suite, step, callback) {
-        const stepRunner = new StepRunner(null, null, params, suite, step, callback);
+    async runAndRecordStep(params, suite, step) {
+        const stepRunner = new StepRunner(null, null, params, suite, step);
         const result = await stepRunner.runStep();
         return result;
     }
 }
 
 export class AsyncBenchmarkStep extends BenchmarkStep {
-    async runAndRecord(params, suite, test, callback) {
-        const testRunner = new AsyncStepRunner(null, null, params, suite, test, callback);
-        const result = await testRunner.runTest();
+    async runAndRecordStep(params, suite, step) {
+        const stepRunner = new AsyncStepRunner(null, null, params, suite, step);
+        const result = await stepRunner.runStep();
         return result;
     }
 }
@@ -47,16 +47,6 @@ export class BenchmarkSuite {
         console.assert(this.type in BENCHMARK_SUITE_TYPE, "Invalid Type", this.type);
     }
 
-    record(_step, syncTime, asyncTime) {
-        const total = syncTime + asyncTime;
-        const results = {
-            tests: { Sync: syncTime, Async: asyncTime },
-            total: total,
-        };
-
-        return results;
-    }
-
     async runAndRecordSuite(params, onProgress) {
         const measuredValues = {
             tests: {},
@@ -69,10 +59,18 @@ export class BenchmarkSuite {
         performance.mark(suiteStartLabel);
 
         for (const step of this.steps) {
-            const result = await step.runAndRecordStep(params, this, step, this.record);
-            console.assert(result, "Missing test return value", step);
-            measuredValues.tests[step.name] = result;
-            measuredValues.total += result.total;
+            const rawResult = await step.runAndRecordStep(params, this, step);
+            console.assert(rawResult, "Missing test return value", step);
+            const { syncTime, asyncTime } = rawResult;
+            const total = syncTime + asyncTime;
+            const result = {
+                tests: { Sync: syncTime, Async: asyncTime },
+                total: total,
+            };
+            if (!step.ignoreResult) {
+                measuredValues.tests[step.name] = result;
+                measuredValues.total += total;
+            }
             onProgress?.(step.name);
         }
 
