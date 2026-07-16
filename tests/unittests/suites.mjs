@@ -67,17 +67,28 @@ for (const [name, suites] of Object.entries(Suites)) {
         it("should have resources.txt listing only valid files", async function () {
             // validating all resource files can take a bit longer than the default timeout.
             this.timeout(10000);
-            const baseUrl = `${window.location.origin}/`;
+            const isNode = typeof window === "undefined";
+            const baseUrl = isNode ? new URL("../../", import.meta.url).href : `${window.location.origin}/`;
             const brokenResourcesList = [];
             for (const suite of suites) {
                 if (!suite.resources)
                     continue;
                 const resourcesUrl = new URL(suite.resources, baseUrl).href;
-                const res = await fetch(resourcesUrl);
-                if (!res.ok)
-                    throw new Error(`Failed to load resources.txt for ${suite.name} at ${resourcesUrl}`);
+                let text;
+                if (isNode) {
+                    const fs = await import("node:fs/promises");
+                    try {
+                        text = await fs.readFile(new URL(resourcesUrl), "utf-8");
+                    } catch (e) {
+                        throw new Error(`Failed to load resources.txt for ${suite.name} at ${resourcesUrl}`);
+                    }
+                } else {
+                    const res = await fetch(resourcesUrl);
+                    if (!res.ok)
+                        throw new Error(`Failed to load resources.txt for ${suite.name} at ${resourcesUrl}`);
+                    text = await res.text();
+                }
 
-                const text = await res.text();
                 if (text.trim().length === 0)
                     throw new Error(`resources.txt for ${suite.name} is empty`);
 
@@ -88,11 +99,21 @@ for (const [name, suites] of Object.entries(Suites)) {
                 await Promise.all(
                     files.map(async (file) => {
                         const fileUrl = new URL(file, resourcesUrl).href;
-                        const fileRes = await fetch(fileUrl, { method: "HEAD" });
-                        if (!fileRes.ok)
-                            brokenResourcesList.push(`${fileUrl} (listed in ${resourcesUrl})`);
-                        else
-                            expect(fileRes.ok).to.be(true);
+                        if (isNode) {
+                            const fs = await import("node:fs/promises");
+                            try {
+                                await fs.stat(new URL(fileUrl));
+                                expect(true).to.be(true);
+                            } catch {
+                                brokenResourcesList.push(`${fileUrl} (listed in ${resourcesUrl})`);
+                            }
+                        } else {
+                            const fileRes = await fetch(fileUrl, { method: "HEAD" });
+                            if (!fileRes.ok)
+                                brokenResourcesList.push(`${fileUrl} (listed in ${resourcesUrl})`);
+                            else
+                                expect(fileRes.ok).to.be(true);
+                        }
                     })
                 );
             }
