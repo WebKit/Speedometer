@@ -145,6 +145,7 @@ export class ResourcePreloader {
             console.log(`Preloaded ${response.count} files (${sizeMB} MB transferred) in ${timeSec}s`);
         }
         this._preloadParams = params.toSearchParams();
+        return undefined;
     }
 }
 
@@ -556,11 +557,12 @@ class MainBenchmarkClient {
 
     async _setupResourcePreloader(benchmarkConfigurator) {
         await this._resourcePreloader.setup();
-        if (!this._resourcePreloader.isCached())
-            return await this._cacheResources(benchmarkConfigurator);
-        else
+        if (!this._resourcePreloader.isCached()) {
+            return this._cacheResources(benchmarkConfigurator);
+        } else {
             this._enableStartButtons();
-
+        }
+        return undefined;
     }
 
     async _cacheResources(benchmarkConfigurator) {
@@ -583,6 +585,7 @@ class MainBenchmarkClient {
             if (result === "ABORTED")
                 return "ABORTED";
             this._enableStartButtons();
+            return undefined;
         } catch (error) {
             console.error("Service Worker preload failed:", error);
             this._setBenchmarkState(BENCHMARK_STATE.ERROR);
@@ -639,10 +642,10 @@ class MainBenchmarkClient {
         const startButtons = document.querySelectorAll(".start-tests-button");
         if (state === BENCHMARK_STATE.PRELOADING) {
             this._resetPreloadUI();
-            startButtons.forEach((btn) => btn.innerHTML = "<div>Preloading</div>");
+            startButtons.forEach((btn) => { btn.innerHTML = "<div>Preloading</div>"; });
         } else if (state !== BENCHMARK_STATE.RUNNING) {
             document.body.style.removeProperty("--preload-progress");
-            startButtons.forEach((btn) => btn.innerHTML = "<div>Start Test</div>");
+            startButtons.forEach((btn) => { btn.innerHTML = "<div>Start Test</div>"; });
             if (state !== BENCHMARK_STATE.READY)
                 await this._resourcePreloader?.clearSw();
         }
