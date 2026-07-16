@@ -191,7 +191,7 @@ async function fetchAndCache(cache, url, delayMs) {
         await delayAsync(delayMs);
     return requestLimiter.schedule(async () => {
         const request = new Request(url, { cache: "no-cache" });
-        const existing = await cache.match(request, { ignoreSearch: true });
+        const existing = await cache.match(request, { ignoreSearch: true, ignoreVary: true });
         if (existing)
             return getResponseSize(existing);
 
@@ -260,7 +260,7 @@ self.addEventListener("message", (event) => {
 self.addEventListener("fetch", (event) => {
     event.respondWith(
         (async () => {
-            const cachedResponse = await caches.match(event.request, { cacheName: CACHE_NAME, ignoreSearch: true });
+            const cachedResponse = await caches.match(event.request, { cacheName: CACHE_NAME, ignoreSearch: true, ignoreVary: true });
             if (cachedResponse)
                 return cachedResponse;
 
