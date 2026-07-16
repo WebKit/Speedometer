@@ -561,10 +561,9 @@ class MainBenchmarkClient {
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const clearCache = !params.isDefault();
         
-        if (this._state === BENCHMARK_STATE.PRELOADING) {
-            this._resetPreloadUI();
-        }
+        this._resetPreloadUI();
         this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
+        await new Promise(resolve => requestAnimationFrame(resolve));
         
         this._preloadGeneration = (this._preloadGeneration || 0) + 1;
         const currentGeneration = this._preloadGeneration;
@@ -594,16 +593,26 @@ class MainBenchmarkClient {
     }
 
     _updateCacheProgress(progressData) {
-        const { loaded, total, url, suiteName } = progressData;
-        document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
-        const progress = document.getElementById("preload-progress-completed");
-        progress.max = total;
-        progress.value = loaded;
-        let filename = url ? url.substring(url.lastIndexOf("/") + 1) : "";
-        if (!filename && url) filename = url.substring(url.lastIndexOf("/", url.length - 2) + 1);
-        const labelText = suiteName ? `${suiteName}: ${filename}` : filename;
-        document.getElementById("preload-info-label").textContent = labelText;
-        document.getElementById("preload-info-progress").textContent = `${loaded} / ${total}`;
+        this._latestProgressData = progressData;
+        if (this._progressUpdateScheduled) return;
+        this._progressUpdateScheduled = true;
+        
+        requestAnimationFrame(() => {
+            this._progressUpdateScheduled = false;
+            const data = this._latestProgressData;
+            if (!data) return;
+            const { loaded, total, url, suiteName } = data;
+            
+            document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
+            const progress = document.getElementById("preload-progress-completed");
+            progress.max = total;
+            progress.value = loaded;
+            let filename = url ? url.substring(url.lastIndexOf("/") + 1) : "";
+            if (!filename && url) filename = url.substring(url.lastIndexOf("/", url.length - 2) + 1);
+            const labelText = suiteName ? `${suiteName}: ${filename}` : filename;
+            document.getElementById("preload-info-label").textContent = labelText;
+            document.getElementById("preload-info-progress").textContent = `${loaded} / ${total}`;
+        });
     }
 
     _enableStartButtons() {
