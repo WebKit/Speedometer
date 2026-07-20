@@ -14,6 +14,7 @@ export class ResourcePreloader {
         this._preloadParams = "";
         this._clientId = null;
         this._pendingRequest = null;
+        this._onPreloadProgress = null;
     }
 
     isCached() {
@@ -25,24 +26,20 @@ export class ResourcePreloader {
     async setup() {
         if (!params.preload) {
             await this._unregisterOldServiceWorkers();
-            this._registration = null;
-            this._sw = null;
-            return false;
+            return;
         }
 
         await this._registerServiceWorker();
         this._setupMessageListener();
-
-        const response = await this._sendMessageWithReply({ type: SW_MESSAGES.GET_CLIENT_ID }, null, 5000);
-        this._clientId = response.clientId;
-
-        return true;
+        this._clientId = await this._getClientId();
     }
 
     async _unregisterOldServiceWorkers() {
         const existingRegistrations = await navigator.serviceWorker.getRegistrations();
         for (const existing of existingRegistrations)
             await existing.unregister();
+        this._registration = null;
+        this._sw = null;
     }
 
     async _registerServiceWorker() {
@@ -51,8 +48,24 @@ export class ResourcePreloader {
         this._sw = navigator.serviceWorker.controller || this._registration.active;
     }
 
+    async _getClientId() {
+        const response = await this._postMessage({ type: SW_MESSAGES.GET_CLIENT_ID }, 5000);
+        const clientId = response.clientId;
+        if (!clientId)
+            throw new Error("Could not retrieve service worker client id");
+        return clientId;
+    }
+
     _setupMessageListener() {
         navigator.serviceWorker.addEventListener("message", this.onMessage.bind(this));
+    }
+
+    _validateMessageRouting(data) {
+        if (!this._pendingRequest)
+            throw new Error(`Received unexpected ServiceWorker message without any pending request: ${data.type}`);
+
+        if (this._pendingRequest.type !== data.type)
+            throw new Error(`Received ServiceWorker message type '${data.type}' but expected '${this._pendingRequest.type}'`);
     }
 
     onMessage(event) {
@@ -63,29 +76,26 @@ export class ResourcePreloader {
             return;
         }
 
-        if (this._pendingRequest && this._pendingRequest.type === data.type) {
-            const { resolve, reject, onProgress, timeoutId } = this._pendingRequest;
+        this._validateMessageRouting(data);
 
-            if (data.status === SW_MESSAGES.PRELOAD_PROGRESS) {
-                onProgress?.(data);
-                return;
-            }
+        const { resolve, reject, timeoutId } = this._pendingRequest;
 
-            if (timeoutId)
-                clearTimeout(timeoutId);
-            this._pendingRequest = null;
-
-            if (data.status === SW_MESSAGES.ERROR)
-                reject(new Error(data.message || "Unknown SW Error"));
-            else if (data.status === SW_MESSAGES.PRELOAD_ABORTED)
-                resolve({ status: SW_MESSAGES.PRELOAD_ABORTED });
-            else
-                resolve(data);
-
+        if (data.status === SW_MESSAGES.PRELOAD_PROGRESS) {
+            this._onPreloadProgress?.(data);
+            return;
         }
+
+        if (timeoutId)
+            clearTimeout(timeoutId);
+        this._pendingRequest = null;
+
+        if (data.status === SW_MESSAGES.ERROR)
+            reject(new Error(data.message || "Unknown SW Error"));
+        else
+            resolve(data);
     }
 
-    _sendMessageWithReply(messageData, onProgress, timeoutMs = 0) {
+    _postMessage(messageData, timeoutMs = 0) {
         if (!this._sw)
             return Promise.resolve();
 
@@ -93,8 +103,9 @@ export class ResourcePreloader {
             messageData.clientId = this._clientId;
 
         if (this._pendingRequest) {
-            console.warn(`Already waiting for ${this._pendingRequest.type}, overriding with ${messageData.type}`);
-            this._pendingRequest.reject(new Error("Overridden by new request"));
+            const errorMessage = `Already waiting for ${this._pendingRequest.type}, overriding with ${messageData.type}`;
+            console.warn(errorMessage);
+            this._pendingRequest.reject(new Error(errorMessage));
             this._pendingRequest = null;
         }
 
@@ -105,27 +116,38 @@ export class ResourcePreloader {
                 timeoutId = setTimeout(() => {
                     if (this._pendingRequest?.type === messageData.type) {
                         this._pendingRequest = null;
-                        console.error(`Service worker message timed out: ${messageData.type}`);
-                        resolve({}); // Resolve to not block execution
+                        const errorMessage = `Service worker message timed out: ${messageData.type}`;
+                        console.error(errorMessage);
+                        reject(new Error(errorMessage));
                     }
                 }, timeoutMs);
             }
 
-            this._pendingRequest = { type: messageData.type, resolve, reject, onProgress, timeoutId };
+            this._pendingRequest = { type: messageData.type, resolve, reject, timeoutId };
             this._sw.postMessage(messageData);
         });
     }
 
-    async clearSw() {
+    async teardown() {
+        const response = await this.getFailedRequests();
+        if (response.requests?.length > 0) {
+            console.warn("The following requests failed during the benchmark and bypassed the cache:");
+            console.warn(response.requests.join("\n"));
+            throw new Error("The benchmark had missing resources that were not cached. Check the console for details.");
+        }
+        await this.clearServiceWorker();
+    }
+
+    async clearServiceWorker() {
         if (!this._sw)
             return;
-        await this._sendMessageWithReply({ type: SW_MESSAGES.CLEAR_CACHE });
+        await this._postMessage({ type: SW_MESSAGES.CLEAR_CACHE });
     }
 
     async resetPreloading() {
         if (!this._sw)
             return;
-        await this._sendMessageWithReply({ type: SW_MESSAGES.RESET_PRELOADING });
+        await this._postMessage({ type: SW_MESSAGES.RESET_PRELOADING });
         if (this._activePreloadPromise)
             await this._activePreloadPromise;
     }
@@ -133,6 +155,10 @@ export class ResourcePreloader {
     async preloadSuites(suites, resourceLoadDelay, clearCache = true, onProgress) {
         if (!this._sw)
             return undefined;
+        if (this._onPreloadProgress)
+            throw new Error("Preload already active");
+        this._onPreloadProgress = onProgress;
+
         const suitesData = suites
             .filter((s) => s.resources)
             .map((s) => ({
@@ -145,14 +171,14 @@ export class ResourcePreloader {
             return undefined;
 
         const startTime = performance.now();
-        this._activePreloadPromise = this._sendMessageWithReply({ type: SW_MESSAGES.PRELOAD_SUITES, suites: suitesData, delay: resourceLoadDelay, clearCache }, onProgress, PRELOAD_TIMEOUT_MS);
+        this._activePreloadPromise = this._postMessage({ type: SW_MESSAGES.PRELOAD_SUITES, suites: suitesData, delay: resourceLoadDelay, clearCache }, PRELOAD_TIMEOUT_MS);
         const response = await this._activePreloadPromise;
         this._activePreloadPromise = null;
 
-        if (response.type === SW_MESSAGES.PRELOAD_ABORTED)
-            return "ABORTED";
+        if (response.status === SW_MESSAGES.PRELOAD_ABORTED)
+            throw new Error("Preload aborted");
 
-        if (response.type === SW_MESSAGES.PRELOAD_DONE) {
+        if (response.status === SW_MESSAGES.PRELOAD_DONE) {
             const timeTakenMs = performance.now() - startTime;
             const sizeMB = (response.transferredSize / (1024 * 1024)).toFixed(2);
             const timeSec = (timeTakenMs / 1000).toFixed(2);
@@ -160,6 +186,11 @@ export class ResourcePreloader {
         }
         this._preloadParams = params.toSearchParams();
         return undefined;
+    }
+
+    async getFailedRequests() {
+        // return this._postMessage({ type: SW_MESSAGES.GET_FAILED_REQUESTS });
+        return { requests: ["a"] };
     }
 }
 
@@ -183,7 +214,14 @@ class PreloadStatusUpdater {
         this._infoProgressElement = document.getElementById("preload-info-progress");
     }
 
-    update(data) {
+    start() {
+        this._progressCompletedElement.value = 0;
+        this._infoLabelElement.textContent = "";
+        this._infoProgressElement.textContent = "";
+        document.body.style.setProperty("--preload-progress", "0%");
+    }
+
+    onProgress(data) {
         this._latestData = data;
         if (!this._rafId)
             this._rafId = requestAnimationFrame(this._updateFn);
@@ -207,20 +245,12 @@ class PreloadStatusUpdater {
         this._infoProgressElement.textContent = `${loaded} / ${total}`;
     }
 
-    cancel() {
+    stop() {
         if (this._rafId) {
             cancelAnimationFrame(this._rafId);
             this._rafId = null;
         }
         this._latestData = null;
-    }
-
-    resetUI() {
-        this.cancel();
-        this._progressCompletedElement.value = 0;
-        this._infoLabelElement.textContent = "";
-        this._infoProgressElement.textContent = "";
-        document.body.style.setProperty("--preload-progress", "0%");
     }
 }
 
@@ -236,7 +266,6 @@ class MainBenchmarkClient {
     _hasResults = false;
     _metrics = Object.create(null);
     _resourcePreloader = new ResourcePreloader();
-    _preloadStatusUpdater = new PreloadStatusUpdater();
     _steppingPromise = null;
     _steppingResolver = null;
     _benchmarkConfiguratorPromise = null;
@@ -310,17 +339,8 @@ class MainBenchmarkClient {
         if (!this._isStepping())
             this._developerModeContainer?.remove();
 
-        await this._resourcePreloader.resetPreloading();
-        const preloadResult = await this._setupResourcePreloader(benchmarkConfigurator);
-        if (preloadResult === "ABORTED")
-            return false;
-
-        try {
-            await this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
-        } catch (error) {
-            alert(error.message);
-            return false;
-        }
+        await this._preloadResources(benchmarkConfigurator);
+        await this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
 
         this._progressCompleted = document.getElementById("progress-completed");
         if (params.iterationCount < 50) {
@@ -380,16 +400,10 @@ class MainBenchmarkClient {
         console.assert(this._isRunning);
         this._isRunning = false;
 
-        const response = await this._resourcePreloader._sendMessageWithReply({ type: SW_MESSAGES.GET_FAILED_REQUESTS });
-        if (response.requests && response.requests.length > 0) {
-            console.warn("The following requests failed during the benchmark and bypassed the cache:");
-            console.warn(response.requests.join("\n"));
-            alert("Warning: The benchmark had missing resources that were not cached. Check the console for details.");
-        }
-
         this._hasResults = true;
         this._metrics = metrics;
-        this._setBenchmarkState(BENCHMARK_STATE.DONE);
+        await this._setBenchmarkState(BENCHMARK_STATE.DONE);
+        await this._resourcePreloader.teardown();
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         if (scoreResults.isValid)
@@ -406,11 +420,11 @@ class MainBenchmarkClient {
     }
 
     handleError(error) {
-        console.assert(this._isRunning);
         this._isRunning = false;
         this._hasResults = true;
         this._metrics = Object.create(null);
         this._setBenchmarkState(BENCHMARK_STATE.ERROR);
+        this._resourcePreloader?.clearServiceWorker();
         this._populateInvalidScore(error.message);
         this.showResultsSummary();
         throw error;
@@ -613,53 +627,33 @@ class MainBenchmarkClient {
             document.body.append(this._developerModeContainer);
         }
 
-        await this._resourcePreloader.resetPreloading();
-        if (params.developerMode) {
-            this._enableStartButtons();
-        } else {
-            const preloadResult = await this._setupResourcePreloader(benchmarkConfigurator);
-            if (preloadResult === "ABORTED")
-                return;
-        }
+        await this._resourcePreloader.setup();
+        if (!params.developerMode)
+            await this._preloadResources(benchmarkConfigurator);
 
         if (params.startAutomatically)
             this.start();
-    }
-
-    async _setupResourcePreloader(benchmarkConfigurator) {
-        await this._resourcePreloader.setup();
-        if (!this._resourcePreloader.isCached())
-            return this._cacheResources(benchmarkConfigurator);
         else
             this._enableStartButtons();
-
-        return undefined;
     }
 
-    async _cacheResources(benchmarkConfigurator) {
+    async _preloadResources(benchmarkConfigurator) {
+        await this._resourcePreloader.resetPreloading();
+        if (this._resourcePreloader.isCached())
+            return;
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const clearCache = !params.isDefault();
 
-        this._resetPreloadUI();
-        this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
-        await new Promise((resolve) => requestAnimationFrame(resolve));
-
-        this._preloadGeneration = (this._preloadGeneration || 0) + 1;
-        const currentGeneration = this._preloadGeneration;
-        const onProgress = (data) => {
-            if (this._preloadGeneration === currentGeneration)
-                this._updateCacheProgress(data);
-        };
+        const preloadStatusUpdater = new PreloadStatusUpdater();
+        const onProgress = preloadStatusUpdater.onProgress.bind(preloadStatusUpdater);
 
         try {
-            const result = await this._resourcePreloader.preloadSuites(enabledSuites, params.resourceLoadDelay, clearCache, onProgress);
-            this._preloadStatusUpdater.cancel();
-            if (result === "ABORTED")
-                return "ABORTED";
-            this._enableStartButtons();
-            return undefined;
+            this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
+            preloadStatusUpdater.start();
+            await this._resourcePreloader.preloadSuites(enabledSuites, params.resourceLoadDelay, clearCache, onProgress);
+            preloadStatusUpdater.stop();
         } catch (error) {
-            this._preloadStatusUpdater.cancel();
+            preloadStatusUpdater.stop();
             console.error("Service Worker preload failed:", error);
             this._setBenchmarkState(BENCHMARK_STATE.ERROR);
             this._populateInvalidScore(error?.message);
@@ -668,16 +662,8 @@ class MainBenchmarkClient {
         }
     }
 
-    _resetPreloadUI() {
-        this._preloadStatusUpdater.resetUI();
-    }
-
-    _updateCacheProgress(progressData) {
-        this._preloadStatusUpdater.update(progressData);
-    }
-
-    _enableStartButtons() {
-        this._setBenchmarkState(BENCHMARK_STATE.READY);
+    async _enableStartButtons() {
+        await this._setBenchmarkState(BENCHMARK_STATE.READY);
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.disabled = false;
         });
@@ -685,10 +671,8 @@ class MainBenchmarkClient {
 
     async _setBenchmarkState(state) {
         document.body.setAttribute("data-benchmark-state", state);
-
         const startButtons = document.querySelectorAll(".start-tests-button");
         if (state === BENCHMARK_STATE.PRELOADING) {
-            this._resetPreloadUI();
             startButtons.forEach((btn) => {
                 btn.innerHTML = "<div>Preloading</div>";
             });
@@ -697,8 +681,6 @@ class MainBenchmarkClient {
             startButtons.forEach((btn) => {
                 btn.innerHTML = "<div>Start Test</div>";
             });
-            if (state !== BENCHMARK_STATE.READY)
-                await this._resourcePreloader?.clearSw();
         }
     }
 
@@ -823,6 +805,26 @@ function init() {
     rootStyle.setProperty("--viewport-height", `${params.viewport.height}px`);
 
     globalThis.benchmarkClient = new MainBenchmarkClient();
+
+    window.addEventListener("error", (event) => {
+        if (globalThis.benchmarkClient) {
+            try {
+                globalThis.benchmarkClient.handleError(event.error || new Error(event.message));
+            } catch (e) {
+                // Ignore re-thrown error to prevent infinite loops
+            }
+        }
+    });
+
+    window.addEventListener("unhandledrejection", (event) => {
+        if (globalThis.benchmarkClient) {
+            try {
+                globalThis.benchmarkClient.handleError(event.reason || new Error("Unhandled promise rejection"));
+            } catch (e) {
+                // Ignore re-thrown error to prevent infinite loops
+            }
+        }
+    });
 }
 
 if (document.readyState === "loading")
