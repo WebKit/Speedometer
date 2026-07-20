@@ -23,8 +23,7 @@ class MainBenchmarkClient {
     _measuredValuesList = [];
     _finishedTestCount = 0;
     _progressCompleted = null;
-    _isRunning = false;
-    _hasResults = false;
+    _state = BENCHMARK_STATE.IDLE;
     _metrics = Object.create(null);
     _resourcePreloader = new ResourcePreloader();
     _steppingPromise = null;
@@ -55,7 +54,7 @@ class MainBenchmarkClient {
             this._steppingResolver = resolve;
         });
         currentSteppingResolver?.();
-        if (!this._isRunning) {
+        if (this._state !== BENCHMARK_STATE.RUNNING) {
             await this._startBenchmark();
             this._showSection("#running");
         }
@@ -78,7 +77,7 @@ class MainBenchmarkClient {
     }
 
     async _startBenchmark() {
-        if (this._isRunning)
+        if (this._state === BENCHMARK_STATE.RUNNING)
             return false;
 
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
@@ -101,7 +100,7 @@ class MainBenchmarkClient {
             this._developerModeContainer?.remove();
 
         await this._preloadResources(benchmarkConfigurator);
-        await this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
+        this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
 
         this._progressCompleted = document.getElementById("progress-completed");
         if (params.iterationCount < 50) {
@@ -114,7 +113,6 @@ class MainBenchmarkClient {
         }
 
         this._metrics = Object.create(null);
-        this._isRunning = true;
 
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
@@ -158,12 +156,10 @@ class MainBenchmarkClient {
     }
 
     async didFinishLastIteration(metrics) {
-        console.assert(this._isRunning);
-        this._isRunning = false;
+        console.assert(this._state === BENCHMARK_STATE.RUNNING);
 
-        this._hasResults = true;
         this._metrics = metrics;
-        await this._setBenchmarkState(BENCHMARK_STATE.DONE);
+        this._setBenchmarkState(BENCHMARK_STATE.DONE);
         await this._resourcePreloader.teardown();
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
@@ -181,12 +177,10 @@ class MainBenchmarkClient {
     }
 
     handleError(error) {
-        this._isRunning = false;
-        this._hasResults = true;
         this._metrics = Object.create(null);
         this._setBenchmarkState(BENCHMARK_STATE.ERROR);
         this._resourcePreloader?.clearServiceWorker();
-        this._populateInvalidScore(error.message);
+        this._populateErrorMessage(error.message);
         this.showResultsSummary();
         throw error;
     }
@@ -200,20 +194,18 @@ class MainBenchmarkClient {
             document.getElementById("confidence-number").textContent = `\u00b1 ${scoreResults.formattedDelta}`;
     }
 
-    _populateInvalidScore(errorText) {
+    _populateInvalidScore() {
+        this._populateErrorMessage(undefined);
+    }
+
+    _populateErrorMessage(errorText) {
         document.getElementById("summary").className = "invalid";
         document.getElementById("result-number").textContent = "Error";
         document.getElementById("confidence-number").textContent = "";
-
-        const invalidScoreText = document.getElementById("invalid-score-text");
-        if (errorText) {
-            invalidScoreText.textContent = errorText;
-        } else {
-            invalidScoreText.innerHTML = `
-                One or more subtests produced no duration.<br />
-                Please check your <a href="./instructions.html" target="_blank">browser settings</a> and re-run the benchmark.<br />
-            `;
-        }
+        if (errorText === undefined)
+            return;
+        const errorMessage = document.getElementById("invalid-score-text");
+        errorMessage.textContent = errorText;
     }
 
     _computeResults(measuredValuesList, displayUnit) {
@@ -318,15 +310,15 @@ class MainBenchmarkClient {
         document.getElementById("metrics-results").innerHTML = html;
 
         const filePrefix = `speedometer-3-${new Date().toISOString()}`;
-        const classicJsonData = this._formattedJSONResult({ modern: false });
-        const classicJsonLink = document.getElementById("download-classic-json");
-        classicJsonLink.href = URL.createObjectURL(new Blob([classicJsonData], { type: "application/json" }));
-        classicJsonLink.setAttribute("download", `${filePrefix}.json`);
+        let jsonData = this._formattedJSONResult({ modern: false });
+        let jsonLink = document.getElementById("download-classic-json");
+        jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
+        jsonLink.setAttribute("download", `${filePrefix}.json`);
 
-        const fullJsonLink = document.getElementById("download-full-json");
-        const fullJsonData = this._formattedJSONResult({ modern: true });
-        fullJsonLink.href = URL.createObjectURL(new Blob([fullJsonData], { type: "application/json" }));
-        fullJsonLink.setAttribute("download", `${filePrefix}.json`);
+        jsonLink = document.getElementById("download-full-json");
+        jsonData = this._formattedJSONResult({ modern: true });
+        jsonLink.href = URL.createObjectURL(new Blob([jsonData], { type: "application/json" }));
+        jsonLink.setAttribute("download", `${filePrefix}.json`);
 
         const csvData = this._formattedCSVResult();
         const csvLink = document.getElementById("download-csv");
@@ -402,9 +394,9 @@ class MainBenchmarkClient {
         await this._resourcePreloader.resetPreloading();
         if (this._resourcePreloader.isCached())
             return;
+
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
         const clearCache = !params.isDefault();
-
         const preloadStatusUpdater = new PreloadStatusUpdater();
 
         try {
@@ -416,20 +408,21 @@ class MainBenchmarkClient {
             preloadStatusUpdater.stop();
             console.error("Service Worker preload failed:", error);
             this._setBenchmarkState(BENCHMARK_STATE.ERROR);
-            this._populateInvalidScore(error?.message);
+            this._populateErrorMessage(error?.message);
             this.showResultsSummary();
             throw error;
         }
     }
 
     async _enableStartButtons() {
-        await this._setBenchmarkState(BENCHMARK_STATE.READY);
+        this._setBenchmarkState(BENCHMARK_STATE.READY);
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.disabled = false;
         });
     }
 
     async _setBenchmarkState(state) {
+        this._state = state;
         document.body.setAttribute("data-benchmark-state", state);
         const startButtons = document.querySelectorAll(".start-tests-button");
         if (state === BENCHMARK_STATE.PRELOADING) {
@@ -464,7 +457,7 @@ class MainBenchmarkClient {
 
     _logoClickHandler(event) {
         // Prevent any accidental UI changes during benchmark runs.
-        if (!this._isRunning)
+        if (this._state !== BENCHMARK_STATE.RUNNING)
             this._showSection("#home");
         event.preventDefault();
         return false;
@@ -513,10 +506,10 @@ class MainBenchmarkClient {
     }
 
     _showSection(hash) {
-        if (this._isRunning) {
+        if (this._state === BENCHMARK_STATE.RUNNING) {
             this._setLocationHash("#running");
             return;
-        } else if (this._hasResults) {
+        } else if (this._state === BENCHMARK_STATE.DONE || this._state === BENCHMARK_STATE.ERROR) {
             if (hash !== "#summary" && hash !== "#details") {
                 this._setLocationHash("#summary");
                 return;

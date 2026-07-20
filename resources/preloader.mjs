@@ -170,9 +170,6 @@ export class ResourcePreloader {
         const response = await this._activePreloadPromise;
         this._activePreloadPromise = null;
 
-        if (response.status === SW_MESSAGES.PRELOAD_ABORTED)
-            throw new Error("Preload aborted");
-
         if (response.status === SW_MESSAGES.PRELOAD_DONE) {
             const timeTakenMs = performance.now() - startTime;
             const sizeMB = (response.transferredSize / (1024 * 1024)).toFixed(2);
@@ -184,8 +181,7 @@ export class ResourcePreloader {
     }
 
     async getFailedRequests() {
-        // return this._postMessage({ type: SW_MESSAGES.GET_FAILED_REQUESTS });
-        return { requests: ["a"] };
+        return this._postMessage({ type: SW_MESSAGES.GET_FAILED_REQUESTS });
     }
 }
 
