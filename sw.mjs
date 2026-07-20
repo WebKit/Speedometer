@@ -1,4 +1,5 @@
 import { SW_MESSAGES } from "./resources/shared/sw-messages.mjs";
+import { RequestLimiter } from "./resources/shared/request-limiter.mjs";
 
 const CACHE_NAME = "speedometer-cache-v4.0";
 const DB_NAME = "SpeedometerStateDB";
@@ -78,78 +79,34 @@ function replyError(event, message) {
     replyToClient(event, SW_MESSAGES.ERROR, { message });
 }
 
-function delayAsync(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 const MAX_CONCURRENT_REQUESTS = 20;
-
-class RequestLimiter {
-    constructor(limit = MAX_CONCURRENT_REQUESTS) {
-        this.limit = limit;
-        this.active = 0;
-        this.queue = [];
-    }
-
-    async _processQueue() {
-        while (this.queue.length > 0) {
-            const task = this.queue.shift();
-            try {
-                await task();
-            } catch (e) {
-                // Individual task errors are handled by their respective promises
-            }
-            await delayAsync(1); // Yield to event loop
-        }
-        this.active--;
-    }
-
-    schedule(fn) {
-        return new Promise((resolve, reject) => {
-            const task = () => fn().then(resolve, reject);
-            task.resolve = resolve;
-            this.queue.push(task);
-
-            if (this.active < this.limit) {
-                this.active++;
-                this._processQueue(); // Intentionally not awaited
-            }
-        });
-    }
-
-    clear() {
-        for (const task of this.queue)
-            task.resolve?.(0);
-
-        this.queue.length = 0;
-    }
-}
 
 const requestLimiter = new RequestLimiter(MAX_CONCURRENT_REQUESTS);
 
-let currentPreloadEvent = null;
-let currentPreloadId = 0;
+let activePreloadController = null;
 
 function handleResetPreloadingMessage(event) {
-    if (currentPreloadEvent)
-        replyToClient(currentPreloadEvent, SW_MESSAGES.PRELOAD_ABORTED);
-
-    currentPreloadEvent = null;
-    currentPreloadId++;
-    requestLimiter.clear();
-    if (event)
-        replyToClient(event, SW_MESSAGES.RESET_PRELOADING);
+    resetPreloadingMessage();
+    replyToClient(event, SW_MESSAGES.RESET_PRELOADING);
 }
 
-async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay = 0, clearCache = true }) {
+function resetPreloadingMessage() {
+    if (activePreloadController) {
+        activePreloadController.abort();
+        activePreloadController = null;
+    }
+    requestLimiter.clear();
+}
+
+async function handlePreloadSuitesMessage(event, clientId, { suites = [], clearCache = true }) {
     try {
         await STORE.getOwner();
         await updateActiveClient(clientId);
 
-        handleResetPreloadingMessage(); // Call it without event to avoid replying to the PRELOAD_SUITES channel!
+        resetPreloadingMessage();
 
-        currentPreloadEvent = event;
-        const preloadId = currentPreloadId;
+        activePreloadController = new AbortController();
+        const signal = activePreloadController.signal;
 
         failedRequests.clear();
         if (clearCache)
@@ -163,32 +120,29 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], delay 
         let transferredSize = 0;
 
         const promises = urlsToCache.map(async (item, index) => {
-            if (preloadId !== currentPreloadId)
-                return;
-            const size = await fetchAndCache(cache, item.url, delay * index);
-            if (preloadId !== currentPreloadId)
-                return;
+            const size = await fetchAndCache(cache, item.url, signal);
             transferredSize += size;
             loaded++;
-            replyToClient(event, SW_MESSAGES.PRELOAD_PROGRESS, { loaded, total, url: item.url, suiteName: item.suiteName });
+            if (!signal.aborted)
+                replyToClient(event, SW_MESSAGES.PRELOAD_PROGRESS, { loaded, total, url: item.url, suiteName: item.suiteName });
         });
 
         await Promise.all(promises);
-
-        if (preloadId !== currentPreloadId)
-            return;
 
         if (!await STORE.hasLock(clientId)) {
             replyError(event, "Speedometer aborted: Another tab took over.");
             return;
         }
+
         replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { transferredSize, count: urlsToCache.length });
     } catch (error) {
+        if (error.name === "AbortError")
+            return;
         console.error("Error during preload:", error);
         replyError(event, error.message || "Failed to preload resources.");
     } finally {
-        if (currentPreloadEvent === event)
-            currentPreloadEvent = null;
+        if (activePreloadController && !activePreloadController.signal.aborted)
+            activePreloadController = null;
     }
 }
 
@@ -223,11 +177,14 @@ function getResponseSize(response) {
     return contentLength ? parseInt(contentLength, 10) : 0;
 }
 
-async function fetchAndCache(cache, url, delayMs) {
-    if (delayMs)
-        await delayAsync(delayMs);
+async function fetchAndCache(cache, url, signal) {
+    if (signal.aborted)
+        throw new DOMException("Aborted", "AbortError");
+
     return requestLimiter.schedule(async () => {
-        const request = new Request(url, { cache: "no-cache" });
+        if (signal.aborted)
+            throw new DOMException("Aborted", "AbortError");
+        const request = new Request(url, { cache: "no-cache", signal });
         const existing = await cache.match(request, { ignoreSearch: true });
         if (existing)
             return getResponseSize(existing);
@@ -240,7 +197,9 @@ async function fetchAndCache(cache, url, delayMs) {
             await cache.put(request, response);
             return size;
         } catch (e) {
-            console.warn("Cache failed for", url, e);
+            if (e.name === "AbortError")
+                throw e;
+            console.error("Cache failed for", url, e);
             return 0;
         }
     });
