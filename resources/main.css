@@ -970,6 +970,7 @@ section#about .note {
 
 [data-benchmark-state="PRELOADING"] {
     cursor: wait;
+    pointer-events: none;
 }
 
 [data-benchmark-state="PRELOADING"] #preload-progress,

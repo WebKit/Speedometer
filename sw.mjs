@@ -69,15 +69,13 @@ class LockStore {
 
 const STORE = new LockStore();
 
-function replyToClient(event, type, msg = {}) {
-    if (event.ports?.[0]) {
-        event.ports[0].start?.();
-        event.ports[0].postMessage({ type, ...msg });
-    }
+function replyToClient(event, status, msg = {}) {
+    const type = event.data?.type;
+    event.source?.postMessage({ type, status, ...msg });
 }
 
 function replyError(event, message) {
-    replyToClient(event, "ERROR", { message });
+    replyToClient(event, SW_MESSAGES.ERROR, { message });
 }
 
 function delayAsync(ms) {
@@ -134,7 +132,7 @@ let currentPreloadId = 0;
 
 function handleResetPreloadingMessage(event) {
     if (currentPreloadEvent)
-        replyToClient(currentPreloadEvent, "PRELOAD_ABORTED");
+        replyToClient(currentPreloadEvent, SW_MESSAGES.PRELOAD_ABORTED);
 
     currentPreloadEvent = null;
     currentPreloadId++;
@@ -277,7 +275,7 @@ async function handleClearCacheMessage(event, clientId) {
             return;
         }
         await STORE.clear();
-        replyToClient(event, "SUCCESS");
+        replyToClient(event, SW_MESSAGES.SUCCESS);
     } catch (e) {
         replyError(event, e.message || "Failed to clear cache");
     }
@@ -287,11 +285,17 @@ async function handleGetFailedRequestsMessage(event, clientId) {
     replyToClient(event, SW_MESSAGES.FAILED_REQUESTS, { requests: Array.from(failedRequests) });
 }
 
+async function handleGetClientIdMessage(event, clientId) {
+    const id = event.source?.id || clientId || crypto.randomUUID();
+    replyToClient(event, SW_MESSAGES.CLIENT_ID, { clientId: id });
+}
+
 const MESSAGE_HANDLERS = Object.freeze({
     [SW_MESSAGES.PRELOAD_SUITES]: handlePreloadSuitesMessage,
     [SW_MESSAGES.RESET_PRELOADING]: handleResetPreloadingMessage,
     [SW_MESSAGES.CLEAR_CACHE]: handleClearCacheMessage,
     [SW_MESSAGES.GET_FAILED_REQUESTS]: handleGetFailedRequestsMessage,
+    [SW_MESSAGES.GET_CLIENT_ID]: handleGetClientIdMessage,
 });
 
 self.addEventListener("message", (event) => {
@@ -323,7 +327,12 @@ self.addEventListener("fetch", (event) => {
             if (cachedResponse)
                 return cachedResponse;
 
-            return fetch(event.request);
+            try {
+                return await fetch(event.request);
+            } catch (error) {
+                failedRequests.add(event.request.url);
+                return Response.error();
+            }
         })()
     );
 });
