@@ -1,6 +1,5 @@
 import { BenchmarkRunner } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
-import { SW_MESSAGES } from "./shared/sw-messages.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
@@ -15,8 +14,6 @@ const BENCHMARK_STATE = Object.freeze({
     DONE: "DONE",
     ERROR: "ERROR",
 });
-
-
 
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
