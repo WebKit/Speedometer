@@ -37,9 +37,14 @@ class LockStore {
             const db = await this._openDB();
             return await new Promise((resolve, reject) => {
                 const tx = db.transaction(STORE_NAME, mode);
+                let result = null;
                 const req = callback(tx.objectStore(STORE_NAME));
-                req.onsuccess = () => resolve(req.result);
-                req.onerror = () => reject(req.error);
+                if (req) {
+                    req.onsuccess = () => { result = req.result; };
+                }
+                tx.oncomplete = () => resolve(result);
+                tx.onerror = () => reject(tx.error);
+                tx.onabort = () => reject(new Error("Transaction aborted"));
             });
         } catch (e) {
             console.warn(`IndexedDB ${mode} failed`, e);
