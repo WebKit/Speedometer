@@ -8,7 +8,6 @@ export class ResourcePreloader {
         this._registration = null;
         this._sw = null;
         this._preloadParams = "";
-        this._clientId = null;
         this._pendingRequest = null;
         this._onPreloadProgress = null;
     }
@@ -27,7 +26,6 @@ export class ResourcePreloader {
 
         await this._registerServiceWorker();
         this._setupMessageListener();
-        this._clientId = await this._getClientId();
     }
 
     async _unregisterOldServiceWorkers() {
@@ -42,14 +40,6 @@ export class ResourcePreloader {
         this._registration = await navigator.serviceWorker.register("./sw.mjs", { type: "module" });
         await navigator.serviceWorker.ready;
         this._sw = navigator.serviceWorker.controller || this._registration.active;
-    }
-
-    async _getClientId() {
-        const response = await this._postMessage({ type: SW_MESSAGES.GET_CLIENT_ID }, 5000);
-        const clientId = response.clientId;
-        if (!clientId)
-            throw new Error("Could not retrieve service worker client id");
-        return clientId;
     }
 
     _setupMessageListener() {
@@ -94,9 +84,6 @@ export class ResourcePreloader {
         if (!this._sw)
             return Promise.resolve();
 
-        if (this._clientId)
-            messageData.clientId = this._clientId;
-
         if (this._pendingRequest)
             this._rejectPendingRequest(`Already waiting for ${this._pendingRequest.type}, overriding with ${messageData.type}`);
 
@@ -132,19 +119,12 @@ export class ResourcePreloader {
             console.warn(response.requests.join("\n"));
             throw new Error("The benchmark had missing resources that were not cached. Check the console for details.");
         }
-        await this.clearServiceWorker();
     }
 
-    async clearServiceWorker() {
+    async stopPreloading() {
         if (!this._sw)
             return;
-        await this._postMessage({ type: SW_MESSAGES.CLEAR_CACHE });
-    }
-
-    async resetPreloading() {
-        if (!this._sw)
-            return;
-        await this._postMessage({ type: SW_MESSAGES.RESET_PRELOADING });
+        await this._postMessage({ type: SW_MESSAGES.STOP_PRELOADING });
         if (this._activePreloadPromise)
             await this._activePreloadPromise;
     }

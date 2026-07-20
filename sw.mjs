@@ -1,79 +1,13 @@
 import { SW_MESSAGES } from "./resources/shared/sw-messages.mjs";
 import { RequestLimiter } from "./resources/shared/request-limiter.mjs";
 
-const CACHE_NAME = "speedometer-cache-v4.0";
-const DB_NAME = "SpeedometerStateDB";
-const STORE_NAME = "SpeedometerSWState";
-const DB_VERSION = 2;
-let failedRequests = new Set();
-
-class LockStore {
-    constructor() {
-        this.dbPromise = null;
-    }
-
-    async _openDB() {
-        if (this.dbPromise)
-            return this.dbPromise;
-
-        this.dbPromise = new Promise((resolve, reject) => {
-            const request = indexedDB.open(DB_NAME, DB_VERSION);
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-                if (!db.objectStoreNames.contains(STORE_NAME))
-                    db.createObjectStore(STORE_NAME);
-            };
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => {
-                this.dbPromise = null;
-                reject(request.error);
-            };
-        });
-        return this.dbPromise;
-    }
-
-    async _runTransaction(mode, callback) {
-        try {
-            const db = await this._openDB();
-            return await new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, mode);
-                let result = null;
-                const req = callback(tx.objectStore(STORE_NAME));
-                if (req) {
-                    req.onsuccess = () => { result = req.result; };
-                }
-                tx.oncomplete = () => resolve(result);
-                tx.onerror = () => reject(tx.error);
-                tx.onabort = () => reject(new Error("Transaction aborted"));
-            });
-        } catch (e) {
-            console.warn(`IndexedDB ${mode} failed`, e);
-            return null;
-        }
-    }
-
-    async getOwner() {
-        const data = await this._runTransaction("readonly", (store) => store.get("stateData"));
-        return data?.clientId || null;
-    }
-
-    async setOwner(clientId) {
-        await this._runTransaction("readwrite", (store) => store.put({ clientId }, "stateData"));
-    }
-
-    async clear() {
-        await this._runTransaction("readwrite", (store) => store.delete("stateData"));
-    }
-
-    async hasLock(clientId) {
-        const activeClientId = await this.getOwner();
-        if (!activeClientId)
-            return true;
-        return activeClientId === clientId;
-    }
-}
-
-const STORE = new LockStore();
+const CACHE_NAME = "speedometer-cache-v4";
+const MAX_CONCURRENT_REQUESTS = 20;
+const WORKER_STATE = {
+    failedRequests: new Set(),
+    abortController: null,
+    requestLimiter: new RequestLimiter(MAX_CONCURRENT_REQUESTS),
+};
 
 function replyToClient(event, status, msg = {}) {
     const type = event.data?.type;
@@ -84,36 +18,33 @@ function replyError(event, message) {
     replyToClient(event, SW_MESSAGES.ERROR, { message });
 }
 
-const MAX_CONCURRENT_REQUESTS = 20;
-
-const requestLimiter = new RequestLimiter(MAX_CONCURRENT_REQUESTS);
-
-let activePreloadController = null;
-
-function handleResetPreloadingMessage(event) {
-    resetPreloading();
-    replyToClient(event, SW_MESSAGES.RESET_PRELOADING);
+async function handleStopPreloadingMessage(event) {
+    await stopPreloading(event.source?.id);
+    replyToClient(event, SW_MESSAGES.STOP_PRELOADING);
 }
 
-function resetPreloading() {
-    if (activePreloadController) {
-        activePreloadController.abort();
-        activePreloadController = null;
+async function stopPreloading(currentClientId) {
+    if (WORKER_STATE.abortController) {
+        WORKER_STATE.abortController.abort();
+        WORKER_STATE.abortController = null;
     }
-    requestLimiter.clear();
+    const allClients = await self.clients.matchAll({ includeUncontrolled: true });
+    for (const client of allClients) {
+        if (currentClientId && client.id !== currentClientId)
+            client.postMessage({ type: SW_MESSAGES.FATAL_ERROR, message: "Speedometer aborted: Another tab took over." });
+    }
+
+    WORKER_STATE.requestLimiter.clear();
 }
 
-async function handlePreloadSuitesMessage(event, clientId, { suites = [], clearCache = true }) {
+async function handlePreloadSuitesMessage(event, { suites = [], clearCache = true }) {
     try {
-        await STORE.getOwner();
-        await updateActiveClient(clientId);
+        await stopPreloading(event.source?.id);
 
-        resetPreloading();
+        WORKER_STATE.abortController = new AbortController();
+        const signal = WORKER_STATE.abortController.signal;
 
-        activePreloadController = new AbortController();
-        const signal = activePreloadController.signal;
-
-        failedRequests.clear();
+        WORKER_STATE.failedRequests.clear();
         if (clearCache)
             await caches.delete(CACHE_NAME);
 
@@ -134,11 +65,6 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], clearC
 
         await Promise.all(promises);
 
-        if (!await STORE.hasLock(clientId)) {
-            replyError(event, "Speedometer aborted: Another tab took over.");
-            return;
-        }
-
         replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { transferredSize, count: urlsToCache.length });
     } catch (error) {
         if (error.name === "AbortError")
@@ -146,8 +72,8 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], clearC
         console.error("Error during preload:", error);
         replyError(event, error.message || "Failed to preload resources.");
     } finally {
-        if (activePreloadController && !activePreloadController.signal.aborted)
-            activePreloadController = null;
+        if (WORKER_STATE.abortController && !WORKER_STATE.abortController.signal.aborted)
+            WORKER_STATE.abortController = null;
     }
 }
 
@@ -164,8 +90,9 @@ async function getUrlsToCache(suites) {
 async function parseSuiteResources(suite) {
     const response = await fetch(suite.resources);
     if (!response.ok) {
-        console.error(`Failed to load resources for suite ${suite.name}: ${suite.resources} returned ${response.status}`);
-        throw new Error(`Failed to load resources for suite ${suite.name}: ${suite.resources} returned ${response.status}`);
+        const errorMsg = `Failed to load resources for suite ${suite.name}: ${suite.resources} returned ${response.status}`;
+        console.error(errorMsg);
+        throw new Error(errorMsg);
     }
     const text = await response.text();
     return text
@@ -183,12 +110,10 @@ function getResponseSize(response) {
 }
 
 async function fetchAndCache(cache, url, signal) {
-    if (signal.aborted)
-        throw new DOMException("Aborted", "AbortError");
+    signal.throwIfAborted();
 
-    return requestLimiter.schedule(async () => {
-        if (signal.aborted)
-            throw new DOMException("Aborted", "AbortError");
+    return WORKER_STATE.requestLimiter.schedule(async () => {
+        signal.throwIfAborted();
         const request = new Request(url, { cache: "no-cache", signal });
         const existing = await cache.match(request, { ignoreSearch: true });
         if (existing)
@@ -202,8 +127,7 @@ async function fetchAndCache(cache, url, signal) {
             await cache.put(request, response);
             return size;
         } catch (e) {
-            if (e.name === "AbortError")
-                throw e;
+            signal.throwIfAborted();
             console.error("Cache failed for", url, e);
             return 0;
         }
@@ -218,58 +142,23 @@ self.addEventListener("activate", (event) => {
     event.waitUntil(self.clients.claim());
 });
 
-async function updateActiveClient(newClientId) {
-    const oldClientId = await STORE.getOwner();
-    if (oldClientId === newClientId)
-        return false;
-
-    await STORE.setOwner(newClientId);
-
-    if (oldClientId) {
-        const oldClient = await self.clients.get(oldClientId);
-        oldClient?.postMessage({ type: SW_MESSAGES.FATAL_ERROR, message: "Speedometer aborted: Another tab took over." });
-    }
-    return true;
-}
-
-async function handleClearCacheMessage(event, clientId) {
-    try {
-        if (!await STORE.hasLock(clientId)) {
-            replyError(event, "Cannot clear SW: You do not own the lock.");
-            return;
-        }
-        await STORE.clear();
-        replyToClient(event, SW_MESSAGES.SUCCESS);
-    } catch (e) {
-        replyError(event, e.message || "Failed to clear cache");
-    }
-}
-
-async function handleGetFailedRequestsMessage(event, clientId) {
-    replyToClient(event, SW_MESSAGES.FAILED_REQUESTS, { requests: Array.from(failedRequests) });
-}
-
-async function handleGetClientIdMessage(event, clientId) {
-    const id = event.source?.id || clientId || crypto.randomUUID();
-    replyToClient(event, SW_MESSAGES.CLIENT_ID, { clientId: id });
+async function handleGetFailedRequestsMessage(event) {
+    replyToClient(event, SW_MESSAGES.FAILED_REQUESTS, { requests: Array.from(WORKER_STATE.failedRequests) });
 }
 
 const MESSAGE_HANDLERS = Object.freeze({
     [SW_MESSAGES.PRELOAD_SUITES]: handlePreloadSuitesMessage,
-    [SW_MESSAGES.RESET_PRELOADING]: handleResetPreloadingMessage,
-    [SW_MESSAGES.CLEAR_CACHE]: handleClearCacheMessage,
+    [SW_MESSAGES.STOP_PRELOADING]: handleStopPreloadingMessage,
     [SW_MESSAGES.GET_FAILED_REQUESTS]: handleGetFailedRequestsMessage,
-    [SW_MESSAGES.GET_CLIENT_ID]: handleGetClientIdMessage,
 });
 
 self.addEventListener("message", (event) => {
     const { data } = event;
     if (!data)
         return;
-    const clientId = data.clientId || event.source?.id;
     const handler = MESSAGE_HANDLERS[data.type];
     if (handler)
-        event.waitUntil(handler(event, clientId, data));
+        event.waitUntil(handler(event, data));
     else
         console.error("Unknown service worker message type:", data.type);
 });
@@ -294,7 +183,7 @@ self.addEventListener("fetch", (event) => {
             try {
                 return await fetch(event.request);
             } catch (error) {
-                failedRequests.add(event.request.url);
+                WORKER_STATE.failedRequests.add(event.request.url);
                 return Response.error();
             }
         })()

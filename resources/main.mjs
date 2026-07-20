@@ -185,10 +185,10 @@ class MainBenchmarkClient {
     }
 
     handleError(error) {
-        if (this._state === BENCHMARK_STATE.ERROR) return;
+        if (this._state === BENCHMARK_STATE.ERROR)
+            return;
         this._metrics = Object.create(null);
         this._setBenchmarkState(BENCHMARK_STATE.ERROR);
-        this._resourcePreloader?.clearServiceWorker();
         this._populateErrorMessage(error.message);
         this.showResultsSummary();
         throw error;
@@ -400,7 +400,7 @@ class MainBenchmarkClient {
     }
 
     async _preloadResources(benchmarkConfigurator) {
-        await this._resourcePreloader.resetPreloading();
+        await this._resourcePreloader.stopPreloading();
         if (this._resourcePreloader.isCached())
             return;
 
