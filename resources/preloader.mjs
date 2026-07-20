@@ -97,30 +97,32 @@ export class ResourcePreloader {
         if (this._clientId)
             messageData.clientId = this._clientId;
 
-        if (this._pendingRequest) {
-            const errorMessage = `Already waiting for ${this._pendingRequest.type}, overriding with ${messageData.type}`;
-            console.warn(errorMessage);
-            this._pendingRequest.reject(new Error(errorMessage));
-            this._pendingRequest = null;
-        }
+        if (this._pendingRequest)
+            this._rejectPendingRequest(`Already waiting for ${this._pendingRequest.type}, overriding with ${messageData.type}`);
 
         return new Promise((resolve, reject) => {
             let timeoutId = null;
 
             if (timeoutMs > 0) {
                 timeoutId = setTimeout(() => {
-                    if (this._pendingRequest?.type === messageData.type) {
-                        this._pendingRequest = null;
-                        const errorMessage = `Service worker message timed out: ${messageData.type}`;
-                        console.error(errorMessage);
-                        reject(new Error(errorMessage));
-                    }
+                    if (this._pendingRequest?.type === messageData.type)
+                        this._rejectPendingRequest(`Service worker message timed out: ${messageData.type}`);
                 }, timeoutMs);
             }
 
             this._pendingRequest = { type: messageData.type, resolve, reject, timeoutId };
             this._sw.postMessage(messageData);
         });
+    }
+
+    _rejectPendingRequest(errorMessage) {
+        const pendingRequest = this._pendingRequest;
+        this._pendingRequest = null;
+        if (pendingRequest.timeoutId)
+            clearTimeout(pendingRequest.timeoutId);
+
+        console.warn(errorMessage);
+        pendingRequest.reject(new Error(errorMessage));
     }
 
     async teardown() {
@@ -219,11 +221,9 @@ export class PreloadStatusUpdater {
         document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
         this._progressCompletedElement.max = total;
         this._progressCompletedElement.value = loaded;
-        let filename = url ? url.substring(url.lastIndexOf("/") + 1) : "";
-        if (!filename && url)
-            filename = url.substring(url.lastIndexOf("/", url.length - 2) + 1);
-        const labelText = suiteName ? `${suiteName}: ${filename}` : filename;
-        this._infoLabelElement.textContent = labelText;
+        const match = url.match(/(?:suites(?:-experimental)?|resources)\/(.+)$/);
+        const filename = match ? match[1] : "";
+        this._infoLabelElement.textContent = `${suiteName}: ${filename}`;
         this._infoProgressElement.textContent = `${loaded} / ${total}`;
     }
 

@@ -86,11 +86,11 @@ const requestLimiter = new RequestLimiter(MAX_CONCURRENT_REQUESTS);
 let activePreloadController = null;
 
 function handleResetPreloadingMessage(event) {
-    resetPreloadingMessage();
+    resetPreloading();
     replyToClient(event, SW_MESSAGES.RESET_PRELOADING);
 }
 
-function resetPreloadingMessage() {
+function resetPreloading() {
     if (activePreloadController) {
         activePreloadController.abort();
         activePreloadController = null;
@@ -103,7 +103,7 @@ async function handlePreloadSuitesMessage(event, clientId, { suites = [], clearC
         await STORE.getOwner();
         await updateActiveClient(clientId);
 
-        resetPreloadingMessage();
+        resetPreloading();
 
         activePreloadController = new AbortController();
         const signal = activePreloadController.signal;

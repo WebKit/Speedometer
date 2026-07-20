@@ -41,6 +41,14 @@ class MainBenchmarkClient {
         });
     }
 
+    isRunning() {
+        return this._state === BENCHMARK_STATE.RUNNING;
+    }
+
+    hasFinished() {
+        return this._state === BENCHMARK_STATE.DONE || this._state === BENCHMARK_STATE.ERROR;
+    }
+
     async start() {
         if (this._isStepping())
             this._clearStepping();
@@ -54,7 +62,7 @@ class MainBenchmarkClient {
             this._steppingResolver = resolve;
         });
         currentSteppingResolver?.();
-        if (this._state !== BENCHMARK_STATE.RUNNING) {
+        if (!this.isRunning()) {
             await this._startBenchmark();
             this._showSection("#running");
         }
@@ -77,7 +85,7 @@ class MainBenchmarkClient {
     }
 
     async _startBenchmark() {
-        if (this._state === BENCHMARK_STATE.RUNNING)
+        if (this.isRunning())
             return false;
 
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
@@ -100,7 +108,6 @@ class MainBenchmarkClient {
             this._developerModeContainer?.remove();
 
         await this._preloadResources(benchmarkConfigurator);
-        this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
 
         this._progressCompleted = document.getElementById("progress-completed");
         if (params.iterationCount < 50) {
@@ -113,10 +120,11 @@ class MainBenchmarkClient {
         }
 
         this._metrics = Object.create(null);
-
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
+
+        this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
         const runner = new BenchmarkRunner(benchmarkConfigurator.suites, this);
         runner.runMultipleIterations(params.iterationCount);
         return true;
@@ -156,7 +164,7 @@ class MainBenchmarkClient {
     }
 
     async didFinishLastIteration(metrics) {
-        console.assert(this._state === BENCHMARK_STATE.RUNNING);
+        console.assert(this.isRunning());
 
         this._metrics = metrics;
         this._setBenchmarkState(BENCHMARK_STATE.DONE);
@@ -387,7 +395,7 @@ class MainBenchmarkClient {
         if (params.startAutomatically)
             this.start();
         else
-            this._enableStartButtons();
+            this._setBenchmarkState(BENCHMARK_STATE.READY);
     }
 
     async _preloadResources(benchmarkConfigurator) {
@@ -403,22 +411,9 @@ class MainBenchmarkClient {
             this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
             preloadStatusUpdater.start();
             await this._resourcePreloader.preloadSuites(enabledSuites, clearCache, preloadStatusUpdater.onProgress.bind(preloadStatusUpdater));
+        } finally {
             preloadStatusUpdater.stop();
-        } catch (error) {
-            preloadStatusUpdater.stop();
-            console.error("Service Worker preload failed:", error);
-            this._setBenchmarkState(BENCHMARK_STATE.ERROR);
-            this._populateErrorMessage(error?.message);
-            this.showResultsSummary();
-            throw error;
         }
-    }
-
-    async _enableStartButtons() {
-        this._setBenchmarkState(BENCHMARK_STATE.READY);
-        document.querySelectorAll(".start-tests-button").forEach((button) => {
-            button.disabled = false;
-        });
     }
 
     async _setBenchmarkState(state) {
@@ -434,6 +429,11 @@ class MainBenchmarkClient {
             startButtons.forEach((btn) => {
                 btn.innerHTML = "<div>Start Test</div>";
             });
+            if (state === BENCHMARK_STATE.READY) {
+                startButtons.forEach((btn) => {
+                    btn.disabled = false;
+                });
+            }
         }
     }
 
@@ -457,7 +457,7 @@ class MainBenchmarkClient {
 
     _logoClickHandler(event) {
         // Prevent any accidental UI changes during benchmark runs.
-        if (this._state !== BENCHMARK_STATE.RUNNING)
+        if (!this.isRunning())
             this._showSection("#home");
         event.preventDefault();
         return false;
@@ -506,10 +506,10 @@ class MainBenchmarkClient {
     }
 
     _showSection(hash) {
-        if (this._state === BENCHMARK_STATE.RUNNING) {
+        if (this.isRunning()) {
             this._setLocationHash("#running");
             return;
-        } else if (this._state === BENCHMARK_STATE.DONE || this._state === BENCHMARK_STATE.ERROR) {
+        } else if (this.hasFinished()) {
             if (hash !== "#summary" && hash !== "#details") {
                 this._setLocationHash("#summary");
                 return;
