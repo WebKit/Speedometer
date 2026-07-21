@@ -28,7 +28,7 @@ export function logError(...args) {
         if (error?.stack)
             console.error(`::error::${error.stack.replace(/\n/g, "%0A")}`);
         else
-            console.error(`::error::${text}`);
+            console.error(`::error::${text.replace(/\n/g, "%0A")}`);
     } else {
         if (error?.stack)
             console.error(styleText("red", error.stack));

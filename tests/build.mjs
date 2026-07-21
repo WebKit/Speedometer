@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { DefaultSuites } from "../suites/default-suites.mjs";
 import { ExperimentalSuites } from "../suites-experimental/suites.mjs";
-import { getChangedFiles, runActionGroup, sh } from "./helper.mjs";
+import { getChangedFiles, logError, runActionGroup, sh } from "./helper.mjs";
 
 const EXCLUDES = new Set([
     // TODO: Re-enable once packages are updated and node 22 is supported
@@ -57,7 +57,7 @@ async function buildWorkloads(workloads) {
             });
             successfulWorkloads.push(workload);
         } catch (e) {
-            console.error(`Failed to build workload: ${workload}`);
+            logError(`Failed to build workload: ${workload}`);
             failedWorkloads.push(workload);
         }
     }
@@ -67,9 +67,7 @@ async function buildWorkloads(workloads) {
     console.log("================================================================================\n");
 
     if (failedWorkloads.length > 0) {
-        console.error("Failed Workloads:");
-        for (const workload of failedWorkloads)
-            console.error(` - ${workload}`);
+        logError("Failed Workloads:\n" + failedWorkloads.map(w => ` - ${w}`).join("\n"));
 
         process.exit(1);
     }
@@ -108,13 +106,13 @@ async function checkGitStatus() {
         await runActionGroup("Checking for uncommitted build changes...", async () => {
             const status = await sh("git", "status", "--porcelain", "suites", "suites-experimental");
             if (status.stdoutString.trim() !== "") {
-                console.error(status.stdoutString);
+                logError(status.stdoutString);
                 throw new Error("Git tree is dirty");
             }
         });
         console.log("Git tree is clean. All build files match the source.");
     } catch (e) {
-        console.error("Build files have changed or new files were created. Please commit them.");
+        logError("Build files have changed or new files were created. Please commit them.");
         process.exit(1);
     }
 }
