@@ -74,7 +74,6 @@ try {
     ({ values } = parseArgs({
         options: {
             all: { type: "boolean" },
-            changed: { type: "boolean" },
             help: { type: "boolean", short: "h" },
         },
         strict: true,
@@ -89,33 +88,31 @@ if (values.help) {
     console.log(`Usage: node tests/format.mjs [options]
 
 Options:
-  --changed      Format only changed files compared to upstream
-  --all          Format all files (default behavior)
+  --all          Format all files across the repository instead of just changed files
   -h, --help     Show this help message`);
     process.exit(0);
 }
 
-if (values.changed) {
-    let changedFiles = [];
-    try {
-        changedFiles = getChangedFiles();
-    } catch (e) {
-        console.error("Failed to get changed files from git. Falling back to formatting all files.");
-        formatAll();
-        process.exit(0);
-    }
-
-    if (changedFiles.length === 0) {
-        console.log("No files changed compared to upstream.");
-        process.exit(0);
-    }
-    console.log(`Formatting ${changedFiles.length} changed files compared to upstream`);
-
-    runPrettier(changedFiles);
-    runEslint(changedFiles);
-    runStylelint(changedFiles);
+if (values.all) {
+    formatAll();
     process.exit(0);
 }
 
-// Default behavior
-formatAll();
+let changedFiles = [];
+try {
+    changedFiles = getChangedFiles();
+} catch (e) {
+    console.error("Failed to get changed files from git. Falling back to formatting all files.");
+    formatAll();
+    process.exit(0);
+}
+
+if (changedFiles.length === 0) {
+    console.log("No files changed compared to upstream.");
+    process.exit(0);
+}
+console.log(`Formatting ${changedFiles.length} changed files compared to upstream`);
+
+runPrettier(changedFiles);
+runEslint(changedFiles);
+runStylelint(changedFiles);
