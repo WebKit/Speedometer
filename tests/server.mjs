@@ -10,6 +10,7 @@ import "lws-log";
 import "lws-static";
 
 const ROOT_DIR = path.join(process.cwd(), "./");
+export const DEFAULT_CACHE_DURATION = 3600;
 
 class CacheControlPlugin {
     middleware(config) {
@@ -68,12 +69,12 @@ async function verifyStartup(ws, port) {
 function main() {
     const optionDefinitions = [
         { name: "port", type: Number, defaultValue: 8080, description: "Set the test-server port, The default value is 8080." },
-        { name: "cache", type: Number, description: "Set the cache duration in seconds. If flag is present without a value, defaults to 3600." },
+        { name: "cache", type: Number, description: `Set the cache duration in seconds. If flag is present without a value, defaults to ${DEFAULT_CACHE_DURATION}.` },
     ];
     const options = commandLineArgs(optionDefinitions);
     let cacheDuration = undefined;
     if ("cache" in options)
-        cacheDuration = options.cache ?? 3600;
+        cacheDuration = options.cache ?? DEFAULT_CACHE_DURATION;
 
     serve(options.port, cacheDuration);
 }

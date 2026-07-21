@@ -1,6 +1,6 @@
 import commandLineUsage from "command-line-usage";
 import commandLineArgs from "command-line-args";
-import serve from "./server.mjs";
+import serve, { DEFAULT_CACHE_DURATION } from "./server.mjs";
 
 import firefox from "selenium-webdriver/firefox.js";
 import chrome from "selenium-webdriver/chrome.js";
@@ -73,9 +73,8 @@ export default async function testSetup(helpText) {
         }
     }
     const PORT = options.port;
-    const CACHE_DURATION = 3600;
 
-    const server = await serve(PORT, CACHE_DURATION);
+    const server = await serve(PORT, DEFAULT_CACHE_DURATION);
     let driver, logInspector;
 
     process.on("unhandledRejection", (err) => {
