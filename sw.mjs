@@ -36,7 +36,7 @@ async function stopAllOtherClients(currentClientId) {
     const allClients = await self.clients.matchAll({ includeUncontrolled: true });
     for (const client of allClients) {
         if (currentClientId && client.id !== currentClientId)
-            client.postMessage({ type: SW_MESSAGES.FATAL_ERROR, message: "Speedometer aborted: Another tab took over." });
+            client.postMessage({ type: SW_MESSAGES.FATAL_ERROR, message: "Aborted Run: Another tab took over." });
     }
 
 }
@@ -56,9 +56,6 @@ async function handlePreloadSuitesMessage(event, { suites = [], clearCache = tru
             return;
         console.error("Error during preload:", error);
         replyError(event, error.message || "Failed to preload resources.");
-    } finally {
-        if (WORKER_STATE.abortController && !WORKER_STATE.abortController.signal.aborted)
-            WORKER_STATE.abortController = null;
     }
 }
 
@@ -83,7 +80,7 @@ async function preloadSuites(suites, clearCache, onProgress) {
         await caches.delete(CACHE_NAME);
 
     const cache = await caches.open(CACHE_NAME);
-    const urlsToCache = await getUrlsToCache(suites);
+    const urlsToCache = await getUrlsToCache(suites, signal);
     const total = urlsToCache.length;
 
     let loaded = 0;
@@ -101,18 +98,19 @@ async function preloadSuites(suites, clearCache, onProgress) {
     return { transferredSize, count: urlsToCache.length };
 }
 
-async function getUrlsToCache(suites) {
+async function getUrlsToCache(suites, signal) {
     const urlsToCache = [];
     for (const suite of suites) {
+        signal.throwIfAborted();
         if (suite.resources)
-            urlsToCache.push(...await parseSuiteResources(suite));
+            urlsToCache.push(...await parseSuiteResources(suite, signal));
     }
 
     return urlsToCache;
 }
 
-async function parseSuiteResources(suite) {
-    const response = await fetch(suite.resources);
+async function parseSuiteResources(suite, signal) {
+    const response = await fetch(suite.resources, { signal });
     if (!response.ok) {
         const errorMsg = `Failed to load resources for suite ${suite.name}: ${suite.resources} returned ${response.status}`;
         console.error(errorMsg);

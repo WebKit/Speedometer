@@ -125,8 +125,11 @@ export class ResourcePreloader {
         if (!this._sw)
             return;
         await this._postMessage({ type: SW_MESSAGES.STOP_PRELOADING });
-        if (this._activePreloadPromise)
+        if (this._activePreloadPromise) {
+            // Await to explicitly catch abort error potentially triggered by
+            // by other racing tabs.
             await this._activePreloadPromise;
+        }
     }
 
     async preloadSuites(suites, clearCache = true, onProgress) {
@@ -159,6 +162,7 @@ export class ResourcePreloader {
             console.log(`Preloaded ${response.count} files (${sizeMB} MB transferred) in ${timeSec}s`);
         }
         this._preloadParams = params.toSearchParams();
+        this._onPreloadProgress = undefined;
         return undefined;
     }
 

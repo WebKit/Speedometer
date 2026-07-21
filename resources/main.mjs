@@ -134,13 +134,20 @@ class MainBenchmarkClient {
         return this._metrics;
     }
 
+    _assertNotAborted() {
+        if (this._state === BENCHMARK_STATE.ERROR)
+            throw new Error("Benchmark aborted by another process.");
+    }
+
     willAddTestFrame(frame) {
+        this._assertNotAborted();
         frame.style.left = "50%";
         frame.style.top = "50%";
         frame.style.transform = "translate(-50%, -50%)";
     }
 
     async willRunTest(suite, test) {
+        this._assertNotAborted();
         document.getElementById("info-label").textContent = suite.name;
         document.getElementById("info-progress").textContent = `${this._finishedTestCount} / ${this.stepCount}`;
         if (this._steppingPromise)
