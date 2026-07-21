@@ -206,7 +206,8 @@ button,
     user-select: none;
 }
 
-.primary-button {
+.buttons button.primary-button,
+.buttons .button.primary-button {
     border: 3px solid var(--foreground);
     border-radius: 10px;
     min-width: 200px;
