@@ -1,0 +1,11 @@
+{
+    "extends": "stylelint-config-standard",
+    "rules": {
+        "no-descending-specificity": null,
+        "no-duplicate-selectors": null,
+        "selector-id-pattern": null,
+        "selector-class-pattern": null,
+        "block-no-empty": null,
+        "declaration-property-value-no-unknown": [true, { "ignoreProperties": { "background-image": "/-webkit-image-set/" } }]
+    }
+}

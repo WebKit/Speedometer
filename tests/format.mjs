@@ -6,6 +6,7 @@ function formatAll() {
     console.log("Formatting all files...");
     execFileSync("npm", ["run", "pretty:fix"], { stdio: "inherit" });
     execFileSync("npm", ["run", "lint:fix"], { stdio: "inherit" });
+    execFileSync("npm", ["run", "lint:css:fix"], { stdio: "inherit" });
 }
 
 // Chunk files into batches to avoid "Argument list too long" errors on large changelists.
@@ -39,6 +40,25 @@ function runEslint(files) {
     }
 }
 
+function runStylelint(files) {
+    // Only format top-level CSS and resources/**/*.css
+    const cssFiles = files.filter((f) => {
+        if (!f.endsWith(".css"))
+            return false;
+        const parts = f.split("/");
+        return parts.length === 1 || parts[0] === "resources";
+    });
+    if (cssFiles.length === 0)
+        return;
+    try {
+        console.log(`Running stylelint on ${cssFiles.length} file(s)`);
+        execFileSyncInBatches("stylelint", ["--fix"], cssFiles);
+    } catch (e) {
+        console.error("Stylelint formatting failed");
+        process.exit(1);
+    }
+}
+
 function getChangedFiles() {
     // "--diff-filter=ACMR" => ignore deleted files.
     const diffOut = execFileSync("git", ["diff", "--name-only", "--diff-filter=ACMR", "@{upstream}"], { encoding: "utf8" });
@@ -54,6 +74,7 @@ try {
     ({ values } = parseArgs({
         options: {
             all: { type: "boolean" },
+            changed: { type: "boolean" },
             help: { type: "boolean", short: "h" },
         },
         strict: true,
@@ -68,30 +89,33 @@ if (values.help) {
     console.log(`Usage: node tests/format.mjs [options]
 
 Options:
-  --all          Format all files across the repository instead of just changed files
+  --changed      Format only changed files compared to upstream
+  --all          Format all files (default behavior)
   -h, --help     Show this help message`);
     process.exit(0);
 }
 
-if (values.all) {
-    formatAll();
+if (values.changed) {
+    let changedFiles = [];
+    try {
+        changedFiles = getChangedFiles();
+    } catch (e) {
+        console.error("Failed to get changed files from git. Falling back to formatting all files.");
+        formatAll();
+        process.exit(0);
+    }
+
+    if (changedFiles.length === 0) {
+        console.log("No files changed compared to upstream.");
+        process.exit(0);
+    }
+    console.log(`Formatting ${changedFiles.length} changed files compared to upstream`);
+
+    runPrettier(changedFiles);
+    runEslint(changedFiles);
+    runStylelint(changedFiles);
     process.exit(0);
 }
 
-let changedFiles = [];
-try {
-    changedFiles = getChangedFiles();
-} catch (e) {
-    console.error("Failed to get changed files from git. Falling back to formatting all files.");
-    formatAll();
-    process.exit(0);
-}
-
-if (changedFiles.length === 0) {
-    console.log("No files changed compared to upstream.");
-    process.exit(0);
-}
-console.log(`Formatting ${changedFiles.length} changed files compared to upstream`);
-
-runPrettier(changedFiles);
-runEslint(changedFiles);
+// Default behavior
+formatAll();

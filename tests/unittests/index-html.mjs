@@ -10,10 +10,9 @@ describe("index.html", () => {
         const preloadRegex = /<link\s+rel="modulepreload"\s+href="([^"]+)"/g;
         let match;
         const preloads = [];
-        
-        while ((match = preloadRegex.exec(html)) !== null) {
+
+        while ((match = preloadRegex.exec(html)) !== null)
             preloads.push(match[1]);
-        }
 
         assert.ok(preloads.length > 0, "Should have at least one modulepreload link");
 
