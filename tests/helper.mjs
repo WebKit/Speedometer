@@ -1,6 +1,7 @@
 import { execFileSync, spawn } from "child_process";
 import { styleText } from "node:util";
 import fs from "fs";
+import serve, { DEFAULT_CACHE_DURATION } from "./server.mjs";
 
 export const GITHUB_ACTIONS_OUTPUT = "GITHUB_ACTIONS_OUTPUT" in process.env || "GITHUB_EVENT_PATH" in process.env;
 
@@ -43,7 +44,9 @@ export function logError(...args) {
         else
             console.error(styleText("red", text));
     }
-}
+    const PORT = options.port;
+    const server = await serve(PORT, DEFAULT_CACHE_DURATION);
+    let driver, logInspector;
 
 export function logCommand(...args) {
     const cmd = args.join(" ");
