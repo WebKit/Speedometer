@@ -21,11 +21,11 @@ export function logInfo(...args) {
 
 export function logWarn(...args) {
     const text = args.join(" ");
-    if (GITHUB_ACTIONS_OUTPUT) {
+    if (GITHUB_ACTIONS_OUTPUT)
         console.warn(`::warning::${text.replace(/\n/g, "%0A")}`);
-    } else {
+    else
         console.warn(styleText("magenta", text));
-    }
+
 }
 
 export function logError(...args) {
