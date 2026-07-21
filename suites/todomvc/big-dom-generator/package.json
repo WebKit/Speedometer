@@ -9,7 +9,7 @@
     "scripts": {
         "build": "webpack --config webpack.prod.mjs",
         "build:resources": "node ../../../resources/shared/generate-resources.mjs dist",
-        "postbuild": "npm run build:resources",
+        "postbuild": "node dist/app.bundle.js && purgecss -css dist/big-dom.css --content dist/index.html --output=dist/big-dom.css && rm dist/app.bundle.js && rm dist/app.bundle.js.LICENSE.txt && node utils/createVariant.mjs && npm run build:resources",
         "dev": "webpack serve --open --config webpack.dev.mjs",
         "serve": "http-server ./dist -p 7002 -c-1 --cors"
     },
