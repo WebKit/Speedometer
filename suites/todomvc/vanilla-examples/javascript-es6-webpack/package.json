@@ -10,8 +10,9 @@
     "scripts": {
         "dev": "webpack serve --open --config webpack.dev.mjs",
         "build": "webpack --config webpack.prod.mjs",
-        "serve": "http-server ./dist -p 7002 -c-1 --cors",
-        "postbuild": "node ../../../../resources/shared/generate-resources.mjs dist"
+        "build:resources": "node ../../../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
+        "serve": "http-server ./dist -p 7002 -c-1 --cors"
     },
     "dependencies": {
         "todomvc-app-css": "^2.4.2",

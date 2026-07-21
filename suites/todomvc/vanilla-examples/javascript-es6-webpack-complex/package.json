@@ -9,8 +9,9 @@
     "private": true,
     "scripts": {
         "build": "node scripts/build.mjs",
-        "serve": "http-server ./dist -p 7002 -c-1 --cors",
-        "postbuild": "node ../../../../resources/shared/generate-resources.mjs dist"
+        "build:resources": "node ../../../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
+        "serve": "http-server ./dist -p 7002 -c-1 --cors"
     },
     "devDependencies": {
         "big-dom-generator": "file:../../big-dom-generator",

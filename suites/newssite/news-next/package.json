@@ -6,10 +6,11 @@
         "dev": "next dev",
         "build": "node scripts/build.mjs",
         "build:next": "next build",
+        "build:resources": "node ../../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
         "start": "next start",
         "lint": "next lint",
-        "serve": "http-server ./dist -p 7002 -c-1 --cors",
-        "postbuild": "node ../../../resources/shared/generate-resources.mjs dist"
+        "serve": "http-server ./dist -p 7002 -c-1 --cors"
     },
     "dependencies": {
         "classnames": "^2.3.2",

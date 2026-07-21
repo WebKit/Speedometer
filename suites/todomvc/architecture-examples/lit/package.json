@@ -11,10 +11,11 @@
         "serve": "wireit",
         "dev": "wireit",
         "build": "wireit",
+        "build:resources": "node ../../../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
         "tsc": "wireit",
         "rollup": "wireit",
-        "copy-index-html": "wireit",
-        "postbuild": "node ../../../../resources/shared/generate-resources.mjs dist"
+        "copy-index-html": "wireit"
     },
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^15.1.0",

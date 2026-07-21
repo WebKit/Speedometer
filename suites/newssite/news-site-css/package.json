@@ -11,7 +11,8 @@
     "scripts": {
         "lint": "stylelint \"src/css/*.css\"",
         "build": "rollup -c --bundleConfigAsCjs",
-        "postbuild": "node ../../../resources/shared/generate-resources.mjs dist"
+        "build:resources": "node ../../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources"
     },
     "devDependencies": {
         "@rollup/plugin-babel": "^6.0.3",
