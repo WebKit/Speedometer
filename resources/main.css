@@ -190,25 +190,36 @@ button,
 .buttons button,
 .buttons .button {
     appearance: none;
-    border: 3px solid var(--foreground);
-    border-radius: 10px;
-    min-width: 200px;
-    padding: 5px 0;
-    margin: 0 20px;
-    font-size: 25px;
+    border: 2px solid var(--foreground);
+    border-radius: 8px;
+    min-width: 160px;
+    padding: 6px 15px;
+    margin: 0 10px;
+    font-size: 16px;
     color: var(--foreground);
     background-color: transparent;
     cursor: pointer;
     user-select: none;
 }
 
-.buttons button:active {
+.primary-button {
+    border: 3px solid var(--foreground);
+    border-radius: 10px;
+    min-width: 200px;
+    padding: 5px 0;
+    margin: 0 20px;
+    font-size: 25px;
+}
+
+.buttons button:active,
+.buttons .button:active {
     background-color: var(--foreground);
     color: var(--background);
     border-color: var(--foreground) !important;
 }
 
-.buttons button:focus {
+.buttons button:focus,
+.buttons .button:focus {
     outline: none;
     border-color: var(--highlight);
 }
@@ -426,6 +437,40 @@ section#home .content {
     text-align: center;
 }
 
+.fixed-footer {
+    position: absolute;
+    bottom: var(--padding-width);
+    left: var(--padding-width);
+    width: var(--viewport-width);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--background);
+    z-index: 10;
+}
+
+.fixed-footer .button-row {
+    align-items: center;
+    width: 100%;
+    margin: 0;
+}
+
+section#about .section-content,
+section#instructions .section-content {
+    padding-bottom: 70px;
+}
+
+section#home .buttons:not(.section-footer) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}
+
 button.show-about {
     margin-top: 100px;
     font-size: 16px;
@@ -549,13 +594,13 @@ section#details .results-table {
     width: 50%;
 }
 
-section#details .export-buttons {
+.export-buttons {
     justify-content: center;
     margin-bottom: 0;
 }
 
-section#details .export-buttons button,
-section#details .export-buttons .button {
+.export-buttons button,
+.export-buttons .button {
     padding: 5px 10px;
     min-width: auto;
     font-size: 14px;

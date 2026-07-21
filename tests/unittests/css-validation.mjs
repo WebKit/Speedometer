@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import stylelint from "stylelint";
 import fs from "node:fs";
+import path from "node:path";
 
 describe("CSS Validation", () => {
     const files = fs.globSync(["*.css", "resources/**/*.css"]);
@@ -11,8 +12,10 @@ describe("CSS Validation", () => {
             const report = result.results[0];
 
             let messages = "";
-            if (report && report.warnings.length > 0)
-                messages = report.warnings.map((w) => `${w.line}:${w.column} ${w.text}`).join("\n");
+            if (report && report.warnings.length > 0) {
+                const absPath = path.resolve(file);
+                messages = report.warnings.map((w) => `${absPath}:${w.line}:${w.column} - ${w.text}`).join("\n");
+            }
 
             assert.ok(!result.errored, `Validation failed for ${file}:\n${messages}`);
         });
