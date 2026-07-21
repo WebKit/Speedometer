@@ -93,6 +93,24 @@ describe("Params", () => {
         });
     });
 
+    describe("isDefault", () => {
+        it("should return true for defaultParams", () => {
+            expect(defaultParams.isDefault()).to.be(true);
+        });
+        it("should return false for newly instantiated empty Params", () => {
+            const params = new Params();
+            expect(params.isDefault()).to.be(false);
+        });
+        it("should return false for custom params", () => {
+            const params = new Params(
+                new URLSearchParams({
+                    iterationCount: "100",
+                })
+            );
+            expect(params.isDefault()).to.be(false);
+        });
+    });
+
     describe("parse input params", () => {
         it("should parse custom viewport", () => {
             const params = new Params(

@@ -97,6 +97,18 @@ async function testAll() {
     assert(metrics.Score.values.length === 1);
 }
 
+async function testPreloadEnabled() {
+    const metrics = await testPage("index.html?iterationCount=1&suites=Perf-Dashboard&preload=true");
+    assert("Perf-Dashboard" in metrics);
+    assert(metrics["Perf-Dashboard"].values.length === 1);
+}
+
+async function testPreloadDisabled() {
+    const metrics = await testPage("index.html?iterationCount=1&suites=Perf-Dashboard&preload=false");
+    assert("Perf-Dashboard" in metrics);
+    assert(metrics["Perf-Dashboard"].values.length === 1);
+}
+
 async function testDeveloperMode() {
     const params = ["developerMode", "iterationCount=1", "warmupBeforeSync=2", "waitBeforeSync=2", "shuffleSeed=123", "suites=Perf-Dashboard"];
     const metrics = await testPage(`index.html?${params.join("&")}`);
@@ -140,6 +152,8 @@ async function tryTests() {
     await driver.manage().setTimeouts({ script: 60000 });
     await testIterations();
     await testAll();
+    await testPreloadEnabled();
+    await testPreloadDisabled();
     await testDeveloperMode();
     console.log("\nTests complete!");
 }
