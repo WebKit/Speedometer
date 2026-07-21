@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "build": "node scripts/build.mjs",
+        "build": "npm run build:nuxt",
         "build:nuxt": "nuxt build",
         "build:resources": "node ../../../resources/shared/generate-resources.mjs dist",
         "postbuild": "npm run build:resources",

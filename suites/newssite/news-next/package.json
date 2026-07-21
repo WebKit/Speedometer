@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "node scripts/build.mjs",
+        "build": "npm run build:next",
         "build:next": "next build",
         "build:resources": "node ../../../resources/shared/generate-resources.mjs dist",
         "postbuild": "npm run build:resources",
