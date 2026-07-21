@@ -25,7 +25,6 @@ export function logWarn(...args) {
         console.warn(`::warning::${text.replace(/\n/g, "%0A")}`);
     else
         console.warn(styleText("magenta", text));
-
 }
 
 export function logError(...args) {

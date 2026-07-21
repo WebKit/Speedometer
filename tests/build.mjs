@@ -37,10 +37,9 @@ function getWorkloads() {
     }
     if (skippedWorkloads.size > 0) {
         logWarn(
-            `Skipping the following excluded workloads:\n${
-                Array.from(skippedWorkloads)
-                    .map((w) => ` - ${w}`)
-                    .join("\n")}`
+            `Skipping the following excluded workloads:\n${Array.from(skippedWorkloads)
+                .map((w) => ` - ${w}`)
+                .join("\n")}`
         );
     }
     return Array.from(workloads);
@@ -73,7 +72,7 @@ async function buildWorkloads(workloads) {
     console.log("================================================================================\n");
 
     if (failedWorkloads.length > 0) {
-        logError(`Failed Workloads:\n${ failedWorkloads.map((w) => ` - ${w}`).join("\n")}`);
+        logError(`Failed Workloads:\n${failedWorkloads.map((w) => ` - ${w}`).join("\n")}`);
 
         process.exit(1);
     }
