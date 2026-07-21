@@ -10,10 +10,25 @@ import "lws-log";
 import "lws-static";
 
 const ROOT_DIR = path.join(process.cwd(), "./");
+export const DEFAULT_CACHE_DURATION = 3600;
 
-export default async function serve(port) {
+class CacheControlPlugin {
+    middleware(config) {
+        return async (ctx, next) => {
+            ctx.set("Cache-Control", `max-age=${config.cache}`);
+            await next();
+        };
+    }
+}
+
+export default async function serve(port, cacheDuration) {
     if (!port)
         throw new Error("Port is required");
+
+    const stack = ["lws-log", "lws-cors", "lws-static", "lws-index"];
+    if (cacheDuration !== undefined)
+        stack.unshift(CacheControlPlugin);
+
     const ws = await LocalWebServer.create({
         port: port,
         hostname: "127.0.0.1",
@@ -21,7 +36,8 @@ export default async function serve(port) {
         corsOpenerPolicy: "same-origin",
         corsEmbedderPolicy: "require-corp",
         logFormat: "dev",
-        stack: ["lws-log", "lws-cors", "lws-static", "lws-index"],
+        stack,
+        cache: cacheDuration,
     });
     await verifyStartup(ws, port);
 
@@ -51,9 +67,16 @@ async function verifyStartup(ws, port) {
 }
 
 function main() {
-    const optionDefinitions = [{ name: "port", type: Number, defaultValue: 8080, description: "Set the test-server port, The default value is 8080." }];
+    const optionDefinitions = [
+        { name: "port", type: Number, defaultValue: 8080, description: "Set the test-server port, The default value is 8080." },
+        { name: "cache", type: Number, description: `Set the cache duration in seconds. If flag is present without a value, defaults to ${DEFAULT_CACHE_DURATION}.` },
+    ];
     const options = commandLineArgs(optionDefinitions);
-    serve(options.port);
+    let cacheDuration = undefined;
+    if ("cache" in options)
+        cacheDuration = options.cache ?? DEFAULT_CACHE_DURATION;
+
+    serve(options.port, cacheDuration);
 }
 
 if (esMain(import.meta))
