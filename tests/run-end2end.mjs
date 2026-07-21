@@ -35,15 +35,10 @@ async function testPage(url) {
             { once: true }
         );
         // Install error handlers to report page errors back to selenium.
-        globalThis.addEventListener(
-            "error",
-            (e) => {
-                const url = e.filename || (e.target && (e.target.src || e.target.href));
-                callback({
-                    error: { message: e.message || `Network/Resource error for ${url}` },
-                });
-            },
-            true
+        globalThis.addEventListener("error", (message, source, lineno, colno, error) =>
+            callback({
+                error: { message, source, lineno, colno, error },
+            })
         );
         globalThis.addEventListener("unhandledrejection", (e) => {
             callback({
