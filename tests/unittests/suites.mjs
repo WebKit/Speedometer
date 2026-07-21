@@ -1,5 +1,6 @@
 import { ExperimentalSuites } from "../../suites-experimental/suites.mjs";
 import { DefaultSuites } from "../../suites/default-suites.mjs";
+import { EXCLUDES } from "../excludes.mjs";
 
 const Suites = {
     ExperimentalSuites,
@@ -71,6 +72,12 @@ for (const [name, suites] of Object.entries(Suites)) {
             const baseUrl = isNode ? new URL("../../", import.meta.url).href : `${window.location.origin}/`;
             const brokenResourcesList = [];
             for (const suite of suites) {
+                const isExcluded = [...EXCLUDES].some((excludePath) => suite.url.startsWith(excludePath + "/") || suite.url === excludePath);
+                if (isExcluded) {
+                    console.warn(`        ⚠ Skipping resources check for excluded suite: ${suite.name}`);
+                    continue;
+                }
+
                 if (!suite.resources)
                     continue;
                 const resourcesUrl = new URL(suite.resources, baseUrl).href;

@@ -19,6 +19,15 @@ export function logInfo(...args) {
     console.log(styleText("yellow", text));
 }
 
+export function logWarn(...args) {
+    const text = args.join(" ");
+    if (GITHUB_ACTIONS_OUTPUT) {
+        console.warn(`::warning::${text.replace(/\n/g, "%0A")}`);
+    } else {
+        console.warn(styleText("magenta", text));
+    }
+}
+
 export function logError(...args) {
     let error;
     if (args.length === 1 && args[0] instanceof Error)

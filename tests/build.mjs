@@ -3,15 +3,8 @@ import fs from "fs";
 import path from "path";
 import { DefaultSuites } from "../suites/default-suites.mjs";
 import { ExperimentalSuites } from "../suites-experimental/suites.mjs";
-import { getChangedFiles, logError, runActionGroup, sh } from "./helper.mjs";
-
-const EXCLUDES = new Set([
-    // TODO: Re-enable once packages are updated and node 22 is supported
-    "suites/todomvc/architecture-examples/vue",
-    "suites/todomvc/architecture-examples/vue-complex",
-    "suites/newssite/news-nuxt",
-    "suites/react-stockcharts",
-]);
+import { getChangedFiles, logError, logWarn, runActionGroup, sh } from "./helper.mjs";
+import { EXCLUDES } from "./excludes.mjs";
 
 function findWorkloadForUrl(suiteUrl) {
     let currentDir = path.dirname(suiteUrl);
@@ -29,13 +22,21 @@ function findWorkloadForUrl(suiteUrl) {
 
 function getWorkloads() {
     const workloads = new Set();
+    const skippedWorkloads = new Set();
     const suites = [...DefaultSuites, ...ExperimentalSuites];
     for (const suite of suites) {
         if (suite.url) {
             const workload = findWorkloadForUrl(suite.url);
-            if (workload && !EXCLUDES.has(workload))
-                workloads.add(workload);
+            if (workload) {
+                if (EXCLUDES.has(workload))
+                    skippedWorkloads.add(workload);
+                else
+                    workloads.add(workload);
+            }
         }
+    }
+    if (skippedWorkloads.size > 0) {
+        logWarn("Skipping the following excluded workloads:\n" + Array.from(skippedWorkloads).map(w => ` - ${w}`).join("\n"));
     }
     return Array.from(workloads);
 }
