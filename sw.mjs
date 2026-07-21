@@ -28,44 +28,29 @@ async function stopPreloading(currentClientId) {
         WORKER_STATE.abortController.abort();
         WORKER_STATE.abortController = null;
     }
+    await stopAllOtherClients(currentClientId);
+    WORKER_STATE.requestLimiter.clear();
+}
+
+async function stopAllOtherClients(currentClientId) {
     const allClients = await self.clients.matchAll({ includeUncontrolled: true });
     for (const client of allClients) {
         if (currentClientId && client.id !== currentClientId)
             client.postMessage({ type: SW_MESSAGES.FATAL_ERROR, message: "Speedometer aborted: Another tab took over." });
     }
 
-    WORKER_STATE.requestLimiter.clear();
 }
 
 async function handlePreloadSuitesMessage(event, { suites = [], clearCache = true }) {
     try {
         await stopPreloading(event.source?.id);
-
-        WORKER_STATE.abortController = new AbortController();
-        const signal = WORKER_STATE.abortController.signal;
-
-        WORKER_STATE.failedRequests.clear();
-        if (clearCache)
-            await caches.delete(CACHE_NAME);
-
-        const cache = await caches.open(CACHE_NAME);
-        const urlsToCache = await getUrlsToCache(suites);
-        const total = urlsToCache.length;
-
-        let loaded = 0;
-        let transferredSize = 0;
-
-        const promises = urlsToCache.map(async (item, index) => {
-            const size = await fetchAndCache(cache, item.url, signal);
-            transferredSize += size;
-            loaded++;
-            if (!signal.aborted)
-                replyToClient(event, SW_MESSAGES.PRELOAD_PROGRESS, { loaded, total, url: item.url, suiteName: item.suiteName });
-        });
-
-        await Promise.all(promises);
-
-        replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { transferredSize, count: urlsToCache.length });
+        // debounce on progress callbacks to limit overhead.
+        const MAX_RATE_MS = 100;
+        const onProgress = (payload) => {
+            replyToClient(event, SW_MESSAGES.PRELOAD_PROGRESS, payload);
+        };
+        const { transferredSize, count } = await preloadSuites(suites, clearCache, throttle(onProgress, MAX_RATE_MS));
+        replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { transferredSize, count });
     } catch (error) {
         if (error.name === "AbortError")
             return;
@@ -75,6 +60,45 @@ async function handlePreloadSuitesMessage(event, { suites = [], clearCache = tru
         if (WORKER_STATE.abortController && !WORKER_STATE.abortController.signal.aborted)
             WORKER_STATE.abortController = null;
     }
+}
+
+function throttle(callback, max_rate_ms) {
+    let lastCallbackTime = 0;
+    return (...args) => {
+        const now = Date.now();
+        if (now - lastCallbackTime > max_rate_ms) {
+            lastCallbackTime = now;
+            callback(...args);
+        }
+    };
+}
+
+async function preloadSuites(suites, clearCache, onProgress) {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+    WORKER_STATE.abortController = abortController;
+
+    WORKER_STATE.failedRequests.clear();
+    if (clearCache)
+        await caches.delete(CACHE_NAME);
+
+    const cache = await caches.open(CACHE_NAME);
+    const urlsToCache = await getUrlsToCache(suites);
+    const total = urlsToCache.length;
+
+    let loaded = 0;
+    let transferredSize = 0;
+
+    const promises = urlsToCache.map(async (item, index) => {
+        const size = await fetchAndCache(cache, item.url, signal);
+        transferredSize += size;
+        loaded++;
+        if (!signal.aborted)
+            onProgress({ loaded, total, url: item.url, suiteName: item.suiteName });
+    });
+
+    await Promise.all(promises);
+    return { transferredSize, count: urlsToCache.length };
 }
 
 async function getUrlsToCache(suites) {
@@ -104,11 +128,6 @@ async function parseSuiteResources(suite) {
         }));
 }
 
-function getResponseSize(response) {
-    const contentLength = response.headers.get("content-length");
-    return contentLength ? parseInt(contentLength, 10) : 0;
-}
-
 async function fetchAndCache(cache, url, signal) {
     signal.throwIfAborted();
 
@@ -134,13 +153,10 @@ async function fetchAndCache(cache, url, signal) {
     });
 }
 
-self.addEventListener("install", () => {
-    self.skipWaiting();
-});
-
-self.addEventListener("activate", (event) => {
-    event.waitUntil(self.clients.claim());
-});
+function getResponseSize(response) {
+    const contentLength = response.headers.get("content-length");
+    return contentLength ? parseInt(contentLength, 10) : 0;
+}
 
 async function handleGetFailedRequestsMessage(event) {
     replyToClient(event, SW_MESSAGES.FAILED_REQUESTS, { requests: Array.from(WORKER_STATE.failedRequests) });
@@ -150,6 +166,14 @@ const MESSAGE_HANDLERS = Object.freeze({
     [SW_MESSAGES.PRELOAD_SUITES]: handlePreloadSuitesMessage,
     [SW_MESSAGES.STOP_PRELOADING]: handleStopPreloadingMessage,
     [SW_MESSAGES.GET_FAILED_REQUESTS]: handleGetFailedRequestsMessage,
+});
+
+self.addEventListener("install", () => {
+    self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+    event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener("message", (event) => {
