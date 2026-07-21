@@ -73,7 +73,9 @@ export default async function testSetup(helpText) {
         }
     }
     const PORT = options.port;
-    const server = await serve(PORT);
+    const CACHE_DURATION = 3600;
+
+    const server = await serve(PORT, CACHE_DURATION);
     let driver, logInspector;
 
     process.on("unhandledRejection", (err) => {
