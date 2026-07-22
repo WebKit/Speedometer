@@ -104,7 +104,8 @@ export class SuiteRunner {
         // When the test is fast and the precision is low (for example with Firefox'
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
-        const { suiteTotal, suitePrepare } = this.#suiteResults.total;
+        const suiteTotal = this.#suiteResults.total;
+        const suitePrepare = this.#suiteResults.prepare;
         if (suiteTotal === 0)
             throw new Error(`Got invalid 0-time total for suite ${this.#suite.name}: ${suiteTotal}`);
         if (this.#params.measurePrepare && suitePrepare === 0)
@@ -134,7 +135,7 @@ export class SuiteRunner {
             total: total,
         };
         this.#suiteResults.prepare = this.#prepareTime;
-        this.#suiteResults.total = total;
+        this.#suiteResults.total += total;
     }
 
     async _updateClient(suite = this.#suite) {
