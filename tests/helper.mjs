@@ -44,10 +44,7 @@ export function logError(...args) {
         else
             console.error(styleText("red", text));
     }
-    const PORT = options.port;
-    const server = await serve(PORT, DEFAULT_CACHE_DURATION);
-    let driver, logInspector;
-
+}
 export function logCommand(...args) {
     const cmd = args.join(" ");
     if (GITHUB_ACTIONS_OUTPUT)
