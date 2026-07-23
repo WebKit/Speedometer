@@ -235,6 +235,7 @@ button,
     background: #602525;
     border: 3px solid rgba(255, 255, 255, 0.5);
     position: fixed;
+    z-index: 9999;
     left: 10px;
     top: 10px;
     max-height: calc(100vh - 20px);
