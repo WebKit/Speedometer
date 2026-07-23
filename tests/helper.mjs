@@ -1,108 +1,122 @@
-import commandLineUsage from "command-line-usage";
-import commandLineArgs from "command-line-args";
+import { execFileSync, spawn } from "child_process";
+import { styleText } from "node:util";
+import fs from "fs";
 import serve, { DEFAULT_CACHE_DURATION } from "./server.mjs";
 
-import firefox from "selenium-webdriver/firefox.js";
-import chrome from "selenium-webdriver/chrome.js";
-import edge from "selenium-webdriver/edge.js";
+export const GITHUB_ACTIONS_OUTPUT = "GITHUB_ACTIONS_OUTPUT" in process.env || "GITHUB_EVENT_PATH" in process.env;
 
-import LogInspector from "selenium-webdriver/bidi/logInspector.js";
-import { Builder } from "selenium-webdriver";
-
-export const DEFAULT_RETRIES = 1;
-
-const optionDefinitions = [
-    { name: "browser", type: String, description: "Set the browser to test, choices are [safari, firefox, chrome]. By default the $BROWSER env variable is used." },
-    { name: "port", type: Number, defaultValue: 8010, description: "Set the test-server port, The default value is 8010." },
-    { name: "retry", type: Number, defaultValue: DEFAULT_RETRIES, description: "Number of retries for the tests on failure." },
-    { name: "help", alias: "h", description: "Print this help text." },
-];
-
-function printHelp(message = "", exitStatus = 0) {
-    const usage = commandLineUsage([
-        {
-            header: "Run all tests",
-        },
-        {
-            header: "Options",
-            optionList: optionDefinitions,
-        },
-    ]);
-    if (message) {
-        console.error(message);
-        console.error();
-    }
-    console.log(usage);
-    process.exit(exitStatus);
+export function getChangedFiles() {
+    // "--diff-filter=ACMR" => ignore deleted files.
+    const diffOut = execFileSync("git", ["diff", "--name-only", "--diff-filter=ACMR", "@{upstream}"], { encoding: "utf8" });
+    const files = diffOut
+        .split("\n")
+        .map((f) => f.trim())
+        .filter((f) => f.length > 0 && fs.existsSync(f));
+    return [...new Set(files)];
 }
 
-export default async function testSetup(helpText) {
-    const options = commandLineArgs(optionDefinitions);
+export function logInfo(...args) {
+    const text = args.join(" ");
+    console.log(styleText("yellow", text));
+}
 
-    if ("help" in options)
-        printHelp(helpText);
+export function logWarn(...args) {
+    const text = args.join(" ");
+    if (GITHUB_ACTIONS_OUTPUT)
+        console.warn(`::warning::${text.replace(/\n/g, "%0A")}`);
+    else
+        console.warn(styleText("magenta", text));
+}
 
-    const BROWSER = options?.browser;
-    if (!BROWSER)
-        printHelp("No browser specified, use $BROWSER or --browser", 1);
-
-    if (options.retry < 0)
-        printHelp("Number of retries cannot be negative", 1);
-
-    let builder;
-    switch (BROWSER) {
-        case "safari": {
-            builder = new Builder().forBrowser(BROWSER);
-            // No bidi and log support in safari.
-            break;
-        }
-        case "firefox": {
-            builder = new Builder().forBrowser(BROWSER).setFirefoxOptions(new firefox.Options().enableBidi());
-            break;
-        }
-        case "chrome": {
-            builder = new Builder().forBrowser(BROWSER).setChromeOptions(new chrome.Options().enableBidi());
-            break;
-        }
-        case "edge": {
-            builder = new Builder().forBrowser(BROWSER).setEdgeOptions(new edge.Options().enableBidi());
-            break;
-        }
-        default: {
-            printHelp(`Invalid browser "${BROWSER}", choices are: "safari", "firefox", "chrome", "edge"`);
-        }
+export function logError(...args) {
+    let error;
+    if (args.length === 1 && args[0] instanceof Error)
+        error = args[0];
+    const text = args.join(" ");
+    if (GITHUB_ACTIONS_OUTPUT) {
+        if (error?.stack)
+            console.error(`::error::${error.stack.replace(/\n/g, "%0A")}`);
+        else
+            console.error(`::error::${text.replace(/\n/g, "%0A")}`);
+    } else {
+        if (error?.stack)
+            console.error(styleText("red", error.stack));
+        else
+            console.error(styleText("red", text));
     }
-    const PORT = options.port;
+}
+export function logCommand(...args) {
+    const cmd = args.join(" ");
+    if (GITHUB_ACTIONS_OUTPUT)
+        console.log(`::notice::${styleText("blue", cmd)}`);
+    else
+        console.log(styleText("blue", cmd));
+}
 
-    const server = await serve(PORT, DEFAULT_CACHE_DURATION);
-    let driver, logInspector;
+export async function runActionGroup(name, body) {
+    if (GITHUB_ACTIONS_OUTPUT) {
+        console.log(`::group::${name}`);
+    } else {
+        logInfo("=".repeat(80));
+        logInfo(name);
+        logInfo(".".repeat(80));
+    }
+    try {
+        const result = body();
+        if (result instanceof Promise)
+            return await result;
+        return result;
+    } finally {
+        if (GITHUB_ACTIONS_OUTPUT)
+            console.log("::endgroup::");
+    }
+}
 
-    process.on("unhandledRejection", (err) => {
-        console.error(err);
-        process.exit(1);
-    });
-    process.once("uncaughtException", (err) => {
-        console.error(err);
-        process.exit(1);
-    });
-    process.on("exit", () => stop());
+const SPAWN_OPTIONS = Object.freeze({
+    stdio: ["inherit", "pipe", "inherit"],
+});
 
-    driver = await builder.build();
-    driver.manage().window().setRect({ width: 1200, height: 1000 });
-
-    if (BROWSER !== "safari") {
-        logInspector = await LogInspector(driver);
-        await logInspector.onConsoleEntry((log) => {
-            console.log(`${log.type}.${log.level}`.toUpperCase(), log.text);
+async function spawnCaptureStdout(binary, args, options = {}) {
+    options = Object.assign({}, SPAWN_OPTIONS, options);
+    const childProcess = spawn(binary, args, options);
+    childProcess.stdout.pipe(process.stdout);
+    return new Promise((resolve, reject) => {
+        childProcess.stdoutString = "";
+        childProcess.stdio[1].on("data", (data) => {
+            childProcess.stdoutString += data.toString();
         });
-    }
+        childProcess.on("close", (code) => {
+            if (code === 0) {
+                resolve(childProcess);
+            } else {
+                const error = new Error(`Command failed with exit code ${code}: ${binary} ${args.join(" ")}`);
+                error.process = childProcess;
+                error.stdout = childProcess.stdoutString;
+                error.exitCode = code;
+                reject(error);
+            }
+        });
+        childProcess.on("error", reject);
+    });
+}
 
-    async function stop() {
-        server.close();
-        if (logInspector)
-            await logInspector.close();
-        if (driver)
-            driver.close();
+export async function sh(binary, ...args) {
+    let options = {};
+    if (args.length > 0 && typeof args[args.length - 1] === "object" && !Array.isArray(args[args.length - 1]))
+        options = args.pop();
+
+    const cmd = `${binary} ${args.join(" ")}`;
+    if (GITHUB_ACTIONS_OUTPUT)
+        console.log(`::group::${binary}`);
+    logCommand(cmd);
+    try {
+        return await spawnCaptureStdout(binary, args, options);
+    } catch (e) {
+        if (e.stdoutString)
+            logError(e.stdoutString);
+        throw e;
+    } finally {
+        if (GITHUB_ACTIONS_OUTPUT)
+            console.log("::endgroup::");
     }
-    return { driver, PORT, stop, retry: options.retry };
 }

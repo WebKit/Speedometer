@@ -15,7 +15,15 @@ hooks/useDoubleClick.js
 hooks/useKeyListener.js
 hooks/useRouter.js
 index.html
+index.mjs
 logo.png
+speedometer-utils/benchmark.mjs
+speedometer-utils/helpers.mjs
+speedometer-utils/params.mjs
+speedometer-utils/step-runner.mjs
+speedometer-utils/step-scheduler.mjs
+speedometer-utils/todomvc-utils.mjs
+speedometer-utils/translations.mjs
 styles/app.constructable.js
 styles/bottombar.constructable.js
 styles/footer.css
@@ -29,3 +37,4 @@ styles/topbar.constructable.js
 todo-item-extra-css.js
 todo-list-extra-css.js
 utils/nanoid.js
+workload-test.mjs

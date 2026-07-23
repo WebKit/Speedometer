@@ -24,3 +24,10 @@ export function generateResourcesFile(distPath) {
     fs.writeFileSync(path.join(absoluteDist, "resources.txt"), `${relativePaths.join("\n")}\n`, "utf8");
     console.log(`Generated resources.txt at ${distPath}`);
 }
+
+import { fileURLToPath } from "node:url";
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+    const targetDir = process.argv[2] || "dist";
+    generateResourcesFile(path.resolve(process.cwd(), targetDir));
+}
