@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!-- Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+     Redistribution and use in source and binary forms, with or without modification,
+     are permitted under the terms of the BSD 2-Clause License (see root LICENSE file). -->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="./async-overrides.js"></script>
+      <script type="module" crossorigin src="./assets/main.js"></script>
+      <link rel="stylesheet" crossorigin href="./assets/main.css">
+    </head>
+    <body>
+        <div id="app">
+            <header id="header">
+                <div id="tab-bar">
+                    <button class="tab active" data-tab="build">
+                        <span class="tab-icon">⚡</span>
+                        <span class="tab-label">Build Log</span>
+                    </button>
+                    <button class="tab" data-tab="links">
+                        <span class="tab-icon">🔗</span>
+                        <span class="tab-label">Links & Traces</span>
+                    </button>
+                    <button class="tab" data-tab="ncurses">
+                        <span class="tab-icon">📊</span>
+                        <span class="tab-label">Ncurses Monitor</span>
+                    </button>
+                    <button class="tab" data-tab="git">
+                        <span class="tab-icon">🌿</span>
+                        <span class="tab-label">Git Status</span>
+                    </button>
+                </div>
+                <div id="controls">
+                    <button id="btn-init" class="btn">Init</button>
+                    <button id="btn-dump-scroll" class="btn">1. Dump & Scroll</button>
+                    <button id="btn-hover-links" class="btn">2. Inline Links</button>
+                    <button id="btn-ncurses" class="btn">3. Ncurses Color</button>
+                    <button id="btn-switch-tabs" class="btn">4. Switch Tabs</button>
+                    <button id="btn-layout" class="btn" title="Force layout check">🔄</button>
+                </div>
+            </header>
+            <main id="terminal-container">
+                <div id="pane-build" class="terminal-pane active"></div>
+                <div id="pane-links" class="terminal-pane"></div>
+                <div id="pane-ncurses" class="terminal-pane"></div>
+                <div id="pane-git" class="terminal-pane"></div>
+            </main>
+        </div>
+    </body>
+</html>
