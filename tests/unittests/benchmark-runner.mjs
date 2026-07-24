@@ -307,3 +307,86 @@ describe("BenchmarkRunner", () => {
         });
     });
 });
+
+describe("PageElement", () => {
+    describe("observeResizeEvents", () => {
+        before(function () {
+            skipInShell(this);
+        });
+
+        async function withPageElement(configureFrame, callback) {
+            let fixtureNode;
+            let result;
+            const runner = new BenchmarkRunner(
+                [
+                    {
+                        name: "PageElement fixture",
+                        enabled: true,
+                        url: "about:blank",
+                        async prepare(page) {
+                            result = await callback(page.getElementById("resize-target"), fixtureNode);
+                        },
+                        tests: [],
+                    },
+                ],
+                {}
+            );
+            sinon.stub(SuiteRunner.prototype, "_loadFrame").callsFake(async function () {
+                fixtureNode = configureFrame(this.frame);
+            });
+            sinon.stub(SuiteRunner.prototype, "_runSuite").callsFake(async () => {});
+            await runner.runAllSuites();
+            return result;
+        }
+
+        // A fake ResizeObserver drives deliveries synchronously for exact-count assertions.
+        async function createTracker() {
+            let deliver;
+            class FakeResizeObserver {
+                constructor(callback) {
+                    deliver = (...widths) => callback(widths.map((width) => ({ contentBoxSize: [{ inlineSize: width }] })));
+                }
+                observe() {}
+                disconnect() {}
+            }
+            return withPageElement(
+                (frame) => {
+                    Object.defineProperty(frame.contentWindow, "ResizeObserver", { configurable: true, value: FakeResizeObserver });
+                    const node = frame.contentDocument.createElement("div");
+                    node.id = "resize-target";
+                    frame.contentDocument.body.appendChild(node);
+                    return node;
+                },
+                (element) => ({
+                    resizeEvents: element.observeResizeEvents(),
+                    deliver: (...widths) => deliver(...widths),
+                })
+            );
+        }
+
+        it("treats the first delivery as the baseline without counting it", async () => {
+            const { resizeEvents, deliver } = await createTracker();
+            deliver(200);
+            await resizeEvents.ready;
+            expect(resizeEvents.count).to.equal(0);
+        });
+
+        it("counts each distinct width change exactly once", async () => {
+            const { resizeEvents, deliver } = await createTracker();
+            deliver(200); // seed
+            deliver(300);
+            deliver(400);
+            deliver(500);
+            expect(resizeEvents.count).to.equal(3);
+        });
+
+        it("does not count deliveries that report the same width", async () => {
+            const { resizeEvents, deliver } = await createTracker();
+            deliver(200); // seed
+            deliver(300);
+            deliver(300);
+            deliver(300);
+            expect(resizeEvents.count).to.equal(1);
+        });
+    });
+});
