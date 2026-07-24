@@ -163,6 +163,46 @@ class PageElement {
         this.#node.scrollIntoView(options);
     }
 
+    observeResizeEvents() {
+        const contentWindow = this.#node.ownerDocument.defaultView;
+        const state = {
+            count: 0,
+            lastWidth: null,
+        };
+        let markReady;
+        // Resolves on the first delivery so callers can seed a baseline before resizing.
+        const ready = new Promise((resolve) => {
+            markReady = resolve;
+        });
+        const observer = new contentWindow.ResizeObserver((entries) => {
+            for (const entry of entries) {
+                const contentBoxSize = entry.contentBoxSize;
+                const inlineSize = Array.isArray(contentBoxSize) ? contentBoxSize[0]?.inlineSize : contentBoxSize?.inlineSize;
+                const width = inlineSize ?? entry.contentRect.width;
+                // The first delivery seeds the baseline width without counting it as a change.
+                if (state.lastWidth === null) {
+                    state.lastWidth = width;
+                    markReady();
+                    continue;
+                }
+                if (width === state.lastWidth)
+                    continue;
+                state.count++;
+                state.lastWidth = width;
+            }
+        });
+        observer.observe(this.#node);
+        return {
+            ready,
+            get count() {
+                return state.count;
+            },
+            disconnect() {
+                observer.disconnect();
+            },
+        };
+    }
+
     dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
         if (eventName === "submit")
             // FIXME FireFox doesn't like `new Event('submit')
