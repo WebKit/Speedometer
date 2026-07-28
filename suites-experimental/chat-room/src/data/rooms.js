@@ -368,9 +368,18 @@ function buildBlocks(seed) {
     return blocks;
 }
 
-// Build a deterministic reactions row. Reaction pills are all over a busy chat,
-// so roughly two messages in three have at least one and popular ones collect a
-// whole row of them.
+// Bodies are shared rather than generated one per message: a body is immutable and
+// only read during render, so two messages can point at the same one. Generating
+// 60,000 instead dominated this module's load time. Pool size trades load time
+// against how often two rows on screen show the same body.
+const BODY_POOL_SIZE = 2048;
+
+const BODY_POOL = [];
+for (let i = 0; i < BODY_POOL_SIZE; i++)
+    BODY_POOL.push(buildBlocks(i));
+
+// Reaction pills are all over a busy chat, so roughly two messages in three have
+// at least one and popular ones collect a whole row.
 function buildReactions(seed) {
     if (seed % 3 === 2)
         return [];
@@ -385,6 +394,15 @@ function buildReactions(seed) {
     return reactions;
 }
 
+// Every term above reduces modulo 3, 4 or 12, and REACTION_EMOJIS has twelve
+// entries, so a row repeats every twelve seeds and nine distinct rows cover the
+// whole corpus. Anyone changing REACTION_EMOJIS has to revisit this cycle.
+const REACTION_CYCLE = 12;
+
+const REACTION_POOL = [];
+for (let i = 0; i < REACTION_CYCLE; i++)
+    REACTION_POOL.push(buildReactions(i));
+
 // Format a deterministic HH:MM timestamp without touching the real clock.
 function formatTime(minutesInDay) {
     const hours = Math.floor(minutesInDay / 60);
@@ -393,9 +411,13 @@ function formatTime(minutesInDay) {
     return `${pad(hours)}:${pad(minutes)}`;
 }
 
-function buildTime(seed) {
-    return formatTime(seed % (24 * 60));
-}
+// Every timestamp is one of the minutes in a day, so the 1440 strings are built
+// once and shared rather than formatted per message.
+const MINUTES_IN_DAY = 24 * 60;
+
+const TIME_STRINGS = [];
+for (let minutes = 0; minutes < MINUTES_IN_DAY; minutes++)
+    TIME_STRINGS.push(formatTime(minutes));
 
 function spansToText(spans) {
     let text = "";
@@ -432,9 +454,24 @@ function excerpt(text, limit) {
     return text.length <= limit ? text : `${text.slice(0, limit).trimEnd()}…`;
 }
 
+const REPLY_EXCERPT_LIMIT = 80;
+
+// Bodies are shared, so the flattened form is cached against the body rather than
+// recomputed and stored for every message that might be quoted.
+const BODY_EXCERPTS = new Map();
+
+function bodyExcerpt(blocks) {
+    let text = BODY_EXCERPTS.get(blocks);
+    if (text === undefined) {
+        text = excerpt(blocksToText(blocks), REPLY_EXCERPT_LIMIT);
+        BODY_EXCERPTS.set(blocks, text);
+    }
+    return text;
+}
+
 // Real conversations arrive in bursts from the same person, which is what makes
-// message grouping worth rendering. Emit runs of one to three messages per
-// sender, always advancing to a different sender between runs.
+// message grouping worth rendering. Runs of one to three, always advancing to a
+// different sender between runs.
 function buildSenderSequence(roomIndex, count) {
     const senders = [];
     let index = hash(roomIndex, 301) % SENDERS.length;
@@ -452,39 +489,38 @@ function buildSenderSequence(roomIndex, count) {
 
 const SENDER_COLOR_INDEX = new Map(SENDERS.map((name, index) => [name, index % AVATAR_COLOR_COUNT]));
 
+// Ten senders, so the initials are derived once rather than per message.
+const SENDER_INITIALS = new Map(SENDERS.map((name) => [name, initials(name)]));
+
 function buildMessages(roomIndex) {
     const senders = buildSenderSequence(roomIndex, MESSAGES_PER_ROOM);
     const messages = [];
     for (let i = 0; i < MESSAGES_PER_ROOM; i++) {
         const seed = roomIndex * MESSAGES_PER_ROOM + i;
         const sender = senders[i];
-        const blocks = buildBlocks(seed);
+        const blocks = BODY_POOL[hash(seed, 105) % BODY_POOL_SIZE];
 
-        // Inline reply quotes embed a parent message in the child, and always
-        // break the sender group above them.
-        //
-        // Most answer something just said, but one in four pulls a message back
-        // out of the history. Those are the interesting ones for a windowed
-        // timeline: the quoted message is nowhere in the DOM, so clicking the
-        // quote has to scroll to a row whose height has never been measured.
+        // A reply quote embeds its parent in the child and breaks the sender group.
+        // Most answer something just said, but one in four reaches back into the
+        // history, where the quoted row is nowhere in the DOM and clicking the quote
+        // has to scroll to a height that has never been measured.
         let replyTo = null;
         if (i > 0 && hash(seed, 201) % 100 < 18) {
             const distance = hash(seed, 203) % 4 === 0 ? 1 + (hash(seed, 204) % Math.min(i, 400)) : 1 + (hash(seed, 202) % 6);
             const parent = messages[Math.max(0, i - distance)];
-            replyTo = { id: parent.id, sender: parent.sender, excerpt: excerpt(parent.preview, 80) };
+            replyTo = { id: parent.id, sender: parent.sender, excerpt: bodyExcerpt(parent.blocks) };
         }
 
         messages.push({
             id: `room-${roomIndex}-msg-${i}`,
             sender,
-            senderInitials: initials(sender),
+            senderInitials: SENDER_INITIALS.get(sender),
             colorIndex: SENDER_COLOR_INDEX.get(sender),
-            time: buildTime(seed),
+            time: TIME_STRINGS[seed % MINUTES_IN_DAY],
             blocks,
-            preview: blocksToText(blocks),
             replyTo,
             grouped: i > 0 && senders[i - 1] === sender && !replyTo,
-            reactions: buildReactions(seed),
+            reactions: REACTION_POOL[seed % REACTION_CYCLE],
         });
     }
     return messages;
@@ -501,7 +537,7 @@ function buildRooms() {
             colorIndex: i % AVATAR_COLOR_COUNT,
             initials: initials(name),
             topic: `Discussion about ${name.toLowerCase()}`,
-            lastMessage: messages[messages.length - 1].preview,
+            lastMessage: blocksToText(messages[messages.length - 1].blocks),
             messages,
         });
     }
@@ -518,23 +554,19 @@ export const LOCAL_USER = {
     colorIndex: SENDERS.length % AVATAR_COLOR_COUNT,
 };
 
-// Build a message the local user just sent, in the same shape as the generated
-// fixtures so the timeline renders it through the same path.
-//
-// The timestamp continues from the room's last message instead of reading the
-// clock, keeping the workload deterministic. Runs of outgoing messages group
-// under the first one, the way a burst from one sender does anywhere else.
+// Same shape as the generated fixtures, so the timeline renders it through the same
+// path. The timestamp continues from the room's last message instead of reading the
+// clock, keeping the workload deterministic.
 export function createOutgoingMessage(room, sequence, text) {
     const previous = room.messages[room.messages.length - 1].time.split(":").map(Number);
-    const sentAt = (previous[0] * 60 + previous[1] + 1 + sequence) % (24 * 60);
+    const sentAt = (previous[0] * 60 + previous[1] + 1 + sequence) % MINUTES_IN_DAY;
     return {
         id: `${room.id}-sent-${sequence}`,
         sender: LOCAL_USER.name,
         senderInitials: LOCAL_USER.initials,
         colorIndex: LOCAL_USER.colorIndex,
-        time: formatTime(sentAt),
+        time: TIME_STRINGS[sentAt],
         blocks: [{ type: "p", spans: [{ type: "text", text }] }],
-        preview: text,
         replyTo: null,
         grouped: sequence > 0,
         reactions: [],
