@@ -115,6 +115,55 @@ body {
     color: #737d8c;
 }
 
+/* Composer. Sits below the timeline, so the scroller gives up the height it takes. */
+.composer {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 8px;
+    padding: 12px 20px;
+    border-top: 1px solid #e3e8ef;
+    background-color: #fff;
+}
+
+.composer-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 8px 12px;
+    border: 1px solid #d5dbe5;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 14px;
+    color: inherit;
+}
+
+.composer-input:focus {
+    border-color: #9dc0f5;
+    outline: 2px solid #dce8fb;
+    outline-offset: -1px;
+}
+
+.composer-send {
+    flex: 0 0 auto;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 8px;
+    background-color: #2a6fd6;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+}
+
+.composer-send:hover:enabled {
+    background-color: #245fb8;
+}
+
+.composer-send:disabled {
+    background-color: #c8d1de;
+    cursor: default;
+}
+
 /* Timeline */
 .timeline {
     flex: 1 1 auto;
