@@ -333,12 +333,15 @@ function buildReactions(seed) {
 }
 
 // Format a deterministic HH:MM timestamp without touching the real clock.
-function buildTime(seed) {
-    const minutesInDay = seed % (24 * 60);
+function formatTime(minutesInDay) {
     const hours = Math.floor(minutesInDay / 60);
     const minutes = minutesInDay % 60;
     const pad = (value) => String(value).padStart(2, "0");
     return `${pad(hours)}:${pad(minutes)}`;
+}
+
+function buildTime(seed) {
+    return formatTime(seed % (24 * 60));
 }
 
 function spansToText(spans) {
@@ -440,3 +443,34 @@ function buildRooms() {
 }
 
 export const rooms = buildRooms();
+
+const LOCAL_USER_NAME = "You";
+
+export const LOCAL_USER = {
+    name: LOCAL_USER_NAME,
+    initials: initials(LOCAL_USER_NAME),
+    colorIndex: SENDERS.length % AVATAR_COLOR_COUNT,
+};
+
+// Build a message the local user just sent, in the same shape as the generated
+// fixtures so the timeline renders it through the same path.
+//
+// The timestamp continues from the room's last message instead of reading the
+// clock, keeping the workload deterministic. Runs of outgoing messages group
+// under the first one, the way a burst from one sender does anywhere else.
+export function createOutgoingMessage(room, sequence, text) {
+    const previous = room.messages[room.messages.length - 1].time.split(":").map(Number);
+    const sentAt = (previous[0] * 60 + previous[1] + 1 + sequence) % (24 * 60);
+    return {
+        id: `${room.id}-sent-${sequence}`,
+        sender: LOCAL_USER.name,
+        senderInitials: LOCAL_USER.initials,
+        colorIndex: LOCAL_USER.colorIndex,
+        time: formatTime(sentAt),
+        blocks: [{ type: "p", spans: [{ type: "text", text }] }],
+        preview: text,
+        replyTo: null,
+        grouped: sequence > 0,
+        reactions: [],
+    };
+}
