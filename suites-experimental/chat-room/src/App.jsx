@@ -24,7 +24,7 @@ export default function App() {
                 </header>
                 {/* Keyed by room id so switching rooms fully tears down the old
                     timeline and mounts the new one, which is the work we profile. */}
-                <Timeline key={selectedRoom.id} room={selectedRoom} />
+                <Timeline key={selectedRoom.id} room={selectedRoom} onSelectRoom={handleSelect} />
             </main>
         </div>
     );
