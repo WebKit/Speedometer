@@ -6,7 +6,9 @@ import RichText from "./rich-text.jsx";
 // Consecutive messages from the same sender collapse into the previous one, the
 // way a chat client renders a burst of them: no repeated avatar or name, just
 // the body under a gutter that holds the timestamp on hover.
-export default function Message({ message, highlighted }) {
+// The index is the row's position in the whole room, not in the mounted window,
+// so the timeline can file the measured height against the right message.
+export default function Message({ index, message, highlighted }) {
     const { jumpToMessage } = useActions();
     const classNames = ["timeline-message"];
     if (message.grouped)
@@ -15,7 +17,7 @@ export default function Message({ message, highlighted }) {
         classNames.push("timeline-message-highlighted");
 
     return (
-        <li className={classNames.join(" ")} data-message-id={message.id}>
+        <li className={classNames.join(" ")} data-message-id={message.id} data-index={index}>
             {message.grouped
                 ? <span className="timeline-message-gutter">{message.time}</span>
                 : <span className="avatar" style={{ backgroundColor: AVATAR_COLORS[message.colorIndex] }}>

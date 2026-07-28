@@ -5,8 +5,12 @@ between rooms/channels is one of their most frequent and performance-sensitive
 interactions: the previous conversation's timeline is torn down and a new,
 often long, timeline of rich messages is rendered in its place.
 
-This workload is an original, self-contained React app that reproduces that
-interaction. It is **not** derived from any existing chat product's source code
+Reading back through a conversation is the other one, and on a room this long it
+is not a plain scroll: the timeline is windowed, so every offset mounts rows
+whose height is not known until they have been laid out.
+
+This workload is an original, self-contained React app that reproduces those
+interactions. It is **not** derived from any existing chat product's source code
 and ships no third-party assets, so it is free of licensing and trademark
 concerns.
 
@@ -14,18 +18,27 @@ concerns.
 
 -   React reconciliation cost of repeatedly mounting/unmounting a large timeline
 -   DOM churn and layout when switching between rooms
+-   Windowed scrolling that measures rows only after mounting them, and corrects
+    the scroll position against what they measured
 -   Flex/grid layout of a typical two-pane chat UI with many small components
     (avatars, sender names, timestamps, message bodies)
 
 ## How are we testing
 
-The app renders a sidebar of rooms and, for the selected room, a timeline of
-messages. All content is generated deterministically at load time (no network,
-no backend, no `Math.random`/`Date.now`), so every run renders identical data.
+The app renders a sidebar of rooms and, for the selected room, a windowed
+timeline of its 1500 messages. All content is generated deterministically at load
+time (no network, no backend, no `Math.random`/`Date.now`), so every run renders
+identical data.
 
-The timed step (`SwitchRooms`) clicks through the rooms in the sidebar in turn.
-Each room's timeline is keyed by room id, so a switch fully unmounts the old
-timeline and mounts the new one.
+`ScrollTimeline` reads back through a room's history, first a viewport at a time
+and then in the long strides that dragging the scrollbar produces. The two cover
+opposite halves of the height model: the short steps land on rows that have
+already been measured and are being recycled, the strides on rows that have only
+ever been estimated.
+
+`SwitchRooms` clicks through the rooms in the sidebar in turn. Each room's
+timeline is keyed by room id, so a switch fully unmounts the old timeline and
+mounts the new one.
 
 ## Developer Documentation
 

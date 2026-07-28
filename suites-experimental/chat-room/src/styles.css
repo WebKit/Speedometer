@@ -164,13 +164,17 @@ body {
     cursor: default;
 }
 
-/* Timeline */
+/* Timeline. No vertical padding, so scrollTop maps one to one onto the height
+   model's row offsets. overflow-anchor is off because the timeline corrects its own
+   scroll position after measuring, and the browser would apply a second correction
+   for the same content change. */
 .timeline {
     flex: 1 1 auto;
     margin: 0;
-    padding: 16px 20px;
+    padding: 0 20px;
     list-style: none;
     overflow-y: auto;
+    overflow-anchor: none;
 }
 
 .timeline-message {

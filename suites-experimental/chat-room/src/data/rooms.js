@@ -8,7 +8,12 @@
 import { generatedImage } from "./graphics.js";
 
 const ROOM_COUNT = 40;
-const MESSAGES_PER_ROOM = 150;
+
+// Real channels hold years of history, which is only feasible to render with a
+// windowed timeline. Generation is eager at module load, so this number is a
+// tradeoff against load time rather than against the measured steps: see the
+// figure recorded in debugging/chat-room-realism-plan.md.
+const MESSAGES_PER_ROOM = 1500;
 
 const ROOM_NAMES = [
     "General",
@@ -434,10 +439,13 @@ function buildSenderSequence(roomIndex, count) {
     const senders = [];
     let index = hash(roomIndex, 301) % SENDERS.length;
     while (senders.length < count) {
-        const runLength = 1 + (hash(roomIndex * 1000 + senders.length, 302) % 3);
+        // Same construction as a message seed, so one room's run lengths stay
+        // independent of every other room's.
+        const seed = roomIndex * count + senders.length;
+        const runLength = 1 + (hash(seed, 302) % 3);
         for (let i = 0; i < runLength && senders.length < count; i++)
             senders.push(SENDERS[index]);
-        index = (index + 1 + (hash(roomIndex * 1000 + senders.length, 303) % (SENDERS.length - 1))) % SENDERS.length;
+        index = (index + 1 + (hash(roomIndex * count + senders.length, 303) % (SENDERS.length - 1))) % SENDERS.length;
     }
     return senders;
 }
@@ -454,9 +462,15 @@ function buildMessages(roomIndex) {
 
         // Inline reply quotes embed a parent message in the child, and always
         // break the sender group above them.
+        //
+        // Most answer something just said, but one in four pulls a message back
+        // out of the history. Those are the interesting ones for a windowed
+        // timeline: the quoted message is nowhere in the DOM, so clicking the
+        // quote has to scroll to a row whose height has never been measured.
         let replyTo = null;
         if (i > 0 && hash(seed, 201) % 100 < 18) {
-            const parent = messages[Math.max(0, i - 1 - (hash(seed, 202) % 6))];
+            const distance = hash(seed, 203) % 4 === 0 ? 1 + (hash(seed, 204) % Math.min(i, 400)) : 1 + (hash(seed, 202) % 6);
+            const parent = messages[Math.max(0, i - distance)];
             replyTo = { id: parent.id, sender: parent.sender, excerpt: excerpt(parent.preview, 80) };
         }
 
