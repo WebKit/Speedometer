@@ -49,11 +49,20 @@ export default function Timeline({ room, onSelectRoom }) {
     heights.grow(messages.length);
     heights.extendTo(firstLoaded);
 
-    const indexById = useMemo(() => new Map(messages.map((message, index) => [message.id, index])), [messages]);
+    // Only a reply-quote click turns an id back into a row, so the index is built
+    // on first use. Building it during render meant rebuilding a map over the
+    // room's whole history inside every room switch.
+    const indexById = useMemo(() => {
+        let byId = null;
+        return (id) => {
+            if (byId === null)
+                byId = new Map(messages.map((message, index) => [message.id, index]));
+            return byId.get(id);
+        };
+    }, [messages]);
 
-    // The mounted range, end exclusive. Starts empty because the total height is
-    // still all estimates at that point: the mount effect below pins the scroller
-    // to the bottom first, and the window follows from that offset.
+    // The mounted range, end exclusive. Starts empty because the mount effect below
+    // pins the scroller to the bottom first, and the window follows from there.
     const [range, setRange] = useState({ start: 0, end: 0 });
 
     // True while the timeline is following the conversation, the way a chat client
@@ -168,18 +177,13 @@ export default function Timeline({ room, onSelectRoom }) {
         updateRange(rangeFor(scroller.scrollTop, viewportHeight));
     });
 
-    // Clicking a reply quote jumps to the message it quotes and leaves it
-    // highlighted. The offset comes from the height model rather than the DOM,
-    // because the quoted message is usually not mounted: scrolling to an
-    // arbitrary row is the case a virtualizer has to answer without measuring.
-    // No smooth behavior and no scrollIntoView, so a timed step stays
-    // deterministic. The highlight holds until the next jump rather than
-    // clearing on a timer, for the same reason, and only changes background
-    // colour, so committing it asynchronously cannot move the offset computed
-    // here.
+    // Jump to the quoted message and leave it highlighted. The offset comes from the
+    // height model, because the quoted row is usually not mounted. No smooth
+    // behavior, no scrollIntoView, and the highlight holds until the next jump
+    // rather than clearing on a timer, so a timed step stays deterministic.
     const jumpToMessage = useCallback(
         (messageId) => {
-            const index = indexById.get(messageId);
+            const index = indexById(messageId);
             if (index === undefined)
                 return;
             const scroller = scrollerRef.current;
