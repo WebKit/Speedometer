@@ -21,6 +21,11 @@ const ESTIMATED_ROW_HEIGHT = 100;
 // How close to the bottom still counts as following the conversation.
 const PIN_THRESHOLD = 4;
 
+// A room opens on its newest page and fetches older ones as the reader goes back,
+// the way a real client does, which is what inserts content *above* the viewport.
+const INITIAL_PAGE = 300;
+const OLDER_PAGE = 120;
+
 export default function Timeline({ room, onSelectRoom }) {
     const scrollerRef = useRef(null);
     const [highlightedId, setHighlightedId] = useState(null);
@@ -32,11 +37,17 @@ export default function Timeline({ room, onSelectRoom }) {
 
     const messages = useMemo(() => sent.length ? [...room.messages, ...sent] : room.messages, [room.messages, sent]);
 
-    const heights = useMemo(() => new RowHeights(room.messages.length, ESTIMATED_ROW_HEIGHT), [room.messages]);
+    // How far back the room has been loaded. Rows before this exist in the fixture
+    // but are not in the timeline yet.
+    const initialFirst = Math.max(0, room.messages.length - INITIAL_PAGE);
+    const [firstLoaded, setFirstLoaded] = useState(initialFirst);
 
-    // Only ever grows, and only at the end, so calling it here is idempotent: a
-    // re-render with the same messages changes nothing.
+    const heights = useMemo(() => new RowHeights(room.messages.length, initialFirst, ESTIMATED_ROW_HEIGHT), [room.messages, initialFirst]);
+
+    // The model only grows -- at the end when the local user sends, at the front
+    // when older history loads -- so calling these during render is idempotent.
     heights.grow(messages.length);
+    heights.extendTo(firstLoaded);
 
     const indexById = useMemo(() => new Map(messages.map((message, index) => [message.id, index])), [messages]);
 
@@ -70,7 +81,7 @@ export default function Timeline({ room, onSelectRoom }) {
             while (last + 1 < heights.count && heights.offsetAt(last + 1) < bottom)
                 last++;
             return {
-                start: Math.max(0, first - OVERSCAN),
+                start: Math.max(heights.first, first - OVERSCAN),
                 end: Math.min(heights.count, last + 1 + OVERSCAN),
             };
         },
@@ -105,17 +116,22 @@ export default function Timeline({ room, onSelectRoom }) {
     const handleScroll = useCallback(() => {
         const scroller = scrollerRef.current;
         pinnedToBottom.current = scroller.scrollHeight - (scroller.scrollTop + scroller.clientHeight) <= PIN_THRESHOLD;
+
+        // Prefetch the next page a viewport before the top, the way a real client
+        // does. The anchor has to be taken before the model learns about the new
+        // rows. No in-flight guard: the rows land synchronously, a page below the top.
+        if (heights.first > 0 && scroller.scrollTop < scroller.clientHeight) {
+            anchor.current = captureAnchor(scroller.scrollTop);
+            setFirstLoaded(Math.max(0, heights.first - OLDER_PAGE));
+            return;
+        }
+
         updateRange(rangeFor(scroller.scrollTop, scroller.clientHeight));
-    }, [rangeFor, updateRange]);
+    }, [captureAnchor, heights, rangeFor, updateRange]);
 
     // Measure what is mounted, then put the content back where it was. Runs after
-    // every commit, because a row's height can change without the window moving:
-    // that is what will make a narrower timeline re-measure in the thread-panel
-    // phase.
-    //
-    // Correcting the scroll position is the part that makes windowing honest. The
-    // rows that just mounted were laid out against estimates, so the offsets read
-    // before this pass are stale the moment a measurement lands, and without the
+    // every commit, because a row's height can change without the window moving.
+    // The rows that just mounted were laid out against estimates, so without the
     // correction the content under the viewport would jump.
     useLayoutEffect(() => {
         const scroller = scrollerRef.current;
@@ -170,10 +186,19 @@ export default function Timeline({ room, onSelectRoom }) {
             setHighlightedId(messageId);
             pinnedToBottom.current = false;
             jumpTarget.current = index;
+
+            // A quote can point further back than the room has been loaded, so the
+            // history in between has to come in before there is an offset to
+            // scroll to, the way following a permalink loads its context.
+            if (index < heights.first) {
+                heights.extendTo(Math.max(0, index - OVERSCAN));
+                setFirstLoaded(heights.first);
+            }
+
             scroller.scrollTop = centeredOffset(index, scroller.clientHeight);
             updateRange(rangeFor(scroller.scrollTop, scroller.clientHeight));
         },
-        [centeredOffset, indexById, rangeFor, updateRange]
+        [centeredOffset, heights, indexById, rangeFor, updateRange]
     );
 
     const actions = useMemo(() => ({ selectRoom: onSelectRoom, jumpToMessage }), [onSelectRoom, jumpToMessage]);

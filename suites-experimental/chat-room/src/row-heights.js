@@ -17,25 +17,43 @@ export class RowHeights {
     #heights;
     #offsets;
 
-    // Index of the earliest row whose offset needs recomputing. Offsets at or
-    // below it are still valid, because changing row i only moves the rows after
-    // it. #count + 1 means everything is up to date.
+    // The oldest loaded row. The model covers [#first, #count); older rows
+    // contribute no height because they are not in the timeline yet.
+    #first;
+
+    // Earliest row whose offset needs recomputing: changing row i only moves the
+    // rows after it. #count + 1 means everything is up to date.
     #dirtyFrom;
 
-    constructor(count, estimate) {
+    constructor(count, first, estimate) {
         this.#estimate = estimate;
         this.#count = count;
+        this.#first = first;
         this.#heights = new Float64Array(count).fill(UNMEASURED);
         this.#offsets = new Float64Array(count + 1);
-        this.#dirtyFrom = 0;
+        this.#dirtyFrom = first;
     }
 
     get count() {
         return this.#count;
     }
 
-    // A room only ever grows at the end, when the local user sends a message, so
-    // every measured height and every offset up to the old end survives.
+    get first() {
+        return this.#first;
+    }
+
+    // Load older history. Measured heights stay valid because a row keeps its
+    // index: the offsets all shift by the height of the rows that were added,
+    // which is what lets the scroll position be corrected exactly.
+    extendTo(first) {
+        if (first >= this.#first)
+            return;
+        this.#first = first;
+        this.#dirtyFrom = first;
+    }
+
+    // A room only ever grows at the end, when the local user sends, so every
+    // measured height and every offset up to the old end survives.
     grow(count) {
         if (count <= this.#count)
             return;
@@ -82,7 +100,7 @@ export class RowHeights {
     indexAt(offset) {
         this.#recomputeOffsets();
         const offsets = this.#offsets;
-        let low = 0;
+        let low = this.#first;
         let high = this.#count - 1;
         while (low < high) {
             const middle = (low + high + 1) >> 1;
@@ -91,13 +109,16 @@ export class RowHeights {
             else
                 high = middle - 1;
         }
-        return Math.max(0, low);
+        return Math.max(this.#first, low);
     }
 
     #recomputeOffsets() {
         if (this.#dirtyFrom > this.#count)
             return;
         const offsets = this.#offsets;
+        // Offsets run from the oldest loaded row, which is the origin the
+        // scroller's own coordinates line up with.
+        offsets[this.#first] = 0;
         for (let i = this.#dirtyFrom; i < this.#count; i++)
             offsets[i + 1] = offsets[i] + this.heightAt(i);
         this.#dirtyFrom = this.#count + 1;
