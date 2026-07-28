@@ -321,6 +321,41 @@ export const ExperimentalSuites = freezeSuites([
             await page.waitForElement(".room-list-item");
         },
         tests: [
+            // Each offset mounts a fresh set of rows, measures them, and corrects
+            // the scroll position against what they measured. The scroll event is
+            // dispatched by hand because waiting for the browser's would put a
+            // frame inside the measured window.
+            new BenchmarkTestStep("ScrollTimeline", async (page) => {
+                const timeline = page.querySelector("#timeline");
+                const viewportHeight = timeline.clientHeight;
+
+                const scrollTo = async (offset) => {
+                    timeline.scrollTop = offset;
+                    timeline.dispatchEvent("scroll");
+                    await yieldTask();
+                    page.layout();
+                };
+
+                // A viewport at a time, from the newest message: the windows
+                // overlap, so rows are recycled and measured heights reused.
+                // Relative to the current offset rather than to scrollHeight,
+                // because the total height moves as rows are measured.
+                const pages = 10;
+                for (let i = 0; i < pages; i++)
+                    await scrollTo(timeline.scrollTop - viewportHeight);
+
+                // Then cover the whole room in long strides, the way dragging the
+                // scrollbar does. Every stride lands on rows that have never been
+                // measured, so the window is replaced outright and the correction
+                // runs against estimates.
+                const strides = 10;
+                for (let i = strides - 1; i >= 0; i--)
+                    await scrollTo(((timeline.scrollHeight - viewportHeight) * i) / (strides - 1));
+
+                // Back to the newest message, which is where a chat client leaves
+                // you and where the next step expects to start.
+                await scrollTo(timeline.scrollHeight);
+            }),
             new BenchmarkTestStep("SwitchRooms", async (page) => {
                 const rooms = page.querySelectorAll(".room-list-item");
                 const iterations = 20;
