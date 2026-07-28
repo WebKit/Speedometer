@@ -2,11 +2,10 @@
 // integer hash, with no Math.random() or Date.now(), so every run renders identical
 // content -- entirely original, with no third-party assets.
 //
-// Message bodies are structured blocks rather than plain strings, the way a real
-// client keeps them once markdown has been parsed: paragraphs, fenced code,
-// blockquotes and bullet lists, with inline runs for code, links, @mentions and
-// #room pills. The point is non-uniform row heights, which is what a windowing
-// timeline has to cope with.
+// Bodies are structured blocks rather than plain strings, the way a client keeps
+// them once markdown has been parsed. The point is non-uniform row heights.
+
+import { generatedImage } from "./graphics.js";
 
 const ROOM_COUNT = 40;
 const MESSAGES_PER_ROOM = 150;
@@ -112,6 +111,13 @@ const CODE_TOKENS = [
 const LINK_LABELS = ["the trace", "last night's run", "this regression", "the profile", "the spec text", "my notes", "the dashboard", "that comparison"];
 
 const LINK_PATHS = ["traces/2f9c", "runs/nightly", "profiles/hot-path", "spec/scroll-anchoring", "notes/timeline", "dashboards/perf", "reports/42", "compare/main"];
+
+const UNFURL_LINKS = [
+    { site: "example.com", title: "Scroll anchoring, and why feeds jump", description: "How browsers pin a scroll position while content is inserted above the viewport, and where it gives up." },
+    { site: "perf.example.com", title: "Nightly run 482 vs 481", description: "Geomean moved 1.8% on the chat suites. Row measurement dominates the profile." },
+    { site: "docs.example.com", title: "Windowing a variable-height list", description: "Estimate, measure, cache, correct. The four steps every hand-rolled virtualizer ends up with." },
+    { site: "bugs.example.com", title: "Timeline jumps when the panel opens", description: "Narrowing the scroller re-wraps every row, so the cached heights are all stale at once." },
+];
 
 const QUOTE_LINES = [
     "can we get a number on how bad the jank is before we start moving code around",
@@ -279,9 +285,11 @@ function buildCodeBlock(seed) {
 
 function buildList(seed) {
     const count = 2 + (hash(seed, 402) % 3);
+    // Walk the pool from a seeded offset, so a list never repeats a line.
+    const start = hash(seed, 403) % LIST_ITEMS.length;
     const items = [];
     for (let i = 0; i < count; i++) {
-        const tokens = [pick(LIST_ITEMS, seed, 403 + i)];
+        const tokens = [LIST_ITEMS[(start + i) % LIST_ITEMS.length]];
         if (hash(seed, 413 + i) % 3 === 0)
             tokens.push({ type: "code", text: pick(CODE_TOKENS, seed, 423 + i) });
         items.push(tokensToSpans(tokens));
@@ -289,9 +297,45 @@ function buildList(seed) {
     return { type: "list", items };
 }
 
-// Compose a message body out of blocks. The shape distribution is what drives
-// the row height spread: emoji-only one-liners at one end, a paragraph plus a
-// fenced code block at the other.
+// A few different aspect ratios, so attachments widen the row height spread
+// rather than all adding the same block.
+const IMAGE_SIZES = [
+    { width: 260, height: 146 },
+    { width: 220, height: 165 },
+    { width: 180, height: 180 },
+];
+
+const IMAGE_ALTS = ["a flame chart of the room switch", "the timeline mid-scroll", "row heights before and after windowing", "a screenshot of the composer", "the scroll anchoring repro"];
+
+function buildImage(seed) {
+    const size = IMAGE_SIZES[hash(seed, 501) % IMAGE_SIZES.length];
+    return {
+        type: "image",
+        src: generatedImage(hash(seed, 502), hash(seed, 503), size.width, size.height),
+        width: size.width,
+        height: size.height,
+        alt: pick(IMAGE_ALTS, seed, 504),
+    };
+}
+
+// Link previews, the card a client renders after unfurling a URL.
+function buildUnfurl(seed) {
+    const link = pick(UNFURL_LINKS, seed, 601);
+    return {
+        type: "unfurl",
+        href: `https://example.com/${pick(LINK_PATHS, seed, 602)}`,
+        site: link.site,
+        title: link.title,
+        description: link.description,
+        thumbSrc: generatedImage(hash(seed, 603), hash(seed, 604), 72, 72),
+        thumbWidth: 72,
+        thumbHeight: 72,
+    };
+}
+
+// The shape distribution is what drives the row height spread: emoji-only
+// one-liners at one end, a paragraph plus an attachment or fenced code block at
+// the other.
 function buildBlocks(seed) {
     const shape = hash(seed, 101) % 100;
 
@@ -304,12 +348,16 @@ function buildBlocks(seed) {
         blocks.push(buildCodeBlock(seed));
         if (shape < 13)
             blocks.push({ type: "p", spans: buildParagraph(seed, 2) });
-    } else if (shape < 30) {
+    } else if (shape < 28) {
         blocks.push(buildList(seed));
-    } else if (shape < 38) {
+    } else if (shape < 35) {
         blocks.push({ type: "quote", spans: [{ type: "text", text: pick(QUOTE_LINES, seed, 103) }] });
         blocks.push({ type: "p", spans: buildParagraph(seed, 3) });
-    } else if (shape < 48) {
+    } else if (shape < 41) {
+        blocks.push(buildImage(seed));
+    } else if (shape < 46) {
+        blocks.push(buildUnfurl(seed));
+    } else if (shape < 54) {
         blocks.push({ type: "p", spans: buildParagraph(seed, 4) });
     }
     return blocks;
@@ -365,6 +413,10 @@ function blocksToText(blocks) {
             parts.push(block.lines.join(" "));
         else if (block.type === "list")
             parts.push(block.items.map(spansToText).join(" "));
+        else if (block.type === "image")
+            parts.push(block.alt);
+        else if (block.type === "unfurl")
+            parts.push(`${block.title} ${block.site}`);
         else
             parts.push(spansToText(block.spans));
     }

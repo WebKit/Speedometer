@@ -50,6 +50,22 @@ function Block({ block }) {
                     <Spans spans={block.spans} />
                 </blockquote>
             );
+        case "image":
+            // Intrinsic width/height so the row reserves its space before the
+            // image decodes. Without them the height would change after layout,
+            // invalidating the timeline's height cache.
+            return <img className="rich-image" src={block.src} width={block.width} height={block.height} alt={block.alt} decoding="sync" />;
+        case "unfurl":
+            return (
+                <a className="rich-unfurl" href={block.href} onClick={(event) => event.preventDefault()}>
+                    <img className="rich-unfurl-thumb" src={block.thumbSrc} width={block.thumbWidth} height={block.thumbHeight} alt="" decoding="sync" />
+                    <span className="rich-unfurl-body">
+                        <span className="rich-unfurl-site">{block.site}</span>
+                        <span className="rich-unfurl-title">{block.title}</span>
+                        <span className="rich-unfurl-description">{block.description}</span>
+                    </span>
+                </a>
+            );
         case "list":
             return (
                 <ul className="rich-list">

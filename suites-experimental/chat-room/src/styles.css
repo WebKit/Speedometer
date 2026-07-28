@@ -299,6 +299,64 @@ body {
     white-space: pre;
 }
 
+/* Attachments and link previews. The artwork is procedurally generated SVG. */
+.rich-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 6px 0;
+    border: 1px solid #e3e8ef;
+    border-radius: 8px;
+}
+
+.rich-unfurl {
+    display: flex;
+    gap: 10px;
+    max-width: 460px;
+    margin: 6px 0;
+    padding: 10px;
+    border: 1px solid #e3e8ef;
+    border-left: 3px solid #9dc0f5;
+    border-radius: 8px;
+    background-color: #fbfcfe;
+    color: inherit;
+    text-decoration: none;
+}
+
+.rich-unfurl:hover {
+    background-color: #f4f8ff;
+}
+
+.rich-unfurl-thumb {
+    flex: 0 0 auto;
+    border-radius: 6px;
+}
+
+.rich-unfurl-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.rich-unfurl-site {
+    font-size: 11px;
+    font-weight: 600;
+    color: #737d8c;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.rich-unfurl-title {
+    font-weight: 600;
+    color: #24509b;
+}
+
+.rich-unfurl-description {
+    font-size: 13px;
+    color: #5a6472;
+}
+
 .rich-quote {
     margin: 4px 0;
     padding: 2px 0 2px 10px;
