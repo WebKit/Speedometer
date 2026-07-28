@@ -344,16 +344,15 @@ export const ExperimentalSuites = freezeSuites([
                 for (let i = 0; i < pages; i++)
                     await scrollTo(timeline.scrollTop - viewportHeight);
 
-                // Then cover the whole room in long strides, the way dragging the
-                // scrollbar does. Every stride lands on rows that have never been
-                // measured, so the window is replaced outright and the correction
-                // runs against estimates.
+                // Then long strides, the way dragging the scrollbar does: every
+                // stride lands on rows that have only ever been estimated, so the
+                // window is replaced outright. Stops one stride short of the top,
+                // so it does not trip the prefetch LoadOlderMessages measures.
                 const strides = 10;
-                for (let i = strides - 1; i >= 0; i--)
+                for (let i = strides - 1; i >= 1; i--)
                     await scrollTo(((timeline.scrollHeight - viewportHeight) * i) / (strides - 1));
 
-                // Back to the newest message, which is where a chat client leaves
-                // you and where the next step expects to start.
+                // Back to the newest message, where the next step expects to start.
                 await scrollTo(timeline.scrollHeight);
             }),
             new BenchmarkTestStep("SwitchRooms", async (page) => {
@@ -362,6 +361,20 @@ export const ExperimentalSuites = freezeSuites([
                 // Starts past room 0, which is already open: clicking it commits nothing.
                 for (let i = 1; i <= iterations; i++) {
                     rooms[i % rooms.length].click();
+                    await yieldTask();
+                    page.layout();
+                }
+            }),
+            // Reading past the start of the loaded history inserts a page *above*
+            // the viewport, the case browsers ship scroll anchoring for. The
+            // timeline anchors by hand instead, so overflow-anchor is off. Each
+            // iteration also crosses the page the previous one prepended.
+            new BenchmarkTestStep("LoadOlderMessages", async (page) => {
+                const timeline = page.querySelector("#timeline");
+                const pages = 5;
+                for (let i = 0; i < pages; i++) {
+                    timeline.scrollTop = 0;
+                    timeline.dispatchEvent("scroll");
                     await yieldTask();
                     page.layout();
                 }
