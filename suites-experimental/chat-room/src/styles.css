@@ -130,8 +130,69 @@ body {
     padding: 6px 0;
 }
 
+/* Grouped messages drop the avatar and name; the gutter keeps the body aligned
+   and carries the timestamp, revealed on hover the way real clients do. */
+.timeline-message-grouped {
+    padding: 1px 0;
+}
+
+.timeline-message-gutter {
+    flex: 0 0 auto;
+    width: 36px;
+    font-size: 11px;
+    color: #939aa5;
+    text-align: right;
+    opacity: 0;
+}
+
+.timeline-message-grouped:hover .timeline-message-gutter {
+    opacity: 1;
+}
+
 .timeline-message-body {
     min-width: 0;
+    flex: 1 1 auto;
+}
+
+/* The jump target of a reply click. Background only: changing the box would
+   invalidate measured row heights. */
+.timeline-message-highlighted {
+    background-color: #fff6d8;
+}
+
+/* Inline reply quote: a button, because clicking it jumps to the parent. */
+.timeline-message-reply {
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+    width: 100%;
+    margin-bottom: 2px;
+    padding: 0 0 0 8px;
+    border: 0;
+    border-left: 2px solid #d5dbe5;
+    background: transparent;
+    font: inherit;
+    font-size: 12px;
+    color: #737d8c;
+    text-align: left;
+    cursor: pointer;
+}
+
+.timeline-message-reply:hover {
+    border-left-color: #9dc0f5;
+    color: #5a6472;
+}
+
+.timeline-message-reply-sender {
+    flex: 0 0 auto;
+    font-weight: 600;
+    color: #5a6472;
+}
+
+.timeline-message-reply-excerpt {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .timeline-message-meta {
@@ -157,6 +218,81 @@ body {
     color: #2c3038;
 }
 
+/* Rich message content */
+.rich-paragraph {
+    margin: 0 0 4px;
+}
+
+.rich-paragraph:last-child {
+    margin-bottom: 0;
+}
+
+.rich-code {
+    padding: 1px 4px;
+    border: 1px solid #e3e8ef;
+    border-radius: 4px;
+    background-color: #f4f6fa;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    color: #b4295c;
+}
+
+.rich-code-block {
+    margin: 4px 0;
+    padding: 8px 10px;
+    overflow-x: auto;
+    border: 1px solid #e3e8ef;
+    border-radius: 6px;
+    background-color: #f8fafc;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.45;
+    white-space: pre;
+}
+
+.rich-quote {
+    margin: 4px 0;
+    padding: 2px 0 2px 10px;
+    border-left: 3px solid #c8d1de;
+    color: #5a6472;
+}
+
+.rich-list {
+    margin: 4px 0;
+    padding-left: 20px;
+}
+
+.rich-link {
+    color: #2a6fd6;
+    text-decoration: underline;
+}
+
+.rich-pill {
+    padding: 0 5px;
+    border: 0;
+    border-radius: 10px;
+    font: inherit;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.rich-pill-mention {
+    background-color: #e2ecfd;
+    color: #24509b;
+}
+
+/* A #room pill is a button: clicking it switches to that room. */
+.rich-pill-room {
+    background-color: #e6f6ee;
+    color: #1c6e4c;
+    cursor: pointer;
+}
+
+.rich-pill-room:hover {
+    background-color: #d3efe1;
+}
+
+/* Reactions */
 .timeline-message-reactions {
     display: flex;
     flex-wrap: wrap;
@@ -164,6 +300,7 @@ body {
     margin-top: 4px;
 }
 
+/* Reaction pills are real toggle buttons. */
 .reaction {
     display: inline-flex;
     align-items: center;
@@ -172,7 +309,25 @@ body {
     border: 1px solid #e3e8ef;
     border-radius: 12px;
     background-color: #f4f6fa;
+    font: inherit;
     font-size: 12px;
+    color: inherit;
+    cursor: pointer;
+}
+
+.reaction:hover {
+    border-color: #c8d1de;
+    background-color: #eaeef5;
+}
+
+.reaction-mine {
+    border-color: #9dc0f5;
+    background-color: #e2ecfd;
+}
+
+.reaction-mine .reaction-count {
+    color: #24509b;
+    font-weight: 600;
 }
 
 .reaction-count {
