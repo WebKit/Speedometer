@@ -23,6 +23,8 @@
         "pretty:fix": "prettier --write ./",
         "format": "node tests/format.mjs",
         "format:all": "node tests/format.mjs --all",
+        "build": "node tests/build.mjs",
+        "build:all": "node tests/build.mjs --all",
         "test:chrome": "node tests/run-unittests.mjs --browser chrome",
         "test:firefox": "node tests/run-unittests.mjs --browser firefox",
         "test:safari": "node tests/run-unittests.mjs --browser safari",

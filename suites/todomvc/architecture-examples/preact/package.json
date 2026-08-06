@@ -9,6 +9,8 @@
     },
     "scripts": {
         "build": "rollup -c --bundleConfigAsCjs",
+        "build:resources": "node ../../../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
         "dev": "npm-run-all --parallel serve watch",
         "serve": "http-server ./dist -p 7002 -c-1 --cors -o",
         "watch": "ROLLUP_WATCH=true rollup -c -w --bundleConfigAsCjs"

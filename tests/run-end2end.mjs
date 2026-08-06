@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 import assert from "assert";
-import testSetup, { DEFAULT_RETRIES } from "./helper.mjs";
+import testSetup, { DEFAULT_RETRIES } from "./webdriver-helper.mjs";
 import { benchmarkConfigurator } from "../resources/benchmark-configurator.mjs";
 
 const HELP = `

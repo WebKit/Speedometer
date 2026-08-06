@@ -6,6 +6,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
+        "build:resources": "node ../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
         "preview": "vite preview"
     },
     "devDependencies": {
