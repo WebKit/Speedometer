@@ -292,4 +292,40 @@ export const ExperimentalSuites = freezeSuites([
             }),
         ],
     },
+    {
+        name: "Media-Conferencing",
+        url: "suites-experimental/media-performance/conferencing.html",
+        tags: ["experimental", "media"],
+        type: "async",
+        async prepare(page) {
+            await page.waitForElement("#video-benchmark");
+        },
+        tests: [
+            new BenchmarkTestStep("VideoChat", async (page) => {
+                await page.callAsyncBlocking("runVideoBenchmark");
+            }),
+            new BenchmarkTestStep("VoiceChat", async (page) => {
+                await page.callAsyncBlocking("runVoiceBenchmark");
+            }),
+        ],
+    },
+    {
+        name: "Media-Streaming",
+        url: "suites-experimental/media-performance/streaming.html",
+        tags: ["experimental", "media"],
+        type: "async",
+        async prepare(page) {
+            await page.waitForElement("#initial-playback");
+            page.call("prefetchVideo");
+            await page.waitForElement("body[data-prefetch-ready='1']");
+        },
+        tests: [
+            new BenchmarkTestStep("InitialPlayback", async (page) => {
+                await page.callAsyncBlocking("initialPlayback");
+            }),
+            new BenchmarkTestStep("Seek", async (page) => {
+                await page.callAsyncBlocking("seek");
+            }),
+        ],
+    },
 ]);
