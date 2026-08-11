@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ActionsContext } from "../actions.js";
-import { createOutgoingMessage } from "../data/rooms.js";
+import { createOutgoingMessage, dateLabelFor } from "../data/rooms.js";
 import { RowHeights } from "../row-heights.js";
 import Composer from "./composer.jsx";
 import Message from "./message.jsx";
@@ -216,14 +216,18 @@ export default function Timeline({ room, onSelectRoom }) {
         [room]
     );
 
-    // Grouping is taken from the fixture rather than from the window, so a row
-    // renders the same whether or not the message above it happens to be mounted.
-    // Deriving it from the window would change a row's height as the window
-    // moved, which would invalidate the very cache being built here.
+    // Grouping and the date separator come from the message array rather than from
+    // the window: a row that changed height as the window moved would invalidate
+    // the very height cache being built here.
+    const lastDayIndex = messages[messages.length - 1].dayIndex;
     const rows = [];
     for (let index = range.start; index < range.end; index++) {
         const message = messages[index];
-        rows.push(<Message key={message.id} index={index} message={message} highlighted={message.id === highlightedId} />);
+        // messages[index - 1] is always there: the fixture holds the whole room
+        // even when only the newest page is in the timeline.
+        const previous = index > 0 ? messages[index - 1] : null;
+        const startsDay = previous === null || previous.dayIndex !== message.dayIndex;
+        rows.push(<Message key={message.id} index={index} message={message} highlighted={message.id === highlightedId} dateLabel={startsDay ? dateLabelFor(message.dayIndex, lastDayIndex) : null} unreadBelow={index === room.readUpToIndex + 1} />);
     }
 
     return (

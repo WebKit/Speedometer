@@ -177,14 +177,18 @@ body {
     overflow-anchor: none;
 }
 
+/* A row is a column: the separators stack above the message's own flex row. */
 .timeline-message {
-    display: flex;
-    gap: 12px;
     padding: 6px 0;
 }
 
+.timeline-message-row {
+    display: flex;
+    gap: 12px;
+}
+
 /* Grouped messages drop the avatar and name; the gutter keeps the body aligned
-   and carries the timestamp, revealed on hover the way real clients do. */
+   and carries the timestamp on hover, the way real clients do. */
 .timeline-message-grouped {
     padding: 1px 0;
 }
@@ -200,6 +204,53 @@ body {
 
 .timeline-message-grouped:hover .timeline-message-gutter {
     opacity: 1;
+}
+
+/* Date separator: a centred label between two rules, drawn with pseudo-element
+   borders so it costs a real layout box either side. */
+.timeline-date-separator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0 6px;
+}
+
+.timeline-date-separator::before,
+.timeline-date-separator::after {
+    content: "";
+    flex: 1 1 auto;
+    border-top: 1px solid #e3e6ea;
+}
+
+.timeline-date-separator-label {
+    flex: 0 0 auto;
+    padding: 2px 10px;
+    border: 1px solid #e3e6ea;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* The unread divider sits above the first message the reader has not seen. */
+.timeline-unread-divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 4px;
+    border-top: 1px solid #e2564a;
+}
+
+.timeline-unread-divider-label {
+    margin-left: auto;
+    padding: 1px 8px;
+    border-radius: 0 0 8px 8px;
+    background-color: #e2564a;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
 .timeline-message-body {

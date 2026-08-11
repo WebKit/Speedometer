@@ -9,11 +9,15 @@ import { generatedImage } from "./graphics.js";
 
 const ROOM_COUNT = 40;
 
-// Real channels hold years of history, which is only feasible to render with a
-// windowed timeline. Generation is eager at module load, so this number is a
-// tradeoff against load time rather than against the measured steps: see the
-// figure recorded in debugging/chat-room-realism-plan.md.
+// Real channels hold years of history. Generation is eager at module load, so this
+// trades against load time rather than against the measured steps.
 const MESSAGES_PER_ROOM = 1500;
+
+// How many messages land on one day, as a range because a real channel does not turn
+// over the same number every day. The run lengths set how often a row carries a date
+// separator, and how short the newest day is decides whether a room opens on one.
+const MIN_MESSAGES_PER_DAY = 8;
+const MAX_MESSAGES_PER_DAY = 56;
 
 const ROOM_NAMES = [
     "General",
@@ -419,6 +423,27 @@ const TIME_STRINGS = [];
 for (let minutes = 0; minutes < MINUTES_IN_DAY; minutes++)
     TIME_STRINGS.push(formatTime(minutes));
 
+const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+// A synthetic calendar rather than the real one, so the workload stays
+// deterministic. Sized for the shortest day a room can have, so no two days in one
+// room ever share a label.
+const DATE_LABELS = [];
+for (let day = 0; day < Math.ceil(MESSAGES_PER_ROOM / MIN_MESSAGES_PER_DAY) + 1; day++)
+    DATE_LABELS.push(`${WEEKDAYS[day % WEEKDAYS.length]}, ${1 + (day % 28)} ${MONTHS[Math.floor(day / 28) % MONTHS.length]}`);
+
+// Real clients name the last two days rather than dating them, which is a branch
+// per separator and a different string length where a room opens.
+export function dateLabelFor(dayIndex, lastDayIndex) {
+    if (dayIndex === lastDayIndex)
+        return "Today";
+    if (dayIndex === lastDayIndex - 1)
+        return "Yesterday";
+    return DATE_LABELS[dayIndex % DATE_LABELS.length];
+}
+
 function spansToText(spans) {
     let text = "";
     for (const span of spans) {
@@ -492,8 +517,25 @@ const SENDER_COLOR_INDEX = new Map(SENDERS.map((name, index) => [name, index % A
 // Ten senders, so the initials are derived once rather than per message.
 const SENDER_INITIALS = new Map(SENDERS.map((name) => [name, initials(name)]));
 
+// Which day each message falls on, as runs of varying length. Same construction as
+// the sender sequence, and precomputed so a row's day never depends on what is
+// mounted.
+function buildDaySequence(roomIndex, count) {
+    const days = [];
+    let day = 0;
+    while (days.length < count) {
+        const span = MAX_MESSAGES_PER_DAY - MIN_MESSAGES_PER_DAY + 1;
+        const length = MIN_MESSAGES_PER_DAY + (hash(roomIndex * count + day, 901) % span);
+        for (let i = 0; i < length && days.length < count; i++)
+            days.push(day);
+        day++;
+    }
+    return days;
+}
+
 function buildMessages(roomIndex) {
     const senders = buildSenderSequence(roomIndex, MESSAGES_PER_ROOM);
+    const days = buildDaySequence(roomIndex, MESSAGES_PER_ROOM);
     const messages = [];
     for (let i = 0; i < MESSAGES_PER_ROOM; i++) {
         const seed = roomIndex * MESSAGES_PER_ROOM + i;
@@ -517,6 +559,9 @@ function buildMessages(roomIndex) {
             senderInitials: SENDER_INITIALS.get(sender),
             colorIndex: SENDER_COLOR_INDEX.get(sender),
             time: TIME_STRINGS[seed % MINUTES_IN_DAY],
+            // The timeline compares this against the row above to decide whether to
+            // draw a date separator.
+            dayIndex: days[i],
             blocks,
             replyTo,
             grouped: i > 0 && senders[i - 1] === sender && !replyTo,
@@ -525,6 +570,11 @@ function buildMessages(roomIndex) {
     }
     return messages;
 }
+
+// How far back the unread divider sits when the room opens. At least one message
+// back, so it is always a row that exists, and never further than a viewport, so
+// every room switch lays one out -- which is also the common case in a real client.
+const UNREAD_DEPTH = 12;
 
 function buildRooms() {
     const rooms = [];
@@ -538,6 +588,9 @@ function buildRooms() {
             initials: initials(name),
             topic: `Discussion about ${name.toLowerCase()}`,
             lastMessage: blocksToText(messages[messages.length - 1].blocks),
+            // The last message this user has read. The row after it carries the
+            // unread divider.
+            readUpToIndex: Math.max(0, messages.length - 1 - (1 + (hash(i, 701) % (UNREAD_DEPTH - 1)))),
             messages,
         });
     }
@@ -558,7 +611,8 @@ export const LOCAL_USER = {
 // path. The timestamp continues from the room's last message instead of reading the
 // clock, keeping the workload deterministic.
 export function createOutgoingMessage(room, sequence, text) {
-    const previous = room.messages[room.messages.length - 1].time.split(":").map(Number);
+    const newest = room.messages[room.messages.length - 1];
+    const previous = newest.time.split(":").map(Number);
     const sentAt = (previous[0] * 60 + previous[1] + 1 + sequence) % MINUTES_IN_DAY;
     return {
         id: `${room.id}-sent-${sequence}`,
@@ -566,6 +620,9 @@ export function createOutgoingMessage(room, sequence, text) {
         senderInitials: LOCAL_USER.initials,
         colorIndex: LOCAL_USER.colorIndex,
         time: TIME_STRINGS[sentAt],
+        // Same day as the message it follows, so sending does not put a date
+        // separator in the middle of the burst.
+        dayIndex: newest.dayIndex,
         blocks: [{ type: "p", spans: [{ type: "text", text }] }],
         replyTo: null,
         grouped: sequence > 0,
