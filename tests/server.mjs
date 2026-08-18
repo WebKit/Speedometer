@@ -22,7 +22,7 @@ class CacheControlPlugin {
 }
 
 export default async function serve(port, cacheDuration) {
-    if (!port)
+    if (!port && port !== 0)
         throw new Error("Port is required");
 
     const stack = ["lws-log", "lws-cors", "lws-static", "lws-index"];
@@ -39,30 +39,39 @@ export default async function serve(port, cacheDuration) {
         stack,
         cache: cacheDuration,
     });
-    await verifyStartup(ws, port);
+    const actualPort = await verifyStartup(ws);
 
     process.on("exit", () => ws.server.close());
 
     return {
-        close() {
-            ws.server.close();
+        port: actualPort,
+        server: {
+            close() {
+                ws.server.close();
+            },
         },
     };
 }
 
-async function verifyStartup(ws, port) {
-    await new Promise((resolve, reject) => {
-        ws.server.on("listening", () => {
+async function verifyStartup(ws) {
+    return new Promise((resolve, reject) => {
+        const onListening = () => {
+            const actualPort = ws.server.address().port;
             console.log("Server started:");
-            console.log(`  http://localhost:${port}`);
-            console.log(`  http://localhost:${port}?developerMode`);
+            console.log(`  http://localhost:${actualPort}`);
+            console.log(`  http://localhost:${actualPort}?developerMode`);
             console.log("");
-            resolve();
-        });
-        ws.server.on("error", (e) => {
-            console.error("Error while starting the server", e);
-            reject(e);
-        });
+            resolve(actualPort);
+        };
+        if (ws.server.listening) {
+            onListening();
+        } else {
+            ws.server.on("listening", onListening);
+            ws.server.on("error", (e) => {
+                console.error("Error while starting the server", e);
+                reject(e);
+            });
+        }
     });
 }
 
