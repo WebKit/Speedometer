@@ -1,6 +1,6 @@
 import commandLineUsage from "command-line-usage";
 import commandLineArgs from "command-line-args";
-import serve from "./server.mjs";
+import serve, { DEFAULT_CACHE_DURATION } from "./server.mjs";
 
 import firefox from "selenium-webdriver/firefox.js";
 import chrome from "selenium-webdriver/chrome.js";
@@ -100,7 +100,7 @@ export default async function testSetup(helpText) {
             printHelp(`Invalid browser "${BROWSER}", choices are: "safari", "firefox", "chrome", "edge"`);
         }
     }
-    const { server, port } = await serve(options.port);
+    const { server, port } = await serve(options.port, DEFAULT_CACHE_DURATION);
     let driver, logInspector;
 
     process.on("unhandledRejection", (err) => {

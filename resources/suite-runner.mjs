@@ -83,13 +83,13 @@ export class SuiteRunner {
 
         performance.mark(suiteStartLabel);
         for (const step of this.#suite.tests) {
-            if (this.#client?.willRunTest)
-                await this.#client.willRunTest(this.#suite, step);
+            await this.#client?.willRunTest?.(this.#suite, step);
 
             const stepRunnerType = this.#suite.type ?? this.params.useAsyncSteps ? "async" : "default";
             const stepRunnerClass = STEP_RUNNER_LOOKUP[stepRunnerType];
-            const stepRunner = new stepRunnerClass(this.#frame, this.#page, this.#params, this.#suite, step, this._recordTestResults, stepRunnerType);
-            await stepRunner.runStep();
+            const stepRunner = new stepRunnerClass(this.#frame, this.#page, this.#params, this.#suite, step, stepRunnerType);
+            let { syncTime, asyncTime } = await stepRunner.runStep();
+            this._recordTestResults(step, syncTime, asyncTime);
         }
         performance.mark(suiteEndLabel);
 
@@ -104,7 +104,8 @@ export class SuiteRunner {
         // When the test is fast and the precision is low (for example with Firefox'
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
-        const { suiteTotal, suitePrepare } = this.#suiteResults.total;
+        const suiteTotal = this.#suiteResults.total;
+        const suitePrepare = this.#suiteResults.prepare;
         if (suiteTotal === 0)
             throw new Error(`Got invalid 0-time total for suite ${this.#suite.name}: ${suiteTotal}`);
         if (this.#params.measurePrepare && suitePrepare === 0)
@@ -123,7 +124,7 @@ export class SuiteRunner {
         });
     }
 
-    _recordTestResults = async (step, syncTime, asyncTime) => {
+    async _recordTestResults(step, syncTime, asyncTime) {
         // Skip reporting updates for the warmup suite.
         if (this.#suite === WarmupSuite)
             return;
@@ -134,12 +135,11 @@ export class SuiteRunner {
             total: total,
         };
         this.#suiteResults.prepare = this.#prepareTime;
-        this.#suiteResults.total = total;
-    };
+        this.#suiteResults.total += total;
+    }
 
     async _updateClient(suite = this.#suite) {
-        if (this.#client?.didFinishSuite)
-            await this.#client.didFinishSuite(suite);
+        await this.#client?.didFinishSuite?.(suite);
     }
 }
 

@@ -13,6 +13,11 @@ export default defineConfig({
                 plot: resolve(__dirname, "observable-plot.html"),
                 chartjs: resolve(__dirname, "chartjs.html"),
             },
+            output: {
+                entryFileNames: "assets/[name].js",
+                chunkFileNames: "assets/[name].js",
+                assetFileNames: "assets/[name].[ext]",
+            },
         },
     },
 });

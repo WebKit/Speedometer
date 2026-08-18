@@ -12,6 +12,11 @@ export default defineConfig({
                 main: resolve(__dirname, "index.html"),
                 tiptap: resolve(__dirname, "tiptap.html"),
             },
+            output: {
+                entryFileNames: "assets/[name].js",
+                chunkFileNames: "assets/[name].js",
+                assetFileNames: "assets/[name].[ext]",
+            },
         },
     },
 });

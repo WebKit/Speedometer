@@ -15,22 +15,26 @@
                     <img srcset="resources/logo@2x.png 2x" src="resources/logo.png" alt="Speedometer" />
                     <div class="version next">next</div>
                 </a>
-                <div class="content">
-                    <p>Speedometer is a browser benchmark that measures the responsiveness of Web applications. It uses demo web applications to simulate user actions such as adding to-do items.</p>
-                    <p id="screen-size-warning">
-                        <strong>
-                            Your browser window is too small. For most accurate results, please make the view port size at least <span id="min-screen-width">850px</span> by <span id="min-screen-height">650px</span>.<br />
-                            It's currently <span id="screen-size"></span>.
-                        </strong>
-                    </p>
-                </div>
-                <div class="buttons">
-                    <div class="button-row">
-                        <button class="start-tests-button">Start Test</button>
+                <div class="section-grid">
+                    <div class="section-content content">
+                        <p class="top-row">Speedometer is a browser benchmark that measures the responsiveness of Web applications. It uses demo web applications to simulate user actions such as adding to-do items.</p>
+                        <p id="screen-size-warning">
+                            <strong>
+                                Your browser window is too small. For most accurate results, please make the view port size at least <span id="min-screen-width">850px</span> by <span id="min-screen-height">650px</span>.<br />
+                                It's currently <span id="screen-size"></span>.
+                            </strong>
+                        </p>
                     </div>
-                    <div class="button-row">
-                        <a href="about.html">About Speedometer</a>
-                        <a href="instructions.html">Test Instructions</a>
+                    <div class="buttons">
+                        <div class="button-row">
+                            <button class="start-tests-button primary-button">Start Test</button>
+                        </div>
+                    </div>
+                    <div class="buttons section-footer fixed-footer">
+                        <div class="button-row">
+                            <a class="button" href="about.html">About Speedometer</a>
+                            <a class="button" href="instructions.html">Test Instructions</a>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -68,7 +72,7 @@
                 </div>
                 <div class="buttons">
                     <div class="button-row">
-                        <a class="button" href="#details" id="show-details" title="Show detailed results data.">Details</a>
+                        <a class="button primary-button" href="#details" id="show-details" title="Show detailed results data.">Details</a>
                     </div>
                 </div>
             </section>

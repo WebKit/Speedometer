@@ -39,4 +39,15 @@ export default defineNuxtConfig({
         cdnURL: "./",
         baseURL: "./",
     },
+    vite: {
+        build: {
+            rollupOptions: {
+                output: {
+                    entryFileNames: "_nuxt/[name].js",
+                    chunkFileNames: "_nuxt/[name].js",
+                    assetFileNames: "_nuxt/[name].[ext]",
+                },
+            },
+        },
+    },
 });

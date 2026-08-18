@@ -4,6 +4,14 @@ import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
+const BENCHMARK_STATE = Object.freeze({
+    IDLE: "IDLE",
+    READY: "READY",
+    RUNNING: "RUNNING",
+    DONE: "DONE",
+    ERROR: "ERROR",
+});
+
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
     developerMode = false;
@@ -12,8 +20,7 @@ class MainBenchmarkClient {
     _measuredValuesList = [];
     _finishedTestCount = 0;
     _progressCompleted = null;
-    _isRunning = false;
-    _hasResults = false;
+    _state = BENCHMARK_STATE.IDLE;
     _developerModeContainer = null;
     _metrics = Object.create(null);
     _steppingPromise = null;
@@ -31,21 +38,29 @@ class MainBenchmarkClient {
         });
     }
 
-    start() {
+    isRunning() {
+        return this._state === BENCHMARK_STATE.RUNNING;
+    }
+
+    hasFinished() {
+        return this._state === BENCHMARK_STATE.DONE || this._state === BENCHMARK_STATE.ERROR;
+    }
+
+    async start() {
         if (this._isStepping())
             this._clearStepping();
-        else if (this._startBenchmark())
+        else if (await this._startBenchmark())
             this._showSection("#running");
     }
 
-    step() {
+    async step() {
         const currentSteppingResolver = this._steppingResolver;
         this._steppingPromise = new Promise((resolve) => {
             this._steppingResolver = resolve;
         });
         currentSteppingResolver?.();
-        if (!this._isRunning) {
-            this._startBenchmark();
+        if (!this.isRunning()) {
+            await this._startBenchmark();
             this._showSection("#running");
         }
     }
@@ -67,7 +82,7 @@ class MainBenchmarkClient {
     }
 
     async _startBenchmark() {
-        if (this._isRunning)
+        if (this.isRunning())
             return false;
 
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
@@ -99,11 +114,11 @@ class MainBenchmarkClient {
         }
 
         this._metrics = Object.create(null);
-        this._isRunning = true;
 
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
+        this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
         const runner = new BenchmarkRunner(benchmarkConfigurator.suites, this);
         runner.runMultipleIterations(params.iterationCount);
         return true;
@@ -113,13 +128,20 @@ class MainBenchmarkClient {
         return this._metrics;
     }
 
+    _assertNotAborted() {
+        if (this._state === BENCHMARK_STATE.ERROR)
+            throw new Error("Benchmark aborted by another process.");
+    }
+
     willAddTestFrame(frame) {
+        this._assertNotAborted();
         frame.style.left = "50%";
         frame.style.top = "50%";
         frame.style.transform = "translate(-50%, -50%)";
     }
 
     async willRunTest(suite, test) {
+        this._assertNotAborted();
         document.getElementById("info-label").textContent = suite.name;
         document.getElementById("info-progress").textContent = `${this._finishedTestCount} / ${this.stepCount}`;
         if (this._steppingPromise)
@@ -143,10 +165,10 @@ class MainBenchmarkClient {
     }
 
     didFinishLastIteration(metrics) {
-        console.assert(this._isRunning);
-        this._isRunning = false;
-        this._hasResults = true;
+        console.assert(this.isRunning());
+
         this._metrics = metrics;
+        this._setBenchmarkState(BENCHMARK_STATE.DONE);
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         if (scoreResults.isValid)
@@ -163,11 +185,11 @@ class MainBenchmarkClient {
     }
 
     handleError(error) {
-        console.assert(this._isRunning);
-        this._isRunning = false;
-        this._hasResults = true;
+        if (this._state === BENCHMARK_STATE.ERROR)
+            return;
         this._metrics = Object.create(null);
-        this._populateInvalidScore();
+        this._setBenchmarkState(BENCHMARK_STATE.ERROR);
+        this._populateErrorMessage(error.message);
         this.showResultsSummary();
         throw error;
     }
@@ -182,9 +204,17 @@ class MainBenchmarkClient {
     }
 
     _populateInvalidScore() {
+        this._populateErrorMessage(undefined);
+    }
+
+    _populateErrorMessage(errorText) {
         document.getElementById("summary").className = "invalid";
         document.getElementById("result-number").textContent = "Error";
         document.getElementById("confidence-number").textContent = "";
+        if (errorText === undefined)
+            return;
+        const errorMessage = document.getElementById("invalid-score-text");
+        errorMessage.textContent = errorText;
     }
 
     _computeResults(measuredValuesList, displayUnit) {
@@ -344,6 +374,7 @@ class MainBenchmarkClient {
         document.getElementById("copy-csv").onclick = this.copyCSVResults.bind(this);
         document.querySelectorAll(".start-tests-button").forEach((button) => {
             button.onclick = this._startBenchmarkHandler.bind(this);
+            button.disabled = true;
         });
     }
 
@@ -360,6 +391,24 @@ class MainBenchmarkClient {
 
         if (params.startAutomatically)
             this.start();
+        else
+            this._setBenchmarkState(BENCHMARK_STATE.READY);
+    }
+
+    async _setBenchmarkState(state) {
+        this._state = state;
+        document.body.setAttribute("data-benchmark-state", state);
+        const startButtons = document.querySelectorAll(".start-tests-button");
+        if (state !== BENCHMARK_STATE.RUNNING) {
+            startButtons.forEach((btn) => {
+                btn.innerHTML = "<div>Start Test</div>";
+            });
+            if (state === BENCHMARK_STATE.READY) {
+                startButtons.forEach((btn) => {
+                    btn.disabled = false;
+                });
+            }
+        }
     }
 
     _hashChangeHandler() {
@@ -382,7 +431,7 @@ class MainBenchmarkClient {
 
     _logoClickHandler(event) {
         // Prevent any accidental UI changes during benchmark runs.
-        if (!this._isRunning)
+        if (!this.isRunning())
             this._showSection("#home");
         event.preventDefault();
         return false;
@@ -431,10 +480,10 @@ class MainBenchmarkClient {
     }
 
     _showSection(hash) {
-        if (this._isRunning) {
+        if (this.isRunning()) {
             this._setLocationHash("#running");
             return;
-        } else if (this._hasResults) {
+        } else if (this.hasFinished()) {
             if (hash !== "#summary" && hash !== "#details") {
                 this._setLocationHash("#summary");
                 return;
@@ -483,6 +532,13 @@ function init() {
     rootStyle.setProperty("--viewport-height", `${params.viewport.height}px`);
 
     globalThis.benchmarkClient = new MainBenchmarkClient();
+    window.addEventListener("error", (event) => {
+        globalThis.benchmarkClient.handleError(event.error || new Error(event.message));
+    });
+
+    window.addEventListener("unhandledrejection", (event) => {
+        globalThis.benchmarkClient.handleError(event.reason || new Error("Unhandled promise rejection"));
+    });
 }
 
 if (document.readyState === "loading")
