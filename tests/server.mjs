@@ -50,9 +50,6 @@ export default async function serve(port, cacheDuration) {
                 ws.server.close();
             },
         },
-        close() {
-            ws.server.close();
-        },
     };
 }
 
