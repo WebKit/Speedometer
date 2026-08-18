@@ -225,6 +225,14 @@ function createUIForSuites() {
             }
         };
 
+        const link = document.createElement("a");
+        link.href = suite.url;
+        link.target = "_blank";
+        link.title = "Raw workload URL";
+        link.className = "workload-url-link";
+        link.textContent = "\u{1F517}";
+        li.appendChild(link);
+
         ol.appendChild(li);
     }
     control.appendChild(ol);

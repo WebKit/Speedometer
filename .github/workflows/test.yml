@@ -26,6 +26,9 @@ jobs:
             - name: Install Node Packages
               run: npm ci
 
+            - name: Run package.json linter
+              run: npm run lint:pkg
+
             - name: Run linters
               run: npm run format
 

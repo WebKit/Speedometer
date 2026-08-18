@@ -4,6 +4,7 @@ import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
+<<<<<<< HEAD
 import { ResourcePreloader, PreloadStatusUpdater } from "./preloader.mjs";
 
 const BENCHMARK_STATE = Object.freeze({
@@ -15,6 +16,17 @@ const BENCHMARK_STATE = Object.freeze({
     ERROR: "ERROR",
 });
 
+||||||| 59832dd0
+=======
+const BENCHMARK_STATE = Object.freeze({
+    IDLE: "IDLE",
+    READY: "READY",
+    RUNNING: "RUNNING",
+    DONE: "DONE",
+    ERROR: "ERROR",
+});
+
+>>>>>>> main
 // FIXME(camillobruni): Add base class
 class MainBenchmarkClient {
     developerMode = false;
@@ -23,7 +35,16 @@ class MainBenchmarkClient {
     _measuredValuesList = [];
     _finishedTestCount = 0;
     _progressCompleted = null;
+<<<<<<< HEAD
     _state = BENCHMARK_STATE.IDLE;
+||||||| 59832dd0
+    _isRunning = false;
+    _hasResults = false;
+    _developerModeContainer = null;
+=======
+    _state = BENCHMARK_STATE.IDLE;
+    _developerModeContainer = null;
+>>>>>>> main
     _metrics = Object.create(null);
     _resourcePreloader = new ResourcePreloader();
     _steppingPromise = null;
@@ -120,11 +141,23 @@ class MainBenchmarkClient {
         }
 
         this._metrics = Object.create(null);
+<<<<<<< HEAD
+||||||| 59832dd0
+        this._isRunning = true;
+
+=======
+
+>>>>>>> main
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
+<<<<<<< HEAD
 
         this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
+||||||| 59832dd0
+=======
+        this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
+>>>>>>> main
         const runner = new BenchmarkRunner(benchmarkConfigurator.suites, this);
         runner.runMultipleIterations(params.iterationCount);
         return true;
@@ -170,12 +203,28 @@ class MainBenchmarkClient {
         this._finishedTestCount = 0;
     }
 
+<<<<<<< HEAD
     async didFinishLastIteration(metrics) {
         console.assert(this.isRunning());
 
+||||||| 59832dd0
+    didFinishLastIteration(metrics) {
+        console.assert(this._isRunning);
+        this._isRunning = false;
+        this._hasResults = true;
+=======
+    didFinishLastIteration(metrics) {
+        console.assert(this.isRunning());
+
+>>>>>>> main
         this._metrics = metrics;
+<<<<<<< HEAD
         this._setBenchmarkState(BENCHMARK_STATE.DONE);
         await this._resourcePreloader.teardown();
+||||||| 59832dd0
+=======
+        this._setBenchmarkState(BENCHMARK_STATE.DONE);
+>>>>>>> main
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         if (scoreResults.isValid)
@@ -402,6 +451,7 @@ class MainBenchmarkClient {
 
         if (params.startAutomatically)
             this.start();
+<<<<<<< HEAD
         else
             this._setBenchmarkState(BENCHMARK_STATE.READY);
     }
@@ -443,6 +493,27 @@ class MainBenchmarkClient {
                 });
             }
         }
+||||||| 59832dd0
+=======
+        else
+            this._setBenchmarkState(BENCHMARK_STATE.READY);
+    }
+
+    async _setBenchmarkState(state) {
+        this._state = state;
+        document.body.setAttribute("data-benchmark-state", state);
+        const startButtons = document.querySelectorAll(".start-tests-button");
+        if (state !== BENCHMARK_STATE.RUNNING) {
+            startButtons.forEach((btn) => {
+                btn.innerHTML = "<div>Start Test</div>";
+            });
+            if (state === BENCHMARK_STATE.READY) {
+                startButtons.forEach((btn) => {
+                    btn.disabled = false;
+                });
+            }
+        }
+>>>>>>> main
     }
 
     _hashChangeHandler() {

@@ -1,5 +1,6 @@
 {
   "name": "todomvc-jquery",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "http-server . -p 7001 -c-1 --cors",
