@@ -84,8 +84,17 @@ export class ResourcePreloader {
         if (!this._sw)
             return Promise.resolve();
 
-        if (this._pendingRequest)
-            this._rejectPendingRequest(`Already waiting for ${this._pendingRequest.type}, overriding with ${messageData.type}`);
+        if (this._pendingRequest) {
+            const isCooperativePreemption = this._pendingRequest.type === SW_MESSAGES.PRELOAD_SUITES && messageData.type === SW_MESSAGES.STOP_PRELOADING;
+
+            const logMessage = `Already waiting for ${this._pendingRequest.type}, overriding with ${messageData.type}`;
+            if (isCooperativePreemption) {
+                console.warn(logMessage);
+                this._resolvePendingRequest(null);
+            } else {
+                this._rejectPendingRequest(logMessage);
+            }
+        }
 
         return new Promise((resolve, reject) => {
             let timeoutId = null;
@@ -94,12 +103,22 @@ export class ResourcePreloader {
                 timeoutId = setTimeout(() => {
                     if (this._pendingRequest?.type === messageData.type)
                         this._rejectPendingRequest(`Service worker message timed out: ${messageData.type}`);
+
                 }, timeoutMs);
             }
 
             this._pendingRequest = { type: messageData.type, resolve, reject, timeoutId };
             this._sw.postMessage(messageData);
         });
+    }
+
+    _resolvePendingRequest(data = null) {
+        const pendingRequest = this._pendingRequest;
+        this._pendingRequest = null;
+        if (pendingRequest.timeoutId)
+            clearTimeout(pendingRequest.timeoutId);
+
+        pendingRequest.resolve(data);
     }
 
     _rejectPendingRequest(errorMessage) {
@@ -113,6 +132,8 @@ export class ResourcePreloader {
     }
 
     async teardown() {
+        await this.stopPreloading();
+
         const response = await this.getFailedRequests();
         if (response.requests?.length > 0) {
             console.warn("The following requests failed during the benchmark and bypassed the cache:");
@@ -124,19 +145,20 @@ export class ResourcePreloader {
     async stopPreloading() {
         if (!this._sw)
             return;
+
         await this._postMessage({ type: SW_MESSAGES.STOP_PRELOADING });
-        if (this._activePreloadPromise) {
-            // Await to explicitly catch abort error potentially triggered by
-            // by other racing tabs.
+        if (this._activePreloadPromise)
             await this._activePreloadPromise;
-        }
+
     }
 
     async preloadSuites(suites, clearCache = true, onProgress) {
         if (!this._sw)
             return undefined;
+
         if (this._onPreloadProgress)
             throw new Error("Preload already active");
+
         this._onPreloadProgress = onProgress;
 
         const suitesData = suites
@@ -155,7 +177,7 @@ export class ResourcePreloader {
         const response = await this._activePreloadPromise;
         this._activePreloadPromise = null;
 
-        if (response.status === SW_MESSAGES.PRELOAD_DONE) {
+        if (response?.status === SW_MESSAGES.PRELOAD_DONE) {
             const timeTakenMs = performance.now() - startTime;
             const sizeMB = (response.transferredSize / (1024 * 1024)).toFixed(2);
             const timeSec = (timeTakenMs / 1000).toFixed(2);
@@ -167,6 +189,9 @@ export class ResourcePreloader {
     }
 
     async getFailedRequests() {
+        if (!this._sw)
+            return { requests: [] };
+
         return this._postMessage({ type: SW_MESSAGES.GET_FAILED_REQUESTS });
     }
 }

@@ -22,6 +22,7 @@ async function testPage(url) {
             callback();
         else
             globalThis.addEventListener("SpeedometerReady", () => callback(), { once: true });
+
     });
 
     console.log("    - Awaiting Benchmark");
@@ -35,24 +36,35 @@ async function testPage(url) {
             { once: true }
         );
         // Install error handlers to report page errors back to selenium.
-        globalThis.addEventListener("error", (message, source, lineno, colno, error) =>
-            callback({
-                error: { message, source, lineno, colno, error },
-            })
-        );
-        globalThis.addEventListener("unhandledrejection", (e) => {
+        globalThis.addEventListener("error", (event) => {
             callback({
                 error: {
-                    message: e.reason.toString(),
-                    stack: e.reason?.stack,
+                    message: event.message || "Unknown Runtime Error",
+                    source: event.filename,
+                    lineno: event.lineno,
+                    colno: event.colno,
+                    stack: event.error?.stack,
+                },
+            });
+        });
+        globalThis.addEventListener("unhandledrejection", (e) => {
+            const reason = e.reason;
+            const message = reason instanceof Error ? reason.message : typeof reason === "object" && reason !== null ? JSON.stringify(reason) : String(reason);
+            callback({
+                error: {
+                    message: `Unhandled Rejection: ${message}`,
+                    stack: reason?.stack,
                 },
             });
         });
         globalThis.benchmarkClient.start();
     });
 
-    if (error)
-        throw new Error(error.message + (error?.stack ?? ""));
+    if (error) {
+        const stackTrace = error.stack ? `\nBrowser Stack Trace:\n${error.stack}` : "";
+        const location = error.source ? ` at ${error.source}:${error.lineno}:${error.colno}` : "";
+        throw new Error(`${error.message}${location}${stackTrace}`);
+    }
 
     validateMetrics(metrics);
     return metrics;
@@ -61,6 +73,7 @@ async function testPage(url) {
 function validateMetrics(metrics) {
     for (const [name, metric] of Object.entries(metrics))
         validateMetric(name, metric);
+
     assert(metrics.Geomean.mean > 0);
     assert(metrics.Score.mean > 0);
 }
