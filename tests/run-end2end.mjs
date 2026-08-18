@@ -9,13 +9,13 @@ This script runs end2end tests by invoking the benchmark via the main
 Speedometer page in /index.html.
 `.trim();
 
-const { driver, PORT, stop, retry } = await testSetup(HELP);
+const { driver, port, stop, retry } = await testSetup(HELP);
 
 const suites = benchmarkConfigurator.suites;
 
 async function testPage(url) {
     console.log(`Testing: ${url}`);
-    await driver.get(`http://localhost:${PORT}/${url}`);
+    await driver.get(`http://localhost:${port}/${url}`);
 
     await driver.executeAsyncScript((callback) => {
         if (globalThis.benchmarkClient)
