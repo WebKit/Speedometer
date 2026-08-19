@@ -101,6 +101,9 @@ export class SuiteRunner {
     }
 
     _validateSuiteResults() {
+        // The warmup suite's results are intentionally not recorded, so it has no total.
+        if (this.#suite === WarmupSuite)
+            return;
         // When the test is fast and the precision is low (for example with Firefox'
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
