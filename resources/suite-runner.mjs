@@ -19,10 +19,16 @@ export class SuiteRunner {
 
     constructor(frame, page, params, suite, client, measuredValues) {
         // FIXME: Create SuiteRunner-local measuredValues.
-        this.#suiteResults = measuredValues.tests[suite.name];
-        if (!this.#suiteResults) {
+        if (suite === WarmupSuite) {
+            // The warmup suite's results are intentionally not reported. Registering them in
+            // measuredValues would leave a 0-total entry, which zeroes the overall geomean.
             this.#suiteResults = { tests: {}, prepare: 0, total: 0 };
-            measuredValues.tests[suite.name] = this.#suiteResults;
+        } else {
+            this.#suiteResults = measuredValues.tests[suite.name];
+            if (!this.#suiteResults) {
+                this.#suiteResults = { tests: {}, prepare: 0, total: 0 };
+                measuredValues.tests[suite.name] = this.#suiteResults;
+            }
         }
         this.#frame = frame;
         this.#page = page;

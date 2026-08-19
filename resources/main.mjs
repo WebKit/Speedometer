@@ -1,4 +1,4 @@
-import { BenchmarkRunner } from "./benchmark-runner.mjs";
+import { BenchmarkRunner, WarmupSuite } from "./benchmark-runner.mjs";
 import * as Statistics from "./statistics.mjs";
 import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
@@ -149,6 +149,9 @@ class MainBenchmarkClient {
     }
 
     async didFinishSuite(suite) {
+        // The warmup suite is not part of stepCount, so counting it would overshoot the bar.
+        if (suite === WarmupSuite)
+            return;
         this._finishedTestCount++;
         this._progressCompleted.value = this._finishedTestCount;
         if (this._steppingPromise)

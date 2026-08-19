@@ -239,7 +239,13 @@ function geomeanToScore(geomean) {
 // compilation of runner methods in the middle of the measuring cycle.
 export const WarmupSuite = {
     name: "Warmup",
-    url: "warmup/index.html",
+    // _loadFrame() resolves suite URLs against the document base, so this needs the same
+    // root-relative form as the regular suites. It was still the 3.1-era path, which
+    // _prepareSuite() used to prefix with "resources/".
+    url: "suites/warmup/index.html",
+    // runAllSuites() skips suites that are not enabled. Unlike the regular suites, the warmup
+    // suite is not passed through BenchmarkConfigurator, so nothing else sets this for it.
+    enabled: true,
     async prepare(page) {
         await page.waitForElement("#testItem");
     },
