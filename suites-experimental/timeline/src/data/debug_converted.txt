@@ -1,0 +1,394 @@
+[
+    {
+        "id": "card-gaming-2008-01-18-11810",
+        "date": "2008-01-18",
+        "title": "Fantastic "Four": Flame On",
+        "description":
+            "Fantastic "Four": Flame On es un videojuego de 2005 desarrollado por Torus Games y publicado por Activision exclusivamente para Game Boy Advance. El personaje principal es Human Torch, superhéroe Marvel Comics y uno de los miembros de Fantastic Four. El juego está basado en la película Fantastic Four y cuenta su propia historia, utilizando más elementos de los cómics.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://es.wikipedia.org/wiki/Fantastic_Four%3A_Flame_On",
+        },
+    },
+    {
+        "id": "card-web-2008-01-22-95964",
+        "date": "2008-01-22",
+        "title": "HTML5 Draft Publication",
+        "description":
+            "HTML5 is a markup language used for structuring and presenting hypertext documents on the World Wide Web. It was the fifth and final major HTML version that is now a retired World Wide Web Consortium (W3C) recommendation. The current specification is known as the HTML Living Standard. It is maintained by the Web Hypertext Application Technology Working Group (WHATWG), a consortium of the major browser vendors.",
+        "tags": ["web"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/HTML5",
+        },
+    },
+    {
+        "id": "card-hardware-2008-01-29-65182",
+        "date": "2008-01-29",
+        "title": "Apple MacBook Air Laptop",
+        "description":
+            "The MacBook Air is a line of consumer-oriented high-end Mac notebook computers developed and manufactured by Apple since 2008. It features a thin, light structure in a machined aluminum case and either a 13- or 15-inch screen. The MacBook Air's lower prices relative to the larger, higher performance MacBook Pro made it Apple's entry-level notebook for over a decade since the discontinuation of the original MacBook line in 2012, until the introduction of the MacBook Neo in 2026.",
+        "tags": ["hardware"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/MacBook_Air",
+        },
+    },
+    {
+        "id": "card-gaming-2008-02-10-85045",
+        "date": "2008-02-10",
+        "title": "Morning's Wrath",
+        "description":
+            "Morning's Wrath is a 2005 role-playing video game by American studio Ethereal Darkness Interactive. This event titled \"Morning's Wrath\" occurred on 2008-02-10. Additional detailed information, historical background, development history, and interesting details regarding this topic can be found on the linked Wikipedia page.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/Morning's_Wrath",
+        },
+    },
+    {
+        "id": "card-gaming-2008-03-21-76728",
+        "date": "2008-03-21",
+        "title": "Fate/hollow ataraxia",
+        "description":
+            "Fate/Hollow Ataraxia is a Japanese adult visual novel developed by Type-Moon, and released on October 28, 2005 for Windows PCs. Type-Moon had released a version of the game without erotic content, and later released a port for PlayStation Vita in November 2014. The game is a spin-off of Type-Moon's earlier adult game Fate/stay night for mature audiences. A remastered version of Fate/hollow ataraxia, was released worldwide for the Nintendo Switch in August 2025. The story takes place a few months after the events of Fate/stay night in Fuyuki City. It follows a time loop imposed on Shirou Emiya and Bazett Fraga McRemitz by the servant Avenger.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/Fate%2FHollow_Ataraxia",
+        },
+    },
+    {
+        "id": "card-gaming-2008-03-24-75551",
+        "date": "2008-03-24",
+        "title": "Perfect Battle",
+        "description":
+            'Perfect Battle är ett freeware action och strategi datorspel för Windows. Spelet är svenskutvecklat och lades ut för allmänheten i mars 2005. This event titled "Perfect Battle" occurred on 2008-03-24. Additional detailed information, historical background, development history, and interesting details regarding this topic can be found on the linked Wikipedia page.',
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://sv.wikipedia.org/wiki/Perfect_Battle",
+        },
+    },
+    {
+        "id": "card-gaming-2008-03-26-37090",
+        "date": "2008-03-26",
+        "title": "Food Force",
+        "description":
+            "Food Force ist ein Serious Game, das von dem Welternährungsprogramm der Vereinten Nationen (WFP) herausgegeben wurde. Es wurde von den Entwicklerstudios Deepend und Playerthree entwickelt und ist am 14. April 2005 für Windows und macOS erschienen.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://de.wikipedia.org/wiki/Food_Force",
+        },
+    },
+    {
+        "id": "card-gaming-2008-04-01-47740",
+        "date": "2008-04-01",
+        "title": "Spectral vs. Generation",
+        "description":
+            "Spectral vs. Generation est un jeu de combat en 2D de la société IGS, en collaboration avec Idea Factory. Il est sorti en 2005 en arcade sur le système PGM, puis en mai 2007 sur la PlayStation 2 en Europe. Il fait suite à Killing Blade et Martial Masters.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://fr.wikipedia.org/wiki/Spectral_vs._Generation",
+        },
+    },
+    {
+        "id": "card-gaming-2008-04-17-5966",
+        "date": "2008-04-17",
+        "title": ""Rome": Total Realism",
+        "description":
+            ""Rome": Total Realism is a series of complete modification packs for the computer game "Rome": Total War, intended to rectify historical inaccuracies in the original game. RTR has been featured in several major gaming sites and magazines, such as PC Gamer (US), PC Gamer UK, and GameSpot. Recent versions of RTR include "Rome": Total Realism "VII": Grand Campaign, which uses the newer Barbarian Invasion engine.\nIn 2021, the RTR team joined forces with the old Roma Surrectum team in order to develop a new project called "RTR": Imperium Surrectum for the remaster of the original game that has recently been brought on the market by Feral Interactive.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/Rome%3A_Total_Realism",
+        },
+    },
+    {
+        "id": "card-gaming-2008-04-23-60403",
+        "date": "2008-04-23",
+        "title": "Cold Fear",
+        "description":
+            "Cold Fear is a 2005 survival horror third-person shooter video game developed by Darkworks and published by Ubisoft for PlayStation 2, Xbox and Microsoft Windows. It was Darkworks' second game, after Alone in the "Dark": The New Nightmare in 2001. The game is centered on Tom Hansen, a guardsman of the United States Coast Guard, who aids a Russian whaler in the Bering Strait and finds a mysterious parasite has turned the crew into zombie-like creatures. Discovering the involvement of both the Russian mafia and the CIA, Hansen sets out to ensure the parasites don't reach land.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/Cold_Fear",
+        },
+    },
+    {
+        "id": "card-gaming-2008-05-10-70611",
+        "date": "2008-05-10",
+        "title": "Pilot "Down": Behind Enemy Lines",
+        "description":
+            "II wojna światowa: Pilot Down – na tyłach wroga – strzelanka trzecioosobowa i skradanka z 2005 roku produkcji The wide games team, wydana przez Oxygen Interactive, w Polsce dystrybuowana przez Oni Games. Opowiada historię amerykańskiego lotnika zestrzelonego w czasie misji bombowej nad Niemcami podczas II wojny światowej. Gra oferuje rozgrywkę tylko w trybie jednoosobowym.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://pl.wikipedia.org/wiki/II_wojna_%C5%9Bwiatowa%3A_Pilot_Down_%E2%80%93_na_ty%C5%82ach_wroga",
+        },
+    },
+    {
+        "id": "card-gaming-2008-06-22-29023",
+        "date": "2008-06-22",
+        "title": "Mortal "Kombat": Unchained",
+        "description":
+            "Mortal Kombat ist eine seit 1992 erscheinende Reihe von Kampfspielen des US-amerikanischen Entwicklers NetherRealm Studios, vormals Midway Games. Auf Grundlage der für diverse Plattformen erscheinenden Computerspiele entstanden zudem zahlreiche Filmadaptionen, Fernsehserien, Comics, Musikalben, eine Bühnenshow und ein Kartenspiel. Mortal Kombat ist gemessen an den weltweiten Verkaufszahlen von über 79 Millionen Kopien die erfolgreichste Spielreihe des Genres und mit über 5 Milliarden US-Dollar Umsatz eine der weltweit umsatzstärksten Videospielmarken.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://de.wikipedia.org/wiki/Mortal_Kombat%3A_Unchained",
+        },
+    },
+    {
+        "id": "card-gaming-2008-07-21-36445",
+        "date": "2008-07-21",
+        "title": "Mobile Suit Gundam 0079: Card Builder",
+        "description":
+            "Mobile Suit Gundam 0079: Card Builder est un jeu vidéo de stratégie développé et édité par Banpresto en 2005 uniquement en arcade sur Naomi 2 Satellite Terminal. C'est une adaptation en jeu vidéo de la série basée sur l'anime Mobile Suit Gundam et notamment Mobile Suit Gundam. Le jeu peut se jouer en multijoueur et utilise un système de cartes de jeu.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://fr.wikipedia.org/wiki/Mobile_Suit_Gundam_0079%3A_Card_Builder",
+        },
+    },
+    {
+        "id": "card-gaming-2008-07-22-62579",
+        "date": "2008-07-22",
+        "title": "System Rush",
+        "description":
+            'System Rush is a 2005 futuristic racing game published by Nokia and developed by Ideaworks Game Studio for the N-Gage. This event titled "System Rush" occurred on 2008-07-22. Additional detailed information, historical background, development history, and interesting details regarding this topic can be found on the linked Wikipedia page.',
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/System_Rush",
+        },
+    },
+    {
+        "id": "card-gaming-2008-09-02-18972",
+        "date": "2008-09-02",
+        "title": "Lucky Star Moe Drill",
+        "description":
+            "Lucky Star  is a Japanese four-panel comic strip manga series by Kagami Yoshimizu. It has been serialized in Kadokawa Shoten's Comptiq magazine since December 2003. Cameo strips were published in other magazines such as Shōnen Ace and others. Lucky Star is a slice of life manga focusing on the daily lives of four girls, and has little overarching plot.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/Lucky_Star%3A_Moe_Drill",
+        },
+    },
+    {
+        "id": "card-gaming-2008-09-09-21909",
+        "date": "2008-09-09",
+        "title": "MechAssault 2: Lone Wolf",
+        "description":
+            "MechAssault 2: Lone Wolf ist ein Actionspiel für Xbox und Nachfolger zu MechAssault. Wie der Vorgänger ist es ein Lizenzprodukt des BattleTech-Franchises und erschien im Dezember 2004 über Microsoft Game Studios. Entwickler waren die amerikanischen Day 1 Studios.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://de.wikipedia.org/wiki/MechAssault_2%3A_Lone_Wolf",
+        },
+    },
+    {
+        "id": "card-gaming-2008-09-10-92518",
+        "date": "2008-09-10",
+        "title": "Great Invasions",
+        "description":
+            'Great Invasions ie n videojuech svilupà da Philippe Thibaut y publicà ai 2005 da Nobilis. This event titled "Great Invasions" occurred on 2008-09-10. Additional detailed information, historical background, development history, and interesting details regarding this topic can be found on the linked Wikipedia page.',
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://lld.wikipedia.org/wiki/Great_Invasions",
+        },
+    },
+    {
+        "id": "card-web-2008-09-15-31127",
+        "date": "2008-09-15",
+        "title": "Stack Overflow Q&A",
+        "description":
+            "Stack Overflow is a question-and-answer website for computer programmers. Created in 2008 by Jeff Atwood and Joel Spolsky, it is the flagship site of the Stack Exchange network. Stack Overflow features questions and answers on certain computer programming topics, and was created to be a more open alternative to earlier question-and-answer websites such as Experts-Exchange. The website was sold to Prosus, a Netherlands-based consumer-internet conglomerate, on 2 June 2021 for US$1.8 billion.",
+        "tags": ["web"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/Stack_Overflow",
+        },
+    },
+    {
+        "id": "card-gaming-2008-09-23-28286",
+        "date": "2008-09-23",
+        "title": "Legion Arena",
+        "description":
+            "Legion Arena is a computer wargame developed by Slitherine Strategies. It allows the player to play as several tribes during the rise of the Roman Empire. The player can play as the Latin tribes, the Celts and the Romans. It is published by Black Bean Games in Europe and Strategy First in North America for Windows.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/Legion_Arena",
+        },
+    },
+    {
+        "id": "card-software-2008-09-23-16255",
+        "date": "2008-09-23",
+        "title": "Android Software Kit",
+        "description":
+            "The version history of the Android mobile operating system began with the public release of its first beta on November 5, 2007. The first commercial version, Android 1.0, was released on September 23, 2008. The operating system has been developed by Google on a yearly schedule since at least 2011. New major releases are usually announced at Google I/O in May, along with beta testing, with the stable version released to the public between August and October. From 2025, new versions were announced in the first quarter and shipped in the second quarter.",
+        "tags": ["software"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/Android_version_history",
+        },
+    },
+    {
+        "id": "card-gaming-2008-10-15-91334",
+        "date": "2008-10-15",
+        "title": ""Doraemon": Nobita's Biohazard",
+        "description":
+            "《野比大雄的生化危机》 是日本人aaa氏用RPG Maker 2000制造的恶搞游戏，2005年12月4日首次公开，将《哆拉A梦》中的人物和《生化危机》的情节进行混搭。由于其情节包括哆啦A梦等人是制造僵尸的元凶的情节，对原著改编过大，引起争议。之后，很快有对原版改编而来的改造版，著名的有125氏改编了《野比大雄的生化危机 无理改造版》，其中大幅度改造了游戏原作的情节，使人物性格更接近原著形象。之後還有不同的改編，包括:《野比大雄的生化危機•G rebirth》,《野比大雄的生化危機•G2》等等。",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://zh.wikipedia.org/wiki/%E9%87%8E%E6%AF%94%E5%A4%A7%E9%9B%84%E7%9A%84%E7%94%9F%E5%8C%96%E5%8D%B1%E6%9C%BA",
+        },
+    },
+    {
+        "id": "card-gaming-2008-11-07-49761",
+        "date": "2008-11-07",
+        "title": "The Legend of "Zelda": Twilight Princess",
+        "description":
+            "The Legend of "Zelda": Twilight Princess ist ein Action-Adventure-Spiel aus dem Jahr 2006, das von Nintendo für den GameCube und die Wii entwickelt und veröffentlicht wurde. Ursprünglich für eine exklusive Veröffentlichung auf dem GameCube im November 2005 geplant, wurde Twilight Princess von Nintendo verschoben, um den Entwicklern die Möglichkeit zu geben, das Spiel zu verfeinern, mehr Inhalte hinzuzufügen und es auf die Wii zu portieren. Die Wii-Version war ein Starttitel in Nordamerika im November 2006 und im folgenden Monat in Japan, Europa und Australien. Die GameCube-Version wurde im Dezember 2006 als das letzte First-Party-Spiel für die Konsole veröffentlicht.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://de.wikipedia.org/wiki/The_Legend_of_Zelda%3A_Twilight_Princess",
+        },
+    },
+    {
+        "id": "card-gaming-2008-11-12-59039",
+        "date": "2008-11-12",
+        "title": "V GAS",
+        "description":
+            "V GAS is a 3D serious game in which players explore and live in a house that is built to mirror their own. Players begin the game by building a profile including variables such as water use and transportation behaviors, heating and cooling practices, food purchases, and electrical appliance usage. Once the profile has been built, the player can begin the simulation which introduces different scenarios ranging from heat waves to mad cow disease. The player adjusts their lifestyle according to how they would react to these events in real life. All the while, the players' decisions are being measured and recorded, and their overall contribution to N2O, CO2, and CH4 to the atmosphere is measured.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/V_GAS",
+        },
+    },
+    {
+        "id": "card-hardware-2008-11-17-24245",
+        "date": "2008-11-17",
+        "title": "Intel Core i7 CPU",
+        "description":
+            "Intel Core is a line of multi-core central processing units (CPUs) for midrange, embedded, workstation, high-end, enthusiast and gaming computer markets marketed by Intel Corporation. These processors displaced the existing mid- to high-end Pentium processors at the time of their introduction, moving the Pentium to the mid-range budget market. Identical or more capable versions of Core processors are also sold as Xeon processors for the server and workstation markets.",
+        "tags": ["hardware"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/Intel_Core",
+        },
+    },
+    {
+        "id": "card-gaming-2008-11-24-12647",
+        "date": "2008-11-24",
+        "title": "Elite "Warriors": Vietnam",
+        "description":
+            'Elite "Warriors": Vietnam is a 2005 squad-based first-person/third-person shooter video game developed by American studio nFusion and published by Bold Games for Microsoft Windows. This event titled "Elite "Warriors": Vietnam" occurred on 2008-11-24. Additional detailed information, historical background, development history, and interesting details regarding this topic can be found on the linked Wikipedia page.',
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://en.wikipedia.org/wiki/Elite_Warriors%3A_Vietnam",
+        },
+    },
+    {
+        "id": "card-gaming-2008-12-15-89618",
+        "date": "2008-12-15",
+        "title": "Dragon Ball "Z": Supersonic Warriors 2",
+        "description":
+            "Dragon Ball "Z": Supersonic Warriors 2  es un videojuego de lucha exclusivo para Nintendo DS basado en la popular serie de anime Dragon Ball Z. Desarrollado por Cavia inc. y distribuido por Atari, llegó al mercado estadounidense y japonés a finales de 2005 y al mercado europeo a principios de 2006. El juego es a su vez una secuela de Dragon Ball "Z": Supersonic Warriors, videojuego de Game Boy Advance.",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://es.wikipedia.org/wiki/Dragon_Ball_Z%3A_Supersonic_Warriors_2",
+        },
+    },
+    {
+        "id": "card-gaming-2008-12-16-25258",
+        "date": "2008-12-16",
+        "title": "Yu-Gi-Oh! Online",
+        "description":
+            'Yu-Gi-Oh! Online est un jeu vidéo sous Microsoft Windows développé et édité par Konami. Le jeu reprend les principes du jeu de cartes à collectionner Yu-Gi-Oh! Jeu de cartes à jouer. This event titled "Yu-Gi-Oh! Online" occurred on 2008-12-16. Additional detailed information, historical background, development history, and interesting details regarding this topic can be found on the linked Wikipedia page.',
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://fr.wikipedia.org/wiki/Yu-Gi-Oh!_Online",
+        },
+    },
+    {
+        "id": "card-gaming-2008-12-28-97061",
+        "date": "2008-12-28",
+        "title": "Jet Set Racing",
+        "description":
+            "Fahrenheit ist ein Computerspiel aus dem Jahr 2005. In den Vereinigten Staaten erschien es unter dem Titel Indigo Prophecy, um Verwechslungen mit dem Film Fahrenheit 9/11 zu vermeiden. Es wird dem Genre der Adventurespiele zugeordnet, enthält aber auch Elemente des Actionspiels; zudem wird es als interaktiver Film bezeichnet. Ursprünglich erschien es für Personal Computer mit dem Betriebssystem Windows sowie für die Spielkonsolen PlayStation 2, Xbox und Xbox 360. 2015 wurde ein Remaster des Spiels veröffentlicht, das auf weitere Systeme portiert wurde. ("Ref": Jet Set Racing 2)",
+        "tags": ["gaming"],
+        "type": "text",
+        "width": 380,
+        "year": 2008,
+        "links": {
+            "wikipedia": ""https"://de.wikipedia.org/wiki/Fahrenheit_(Computerspiel)",
+        },
+    },
+]

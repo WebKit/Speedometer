@@ -17,9 +17,12 @@ function execFileSyncInBatches(command, args, files, batchSize = 100) {
 }
 
 function runPrettier(files) {
+    const prettierFiles = files.filter((f) => !/node_modules/.test(f));
+    if (prettierFiles.length === 0)
+        return;
     try {
-        console.log(`Running prettier on ${files.length} file(s)`);
-        execFileSyncInBatches("prettier", ["--write", "--ignore-unknown"], files);
+        console.log(`Running prettier on ${prettierFiles.length} file(s)`);
+        execFileSyncInBatches("prettier", ["--write", "--ignore-unknown"], prettierFiles);
     } catch (e) {
         console.error("Prettier formatting failed");
         process.exit(1);
@@ -27,7 +30,7 @@ function runPrettier(files) {
 }
 
 function runEslint(files) {
-    const jsTsFiles = files.filter((f) => /\.(js|mjs|jsx|ts|tsx)$/.test(f));
+    const jsTsFiles = files.filter((f) => /\.(js|mjs|jsx|ts|tsx)$/.test(f) && !/node_modules/.test(f));
     if (jsTsFiles.length === 0)
         return;
     try {

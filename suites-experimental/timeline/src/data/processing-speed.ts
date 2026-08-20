@@ -1,0 +1,84 @@
+// Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted under the terms of the BSD 2-Clause License (see root LICENSE file).
+
+// Historical FLOPS and MIPS performance data points for CPUs, GPUs, and TPUs.
+// Sourced from Top500, TechPowerUp, and official vendor specifications.
+
+export interface FlopsDataPoint {
+    name: string;
+    type: "cpu" | "gpu" | "tpu";
+    date: string;
+    flops: number;
+    source: string;
+    mips?: number; // Millions of Instructions Per Second
+}
+
+export const flopsData: FlopsDataPoint[] = [
+    { name: "Zuse Z3", type: "cpu", date: "1941-05-12", flops: 2, source: "Rojas: The First Computers (MIT Press)", mips: 0.0000003 },
+    { name: "ENIAC", type: "cpu", date: "1946-02-15", flops: 5000, source: "Rojas: The First Computers (MIT Press)", mips: 0.00035 },
+    { name: "UNIVAC I", type: "cpu", date: "1951-06-14", flops: 1900, source: "Unisys Historical Collections", mips: 0.0019 },
+    { name: "IBM 704", type: "cpu", date: "1954-05-01", flops: 4000, source: "IBM Archives", mips: 0.04 },
+    { name: "CDC 6600", type: "cpu", date: "1964-09-01", flops: 3e6, source: "Charles Babbage Institute", mips: 3.0 },
+    { name: "Cray-1", type: "cpu", date: "1976-03-01", flops: 1.6e8, source: "Cray History Museum", mips: 160.0 },
+    { name: "Intel 8086", type: "cpu", date: "1978-06-08", flops: 3.3e4, source: "Intel Microprocessor Datasheet", mips: 0.75 },
+    { name: "Intel 80286", type: "cpu", date: "1982-02-01", flops: 5e4, source: "Intel Microprocessor Datasheet (with 80287 FPU)", mips: 2.66 },
+    { name: "SGI Geometry Engine (IRIS 1000)", type: "gpu", date: "1982-11-01", flops: 6e6, source: "Stanford / SGI Geometry Engine Specifications" },
+    { name: "Cray X-MP", type: "cpu", date: "1982-11-01", flops: 8e8, source: "Cray History Museum", mips: 800.0 },
+    { name: "Intel 80386DX", type: "cpu", date: "1985-10-17", flops: 1.2e5, source: "Intel Microprocessor Datasheet (with 80387 FPU)", mips: 4.3 },
+    { name: "TI TMS34010 GSP", type: "gpu", date: "1986-02-01", flops: 1e6, source: "Texas Instruments TMS34010 GSP Datasheet", mips: 6.0 },
+    { name: "TI TMS34020 + TMS34082A FPU", type: "gpu", date: "1988-08-01", flops: 4e7, source: "Texas Instruments TMS34082A Floating-Point Graphics Coprocessor Datasheet", mips: 10.0 },
+    { name: "Intel 486", type: "cpu", date: "1989-04-10", flops: 4e7, source: "Intel Microprocessor Datasheet", mips: 40.0 },
+    { name: "Weitek 4167 Graphics Coprocessor", type: "gpu", date: "1989-10-01", flops: 4e6, source: "Weitek 4167 Coprocessor Specifications" },
+    { name: "SGI Indigo Extreme Graphics", type: "gpu", date: "1992-01-01", flops: 2.56e8, source: "Silicon Graphics Indigo Extreme Architecture Specifications" },
+    { name: "SGI RealityEngine2 (Onyx)", type: "gpu", date: "1993-01-01", flops: 1.2e9, source: "Silicon Graphics RealityEngine Architecture Specifications" },
+    { name: "Intel Pentium", type: "cpu", date: "1993-03-22", flops: 1e8, source: "Intel Microprocessor Datasheet", mips: 100.0 },
+    { name: "NV1", type: "gpu", date: "1995-05-22", flops: 1.2e7, source: "TechPowerUp GPU Database" },
+    { name: "Intel Pentium Pro", type: "cpu", date: "1995-11-01", flops: 2e8, source: "Intel Microprocessor Datasheet", mips: 440.0 },
+    { name: "ASCI Red", type: "cpu", date: "1997-06-01", flops: 1.3e12, source: "Top500 Supercomputers (June 1997)", mips: 2000000.0 },
+    { name: "NVIDIA RIVA 128", type: "gpu", date: "1997-08-25", flops: 3.7e8, source: "TechPowerUp GPU Database" },
+    { name: "Intel Pentium III", type: "cpu", date: "1999-02-26", flops: 2e9, source: "Intel Microprocessor Datasheet", mips: 1000.0 },
+    { name: "AMD Athlon (K7)", type: "cpu", date: "1999-06-23", flops: 2e9, source: "AMD Microprocessor Specifications", mips: 1500.0 },
+    { name: "GeForce 256", type: "gpu", date: "1999-10-11", flops: 5e8, source: "TechPowerUp GPU Database" },
+    { name: "Intel Pentium 4", type: "cpu", date: "2000-11-20", flops: 9e9, source: "Intel Microprocessor Datasheet", mips: 9000.0 },
+    { name: "GeForce 3", type: "gpu", date: "2001-02-27", flops: 6e9, source: "TechPowerUp GPU Database" },
+    { name: "Earth Simulator", type: "cpu", date: "2002-03-11", flops: 3.586e13, source: "Top500 Supercomputers (June 2002)", mips: 40000000.0 },
+    { name: "Intel Pentium M", type: "cpu", date: "2003-03-12", flops: 6.4e9, source: "Intel Microprocessor Datasheet", mips: 3200.0 },
+    { name: "GeForce 6800 Ultra", type: "gpu", date: "2004-04-14", flops: 4e10, source: "TechPowerUp GPU Database" },
+    { name: "Intel Core 2 Duo", type: "cpu", date: "2006-07-27", flops: 2e10, source: "Intel Microprocessor Datasheet", mips: 22000.0 },
+    { name: "GeForce 8800 GTX", type: "gpu", date: "2006-11-08", flops: 3.45e11, source: "TechPowerUp GPU Database" },
+    { name: "Roadrunner", type: "cpu", date: "2008-05-25", flops: 1.042e15, source: "Top500 Supercomputers (June 2008)", mips: 1200000000.0 },
+    { name: "NVIDIA GeForce GTX 280", type: "gpu", date: "2008-06-16", flops: 9.331e11, source: "TechPowerUp GPU Database" },
+    { name: "Radeon HD 4870", type: "gpu", date: "2008-06-25", flops: 1.2e12, source: "TechPowerUp GPU Database" },
+    { name: "Intel Core i7-920", type: "cpu", date: "2008-11-17", flops: 8.512e10, source: "Intel Microprocessor Datasheet (Nehalem)", mips: 76300.0 },
+    { name: "GeForce GTX 480", type: "gpu", date: "2010-03-26", flops: 1.34e12, source: "TechPowerUp GPU Database" },
+    { name: "NVIDIA GeForce GTX 580", type: "gpu", date: "2010-11-09", flops: 1.581e12, source: "TechPowerUp GPU Database" },
+    { name: "K Computer", type: "cpu", date: "2011-06-01", flops: 1.051e16, source: "Top500 Supercomputers (June 2011)", mips: 10000000000.0 },
+    { name: "AMD Radeon HD 7970", type: "gpu", date: "2011-12-22", flops: 3.79e12, source: "TechPowerUp GPU Database" },
+    { name: "GeForce GTX 680", type: "gpu", date: "2012-03-22", flops: 3.09e12, source: "TechPowerUp GPU Database" },
+    { name: "NVIDIA GeForce GTX Titan", type: "gpu", date: "2013-02-19", flops: 4.5e12, source: "TechPowerUp GPU Database" },
+    { name: "Tianhe-2", type: "cpu", date: "2013-06-01", flops: 3.386e16, source: "Top500 Supercomputers (June 2013)", mips: 50000000000.0 },
+    { name: "GeForce GTX 980", type: "gpu", date: "2014-09-18", flops: 4.6e12, source: "TechPowerUp GPU Database" },
+    { name: "Google TPU v1", type: "tpu", date: "2015-06-01", flops: 9.2e13, source: "Google ISCA 2017 TPU Paper" },
+    { name: "AMD Ryzen 7 1800X", type: "cpu", date: "2017-03-02", flops: 9.216e11, source: "AMD Zen Microarchitecture Specs", mips: 304510.0 },
+    { name: "GeForce GTX 1080 Ti", type: "gpu", date: "2017-03-10", flops: 1.13e13, source: "TechPowerUp GPU Database" },
+    { name: "Google TPU v2", type: "tpu", date: "2017-05-17", flops: 1.8e14, source: "Google Cloud TPU Architecture Specs" },
+    { name: "AMD Radeon RX Vega 64", type: "gpu", date: "2017-08-14", flops: 1.266e13, source: "TechPowerUp GPU Database" },
+    { name: "Google TPU v3", type: "tpu", date: "2018-05-08", flops: 4.2e14, source: "Google Cloud TPU Architecture Specs" },
+    { name: "Summit", type: "cpu", date: "2018-06-08", flops: 1.486e17, source: "Top500 Supercomputers (June 2018)", mips: 200000000000.0 },
+    { name: "GeForce RTX 2080 Ti", type: "gpu", date: "2018-09-20", flops: 1.34e13, source: "TechPowerUp GPU Database" },
+    { name: "NVIDIA A100", type: "gpu", date: "2020-05-14", flops: 1.95e13, source: "NVIDIA A100 Architecture Whitepaper" },
+    { name: "NVIDIA GeForce RTX 3080", type: "gpu", date: "2020-09-17", flops: 2.977e13, source: "TechPowerUp GPU Database" },
+    { name: "Google TPU v4", type: "tpu", date: "2021-05-18", flops: 2.75e14, source: "Google Cloud TPU Architecture Specs" },
+    { name: "Apple M1 Max (32-Core)", type: "gpu", date: "2021-10-18", flops: 1.04e13, source: "TechPowerUp GPU Database" },
+    { name: "GeForce RTX 3090 Ti", type: "gpu", date: "2022-03-29", flops: 4e13, source: "TechPowerUp GPU Database" },
+    { name: "Frontier", type: "cpu", date: "2022-05-30", flops: 1.194e18, source: "Top500 Supercomputers (June 2022)", mips: 1200000000000.0 },
+    { name: "NVIDIA H100", type: "gpu", date: "2022-10-12", flops: 6e13, source: "NVIDIA H100 Architecture Whitepaper" },
+    { name: "GeForce RTX 4090", type: "gpu", date: "2022-10-12", flops: 8.3e13, source: "TechPowerUp GPU Database" },
+    { name: "Intel Core i9-13900K", type: "cpu", date: "2022-10-20", flops: 2.48e12, source: "Intel Raptor Lake Specifications", mips: 1600000.0 },
+    { name: "AMD Radeon RX 7900 XTX", type: "gpu", date: "2022-12-13", flops: 6.14e13, source: "TechPowerUp GPU Database" },
+    { name: "NVIDIA H100 NVL", type: "tpu", date: "2023-03-21", flops: 1.35e14, source: "NVIDIA Hopper NVL Specifications" },
+    { name: "Google TPU v5p", type: "tpu", date: "2023-12-06", flops: 4.59e14, source: "Google Cloud TPU Architecture Specs" },
+    { name: "NVIDIA B200", type: "gpu", date: "2024-03-18", flops: 9e13, source: "NVIDIA Blackwell B200 Specifications" },
+];

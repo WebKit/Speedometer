@@ -48,7 +48,7 @@ function printTree(node) {
         } else {
             console.log("\x1b[31m✖", `\x1b[0m${test.title}`);
             console.group();
-            console.log(`\x1b[31m${test.error.name}: ${test.error.message}`);
+            console.log(`\x1b[31m${test.error.stack || `${test.error.name}: ${test.error.message}`}`);
             console.groupEnd();
         }
         console.groupEnd();
