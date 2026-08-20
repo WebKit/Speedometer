@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ChatRoom</title>
+        <script>
+            // This hack allows to capture the work normally happening in a rAF. We
+            // may be able to remove it if the runner improves.
+            window.requestAnimationFrame = (cb) => window.setTimeout(cb, 0);
+            window.cancelAnimationFrame = window.clearTimeout;
+            // Disable requestIdleCallback until WebKit / Safari supports it.
+            window.requestIdleCallback = undefined;
+            window.cancelIdleCallback = undefined;
+        </script>
+      <script type="module" crossorigin src="./assets/index-381effb6.js"></script>
+      <link rel="stylesheet" href="./assets/index-158fa97f.css">
+    </head>
+    <body>
+        <div id="root"></div>
+        
+    </body>
+</html>

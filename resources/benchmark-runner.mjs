@@ -163,6 +163,26 @@ class PageElement {
         this.#node.scrollIntoView(options);
     }
 
+    /**
+     * Scroll geometry, for steps that drive a scroller to an explicit offset.
+     * Never animate a scroll inside a measured step: assign an offset instead.
+     */
+    get scrollTop() {
+        return this.#node.scrollTop;
+    }
+
+    set scrollTop(offset) {
+        this.#node.scrollTop = offset;
+    }
+
+    get scrollHeight() {
+        return this.#node.scrollHeight;
+    }
+
+    get clientHeight() {
+        return this.#node.clientHeight;
+    }
+
     dispatchEvent(eventName, options = NATIVE_OPTIONS, eventType = Event) {
         if (eventName === "submit")
             // FIXME FireFox doesn't like `new Event('submit')

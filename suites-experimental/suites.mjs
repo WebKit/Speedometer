@@ -3,6 +3,25 @@ import { getTodoText } from "../resources/shared/translations.mjs";
 import { getNumberOfItemsToAdd } from "../resources/shared/todomvc-utils.mjs";
 import { freezeSuites } from "../resources/suites-helper.mjs";
 
+// Yield a task so React's concurrent scheduler lands the pending update before
+// the next interaction. A MessageChannel round-trip rather than setTimeout(0):
+// an async step is awaited inside the measured window (see
+// resources/shared/step-runner.mjs), so the timer clamp would be reported as
+// workload time.
+//
+// Closed at both ends because an entangled port is a cycle collector root.
+function yieldTask() {
+    return new Promise((resolve) => {
+        const channel = new MessageChannel();
+        channel.port1.onmessage = () => {
+            channel.port1.close();
+            channel.port2.close();
+            resolve();
+        };
+        channel.port2.postMessage(0);
+    });
+}
+
 export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-LocalStorage",
@@ -289,6 +308,76 @@ export const ExperimentalSuites = freezeSuites([
                 }
 
                 await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            }),
+        ],
+    },
+    {
+        name: "ChatRoom-React",
+        url: "suites-experimental/chat-room/dist/index.html",
+        resources: "suites-experimental/chat-room/dist/resources.txt",
+        tags: ["chat-room", "experimental"],
+        type: "async",
+        async prepare(page) {
+            await page.waitForElement(".room-list-item");
+        },
+        tests: [
+            // Each offset mounts a fresh set of rows, measures them, and corrects
+            // the scroll position against what they measured. The scroll event is
+            // dispatched by hand because waiting for the browser's would put a
+            // frame inside the measured window.
+            new BenchmarkTestStep("ScrollTimeline", async (page) => {
+                const timeline = page.querySelector("#timeline");
+                const viewportHeight = timeline.clientHeight;
+
+                const scrollTo = async (offset) => {
+                    timeline.scrollTop = offset;
+                    timeline.dispatchEvent("scroll");
+                    await yieldTask();
+                    page.layout();
+                };
+
+                // A viewport at a time, from the newest message: the windows
+                // overlap, so rows are recycled and measured heights reused.
+                // Relative to the current offset rather than to scrollHeight,
+                // because the total height moves as rows are measured.
+                const pages = 10;
+                for (let i = 0; i < pages; i++)
+                    await scrollTo(timeline.scrollTop - viewportHeight);
+
+                // Then long strides, the way dragging the scrollbar does: every
+                // stride lands on rows that have only ever been estimated, so the
+                // window is replaced outright. Stops one stride short of the top,
+                // so it does not trip the prefetch LoadOlderMessages measures.
+                const strides = 10;
+                for (let i = strides - 1; i >= 1; i--)
+                    await scrollTo(((timeline.scrollHeight - viewportHeight) * i) / (strides - 1));
+
+                // Back to the newest message, where the next step expects to start.
+                await scrollTo(timeline.scrollHeight);
+            }),
+            new BenchmarkTestStep("SwitchRooms", async (page) => {
+                const rooms = page.querySelectorAll(".room-list-item");
+                const iterations = 20;
+                // Starts past room 0, which is already open: clicking it commits nothing.
+                for (let i = 1; i <= iterations; i++) {
+                    rooms[i % rooms.length].click();
+                    await yieldTask();
+                    page.layout();
+                }
+            }),
+            // Reading past the start of the loaded history inserts a page *above*
+            // the viewport, the case browsers ship scroll anchoring for. The
+            // timeline anchors by hand instead, so overflow-anchor is off. Each
+            // iteration also crosses the page the previous one prepended.
+            new BenchmarkTestStep("LoadOlderMessages", async (page) => {
+                const timeline = page.querySelector("#timeline");
+                const pages = 5;
+                for (let i = 0; i < pages; i++) {
+                    timeline.scrollTop = 0;
+                    timeline.dispatchEvent("scroll");
+                    await yieldTask();
+                    page.layout();
+                }
             }),
         ],
     },
