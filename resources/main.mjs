@@ -4,8 +4,11 @@ import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
+import { ResourcePreloader, PreloadStatusUpdater } from "./preloader.mjs";
+
 const BENCHMARK_STATE = Object.freeze({
     IDLE: "IDLE",
+    PRELOADING: "PRELOADING",
     READY: "READY",
     RUNNING: "RUNNING",
     DONE: "DONE",
@@ -20,9 +23,11 @@ class MainBenchmarkClient {
     _measuredValuesList = [];
     _finishedTestCount = 0;
     _progressCompleted = null;
-    _state = BENCHMARK_STATE.IDLE;
+    _isRunning = false;
+    _hasResults = false;
     _developerModeContainer = null;
     _metrics = Object.create(null);
+    _resourcePreloader = new ResourcePreloader();
     _steppingPromise = null;
     _steppingResolver = null;
     _benchmarkConfiguratorPromise = null;
@@ -103,6 +108,9 @@ class MainBenchmarkClient {
         }
         if (!this._isStepping())
             this._developerModeContainer?.remove();
+
+        await this._preloadResources(benchmarkConfigurator);
+
         this._progressCompleted = document.getElementById("progress-completed");
         if (params.iterationCount < 50) {
             const progressNode = document.getElementById("progress");
@@ -114,10 +122,10 @@ class MainBenchmarkClient {
         }
 
         this._metrics = Object.create(null);
-
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
+
         this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
         const runner = new BenchmarkRunner(benchmarkConfigurator.suites, this);
         runner.runMultipleIterations(params.iterationCount);
@@ -164,11 +172,12 @@ class MainBenchmarkClient {
         this._finishedTestCount = 0;
     }
 
-    didFinishLastIteration(metrics) {
+    async didFinishLastIteration(metrics) {
         console.assert(this.isRunning());
 
         this._metrics = metrics;
         this._setBenchmarkState(BENCHMARK_STATE.DONE);
+        await this._resourcePreloader.teardown();
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         if (scoreResults.isValid)
@@ -389,17 +398,44 @@ class MainBenchmarkClient {
             document.body.append(this._developerModeContainer);
         }
 
+        await this._resourcePreloader.setup();
+        if (!params.developerMode)
+            await this._preloadResources(benchmarkConfigurator);
+
         if (params.startAutomatically)
             this.start();
         else
             this._setBenchmarkState(BENCHMARK_STATE.READY);
     }
 
+    async _preloadResources(benchmarkConfigurator) {
+        await this._resourcePreloader.stopPreloading();
+        if (this._resourcePreloader.isCached())
+            return;
+
+        const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
+        const clearCache = !params.isDefault();
+        const preloadStatusUpdater = new PreloadStatusUpdater();
+
+        try {
+            this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
+            preloadStatusUpdater.start();
+            await this._resourcePreloader.preloadSuites(enabledSuites, clearCache, preloadStatusUpdater.onProgress.bind(preloadStatusUpdater));
+        } finally {
+            preloadStatusUpdater.stop();
+        }
+    }
+
     async _setBenchmarkState(state) {
         this._state = state;
         document.body.setAttribute("data-benchmark-state", state);
         const startButtons = document.querySelectorAll(".start-tests-button");
-        if (state !== BENCHMARK_STATE.RUNNING) {
+        if (state === BENCHMARK_STATE.PRELOADING) {
+            startButtons.forEach((btn) => {
+                btn.innerHTML = "<div>Preloading</div>";
+            });
+        } else if (state !== BENCHMARK_STATE.RUNNING) {
+            document.body.style.removeProperty("--preload-progress");
             startButtons.forEach((btn) => {
                 btn.innerHTML = "<div>Start Test</div>";
             });
