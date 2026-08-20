@@ -1,0 +1,23 @@
+{
+    "name": "terminal-xterm",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "description": "Experimental terminal emulator benchmark workload using xterm.js",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "build-dev": "vite build --mode development",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@xterm/addon-canvas": "^0.6.0",
+        "@xterm/addon-fit": "^0.10.0",
+        "@xterm/addon-web-links": "^0.11.0",
+        "@xterm/addon-webgl": "^0.18.0",
+        "@xterm/xterm": "^5.5.0"
+    },
+    "devDependencies": {
+        "vite": "^5.0.0"
+    }
+}
