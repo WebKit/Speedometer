@@ -339,7 +339,7 @@ describe("PageElement", () => {
             return result;
         }
 
-        // A fake ResizeObserver drives deliveries synchronously for exact-count assertions.
+        // A fake ResizeObserver drives callbacks synchronously for exact-count assertions.
         async function createTracker() {
             let deliver;
             const disconnect = sinon.stub();
@@ -368,7 +368,7 @@ describe("PageElement", () => {
             );
         }
 
-        it("treats the first delivery as the baseline without counting it", async () => {
+        it("treats the first callback as the baseline without counting it", async () => {
             const { resizeEventsPromise, deliver, disconnect } = await createTracker();
             deliver(200);
             const resizeEvents = await resizeEventsPromise;
@@ -386,7 +386,7 @@ describe("PageElement", () => {
             expect(resizeEvents.stop()).to.equal(3);
         });
 
-        it("does not count deliveries that report the same width", async () => {
+        it("does not count callbacks that report the same width", async () => {
             const { resizeEventsPromise, deliver } = await createTracker();
             deliver(200); // seed
             const resizeEvents = await resizeEventsPromise;
