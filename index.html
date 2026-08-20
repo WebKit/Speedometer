@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-visible-section="home">
+<html lang="en" data-visible-section="home">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=850" />
@@ -27,7 +27,7 @@
                     </div>
                     <div class="buttons">
                         <div class="button-row">
-                            <button class="start-tests-button primary-button">Start Test</button>
+                            <button type="button" class="start-tests-button primary-button">Start Test</button>
                         </div>
                     </div>
                     <div class="buttons section-footer fixed-footer">
@@ -44,7 +44,7 @@
                     <img srcset="resources/logo@2x.png 2x" src="resources/logo.png" alt="Speedometer" />
                     <div class="version next">next</div>
                 </a>
-                <div id="testContainer"></div>
+                <div id="test-container"></div>
                 <div id="progress">
                     <progress aria-label="Progress" id="progress-completed"></progress>
                 </div>
@@ -117,11 +117,11 @@
                             <a class="button" href="#summary" title="Go back to the simplified summary view.">Summary</a>
                         </div>
                         <div class="button-row export-buttons">
-                            <button id="copy-full-json" title="Copy full result metrics as json string.">Copy JSON</button>
+                            <button type="button" id="copy-full-json" title="Copy full result metrics as json string.">Copy JSON</button>
                             <a class="button" id="download-full-json" title="Download full result metrics as json string.">Download JSON</a>
                             <a class="button" id="download-classic-json" title="Download backwards-compatible result metrics as json string.">Download Classic JSON</a>
                             <a class="button" id="download-csv" title="Download all result metrics as CSV string.">Download CSV</a>
-                            <button id="copy-csv" title="Copy all result metrics as CSV string.">Copy CSV</button>
+                            <button type="button" id="copy-csv" title="Copy all result metrics as CSV string.">Copy CSV</button>
                         </div>
                     </div>
                 </div>
