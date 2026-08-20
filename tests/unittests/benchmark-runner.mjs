@@ -342,12 +342,15 @@ describe("PageElement", () => {
         // A fake ResizeObserver drives deliveries synchronously for exact-count assertions.
         async function createTracker() {
             let deliver;
+            const disconnect = sinon.stub();
             class FakeResizeObserver {
                 constructor(callback) {
                     deliver = (...widths) => callback(widths.map((width) => ({ contentBoxSize: [{ inlineSize: width }] })));
                 }
                 observe() {}
-                disconnect() {}
+                disconnect() {
+                    disconnect();
+                }
             }
             return withPageElement(
                 (frame) => {
@@ -358,35 +361,39 @@ describe("PageElement", () => {
                     return node;
                 },
                 (element) => ({
-                    resizeEvents: element.observeResizeEvents(),
+                    resizeEventsPromise: element.observeResizeEvents(),
                     deliver: (...widths) => deliver(...widths),
+                    disconnect,
                 })
             );
         }
 
         it("treats the first delivery as the baseline without counting it", async () => {
-            const { resizeEvents, deliver } = await createTracker();
+            const { resizeEventsPromise, deliver, disconnect } = await createTracker();
             deliver(200);
-            await resizeEvents.ready;
-            expect(resizeEvents.count).to.equal(0);
+            const resizeEvents = await resizeEventsPromise;
+            expect(resizeEvents.stop()).to.equal(0);
+            sinon.assert.calledOnce(disconnect);
         });
 
         it("counts each distinct width change exactly once", async () => {
-            const { resizeEvents, deliver } = await createTracker();
+            const { resizeEventsPromise, deliver } = await createTracker();
             deliver(200); // seed
+            const resizeEvents = await resizeEventsPromise;
             deliver(300);
             deliver(400);
             deliver(500);
-            expect(resizeEvents.count).to.equal(3);
+            expect(resizeEvents.stop()).to.equal(3);
         });
 
         it("does not count deliveries that report the same width", async () => {
-            const { resizeEvents, deliver } = await createTracker();
+            const { resizeEventsPromise, deliver } = await createTracker();
             deliver(200); // seed
+            const resizeEvents = await resizeEventsPromise;
             deliver(300);
             deliver(300);
             deliver(300);
-            expect(resizeEvents.count).to.equal(1);
+            expect(resizeEvents.stop()).to.equal(1);
         });
     });
 });

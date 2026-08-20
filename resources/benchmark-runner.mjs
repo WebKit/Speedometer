@@ -163,14 +163,14 @@ class PageElement {
         this.#node.scrollIntoView(options);
     }
 
-    observeResizeEvents() {
+    async observeResizeEvents() {
         const contentWindow = this.#node.ownerDocument.defaultView;
         const state = {
             count: 0,
             lastWidth: null,
         };
         let markReady;
-        // Resolves on the first delivery so callers can seed a baseline before resizing.
+        // Resolves on the first callback so the initial width can be used as a baseline.
         const ready = new Promise((resolve) => {
             markReady = resolve;
         });
@@ -179,7 +179,7 @@ class PageElement {
                 const contentBoxSize = entry.contentBoxSize;
                 const inlineSize = Array.isArray(contentBoxSize) ? contentBoxSize[0]?.inlineSize : contentBoxSize?.inlineSize;
                 const width = inlineSize ?? entry.contentRect.width;
-                // The first delivery seeds the baseline width without counting it as a change.
+                // The first callback seeds the baseline width without counting it as a change.
                 if (state.lastWidth === null) {
                     state.lastWidth = width;
                     markReady();
@@ -192,13 +192,11 @@ class PageElement {
             }
         });
         observer.observe(this.#node);
+        await ready;
         return {
-            ready,
-            get count() {
-                return state.count;
-            },
-            disconnect() {
+            stop() {
                 observer.disconnect();
+                return state.count;
             },
         };
     }
