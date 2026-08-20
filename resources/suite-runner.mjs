@@ -19,10 +19,16 @@ export class SuiteRunner {
 
     constructor(frame, page, params, suite, client, measuredValues) {
         // FIXME: Create SuiteRunner-local measuredValues.
-        this.#suiteResults = measuredValues.tests[suite.name];
-        if (!this.#suiteResults) {
+        if (suite === WarmupSuite) {
+            // The warmup suite's results are intentionally not reported. Registering them in
+            // measuredValues would leave a 0-total entry, which zeroes the overall geomean.
             this.#suiteResults = { tests: {}, prepare: 0, total: 0 };
-            measuredValues.tests[suite.name] = this.#suiteResults;
+        } else {
+            this.#suiteResults = measuredValues.tests[suite.name];
+            if (!this.#suiteResults) {
+                this.#suiteResults = { tests: {}, prepare: 0, total: 0 };
+                measuredValues.tests[suite.name] = this.#suiteResults;
+            }
         }
         this.#frame = frame;
         this.#page = page;
@@ -101,6 +107,9 @@ export class SuiteRunner {
     }
 
     _validateSuiteResults() {
+        // The warmup suite's results are intentionally not recorded, so it has no total.
+        if (this.#suite === WarmupSuite)
+            return;
         // When the test is fast and the precision is low (for example with Firefox'
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
