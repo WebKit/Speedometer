@@ -292,4 +292,50 @@ export const ExperimentalSuites = freezeSuites([
             }),
         ],
     },
+    {
+        name: "Scrollytelling-Scrollama",
+        url: "suites-experimental/scrollytelling/dist/index.html?engine=scrollama",
+        tags: ["experimental", "scrollytelling"],
+        async prepare(page) {
+            await page.waitForElement(".scrolly-container");
+            page.call("serviceRAF");
+        },
+        tests: [
+            new BenchmarkTestStep("DiscreteStepTransitions", (page) => {
+                for (let i = 0; i < 8; i++) {
+                    page.call(`stepTo${i}`);
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+                for (let i = 6; i >= 0; i--) {
+                    page.call(`stepTo${i}`);
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+            }),
+            new BenchmarkTestStep("ContinuousScrollScrubbing", (page) => {
+                page.call("resetScrub");
+                page.call("serviceRAF");
+                page.layout();
+                for (let i = 0; i < 30; i++) {
+                    page.call("scrubForward");
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+                for (let i = 0; i < 30; i++) {
+                    page.call("scrubBackward");
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+            }),
+            new BenchmarkTestStep("RapidStepJumps", (page) => {
+                const jumpTargets = [7, 1, 6, 2, 5, 0, 4, 3];
+                for (const target of jumpTargets) {
+                    page.call(`stepTo${target}`);
+                    page.call("serviceRAF");
+                    page.layout();
+                }
+            }),
+        ],
+    },
 ]);
