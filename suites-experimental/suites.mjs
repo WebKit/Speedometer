@@ -191,6 +191,14 @@ export const ExperimentalSuites = freezeSuites([
         }, */
     },
     {
+        name: "PDFViewer-PDFjs",
+        url: "suites-experimental/pdf-viewer/dist/index.html",
+        resources: "suites-experimental/pdf-viewer/dist/resources.txt",
+        tags: ["pdf", "experimental"],
+        async prepare() {},
+        type: "remote",
+    },
+    {
         name: "Responsive-Design",
         url: "suites-experimental/responsive-design/dist/index.html",
         resources: "suites-experimental/responsive-design/dist/resources.txt",
