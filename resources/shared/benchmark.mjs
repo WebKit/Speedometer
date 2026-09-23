@@ -132,7 +132,7 @@ export class BenchmarkConnector {
     async onMessage(event) {
         const message = event.data;
         if (message.appId !== this.appId || message.key !== "benchmark-connector") {
-            console.warning("Invalid message", message);
+            console.warn("Invalid message", message);
             return;
         }
 
