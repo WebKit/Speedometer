@@ -1,0 +1,22 @@
+{
+    "name": "mithril-timeline",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "node generate-index.js && vite",
+        "build": "node generate-index.js && vite build",
+        "preview": "vite preview",
+        "test": "npx tsc && npx mocha tests/"
+    },
+    "dependencies": {
+        "mithril": "^2.2.0"
+    },
+    "devDependencies": {
+        "@types/mithril": "^2.2.8",
+        "expect.js": "^0.3.1",
+        "mocha": "^11.7.6",
+        "typescript": "^6.0.3",
+        "vite": "^4.5.0"
+    }
+}
