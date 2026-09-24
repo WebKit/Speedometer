@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!--
+  Copyright (C) 2024 Apple Inc. All rights reserved.
+  Copyright (C) 2024 Google Inc. All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+  1. Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+
+  THIS SOFTWARE IS PROVIDED BY APPLE INC. AND ITS CONTRIBUTORS ``AS IS''
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL APPLE INC. OR ITS CONTRIBUTORS
+  BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+  THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Project A-101: The Homestead Dossier - Speedometer Scrollytelling Workload</title>
+        <link rel="stylesheet" href="./styles.css" />
+        <script>
+            // Speedometer rAF interception and servicing pattern
+            // Intercepts requestAnimationFrame so that Speedometer can synchronously flush
+            // any pending animation/scroll callbacks before invoking page.layout().
+            const rAFCallbacks = new Map();
+            let rAFId = 1;
+
+            window.requestAnimationFrame = function (callback) {
+                const id = rAFId++;
+                rAFCallbacks.set(id, callback);
+                return id;
+            };
+
+            window.cancelAnimationFrame = function (id) {
+                rAFCallbacks.delete(id);
+            };
+
+            window.serviceRAF = function () {
+                // 1. Synchronously execute any queued rAF callbacks (e.g. from scrollama or scroll listeners)
+                let iterations = 0;
+                while (rAFCallbacks.size > 0 && iterations < 10) {
+                    iterations++;
+                    const callbacks = Array.from(rAFCallbacks.values());
+                    rAFCallbacks.clear();
+                    const now = performance.now();
+                    for (const callback of callbacks) {
+                        try {
+                            callback(now);
+                        } catch (e) {
+                            console.error("Error in rAF callback:", e);
+                        }
+                    }
+                }
+                // 2. Synchronously settle all visual mutations and scrollytelling state before page.layout()
+                if (typeof window.forceScrollytellingUpdate === "function") {
+                    window.forceScrollytellingUpdate();
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <div id="app">
+            <header class="page-header">
+                <h1>Project A-101: The Homestead Dossier</h1>
+                <p class="subtitle">246 Years of Residential Anatomy & Engineering</p>
+                <div class="header-status">
+                    <span id="active-stage-label" class="status-tag">STAGE 1: EARLY SETTLEMENT</span>
+                </div>
+            </header>
+            <nav id="floating-toc" class="floating-toc is-hidden" aria-label="Table of Contents">
+                <div class="toc-header">
+                    <button id="toc-toggle-btn" class="toc-toggle-btn" type="button" aria-expanded="true" aria-controls="toc-list" aria-label="Toggle Table of Contents">
+                        <span class="toc-title">INDEX</span>
+                        <span id="toc-toggle-symbol" class="toc-toggle-symbol">[ - ]</span>
+                    </button>
+                </div>
+                <ul class="toc-list" id="toc-list"></ul>
+            </nav>
+            <main class="scrolly-container" id="scrolly-container">
+                <!-- Stage sections rendered dynamically by app.js from content.js -->
+            </main>
+            <footer class="page-footer">
+                <p>Speedometer Experimental Scrollytelling Benchmark Workload</p>
+            </footer>
+        </div>
+        <script type="module" src="./app.js"></script>
+        <nav id="bottom-timeline-overlay" class="bottom-timeline-overlay is-visible" aria-label="Timeline Navigation">
+            <div class="timeline-track"></div>
+            <ul class="timeline-points" id="timeline-points"></ul>
+        </nav>
+    </body>
+</html>

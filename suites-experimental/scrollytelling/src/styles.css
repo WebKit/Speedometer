@@ -1,0 +1,965 @@
+/*
+ * Copyright (C) 2024-2026 Speedometer Contributors. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ */
+
+/**
+ * 1950s Black & White Blueprint / Planning Design
+ * Reference: STYLE_CONFIG in src/graphics.js
+ * 
+ * Aesthetic Rules:
+ * - Pure black drafting background (#000000) with crisp B&W geometry.
+ * - Negative blueprint drafting theme (light typography & wireframes on dark void).
+ * - Slanted container borders (-2.0deg to +2.0deg) and independent drop shadow angles (Shadow Angle != Box Angle).
+ * - Gradual organic watercolor animation reveals for accent coloring during scroll.
+ */
+
+*,
+*::before,
+*::after {
+    transition: none !important;
+    animation: none !important;
+}
+
+:root {
+    --bg-color: #000000;
+    --paper-light: rgba(0, 0, 0, 0.65);
+    --paper-card: rgba(0, 0, 0, 0.85);
+    --ink-primary: #ffffff;
+    --ink-secondary: #cccccc;
+    --ink-muted: #777777;
+    --accent-crimson: #d12b3e;
+    --accent-ruby: #c72436;
+    --accent-dark: #ffffff;
+    --accent-light: #cccccc;
+    --border-color: #ffffff;
+    --shadow-solid: rgba(0, 0, 0, 0.75);
+    --text-color: var(--ink-primary);
+    --text-muted: var(--ink-muted);
+    --card-bg: var(--paper-light);
+    --card-active-bg: var(--paper-card);
+    --accent-color: var(--accent-crimson);
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--ink-primary);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+    z-index: 0;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-color: var(--bg-color, #000000);
+    background-image: url("public/planning_paper_dot_grid.webp");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+    pointer-events: none;
+}
+
+#app {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+}
+
+/* 1950s Construction Paper Header Box with Slanted Geometry & Independent Shadow */
+.page-header {
+    position: relative;
+    z-index: 1;
+    padding: 4.5rem 2rem 2.5rem;
+    background-color: var(--paper-card);
+    border: 4px solid var(--accent-crimson, #d12b3e);
+    border-radius: 10px;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    transform: rotate(-0.6deg);
+    overflow: visible;
+}
+
+.page-header::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 14px;
+    left: 10px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    border-radius: 10px;
+    transform: rotate(1.3deg);
+}
+
+.page-header:hover {
+    transform: rotate(0deg);
+}
+
+.page-header:hover::before {
+    top: 16px;
+    left: 14px;
+    transform: rotate(-0.9deg);
+}
+
+.page-header h1 {
+    font-family: "Impact", "Arial Black", "Futura", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    color: var(--ink-primary);
+}
+
+.subtitle {
+    position: relative;
+    z-index: 1;
+    font-size: 1rem;
+    color: var(--ink-primary, #ffffff);
+    background-color: var(--paper-card, rgba(0, 0, 0, 0.85));
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    display: inline-block;
+    padding: 0.4rem 1.2rem;
+    border: 3px solid var(--border-color, #ffffff);
+    border-radius: 6px;
+    transform: rotate(1deg);
+    overflow: visible;
+}
+
+.subtitle::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 6px;
+    left: -6px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    border-radius: 6px;
+    transform: rotate(-1.7deg);
+}
+
+.header-status {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+}
+
+.status-tag {
+    position: relative;
+    z-index: 1;
+    font-family: "Impact", "Arial Black", "Futura", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+    padding: 0.5rem 1.4rem;
+    border: 2px solid #ffffff;
+    background-color: var(--accent-crimson, #d12b3e);
+    color: #ffffff;
+    border-radius: 6px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transform: rotate(-1.5deg);
+    display: inline-block;
+    overflow: visible;
+}
+
+.status-tag::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 8px;
+    left: 10px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid, rgba(0, 0, 0, 0.75));
+    border-radius: 6px;
+    transform: rotate(2.3deg);
+}
+
+/* Floating Table of Contents (1950s Slanted Index Banner with Independent Shadow) */
+.floating-toc {
+    position: fixed;
+    top: 2.5rem;
+    right: 2.5rem;
+    z-index: 1000;
+    background-color: var(--paper-card);
+    border: 3px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    width: 260px;
+    transform: rotate(1.2deg);
+    overflow: visible;
+}
+
+.floating-toc::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 10px;
+    left: 6px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    border-radius: 8px;
+    transform: rotate(-1.1deg);
+}
+
+.floating-toc:hover {
+    transform: rotate(0deg) scale(1.02);
+}
+
+.floating-toc:hover::after {
+    top: 12px;
+    left: 10px;
+    transform: rotate(-1.6deg);
+}
+
+/* Visibility Toggling for Floating TOC (Zero Transitions / Instant Synchronous Toggle) */
+.floating-toc.is-hidden {
+    display: none !important;
+}
+.floating-toc.is-visible {
+    display: block !important;
+}
+
+/* Table of Contents Interactive Toggle & Collapsed State (1950s Blueprint Style, 0 Transitions) */
+.toc-toggle-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    width: 100%;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+}
+.toc-toggle-symbol {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.floating-toc.is-collapsed {
+    width: 160px;
+    padding: 0;
+}
+.floating-toc.is-collapsed .toc-header {
+    margin: 0;
+    border-bottom: none;
+    padding: 0.65rem 1rem;
+    border-radius: 8px;
+}
+.floating-toc.is-collapsed .toc-list,
+.floating-toc.is-collapsed .toc-active-indicator {
+    display: none !important;
+}
+
+/* Independent Drop Shadow Angle for Collapsed State (Rule 3: Collage/Diorama Rule) */
+.floating-toc.is-collapsed::after {
+    top: 6px;
+    left: 5px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    border-radius: 8px;
+    transform: rotate(-1.5deg);
+}
+.floating-toc.is-collapsed:hover::after {
+    top: 8px;
+    left: 7px;
+    transform: rotate(-1.8deg);
+}
+
+.toc-header {
+    border-bottom: 3px solid var(--accent-crimson, #d12b3e);
+    text-align: center;
+    background-color: var(--paper-card, rgba(0, 0, 0, 0.85));
+    color: var(--ink-primary, #ffffff);
+    margin: -1rem -1rem 0.75rem -1rem;
+    padding: 0.65rem 1rem 0.55rem;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.toc-title {
+    font-family: "Impact", "Arial Black", "Futura", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.toc-list {
+    list-style: none;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    z-index: 10;
+}
+
+.toc-item-wrapper {
+    position: relative;
+    z-index: 10;
+}
+
+.toc-item {
+    width: 100%;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    color: var(--ink-secondary);
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 1 !important;
+}
+
+.toc-item.is-active {
+    background: var(--accent-crimson, #d12b3e) !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+}
+
+.toc-num {
+    color: var(--accent-crimson, #d12b3e);
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    opacity: 1 !important;
+}
+
+.toc-item.is-active .toc-num {
+    color: #ffffff !important;
+}
+
+.toc-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+}
+
+.toc-active-indicator {
+    display: none !important;
+}
+
+.scrolly-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+}
+
+/* Stage Layout & Asymmetric Composition */
+.stage-section {
+    display: flex;
+    position: relative;
+    gap: 4.5rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    min-height: min(650px, 80vh);
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.stage-section.layout-text-left {
+    flex-direction: row;
+}
+
+.stage-section.layout-text-right {
+    flex-direction: row-reverse;
+}
+
+.stage-graphic-column {
+    flex: 1 1 55%;
+    position: sticky;
+    top: 0;
+    max-height: 100vh;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 10;
+}
+
+.stage-narrative-column {
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    padding-top: 0;
+    padding-bottom: 0;
+    z-index: 5;
+}
+
+/* Irregular Slanted Tilt Angles & Independent Drop Shadow Offsets/Angles per Stage */
+#stage-section-0 {
+    --step-tilt: -1.4deg;
+    --step-shadow-tilt: 0.9deg;
+    --step-shadow-x: 12px;
+    --step-shadow-y: 8px;
+    --graphic-tilt: 1.2deg;
+    --graphic-shadow-tilt: -1.6deg;
+    --graphic-shadow-x: 16px;
+    --graphic-shadow-y: 10px;
+}
+#stage-section-1 {
+    --step-tilt: 1.6deg;
+    --step-shadow-tilt: -1.1deg;
+    --step-shadow-x: -10px;
+    --step-shadow-y: 14px;
+    --graphic-tilt: -1.4deg;
+    --graphic-shadow-tilt: 1.3deg;
+    --graphic-shadow-x: -12px;
+    --graphic-shadow-y: 16px;
+}
+#stage-section-2 {
+    --step-tilt: -1.1deg;
+    --step-shadow-tilt: 1.5deg;
+    --step-shadow-x: 14px;
+    --step-shadow-y: -6px;
+    --graphic-tilt: 1.5deg;
+    --graphic-shadow-tilt: -0.9deg;
+    --graphic-shadow-x: 10px;
+    --graphic-shadow-y: 18px;
+}
+#stage-section-3 {
+    --step-tilt: 1.3deg;
+    --step-shadow-tilt: -1.4deg;
+    --step-shadow-x: 8px;
+    --step-shadow-y: 16px;
+    --graphic-tilt: -1.1deg;
+    --graphic-shadow-tilt: 1.7deg;
+    --graphic-shadow-x: -14px;
+    --graphic-shadow-y: 12px;
+}
+#stage-section-4 {
+    --step-tilt: -1.5deg;
+    --step-shadow-tilt: 1.2deg;
+    --step-shadow-x: -12px;
+    --step-shadow-y: 10px;
+    --graphic-tilt: 1.3deg;
+    --graphic-shadow-tilt: -1.8deg;
+    --graphic-shadow-x: 18px;
+    --graphic-shadow-y: 8px;
+}
+#stage-section-5 {
+    --step-tilt: 1.2deg;
+    --step-shadow-tilt: -1.5deg;
+    --step-shadow-x: 16px;
+    --step-shadow-y: 14px;
+    --graphic-tilt: -1.5deg;
+    --graphic-shadow-tilt: 1.1deg;
+    --graphic-shadow-x: -10px;
+    --graphic-shadow-y: -8px;
+}
+#stage-section-6 {
+    --step-tilt: -1.3deg;
+    --step-shadow-tilt: 1.6deg;
+    --step-shadow-x: 10px;
+    --step-shadow-y: 18px;
+    --graphic-tilt: 1.4deg;
+    --graphic-shadow-tilt: -1.2deg;
+    --graphic-shadow-x: 14px;
+    --graphic-shadow-y: 14px;
+}
+#stage-section-7 {
+    --step-tilt: 1.5deg;
+    --step-shadow-tilt: -1.1deg;
+    --step-shadow-x: -14px;
+    --step-shadow-y: 12px;
+    --graphic-tilt: -1.2deg;
+    --graphic-shadow-tilt: 1.5deg;
+    --graphic-shadow-x: -16px;
+    --graphic-shadow-y: 16px;
+}
+
+/* Graphic Sticky Wrapper (1950s Architectural Drawing Frame with Independent Shadow) */
+.graphic-sticky-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 4px solid var(--border-color);
+    border-radius: 10px;
+    background-color: transparent;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotateZ(var(--graphic-tilt, 0deg));
+}
+
+.graphic-sticky-wrapper::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: var(--graphic-shadow-y, 14px);
+    left: var(--graphic-shadow-x, 14px);
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    border-radius: 10px;
+    transform: rotateZ(var(--graphic-shadow-tilt, -1.5deg));
+}
+
+.graphic-canvas,
+.graphic-svg,
+#graphic-canvas,
+#graphic-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    clip-path: inset(0px round 5px);
+}
+
+.graphic-canvas,
+#graphic-canvas {
+    z-index: 1;
+}
+
+.graphic-svg,
+#graphic-svg {
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Clean Blueprint Dot Grid / Watercolor Wash Overlay */
+.graphic-texture-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.12), transparent 70%);
+    background-size: 100% 100%;
+    background-position: center;
+    mix-blend-mode: screen;
+    opacity: 0.35;
+    border-radius: 5px;
+    z-index: 2;
+    pointer-events: none;
+    clip-path: inset(0px round 5px);
+}
+
+/* 1950s Graphic Callout Badge Caption with Independent Shadow */
+.caption {
+    position: absolute;
+    z-index: 5;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    right: 1.25rem;
+    background-color: var(--paper-card, rgba(0, 0, 0, 0.85));
+    color: var(--ink-primary, #ffffff);
+    border: 3px solid var(--accent-crimson, #d12b3e);
+    border-radius: 6px;
+    padding: 0.65rem 1.25rem;
+    font-family: "Impact", "Arial Black", "Futura", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: rotate(-0.8deg);
+    overflow: visible;
+}
+
+.caption::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 5px;
+    left: 6px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    border-radius: 6px;
+    transform: rotate(1.6deg);
+}
+
+.caption-title {
+    color: var(--ink-secondary, #cccccc);
+    font-weight: 700;
+}
+
+.caption-text {
+    color: var(--ink-primary, #ffffff);
+    font-weight: 900;
+}
+
+/* Narrative Cards (.step) on Construction Paper with Independent Shadow - Upright & Transparent */
+article,
+.step {
+    position: relative;
+    z-index: 1;
+    background-color: transparent !important;
+    border: 3px solid var(--ink-secondary, #cccccc);
+    border-radius: 8px;
+    padding: 1.35rem 1.75rem;
+    opacity: 1 !important;
+    transform: none !important;
+    overflow: visible;
+}
+
+article.is-active,
+.step.is-active {
+    background-color: transparent !important;
+    transform: none !important;
+}
+
+.step::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: var(--step-shadow-y, 6px);
+    left: var(--step-shadow-x, 6px);
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid, rgba(0, 0, 0, 0.75));
+    border-radius: 8px;
+    opacity: 1;
+    transform: rotateZ(var(--step-shadow-tilt, 1deg));
+}
+
+.step-meta {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: var(--accent-crimson, #d12b3e);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    display: block;
+    margin-top: 0.2rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent-ruby, #c72436);
+    padding-bottom: 0.4rem;
+    opacity: 1 !important;
+}
+
+.step-title {
+    font-family: "Impact", "Arial Black", "Futura", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    color: var(--ink-primary);
+    line-height: 1.1;
+}
+
+/* Standard Vertical Paragraph Text (0 Layout Animations, 0 Transforms, No Separate Boxes) */
+.step-paragraph-item {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1.2rem;
+    opacity: 1 !important;
+    cursor: pointer;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    color: var(--ink-primary);
+    line-height: 1.65;
+    font-weight: 400;
+    transform: rotate(0deg);
+}
+
+.step-paragraph-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Inline Transparent Illustrations Between Paragraphs (Strict Defense-in-Depth Guardrails) */
+.step-inline-illustration {
+    opacity: 1 !important;
+    transition: none !important;
+    animation: none !important;
+    background: transparent !important;
+    border: 2px solid var(--ink-secondary);
+    border-radius: 6px;
+    margin: 16px 0;
+    padding: 12px;
+    text-align: center;
+}
+
+.step-inline-illustration-img {
+    opacity: 1 !important;
+    transition: none !important;
+    animation: none !important;
+    background: transparent !important;
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+}
+
+/* Step Specs (1950s Slanted Print Data Box with Independent Shadow) */
+.step-specs {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    background: var(--bg-color);
+    padding: 0.75rem 1rem;
+    border: 3px solid var(--ink-primary);
+    border-radius: 6px;
+    margin-top: 0.6rem;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    transform: rotate(0.5deg);
+    overflow: visible;
+}
+
+.step-specs::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 6px;
+    left: -6px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    border-radius: 6px;
+    transform: rotate(-1.3deg);
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+    border-left: 3px solid var(--accent-crimson, #d12b3e);
+    padding-left: 0.65rem;
+}
+
+.spec-label {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--ink-secondary, #cccccc);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 1 !important;
+}
+
+.spec-value {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: var(--ink-primary);
+}
+
+.page-footer {
+    position: relative;
+    z-index: 1;
+    padding: 4.5rem 2rem 3.5rem;
+    background-color: var(--paper-card);
+    border: 4px solid var(--border-color);
+    border-radius: 10px;
+    margin-top: 1rem;
+    margin-bottom: 4rem;
+    text-align: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: var(--ink-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transform: rotate(0.5deg);
+    overflow: visible;
+}
+
+.page-footer::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 12px;
+    left: 10px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid);
+    border-radius: 10px;
+    transform: rotate(-0.9deg);
+}
+
+@media (max-width: 1100px) {
+    .floating-toc {
+        top: auto;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 230px;
+        padding: 0.75rem;
+        transform: rotate(0deg);
+    }
+    .floating-toc.is-collapsed {
+        width: 145px;
+        padding: 0;
+    }
+    .toc-title {
+        font-size: 1rem;
+    }
+    .toc-item {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.45rem;
+    }
+    .step-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .scrolly-container {
+        gap: 2.5rem;
+    }
+    .stage-section,
+    .stage-section.layout-text-left,
+    .stage-section.layout-text-right {
+        flex-direction: column;
+        gap: 2.5rem;
+        min-height: auto;
+        padding-top: 1.5rem;
+        padding-bottom: 2rem;
+    }
+    .stage-graphic-column {
+        position: relative;
+        top: 0;
+        width: 100%;
+        height: auto;
+    }
+    .stage-narrative-column {
+        width: 100%;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    .step-specs {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Bottom Timeline Navigation Overlay (Canon Autozoom Style, Zero Transitions) */
+.bottom-timeline-overlay,
+#bottom-timeline-overlay {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) rotate(-0.5deg);
+    z-index: 1000;
+    background-color: var(--paper-card, rgba(0, 0, 0, 0.85));
+    border: 3px solid var(--border-color, #ffffff);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    width: max-content;
+    max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 1 !important;
+    overflow: visible;
+    transition: none !important;
+    animation: none !important;
+}
+.bottom-timeline-overlay::after,
+#bottom-timeline-overlay::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 6px;
+    left: 8px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-solid, rgba(0, 0, 0, 0.75));
+    border-radius: 8px;
+    transform: rotate(1.1deg);
+    transition: none !important;
+    animation: none !important;
+}
+.bottom-timeline-overlay.is-hidden,
+#bottom-timeline-overlay.is-hidden {
+    display: none !important;
+}
+.bottom-timeline-overlay.is-visible,
+#bottom-timeline-overlay.is-visible {
+    display: flex !important;
+}
+.timeline-track {
+    position: absolute;
+    top: 50%;
+    left: 1.5rem;
+    right: 1.5rem;
+    height: 2px;
+    background-color: var(--ink-secondary, #cccccc);
+    z-index: 1;
+}
+.timeline-points {
+    list-style: none;
+    display: flex;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 2;
+}
+.timeline-point {
+    background-color: var(--paper-light, rgba(0, 0, 0, 0.65));
+    border: 2px solid var(--border-color, #ffffff);
+    border-radius: 6px;
+    color: var(--ink-secondary, #cccccc);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.35rem 0.65rem;
+    cursor: pointer;
+    opacity: 1 !important;
+    transition: none !important;
+    animation: none !important;
+    transform: rotate(0deg);
+    z-index: 2;
+}
+.timeline-point.is-active {
+    background: var(--accent-crimson, #d12b3e) !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+}
