@@ -1,0 +1,4 @@
+assets/index.css
+assets/index.js
+assets/index.js.map
+index.html
