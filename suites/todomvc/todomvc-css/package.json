@@ -12,6 +12,8 @@
         "dev": "http-server ./ -p 7005 -c-1 --cors -o",
         "lint": "stylelint \"src/css/*.css\"",
         "build": "rollup -c --bundleConfigAsCjs",
+        "build:resources": "node ../../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
         "reference": "http-server ./_reference/ -p 7006 -c-1 --cors -o",
         "serve": "http-server ./dist/ -p 7007 -c-1 --cors -o",
         "prepublish": "npm run build"

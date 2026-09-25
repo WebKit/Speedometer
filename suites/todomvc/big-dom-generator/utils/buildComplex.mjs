@@ -132,12 +132,13 @@ export function buildComplex(options) {
 function prepareComplex(options) {
     const { standaloneDirectory, complexDirectory } = options;
 
-    // Run npm i in big-dom-generator
-    console.log("Running npm ci in big-dom-generator...");
-    execSync("npm ci", { cwd: path.join(__dirname, ".."), stdio: "inherit" });
+    // Run npm install in big-dom-generator to avoid wiping the node_modules folder the current script is running from
+    console.log("Running npm install in big-dom-generator...");
+    execSync("npm install", { cwd: path.join(__dirname, ".."), stdio: "inherit" });
 
     // Run npm i in the standalone directory
     console.log(`Running npm ci in the standalone directory: ${standaloneDirectory}`);
+    fs.rmSync(path.join(standaloneDirectory, "node_modules"), { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
     execSync("npm ci", { cwd: standaloneDirectory, stdio: "inherit" });
 
     // Run npm run build in the standalone directory
@@ -145,6 +146,7 @@ function prepareComplex(options) {
     execSync("npm run build", { cwd: standaloneDirectory, stdio: "inherit" });
 
     console.log(`Running npm ci in the complex directory: ${complexDirectory}`);
+    fs.rmSync(path.join(complexDirectory, "node_modules"), { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
     execSync("npm ci", { cwd: complexDirectory, stdio: "inherit" });
 }
 
