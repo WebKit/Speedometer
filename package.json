@@ -18,6 +18,9 @@
         "dev": "node tests/server.mjs",
         "lint:check": "eslint \"**/*.{js,mjs,jsx,ts,tsx}\"",
         "lint:fix": "eslint \"**/*.{js,mjs,jsx,ts,tsx}\" --fix",
+        "lint:html": "html-validate \"*.html\" \"resources/**/*.html\"",
+        "lint:css": "stylelint \"*.css\" \"resources/**/*.css\"",
+        "lint:css:fix": "stylelint \"*.css\" \"resources/**/*.css\" --fix",
         "lint:pkg": "npmPkgJsonLint \"**/package.json\" --ignore-pattern \"**/node_modules/**\"",
         "pretty:check": "prettier --check ./",
         "pretty:fix": "prettier --write ./",
@@ -50,6 +53,7 @@
         "eslint-plugin-react": "^7.32.2",
         "eslint-plugin-vue": "^9.10.0",
         "expect.js": "^0.3.1",
+        "html-validate": "^11.5.6",
         "lws": "^4.2.0",
         "lws-cors": "^4.2.1",
         "lws-index": "^3.1.1",
@@ -63,6 +67,8 @@
         "prettier-plugin-tailwindcss": "^0.4.1",
         "selenium-webdriver": "^4.44.0",
         "sinon": "^17.0.1",
+        "stylelint": "^17.14.1",
+        "stylelint-config-standard": "^40.0.0",
         "typescript": "~5.1.0"
     }
 }
