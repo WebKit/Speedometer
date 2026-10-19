@@ -1,0 +1,23 @@
+{
+    "name": "videowatch-spa",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Speedometer workload modeling a modern video watch SPA (Polymer Custom Elements + Lit/Signals + Redux)",
+    "engines": {
+        "node": ">=22.0.0",
+        "npm": ">=8.19.3"
+    },
+    "scripts": {
+        "build": "rollup --config rollup.config.mjs && cp index.html styles.css dist/"
+    },
+    "dependencies": {
+        "@polymer/polymer": "^3.5.1",
+        "@preact/signals-core": "^1.8.0",
+        "lit-html": "^3.0.0",
+        "redux": "^5.0.1"
+    },
+    "devDependencies": {
+        "rollup": "^4.0.0"
+    }
+}

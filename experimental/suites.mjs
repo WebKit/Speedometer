@@ -271,4 +271,18 @@ export const ExperimentalSuites = freezeSuites([
             }),
         ],
     },
+    {
+        name: "VideoWatch-SPA",
+        url: "experimental/videowatch/dist/index.html",
+        tags: ["videowatch", "webcomponents", "experimental"],
+        async prepare(page) {
+            await page.waitForElement("#watch-app-ready");
+        },
+        tests: [
+            new BenchmarkTestStep("NavigatePlaylistAndInteract", (page) => {
+                page.getElementById("run-playlist-session").click();
+                page.layout();
+            }),
+        ],
+    },
 ]);
