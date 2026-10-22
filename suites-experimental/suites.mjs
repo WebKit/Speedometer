@@ -548,28 +548,33 @@ export const ExperimentalSuites = freezeSuites([
                     await scrollTo(((scroller.scrollHeight - viewportHeight) * i) / strides);
                 await scrollTo(0);
             }),
-            // The first message is opened by click, the rest with J (next
+            // The first message is opened by click, the next 15 with J (next
             // message). Plain text renders inline; HTML goes through DOMPurify,
             // dark-mode adaptation and a sandboxed srcdoc iframe.
+            //
+            // The cursor follow (TanStack Virtual's scrollToIndex) re-applies its
+            // target on later frames until it settles, even across other
+            // scrolls; Back changes the row heights and so the target. Home makes
+            // row 0 the last target, whose offset stays 0, so the list is at the
+            // top for the next step and a late re-application changes nothing.
             new BenchmarkTestStep("ReadMessages", async (page) => {
                 const J_KEY = 74;
+                const HOME_KEY = 36;
                 stormboxRow(page, 0).querySelector(".msg-list__open").click();
                 await stormboxSettle(page);
+                const scroller = page.querySelector(".msg-list__scroller");
                 for (let i = 0; i < 15; i++) {
-                    page.querySelector(".msg-list__scroller").dispatchKeyEvent("keydown", J_KEY, "j");
+                    scroller.dispatchKeyEvent("keydown", J_KEY, "j");
                     await stormboxSettle(page);
                 }
+                scroller.dispatchKeyEvent("keydown", HOME_KEY, "Home");
+                await stormboxSettle(page);
                 page.querySelector(".message-view__action--back").click();
                 await stormboxSettle(page);
             }),
             // The row overlay's star and tag buttons; the tag button opens the
-            // tag menu as a popover, toggles Work, and closes it again. Starts
-            // from the top of the list so every browser acts on the same rows.
+            // tag menu as a popover, toggles Work, and closes it again.
             new BenchmarkTestStep("StarAndTagMessages", async (page) => {
-                const scroller = page.querySelector(".msg-list__scroller");
-                scroller.scrollTop = 0;
-                scroller.dispatchEvent("scroll");
-                await stormboxSettle(page);
                 const row = (index) => page.querySelector(`.msg-list__items li[data-index="${index}"]`);
                 for (let i = 0; i < 10; i++) {
                     row(i).querySelector(".msg-list__action--star").click();
