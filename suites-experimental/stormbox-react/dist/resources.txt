@@ -1,0 +1,13 @@
+assets/Inter-Bold-CuhepTt8.woff2
+assets/Inter-Medium-P1cOs5ep.woff2
+assets/Inter-Regular-CKDp9E3C.woff2
+assets/Inter-SemiBold-Ctx7G98q.woff2
+assets/Metropolis-Bold-BZLKi5Gb.woff2
+assets/Metropolis-Light-zcEanPsD.woff2
+assets/Metropolis-Regular-DKepXnDq.woff2
+assets/Metropolis-SemiBold-D_dLm6Ff.woff2
+assets/index-AWVjlOug.css
+assets/index-DIr-gxPn.js
+assets/index-DIr-gxPn.js.map
+favicon-32.png
+index.html
