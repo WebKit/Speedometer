@@ -400,4 +400,15 @@ export const ExperimentalSuites = freezeSuites([
         },
         tests: chatRoomTests,
     },
+    {
+        name: "ChatRoom-Svelte",
+        url: "suites-experimental/chat-room-svelte/dist/index.html",
+        resources: "suites-experimental/chat-room-svelte/dist/resources.txt",
+        tags: ["chat-room", "experimental"],
+        type: "async",
+        async prepare(page) {
+            await page.waitForElement(".room-list-item");
+        },
+        tests: chatRoomTests,
+    },
 ]);
