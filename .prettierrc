@@ -9,5 +9,13 @@
     "tabWidth": 4,
     "trailingComma": "es5",
     "useTabs": false,
-    "plugins": ["prettier-plugin-tailwindcss"]
+    "plugins": ["prettier-plugin-tailwindcss"],
+    "overrides": [
+        {
+            "files": "suites-experimental/chat-room-angular/src/**/*.ts",
+            "options": {
+                "embeddedLanguageFormatting": "off"
+            }
+        }
+    ]
 }
