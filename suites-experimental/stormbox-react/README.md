@@ -11,7 +11,7 @@ transitions and the reading pane's 310ms wait for the folder list, so the
 800px viewport's responsive layout (opening a message hides the folder list)
 happens within the interaction that triggers it.
 
-Steps, each interaction followed by a task yield and a forced layout:
+Steps, each interaction followed by a task yield:
 
 - `SwitchFolders`: large folders, nested subfolders and the Starred tag view.
 - `ScrollMessageList`: the virtualized Inbox, a viewport at a time, then in

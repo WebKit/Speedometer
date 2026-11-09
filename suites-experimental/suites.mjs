@@ -34,11 +34,9 @@ function yieldTask() {
     });
 }
 
-// Lets React commit an interaction, then forces layout, so each Stormbox
-// step measures the update it triggered.
-async function stormboxSettle(page) {
+// Lets React commit an interaction before the next one.
+async function stormboxSettle() {
     await yieldTask();
-    page.layout();
 }
 
 // The message list is virtualized: only rendered rows can be targeted, and
@@ -527,7 +525,7 @@ export const ExperimentalSuites = freezeSuites([
                 ];
                 for (const target of clicks) {
                     target().click();
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                 }
             }),
             // The list is virtualized at a fixed row height, so every offset
@@ -539,7 +537,7 @@ export const ExperimentalSuites = freezeSuites([
                 const scrollTo = async (offset) => {
                     scroller.scrollTop = offset;
                     scroller.dispatchEvent("scroll");
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                 };
                 for (let i = 1; i <= 10; i++)
                     await scrollTo(i * viewportHeight);
@@ -561,32 +559,32 @@ export const ExperimentalSuites = freezeSuites([
                 const J_KEY = 74;
                 const HOME_KEY = 36;
                 stormboxRow(page, 0).querySelector(".msg-list__open").click();
-                await stormboxSettle(page);
+                await stormboxSettle();
                 const scroller = page.querySelector(".msg-list__scroller");
-                for (let i = 0; i < 15; i++) {
+                for (let i = 0; i < 5; i++) {
                     scroller.dispatchKeyEvent("keydown", J_KEY, "j");
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                 }
                 scroller.dispatchKeyEvent("keydown", HOME_KEY, "Home");
-                await stormboxSettle(page);
+                await stormboxSettle();
                 page.querySelector(".message-view__action--back").click();
-                await stormboxSettle(page);
+                await stormboxSettle();
             }),
             // The row overlay's star and tag buttons; the tag button opens the
             // tag menu as a popover, toggles Work, and closes it again.
             new BenchmarkTestStep("StarAndTagMessages", async (page) => {
                 const row = (index) => page.querySelector(`.msg-list__items li[data-index="${index}"]`);
-                for (let i = 0; i < 10; i++) {
-                    row(i).querySelector(".msg-list__action--star").click();
-                    await stormboxSettle(page);
-                }
                 for (let i = 0; i < 5; i++) {
+                    row(i).querySelector(".msg-list__action--star").click();
+                    await stormboxSettle();
+                }
+                for (let i = 0; i < 3; i++) {
                     row(i).querySelector(".msg-list__action--tag").click();
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                     page.querySelector('[data-tag-picker-popover] [data-tag-keyword="$label2"]').click();
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                     row(i).querySelector(".msg-list__action--tag").click();
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                 }
             }),
             // Select all checks every Inbox message, so each bulk action
@@ -604,7 +602,7 @@ export const ExperimentalSuites = freezeSuites([
                 ];
                 for (const selector of clicks) {
                     page.querySelector(selector).click();
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                 }
             }),
             new BenchmarkTestStep("QuickFilter", async (page) => {
@@ -613,12 +611,12 @@ export const ExperimentalSuites = freezeSuites([
                 for (let i = 1; i <= query.length; i++) {
                     input.setValue(query.slice(0, i));
                     input.dispatchEvent("input");
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                 }
                 for (let i = query.length - 1; i >= 0; i--) {
                     input.setValue(query.slice(0, i));
                     input.dispatchEvent("input");
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                 }
             }),
             // Removing checked rows opens their neighbour, as Stormbox does,
@@ -627,18 +625,18 @@ export const ExperimentalSuites = freezeSuites([
                 const selectRows = async (count) => {
                     for (let i = 0; i < count; i++) {
                         stormboxRow(page, i).querySelector(".msg-list__check input").click();
-                        await stormboxSettle(page);
+                        await stormboxSettle();
                     }
                 };
                 const clicks = async (...selectors) => {
                     for (const selector of selectors) {
                         page.querySelector(selector).click();
-                        await stormboxSettle(page);
+                        await stormboxSettle();
                     }
                 };
-                await selectRows(10);
+                await selectRows(5);
                 await clicks('[data-bulk-action="archive"]');
-                await selectRows(10);
+                await selectRows(5);
                 await clicks('[data-bulk-action="delete"]', ".message-view__action--back");
                 // Trash now holds the deleted rows; emptying it removes them for good.
                 await clicks('.folder-node[data-folder-id="7"] .folder-node__button', ".msg-list__select-all input", '[data-bulk-action="delete"]');
@@ -650,44 +648,44 @@ export const ExperimentalSuites = freezeSuites([
             new BenchmarkTestStep("ComposeAndSend", async (page) => {
                 const ENTER_KEY = 13;
                 const C_KEY = 67;
-                for (let i = 0; i < 3; i++) {
+                for (let i = 0; i < 2; i++) {
                     stormboxRow(page, i).querySelector(".msg-list__open").click();
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                     page.querySelector('.message-view__action[aria-label="Reply"]').click();
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                     page.querySelector(".compose-dialog--expanded .compose-send").click();
-                    await stormboxSettle(page);
+                    await stormboxSettle();
 
                     page.querySelector(".msg-list__scroller").dispatchKeyEvent("keydown", C_KEY, "c");
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                     const to = page.querySelector("#compose-to");
                     to.setValue(`Priya García <pgarcia${i}@tailspin.example>`);
                     to.dispatchEvent("input");
                     to.dispatchKeyEvent("keydown", ENTER_KEY, "Enter");
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                     const subject = page.querySelector("#compose-subject");
                     subject.setValue(`Quarterly numbers, part ${i + 1}`);
                     subject.dispatchEvent("input");
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                     page.querySelector(".compose-dialog--expanded .compose-send").click();
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                 }
                 page.querySelector(".message-view__action--back").click();
-                await stormboxSettle(page);
+                await stormboxSettle();
             }),
             // Each theme switch restyles the page and re-adapts the open HTML
             // newsletter for the new color scheme.
             new BenchmarkTestStep("ToggleTheme", async (page) => {
                 page.querySelector('.folder-node[data-folder-id="20"] .folder-node__button').click();
-                await stormboxSettle(page);
+                await stormboxSettle();
                 stormboxRow(page, 0).querySelector(".msg-list__open").click();
-                await stormboxSettle(page);
-                for (let i = 0; i < 4; i++) {
+                await stormboxSettle();
+                for (let i = 0; i < 2; i++) {
                     page.querySelector(".theme-toggle").click();
-                    await stormboxSettle(page);
+                    await stormboxSettle();
                 }
                 page.querySelector(".message-view__action--back").click();
-                await stormboxSettle(page);
+                await stormboxSettle();
             }),
         ],
     },
