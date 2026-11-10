@@ -45,6 +45,40 @@ function stormboxRow(page, n) {
     return page.querySelectorAll(".msg-list__items li")[n];
 }
 
+// Resolves on the next `name` event from the workload, which it fires once the result
+// of an interaction has committed. Register before triggering the interaction.
+function waitForAppEvent(page, name) {
+    return new Promise((resolve) => page.addEventListener(name, resolve, { once: true }));
+}
+
+// React commits an update made in a discrete event from a microtask. When the step
+// dispatches the event itself, that microtask only runs once the step yields.
+function commitPendingUpdates() {
+    return new Promise((resolve) => queueMicrotask(resolve));
+}
+
+// Types `text` one key at a time, starting after the first `typed` characters. Each
+// key commits before the next, as it does when a person types.
+async function typeInto(field, text, typed = 0) {
+    for (let i = typed + 1; i <= text.length; i++) {
+        const key = text[i - 1];
+        field.dispatchKeyEvent("keydown", key.charCodeAt(0), key);
+        field.setValue(text.slice(0, i));
+        field.dispatchEvent("input");
+        field.dispatchKeyEvent("keyup", key.charCodeAt(0), key);
+        await commitPendingUpdates();
+    }
+}
+
+// Pages of five stories and of ten comments, scaled with the complexity param.
+function getNumberOfFeedPages() {
+    return Math.max(1, Math.round(getNumberOfItemsToAdd() / 25));
+}
+
+function getNumberOfCommentPages() {
+    return Math.max(1, Math.round(getNumberOfItemsToAdd() / 34));
+}
+
 export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-LocalStorage",
@@ -801,6 +835,147 @@ export const ExperimentalSuites = freezeSuites([
                 page.querySelector("#btn-step-courses").click();
                 await complete;
                 page.layout();
+            }),
+        ],
+    },
+    {
+        name: "SocialNetwork-React",
+        url: "suites-experimental/social-network/dist/index.html",
+        resources: "suites-experimental/social-network/dist/resources.txt",
+        tags: ["social-network", "experimental"],
+        type: "async",
+        async prepare(page) {
+            await page.waitForElement('.home[data-feed-status="ready"]');
+        },
+        tests: [
+            new BenchmarkTestStep("RefreshHomeFeed", async (page) => {
+                const refreshed = waitForAppEvent(page, "home-feed-refreshed");
+                page.querySelector("#tab-home").click();
+                await refreshed;
+            }),
+            // Reads down the feed one story at a time, the way a reader scrolls: each
+            // offset mounts the story it lands on and collapses the ones left behind.
+            // Reaching the end asks for the next page. The scroll event is dispatched by
+            // hand, so no frame lands inside the measured window.
+            new BenchmarkTestStep("LoadMoreStories", async (page) => {
+                const scroller = page.querySelector("#main-scroller");
+                let index = 0;
+                for (let i = 0; i < getNumberOfFeedPages(); i++) {
+                    const loaded = waitForAppEvent(page, "feed-page-loaded");
+                    const units = page.querySelectorAll(".feed-unit");
+                    for (; index < units.length; index++) {
+                        units[index].scrollIntoView({ block: "start", behavior: "instant" });
+                        scroller.dispatchEvent("scroll");
+                        page.layout();
+                    }
+                    await loaded;
+                }
+            }),
+            // Scrolls back up to the top, expanding every truncated story on the way.
+            new BenchmarkTestStep("ExpandStoryTexts", async (page) => {
+                const scroller = page.querySelector("#main-scroller");
+                const units = page.querySelectorAll(".feed-unit");
+                for (let i = units.length - 1; i >= 0; i--) {
+                    units[i].scrollIntoView({ block: "start", behavior: "instant" });
+                    scroller.dispatchEvent("scroll");
+                    const readMore = units[i].querySelector(".read-more");
+                    if (readMore) {
+                        readMore.click();
+                        await commitPendingUpdates();
+                        page.layout();
+                    }
+                }
+            }),
+            new BenchmarkTestStep("OpenPostDialog", async (page) => {
+                const ready = waitForAppEvent(page, "post-dialog-ready");
+                page.querySelector('[data-unit-live] .story-comments-button[data-thread="busy"]').click();
+                await ready;
+            }),
+            new BenchmarkTestStep("ExpandCommentReplies", async (page) => {
+                const buttons = page.querySelectorAll("#post-dialog .view-replies");
+                for (const button of buttons) {
+                    const loaded = waitForAppEvent(page, "replies-loaded");
+                    button.click();
+                    await loaded;
+                    page.layout();
+                }
+            }),
+            new BenchmarkTestStep("ChangeCommentOrder", async (page) => {
+                page.querySelector("#comment-order").click();
+                await commitPendingUpdates();
+                page.layout();
+                const reordered = waitForAppEvent(page, "comments-reordered");
+                page.querySelector('.comment-order-option[data-order="all"]').click();
+                await reordered;
+            }),
+            new BenchmarkTestStep("LoadMoreComments", async (page) => {
+                const body = page.querySelector("#post-dialog-body");
+                for (let i = 0; i < getNumberOfCommentPages(); i++) {
+                    if (page.querySelector("#post-dialog .comments-end"))
+                        break;
+                    const loaded = waitForAppEvent(page, "comments-page-loaded");
+                    const comments = page.querySelectorAll("#post-dialog-body .comment");
+                    comments[comments.length - 1].scrollIntoView({ block: "end", behavior: "instant" });
+                    body.dispatchEvent("scroll");
+                    await loaded;
+                    page.layout();
+                }
+            }),
+            new BenchmarkTestStep("TypeComment", async (page) => {
+                const composer = page.querySelector("#comment-composer");
+                composer.focus();
+                await typeInto(composer, "This brings back so many memories, @an the harbour one is my favourite :) #goldenhour");
+                page.layout();
+            }),
+            new BenchmarkTestStep("ClosePostDialog", async (page) => {
+                page.querySelector("#post-dialog-close").click();
+                await commitPendingUpdates();
+                page.layout();
+            }),
+            new BenchmarkTestStep("OpenOwnProfile", async (page) => {
+                const ready = waitForAppEvent(page, "profile-ready");
+                page.querySelector("#rail-profile").click();
+                await ready;
+                const scroller = page.querySelector("#main-scroller");
+                for (const unit of page.querySelectorAll(".feed-unit")) {
+                    unit.scrollIntoView({ block: "start", behavior: "instant" });
+                    scroller.dispatchEvent("scroll");
+                    page.layout();
+                }
+            }),
+            new BenchmarkTestStep("BackToHomeFeed", async (page) => {
+                const ready = waitForAppEvent(page, "home-ready");
+                page.querySelector("#tab-home").click();
+                await ready;
+            }),
+            // Every keystroke filters the local index and asks the server; the step
+            // waits for each answer, the way a typeahead keeps up with typing.
+            new BenchmarkTestStep("SearchTypeahead", async (page) => {
+                const input = page.querySelector("#search-input");
+                const opened = waitForAppEvent(page, "search-ready");
+                input.focus();
+                input.click();
+                await opened;
+                const query = "maren quill";
+                for (let i = 1; i <= query.length; i++) {
+                    const results = waitForAppEvent(page, "search-results");
+                    await typeInto(input, query.slice(0, i), i - 1);
+                    await results;
+                }
+                input.dispatchKeyEvent("keydown", 27, "Escape");
+                await commitPendingUpdates();
+                page.layout();
+            }),
+            new BenchmarkTestStep("OpenHeaderMenus", async (page) => {
+                for (const menu of ["explore", "messages", "notifications", "account"]) {
+                    const button = page.querySelector(`#header-${menu}`);
+                    const ready = waitForAppEvent(page, "menu-ready");
+                    button.click();
+                    await ready;
+                    page.layout();
+                    button.click();
+                    await commitPendingUpdates();
+                }
             }),
         ],
     },
