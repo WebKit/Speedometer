@@ -1,0 +1,483 @@
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/Inter-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/Inter-Medium.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/Inter-SemiBold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/Inter-Bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Metropolis";
+  src: url("../assets/fonts/Metropolis/Metropolis-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Metropolis";
+  src: url("../assets/fonts/Metropolis/Metropolis-Light.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Metropolis";
+  src: url("../assets/fonts/Metropolis/Metropolis-SemiBold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Metropolis";
+  src: url("../assets/fonts/Metropolis/Metropolis-Bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  /* The vertical gradient services-ui paints on filled primary buttons
+     (see .primary.filled in their style.css). Kept as a token so our own
+     accent-filled elements (e.g. the active spaces button) can render the
+     exact same surface. Theme-correct automatically: it is built from the
+     --colour-* tokens, which dark mode re-aliases to our palette. */
+  --primary-filled-gradient: linear-gradient(
+    180deg,
+    var(--colour-accent-blue) -31.82%,
+    var(--colour-primary-default) 8.74%,
+    var(--colour-primary-hover) 100%
+  );
+  /* Default to dark; system light overrides below */
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Metropolis", "Inter", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* Bolt surface ramp (bolt.thunderbird.net, Foundations > Color >
+     Surface), dark values; the theme blocks below re-declare it. The
+     names are services-ui's, so its components share the ramp. lower,
+     base and raised are elevation; subtle and deep are tints, lighter
+     than base in dark and darker than base in light. */
+  --colour-neutral-lower: #111113;
+  --colour-neutral-base: #18181b;
+  --colour-neutral-subtle: #232326;
+  --colour-neutral-raised: #2b2b2f;
+  --colour-neutral-deep: #3f3f46;
+  --colour-neutral-border: #52525b;
+  --colour-neutral-border-intense: #71717a;
+  /* The surface ladder runs the opposite way in each theme. Dark: content
+     on lower, folder list and dialogs on base, chrome (App.vue) on raised.
+     Light: content on base, folder list on lower, chrome on subtle. Inputs
+     take the subtle tint so a field is lifted from a dark surface and
+     recessed from a light one; dividers are the nearest tint to the
+     surface (~1.2:1). */
+  --panel: var(--colour-neutral-lower);
+  --panel2: var(--colour-neutral-subtle);
+  --border: var(--colour-neutral-subtle);
+  --text: #e6e8ef;
+  --muted: #9aa3b2;
+  --accent: #4f8cff;
+  /* Bright enough to read as a highlight on any dark surface (--panel,
+     --panel2, the folder list); the old #14182a was nearly invisible.
+     Selected sits clearly above hover via a stronger blue cast without
+     jumping to the over-bright #263054 tried earlier. */
+  --rowHover: #1e2438;
+  --rowActive: #222c50;
+  --folder-icon-color: #fee78a;
+  --folder-icon-fill: color-mix(in srgb, #ffd166 20%, transparent);
+  /* Warning banner (default = dark theme): light amber on a translucent
+     amber wash; ~13:1 over the dark page. WCAG AA. */
+  --warn-bg: rgba(255, 193, 7, 0.1);
+  --warn-fg: #ffd166;
+  --warn-border: rgba(255, 193, 7, 0.38);
+  /* Errors (invalid pills, inline failures): light red on a red wash,
+     readable over --panel and --panel2. */
+  --error-bg: rgba(255, 107, 107, 0.14);
+  --error-fg: #ff6b6b;
+  /* Form controls (inputs, pickers, toggle buttons) and dialog edges take
+     the ramp's border token, a step above the --border hairline. */
+  --control-border: var(--colour-neutral-border);
+  --control-hover-bg: color-mix(in srgb, var(--text) 16%, transparent);
+  --control-hover-border: color-mix(in srgb, var(--text) 38%, transparent);
+  /* Cards inset on a panel (feature cards, shortcut groups) use the same weight. */
+  --card-border: var(--control-border);
+  color-scheme: dark light;
+}
+
+/* Explicit theme overrides via the services-ui `dark`/`light` class on <html> */
+html.dark,
+.dark {
+  --colour-neutral-lower: #111113;
+  --colour-neutral-base: #18181b;
+  --colour-neutral-subtle: #232326;
+  --colour-neutral-raised: #2b2b2f;
+  --colour-neutral-deep: #3f3f46;
+  --colour-neutral-border: #52525b;
+  --colour-neutral-border-intense: #71717a;
+  --panel: var(--colour-neutral-lower);
+  --border: var(--colour-neutral-subtle);
+  --text: #e6e8ef;
+  --muted: #9aa3b2;
+  --accent: #4f8cff;
+  --rowHover: #1e2438;
+  --rowActive: #222c50;
+  --folder-icon-color: #fee78a;
+  --folder-icon-fill: color-mix(in srgb, #ffd166 20%, transparent);
+  --warn-bg: rgba(255, 193, 7, 0.1);
+  --warn-fg: #ffd166;
+  --warn-border: rgba(255, 193, 7, 0.38);
+  --error-bg: rgba(255, 107, 107, 0.14);
+  --error-fg: #ff6b6b;
+}
+
+html.light,
+.light {
+  --colour-neutral-lower: #f7f7f8;
+  --colour-neutral-base: #fcfcfd;
+  --colour-neutral-subtle: #efeff1;
+  --colour-neutral-raised: #ffffff;
+  --colour-neutral-deep: #e4e4e7;
+  --colour-neutral-border: #d9d9de;
+  --colour-neutral-border-intense: #a1a1aa;
+  --panel: var(--colour-neutral-base);
+  /* deep on base is ~1.25:1, the same hairline weight as dark's subtle. */
+  --border: var(--colour-neutral-deep);
+  --text: #111827;
+  --muted: #6b7280;
+  /* Light mode adopts services-ui's primary blue (--colour-primary-default,
+     #1373d9) so our own accent-coloured elements match services-ui buttons.
+     Dark mode keeps our #4f8cff and aliases the services-ui tokens to it. */
+  --accent: #1373d9;
+  --rowHover: #eef2ff; /* soft accent-tint for hover */
+  --rowActive: #e0e9ff; /* slightly stronger for selected */
+  --folder-icon-color: #947400;
+  --folder-icon-fill: #ffeb99;
+  /* Amber-on-pale-yellow is unreadable in light mode (issue #46); deep amber
+     text on a solid pale-amber field. #664700 on #fdf4d0 ≈ 7.7:1. WCAG AAA. */
+  --warn-bg: #fdf4d0;
+  --warn-fg: #664700;
+  --warn-border: #e7c34d;
+  /* Deep red on a solid pale-red field; #a4000f on #fbeaea ≈ 7.6:1. */
+  --error-bg: #fbeaea;
+  --error-fg: #a4000f;
+}
+
+/* If user prefers light and no explicit theme chosen, use light */
+@media (prefers-color-scheme: light) {
+  :root {
+    --colour-neutral-lower: #f7f7f8;
+    --colour-neutral-base: #fcfcfd;
+    --colour-neutral-subtle: #efeff1;
+    --colour-neutral-raised: #ffffff;
+    --colour-neutral-deep: #e4e4e7;
+    --colour-neutral-border: #d9d9de;
+    --colour-neutral-border-intense: #a1a1aa;
+    --panel: var(--colour-neutral-base);
+    --border: var(--colour-neutral-deep);
+    --text: #111827;
+    --muted: #6b7280;
+    --accent: #1373d9;
+    --rowHover: #eef2ff;
+    --rowActive: #e0e9ff;
+    --folder-icon-color: #947400;
+    --folder-icon-fill: #ffeb99;
+    --warn-bg: #fdf4d0;
+    --warn-fg: #664700;
+    --warn-border: #e7c34d;
+    --error-bg: #fbeaea;
+    --error-fg: #a4000f;
+  }
+}
+
+/* Neutrals come from the Bolt ramp in the theme blocks above, in both
+   themes. Light mode otherwise uses the services-ui palette as-is. Dark
+   mode overrides the remaining services-ui --colour-* tokens with our own
+   palette, because services-ui's dark theme doesn't match our chrome. We
+   import services-ui's style.css first (see main.ts), so re-declaring these
+   tokens here wins and cascades into every services-ui component.
+
+   Intentionally NOT overridden (kept on services-ui defaults): the
+   `secondary` family, the decorative `accent-{teal,purple,orange,pink,gray}`
+   set, and other-product brand colours (`apmt-*`, `send-*`, `service-*`) —
+   we have no equivalents and nothing in webmail renders them. */
+html.dark {
+  /* Primary → our accent blue. */
+  --colour-primary-soft: #16203a;
+  --colour-primary-default: var(--accent);
+  --colour-primary-hover: #5e97ff;
+  --colour-primary-pressed: #3c79e6;
+  --colour-accent-blue: var(--accent);
+
+  /* Text / icon. */
+  --colour-ti-base: var(--text);
+  --colour-ti-secondary: #c2c8d4;
+  --colour-ti-muted: var(--muted);
+  --colour-ti-highlight: var(--accent);
+  --colour-ti-warning: #ffd166;
+  --colour-ti-critical: #ff6b6b;
+  --colour-ti-success: #45c483;
+
+  /* Warning (amber): soft = dark tinted bg, default/hover/pressed = fg. */
+  --colour-warning-soft: #2a2206;
+  --colour-warning-default: #ffd166;
+  --colour-warning-hover: #ffdb85;
+  --colour-warning-pressed: #f5c23e;
+
+  /* Danger: derived from our error red #ff6b6b. */
+  --colour-danger-soft: #3a1418;
+  --colour-danger-default: #ff6b6b;
+  --colour-danger-hover: #ff8585;
+  --colour-danger-pressed: #e85555;
+
+  /* Success: derived from our success green #2e9e63. */
+  --colour-success-soft: #0d2a1a;
+  --colour-success-default: #57c98a;
+  --colour-success-hover: #6ed79b;
+  --colour-success-pressed: #2e9e63;
+}
+/* Label and icon colour on flat --accent fills in the dark theme: the
+   accent is a light blue (#4f8cff), so the lower surface (#0f1117, 5.8:1)
+   reads where white sits at 3.2:1. The light theme keeps white on its
+   darker blue. Listed with the same state variants as the components so
+   the override outranks their scoped rules; the Bolt palette applies the
+   same treatment via --bolt-filled-fg (assets/bolt-theme.css). */
+html.dark .base.primary.filled:not(:disabled),
+html.dark .app-toggle-button.is-active,
+html.dark .msg-list__filter.is-active,
+html.dark .msg-list__bulk-action--whitelist,
+html.dark .msg-list__bulk-action--whitelist:hover,
+html.dark .msg-list__bulk-action--whitelist:disabled,
+html.dark .msg-list__bulk-action--whitelist:disabled:hover,
+html.dark .message-view__action--whitelist,
+html.dark .message-view__action--whitelist:hover,
+html.dark .message-view__action--whitelist:disabled,
+html.dark .message-view__action--whitelist:disabled:hover,
+html.dark .folder-create__btn--primary,
+html.dark .folder-subs__btn--primary,
+html.dark .settings-dialog__btn--primary,
+html.dark .scheme-picker__option[aria-checked="true"] {
+  color: var(--panel2);
+}
+/* Filled primary buttons are flat --accent at rest; services-ui's own flat
+   hover/pressed states still apply. Its resting gradient is a Bolt-only
+   treatment (assets/bolt-theme.css). */
+.base.primary.filled {
+  /* As a gradient, not a colour: services-ui transitions `background` and
+     its hover state is a gradient. A colour rest state would interpolate
+     background-color through transparent on mouse-out, leaving the button
+     see-through for ~150ms. */
+  background: linear-gradient(var(--accent), var(--accent)) border-box;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+details:not([open]) > :not(summary) {
+  display: none;
+}
+
+.contact-editor__add {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 5px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.app-icon-button.contact-editor__remove {
+  border-radius: 6px;
+}
+
+.contact-editor__add:hover,
+.contact-editor__add:focus-visible {
+  background: var(--rowHover, #f0f1f6);
+  outline: none;
+}
+
+:root {
+  --app-viewport-height: 100vh;
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --app-viewport-height: 100dvh;
+  }
+}
+
+html,
+body {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--panel);
+  color: var(--text);
+  font: 14px/1.4 var(--font-sans);
+  height: var(--app-viewport-height);
+  overflow: hidden;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+html .dp--theme-light,
+html .dp--theme-dark {
+  --dp-font-family: var(--font-sans);
+  --dp-font-size: 13px;
+  --dp-border-radius: 6px;
+  --dp-cell-border-radius: 4px;
+  --dp-background-color: var(--panel);
+  --dp-text-color: var(--text);
+  --dp-hover-color: var(--rowHover);
+  --dp-hover-text-color: var(--text);
+  --dp-hover-icon-color: var(--text);
+  --dp-primary-color: var(--accent);
+  --dp-primary-disabled-color: color-mix(in srgb, var(--accent) 48%, transparent);
+  --dp-primary-text-color: #fff;
+  --dp-secondary-color: var(--muted);
+  --dp-border-color: var(--border);
+  --dp-menu-border-color: var(--border);
+  --dp-border-color-hover: var(--accent);
+  --dp-border-color-focus: var(--accent);
+  --dp-disabled-color: color-mix(in srgb, var(--panel) 82%, var(--muted));
+  --dp-disabled-color-text: var(--muted);
+  --dp-scroll-bar-background: var(--panel2);
+  --dp-scroll-bar-color: var(--muted);
+  --dp-icon-color: var(--muted);
+  --dp-danger-color: var(--error-fg);
+  --dp-marker-color: var(--error-fg);
+  --dp-tooltip-color: var(--panel2);
+  --dp-highlight-color: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+/* The shell layout lives in App.vue; #app just needs to fill the
+ * viewport so the grid can size itself. */
+#app {
+  height: var(--app-viewport-height);
+  min-height: 0;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: transparent;
+  color: var(--text);
+}
+
+.theme-toggle:hover {
+  background: var(--control-hover-bg);
+}
+
+/* Global button styles */
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Initial modal focus belongs to the surface, not an action button. */
+[role="dialog"][aria-modal="true"]:focus,
+[role="alertdialog"][aria-modal="true"]:focus {
+  outline: none;
+}
+
+/* Global input styles */
+input,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Utility classes */
+.meta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 6px;
+  text-align: center;
+}
+
+.err {
+  color: #ff6b6b;
+  white-space: pre-wrap;
+  font-size: 13px;
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* Row grid layout for forms */
+.row {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.row label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.row input,
+.row select {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--control-border);
+  border-radius: 0.5rem;
+  background: var(--panel2);
+  color: var(--text);
+  outline: none;
+}
+
+.row input::placeholder {
+  color: #9aa3b2;
+}
+
+.row input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px var(--panel2) inset;
+  -webkit-text-fill-color: var(--text);
+}

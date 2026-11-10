@@ -1,0 +1,530 @@
+:root {
+  --surface: var(--panel);
+  --fg: var(--text);
+  --spaces-bar-height: calc(56px + env(safe-area-inset-bottom));
+  --border-soft: color-mix(in srgb, var(--border) 55%, transparent);
+  --accent-bg: color-mix(in srgb, var(--accent) 22%, var(--panel2));
+  --accent-fg: var(--accent);
+  /* Chrome on the Bolt ramp (assets/styles.css). Dark: content on lower,
+     folder list, popovers and dialogs on base, rail and top nav on raised.
+     Light steps the other way (html.light below). */
+  --space-rail-bg: var(--colour-neutral-raised);
+  --space-rail-fg: var(--muted);
+  --folder-list-bg: var(--colour-neutral-base);
+  /* Top nav: same 56px band as before, sharing the rail's surface. The
+     Bolt palette (assets/bolt-theme.css) re-points these tokens. */
+  --top-nav-height: 56px;
+  --top-nav-bg: var(--space-rail-bg);
+  /* Modal look shared by every dialog (the Welcome modal defines it): a
+     base-surface card with a border edge over a dark blurred scrim. */
+  --modal-bg: var(--colour-neutral-base);
+  --modal-surface: var(--modal-bg);
+  --modal-border: var(--control-border);
+  --modal-shadow:
+    0 28px 80px color-mix(in srgb, #000 46%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent);
+  --modal-scrim: color-mix(in srgb, #000 64%, transparent);
+  --modal-scrim-blur: blur(12px);
+  --top-nav-wordmark: var(--accent);
+  --top-nav-input-bg: var(--surface);
+  --top-nav-popover-bg: var(--colour-neutral-base);
+}
+
+html.light,
+.light {
+  /* Content, dialogs and popovers on base, folder list on lower, rail and
+     top nav on subtle. */
+  --space-rail-bg: var(--colour-neutral-subtle);
+  --folder-list-bg: var(--colour-neutral-lower);
+  --top-nav-wordmark: var(--accent);
+}
+
+/* The columns area asks for the sum of its column widths; the grid gives
+   it that much only while the reading pane keeps its minimum, and the
+   area scrolls horizontally past that (the column handles live inside
+   it, so no resizer track sits between the two). */
+.shell {
+  position: relative;
+  --folder-resizer-width: var(--column-resizer-width, 6px);
+  display: grid;
+  grid-template-columns:
+    56px
+    auto
+    var(--folder-resizer-width)
+    minmax(var(--message-list-min-width, 280px), var(--message-columns-width, 360px))
+    minmax(var(--message-view-min-width, 320px), 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  height: var(--app-viewport-height);
+  background: var(--panel);
+  color: var(--text);
+  overflow: hidden;
+}
+.shell--message-view-hidden {
+  grid-template-columns:
+    56px
+    auto
+    var(--folder-resizer-width)
+    minmax(var(--message-list-min-width, 280px), 1fr)
+    0px;
+}
+.shell--message-list-hidden {
+  grid-template-columns:
+    56px
+    auto
+    var(--folder-resizer-width)
+    0px
+    minmax(0, 1fr);
+}
+.shell--folder-list-hidden {
+  --folder-resizer-width: 0px;
+}
+.shell--contacts {
+  grid-template-columns:
+    56px
+    auto
+    var(--folder-resizer-width)
+    minmax(0, 1fr);
+}
+/* While a feature spotlight runs, the tour caption sits along the top edge
+ * (FeatureCardGrid) and the composer sits directly beneath it. The dialog's
+ * own backdrop is dropped so the scrim is the only dimming. The dock lifts
+ * off the bottom edge so its ring is not clipped by the viewport. Three
+ * classes outrank the components' scoped `[data-v]` rules. */
+.shell.shell--spotlighting .compose-dialog {
+  --spotlight-caption-space: 112px;
+  align-items: start;
+  padding-top: var(--spotlight-caption-space);
+  box-sizing: border-box;
+  background: transparent;
+}
+.shell.shell--spotlighting .compose-dialog__card {
+  height: min(640px, calc(100vh - var(--spotlight-caption-space) - 24px));
+}
+.shell.shell--spotlighting .compose-dock {
+  bottom: 14px;
+}
+.shell.shell--spotlighting .compose-dock__item {
+  border-bottom: 2px solid var(--compose-dock-outline);
+  border-radius: 10px;
+}
+/* The folder manager the tour opens sits above the scrim (120 > 90); its
+ * own backdrop would dim the caption, so the scrim is the only dimming. */
+body.spotlighting .folder-subs {
+  background: transparent;
+}
+/* Grid items default to min-height: auto, which makes inner
+ * overflow:auto containers grow to their content instead of scrolling.
+ * Force every shell column to be allowed to shrink so its children can
+ * own the vertical scroll. */
+.shell > * { min-height: 0; min-width: 0; }
+.shell > .msg-columns {
+  grid-column: 4;
+}
+.shell > .message-view {
+  grid-column: 5;
+}
+.shell--message-view-maximized > .message-view {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  width: 100%;
+  height: var(--app-viewport-height);
+}
+.shell--message-view-maximized > :is(
+  .quick-filter,
+  .app-spaces,
+  .sidebar-slot,
+  .column-resizer,
+  .msg-columns
+) {
+  visibility: hidden;
+}
+.shell--message-list-hidden > .message-view {
+  grid-column: 4 / -1;
+}
+.shell > .contacts { grid-column: 4 / -1; }
+
+.quick-filter {
+  grid-column: 1 / -1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+  height: var(--top-nav-height);
+  padding: 0 16px 0 14px;
+  /* No bottom hairline: the bar reads as one surface with the sidebar. */
+  background: var(--top-nav-bg);
+}
+.quick-filter__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  flex-shrink: 0;
+  user-select: none;
+}
+.quick-filter__glyph {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  color: var(--accent);
+}
+.quick-filter__glyph svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.quick-filter__wordmark {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--top-nav-wordmark);
+}
+/* Compact layouts only; see the 639px media query. */
+.quick-filter__menu {
+  display: none;
+}
+.quick-filter__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.quick-filter__actions > .account-menu {
+  margin-left: 2px;
+}
+.quick-filter__actions > .beacon-menu {
+  margin: 0 4px;
+}
+.quick-filter__action,
+.quick-filter__action.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: none;
+}
+.quick-filter__action:hover,
+.quick-filter__action:focus-visible,
+.quick-filter__action.theme-toggle:hover,
+.quick-filter__action.theme-toggle:focus-visible {
+  background: var(--control-hover-bg);
+  border-color: var(--control-hover-border);
+}
+.quick-filter__action:focus-visible,
+.quick-filter__action.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.quick-filter__search {
+  position: relative;
+  flex: 0 1 360px;
+  min-width: 160px;
+  margin: 0 auto;
+}
+.quick-filter__input {
+  width: 100%;
+  height: 36px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  background: var(--top-nav-input-bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  padding: 0 40px 0 14px;
+  outline: none;
+}
+.quick-filter__input--empty {
+  padding-right: 70px;
+}
+/* .quick-filter__clear occupies the padding gutter, so the WebKit search
+   affordances would sit beside it as a second clear button. */
+.quick-filter__input::-webkit-search-cancel-button,
+.quick-filter__input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.quick-filter__input::placeholder {
+  color: var(--muted);
+}
+.quick-filter__input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.quick-filter__shortcut {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--surface) 88%, var(--rowHover));
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1.2;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+.quick-filter__clear {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+.quick-filter__clear svg {
+  display: block;
+}
+.quick-filter__clear:hover,
+.quick-filter__clear:focus-visible {
+  background: var(--control-hover-bg);
+  border-color: var(--control-hover-border);
+  color: var(--text);
+}
+.quick-filter__clear:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 639px) {
+  .shell {
+    --folder-resizer-width: 0px;
+  }
+  .shell .sidebar-slot {
+    position: absolute;
+    /* Under `.compose-dialog` (50), which is a modal and has to be reachable
+       from the one control that opens it here — the New Message button inside
+       this drawer. At 70 the drawer covered the dialog it had just opened, and
+       took its taps with it, which is what made compose unusable on a phone
+       (CS-2.9). Nothing else occupies the band between the mail columns and
+       the dialog, so this only reorders those two. */
+    z-index: 40;
+    top: var(--top-nav-height);
+    bottom: 0;
+    left: 56px;
+    width: min(var(--folder-list-width, 240px), calc(100vw - 56px));
+    max-width: calc(100vw - 56px);
+    height: auto;
+    transform: translateX(0);
+    transition: transform var(--folder-list-transition-ms, 360ms) ease,
+      box-shadow var(--folder-list-transition-ms, 360ms) ease;
+    box-shadow: 18px 0 34px color-mix(in srgb, #000 28%, transparent);
+  }
+  .shell .sidebar-slot--hidden {
+    width: min(var(--folder-list-width, 240px), calc(100vw - 56px));
+    transform: translateX(-100%);
+    box-shadow: none;
+    pointer-events: none;
+  }
+  .shell .sidebar {
+    width: 100%;
+    transform: none;
+  }
+  .shell .column-resizer--folder-list {
+    display: none;
+  }
+  .shell--message-view-hidden > .msg-columns,
+  .shell--message-list-hidden > .message-view {
+    grid-column: 2 / -1;
+  }
+  /* Same 56px band: glyph, full-width filter, menu and avatar in one row.
+     The wordmark and the desktop-only actions give the filter their room;
+     the menu takes their place beside the avatar. */
+  .quick-filter {
+    column-gap: 8px;
+    padding: 0 8px;
+  }
+  .quick-filter__wordmark {
+    display: none;
+  }
+  .quick-filter__search {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+  }
+  .quick-filter__menu {
+    display: block;
+  }
+  .quick-filter__actions > :not(.account-menu, .beacon-menu, .quick-filter__menu) {
+    display: none;
+  }
+  .quick-filter__actions > .account-menu {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 639px) {
+  .shell,
+  .shell--message-view-hidden,
+  .shell--message-list-hidden {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) var(--spaces-bar-height);
+  }
+  .quick-filter {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .shell > .app-spaces {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  .shell .sidebar-slot {
+    top: var(--top-nav-height);
+    bottom: var(--spaces-bar-height);
+    left: 0;
+    width: min(var(--folder-list-width, 240px), 100vw);
+    max-width: 100vw;
+  }
+  .shell .sidebar-slot--hidden {
+    width: min(var(--folder-list-width, 240px), 100vw);
+  }
+  .shell > .msg-columns,
+  .shell > .message-view,
+  .shell > .contacts,
+  .shell--message-view-hidden > .msg-columns,
+  .shell--message-list-hidden > .message-view {
+    grid-column: 1;
+    grid-row: 2;
+  }
+}
+
+.sidebar-slot {
+  width: var(--folder-list-width, 240px);
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  transition: width var(--folder-list-transition-ms, 360ms) ease;
+}
+.shell--column-resizing .sidebar-slot,
+.shell--column-resizing .sidebar {
+  transition: none;
+}
+.sidebar-slot--hidden {
+  width: 0;
+}
+.sidebar {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  background: var(--folder-list-bg);
+  width: var(--folder-list-width, 240px);
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  transform: translateX(0);
+  transition: transform var(--folder-list-transition-ms, 360ms) ease;
+}
+.sidebar-slot--hidden .sidebar {
+  transform: translateX(-100%);
+}
+.sidebar--contacts {
+  grid-template-rows: minmax(0, 1fr);
+}
+.sidebar > * {
+  min-width: 0;
+}
+.sidebar > :nth-child(3) { min-height: 0; overflow-y: auto; }
+.sidebar__header {
+  min-width: 0;
+  padding: 12px 12px 10px;
+}
+/* New Message is our AppButton (services-ui PrimaryButton wrapper, which
+   owns the 34px height and bold label). Here we only stretch it to the
+   sidebar width; colour/hover stay owned by services-ui. */
+.sidebar__compose {
+  width: 100%;
+  max-width: 100%;
+}
+.sidebar__account {
+  padding: 10px 14px 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sidebar__account-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.sidebar__footer {
+  margin-top: auto;
+  padding: 8px;
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.column-resizer {
+  position: relative;
+  background: var(--folder-list-bg);
+  cursor: col-resize;
+  outline: none;
+  touch-action: none;
+}
+.column-resizer--hidden {
+  cursor: default;
+  pointer-events: none;
+}
+.column-resizer::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: calc(50% - 0.5px);
+  width: 1px;
+  background: var(--border);
+  transition: background-color 0.12s ease, box-shadow 0.12s ease;
+}
+.column-resizer:hover::before,
+.column-resizer:focus-visible::before,
+.column-resizer.is-active::before {
+  background: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+body.is-column-resizing {
+  cursor: col-resize;
+  user-select: none;
+}
+body.is-column-resizing iframe {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-slot,
+  .sidebar {
+    transition: none;
+  }
+}

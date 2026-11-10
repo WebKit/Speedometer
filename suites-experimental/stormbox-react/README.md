@@ -1,10 +1,17 @@
 # Stormbox-React
 
-A React clone of the Stormbox webmail front end (Vue 3, Thunderbird) with a
-generated, deterministic mailbox and no server. `dist/` is built from the
-`stormbox-react` project, whose README lists what matches Stormbox and what
-does not; `npm run speedometer` there rebuilds and copies it here, including
-`resources.txt`.
+A React clone of the Stormbox webmail front end (Vue 3, Thunderbird) and no
+server: the mailbox is generated in the page from a fixed seed, so every
+run renders the same folders, messages and dates.
+
+    npm install
+    npm run dev        # development React
+    npm run build      # production build into dist/, plus dist/resources.txt
+    npm run preview    # serve dist/ (use this for timing outside Speedometer)
+    npm run typecheck
+
+The committed `dist/` is what the suite runs; rebuild and commit it after
+changing `src/`. Run it with `/?developerMode&suites=Stormbox-React`.
 
 The suite loads `dist/index.html?animations=off`, which removes CSS
 transitions and the reading pane's 310ms wait for the folder list, so the
@@ -26,3 +33,77 @@ Steps, each interaction followed by a task yield:
 - `ComposeAndSend`: replies (Squire with the quoted message) and new
   messages with a recipient pill, all sent.
 - `ToggleTheme`: light and dark with an HTML newsletter open.
+
+## Scope
+
+The Mail space is cloned:
+
+- Top bar (quick filter, theme toggle, app drawer, account menu), spaces
+  rail and the folder list with nested and starred folders, the Tags
+  section and storage bar.
+- The virtualized message list (`@tanstack/react-virtual`, 64px rows,
+  96px card rows under 480px) with Stormbox's header tiers, Unread and
+  Starred filters, the Quick Filter, anchored multi-select (checkbox,
+  Shift/Cmd-click, Shift+Arrow, Cmd+A), bulk actions with overflow, the
+  row hover overlay (tag, star, archive, delete), the tag menu as dropdown
+  and popover, drag and drop onto folders and tags, and keyboard
+  navigation.
+- The reading pane: HTML bodies through DOMPurify, Stormbox's dark-mode
+  adaptation and a sandboxed `srcdoc` iframe with fit-to-width zoom;
+  plain-text bodies linkified with nested quote bars; attachments bar,
+  tag chips, scheduled-send banner, maximize.
+- The composer: From picker, recipient pills with autocomplete over a
+  400-contact address book, Cc/Bcc, the Squire rich text editor with its
+  toolbar overflow, Send and Send Later, minimize-to-dock, the close
+  prompt, reply / reply all / forward, and opening drafts.
+- Stormbox's responsive layout: below 1024px an open message hides the
+  folder list, below 640px a single column.
+- The web shortcut scheme (C, R, Shift+R, F, A, M, S, T, 0–9, Delete,
+  J/K/N/P, `/`, Ctrl/Cmd+K, Escape).
+
+Not cloned: Contacts (the rail button shows a placeholder), settings, the
+folder and tag managers, onboarding, multiple message columns, sender
+favicons (they come from a server-side proxy) and file attachments.
+
+## What is shared with Stormbox
+
+- `src/utils/` holds Stormbox's framework-independent modules copied
+  verbatim: HTML sanitizing and srcdoc building, dark-mode email
+  adaptation, plain-text rendering, address parsing, tag model, folder
+  presentation, sender avatars. Beyond import paths, only
+  `message-row-presentation.ts` and `compose-quote.ts` changed, to format
+  dates against the fixed clock in `src/clock.ts`.
+- `src/styles/styles.css` and `app.css` are Stormbox's global and shell
+  stylesheets. `components.css` is generated from the components' Vue
+  `<style>` blocks by `scripts/port-vue-styles.mjs`, which reproduces the
+  specificity Vue's scoped attribute adds (`:is([class],:not([class]))`).
+  `services-ui.css` holds the design tokens and button rules from
+  `@thunderbirdops/services-ui`.
+- The same library versions where Stormbox uses one: DOMPurify 3.4.7,
+  Squire 2.4.6, TanStack Virtual 3.13.26, linkify 4.3.3, Vite 8.0.16.
+- Icons, fonts and the component markup and class names.
+
+## What is different
+
+- React 19 and Zustand stores instead of Vue 3 and Pinia. There is no
+  SQLite worker, JMAP sync or outbox: mutations apply to the in-memory
+  store at once.
+- Message bodies are generated on first open (`src/data/bodies.ts`):
+  plain text with nested quotes, simple HTML, full HTML newsletters with
+  `<style>` blocks and table layouts, notifications and junk. No body
+  loads anything from the network.
+- Dates format in `en-US` and UTC against a fixed clock.
+
+## URL parameters
+
+- `scale=<n>` multiplies the generated folder sizes (default 1, about
+  6,500 messages; Inbox 1,200, Archive 2,500).
+- `theme=light` starts in the light theme (default dark).
+- `animations=off` drops CSS transitions and the reading pane's 310ms wait
+  for the folder list to slide away. The Speedometer suite uses it so no
+  timer or transition spills into a later measurement.
+
+## License
+
+MPL-2.0, as Stormbox (see `LICENSE`). Inter and Metropolis are under the
+SIL Open Font License.
