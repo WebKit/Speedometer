@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "TodoMVC app written with JavaScript using web components.",
     "engines": {
-        "node": ">=18.13.0",
+        "node": ">=24.0.0",
         "npm": ">=8.19.3"
     },
     "private": true,
@@ -18,6 +18,6 @@
     "dependencies": {
         "http-server": "^14.1.1",
         "todomvc-css": "file:../../todomvc-css",
-        "speedometer-utils": "../../../shared"
+        "speedometer-utils": "file:../../../../resources/shared"
     }
 }

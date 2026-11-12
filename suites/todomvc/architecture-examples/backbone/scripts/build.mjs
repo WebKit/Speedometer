@@ -1,3 +1,4 @@
+import { generateResourcesFile } from "../../../../shared/generate-resources.mjs";
 import fs from "fs/promises";
 import path from "path";
 
@@ -58,4 +59,5 @@ const build = async () => {
     console.log("done!!");
 };
 
-build();
+await build();
+await generateResourcesFile(path.join(import.meta.dirname, "../dist"));

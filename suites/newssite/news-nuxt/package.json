@@ -1,8 +1,10 @@
 {
     "name": "nuxt-app",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
-        "build": "nuxt build",
+        "build": "node scripts/build.mjs",
+        "build:nuxt": "nuxt build",
         "dev": "nuxt dev",
         "generate": "nuxt generate",
         "preview": "nuxt preview",

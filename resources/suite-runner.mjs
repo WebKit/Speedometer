@@ -1,4 +1,5 @@
 import { STEP_RUNNER_LOOKUP } from "./shared/step-runner.mjs";
+import { MESSAGE_TYPE } from "./shared/benchmark.mjs";
 import { WarmupSuite } from "./benchmark-runner.mjs";
 
 function delay(ms) {
@@ -18,10 +19,16 @@ export class SuiteRunner {
 
     constructor(frame, page, params, suite, client, measuredValues) {
         // FIXME: Create SuiteRunner-local measuredValues.
-        this.#suiteResults = measuredValues.tests[suite.name];
-        if (!this.#suiteResults) {
+        if (suite === WarmupSuite) {
+            // The warmup suite's results are intentionally not reported. Registering them in
+            // measuredValues would leave a 0-total entry, which zeroes the overall geomean.
             this.#suiteResults = { tests: {}, prepare: 0, total: 0 };
-            measuredValues.tests[suite.name] = this.#suiteResults;
+        } else {
+            this.#suiteResults = measuredValues.tests[suite.name];
+            if (!this.#suiteResults) {
+                this.#suiteResults = { tests: {}, prepare: 0, total: 0 };
+                measuredValues.tests[suite.name] = this.#suiteResults;
+            }
         }
         this.#frame = frame;
         this.#page = page;
@@ -82,13 +89,13 @@ export class SuiteRunner {
 
         performance.mark(suiteStartLabel);
         for (const step of this.#suite.tests) {
-            if (this.#client?.willRunTest)
-                await this.#client.willRunTest(this.#suite, step);
+            await this.#client?.willRunTest?.(this.#suite, step);
 
             const stepRunnerType = this.#suite.type ?? this.params.useAsyncSteps ? "async" : "default";
             const stepRunnerClass = STEP_RUNNER_LOOKUP[stepRunnerType];
-            const stepRunner = new stepRunnerClass(this.#frame, this.#page, this.#params, this.#suite, step, this._recordTestResults, stepRunnerType);
-            await stepRunner.runStep();
+            const stepRunner = new stepRunnerClass(this.#frame, this.#page, this.#params, this.#suite, step, stepRunnerType);
+            let { syncTime, asyncTime } = await stepRunner.runStep();
+            this._recordTestResults(step, syncTime, asyncTime);
         }
         performance.mark(suiteEndLabel);
 
@@ -100,10 +107,14 @@ export class SuiteRunner {
     }
 
     _validateSuiteResults() {
+        // The warmup suite's results are intentionally not recorded, so it has no total.
+        if (this.#suite === WarmupSuite)
+            return;
         // When the test is fast and the precision is low (for example with Firefox'
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
-        const { suiteTotal, suitePrepare } = this.#suiteResults.total;
+        const suiteTotal = this.#suiteResults.total;
+        const suitePrepare = this.#suiteResults.prepare;
         if (suiteTotal === 0)
             throw new Error(`Got invalid 0-time total for suite ${this.#suite.name}: ${suiteTotal}`);
         if (this.#params.measurePrepare && suitePrepare === 0)
@@ -122,7 +133,7 @@ export class SuiteRunner {
         });
     }
 
-    _recordTestResults = async (step, syncTime, asyncTime) => {
+    async _recordTestResults(step, syncTime, asyncTime) {
         // Skip reporting updates for the warmup suite.
         if (this.#suite === WarmupSuite)
             return;
@@ -133,12 +144,11 @@ export class SuiteRunner {
             total: total,
         };
         this.#suiteResults.prepare = this.#prepareTime;
-        this.#suiteResults.total = total;
-    };
+        this.#suiteResults.total += total;
+    }
 
     async _updateClient(suite = this.#suite) {
-        if (this.#client?.didFinishSuite)
-            await this.#client.didFinishSuite(suite);
+        await this.#client?.didFinishSuite?.(suite);
     }
 }
 
@@ -172,19 +182,17 @@ export class RemoteSuiteRunner extends SuiteRunner {
         const suiteName = this.suite.name;
         const suitePrepareStartLabel = `suite-${suiteName}-prepare-start`;
         const suitePrepareEndLabel = `suite-${suiteName}-prepare-end`;
-
         performance.mark(suitePrepareStartLabel);
 
         // Wait for the app-ready message from the workload.
-        const appReadyPromise = this._subscribeOnce("app-ready");
+        const appReadyPromise = this._subscribeOnce(MESSAGE_TYPE.appReady);
         await this._loadFrame(this.suite);
+        // The suite will send out the app-ready message.
         const response = await appReadyPromise;
+        this._initializeAppId(response.appId);
         await this.suite.prepare?.(this.page);
-        // Capture appId to pass along with messages.
-        this.appId = response?.appId;
 
         performance.mark(suitePrepareEndLabel);
-
         const entry = performance.measure(`suite-${suiteName}-prepare`, suitePrepareStartLabel, suitePrepareEndLabel);
         this.#prepareTime = entry.duration;
     }
@@ -193,26 +201,37 @@ export class RemoteSuiteRunner extends SuiteRunner {
         await delay(this.params.waitAfterSetup);
 
         // Ask workload to run its own tests.
-        this.frame.contentWindow.postMessage({ id: this.appId, key: "benchmark-connector", type: "benchmark-suite", name: this.suite.config?.name || "default" }, "*");
+        this._sendMessage(MESSAGE_TYPE.suiteStart, { name: this.suite.config?.name || "default" });
         // Capture metrics from the completed tests.
-        const response = await this._subscribeOnce("suite-complete");
+        const { result } = await this._subscribeOnce(MESSAGE_TYPE.suiteComplete);
 
         await delay(this.params.waitAfterSuite);
 
         this.suiteResults.tests = {
             ...this.suiteResults.tests,
-            ...response.result.tests,
+            ...result.tests,
         };
 
         this.suiteResults.prepare = this.#prepareTime;
-        this.suiteResults.total = response.result.total;
+        this.suiteResults.total = result.total;
 
         this._validateSuiteResults();
         await this._updateClient();
     }
 
+    _sendMessage(type, payload) {
+        const message = {
+            appId: this.appId,
+            key: "benchmark-connector",
+            type: type,
+            payload: payload,
+        };
+        this.frame.contentWindow.postMessage(message, "*");
+    }
+
     _handlePostMessage(event) {
-        const callback = this.postMessageCallbacks.get(event.data.type);
+        const message = event.data;
+        const callback = this.postMessageCallbacks.get(message.type);
         if (callback)
             callback(event);
     }
@@ -234,10 +253,19 @@ export class RemoteSuiteRunner extends SuiteRunner {
     _subscribeOnce(type) {
         return new Promise((resolve) => {
             this._startSubscription(type, (e) => {
+                const message = e.data;
+                if (type !== MESSAGE_TYPE.appReady && message.appId !== this.appId)
+                    throw new Error(`Got message for invalid app: ${message.appId} instead of ${this.appId}`);
                 this._stopSubscription(type);
-                resolve(e.data);
+                resolve(message.payload);
             });
         });
+    }
+
+    _initializeAppId(appId) {
+        console.assert(!this.appId, `Cannot receive ${MESSAGE_TYPE.appReady} twice`);
+        console.assert(appId, `${MESSAGE_TYPE.appReady} sent no appId`);
+        this.appId = appId;
     }
 }
 

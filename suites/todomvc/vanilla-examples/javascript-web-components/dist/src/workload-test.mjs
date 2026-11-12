@@ -7,7 +7,7 @@ export const appName = "todomvc-postmessage";
 export const appVersion = "1.0.0";
 
 const suites = {
-    default: new BenchmarkSuite("default", [
+    default: new BenchmarkSuite("TodoMVC-WebComponents-PostMessage", [
         new BenchmarkStep("Adding-items", () => {
             const input = getElement(".new-todo-input", ["todo-app", "todo-topbar"]);
             for (let i = 0; i < numberOfItemsToAdd; i++) {

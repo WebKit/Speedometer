@@ -151,6 +151,9 @@ class PageRouter {
 
     _deserializeHashQueryValue(value)
     {
+        if (value === undefined || value === null || value === '')
+            return value;
+
         if (value.charAt(0) == '(') {
             let nestingLevel = 0;
             let end = 0;

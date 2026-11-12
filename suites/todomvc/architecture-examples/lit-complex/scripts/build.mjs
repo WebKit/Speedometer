@@ -1,3 +1,4 @@
+import { generateResourcesFile } from "../../../../shared/generate-resources.mjs";
 /**
  * Builds the TodoMVC Lit Complex DOM.
  */
@@ -25,3 +26,4 @@ const options = {
 };
 
 buildComplex(options);
+await generateResourcesFile(path.join(import.meta.dirname, "../dist"));

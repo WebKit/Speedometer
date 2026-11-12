@@ -1,6 +1,7 @@
 import { BenchmarkStep, BenchmarkSuite } from "./speedometer-utils/benchmark.mjs";
 import { getTodoText, defaultLanguage } from "/node_modules/speedometer-utils/translations.mjs";
 import { numberOfItemsToAdd } from "/node_modules/speedometer-utils/todomvc-utils.mjs";
+import { getStorageType } from "./storage/storage-type.js";
 
 export const appName = "todomvc-indexeddb";
 export const appVersion = "1.0.0";
@@ -22,8 +23,16 @@ const deletePromise = new Promise((resolve) => {
     window.addEventListener(promisesEventsNames.delete, () => resolve());
 });
 
+function waitForPreviousPageLoaded() {
+    return new Promise((resolve) => {
+        window.addEventListener("previous-page-loaded", resolve, { once: true });
+    });
+}
+
+const suiteName = getStorageType() === "dexie" ? "TodoMVC-WebComponents-DexieJS" : "TodoMVC-WebComponents-IndexedDB";
+
 const suites = {
-    default: new BenchmarkSuite("indexeddb", [
+    default: new BenchmarkSuite(suiteName, [
         new BenchmarkStep(`Adding${numberOfItemsToAdd}Items`, async () => {
             const input = document.querySelector("todo-app").shadowRoot.querySelector("todo-topbar").shadowRoot.querySelector(".new-todo-input");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
@@ -65,14 +74,7 @@ const suites = {
         new BenchmarkStep("DeletingAllItems", async () => {
             const numberOfItemsPerIteration = 10;
             const numberOfIterations = 10;
-            function iterationFinishedListener() {
-                iterationFinishedListener.promiseResolve();
-            }
-            window.addEventListener("previous-page-loaded", iterationFinishedListener);
             for (let j = 0; j < numberOfIterations; j++) {
-                const iterationFinishedPromise = new Promise((resolve) => {
-                    iterationFinishedListener.promiseResolve = resolve;
-                });
                 const todoList = document.querySelector("todo-app").shadowRoot.querySelector("todo-list");
                 const items = todoList.shadowRoot.querySelectorAll("todo-item");
                 for (let i = numberOfItemsPerIteration - 1; i >= 0; i--) {
@@ -81,8 +83,9 @@ const suites = {
                 }
                 if (j < 9) {
                     const previousPageButton = document.querySelector("todo-app").shadowRoot.querySelector("todo-bottombar").shadowRoot.querySelector(".previous-page-button");
+                    const previousPageLoadedPromise = waitForPreviousPageLoaded();
                     previousPageButton.click();
-                    await iterationFinishedPromise;
+                    await previousPageLoadedPromise;
                 }
             }
         }),

@@ -7,14 +7,12 @@ export class StepRunner {
     #params;
     #suite;
     #step;
-    #callback;
     #type;
 
-    constructor(frame, page, params, suite, step, callback, type) {
+    constructor(frame, page, params, suite, step, type) {
         this.#suite = suite;
         this.#step = step;
         this.#params = params;
-        this.#callback = callback;
         this.#page = page;
         this.#frame = frame;
         this.#type = type;
@@ -89,20 +87,15 @@ export class StepRunner {
             performance.measure(`${suiteName}.${stepName}-async`, syncEndLabel, asyncEndLabel);
         };
 
-        const report = () => this.#callback(this.#step, syncTime, asyncTime);
         const schedulerType = this.#suite.type === "async" || this.#params.useAsyncSteps ? "async" : this.#params.measurementMethod;
         const schedulerClass = STEP_SCHEDULER_LOOKUP[schedulerType];
-        const scheduler = new schedulerClass(runSync, measureAsync, report, this.#params);
-
-        return scheduler.start();
+        const scheduler = new schedulerClass(runSync, measureAsync, this.#params);
+        await scheduler.start();
+        return { syncTime, asyncTime };
     }
 }
 
 export class AsyncStepRunner extends StepRunner {
-    constructor(frame, page, params, suite, step, callback, type) {
-        super(frame, page, params, suite, step, callback, type);
-    }
-
     async _runSyncStep(step, page) {
         await step.run(page);
     }
