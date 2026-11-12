@@ -9,6 +9,8 @@
     "private": true,
     "scripts": {
         "build": "rollup -c",
+        "build:resources": "node ../../../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
         "watch": "rollup -c -w",
         "serve": "http-server ./dist -p 7002 -c-1 --cors",
         "dev": "npm run serve & npm run watch"

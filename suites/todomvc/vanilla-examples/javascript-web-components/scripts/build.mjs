@@ -1,5 +1,3 @@
-import path from "path";
-import { generateResourcesFile } from "../../../../../resources/shared/generate-resources.mjs";
 import fs from "fs/promises";
 import { dirname } from "path";
 
@@ -98,13 +96,13 @@ const filesToMove = [
     { src: "node_modules/todomvc-css/dist/bottombar.constructable.js", dest: "./dist/styles/bottombar.constructable.js" },
     { src: "node_modules/todomvc-css/dist/todo-list.constructable.js", dest: "./dist/styles/todo-list.constructable.js" },
     { src: "node_modules/todomvc-css/dist/todo-item.constructable.js", dest: "./dist/styles/todo-item.constructable.js" },
-    { src: "node_modules/speedometer-utils/step-scheduler.mjs", dest: "./dist/src/speedometer-utils/step-scheduler.mjs" },
-    { src: "node_modules/speedometer-utils/step-runner.mjs", dest: "./dist/src/speedometer-utils/step-runner.mjs" },
-    { src: "node_modules/speedometer-utils/params.mjs", dest: "./dist/src/speedometer-utils/params.mjs" },
-    { src: "node_modules/speedometer-utils/benchmark.mjs", dest: "./dist/src/speedometer-utils/benchmark.mjs" },
-    { src: "node_modules/speedometer-utils/helpers.mjs", dest: "./dist/src/speedometer-utils//helpers.mjs" },
-    { src: "node_modules/speedometer-utils/translations.mjs", dest: "./dist/src/speedometer-utils/translations.mjs" },
-    { src: "node_modules/speedometer-utils/todomvc-utils.mjs", dest: "./dist/src/speedometer-utils/todomvc-utils.mjs" },
+    { src: "node_modules/speedometer-utils/step-scheduler.mjs", dest: "./dist/speedometer-utils/step-scheduler.mjs" },
+    { src: "node_modules/speedometer-utils/step-runner.mjs", dest: "./dist/speedometer-utils/step-runner.mjs" },
+    { src: "node_modules/speedometer-utils/params.mjs", dest: "./dist/speedometer-utils/params.mjs" },
+    { src: "node_modules/speedometer-utils/benchmark.mjs", dest: "./dist/speedometer-utils/benchmark.mjs" },
+    { src: "node_modules/speedometer-utils/helpers.mjs", dest: "./dist/speedometer-utils//helpers.mjs" },
+    { src: "node_modules/speedometer-utils/translations.mjs", dest: "./dist/speedometer-utils/translations.mjs" },
+    { src: "node_modules/speedometer-utils/todomvc-utils.mjs", dest: "./dist/speedometer-utils/todomvc-utils.mjs" },
 ];
 
 const importsToRename = [
@@ -114,25 +112,30 @@ const importsToRename = [
         files: ["./dist/index.html"],
     },
     {
+        src: 'src="src/',
+        dest: 'src="',
+        files: ["./dist/index.html"],
+    },
+    {
         src: "../../../node_modules/todomvc-css/dist/",
-        dest: "../../../styles/",
+        dest: "../../styles/",
         files: [
-            "./dist/src/components/todo-app/todo-app.component.js",
-            "./dist/src/components/todo-bottombar/todo-bottombar.component.js",
-            "./dist/src/components/todo-item/todo-item.component.js",
-            "./dist/src/components/todo-list/todo-list.component.js",
-            "./dist/src/components/todo-topbar/todo-topbar.component.js",
+            "./dist/components/todo-app/todo-app.component.js",
+            "./dist/components/todo-bottombar/todo-bottombar.component.js",
+            "./dist/components/todo-item/todo-item.component.js",
+            "./dist/components/todo-list/todo-list.component.js",
+            "./dist/components/todo-topbar/todo-topbar.component.js",
         ],
     },
     {
         src: "/src/",
         dest: "./",
-        files: ["./dist/src/index.mjs"],
+        files: ["./dist/index.mjs"],
     },
     {
         src: "/node_modules/speedometer-utils/",
         dest: "./speedometer-utils/",
-        files: ["./dist/src/index.mjs", "./dist/src/workload-test.mjs"],
+        files: ["./dist/index.mjs", "./dist/workload-test.mjs"],
     },
 ];
 
@@ -141,7 +144,7 @@ const build = async () => {
     await createDirectory("./dist");
 
     // copy src folder
-    await copyDirectory("./src", "./dist/src");
+    await copyDirectory("./src", "./dist");
 
     // copy files to Move
     await copyFiles(filesToMove);
@@ -156,4 +159,3 @@ const build = async () => {
 };
 
 await build();
-await generateResourcesFile(path.join(import.meta.dirname, "../dist"));

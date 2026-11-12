@@ -4,8 +4,10 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "node scripts/build.mjs",
+        "build": "npm run build:next",
         "build:next": "next build",
+        "build:resources": "node ../../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
         "start": "next start",
         "lint": "next lint",
         "serve": "http-server ./dist -p 7002 -c-1 --cors"

@@ -11,6 +11,8 @@
         "ng": "ng",
         "dev": "ng serve",
         "build": "ng build --source-map=true",
+        "build:resources": "node ../../../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
         "watch": "ng build --watch --configuration development",
         "test": "ng test"
     },

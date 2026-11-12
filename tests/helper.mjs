@@ -1,135 +1,135 @@
-import commandLineUsage from "command-line-usage";
-import commandLineArgs from "command-line-args";
-import serve, { DEFAULT_CACHE_DURATION } from "./server.mjs";
+import { execFileSync, spawn } from "child_process";
+import { styleText } from "node:util";
+import fs from "fs";
 
-import firefox from "selenium-webdriver/firefox.js";
-import chrome from "selenium-webdriver/chrome.js";
-import edge from "selenium-webdriver/edge.js";
+export const GITHUB_ACTIONS_OUTPUT = "GITHUB_ACTIONS_OUTPUT" in process.env || "GITHUB_EVENT_PATH" in process.env;
 
-import LogInspector from "selenium-webdriver/bidi/logInspector.js";
-import { Builder } from "selenium-webdriver";
-
-export const DEFAULT_RETRIES = 1;
-
-const optionDefinitions = [
-    { name: "browser", type: String, description: "Set the browser to test, choices are [safari, firefox, chrome]. By default the $BROWSER env variable is used." },
-    { name: "port", type: Number, defaultValue: 0, description: "Set the test-server port. The default value is 0 (dynamic port)." },
-    { name: "retry", type: Number, defaultValue: DEFAULT_RETRIES, description: "Number of retries for the tests on failure." },
-    { name: "headless", type: Boolean, description: "Run browser in headless mode. Automatically enabled on Linux when $DISPLAY and $WAYLAND_DISPLAY are unset." },
-    { name: "help", alias: "h", description: "Print this help text." },
-];
-
-function printHelp(message = "", exitStatus = 0) {
-    const usage = commandLineUsage([
-        {
-            header: "Run all tests",
-        },
-        {
-            header: "Options",
-            optionList: optionDefinitions,
-        },
-    ]);
-    if (message) {
-        console.error(message);
-        console.error();
-    }
-    console.log(usage);
-    process.exit(exitStatus);
+export function logInfo(...args) {
+    const text = args.join(" ");
+    console.log(styleText("yellow", text));
 }
 
-export function detectHeadless(options) {
-    if (options?.headless)
-        return true;
-
-    if (process.platform === "linux" && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY)
-        return true;
-
-    return false;
+export function logWarn(...args) {
+    const text = args.join(" ");
+    if (GITHUB_ACTIONS_OUTPUT)
+        console.warn(`::warning::${text.replace(/\n/g, "%0A")}`);
+    else
+        console.warn(styleText("magenta", text));
 }
 
-export default async function testSetup(helpText) {
-    const options = commandLineArgs(optionDefinitions);
-
-    if ("help" in options)
-        printHelp(helpText);
-
-    const BROWSER = options?.browser;
-    if (!BROWSER)
-        printHelp("No browser specified, use $BROWSER or --browser", 1);
-
-    if (options.retry < 0)
-        printHelp("Number of retries cannot be negative", 1);
-
-    const isHeadless = detectHeadless(options);
-
-    let builder;
-    switch (BROWSER) {
-        case "safari": {
-            if (isHeadless)
-                console.warn("Warning: --headless is not supported with safari, running in windowed mode.");
-
-            builder = new Builder().forBrowser(BROWSER);
-            // No bidi and log support in safari.
-            break;
-        }
-        case "firefox": {
-            const firefoxOptions = new firefox.Options().enableBidi();
-            if (isHeadless)
-                firefoxOptions.addArguments("--headless");
-
-            builder = new Builder().forBrowser(BROWSER).setFirefoxOptions(firefoxOptions);
-            break;
-        }
-        case "chrome": {
-            const chromeOptions = new chrome.Options().enableBidi();
-            if (isHeadless)
-                chromeOptions.addArguments("--headless");
-
-            builder = new Builder().forBrowser(BROWSER).setChromeOptions(chromeOptions);
-            break;
-        }
-        case "edge": {
-            const edgeOptions = new edge.Options().enableBidi();
-            if (isHeadless)
-                edgeOptions.addArguments("--headless");
-
-            builder = new Builder().forBrowser(BROWSER).setEdgeOptions(edgeOptions);
-            break;
-        }
-        default: {
-            printHelp(`Invalid browser "${BROWSER}", choices are: "safari", "firefox", "chrome", "edge"`);
-        }
+export function logError(...args) {
+    let error;
+    if (args.length === 1 && args[0] instanceof Error)
+        error = args[0];
+    const text = args.join(" ");
+    if (GITHUB_ACTIONS_OUTPUT) {
+        if (error?.stack)
+            console.error(`::error::${error.stack.replace(/\n/g, "%0A")}`);
+        else
+            console.error(`::error::${text.replace(/\n/g, "%0A")}`);
+    } else {
+        if (error?.stack)
+            console.error(styleText("red", error.stack));
+        else
+            console.error(styleText("red", text));
     }
-    const { server, port } = await serve(options.port, DEFAULT_CACHE_DURATION);
-    let driver, logInspector;
+}
+export function logCommand(...args) {
+    const cmd = args.join(" ");
+    if (GITHUB_ACTIONS_OUTPUT)
+        console.log(`::notice::${styleText("blue", cmd)}`);
+    else
+        console.log(styleText("blue", cmd));
+}
 
-    process.on("unhandledRejection", (err) => {
-        console.error(err);
-        process.exit(1);
-    });
-    process.once("uncaughtException", (err) => {
-        console.error(err);
-        process.exit(1);
-    });
-    process.on("exit", () => stop());
+export async function runActionGroup(name, body) {
+    if (GITHUB_ACTIONS_OUTPUT) {
+        console.log(`::group::${name}`);
+    } else {
+        logInfo("=".repeat(80));
+        logInfo(name);
+        logInfo(".".repeat(80));
+    }
+    try {
+        const result = body();
+        if (result instanceof Promise)
+            return await result;
+        return result;
+    } finally {
+        if (GITHUB_ACTIONS_OUTPUT)
+            console.log("::endgroup::");
+    }
+}
 
-    driver = await builder.build();
-    driver.manage().window().setRect({ width: 1200, height: 1000 });
+const SPAWN_OPTIONS = Object.freeze({
+    stdio: ["inherit", "pipe", "inherit"],
+});
 
-    if (BROWSER !== "safari") {
-        logInspector = await LogInspector(driver);
-        await logInspector.onConsoleEntry((log) => {
-            console.log(`${log.type}.${log.level}`.toUpperCase(), log.text);
+async function spawnCaptureStdout(binary, args, options = {}) {
+    options = Object.assign({}, SPAWN_OPTIONS, options);
+    const childProcess = spawn(binary, args, options);
+    childProcess.stdout.pipe(process.stdout);
+    return new Promise((resolve, reject) => {
+        childProcess.stdoutString = "";
+        childProcess.stdio[1].on("data", (data) => {
+            childProcess.stdoutString += data.toString();
         });
-    }
+        childProcess.on("close", (code) => {
+            if (code === 0) {
+                resolve(childProcess);
+            } else {
+                const error = new Error(`Command failed with exit code ${code}: ${binary} ${args.join(" ")}`);
+                error.process = childProcess;
+                error.stdout = childProcess.stdoutString;
+                error.exitCode = code;
+                reject(error);
+            }
+        });
+        childProcess.on("error", reject);
+    });
+}
 
-    async function stop() {
-        server.close();
-        if (logInspector)
-            await logInspector.close();
+export async function sh(binary, ...args) {
+    let options = {};
+    if (args.length > 0 && typeof args[args.length - 1] === "object" && !Array.isArray(args[args.length - 1]))
+        options = args.pop();
 
-        if (driver)
-            driver.close();
+    const cmd = `${binary} ${args.join(" ")}`;
+    if (GITHUB_ACTIONS_OUTPUT)
+        console.log(`::group::${binary}`);
+    logCommand(cmd);
+    try {
+        return await spawnCaptureStdout(binary, args, options);
+    } catch (e) {
+        if (e.stdoutString)
+            logError(e.stdoutString);
+        throw e;
+    } finally {
+        if (GITHUB_ACTIONS_OUTPUT)
+            console.log("::endgroup::");
     }
-    return { driver, port, stop, retry: options.retry };
+}
+
+export function getChangedFiles() {
+    // "--diff-filter=ACMR" => ignore deleted files.
+    const diffOut = execFileSync("git", ["diff", "--name-only", "--diff-filter=ACMR", "@{upstream}"], { encoding: "utf8" });
+    return parseGitFiles(diffOut, { isPorcelain: false });
+}
+
+export function parseGitFiles(output, { isPorcelain = false } = {}) {
+    const files = new Set();
+    for (let line of output.split("\n")) {
+        line = line.trimEnd();
+        if (isPorcelain) {
+            if (line.length <= 3)
+                continue;
+            line = line.substring(3);
+        } else {
+            if (line.length === 0)
+                continue;
+        }
+        if (fs.existsSync(line))
+            files.add(line);
+    }
+    return [...files];
 }

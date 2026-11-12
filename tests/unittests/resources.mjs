@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ExperimentalSuites } from "../../suites-experimental/suites.mjs";
 import { DefaultSuites } from "../../suites/default-suites.mjs";
+import { EXCLUDES } from "../excludes.mjs";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../");
 
@@ -14,6 +15,12 @@ describe("resources", () => {
         this.timeout(10000);
         const brokenResourcesList = [];
         for (const suite of Suites) {
+            const isExcluded = [...EXCLUDES].some((excludePath) => suite.url.startsWith(`${excludePath}/`) || suite.url === excludePath);
+            if (isExcluded) {
+                console.warn(`        ⚠ Skipping resources check for excluded suite: ${suite.name}`);
+                continue;
+            }
+
             if (!suite.resources)
                 continue;
             const resourcesPath = path.resolve(ROOT_DIR, suite.resources);

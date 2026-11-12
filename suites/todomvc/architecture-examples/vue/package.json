@@ -11,6 +11,8 @@
         "sanitize": "OUTPUT_FOLDER=./dist node node_modules/sanitize-language",
         "dev": "vue-cli-service serve",
         "build": "vue-cli-service build && npm run sanitize",
+        "build:resources": "node ../../../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
         "lint": "vue-cli-service lint"
     },
     "dependencies": {

@@ -10,6 +10,8 @@
     "scripts": {
         "dev": "http-server ./ -p 7005 -c-1 --cors -o",
         "build": "node scripts/build.mjs",
+        "build:resources": "node ../../resources/shared/generate-resources.mjs dist",
+        "postbuild": "npm run build:resources",
         "serve": "http-server ./dist -p 7006 -c-1 --cors -o"
     },
     "keywords": [],
