@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "description": "A single page cooking website built with Lit and Tailwind CSS.",
     "engines": {
-        "node": ">=22.0.0",
+        "node": ">=24.0.0",
         "npm": ">=8.19.3"
     },
     "main": "index.js",

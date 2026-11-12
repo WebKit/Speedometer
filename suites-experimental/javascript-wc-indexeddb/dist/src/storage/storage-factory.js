@@ -1,17 +1,13 @@
 import IndexedDBManager from "./indexedDB-manager.js";
 import DexieDBManager from "./dexieDB-manager.js";
+import { getStorageType } from "./storage-type.js";
 
 /**
  * Factory function that returns the appropriate storage manager based on URL search parameters
  * @returns {IndexedDBManager|DexieDBManager} The storage manager instance
  */
 export function createStorageManager() {
-    const params = new URLSearchParams(window.location.search);
-    let storageType = params.get("storageType");
-    if (storageType && storageType !== "vanilla" && storageType !== "dexie")
-        throw new Error(`Invalid storage type specified in URL parameter: ${storageType}`);
-
-    storageType = storageType || "vanilla";
+    const storageType = getStorageType();
 
     if (storageType === "dexie") {
         console.log("Using Dexie.js storage manager");

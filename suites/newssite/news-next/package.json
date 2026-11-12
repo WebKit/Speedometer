@@ -4,7 +4,8 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
+        "build": "node scripts/build.mjs",
+        "build:next": "next build",
         "start": "next start",
         "lint": "next lint",
         "serve": "http-server ./dist -p 7002 -c-1 --cors"
@@ -20,7 +21,7 @@
         "react-dom": "18.2.0",
         "react-router-dom": "^6.11.1",
         "react-router-hash-link": "^2.4.3",
-        "speedometer-utils": "file:../../../resources/shared",
+        "speedometer-utils": "../../../resources/shared",
         "uuid": "^9.0.0"
     }
 }

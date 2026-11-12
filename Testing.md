@@ -8,7 +8,17 @@ Tests are located in the `/tests` folder.
 
 ## Local Testing
 
-To run this locally you'll need the browsers installed along with the corresponding driver:
+### Local Node.js Unit Testing
+
+You can run the unit tests directly in Node.js using:
+
+```bash
+npm run test:node
+```
+
+### In-Browser Testing
+
+To run the in-browser tests locally, you'll need the browsers installed along with the corresponding driver:
 
 -   [chromedriver](https://chromedriver.chromium.org/getting-started)
 -   [geckodriver](https://github.com/mozilla/geckodriver/releases)

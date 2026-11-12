@@ -8,11 +8,11 @@ This script runs the unittests located in tests/unittests/*
 through the mocha web interface located at tests/index.html
 `.trim();
 
-const { driver, PORT, stop } = await testSetup(HELP);
+const { driver, port, stop } = await testSetup(HELP);
 
 async function test() {
     try {
-        await driver.get(`http://localhost:${PORT}/tests/index.html`);
+        await driver.get(`http://localhost:${port}/tests/index.html`);
 
         const { testResults, stats } = await driver.executeAsyncScript(function (callback) {
             const returnResults = () =>
