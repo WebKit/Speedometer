@@ -7,11 +7,43 @@ import summary from "rollup-plugin-summary";
 import path from "path";
 import fs from "fs";
 import process from "process";
+import { generateResourcesFile } from "../../resources/shared/generate-resources.mjs";
 
 const DEV_OUTPUT_DIR = "build-dev";
 const PROD_OUTPUT_DIR = "dist";
 
 const outputDir = process.env.ROLLUP_WATCH ? DEV_OUTPUT_DIR : PROD_OUTPUT_DIR;
+
+// The suite entry declares a resources.txt, which tests/unittests/resources.mjs
+// validates, so emit it once the bundle is on disk.
+function resourcesManifest() {
+    return {
+        name: "responsive-design-resources-manifest",
+        closeBundle() {
+            generateResourcesFile(path.resolve(outputDir));
+        },
+    };
+}
+
+// Lit's npm packages ship minified code next to a source map for each file.
+// Load those maps so that the bundle's source map points back at Lit's
+// TypeScript sources rather than at its minified output.
+function nodeModulesSourcemaps() {
+    return {
+        name: "node-modules-sourcemaps",
+        load(id) {
+            if (!id.endsWith(".js") || !id.includes("node_modules"))
+                return null;
+            const mapPath = `${id}.map`;
+            if (!fs.existsSync(mapPath))
+                return null;
+            return {
+                code: fs.readFileSync(id, "utf-8"),
+                map: JSON.parse(fs.readFileSync(mapPath, "utf-8")),
+            };
+        },
+    };
+}
 
 // Clean the output directory before bundling (only for production builds)
 if (!process.env.ROLLUP_WATCH && fs.existsSync(outputDir))
@@ -24,10 +56,12 @@ export default {
             file: `${outputDir}/app.js`,
             format: "es",
             name: "app",
+            sourcemap: true,
             plugins: process.env.ROLLUP_WATCH ? [] : [terser()],
         },
     ],
     plugins: [
+        nodeModulesSourcemaps(),
         resolve(),
         css(),
         html({
@@ -60,5 +94,6 @@ export default {
         copy({
             targets: [{ src: "public/", dest: `${outputDir}/` }],
         }),
+        resourcesManifest(),
     ],
 };
