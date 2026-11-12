@@ -1,9 +1,11 @@
 import { createContext, startTransition, useContext, useEffect, useState } from "react";
 import { log, setLoggerRoute } from "./analytics/logger.js";
 
-// Hash routes keep the workload's own document URL intact. Page navigations render in a
-// transition, like a client-side router does; the post dialog opens as an overlay on
-// top of whatever page is underneath.
+// Routes live in memory only. The History API is rate limited per top-level page (WebKit
+// throws after 100 pushState/replaceState calls in 10s across every frame), so URL updates
+// would make this workload fail depending on which suites ran before it. Page navigations
+// render in a transition, like a client-side router does; the post dialog opens as an
+// overlay on top of whatever page is underneath.
 
 const RouterContext = createContext(null);
 
@@ -24,7 +26,6 @@ let controls = null;
 let currentPage = "/";
 
 export function navigate(path) {
-    window.history.pushState(null, "", `#${path}`);
     setLoggerRoute(routeName(path));
     log("page_view", { route: routeName(path), from: routeName(currentPage) });
     currentPage = path;
@@ -32,13 +33,11 @@ export function navigate(path) {
 }
 
 export function openPost(storyId) {
-    window.history.pushState(null, "", `#/post/${storyId}`);
     log("page_view", { route: "post", from: routeName(currentPage), overlay: true });
     controls.setOverlay(storyId);
 }
 
 export function closePost() {
-    window.history.replaceState(null, "", `#${currentPage}`);
     log("overlay_dismiss", { route: "post" });
     controls.setOverlay(null);
 }
@@ -55,14 +54,6 @@ export function RouterProvider({ children }) {
 
     useEffect(() => {
         setLoggerRoute(routeName(page));
-        const onPopState = () => {
-            const next = parse(window.location.hash);
-            currentPage = next.page;
-            startTransition(() => setPage(next.page));
-            setOverlay(next.overlay);
-        };
-        window.addEventListener("popstate", onPopState);
-        return () => window.removeEventListener("popstate", onPopState);
     }, []);
 
     return <RouterContext.Provider value={{ page, overlay }}>{children}</RouterContext.Provider>;
