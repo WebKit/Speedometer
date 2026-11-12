@@ -25,6 +25,26 @@ function resourcesManifest() {
     };
 }
 
+// Lit's npm packages ship minified code next to a source map for each file.
+// Load those maps so that the bundle's source map points back at Lit's
+// TypeScript sources rather than at its minified output.
+function nodeModulesSourcemaps() {
+    return {
+        name: "node-modules-sourcemaps",
+        load(id) {
+            if (!id.endsWith(".js") || !id.includes("node_modules"))
+                return null;
+            const mapPath = `${id}.map`;
+            if (!fs.existsSync(mapPath))
+                return null;
+            return {
+                code: fs.readFileSync(id, "utf-8"),
+                map: JSON.parse(fs.readFileSync(mapPath, "utf-8")),
+            };
+        },
+    };
+}
+
 // Clean the output directory before bundling (only for production builds)
 if (!process.env.ROLLUP_WATCH && fs.existsSync(outputDir))
     fs.rmSync(outputDir, { recursive: true, force: true });
@@ -36,10 +56,12 @@ export default {
             file: `${outputDir}/app.js`,
             format: "es",
             name: "app",
+            sourcemap: true,
             plugins: process.env.ROLLUP_WATCH ? [] : [terser()],
         },
     ],
     plugins: [
+        nodeModulesSourcemaps(),
         resolve(),
         css(),
         html({
