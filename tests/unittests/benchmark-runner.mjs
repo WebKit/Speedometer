@@ -1,6 +1,7 @@
-import { BenchmarkRunner } from "../../resources/benchmark-runner.mjs";
+import { BenchmarkRunner, BenchmarkTestStep } from "../../resources/benchmark-runner.mjs";
 import { SuiteRunner } from "../../resources/suite-runner.mjs";
-import { StepRunner } from "../../resources/shared/step-runner.mjs";
+import { StepRunner, AsyncStepRunner } from "../../resources/shared/step-runner.mjs";
+import { STEP_SCHEDULER_LOOKUP } from "../../resources/shared/step-scheduler.mjs";
 import { defaultParams } from "../../resources/shared/params.mjs";
 import { skipInShell } from "../../resources/shared/helpers.mjs";
 
@@ -111,8 +112,7 @@ describe("BenchmarkRunner", () => {
                 _loadFrameStub = stub(SuiteRunner.prototype, "_loadFrame").callsFake(async () => null);
                 _appendFrameStub = stub(runner, "_appendFrame").callsFake(async () => null);
                 _removeFrameStub = stub(runner, "_removeFrame").callsFake(() => null);
-                for (const suite of runner._suites)
-                    spy(suite, "prepare");
+                runner._suites.forEach((suite) => spy(suite, "prepare"));
                 expect(runner._suites).not.to.have.length(0);
                 await runner.runAllSuites();
             });
@@ -149,7 +149,7 @@ describe("BenchmarkRunner", () => {
             before(async () => {
                 _prepareSuiteSpy = spy(SuiteRunner.prototype, "_prepareSuite");
                 _loadFrameStub = stub(SuiteRunner.prototype, "_loadFrame").callsFake(async () => null);
-                _runTestStub = stub(StepRunner.prototype, "runStep").callsFake(async () => null);
+                _runTestStub = stub(StepRunner.prototype, "runStep").callsFake(async () => ({ syncTime: 0, asyncTime: 0 }));
                 _validateSuiteResultsStub = stub(SuiteRunner.prototype, "_validateSuiteResults").callsFake(async () => null);
                 performanceMarkSpy = spy(window.performance, "mark");
                 _suitePrepareSpy = spy(suite, "prepare");
@@ -256,6 +256,144 @@ describe("BenchmarkRunner", () => {
                     assert.calledWith(runner._client.didRunSuites, runner._measuredValues);
                 });
             });
+        });
+    });
+
+    describe("StepRunner", () => {
+        const suite = SUITES_FIXTURE[0];
+        const params = { measurementMethod: "raf", warmupBeforeSync: 0 };
+
+        it("should run StepRunner and return { syncTime, asyncTime }", async () => {
+            const step = new BenchmarkTestStep("SyncStep", sinon.stub());
+            const runner = new StepRunner(null, null, params, suite, step, "default");
+            const { syncTime, asyncTime } = await runner.runStep();
+            expect(typeof syncTime).to.equal("number");
+            expect(typeof asyncTime).to.equal("number");
+            assert.calledOnce(step.run);
+        });
+
+        it("should run AsyncStepRunner and return { syncTime, asyncTime }", async () => {
+            const asyncStep = new BenchmarkTestStep(
+                "AsyncStep",
+                sinon.stub().callsFake(async () => {})
+            );
+            const runner = new AsyncStepRunner(null, null, params, suite, asyncStep, "async");
+            const { syncTime, asyncTime } = await runner.runStep();
+            expect(typeof syncTime).to.equal("number");
+            expect(typeof asyncTime).to.equal("number");
+            assert.calledOnce(asyncStep.run);
+        });
+    });
+
+    describe("StepScheduler", () => {
+        it("should schedule callbacks and resolve in RAFStepScheduler", async () => {
+            const syncCallback = sinon.stub();
+            const asyncCallback = sinon.stub();
+            const scheduler = new STEP_SCHEDULER_LOOKUP.raf(syncCallback, asyncCallback, { waitBeforeSync: 0 });
+            const result = await scheduler.start();
+            expect(result).to.be(undefined);
+            assert.calledOnce(syncCallback);
+            assert.calledOnce(asyncCallback);
+        });
+
+        it("should respect waitBeforeSync when starting scheduler", async () => {
+            const syncCallback = sinon.stub();
+            const asyncCallback = sinon.stub();
+            const scheduler = new STEP_SCHEDULER_LOOKUP.raf(syncCallback, asyncCallback, { waitBeforeSync: 10 });
+            const result = await scheduler.start();
+            expect(result).to.be(undefined);
+            assert.calledOnce(syncCallback);
+            assert.calledOnce(asyncCallback);
+        });
+    });
+});
+
+describe("PageElement", () => {
+    describe("observeResizeEvents", () => {
+        before(function () {
+            skipInShell(this);
+        });
+
+        async function withPageElement(configureFrame, callback) {
+            let fixtureNode;
+            let result;
+            const runner = new BenchmarkRunner(
+                [
+                    {
+                        name: "PageElement fixture",
+                        enabled: true,
+                        url: "about:blank",
+                        async prepare(page) {
+                            result = await callback(page.getElementById("resize-target"), fixtureNode);
+                        },
+                        tests: [],
+                    },
+                ],
+                {}
+            );
+            sinon.stub(SuiteRunner.prototype, "_loadFrame").callsFake(async function () {
+                fixtureNode = configureFrame(this.frame);
+            });
+            sinon.stub(SuiteRunner.prototype, "_runSuite").callsFake(async () => {});
+            await runner.runAllSuites();
+            return result;
+        }
+
+        // A fake ResizeObserver drives callbacks synchronously for exact-count assertions.
+        async function createTracker() {
+            let deliver;
+            const disconnect = sinon.stub();
+            class FakeResizeObserver {
+                constructor(callback) {
+                    deliver = (...widths) => callback(widths.map((width) => ({ contentBoxSize: [{ inlineSize: width }] })));
+                }
+                observe() {}
+                disconnect() {
+                    disconnect();
+                }
+            }
+            return withPageElement(
+                (frame) => {
+                    Object.defineProperty(frame.contentWindow, "ResizeObserver", { configurable: true, value: FakeResizeObserver });
+                    const node = frame.contentDocument.createElement("div");
+                    node.id = "resize-target";
+                    frame.contentDocument.body.appendChild(node);
+                    return node;
+                },
+                (element) => ({
+                    resizeEventsPromise: element.observeResizeEvents(),
+                    deliver: (...widths) => deliver(...widths),
+                    disconnect,
+                })
+            );
+        }
+
+        it("treats the first callback as the baseline without counting it", async () => {
+            const { resizeEventsPromise, deliver, disconnect } = await createTracker();
+            deliver(200);
+            const resizeEvents = await resizeEventsPromise;
+            expect(resizeEvents.stop()).to.equal(0);
+            sinon.assert.calledOnce(disconnect);
+        });
+
+        it("counts each distinct width change exactly once", async () => {
+            const { resizeEventsPromise, deliver } = await createTracker();
+            deliver(200); // seed
+            const resizeEvents = await resizeEventsPromise;
+            deliver(300);
+            deliver(400);
+            deliver(500);
+            expect(resizeEvents.stop()).to.equal(3);
+        });
+
+        it("does not count callbacks that report the same width", async () => {
+            const { resizeEventsPromise, deliver } = await createTracker();
+            deliver(200); // seed
+            const resizeEvents = await resizeEventsPromise;
+            deliver(300);
+            deliver(300);
+            deliver(300);
+            expect(resizeEvents.stop()).to.equal(1);
         });
     });
 });

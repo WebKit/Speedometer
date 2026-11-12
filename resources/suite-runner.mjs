@@ -19,10 +19,16 @@ export class SuiteRunner {
 
     constructor(frame, page, params, suite, client, measuredValues) {
         // FIXME: Create SuiteRunner-local measuredValues.
-        this.#suiteResults = measuredValues.tests[suite.name];
-        if (!this.#suiteResults) {
+        if (suite === WarmupSuite) {
+            // The warmup suite's results are intentionally not reported. Registering them in
+            // measuredValues would leave a 0-total entry, which zeroes the overall geomean.
             this.#suiteResults = { tests: {}, prepare: 0, total: 0 };
-            measuredValues.tests[suite.name] = this.#suiteResults;
+        } else {
+            this.#suiteResults = measuredValues.tests[suite.name];
+            if (!this.#suiteResults) {
+                this.#suiteResults = { tests: {}, prepare: 0, total: 0 };
+                measuredValues.tests[suite.name] = this.#suiteResults;
+            }
         }
         this.#frame = frame;
         this.#page = page;
@@ -83,13 +89,13 @@ export class SuiteRunner {
 
         performance.mark(suiteStartLabel);
         for (const step of this.#suite.tests) {
-            if (this.#client?.willRunTest)
-                await this.#client.willRunTest(this.#suite, step);
+            await this.#client?.willRunTest?.(this.#suite, step);
 
             const stepRunnerType = this.#suite.type ?? this.params.useAsyncSteps ? "async" : "default";
             const stepRunnerClass = STEP_RUNNER_LOOKUP[stepRunnerType];
-            const stepRunner = new stepRunnerClass(this.#frame, this.#page, this.#params, this.#suite, step, this._recordTestResults, stepRunnerType);
-            await stepRunner.runStep();
+            const stepRunner = new stepRunnerClass(this.#frame, this.#page, this.#params, this.#suite, step, stepRunnerType);
+            let { syncTime, asyncTime } = await stepRunner.runStep();
+            this._recordTestResults(step, syncTime, asyncTime);
         }
         performance.mark(suiteEndLabel);
 
@@ -101,10 +107,14 @@ export class SuiteRunner {
     }
 
     _validateSuiteResults() {
+        // The warmup suite's results are intentionally not recorded, so it has no total.
+        if (this.#suite === WarmupSuite)
+            return;
         // When the test is fast and the precision is low (for example with Firefox'
         // privacy.resistFingerprinting preference), it's possible that the measured
         // total duration for an entire is 0.
-        const { suiteTotal, suitePrepare } = this.#suiteResults.total;
+        const suiteTotal = this.#suiteResults.total;
+        const suitePrepare = this.#suiteResults.prepare;
         if (suiteTotal === 0)
             throw new Error(`Got invalid 0-time total for suite ${this.#suite.name}: ${suiteTotal}`);
         if (this.#params.measurePrepare && suitePrepare === 0)
@@ -123,7 +133,7 @@ export class SuiteRunner {
         });
     }
 
-    _recordTestResults = async (step, syncTime, asyncTime) => {
+    async _recordTestResults(step, syncTime, asyncTime) {
         // Skip reporting updates for the warmup suite.
         if (this.#suite === WarmupSuite)
             return;
@@ -134,12 +144,11 @@ export class SuiteRunner {
             total: total,
         };
         this.#suiteResults.prepare = this.#prepareTime;
-        this.#suiteResults.total = total;
-    };
+        this.#suiteResults.total += total;
+    }
 
     async _updateClient(suite = this.#suite) {
-        if (this.#client?.didFinishSuite)
-            await this.#client.didFinishSuite(suite);
+        await this.#client?.didFinishSuite?.(suite);
     }
 }
 
