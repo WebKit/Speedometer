@@ -7,11 +7,23 @@ import summary from "rollup-plugin-summary";
 import path from "path";
 import fs from "fs";
 import process from "process";
+import { generateResourcesFile } from "../../resources/shared/generate-resources.mjs";
 
 const DEV_OUTPUT_DIR = "build-dev";
 const PROD_OUTPUT_DIR = "dist";
 
 const outputDir = process.env.ROLLUP_WATCH ? DEV_OUTPUT_DIR : PROD_OUTPUT_DIR;
+
+// The suite entry declares a resources.txt, which tests/unittests/resources.mjs
+// validates, so emit it once the bundle is on disk.
+function resourcesManifest() {
+    return {
+        name: "responsive-design-resources-manifest",
+        closeBundle() {
+            generateResourcesFile(path.resolve(outputDir));
+        },
+    };
+}
 
 // Clean the output directory before bundling (only for production builds)
 if (!process.env.ROLLUP_WATCH && fs.existsSync(outputDir))
@@ -60,5 +72,6 @@ export default {
         copy({
             targets: [{ src: "public/", dest: `${outputDir}/` }],
         }),
+        resourcesManifest(),
     ],
 };
