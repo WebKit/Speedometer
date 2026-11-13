@@ -8,7 +8,12 @@ import { FitAddon } from "@xterm/addon-fit";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 import { CanvasAddon } from "@xterm/addon-canvas";
 import { WebGLAddon } from "@xterm/addon-webgl";
-import { generateBuildLogSession, generateLinksSession, generateNcursesSession } from "./sessions.js";
+import {
+    generateBuildLogSession,
+    generateLinksSession,
+    generateNcursesSession,
+    generateGitSession,
+} from "./sessions.js";
 
 // Terminal instances and addons storage
 const TERMINAL_FONT_FAMILY = '"DejaVu Sans Mono", monospace';
@@ -20,6 +25,19 @@ const FIXED_SCROLLBAR_WIDTH = 10;
 
 const terminals = {};
 const fitAddons = {};
+const activeDecorations = {
+    build: [],
+    links: [],
+    ncurses: [],
+    git: [],
+};
+const shellIntegrationState = {
+    build: { prompts: 0, commands: 0, completions: 0, cwd: "" },
+    links: { prompts: 0, commands: 0, completions: 0, cwd: "" },
+    ncurses: { prompts: 0, commands: 0, completions: 0, cwd: "" },
+    git: { prompts: 0, commands: 0, completions: 0, cwd: "" },
+};
+
 let activeTabId = "build";
 let isInitialized = false;
 let tabSwitchCounter = 0;
@@ -45,10 +63,23 @@ const initialFontLoad = ensureFontsLoaded();
 const buildLogChunks = generateBuildLogSession();
 const linksChunks = generateLinksSession();
 const ncursesFrames = generateNcursesSession();
+const gitChunks = generateGitSession();
 
 // Determine renderer backend from URL query param (default: canvas, fallback: dom)
 const params = new URLSearchParams(window.location.search);
 const rendererType = (params.get("renderer") || "canvas").toLowerCase();
+
+// Regexes for custom IDE LinkProviders
+const WORKSPACE_FILE_LINK_REGEX = /(?:file:\/\/\/[^\s:()[\]]+|(?:src|Source|resources|suites(?:-experimental)?)\/[A-Za-z0-9_./-]+)(?::(\d+)(?::(\d+))?|\((\d+),(\d+)\))/g;
+const STACK_TRACE_ISSUE_LINK_REGEX = /(?:at\s+([A-Za-z0-9_.$<>]+)\s+\(([^():\s]+):(\d+):(\d+)\)|\b(TS\d{4})\b|#(\d{4,6})\b)/g;
+
+// Regexes for @xterm/addon-search logical-line search engine
+const BUILD_SEARCH_REGEXES = [
+    /Source\/([A-Za-z0-9_]+)\/([A-Za-z0-9_.]+):(\d+):(\d+)\]\s+(warning|error)/g,
+    /remark:\s+vectorized\s+(\d+)\s+instructions.*?\((-Rpass=[a-z-]+)\)/g,
+    /Created\s+lib\/(lib[A-Za-z0-9_]+\.so)\s+\(([\d.]+)\s+MB/g,
+    /Artifact validated\s+\(SHA-256:\s+([0-9a-f]+)\)/g,
+];
 
 function normalizeCharSizeService(cs) {
     if (!cs || cs._isNormalized)
@@ -96,6 +127,127 @@ function neutralizeBitmapGenerator(bg) {
     }
 }
 
+function clearTabDecorations(tabId) {
+    const list = activeDecorations[tabId];
+    if (Array.isArray(list)) {
+        for (let i = 0; i < list.length; i++) {
+            list[i].decoration?.dispose?.();
+            list[i].marker?.dispose?.();
+        }
+        list.length = 0;
+    }
+    const term = terminals[tabId];
+    if (term?._core?._bufferService?.buffers?.normal?.clearAllMarkers)
+        term._core._bufferService.buffers.normal.clearAllMarkers();
+}
+
+function createWorkspaceFileLinkProvider(term) {
+    return {
+        provideLinks(bufferLineNumber, callback) {
+            const buf = term.buffer.active;
+            const line = buf.getLine(bufferLineNumber - 1);
+            if (!line) {
+                callback(undefined);
+                return;
+            }
+            let text = line.translateToString(true);
+            if (!text || text.length < 5) {
+                callback(undefined);
+                return;
+            }
+            // Join wrapped continuation line if present (like VS Code TerminalLocalLinkDetector)
+            const nextLine = buf.getLine(bufferLineNumber);
+            if (nextLine && nextLine.isWrapped)
+                text += nextLine.translateToString(true);
+
+            const cols = term.cols || 80;
+            WORKSPACE_FILE_LINK_REGEX.lastIndex = 0;
+            let match;
+            const links = [];
+            while ((match = WORKSPACE_FILE_LINK_REGEX.exec(text)) !== null) {
+                const matchText = match[0];
+                const startOffset = match.index;
+                const endOffset = match.index + matchText.length;
+                const startRow = bufferLineNumber + Math.floor(startOffset / cols);
+                const startCol = (startOffset % cols) + 1;
+                const endRow = bufferLineNumber + Math.floor((endOffset - 1) / cols);
+                const endCol = ((endOffset - 1) % cols) + 1;
+                const targetLine = Number(match[1] || match[3] || 1);
+                const targetCol = Number(match[2] || match[4] || 1);
+                links.push({
+                    range: {
+                        start: { x: startCol, y: startRow },
+                        end: { x: endCol, y: endRow },
+                    },
+                    text: matchText,
+                    decorations: {
+                        pointerCursor: true,
+                        underline: true,
+                    },
+                    activate(_event, linkText) {
+                        term._lastActivatedFileLink = { text: linkText, line: targetLine, col: targetCol };
+                    },
+                    hover(_event, linkText) {
+                        term._lastHoveredFileLink = { text: linkText, line: targetLine, col: targetCol };
+                    },
+                    leave() {
+                        term._lastHoveredFileLink = null;
+                    },
+                });
+            }
+            callback(links.length > 0 ? links : undefined);
+        },
+    };
+}
+
+function createStackTraceAndIssueLinkProvider(term) {
+    return {
+        provideLinks(bufferLineNumber, callback) {
+            const buf = term.buffer.active;
+            const line = buf.getLine(bufferLineNumber - 1);
+            if (!line) {
+                callback(undefined);
+                return;
+            }
+            const text = line.translateToString(true);
+            if (!text || text.length < 4) {
+                callback(undefined);
+                return;
+            }
+            STACK_TRACE_ISSUE_LINK_REGEX.lastIndex = 0;
+            let match;
+            const links = [];
+            while ((match = STACK_TRACE_ISSUE_LINK_REGEX.exec(text)) !== null) {
+                const matchText = match[0];
+                const startCol = match.index + 1;
+                const endCol = match.index + matchText.length;
+                const symbol = match[1] || match[5] || `issue-${match[6]}`;
+                links.push({
+                    range: {
+                        start: { x: startCol, y: bufferLineNumber },
+                        end: { x: endCol, y: bufferLineNumber },
+                    },
+                    text: matchText,
+                    decorations: {
+                        pointerCursor: true,
+                        underline: true,
+                    },
+                    activate(_event, linkText) {
+                        term._lastActivatedSymbolLink = { symbol, text: linkText };
+                    },
+                    hover(_event, linkText) {
+                        term._lastHoveredSymbolLink = { symbol, text: linkText };
+                    },
+                    leave() {
+                        term._lastHoveredSymbolLink = null;
+                    },
+                });
+            }
+            callback(links.length > 0 ? links : undefined);
+        },
+    };
+}
+
 /**
  * Initialize all 4 terminal panes and attach addons
  */
@@ -108,19 +260,11 @@ export function initTerminals() {
     const tabs = ["build", "links", "ncurses", "git"];
     tabs.forEach((tabId) => initTerminalForTab(tabId));
 
-    // Populate Git tab with static sample output
-    if (terminals.git) {
-        writeSync(terminals.git, "\x1b[33mOn branch main\x1b[0m\r\n");
-        writeSync(terminals.git, "Your branch is up to date with 'origin/main'.\r\n\r\n");
-        writeSync(terminals.git, "Changes not staged for commit:\r\n");
-        writeSync(terminals.git, '  (use "git add <file>..." to update what will be committed)\r\n');
-        writeSync(terminals.git, '  (use "git restore <file>..." to discard changes in working directory)\r\n');
-        writeSync(terminals.git, "\t\x1b[31mmodified:   src/app.js\x1b[0m\r\n");
-        writeSync(terminals.git, "\t\x1b[31mmodified:   style.css\x1b[0m\r\n\r\n");
-        writeSync(terminals.git, "Untracked files:\r\n");
-        writeSync(terminals.git, '  (use "git add <file>..." to include in what will be committed)\r\n');
-        writeSync(terminals.git, "\t\x1b[31msessions.js\x1b[0m\r\n\r\n");
-        writeSync(terminals.git, 'no changes added to commit (use "git add" and/or "git commit -a")\r\n');
+    // Populate Git tab with initial git status, graph log, and diff output
+    if (terminals.git && gitChunks.length > 0) {
+        for (let i = 0; i < gitChunks.length; i++)
+            writeSync(terminals.git, gitChunks[i]);
+        warmUpTerminalAtlas(terminals.git);
     }
 
     // Display initial content in all terminals so font loading, glyph texture atlas
@@ -128,7 +272,7 @@ export function initTerminals() {
     if (terminals.build && buildLogChunks.length > 0) {
         for (let i = 10; i < buildLogChunks.length; i++)
             writeSync(terminals.build, buildLogChunks[i]);
-        writeSync(terminals.build, "\x1b[2m[Tab switched to build links at 0123456789]\x1b[0m\r\n");
+        writeSync(terminals.build, "\x1b[2m[Tab switched to build links ncurses git at 0123456789]\x1b[0m\r\n");
         warmUpTerminalAtlas(terminals.build);
         writeSync(terminals.build, "\x1b[2J\x1b[3J\x1b[H");
         writeSync(terminals.build, "\x1b[36m⚡ Speedometer Terminal Emulator Suite - Initializing Build Environment...\x1b[0m\r\n\r\n");
@@ -194,6 +338,7 @@ function initTerminalForTab(tabId) {
         return;
 
     const term = new Terminal({
+        allowProposedApi: true,
         theme: {
             background: "#1e1e1e",
             foreground: "#d4d4d4",
@@ -222,14 +367,49 @@ function initTerminalForTab(tabId) {
         scrollback: 5000,
         cursorBlink: false, // Turn off blinking for deterministic rendering
         allowTransparency: false,
-        overviewRuler: { width: FIXED_SCROLLBAR_WIDTH },
+        overviewRulerWidth: FIXED_SCROLLBAR_WIDTH,
+        linkHandler: {
+            allowNonHttpProtocols: true,
+            activate: (_event, text, range) => {
+                term._lastActivatedOscLink = { text, range };
+            },
+            hover: (_event, text, range) => {
+                term._lastHoveredOscLink = { text, range };
+            },
+            leave: () => {
+                term._lastHoveredOscLink = null;
+            },
+        },
     });
 
     const fitAddon = new FitAddon();
-    const webLinksAddon = new WebLinksAddon();
+    const webLinksAddon = new WebLinksAddon((_event, uri) => {
+        term._lastActivatedWebLink = uri;
+    });
 
     term.loadAddon(fitAddon);
     term.loadAddon(webLinksAddon);
+    term.registerLinkProvider(createWorkspaceFileLinkProvider(term));
+    term.registerLinkProvider(createStackTraceAndIssueLinkProvider(term));
+
+    // Register IDE shell integration OSC 133 (FinalTerm) & OSC 633 (VS Code) handlers
+    const shellState = shellIntegrationState[tabId];
+    if (shellState && term.parser) {
+        term.parser.registerOscHandler(133, (data) => {
+            if (data.startsWith("A"))
+                shellState.prompts++;
+            else if (data.startsWith("B") || data.startsWith("C"))
+                shellState.commands++;
+            else if (data.startsWith("D"))
+                shellState.completions++;
+            return true;
+        });
+        term.parser.registerOscHandler(633, (data) => {
+            if (data.startsWith("P;Cwd="))
+                shellState.cwd = data.slice(6);
+            return true;
+        });
+    }
 
     // Load performance rendering backend
     if (rendererType === "webgl") {
@@ -482,35 +662,37 @@ function warmUpTerminalAtlas(term) {
     for (let code = 33; code < 126; code++)
         atlas.getRasterizedGlyph(code, 0, 0, 0, true);
 
-    const buffer = bufferService.buffer;
-    const lines = buffer.lines;
     const cols = bufferService.cols;
-    const maxLine = Math.min(lines.length, buffer.ybase + bufferService.rows);
     const cell = textLayer._workCell;
+    const candidateBuffers = [bufferService.buffers?.normal, bufferService.buffers?.alt].filter(Boolean);
 
-    for (let y = 0; y < maxLine; y++) {
-        const line = lines.get(y);
-        if (!line)
-            continue;
-        for (let x = 0; x < cols; x++) {
-            line.loadCell(x, cell);
-            if (cell.getWidth() === 0)
+    for (const buffer of candidateBuffers) {
+        const lines = buffer.lines;
+        const maxLine = Math.min(lines.length, buffer.ybase + bufferService.rows);
+        for (let y = 0; y < maxLine; y++) {
+            const line = lines.get(y);
+            if (!line)
                 continue;
-            const chars = cell.getChars();
-            textLayer._cellColorResolver.resolve(cell, x, y, textLayer._deviceCellWidth);
-            const res = textLayer._cellColorResolver.result;
-            if (chars && chars.length > 1)
-                atlas.getRasterizedGlyphCombinedChar(chars, res.bg, res.fg, res.ext, true);
-            else
-                atlas.getRasterizedGlyph(cell.getCode() || 32, res.bg, res.fg, res.ext, true);
+            for (let x = 0; x < cols; x++) {
+                line.loadCell(x, cell);
+                if (cell.getWidth() === 0)
+                    continue;
+                const chars = cell.getChars();
+                textLayer._cellColorResolver.resolve(cell, x, y, textLayer._deviceCellWidth);
+                const res = textLayer._cellColorResolver.result;
+                if (chars && chars.length > 1)
+                    atlas.getRasterizedGlyphCombinedChar(chars, res.bg, res.fg, res.ext, true);
+                else
+                    atlas.getRasterizedGlyph(cell.getCode() || 32, res.bg, res.fg, res.ext, true);
+            }
         }
     }
 }
 
 /**
  * Synchronously flush any pending debounced render passes or animation frames on
- * the terminal's render debouncer, viewport scrollbar, and selection overlays,
- * forcing dirty rows and DOM elements to update immediately.
+ * the terminal's render debouncer, viewport scrollbar, selection overlays, and
+ * overview ruler canvas, forcing dirty rows and DOM elements to update immediately.
  */
 export function flushSync(term) {
     if (!term || !term._core)
@@ -577,17 +759,22 @@ export function flushSync(term) {
         }
     }
 
-    // 4. Cancel any pending overview ruler animation frames so they do not leak timers
+    // 4. Synchronously flush overview ruler canvas decorations if pending
     if (term._core._overviewRulerRenderer) {
         const ruler = term._core._overviewRulerRenderer;
+        let hasRulerPending = false;
         if (ruler._refreshAnimationFrame !== undefined && ruler._refreshAnimationFrame !== null) {
             window.cancelAnimationFrame(ruler._refreshAnimationFrame);
             ruler._refreshAnimationFrame = undefined;
+            hasRulerPending = true;
         }
         if (ruler._animationFrame !== undefined && ruler._animationFrame !== null) {
             window.cancelAnimationFrame(ruler._animationFrame);
             ruler._animationFrame = undefined;
+            hasRulerPending = true;
         }
+        if (hasRulerPending && typeof ruler._refreshDecorations === "function")
+            ruler._refreshDecorations();
     }
 }
 
@@ -685,43 +872,180 @@ export function switchTab(tabId, shouldFlush = true) {
 }
 
 async function finishStep() {
-    // 1. Give xterm and addons initial microtask ticks to allow any pending
-    // DOM observer callbacks or event listeners to push their rendering timers.
     for (let i = 0; i < 10; i++)
         await Promise.resolve();
 
-    // 2. Loop until all scheduled xterm rendering passes, texture atlas warmups,
-    // macro-task timers (setTimeout/rAF/rIC), DOM observers, and
-    // asynchronous GPU texture bitmaps (createImageBitmap) have completely drained.
     let drainLimit = 300;
     while ((window.__activeTimers.size > 0 || window.__activeBitmaps.size > 0 || (window.__activeObservers && window.__activeObservers.size > 0)) && drainLimit-- > 0) {
         if (window.__activeBitmaps.size > 0)
             await Promise.all(Array.from(window.__activeBitmaps));
 
         Object.values(terminals).forEach((t) => flushSync(t));
-        if (window.__activeTimers.size > 0 || (window.__activeObservers && window.__activeObservers.size > 0)) {
-            // Yield to the browser's Macro-Task Queue so pending setTimeout(0),
-            // requestAnimationFrame, and requestIdleCallback callbacks actually execute!
+        if (window.__activeTimers.size > 0 || (window.__activeObservers && window.__activeObservers.size > 0))
             await new Promise((resolve) => setTimeout(resolve, 0));
-        }
+
     }
 
-    // 3. Final defensive settling phase: await additional microtask ticks to ensure
-    // zero deferred rendering work spills over into subsequent steps or async measurement.
     for (let i = 0; i < 20; i++)
         await Promise.resolve();
 
-    // 4. Synchronously flush all terminal renderers, viewports, and selection overlays
-    // right before step completion so zero animation frames spill over into -async.
     Object.values(terminals).forEach((t) => flushSync(t));
 
     window.dispatchEvent(new CustomEvent("step-complete"));
 }
 
 /**
+ * Serialize a range of lines from an xterm IBuffer into an ANSI-styled string
+ * AND an HTML styled snippet (@xterm/addon-serialize serialize() + serializeAsHTML()).
+ */
+function serializeBufferAsAnsiAndHtml(buf, startRow, endRow, cols) {
+    const cell = buf.getNullCell();
+    const ansiOut = [];
+    const htmlOut = ['<pre class="xterm-serialize">'];
+    let prevBold = 0;
+    let prevDim = 0;
+    let prevItalic = 0;
+    let prevUnderline = 0;
+    let prevInverse = 0;
+    let prevFgMode = 0;
+    let prevFgColor = -1;
+    let prevBgMode = 0;
+    let prevBgColor = -1;
+
+    const maxRow = Math.min(buf.length, endRow);
+    for (let y = startRow; y < maxRow; y++) {
+        const line = buf.getLine(y);
+        if (!line)
+            continue;
+        let ansiLine = "";
+        let htmlLine = "<div>";
+        let spanOpen = false;
+        const lineLen = Math.min(cols, line.length);
+
+        for (let x = 0; x < lineLen; x++) {
+            line.getCell(x, cell);
+            if (cell.getWidth() === 0)
+                continue;
+
+            const bold = cell.isBold();
+            const dim = cell.isDim();
+            const italic = cell.isItalic();
+            const underline = cell.isUnderline();
+            const inverse = cell.isInverse();
+            const fgMode = cell.getFgColorMode();
+            const fgColor = cell.getFgColor();
+            const bgMode = cell.getBgColorMode();
+            const bgColor = cell.getBgColor();
+
+            if (
+                bold !== prevBold
+                || dim !== prevDim
+                || italic !== prevItalic
+                || underline !== prevUnderline
+                || inverse !== prevInverse
+                || fgMode !== prevFgMode
+                || fgColor !== prevFgColor
+                || bgMode !== prevBgMode
+                || bgColor !== prevBgColor
+            ) {
+                const sgr = [];
+                const styles = [];
+                if (cell.isAttributeDefault()) {
+                    sgr.push(0);
+                } else {
+                    if (bold !== prevBold)
+                        sgr.push(bold ? 1 : 22);
+                    if (dim !== prevDim)
+                        sgr.push(dim ? 2 : 22);
+                    if (italic !== prevItalic)
+                        sgr.push(italic ? 3 : 23);
+                    if (underline !== prevUnderline)
+                        sgr.push(underline ? 4 : 24);
+                    if (inverse !== prevInverse)
+                        sgr.push(inverse ? 7 : 27);
+                    if (bold)
+                        styles.push("font-weight:bold");
+                    if (italic)
+                        styles.push("font-style:italic");
+                    if (underline)
+                        styles.push("text-decoration:underline");
+
+                    if (fgMode !== prevFgMode || fgColor !== prevFgColor) {
+                        if (cell.isFgDefault()) {
+                            sgr.push(39);
+                        } else if (cell.isFgPalette()) {
+                            sgr.push(38, 5, fgColor & 0xff);
+                            styles.push(`color:var(--ansi-${fgColor & 0xff})`);
+                        } else if (cell.isFgRGB()) {
+                            const r = (fgColor >> 16) & 0xff;
+                            const g = (fgColor >> 8) & 0xff;
+                            const b = fgColor & 0xff;
+                            sgr.push(38, 2, r, g, b);
+                            styles.push(`color:rgb(${r},${g},${b})`);
+                        }
+                    }
+                    if (bgMode !== prevBgMode || bgColor !== prevBgColor) {
+                        if (cell.isBgDefault()) {
+                            sgr.push(49);
+                        } else if (cell.isBgPalette()) {
+                            sgr.push(48, 5, bgColor & 0xff);
+                            styles.push(`background:var(--ansi-${bgColor & 0xff})`);
+                        } else if (cell.isBgRGB()) {
+                            const r = (bgColor >> 16) & 0xff;
+                            const g = (bgColor >> 8) & 0xff;
+                            const b = bgColor & 0xff;
+                            sgr.push(48, 2, r, g, b);
+                            styles.push(`background:rgb(${r},${g},${b})`);
+                        }
+                    }
+                }
+                if (sgr.length > 0)
+                    ansiLine += `\x1b[${sgr.join(";")}m`;
+                if (spanOpen) {
+                    htmlLine += "</span>";
+                    spanOpen = false;
+                }
+                if (styles.length > 0) {
+                    htmlLine += `<span style="${styles.join(";")}">`;
+                    spanOpen = true;
+                }
+
+                prevBold = bold;
+                prevDim = dim;
+                prevItalic = italic;
+                prevUnderline = underline;
+                prevInverse = inverse;
+                prevFgMode = fgMode;
+                prevFgColor = fgColor;
+                prevBgMode = bgMode;
+                prevBgColor = bgColor;
+            }
+
+            const ch = cell.getChars() || " ";
+            ansiLine += ch;
+            htmlLine += ch === "<" ? "&lt;" : ch === ">" ? "&gt;" : ch === "&" ? "&amp;" : ch;
+        }
+        if (spanOpen)
+            htmlLine += "</span>";
+        htmlLine += "</div>";
+        ansiOut.push(line.isWrapped ? ansiLine : `${ansiLine.trimEnd()}\r\n`);
+        htmlOut.push(htmlLine);
+    }
+    htmlOut.push("</pre>");
+    return {
+        ansi: ansiOut.join(""),
+        html: htmlOut.join(""),
+    };
+}
+
+/**
  * Benchmark Step 1: Dump & Scroll Output
- * Writes 2 passes of verbose build logs (~300 chunks), exercises ring buffer scrolling,
- * multi-line selection text extraction, and active buffer line translation, then flushes once.
+ * 1. Single-pass stream of a 360-step build & test pipeline with OSC 133/633 shell integration,
+ *    OSC 8 compiler diagnostic links, \r\x1b[2K live progress bar updates, and 256/TrueColor spans.
+ * 2. IDE Problem Matcher scan registering IMarkers and OverviewRuler IDecorations for warnings/errors.
+ * 3. Unwrapped logical-line regex search engine (@xterm/addon-search pattern) with match highlighting.
+ * 4. Marker-driven command/diagnostic scroll navigation.
+ * 5. Dual ANSI + HTML scrollback serialization (@xterm/addon-serialize serialize() & serializeAsHTML()).
  */
 export async function dumpAndScroll() {
     if (!isInitialized) {
@@ -734,41 +1058,107 @@ export async function dumpAndScroll() {
         return;
     }
 
+    clearTabDecorations("build");
     writeSync(term, "\x1b[2J\x1b[3J\x1b[H");
     term.clear();
     switchTab("build", false);
     writeSync(term, "\x1b[2J\x1b[3J\x1b[H");
     term.clear();
 
-    // Write 2 passes of buildLogChunks (~300 writeSync calls) to exercise InputHandler.parse,
-    // EscapeSequenceParser, UTF-32 decoding, and CircularList ring buffer management.
-    for (let pass = 0; pass < 2; pass++) {
-        for (let i = 0; i < buildLogChunks.length; i++)
-            writeSync(term, buildLogChunks[i]);
-    }
+    // 1. Write single-pass build pipeline session (zero loop repetition)
+    for (let i = 0; i < buildLogChunks.length; i++)
+        writeSync(term, buildLogChunks[i]);
 
-    // Scroll through valid scrollback positions without mid-loop flushes
-    term.scrollToTop();
-    for (let i = 0; i < 15; i++)
-        term.scrollLines(15);
-    term.scrollToBottom();
-
-    // Select a multi-line range and extract selection text across wrapped lines in pure JS
-    term.selectLines(10, Math.min(90, term.buffer.active.length - 1));
-    const selectedText = term.getSelection();
-    term.selectLines(0, Math.max(0, term.buffer.active.length - 1));
-    const fullSelectedText = term.getSelection();
-    term.clearSelection();
-
-    // Translate all active buffer lines to strings in pure JS
+    // 3. IDE Problem Matcher + Marker & Decoration Registration + Logical-Line Regex Search (@xterm/addon-search)
     const buf = term.buffer.active;
-    let totalChars = selectedText.length + fullSelectedText.length;
+    const cols = term.cols || 80;
+    const cursorLine = buf.baseY + buf.cursorY;
+    const diagnostics = [];
+    const regexMatches = [];
+
     for (let y = 0; y < buf.length; y++) {
         const line = buf.getLine(y);
-        if (line)
-            totalChars += line.translateToString(true).length;
+        if (!line || line.isWrapped)
+            continue;
+
+        // Reconstruct unwrapped logical line across wrapped continuations
+        let logicalText = line.translateToString(false);
+        let wrappedCount = 0;
+        while (y + wrappedCount + 1 < buf.length) {
+            const next = buf.getLine(y + wrappedCount + 1);
+            if (!next || !next.isWrapped)
+                break;
+            logicalText += next.translateToString(false);
+            wrappedCount++;
+        }
+        const trimmed = logicalText.trimEnd();
+        if (!trimmed)
+            continue;
+
+        const isError = trimmed.includes("error (ignored):");
+        const isWarning = !isError && trimmed.includes("warning:");
+        const isLinkStep = !isError && !isWarning && trimmed.includes("[LINK]");
+        if ((isError || isWarning || isLinkStep) && activeDecorations.build.length < 110) {
+            const offset = y - cursorLine;
+            const marker = term.registerMarker(offset);
+            if (marker) {
+                const decoration = term.registerDecoration({
+                    marker,
+                    width: Math.min(14, cols),
+                    overviewRulerOptions: {
+                        color: isError ? "#f14c4c" : isWarning ? "#e5e510" : "#bc3fbc",
+                        position: isError ? "right" : isWarning ? "center" : "left",
+                    },
+                });
+                activeDecorations.build.push({ marker, decoration });
+                diagnostics.push({ y, severity: isError ? 2 : isWarning ? 1 : 0 });
+            }
+        }
+
+        // Run @xterm/addon-search regexes across the unwrapped logical line and map back to (row, col)
+        for (let r = 0; r < BUILD_SEARCH_REGEXES.length; r++) {
+            const rx = BUILD_SEARCH_REGEXES[r];
+            rx.lastIndex = 0;
+            let m;
+            while ((m = rx.exec(trimmed)) !== null) {
+                const matchRow = y + Math.floor(m.index / cols);
+                const matchCol = m.index % cols;
+                regexMatches.push({
+                    row: matchRow,
+                    col: matchCol,
+                    length: m[0].length,
+                    group: m[1] || "",
+                });
+            }
+        }
     }
-    term._lastScannedChars = totalChars;
+
+    // 4. Navigate through registered diagnostic markers and scrollback pages
+    term.scrollToTop();
+    for (let i = 0; i < activeDecorations.build.length; i += 3) {
+        const targetLine = activeDecorations.build[i].marker.line;
+        if (targetLine >= 0)
+            term.scrollToLine(targetLine);
+    }
+    term.scrollPages(-2);
+    term.scrollLines(15);
+    term.scrollToBottom();
+
+    // 5. Step through regex search matches via SelectionService and extract selections
+    let selectedChars = 0;
+    const maxSelections = Math.min(35, regexMatches.length);
+    for (let i = 0; i < maxSelections; i++) {
+        const m = regexMatches[i];
+        term.select(m.col, m.row, m.length);
+        selectedChars += term.getSelection().length;
+    }
+    term.selectLines(10, Math.min(160, buf.length - 1));
+    selectedChars += term.getSelection().length;
+    term.clearSelection();
+
+    // 6. Export/serialize build scrollback as both ANSI and styled HTML (@xterm/addon-serialize)
+    const serialized = serializeBufferAsAnsiAndHtml(buf, 0, buf.length, cols);
+    term._lastScannedChars = selectedChars + serialized.ansi.length + serialized.html.length + diagnostics.length;
 
     flushSync(term);
     await finishStep();
@@ -776,8 +1166,10 @@ export async function dumpAndScroll() {
 
 /**
  * Benchmark Step 2: Inline Links & Hover
- * Writes 2 passes of URL/trace chunks, hovers across 25 distinct rows, and invokes
- * link providers across the full active buffer before flushing once.
+ * 1. Single-pass 200-entry test trace log with Web URLs, OSC 8 hyperlinks, workspace file spans, and stack frames.
+ * 2. Interactive mousemove hover across 3 viewport scroll regions (top, middle, bottom) to exercise Linkifier & LinkRenderLayer.
+ * 3. Full-buffer link resolution across all 4 registered providers (OscLinkProvider, WebLinksAddon,
+ *    WorkspaceFileLinkProvider, StackTraceAndIssueLinkProvider) with URL/path/symbol parsing and hover tooltip updates.
  */
 export async function hoverInlineLinks() {
     const term = terminals.links;
@@ -792,48 +1184,92 @@ export async function hoverInlineLinks() {
     writeSync(term, "\x1b[2J\x1b[3J\x1b[H");
     term.clear();
 
-    // Write 2 passes of linksChunks (~160 writeSync calls)
-    for (let pass = 0; pass < 2; pass++) {
-        for (let i = 0; i < linksChunks.length; i++)
-            writeSync(term, linksChunks[i]);
+    // 1. Write single-pass links & stack-trace session (zero loop repetition)
+    for (let i = 0; i < linksChunks.length; i++)
+        writeSync(term, linksChunks[i]);
+
+    // Ensure IDE .xterm-hover tooltip container exists within term.element (per xterm.d.ts ILink.hover spec)
+    let hoverTooltip = term.element?.querySelector(".xterm-hover");
+    if (term.element && !hoverTooltip) {
+        hoverTooltip = document.createElement("div");
+        hoverTooltip.className = "xterm-hover";
+        hoverTooltip.style.display = "none";
+        term.element.appendChild(hoverTooltip);
     }
 
-    // Simulate mouse moves across 25 distinct rows (1 hover per row so Linkifier does not
-    // early-return on this._activeLine === position.y, with zero flushSync inside the loop)
+    // 2. Simulate mouse moves across distinct viewport rows & columns across 3 scroll regions
     const screenElement = term.element ? term.element.querySelector(".xterm-screen") : null;
-    if (screenElement) {
+    const buf = term.buffer.active;
+    if (screenElement && buf) {
         const rect = screenElement.getBoundingClientRect();
         const rowHeight = rect.height / term.rows;
-        const clientX = rect.left + rect.width / 3;
+        const colPositions = [
+            rect.left + rect.width * 0.25,
+            rect.left + rect.width * 0.50,
+            rect.left + rect.width * 0.72,
+        ];
+        const scrollTargets = [0, Math.floor(buf.length / 2), Math.max(0, buf.length - term.rows)];
 
-        for (let row = 0; row < 25; row++) {
-            const clientY = rect.top + (row + 0.5) * rowHeight;
-            const moveEvent = new MouseEvent("mousemove", {
-                view: window,
-                bubbles: true,
-                cancelable: true,
-                clientX,
-                clientY,
-            });
-            screenElement.dispatchEvent(moveEvent);
+        for (let s = 0; s < scrollTargets.length; s++) {
+            term.scrollToLine(scrollTargets[s]);
+            for (let row = 0; row < term.rows; row++) {
+                const clientY = rect.top + (row + 0.5) * rowHeight;
+                const clientX = colPositions[(row + s) % colPositions.length];
+                screenElement.dispatchEvent(
+                    new MouseEvent("mousemove", {
+                        view: window,
+                        bubbles: true,
+                        cancelable: true,
+                        clientX,
+                        clientY,
+                    })
+                );
+            }
         }
     }
 
-    // Invoke registered link providers across all populated lines in term.buffer.active
-    // so LinkComputer.computeLink runs across the full link buffer in pure JS.
+    // 3. Invoke all 4 registered link providers (OscLinkProvider, WebLinksAddon, WorkspaceFileLinkProvider,
+    // StackTraceAndIssueLinkProvider) across all populated buffer lines and resolve targets.
     const providers = term._core?._linkProviderService?.linkProviders;
-    const buf = term.buffer.active;
     if (Array.isArray(providers) && buf) {
         let linkCount = 0;
+        let parsedTargets = 0;
+        const cwd = shellIntegrationState.links.cwd || "/workspace/speedometer";
+
         for (let y = 1; y <= buf.length; y++) {
+            const line = buf.getLine(y - 1);
             for (let p = 0; p < providers.length; p++) {
                 providers[p].provideLinks(y, (links) => {
-                    if (links)
-                        linkCount += links.length;
+                    if (!links)
+                        return;
+                    linkCount += links.length;
+                    for (let l = 0; l < links.length; l++) {
+                        const link = links[l];
+                        const startCol = Math.max(0, link.range.start.x - 1);
+                        const endCol = Math.max(startCol + 1, link.range.end.x);
+                        const extracted = line ? line.translateToString(false, startCol, endCol) : link.text;
+                        if (extracted.startsWith("http://") || extracted.startsWith("https://") || extracted.startsWith("file://")) {
+                            try {
+                                const parsedUrl = new URL(extracted);
+                                parsedTargets += parsedUrl.pathname.length + parsedUrl.hash.length;
+                            } catch {
+                                parsedTargets += extracted.length;
+                            }
+                        } else {
+                            const resolvedPath = `${cwd}/${extracted}`;
+                            const colonIdx = resolvedPath.lastIndexOf(":");
+                            parsedTargets += colonIdx > 0 ? colonIdx : resolvedPath.length;
+                        }
+                        if ((linkCount & 31) === 0) {
+                            link.hover?.(null, extracted);
+                            if (hoverTooltip)
+                                hoverTooltip.textContent = `Follow link (${extracted.slice(0, 48)})`;
+                        }
+                    }
                 });
             }
         }
-        term._lastLinkCount = linkCount;
+        term._lastLinkCount = linkCount + parsedTargets;
     }
 
     flushSync(term);
@@ -842,8 +1278,12 @@ export async function hoverInlineLinks() {
 
 /**
  * Benchmark Step 3: Ncurses Color UI
- * Writes 6 passes of 4 htop frames (24 frames) via writeSync, inspects active viewport cells
- * via IBufferLine/IBufferCell bitfield getters after each pass, and flushes once at the end.
+ * 1. Runs 24 distinct interactive full-screen TUI frames in the Alternate Screen Buffer (\x1b[?1049h),
+ *    exercising DECSTBM scroll regions (\x1b[10;25r), DeleteLine (\x1b[M), InsertLine (\x1b[L),
+ *    ReverseIndex (\x1bM), cursor save/restore (\x1b7/\x1b8), EraseChars (\x1b[X), and modal overlays.
+ * 2. After each frame, performs a 2D IBufferCell differential compositor pass comparing cell codepoints,
+ *    24-bit RGB / 256-color palette modes, and SGR bitfields against the previous frame snapshot to build
+ *    dirty-span redraw patches, flushing the renderer on major interactive TUI phase transitions.
  */
 export async function ncursesColorUI() {
     switchTab("ncurses", false);
@@ -853,26 +1293,106 @@ export async function ncursesColorUI() {
         return;
     }
 
-    const buf = term.buffer.active;
-    const cell = buf.getNullCell();
-    let checksum = 0;
+    const rows = term.rows;
+    const cols = term.cols;
+    const gridSize = rows * cols;
+    const prevCodes = new Uint32Array(gridSize);
+    const prevFg = new Uint32Array(gridSize);
+    const prevBg = new Uint32Array(gridSize);
+    const prevStyle = new Uint16Array(gridSize);
 
-    for (let pass = 0; pass < 6; pass++) {
-        for (let i = 0; i < ncursesFrames.length; i++)
-            writeSync(term, ncursesFrames[i]);
+    let totalDirtyCells = 0;
+    let totalStyleRuns = 0;
+    let diffPatchLength = 0;
+    let inputBytesDispatched = 0;
 
+    // Attach temporary onData listener to capture simulated TUI key/mouse input responses
+    const dataDisposable = term.onData((data) => {
+        inputBytesDispatched += data.length;
+    });
+    const tuiInputs = ["\x1bOA", "\x1bOB", "\x1b[15~", "\x1b[17~", "/renderer\r", "\x1b[11~"];
+
+    for (let frameIdx = 0; frameIdx < ncursesFrames.length; frameIdx++) {
+        if (frameIdx % 5 === 0)
+            term.input(tuiInputs[(frameIdx / 5) % tuiInputs.length], false);
+
+        writeSync(term, ncursesFrames[frameIdx]);
+
+        const buf = term.buffer.active;
+        const cell = buf.getNullCell();
         const baseY = buf.viewportY ?? buf.ydisp ?? 0;
-        for (let y = 0; y < term.rows; y++) {
+
+        for (let y = 0; y < rows; y++) {
             const line = buf.getLine(baseY + y);
             if (!line)
                 continue;
-            for (let x = 0; x < term.cols; x++) {
+
+            let inDirtySpan = false;
+            let spanPrevStyle = -1;
+            let spanPrevFg = -1;
+            let spanPrevBg = -1;
+            let rowPatch = "";
+
+            for (let x = 0; x < cols; x++) {
                 line.getCell(x, cell);
-                checksum = ((checksum * 31) + cell.getCode() + (cell.getFgColor() & 0xffffff) + (cell.getBgColor() & 0xffffff)) | 0;
+                const idx = y * cols + x;
+                const code = cell.getCode() || 32;
+                const fg = (cell.getFgColorMode() << 24) | (cell.getFgColor() & 0xffffff);
+                const bg = (cell.getBgColorMode() << 24) | (cell.getBgColor() & 0xffffff);
+                const style
+                    = (cell.isBold() ? 1 : 0)
+                    | (cell.isDim() ? 2 : 0)
+                    | (cell.isItalic() ? 4 : 0)
+                    | (cell.isUnderline() ? 8 : 0)
+                    | (cell.isInverse() ? 16 : 0)
+                    | (cell.isFgRGB() ? 32 : 0)
+                    | (cell.isBgRGB() ? 64 : 0)
+                    | (cell.isFgPalette() ? 128 : 0)
+                    | (cell.isBgPalette() ? 256 : 0);
+
+                if (
+                    prevCodes[idx] !== code
+                    || prevFg[idx] !== fg
+                    || prevBg[idx] !== bg
+                    || prevStyle[idx] !== style
+                ) {
+                    prevCodes[idx] = code;
+                    prevFg[idx] = fg;
+                    prevBg[idx] = bg;
+                    prevStyle[idx] = style;
+                    totalDirtyCells++;
+
+                    if (!inDirtySpan) {
+                        rowPatch += `\x1b[${y + 1};${x + 1}H`;
+                        inDirtySpan = true;
+                    }
+                    if (style !== spanPrevStyle || fg !== spanPrevFg || bg !== spanPrevBg) {
+                        totalStyleRuns++;
+                        spanPrevStyle = style;
+                        spanPrevFg = fg;
+                        spanPrevBg = bg;
+                        rowPatch += `\x1b[${style & 1 ? "1;" : ""}${style & 16 ? "7;" : ""}38;2;${(fg >> 16) & 0xff};${(fg >> 8) & 0xff};${fg & 0xff};48;2;${(bg >> 16) & 0xff};${(bg >> 8) & 0xff};${bg & 0xff}m`;
+                    }
+                    rowPatch += cell.getChars() || " ";
+                } else {
+                    inDirtySpan = false;
+                }
             }
+            const a11yLine = line.translateToString(true);
+            diffPatchLength += rowPatch.length + a11yLine.length;
+        }
+
+        // Capture multiplexer / accessibility state snapshots at major TUI phase transitions
+        if ((frameIdx + 1) % 10 === 0) {
+            const phaseSnap = serializeBufferAsAnsiAndHtml(buf, 0, rows, cols);
+            diffPatchLength += phaseSnap.ansi.length + phaseSnap.html.length;
         }
     }
-    term._lastCellChecksum = checksum;
+
+    dataDisposable?.dispose?.();
+
+    const modesFlag = term.modes.applicationCursorKeysMode ? 1 : 0;
+    term._lastCellChecksum = (totalDirtyCells + totalStyleRuns + diffPatchLength + inputBytesDispatched + modesFlag) | 0;
 
     flushSync(term);
     await finishStep();
@@ -880,31 +1400,18 @@ export async function ncursesColorUI() {
 
 /**
  * Benchmark Step 4: Switch Tabs & Resize
- * Exercises BufferReflow (_reflowSmaller and _reflowLarger) across a sequence of column widths
- * on populated scrollback buffers, then switches tabs and flushes once per visible tab switch.
+ * 1. Exercises BufferReflow (_reflowSmaller and _reflowLarger) across split-pane column widths
+ *    on the git terminal while responsive container width changes trigger FitAddon.fit()
+ *    reflows across build and links.
+ * 2. Cycles across all 4 terminal tabs (build -> links -> ncurses -> git -> build), updating
+ *    each tab's terminal output and fitting the active viewport.
  */
 export async function switchTabsAndResize() {
     const buildTerm = terminals.build;
     const linksTerm = terminals.links;
+    const ncursesTerm = terminals.ncurses;
+    const gitTerm = terminals.git;
     const container = document.getElementById("terminal-container");
-
-    if (buildTerm && linksTerm) {
-        const buildBs = buildTerm._core._bufferService;
-        const linksBs = linksTerm._core._bufferService;
-        const origBuildCols = buildBs.cols;
-        const origLinksCols = linksBs.cols;
-        const origRows = buildBs.rows;
-        buildBs._reflowOnly = true;
-        linksBs._reflowOnly = true;
-        for (const cols of [80, 120, 72]) {
-            buildBs.resize(cols, origRows);
-            linksBs.resize(cols, origRows);
-        }
-        buildBs.resize(origBuildCols, origRows);
-        linksBs.resize(origLinksCols, origRows);
-        buildBs._reflowOnly = false;
-        linksBs._reflowOnly = false;
-    }
 
     container.style.width = "92%";
     switchTab("build", false);
@@ -916,7 +1423,18 @@ export async function switchTabsAndResize() {
     flushSync(linksTerm);
 
     container.style.width = "100%";
-    fitAddons.links?.fit();
+
+    switchTab("ncurses", false);
+    writeSync(ncursesTerm, `\x1b[26;65H\x1b[48;2;30;75;50m\x1b[38;2;230;255;230m[Switch #${++tabSwitchCounter}]\x1b[0m`);
+    flushSync(ncursesTerm);
+
+    switchTab("git", false);
+    writeSync(
+        gitTerm,
+        `\x1b[33m* ${(0xb100000 + tabSwitchCounter).toString(16)}\x1b[0m [git-status] Workspace reflow check #${++tabSwitchCounter} (3 files modified)\r\n`
+    );
+    flushSync(gitTerm);
+
     switchTab("build", false);
     flushSync(buildTerm);
 

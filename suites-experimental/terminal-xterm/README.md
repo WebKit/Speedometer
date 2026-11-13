@@ -10,10 +10,10 @@ The application maintains four distinct terminal sessions organized into tabs (`
 
 ### Benchmark Steps
 
-1. **Dump & Scroll Output**: Dumps ~75 chunks (~750+ lines) of verbose C++ compilation logs into the viewport, exercises scrolling operations, and simulates user selection across blocks of output.
-2. **Parse & Hover Inline Links**: Emits test logs saturated with URLs and file paths, then dispatches synthetic mouse hover events across grid cells to trigger regex link matching and decoration updates (`@xterm/addon-web-links`).
-3. **Ncurses Color UI**: Sequentially renders 4 dynamic frames of an `htop`-style system process monitor using cursor positioning, RGB TrueColor escape sequences, and partial buffer refreshes.
-4. **Switch Tabs & Resize**: Simulates switching active terminal tabs and resizing panel widths to trigger column reflow calculations (`@xterm/addon-fit`).
+1. **Dump & Scroll Output**: Streams a single-pass C++/CMake/Ninja compilation and `ctest` verification log with OSC 133/633 shell integration markers, OSC 8 diagnostic hyperlinks, and live progress updates, then runs IDE problem-matcher marker/decoration registration (`OverviewRuler`), unwrapped logical-line regex search (`@xterm/addon-search` pattern), marker-driven scroll navigation, and dual ANSI + HTML scrollback serialization (`@xterm/addon-serialize` pattern).
+2. **Parse & Hover Inline Links**: Streams a single-pass test runner and stack trace log saturated with URLs, OSC 8 hyperlinks, workspace file spans, and stack frames, dispatches mouse hover events across multiple viewport scroll regions, and resolves inline links across all 4 registered link providers (`OscLinkProvider`, `@xterm/addon-web-links`, workspace file path detector, and stack-trace/issue symbol provider).
+3. **Ncurses Color UI**: Sequentially renders 80 interactive full-screen `htop`/`btop` system monitor frames in the alternate screen buffer (`\x1b[?1049h`) using DECSTBM scroll regions, hardware line insert/delete operations, modal overlays, simulated user input, and a 2D `IBufferCell` differential compositor pass with periodic state snapshots.
+4. **Switch Tabs & Resize**: Resizes the terminal container across multiple widths (`92%`, `96%`, `100%`) while cycling across all four terminal tabs (`Build Log`, `Links & Traces`, `Ncurses Monitor`, and `Git Status`), triggering `FitAddon.fit()` column reflows (`BufferReflow`) and viewport updates.
 
 ## Build Steps
 
