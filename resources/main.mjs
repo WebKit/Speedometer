@@ -47,12 +47,16 @@ class MainBenchmarkClient {
         return this._state === BENCHMARK_STATE.RUNNING;
     }
 
+    isPreloading() {
+        return this._state === BENCHMARK_STATE.PRELOADING;
+    }
+
     hasFinished() {
         return this._state === BENCHMARK_STATE.DONE || this._state === BENCHMARK_STATE.ERROR;
     }
 
     async start() {
-        if (this._state === BENCHMARK_STATE.PRELOADING)
+        if (this.isPreloading())
             return;
         if (this._isStepping())
             this._clearStepping();
@@ -61,7 +65,7 @@ class MainBenchmarkClient {
     }
 
     async step() {
-        if (this._state === BENCHMARK_STATE.PRELOADING)
+        if (this.isPreloading())
             return;
         const currentSteppingResolver = this._steppingResolver;
         this._steppingPromise = new Promise((resolve) => {
@@ -93,7 +97,7 @@ class MainBenchmarkClient {
     }
 
     async _startBenchmark() {
-        if (this.isRunning() || this._state === BENCHMARK_STATE.PRELOADING)
+        if (this.isRunning() || this.isPreloading())
             return false;
 
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
@@ -495,7 +499,7 @@ class MainBenchmarkClient {
 
     _logoClickHandler(event) {
         // Prevent any accidental UI changes during benchmark runs.
-        if (!this.isRunning() && this._state !== BENCHMARK_STATE.PRELOADING)
+        if (!this.isRunning() && !this.isPreloading())
             this._showSection("#home");
         event.preventDefault();
         return false;
