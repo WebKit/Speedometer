@@ -2,6 +2,7 @@
 **/dist
 package-lock.json
 **/.angular
+**/.svelte-kit
 
 /suites/todomvc/architecture-examples/*
 !/suites/todomvc/architecture-examples/angular

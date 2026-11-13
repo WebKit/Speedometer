@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --ink: #16191f;
+    --muted: #5a6270;
+    --line: #e2e5ea;
+    --surface: #ffffff;
+    --canvas: #f5f6f8;
+    --accent: #0b7a75;
+    --accent-soft: #e3f2f1;
+    --up: #0a8a5f;
+    --down: #d1344b;
+    --up-flash: rgba(10, 138, 95, 0.22);
+    --down-flash: rgba(209, 52, 75, 0.22);
+    --radius: 10px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--ink);
+    background: var(--canvas);
+}
+
+body {
+    margin: 0;
+}
+
+@layer components {
+    .up {
+        color: var(--up);
+    }
+
+    .down {
+        color: var(--down);
+    }
+
+    .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .switch-group {
+        display: inline-flex;
+        padding: 3px;
+        border-radius: 999px;
+        background: var(--canvas);
+        border: 1px solid var(--line);
+    }
+
+    .switch {
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+    }
+
+    .switch.active {
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+    }
+
+    .live-value {
+        border-radius: 3px;
+        padding: 0 2px;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .flash-up {
+        animation: flash-up 0.9s ease-out;
+    }
+
+    .flash-down {
+        animation: flash-down 0.9s ease-out;
+    }
+
+    .loader {
+        border-radius: 6px;
+        background: linear-gradient(90deg, #eceef1 25%, #f6f7f9 37%, #eceef1 63%);
+        background-size: 400% 100%;
+        animation: shimmer 1.4s ease infinite;
+    }
+}
+
+@keyframes flash-up {
+    from {
+        background-color: var(--up-flash);
+    }
+    to {
+        background-color: transparent;
+    }
+}
+
+@keyframes flash-down {
+    from {
+        background-color: var(--down-flash);
+    }
+    to {
+        background-color: transparent;
+    }
+}
+
+@keyframes shimmer {
+    from {
+        background-position: 100% 50%;
+    }
+    to {
+        background-position: 0 50%;
+    }
+}
