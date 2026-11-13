@@ -41,6 +41,8 @@ async function main() {
 
     const pdfDocument = await getDocument({
         data: await response.arrayBuffer(),
+        // Without this pdf.js requests willReadFrequently contexts, which browsers keep off the GPU.
+        enableHWA: true,
         // Everything the document needs is embedded, so never substitute a local face.
         useSystemFonts: false,
         verbosity: VerbosityLevel.ERRORS,
