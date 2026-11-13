@@ -6,6 +6,7 @@ function formatAll() {
     console.log("Formatting all files...");
     execFileSync("npm", ["run", "pretty:fix"], { stdio: "inherit" });
     execFileSync("npm", ["run", "lint:fix"], { stdio: "inherit" });
+    execFileSync("npm", ["run", "lint:css:fix"], { stdio: "inherit" });
 }
 
 // Chunk files into batches to avoid "Argument list too long" errors on large changelists.
@@ -35,6 +36,25 @@ function runEslint(files) {
         execFileSyncInBatches("eslint", ["--fix"], jsTsFiles);
     } catch (e) {
         console.error("ESLint formatting failed");
+        process.exit(1);
+    }
+}
+
+function runStylelint(files) {
+    // Only format top-level CSS and resources/**/*.css
+    const cssFiles = files.filter((f) => {
+        if (!f.endsWith(".css"))
+            return false;
+        const parts = f.split("/");
+        return parts.length === 1 || parts[0] === "resources";
+    });
+    if (cssFiles.length === 0)
+        return;
+    try {
+        console.log(`Running stylelint on ${cssFiles.length} file(s)`);
+        execFileSyncInBatches("stylelint", ["--fix"], cssFiles);
+    } catch (e) {
+        console.error("Stylelint formatting failed");
         process.exit(1);
     }
 }
@@ -95,3 +115,4 @@ console.log(`Formatting ${changedFiles.length} changed files compared to upstrea
 
 runPrettier(changedFiles);
 runEslint(changedFiles);
+runStylelint(changedFiles);
