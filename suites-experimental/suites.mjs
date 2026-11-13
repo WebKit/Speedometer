@@ -328,7 +328,7 @@ export const ExperimentalSuites = freezeSuites([
                 const searchInput = page.querySelector("input.search-input");
                 if (!searchInput)
                     return;
-                const queries = ["", "I", "In", "Int", "Inte", "Intel", "", "A", "Ap", "App", "Appl", "Apple", "", "C", "Co", "Com", "Comp", "Compu", "Comput", "Compute", "Computer"];
+                const queries = ["", "I", "Int", "Inte", "Intel", "", "A", "App", "Appl", "Apple", "", "C", "Comp", "Comput", "Computer"];
                 for (let round = 0; round < 2; round++) {
                     for (const q of queries) {
                         searchInput.setValue(q);
@@ -346,7 +346,7 @@ export const ExperimentalSuites = freezeSuites([
                 const filterPills = page.querySelectorAll(".filter-pill");
                 if (!filterPills || filterPills.length === 0)
                     return;
-                const count = Math.min(filterPills.length, 10);
+                const count = Math.min(filterPills.length, 7);
                 for (let round = 0; round < 4; round++) {
                     for (let i = 0; i < count; i++) {
                         filterPills[i].click();
@@ -362,7 +362,7 @@ export const ExperimentalSuites = freezeSuites([
                 }
                 const langButtons = page.querySelectorAll(".lang-selector button.lang-btn");
                 if (langButtons && langButtons.length > 2) {
-                    for (let round = 0; round < 11; round++) {
+                    for (let round = 0; round < 7; round++) {
                         langButtons[1].click();
                         page.layout();
                         langButtons[2].click();
