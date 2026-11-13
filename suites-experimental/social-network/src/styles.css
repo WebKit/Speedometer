@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --canvas: #f2f1ee;
+    --surface: #ffffff;
+    --surface-alt: #eeede9;
+    --text-primary: #1d1b19;
+    --text-secondary: #67625c;
+    --divider: #dedbd5;
+    --hover: rgba(0, 0, 0, 0.05);
+    --accent: #2f7d6d;
+    --accent-soft: #dcefe9;
+    --link: #1f6b5c;
+    --glimmer: #e4e2dd;
+    --online: #31a24c;
+    --scrim: rgba(250, 249, 246, 0.82);
+    --shadow: rgba(0, 0, 0, 0.12);
+    --shadow-strong: rgba(0, 0, 0, 0.18);
+    --badge-red: #d9443c;
+    --badge-green: #3a9b5d;
+    --badge-blue: #3d78c4;
+    --badge-pink: #d4537e;
+    --badge-purple: #8358c2;
+    --reaction-like: #3d78c4;
+    --reaction-love: #e0475b;
+    --reaction-care: #f2b33d;
+    --reaction-warm: #f2b33d;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+.emoji {
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
