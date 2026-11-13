@@ -34,6 +34,80 @@ function yieldTask() {
     });
 }
 
+// ChatStream-Octane: the streaming chat app in chat-stream/. Its steps follow
+// run.mjs in the Octane repository's chat-stream benchmark: event handlers
+// only set state, and window.__benchFlush commits it after every interaction.
+// No step yields to the event loop before it ends, so every browser paints the
+// same number of times.
+function chatStreamTests() {
+    const flush = async (page) => {
+        page.call("__benchFlush");
+        await null;
+    };
+    const typeInto = (element, text) => {
+        element.setValue(text);
+        element.dispatchEvent("input");
+    };
+    const sendPrompt = async (page, text) => {
+        typeInto(page.querySelector(".prompt"), text);
+        await flush(page);
+        page.querySelector(".send").click();
+        await flush(page);
+    };
+    // Calls window.deliverChunk until the reply is complete. run.mjs loops
+    // while window.__pump(batch) returns a positive remaining count.
+    // page.call drops return values, so this checks the DOM instead: the reply
+    // loses .streaming in the synchronous commit of its last chunk.
+    const drain = async (page) => {
+        let guard = 0;
+        for (;;) {
+            page.call("deliverChunk");
+            if (!page.querySelector(".streaming"))
+                break;
+            await flush(page);
+            if (++guard > 10000)
+                throw new Error("drain never settled");
+        }
+        await flush(page);
+    };
+    const prompts = ["How do I stream a response and render it as it arrives?", "Can you show the same thing with cancellation?", "What should I watch out for with long replies?"];
+    return [
+        ...prompts.map(
+            (text, i) =>
+                new BenchmarkTestStep(`StreamReply${i + 1}`, async (page) => {
+                    await sendPrompt(page, text);
+                    await drain(page);
+                })
+        ),
+        // Every conversation in turn, then back to the first: each switch
+        // unmounts one conversation and mounts and parses the next, up to the
+        // 200-message one.
+        new BenchmarkTestStep("SwitchConversations", async (page) => {
+            const items = page.querySelectorAll(".conversation-item");
+            for (let i = 1; i <= items.length; i++) {
+                items[i % items.length].click();
+                await flush(page);
+            }
+        }),
+        // A reply streamed at the end of the 200-message conversation.
+        new BenchmarkTestStep("StreamIntoLongConversation", async (page) => {
+            page.querySelector('.conversation-item[data-conversation="3"]').click();
+            await flush(page);
+            await sendPrompt(page, "Summarize this conversation.");
+            await drain(page);
+        }),
+        // Types a prompt into the controlled composer a character at a time.
+        new BenchmarkTestStep("TypePrompt", async (page) => {
+            const prompt = page.querySelector(".prompt");
+            const text = "Write a function that splits streamed text into Markdown blocks and memoizes each block by its source, then explain how it behaves when a code fence is still open.";
+            for (let i = 1; i <= text.length; i++) {
+                typeInto(prompt, text.slice(0, i));
+                await flush(page);
+            }
+        }),
+    ];
+}
+
 export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-LocalStorage",
@@ -477,5 +551,16 @@ export const ExperimentalSuites = freezeSuites([
                 }
             }),
         ],
+    },
+    {
+        name: "ChatStream-Octane",
+        url: "suites-experimental/chat-stream/dist/octane/index.html",
+        resources: "suites-experimental/chat-stream/dist/octane/resources.txt",
+        tags: ["experimental", "octane", "chat-stream"],
+        type: "async",
+        async prepare(page) {
+            await page.waitForElement(".conversation-item");
+        },
+        tests: chatStreamTests(),
     },
 ]);
