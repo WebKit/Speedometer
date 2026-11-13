@@ -31,8 +31,10 @@ export const Controls = {
         const categories = Object.keys(TAGS).filter((cat) => !hasCounts || (tagCounts[cat] || 0) > 0);
 
         const resetAllTags = () => {
-            if (onSelectAllTags) onSelectAllTags();
-            else if (onResetFilters) onResetFilters();
+            if (onSelectAllTags)
+                onSelectAllTags();
+            else if (onResetFilters)
+                onResetFilters();
         };
 
         return m("header#app-header", [
@@ -45,7 +47,8 @@ export const Controls = {
                     ondblclick: (e: any) => {
                         if (e) {
                             e.redraw = false;
-                            if (e.stopPropagation) e.stopPropagation();
+                            if (e.stopPropagation)
+                                e.stopPropagation();
                         }
                         resetAllTags();
                     },
@@ -59,7 +62,8 @@ export const Controls = {
                             ondblclick: (e: any) => {
                                 if (e) {
                                     e.redraw = false;
-                                    if (e.stopPropagation) e.stopPropagation();
+                                    if (e.stopPropagation)
+                                        e.stopPropagation();
                                 }
                                 resetAllTags();
                             },
@@ -72,7 +76,8 @@ export const Controls = {
                             ondblclick: (e: any) => {
                                 if (e) {
                                     e.redraw = false;
-                                    if (e.stopPropagation) e.stopPropagation();
+                                    if (e.stopPropagation)
+                                        e.stopPropagation();
                                 }
                                 resetAllTags();
                             },
@@ -88,15 +93,18 @@ export const Controls = {
                                     key: cat,
                                     class: `tag tag-${cat} ${activeFilters.includes(cat) ? "" : "inactive"}`,
                                     onclick: (e: any) => {
-                                        if (e) e.redraw = false;
+                                        if (e)
+                                            e.redraw = false;
                                         onFilterChange(cat, !activeFilters.includes(cat));
                                     },
                                     ondblclick: (e: any) => {
                                         if (e) {
                                             e.redraw = false;
-                                            if (e.stopPropagation) e.stopPropagation();
+                                            if (e.stopPropagation)
+                                                e.stopPropagation();
                                         }
-                                        if (onFilterOnly) onFilterOnly(cat);
+                                        if (onFilterOnly)
+                                            onFilterOnly(cat);
                                     },
                                 },
                                 label
@@ -112,31 +120,38 @@ export const Controls = {
                         placeholder: t("searchPlaceholder"),
                         value: searchQuery,
                         oninput: (e: any) => {
-                            if (e) e.redraw = false;
+                            if (e)
+                                e.redraw = false;
                             onSearchChange(e.target.value);
                         },
                         onfocus: (e: any) => {
-                            if (e) e.redraw = false;
+                            if (e)
+                                e.redraw = false;
                             onFocusSearch();
                         },
                         onclick: (e: any) => {
-                            if (e) e.redraw = false;
+                            if (e)
+                                e.redraw = false;
                             onFocusSearch();
                         },
                         onblur: (e: any) => {
-                            if (e) e.redraw = false;
+                            if (e)
+                                e.redraw = false;
                             onCloseSuggestions();
                         },
                         onkeydown: (e: any) => {
-                            if (e) e.redraw = false;
-                            if (e.key === "Enter" && suggestions.length > 0) onJumpToCard(suggestions[0].index);
-                            else if (e.key === "Escape") onCloseSuggestions();
+                            if (e)
+                                e.redraw = false;
+                            if (e.key === "Enter" && suggestions.length > 0)
+                                onJumpToCard(suggestions[0].index);
+                            else if (e.key === "Escape")
+                                onCloseSuggestions();
                         },
                     }),
-                    showSuggestions &&
-                        searchQuery &&
-                        suggestions.length > 0 &&
-                        m(
+                    showSuggestions
+                        && searchQuery
+                        && suggestions.length > 0
+                        && m(
                             ".suggestions-panel",
                             {
                                 style: {
@@ -176,7 +191,8 @@ export const Controls = {
                                                 onclick: (e: any) => {
                                                     if (e) {
                                                         e.redraw = false;
-                                                        if (e.stopPropagation) e.stopPropagation();
+                                                        if (e.stopPropagation)
+                                                            e.stopPropagation();
                                                     }
                                                     onCloseSuggestions();
                                                 },
@@ -188,11 +204,13 @@ export const Controls = {
                                                     padding: "2px 6px",
                                                 },
                                                 onmouseover: (e: any) => {
-                                                    if (e) e.redraw = false;
+                                                    if (e)
+                                                        e.redraw = false;
                                                     e.target.style.color = "#fff";
                                                 },
                                                 onmouseout: (e: any) => {
-                                                    if (e) e.redraw = false;
+                                                    if (e)
+                                                        e.redraw = false;
                                                     e.target.style.color = "#64748b";
                                                 },
                                             },
@@ -208,12 +226,14 @@ export const Controls = {
                                             onmousedown: (e: any) => {
                                                 if (e) {
                                                     e.redraw = false;
-                                                    if (e.preventDefault) e.preventDefault();
+                                                    if (e.preventDefault)
+                                                        e.preventDefault();
                                                 }
                                                 onJumpToCard(s.index);
                                             },
                                             onclick: (e: any) => {
-                                                if (e) e.redraw = false;
+                                                if (e)
+                                                    e.redraw = false;
                                                 onJumpToCard(s.index);
                                             },
                                             style: {
@@ -226,12 +246,14 @@ export const Controls = {
                                                 textAlign: "left",
                                             },
                                             onmouseover: (e: any) => {
-                                                if (e) e.redraw = false;
+                                                if (e)
+                                                    e.redraw = false;
                                                 e.target.style.background = "rgba(56, 189, 248, 0.15)";
                                                 e.target.style.color = "#38bdf8";
                                             },
                                             onmouseout: (e: any) => {
-                                                if (e) e.redraw = false;
+                                                if (e)
+                                                    e.redraw = false;
                                                 e.target.style.background = "";
                                                 e.target.style.color = "";
                                             },
@@ -250,7 +272,8 @@ export const Controls = {
                             {
                                 class: layoutMode === "browser" ? "active" : "",
                                 onclick: (e: any) => {
-                                    if (e) e.redraw = false;
+                                    if (e)
+                                        e.redraw = false;
                                     onLayoutModeChange("browser");
                                 },
                             },
@@ -261,7 +284,8 @@ export const Controls = {
                             {
                                 class: layoutMode === "virtual" ? "active" : "",
                                 onclick: (e: any) => {
-                                    if (e) e.redraw = false;
+                                    if (e)
+                                        e.redraw = false;
                                     onLayoutModeChange("virtual");
                                 },
                             },
@@ -283,8 +307,10 @@ export const Controls = {
                                 {
                                     class: getLanguage() === lang ? "active" : "",
                                     onclick: (e: any) => {
-                                        if (e) e.redraw = false;
-                                        if (vnode.attrs.onLanguageChange) vnode.attrs.onLanguageChange(lang);
+                                        if (e)
+                                            e.redraw = false;
+                                        if (vnode.attrs.onLanguageChange)
+                                            vnode.attrs.onLanguageChange(lang);
                                         setLanguage(lang);
                                     },
                                 },

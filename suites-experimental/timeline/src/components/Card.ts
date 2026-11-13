@@ -10,7 +10,8 @@ import { t, translateContent } from "../i18n.js";
 const Chart = {
     draw(dom, chartData, width) {
         const ctx = dom.getContext("2d");
-        if (!ctx) return;
+        if (!ctx)
+            return;
         const data = chartData.datasets;
         const max = Math.max(...data);
         const height = dom.height;
@@ -47,32 +48,40 @@ const cardRangesMap = new WeakMap<Element, Range[]>();
 let sharedSearchHighlight: any = null;
 
 function getSearchHighlight(): any {
-    if (typeof CSS === "undefined" || !("highlights" in CSS) || typeof (globalThis as any).Highlight === "undefined") return null;
+    if (typeof CSS === "undefined" || !("highlights" in CSS) || typeof (globalThis as any).Highlight === "undefined")
+        return null;
 
     const highlights = (CSS as any).highlights;
-    if (!sharedSearchHighlight) sharedSearchHighlight = new (globalThis as any).Highlight();
+    if (!sharedSearchHighlight)
+        sharedSearchHighlight = new (globalThis as any).Highlight();
 
-    if (!highlights.has("search-results")) highlights.set("search-results", sharedSearchHighlight);
+    if (!highlights.has("search-results"))
+        highlights.set("search-results", sharedSearchHighlight);
 
     return sharedSearchHighlight;
 }
 
 function clearCardSearchHighlights(dom: Element | null | undefined) {
-    if (!dom) return;
+    if (!dom)
+        return;
     const prevRanges = cardRangesMap.get(dom);
     if (prevRanges) {
         if (sharedSearchHighlight) {
-            for (let i = 0; i < prevRanges.length; i++) sharedSearchHighlight.delete(prevRanges[i]);
+            for (let i = 0; i < prevRanges.length; i++)
+                sharedSearchHighlight.delete(prevRanges[i]);
         }
+
         cardRangesMap.delete(dom);
     }
 }
 
 function collectTextMatchRanges(root: Node | null, lowerQuery: string, queryLen: number, outRanges: Range[]) {
-    if (!root) return;
+    if (!root)
+        return;
     if (root.nodeType === 3) {
         const text = root.nodeValue;
-        if (!text) return;
+        if (!text)
+            return;
         const lowerText = text.toLowerCase();
         let startIndex = 0;
         let matchIndex: number;
@@ -94,20 +103,24 @@ function collectTextMatchRanges(root: Node | null, lowerQuery: string, queryLen:
 
 function updateCardSearchHighlights(vnode: any) {
     const dom = vnode.dom as Element | null;
-    if (!dom || typeof document === "undefined" || !document.createRange) return;
+    if (!dom || typeof document === "undefined" || !document.createRange)
+        return;
 
     const { card, searchQuery, language } = vnode.attrs;
     const rawQuery = typeof searchQuery === "string" ? searchQuery : "";
     const highlightKey = `${card?.id ?? ""}\0${language ?? ""}\0${rawQuery}`;
-    if (vnode.state._lastHighlightKey === highlightKey) return;
+    if (vnode.state._lastHighlightKey === highlightKey)
+        return;
     vnode.state._lastHighlightKey = highlightKey;
 
     clearCardSearchHighlights(dom);
 
-    if (!rawQuery) return;
+    if (!rawQuery)
+        return;
 
     const highlight = getSearchHighlight();
-    if (!highlight) return;
+    if (!highlight)
+        return;
 
     const lowerQuery = rawQuery.toLowerCase();
     const queryLen = lowerQuery.length;
@@ -119,12 +132,14 @@ function updateCardSearchHighlights(vnode: any) {
 
     if (newRanges.length > 0) {
         cardRangesMap.set(dom, newRanges);
-        for (let i = 0; i < newRanges.length; i++) highlight.add(newRanges[i]);
+        for (let i = 0; i < newRanges.length; i++)
+            highlight.add(newRanges[i]);
     }
 }
 
 function formatInlineStyles(str: string): any[] {
-    if (!str) return [];
+    if (!str)
+        return [];
 
     const regexParts = [
         "`([^`]+)`", // 1. Code
@@ -139,25 +154,31 @@ function formatInlineStyles(str: string): any[] {
 
     while ((match = masterRegex.exec(str)) !== null) {
         const before = str.substring(lastIndex, match.index);
-        if (before) result.push(before);
+        if (before)
+            result.push(before);
 
         const [, code, bold, italic] = match;
 
-        if (code !== undefined) result.push(m("code", code));
-        else if (bold !== undefined) result.push(m("strong", formatInlineStyles(bold)));
-        else if (italic !== undefined) result.push(m("em", formatInlineStyles(italic)));
+        if (code !== undefined)
+            result.push(m("code", code));
+        else if (bold !== undefined)
+            result.push(m("strong", formatInlineStyles(bold)));
+        else if (italic !== undefined)
+            result.push(m("em", formatInlineStyles(italic)));
 
         lastIndex = masterRegex.lastIndex;
     }
 
     const after = str.substring(lastIndex);
-    if (after) result.push(after);
+    if (after)
+        result.push(after);
 
     return result;
 }
 
 function parseMarkdown(text: string): any[] {
-    if (!text) return [];
+    if (!text)
+        return [];
 
     const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
     let match;
@@ -166,7 +187,8 @@ function parseMarkdown(text: string): any[] {
 
     while ((match = linkRegex.exec(text)) !== null) {
         const textBefore = text.substring(lastIndex, match.index);
-        if (textBefore) parts.push(...formatInlineStyles(textBefore));
+        if (textBefore)
+            parts.push(...formatInlineStyles(textBefore));
 
         const label = match[1];
         const url = match[2];
@@ -174,14 +196,16 @@ function parseMarkdown(text: string): any[] {
         lastIndex = linkRegex.lastIndex;
     }
     const textAfter = text.substring(lastIndex);
-    if (textAfter) parts.push(...formatInlineStyles(textAfter));
+    if (textAfter)
+        parts.push(...formatInlineStyles(textAfter));
 
     return parts;
 }
 
 export const Card = {
     oncreate(vnode: any) {
-        if (vnode.attrs.onResize) vnode.attrs.onResize(vnode.dom.offsetWidth);
+        if (vnode.attrs.onResize)
+            vnode.attrs.onResize(vnode.dom.offsetWidth);
         updateCardSearchHighlights(vnode);
         if (vnode.attrs.isActive && vnode.dom) {
             try {
@@ -192,7 +216,8 @@ export const Card = {
         }
     },
     onupdate(vnode: any) {
-        if (vnode.attrs.onResize) vnode.attrs.onResize(vnode.dom.offsetWidth);
+        if (vnode.attrs.onResize)
+            vnode.attrs.onResize(vnode.dom.offsetWidth);
         updateCardSearchHighlights(vnode);
         if (vnode.attrs.isActive && vnode.dom && document.activeElement !== vnode.dom) {
             try {
@@ -241,32 +266,32 @@ export const Card = {
                     })
                 ),
                 m("p.card-desc", parseMarkdown(descriptionStr)),
-                stats &&
-                    m(".card-stats-summary", [
+                stats
+                    && m(".card-stats-summary", [
                         stats.transistors && m("div", [m("strong", t("transistors")), ` ${stats.transistors}`]),
                         stats.clockSpeed && m("div", [m("strong", t("clockSpeed")), ` ${stats.clockSpeed}`]),
                         stats.memory && m("div", [m("strong", t("memory")), ` ${stats.memory}`]),
                     ]),
-                type === "table" &&
-                    card.cells &&
-                    m(
+                type === "table"
+                    && card.cells
+                    && m(
                         "table.stats-table",
                         card.cells.map((row: any[], rIdx: number) =>
                             m(
                                 "tr",
-                                row.map((cell) => (rIdx === 0 ? m("th", translateContent(cell)) : m("td", translateContent(cell))))
+                                row.map((cell) => rIdx === 0 ? m("th", translateContent(cell)) : m("td", translateContent(cell)))
                             )
                         )
                     ),
-                type === "chart" &&
-                    card.chartData &&
-                    m(Chart, {
+                type === "chart"
+                    && card.chartData
+                    && m(Chart, {
                         chartData: card.chartData,
                         width: width,
                     }),
-                links &&
-                    Object.keys(links).length > 0 &&
-                    m(
+                links
+                    && Object.keys(links).length > 0
+                    && m(
                         ".card-links",
                         {
                             style: {
@@ -279,15 +304,19 @@ export const Card = {
                         },
                         Object.keys(links)
                             .sort((a, b) => {
-                                if (a === "wikipedia") return -1;
-                                if (b === "wikipedia") return 1;
+                                if (a === "wikipedia")
+                                    return -1;
+                                if (b === "wikipedia")
+                                    return 1;
                                 return a.localeCompare(b);
                             })
                             .map((key) => {
                                 const rawUrl = links[key];
-                                if (!rawUrl) return null;
+                                if (!rawUrl)
+                                    return null;
                                 const url = typeof rawUrl === "object" ? translateContent(rawUrl) : rawUrl;
-                                if (!url) return null;
+                                if (!url)
+                                    return null;
                                 const label = key === "wikipedia" ? "Wikipedia" : key.charAt(0).toUpperCase() + key.slice(1);
                                 return m(
                                     "a.card-link",

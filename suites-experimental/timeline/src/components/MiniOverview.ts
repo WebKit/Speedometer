@@ -26,7 +26,8 @@ export const MiniOverview = () => {
     let lastData: any = null;
 
     const getPreciseYear = (dateStr: string) => {
-        if (!dateStr) return null;
+        if (!dateStr)
+            return null;
         const parts = dateStr.split("-");
         const year = parseInt(parts[0], 10);
         const month = parts.length > 1 ? parseInt(parts[1], 10) : 1;
@@ -40,12 +41,18 @@ export const MiniOverview = () => {
     // Helper: format FLOPS values
     const formatFlops = (logVal: number) => {
         const val = Math.pow(10, logVal);
-        if (val >= 1e18) return `${(val / 1e18).toFixed(1)} EFLOPS`;
-        if (val >= 1e15) return `${(val / 1e15).toFixed(1)} PFLOPS`;
-        if (val >= 1e12) return `${(val / 1e12).toFixed(1)} TFLOPS`;
-        if (val >= 1e9) return `${(val / 1e9).toFixed(1)} GFLOPS`;
-        if (val >= 1e6) return `${(val / 1e6).toFixed(1)} MFLOPS`;
-        if (val >= 1e3) return `${(val / 1e3).toFixed(1)} KFLOPS`;
+        if (val >= 1e18)
+            return `${(val / 1e18).toFixed(1)} EFLOPS`;
+        if (val >= 1e15)
+            return `${(val / 1e15).toFixed(1)} PFLOPS`;
+        if (val >= 1e12)
+            return `${(val / 1e12).toFixed(1)} TFLOPS`;
+        if (val >= 1e9)
+            return `${(val / 1e9).toFixed(1)} GFLOPS`;
+        if (val >= 1e6)
+            return `${(val / 1e6).toFixed(1)} MFLOPS`;
+        if (val >= 1e3)
+            return `${(val / 1e3).toFixed(1)} KFLOPS`;
         return `${val.toFixed(1)} FLOPS`;
     };
 
@@ -58,13 +65,16 @@ export const MiniOverview = () => {
 
     const getCatBounds = (type: string, defaultMin: number, defaultMax: number) => {
         const items = flopsData.filter((p) => p.type === type);
-        if (items.length === 0) return { min: defaultMin, max: defaultMax };
+        if (items.length === 0)
+            return { min: defaultMin, max: defaultMax };
         let min = Infinity;
         let max = -Infinity;
         items.forEach((p) => {
             const logVal = Math.log10(p.flops);
-            if (logVal < min) min = logVal;
-            if (logVal > max) max = logVal;
+            if (logVal < min)
+                min = logVal;
+            if (logVal > max)
+                max = logVal;
         });
         return { min: min === Infinity ? defaultMin : min, max: max === -Infinity ? defaultMax : max };
     };
@@ -74,7 +84,8 @@ export const MiniOverview = () => {
     const tpuBounds = getCatBounds("tpu", 13.5, 15.0);
 
     const getYForType = (logVal: number, type?: string) => {
-        if (!type) return getY(logVal);
+        if (!type)
+            return getY(logVal);
         const bottomY = 94;
         let topY = 8;
         let bounds = cpuBounds;
@@ -126,7 +137,8 @@ export const MiniOverview = () => {
     };
 
     const getStartYear = (points: typeof processedFlops, fallback: number) => {
-        if (points.length === 0) return fallback;
+        if (points.length === 0)
+            return fallback;
         return Math.floor(points[0].preciseYear);
     };
 
@@ -138,7 +150,8 @@ export const MiniOverview = () => {
         const map = new Map<number, number>();
         for (let y = start; y <= end; y++) {
             const avg = getMovingAverageLog(y, points);
-            if (avg !== null) map.set(y, getYForType(avg, type));
+            if (avg !== null)
+                map.set(y, getYForType(avg, type));
         }
         return map;
     };
@@ -162,14 +175,17 @@ export const MiniOverview = () => {
     const ticks = [1900, 1920, 1940, 1960, 1980, 2000, 2020, 2026];
 
     const decades = [];
-    for (let y = 1900; y <= 2020; y += 10) decades.push(y);
+    for (let y = 1900; y <= 2020; y += 10)
+        decades.push(y);
 
     function updateMarkersCache(data: any) {
         markersCache = [];
-        if (!data) return;
+        if (!data)
+            return;
         data.forEach((item: any, index: number) => {
             const py = getPreciseYear(item.date);
-            if (!py) return;
+            if (!py)
+                return;
             const xPos = getX(py);
             const primaryTag = item.tags && item.tags.length > 0 ? item.tags[0] : "default";
             const yOffset = ((index * 17) % 44) + 8;
@@ -199,14 +215,16 @@ export const MiniOverview = () => {
         },
         view(vnode) {
             const { data, activeIndex, onJumpToIndex, searchQuery, matchingCards, allData } = vnode.attrs;
-            if (!data || data.length === 0) return null;
+            if (!data || data.length === 0)
+                return null;
             const sourceData = allData || data;
 
             // Compute actual active year from the active index item
             let activeYear = startYear;
             if (data[activeIndex] && data[activeIndex].date) {
                 const match = data[activeIndex].date.match(/^(\d{4})/);
-                if (match) activeYear = parseInt(match[1], 10);
+                if (match)
+                    activeYear = parseInt(match[1], 10);
             }
 
             const displayYear = hoverState.active ? hoverState.year : activeYear;
@@ -216,7 +234,8 @@ export const MiniOverview = () => {
 
             // 1. On-the-fly search matching cards density curve
             let searchDensity: { path: string; areaPath: string; maxVal: number } | null = null;
-            if (searchQuery && typeof searchQuery === "string" && searchQuery.trim().length > 0 && matchingCards && matchingCards.length > 0) searchDensity = calculateDensityCurve(matchingCards, { startYear, endYear, windowYears: 6, maxHeight: 85 });
+            if (searchQuery && typeof searchQuery === "string" && searchQuery.trim().length > 0 && matchingCards && matchingCards.length > 0)
+                searchDensity = calculateDensityCurve(matchingCards, { startYear, endYear, windowYears: 6, maxHeight: 85 });
 
             // 2. Find closest marker across entire chart (responsive hover detection)
             let closestMarker: any = null;
@@ -231,8 +250,10 @@ export const MiniOverview = () => {
 
             // 3. On-the-fly category hover density curves
             let hoveredTags: string[] = [];
-            if (dataHoverState && dataHoverState.active && dataHoverState.index !== undefined && sourceData[dataHoverState.index]) hoveredTags = sourceData[dataHoverState.index].tags || [];
-            else if (hoverState.active && closestMarker) hoveredTags = sourceData[closestMarker.index]?.tags || [closestMarker.primaryTag];
+            if (dataHoverState && dataHoverState.active && dataHoverState.index !== undefined && sourceData[dataHoverState.index])
+                hoveredTags = sourceData[dataHoverState.index].tags || [];
+            else if (hoverState.active && closestMarker)
+                hoveredTags = sourceData[closestMarker.index]?.tags || [closestMarker.primaryTag];
 
             const hoverDensities = hoveredTags
                 .map((category) => {
@@ -380,7 +401,8 @@ export const MiniOverview = () => {
                                 dataHoverState = null;
                             },
                             onclick: (e) => {
-                                if (dataHoverState && dataHoverState.active && dataHoverState.index !== undefined) onJumpToIndex(dataHoverState.index);
+                                if (dataHoverState && dataHoverState.active && dataHoverState.index !== undefined)
+                                    onJumpToIndex(dataHoverState.index);
                             },
                         },
                         [
@@ -415,8 +437,8 @@ export const MiniOverview = () => {
                                         ),
 
                                         // Moving average smooth window highlight band on hover
-                                        hoverState.active &&
-                                            m("rect.hover-window-band", {
+                                        hoverState.active
+                                            && m("rect.hover-window-band", {
                                                 x: `${getX(Math.max(startYear, displayYear - 6))}%`,
                                                 y: 0,
                                                 width: `${Math.max(0.5, getX(Math.min(endYear, displayYear + 6)) - getX(Math.max(startYear, displayYear - 6)))}%`,
@@ -439,8 +461,8 @@ export const MiniOverview = () => {
                                             },
                                         }),
 
-                                        targetY !== null &&
-                                            m("line.tooltip-connector", {
+                                        targetY !== null
+                                            && m("line.tooltip-connector", {
                                                 x1: getX(displayYear),
                                                 y1: -8,
                                                 x2: getX(displayYear),
@@ -481,22 +503,22 @@ export const MiniOverview = () => {
                                     )
                                 ),
                                 [
-                                    hoverCPU !== null &&
-                                        m("div.hover-point.cpu-point", {
+                                    hoverCPU !== null
+                                        && m("div.hover-point.cpu-point", {
                                             style: {
                                                 left: `${getX(displayYear)}%`,
                                                 top: `${getYForType(hoverCPU, "cpu")}%`,
                                             },
                                         }),
-                                    hoverGPU !== null &&
-                                        m("div.hover-point.gpu-point", {
+                                    hoverGPU !== null
+                                        && m("div.hover-point.gpu-point", {
                                             style: {
                                                 left: `${getX(displayYear)}%`,
                                                 top: `${getYForType(hoverGPU, "gpu")}%`,
                                             },
                                         }),
-                                    hoverTPU !== null &&
-                                        m("div.hover-point.tpu-point", {
+                                    hoverTPU !== null
+                                        && m("div.hover-point.tpu-point", {
                                             style: {
                                                 left: `${getX(displayYear)}%`,
                                                 top: `${getYForType(hoverTPU, "tpu")}%`,
@@ -514,8 +536,8 @@ export const MiniOverview = () => {
                                     },
                                     [
                                         m(".tooltip-header", `${t("year")} ${Math.round(displayYear)}`),
-                                        hoverCPU !== null &&
-                                            m(".tooltip-row", [
+                                        hoverCPU !== null
+                                            && m(".tooltip-row", [
                                                 m("span.tooltip-dot.cpu-dot"),
                                                 m("span.tooltip-label", t("cpu")),
                                                 m(
@@ -525,10 +547,10 @@ export const MiniOverview = () => {
                                                     }`
                                                 ),
                                             ]),
-                                        hoverGPU !== null &&
-                                            m(".tooltip-row", [m("span.tooltip-dot.gpu-dot"), m("span.tooltip-label", t("gpu")), m("span.tooltip-val", `${formatFlops(hoverGPU)}${closestGpu && closestGpuDist <= 2.5 ? ` (${closestGpu.name})` : ""}`)]),
-                                        hoverTPU !== null &&
-                                            m(".tooltip-row", [m("span.tooltip-dot.tpu-dot"), m("span.tooltip-label", t("tpu")), m("span.tooltip-val", `${formatFlops(hoverTPU)}${closestTpu && closestTpuDist <= 2.5 ? ` (${closestTpu.name})` : ""}`)]),
+                                        hoverGPU !== null
+                                            && m(".tooltip-row", [m("span.tooltip-dot.gpu-dot"), m("span.tooltip-label", t("gpu")), m("span.tooltip-val", `${formatFlops(hoverGPU)}${closestGpu && closestGpuDist <= 2.5 ? ` (${closestGpu.name})` : ""}`)]),
+                                        hoverTPU !== null
+                                            && m(".tooltip-row", [m("span.tooltip-dot.tpu-dot"), m("span.tooltip-label", t("tpu")), m("span.tooltip-val", `${formatFlops(hoverTPU)}${closestTpu && closestTpuDist <= 2.5 ? ` (${closestTpu.name})` : ""}`)]),
                                     ]
                                 ),
                             ]),
@@ -537,7 +559,8 @@ export const MiniOverview = () => {
                                 ".date-slider-row",
                                 {
                                     onclick: (e) => {
-                                        if (isDraggingSlider) return;
+                                        if (isDraggingSlider)
+                                            return;
                                         const rect = e.currentTarget.getBoundingClientRect();
                                         const percentage = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
                                         const targetYear = startYear + percentage * totalYears;
@@ -545,7 +568,8 @@ export const MiniOverview = () => {
                                             const m = item.date && item.date.match(/^(\d{4})/);
                                             return m && parseInt(m[1], 10) >= Math.round(targetYear);
                                         });
-                                        if (tIdx === -1) tIdx = data.length - 1;
+                                        if (tIdx === -1)
+                                            tIdx = data.length - 1;
                                         onJumpToIndex(tIdx);
                                     },
                                 },
@@ -574,21 +598,25 @@ export const MiniOverview = () => {
                                                 e.stopPropagation();
                                                 isDraggingSlider = true;
                                                 const container = document.getElementById("document-container");
-                                                if (container) container.style.scrollBehavior = "auto";
+                                                if (container)
+                                                    container.style.scrollBehavior = "auto";
                                                 e.target.setPointerCapture(e.pointerId);
 
                                                 const row = document.querySelector(".date-slider-row");
-                                                if (!row) return;
+                                                if (!row)
+                                                    return;
                                                 const rect = row.getBoundingClientRect();
 
                                                 let animationFrameId = null;
 
                                                 const handlePointerMove = (moveEvent) => {
-                                                    if (!isDraggingSlider) return;
+                                                    if (!isDraggingSlider)
+                                                        return;
                                                     const percentage = Math.max(0, Math.min(1, (moveEvent.clientX - rect.left) / rect.width));
                                                     dragPercentage = percentage;
 
-                                                    if (animationFrameId !== null) return;
+                                                    if (animationFrameId !== null)
+                                                        return;
 
                                                     animationFrameId = requestAnimationFrame(() => {
                                                         animationFrameId = null;
@@ -616,7 +644,8 @@ export const MiniOverview = () => {
                                                     isDraggingSlider = false;
                                                     dragPercentage = null;
                                                     const container = document.getElementById("document-container");
-                                                    if (container) container.style.scrollBehavior = "";
+                                                    if (container)
+                                                        container.style.scrollBehavior = "";
                                                     if (animationFrameId !== null) {
                                                         cancelAnimationFrame(animationFrameId);
                                                         animationFrameId = null;
@@ -658,15 +687,15 @@ export const MiniOverview = () => {
                                     [
                                         searchDensity && searchDensity.maxVal > 0
                                             ? [
-                                                  m("path.search-density-area", {
-                                                      d: searchDensity.areaPath,
-                                                      style: { fill: "#fbbf24", opacity: 0.45 },
-                                                  }),
-                                                  m("path.search-density-line", {
-                                                      d: searchDensity.path,
-                                                      style: { stroke: "#fcd34d", strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0 },
-                                                  }),
-                                              ]
+                                                m("path.search-density-area", {
+                                                    d: searchDensity.areaPath,
+                                                    style: { fill: "#fbbf24", opacity: 0.45 },
+                                                }),
+                                                m("path.search-density-line", {
+                                                    d: searchDensity.path,
+                                                    style: { stroke: "#fcd34d", strokeWidth: "3.5px", strokeDasharray: "4 4", fill: "none", filter: "url(#glow)", opacity: 1.0 },
+                                                }),
+                                            ]
                                             : null,
                                         hoverDensities.map((hd) => [
                                             m("path.hover-density-area", {
@@ -729,9 +758,9 @@ export const MiniOverview = () => {
                                     })
                                 ),
 
-                                dataHoverState &&
-                                    dataHoverState.active &&
-                                    m(
+                                dataHoverState
+                                    && dataHoverState.active
+                                    && m(
                                         ".data-hover-tooltip.glass-panel",
                                         {
                                             style: {
