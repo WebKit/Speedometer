@@ -42,12 +42,12 @@ it through `window.__benchFlush` after every interaction, as that benchmark's
 `run.mjs` does. Each chunk renders with `flushSync`, since a chunk arrives
 outside any event. So each send, chunk, conversation click and keystroke is on
 screen before the step's next interaction. A step stops delivering chunks once
-the reply loses its `streaming` class (see `chatStreamHelpers` in
+the reply loses its `streaming` class (see `chatStreamTests` in
 `suites-experimental/suites.mjs`). No step yields to the event loop before it
 ends, so every browser paints once per step.
 
--   `StreamReply1`, `StreamReply2`, `StreamReply3`: each sends a prompt in the
-    first conversation and streams the reply to completion.
+-   `StreamReplies`: sends three prompts in turn in the first conversation,
+    streaming each reply to completion before sending the next.
 -   `SwitchConversations`: clicks every conversation in the sidebar, then returns
     to the first.
 -   `StreamIntoLongConversation`: streams one reply at the end of the

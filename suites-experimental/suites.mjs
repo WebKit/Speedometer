@@ -72,13 +72,14 @@ function chatStreamTests() {
     };
     const prompts = ["How do I stream a response and render it as it arrives?", "Can you show the same thing with cancellation?", "What should I watch out for with long replies?"];
     return [
-        ...prompts.map(
-            (text, i) =>
-                new BenchmarkTestStep(`StreamReply${i + 1}`, async (page) => {
-                    await sendPrompt(page, text);
-                    await drain(page);
-                })
-        ),
+        // Sends each prompt in the first conversation in turn and streams its
+        // reply to completion.
+        new BenchmarkTestStep("StreamReplies", async (page) => {
+            for (const text of prompts) {
+                await sendPrompt(page, text);
+                await drain(page);
+            }
+        }),
         // Every conversation in turn, then back to the first: each switch
         // unmounts one conversation and mounts and parses the next, up to the
         // 200-message one.
