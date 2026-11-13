@@ -54,26 +54,37 @@ function osc8(url, text, id = "") {
 // - UTF-8 box-drawing diagnostic carets and multi-column ctest summary table
 export function generateBuildLogSession() {
     const chunks = [];
-    const components = [
-        "WebCore", "JavaScriptCore", "WebKit2", "WTF", "PAL", "ANGLE",
-        "Skia", "V8", "Blink", "Platform", "Compositor", "Network",
-        "Layout", "DOM", "Style", "Bindings",
-    ];
+    const components = ["WebCore", "JavaScriptCore", "WebKit2", "WTF", "PAL", "ANGLE", "Skia", "V8", "Blink", "Platform", "Compositor", "Network", "Layout", "DOM", "Style", "Bindings"];
     const files = [
-        "Node.cpp", "Element.cpp", "Document.cpp", "JSLexer.cpp", "Parser.cpp",
-        "RenderBox.cpp", "CSSParser.cpp", "EventLoop.cpp", "FrameView.cpp", "DOMWindow.cpp",
-        "StyleResolver.cpp", "LayerTreeHost.cpp", "ResourceLoader.cpp", "BytecodeGenerator.cpp",
-        "InlineFormattingContext.cpp", "ShadowRoot.cpp", "MutationObserver.cpp", "TextDecoder.cpp",
-        "CanvasRenderingContext2D.cpp", "OffscreenCanvas.cpp",
+        "Node.cpp",
+        "Element.cpp",
+        "Document.cpp",
+        "JSLexer.cpp",
+        "Parser.cpp",
+        "RenderBox.cpp",
+        "CSSParser.cpp",
+        "EventLoop.cpp",
+        "FrameView.cpp",
+        "DOMWindow.cpp",
+        "StyleResolver.cpp",
+        "LayerTreeHost.cpp",
+        "ResourceLoader.cpp",
+        "BytecodeGenerator.cpp",
+        "InlineFormattingContext.cpp",
+        "ShadowRoot.cpp",
+        "MutationObserver.cpp",
+        "TextDecoder.cpp",
+        "CanvasRenderingContext2D.cpp",
+        "OffscreenCanvas.cpp",
     ];
 
     chunks.push(
         "\x1b]0;ninja -C out/Release speedometer_all\x07"
-        + "\x1b]133;A\x07\x1b]633;P;Cwd=/workspace/speedometer\x07"
-        + `${ANSI.bold}${ANSI.green}developer@workstation${ANSI.reset}:${ANSI.bold}${ANSI.blue}/workspace/speedometer${ANSI.reset}$ `
-        + "\x1b]133;B\x07ninja -C out/Release -j16 speedometer_all && ctest --output-on-failure\r\n\x1b]133;C\x07"
-        + `${ANSI.bold}${ANSI.cyan}==> Starting build suite configuration (Speedometer Terminal Emulator Workload)...${ANSI.reset}\r\n`
-        + `${ANSI.green}✔ Pre-build checks passed. Environment: Linux x86_64, Node v22.0.0, Clang 18.0.0, LLD 18.0.0${ANSI.reset}\r\n`
+            + "\x1b]133;A\x07\x1b]633;P;Cwd=/workspace/speedometer\x07"
+            + `${ANSI.bold}${ANSI.green}developer@workstation${ANSI.reset}:${ANSI.bold}${ANSI.blue}/workspace/speedometer${ANSI.reset}$ `
+            + "\x1b]133;B\x07ninja -C out/Release -j16 speedometer_all && ctest --output-on-failure\r\n\x1b]133;C\x07"
+            + `${ANSI.bold}${ANSI.cyan}==> Starting build suite configuration (Speedometer Terminal Emulator Workload)...${ANSI.reset}\r\n`
+            + `${ANSI.green}✔ Pre-build checks passed. Environment: Linux x86_64, Node v22.0.0, Clang 18.0.0, LLD 18.0.0${ANSI.reset}\r\n`
     );
 
     const totalSteps = 780;
@@ -87,7 +98,10 @@ export function generateBuildLogSession() {
 
         // In-place ninja status bar overwrite (\r + CSI 2K) followed by completed compile line
         chunk += `\r\x1b[2K${c256Fg(39, `[${i}/${totalSteps}]`)} [${c256Fg(48, bar)}] Compiling ${comp}/${file}...`;
-        chunk += `\r\x1b[2K${ANSI.dim}[${new Date(1720448000000 + i * 250).toISOString()}]${ANSI.reset} [${ANSI.bold}${totalProgress.toString().padStart(3, " ")}%${ANSI.reset}] ${c256Fg(75, `[${i}/${totalSteps}]`)} Building CXX object Source/${comp}/CMakeFiles/${comp}.dir/${file}.o\r\n`;
+        chunk += `\r\x1b[2K${ANSI.dim}[${new Date(1720448000000 + i * 250).toISOString()}]${ANSI.reset} [${ANSI.bold}${totalProgress.toString().padStart(3, " ")}%${ANSI.reset}] ${c256Fg(
+            75,
+            `[${i}/${totalSteps}]`
+        )} Building CXX object Source/${comp}/CMakeFiles/${comp}.dir/${file}.o\r\n`;
 
         if (i % 5 === 0) {
             const lineNum = 120 + (i % 90);
@@ -123,16 +137,16 @@ export function generateBuildLogSession() {
 
     chunks.push(
         `\r\n${ANSI.bold}${ANSI.cyan}==> Running ctest post-build verification suite (8 shards)...${ANSI.reset}\r\n`
-        + "  ┌──────────────────────┬──────────┬──────────┬──────────┐\r\n"
-        + "  │ Suite Shard          │  Passed  │ Warnings │ Duration │\r\n"
-        + "  ├──────────────────────┼──────────┼──────────┼──────────┤\r\n"
-        + `  │ WebCore.DOM          │ ${ANSI.green} 412/412${ANSI.reset} │     2    │   4.12s  │\r\n`
-        + `  │ JavaScriptCore.JIT   │ ${ANSI.green} 628/628${ANSI.reset} │     5    │   8.45s  │\r\n`
-        + `  │ Blink.LayoutNG       │ ${ANSI.green} 380/380${ANSI.reset} │     1    │   5.09s  │\r\n`
-        + `  │ Skia.VulkanBackend   │ ${ANSI.green} 295/295${ANSI.reset} │     0    │   3.18s  │\r\n`
-        + "  └──────────────────────┴──────────┴──────────┴──────────┘\r\n"
-        + `${ANSI.bold}${ANSI.green}==> Build completed successfully in 42.8s! Total artifacts: 1,420 targets.${ANSI.reset}\r\n`
-        + "\x1b]133;D;0\x07"
+            + "  ┌──────────────────────┬──────────┬──────────┬──────────┐\r\n"
+            + "  │ Suite Shard          │  Passed  │ Warnings │ Duration │\r\n"
+            + "  ├──────────────────────┼──────────┼──────────┼──────────┤\r\n"
+            + `  │ WebCore.DOM          │ ${ANSI.green} 412/412${ANSI.reset} │     2    │   4.12s  │\r\n`
+            + `  │ JavaScriptCore.JIT   │ ${ANSI.green} 628/628${ANSI.reset} │     5    │   8.45s  │\r\n`
+            + `  │ Blink.LayoutNG       │ ${ANSI.green} 380/380${ANSI.reset} │     1    │   5.09s  │\r\n`
+            + `  │ Skia.VulkanBackend   │ ${ANSI.green} 295/295${ANSI.reset} │     0    │   3.18s  │\r\n`
+            + "  └──────────────────────┴──────────┴──────────┴──────────┘\r\n"
+            + `${ANSI.bold}${ANSI.green}==> Build completed successfully in 42.8s! Total artifacts: 1,420 targets.${ANSI.reset}\r\n`
+            + "\x1b]133;D;0\x07"
     );
     return chunks;
 }
@@ -145,10 +159,7 @@ export function generateBuildLogSession() {
 // - Custom IDE StackTraceAndIssueLinkProvider (at Symbol (path:line:col), TSxxxx, #issue)
 export function generateLinksSession() {
     const chunks = [];
-    chunks.push(
-        "\x1b]633;P;Cwd=/workspace/speedometer\x07"
-        + `${ANSI.bold}${ANSI.blue}=== Test Execution Summary, Stack Traces & Hyperlinked Specs ===${ANSI.reset}\r\n`
-    );
+    chunks.push("\x1b]633;P;Cwd=/workspace/speedometer\x07" + `${ANSI.bold}${ANSI.blue}=== Test Execution Summary, Stack Traces & Hyperlinked Specs ===${ANSI.reset}\r\n`);
 
     const suites = ["codemirror", "todomvc", "chartjs", "react-stockcharts", "terminal-xterm", "prosemirror", "babylon", "pdfjs"];
     const modules = [
@@ -179,8 +190,7 @@ export function generateLinksSession() {
         const line = 40 + ((i * 7) % 320);
         const col = (i % 36) + 1;
         let chunk = "";
-        chunk += `[Test Worker #${(i % 8) + 1}] RUNNING: https://github.com/WebKit/Speedometer/issues/${1000 + i} ${
-            osc8(`https://tc39.es/ecma262/#sec-execution-contexts-${i}`, `[ECMA-262 §9.4.${i}]`, `spec-${i}`) }\r\n`;
+        chunk += `[Test Worker #${(i % 8) + 1}] RUNNING: https://github.com/WebKit/Speedometer/issues/${1000 + i} ${osc8(`https://tc39.es/ecma262/#sec-execution-contexts-${i}`, `[ECMA-262 §9.4.${i}]`, `spec-${i}`)}\r\n`;
         chunk += "  ↳ Reference spec: https://html.spec.whatwg.org/multipage/webappapis.html#event-loops\r\n";
         chunk += `  ↳ Local fixture: file:///workspace/speedometer/suites/editors/${suite}.html:${10 + i}:${(i % 20) + 1}\r\n`;
         chunk += `  ↳ Compiler span: ${mod}(${line},${col}): warning TS${2300 + (i % 90)}: diagnostic trace in ${mod}:${line}:${col} (issue #${4200 + i})\r\n`;
@@ -247,14 +257,22 @@ export function generateNcursesSession() {
 
         // Row 1-2: Header / Uptime / Load Avg / Disk & Network telemetry
         const load1 = (2.45 + Math.sin(frameIdx / 3) * 0.65).toFixed(2);
-        const load5 = (2.10 + Math.cos(frameIdx / 5) * 0.35).toFixed(2);
+        const load5 = (2.1 + Math.cos(frameIdx / 5) * 0.35).toFixed(2);
         const load15 = (1.85 + Math.sin(frameIdx / 8) * 0.22).toFixed(2);
         const netRx = (48.2 + frameIdx * 4.7).toFixed(1);
         const netTx = (19.5 + frameIdx * 2.3).toFixed(1);
         const ioRead = (124.0 + (frameIdx % 7) * 18.5).toFixed(1);
         const ioWrite = (86.4 + (frameIdx % 5) * 14.2).toFixed(1);
-        frame += `${rgbFg(100, 220, 255, "htop/btop 3.3")} │ ${rgbFg(220, 220, 220, `16:15:${(10 + frameIdx).toString().padStart(2, "0")} up 14d 06:42`)} │ Load: ${rgbFg(255, 100, 100, load1)} ${rgbFg(255, 180, 100, load5)} ${rgbFg(180, 255, 100, load15)} │ I/O R:${c256Fg(114, `${ioRead}M/s`)} W:${c256Fg(209, `${ioWrite}M/s`)}\x1b[K\r\n`;
-        frame += `Tasks: ${ANSI.bold}154${ANSI.reset} (${ANSI.bold}488${ANSI.reset} thr), ${rgbFg(100, 255, 100, "6 run")}, 482 slp │ Net RX:${c256Fg(81, `${netRx}MB/s`)} TX:${c256Fg(213, `${netTx}MB/s`)} │ Zram: ${c256Fg(141, "1.42G/8.0G (3.1x)")}\x1b[K\r\n`;
+        frame += `${rgbFg(100, 220, 255, "htop/btop 3.3")} │ ${rgbFg(220, 220, 220, `16:15:${(10 + frameIdx).toString().padStart(2, "0")} up 14d 06:42`)} │ Load: ${rgbFg(255, 100, 100, load1)} ${rgbFg(255, 180, 100, load5)} ${rgbFg(
+            180,
+            255,
+            100,
+            load15
+        )} │ I/O R:${c256Fg(114, `${ioRead}M/s`)} W:${c256Fg(209, `${ioWrite}M/s`)}\x1b[K\r\n`;
+        frame += `Tasks: ${ANSI.bold}154${ANSI.reset} (${ANSI.bold}488${ANSI.reset} thr), ${rgbFg(100, 255, 100, "6 run")}, 482 slp │ Net RX:${c256Fg(81, `${netRx}MB/s`)} TX:${c256Fg(213, `${netTx}MB/s`)} │ Zram: ${c256Fg(
+            141,
+            "1.42G/8.0G (3.1x)"
+        )}\x1b[K\r\n`;
 
         // Rows 3-6: Render 16 CPU Cores in 4 columns (4 rows) with sparklines & temperatures
         for (let row = 0; row < 4; row++) {
@@ -344,10 +362,16 @@ export function generateNcursesSession() {
             frame += "\x1b7\x1b[10;25r";
             if (frameIdx % 2 === 0) {
                 frame += "\x1b[10;1H\x1b[1M\x1b[25;1H";
-                frame += `${rgbFg(255, 180, 100, " 9410")} ${rgbFg(180, 220, 255, "develop")}  20  0  1840M  220M ${rgbFg(80, 250, 120, "R")} ${rgbFg(255, 100, 100, " 21.4")}  1.4 worker-pool-${frameIdx}     ${rgbFg(90, 110, 130, "│")}${c256Fg(117, "TCP 127.0.0.1:8000->54199 ESTAB ")}\x1b[K`;
+                frame += `${rgbFg(255, 180, 100, " 9410")} ${rgbFg(180, 220, 255, "develop")}  20  0  1840M  220M ${rgbFg(80, 250, 120, "R")} ${rgbFg(255, 100, 100, " 21.4")}  1.4 worker-pool-${frameIdx}     ${rgbFg(90, 110, 130, "│")}${c256Fg(
+                    117,
+                    "TCP 127.0.0.1:8000->54199 ESTAB "
+                )}\x1b[K`;
             } else {
                 frame += "\x1b[10;1H\x1bM\x1b[10;1H";
-                frame += `${rgbFg(255, 180, 100, " 9522")} ${rgbFg(180, 220, 255, "develop")}  20  0  3120M  490M ${rgbFg(80, 250, 120, "R")} ${rgbFg(255, 100, 100, " 52.8")}  3.1 ninja -j16 #${frameIdx}    ${rgbFg(90, 110, 130, "│")}${c256Fg(151, "UNIX /tmp/ninja-jobserver-sock  ")}\x1b[K`;
+                frame += `${rgbFg(255, 180, 100, " 9522")} ${rgbFg(180, 220, 255, "develop")}  20  0  3120M  490M ${rgbFg(80, 250, 120, "R")} ${rgbFg(255, 100, 100, " 52.8")}  3.1 ninja -j16 #${frameIdx}    ${rgbFg(90, 110, 130, "│")}${c256Fg(
+                    151,
+                    "UNIX /tmp/ninja-jobserver-sock  "
+                )}\x1b[K`;
             }
             frame += "\x1b[r\x1b8";
         }
@@ -376,7 +400,7 @@ export function generateNcursesSession() {
         // Frames 45..79: Draw F2 Setup / CPU Affinity (taskset) & I/O Priority (ionice) Inspector Overlay
         if (frameIdx >= 45 && frameIdx <= 79) {
             const setupCol = 28;
-            const maskHex = ((0xffff ^ (1 << (frameIdx % 8))) >>> 0).toString(16).padStart(4, "0");
+            const maskHex = ((0xffff ^ (1 << frameIdx % 8)) >>> 0).toString(16).padStart(4, "0");
             const setupRows = [
                 "╔══════════ Setup (F2) · CPU Affinity & I/O Priority ══════════╗",
                 `║ PID 1420Affinity Mask: 0x${maskHex} [C0-C15 active]  ionice: BE/2 ║`,
@@ -394,7 +418,17 @@ export function generateNcursesSession() {
 
         // Rows 26-27: tmux status ribbon + htop function key bar
         frame += `\x1b[26;1H${rgbBg(30, 75, 50, rgbFg(230, 255, 230, ` [bench-0] 0:htop* 1:ninja-build 2:perf-stat │ Frame ${frameIdx + 1}/30 │ AltBuf:ON `))}\x1b[K\r\n`;
-        frame += `${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F1"))}Help ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F2"))}Setup ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F3"))}Search ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F4"))}Filter ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F5"))}Tree ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F6"))}SortBy ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F7"))}Nice- ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F8"))}Nice+ ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F9"))}Kill ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F10"))}Quit\x1b[K`;
+        frame += `${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F1"))}Help ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F2"))}Setup ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F3"))}Search ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F4"))}Filter ${rgbBg(
+            50,
+            50,
+            50,
+            rgbFg(255, 255, 255, "F5")
+        )}Tree ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F6"))}SortBy ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F7"))}Nice- ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F8"))}Nice+ ${rgbBg(50, 50, 50, rgbFg(255, 255, 255, "F9"))}Kill ${rgbBg(
+            50,
+            50,
+            50,
+            rgbFg(255, 255, 255, "F10")
+        )}Quit\x1b[K`;
 
         frames.push(frame);
     }
@@ -406,10 +440,10 @@ export function generateGitSession() {
     const chunks = [];
     chunks.push(
         `${ANSI.bold}${ANSI.yellow}## main...origin/main [ahead 3]${ANSI.reset}\r\n`
-        + ` ${ANSI.red}M${ANSI.reset} suites-experimental/terminal-xterm/app.js\r\n`
-        + ` ${ANSI.red}M${ANSI.reset} suites-experimental/terminal-xterm/sessions.js\r\n`
-        + ` ${ANSI.green}A${ANSI.reset} suites-experimental/terminal-xterm/fonts/DejaVuSansMono-Regular.woff2\r\n\r\n`
-        + `${ANSI.bold}${ANSI.cyan}==> git log --graph --oneline --decorate -n 20${ANSI.reset}\r\n`
+            + ` ${ANSI.red}M${ANSI.reset} suites-experimental/terminal-xterm/app.js\r\n`
+            + ` ${ANSI.red}M${ANSI.reset} suites-experimental/terminal-xterm/sessions.js\r\n`
+            + ` ${ANSI.green}A${ANSI.reset} suites-experimental/terminal-xterm/fonts/DejaVuSansMono-Regular.woff2\r\n\r\n`
+            + `${ANSI.bold}${ANSI.cyan}==> git log --graph --oneline --decorate -n 20${ANSI.reset}\r\n`
     );
 
     const commits = [
@@ -424,24 +458,25 @@ export function generateGitSession() {
     for (let i = 0; i < 20; i++) {
         const c = commits[i % commits.length];
         const rev = (0xa4f9100 + i * 4099).toString(16).slice(0, 7);
-        const graph = i % 4 === 1 ? `${ANSI.red}*${ANSI.reset} ${ANSI.magenta}|\\${ANSI.reset}` : i % 4 === 2 ? `${ANSI.magenta}|${ANSI.reset} ${ANSI.green}*${ANSI.reset} ` : i % 4 === 3 ? `${ANSI.magenta}|/${ANSI.reset}  ` : `${ANSI.yellow}*${ANSI.reset}   `;
+        const graph
+            = i % 4 === 1 ? `${ANSI.red}*${ANSI.reset} ${ANSI.magenta}|\\${ANSI.reset}` : i % 4 === 2 ? `${ANSI.magenta}|${ANSI.reset} ${ANSI.green}*${ANSI.reset} ` : i % 4 === 3 ? `${ANSI.magenta}|/${ANSI.reset}  ` : `${ANSI.yellow}*${ANSI.reset}   `;
         chunks.push(`${graph} ${ANSI.yellow}${rev}${ANSI.reset}${ANSI.bold}${ANSI.cyan}${i === 0 ? c.branch : ""}${ANSI.reset} ${c.msg} (#${540 + i})\r\n`);
     }
 
     chunks.push(
         `\r\n${ANSI.bold}${ANSI.cyan}==> git diff --stat origin/main${ANSI.reset}\r\n`
-        + ` suites-experimental/terminal-xterm/app.js      | 184 ${ANSI.green}++++++++++++++++++++${ANSI.red}-----${ANSI.reset}\r\n`
-        + ` suites-experimental/terminal-xterm/sessions.js | 142 ${ANSI.green}+++++++++++++++${ANSI.red}----${ANSI.reset}\r\n`
-        + " 2 files changed, 268 insertions(+), 58 deletions(-)\r\n\r\n"
-        + `${ANSI.bold}diff --git a/suites-experimental/terminal-xterm/app.js b/suites-experimental/terminal-xterm/app.js${ANSI.reset}\r\n`
-        + `${ANSI.cyan}@@ -196,8 +196,10 @@ function initTerminalForTab(tabId) {${ANSI.reset}\r\n`
-        + "         scrollback: 5000,\r\n"
-        + "         cursorBlink: false,\r\n"
-        + "         allowTransparency: false,\r\n"
-        + `${ANSI.red}-        overviewRuler: { width: FIXED_SCROLLBAR_WIDTH },${ANSI.reset}\r\n`
-        + `${ANSI.green}+        allowProposedApi: true,${ANSI.reset}\r\n`
-        + `${ANSI.green}+        overviewRulerWidth: FIXED_SCROLLBAR_WIDTH,${ANSI.reset}\r\n`
-        + "     });\r\n"
+            + ` suites-experimental/terminal-xterm/app.js      | 184 ${ANSI.green}++++++++++++++++++++${ANSI.red}-----${ANSI.reset}\r\n`
+            + ` suites-experimental/terminal-xterm/sessions.js | 142 ${ANSI.green}+++++++++++++++${ANSI.red}----${ANSI.reset}\r\n`
+            + " 2 files changed, 268 insertions(+), 58 deletions(-)\r\n\r\n"
+            + `${ANSI.bold}diff --git a/suites-experimental/terminal-xterm/app.js b/suites-experimental/terminal-xterm/app.js${ANSI.reset}\r\n`
+            + `${ANSI.cyan}@@ -196,8 +196,10 @@ function initTerminalForTab(tabId) {${ANSI.reset}\r\n`
+            + "         scrollback: 5000,\r\n"
+            + "         cursorBlink: false,\r\n"
+            + "         allowTransparency: false,\r\n"
+            + `${ANSI.red}-        overviewRuler: { width: FIXED_SCROLLBAR_WIDTH },${ANSI.reset}\r\n`
+            + `${ANSI.green}+        allowProposedApi: true,${ANSI.reset}\r\n`
+            + `${ANSI.green}+        overviewRulerWidth: FIXED_SCROLLBAR_WIDTH,${ANSI.reset}\r\n`
+            + "     });\r\n"
     );
 
     return chunks;

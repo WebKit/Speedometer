@@ -8,12 +8,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 import { CanvasAddon } from "@xterm/addon-canvas";
 import { WebGLAddon } from "@xterm/addon-webgl";
-import {
-    generateBuildLogSession,
-    generateLinksSession,
-    generateNcursesSession,
-    generateGitSession,
-} from "./sessions.js";
+import { generateBuildLogSession, generateLinksSession, generateNcursesSession, generateGitSession } from "./sessions.js";
 
 // Terminal instances and addons storage
 const TERMINAL_FONT_FAMILY = '"DejaVu Sans Mono", monospace';
@@ -45,14 +40,10 @@ let fontsReadyPromise = null;
 
 function ensureFontsLoaded() {
     if (!fontsReadyPromise) {
-        if (document.fonts && typeof document.fonts.load === "function") {
-            fontsReadyPromise = Promise.all([
-                document.fonts.load('400 13px "DejaVu Sans Mono"'),
-                document.fonts.load('700 13px "DejaVu Sans Mono"'),
-            ]);
-        } else {
+        if (document.fonts && typeof document.fonts.load === "function")
+            fontsReadyPromise = Promise.all([document.fonts.load('400 13px "DejaVu Sans Mono"'), document.fonts.load('700 13px "DejaVu Sans Mono"')]);
+        else
             fontsReadyPromise = Promise.resolve();
-        }
     }
     return fontsReadyPromise;
 }
@@ -673,9 +664,7 @@ function initTerminalForTab(tabId) {
                     syncSharedBitmapGenerators();
                     const origRefreshAtlas = layer._refreshCharAtlas.bind(layer);
                     layer._refreshCharAtlas = (colors) => {
-                        const savedGenerators = layer._charAtlas?._sharedBitmapGenerators
-                            ? layer._charAtlas._sharedBitmapGenerators.slice()
-                            : null;
+                        const savedGenerators = layer._charAtlas?._sharedBitmapGenerators ? layer._charAtlas._sharedBitmapGenerators.slice() : null;
                         origRefreshAtlas(colors);
                         if (savedGenerators && layer._charAtlas)
                             layer._charAtlas._sharedBitmapGenerators = savedGenerators;
@@ -820,6 +809,7 @@ export function flushSync(term) {
                     for (let i = 0; i < layer._bitmapGenerator.length; i++)
                         neutralizeBitmapGenerator(layer._bitmapGenerator[i]);
                 }
+
             }
         }
     }
@@ -972,7 +962,6 @@ async function finishStep() {
         Object.values(terminals).forEach((t) => flushSync(t));
         if (window.__activeTimers.size > 0 || (window.__activeObservers && window.__activeObservers.size > 0))
             await new Promise((resolve) => setTimeout(resolve, 0));
-
     }
 
     for (let i = 0; i < 20; i++)
@@ -1026,17 +1015,7 @@ function serializeBufferAsAnsiAndHtml(buf, startRow, endRow, cols) {
             const bgMode = cell.getBgColorMode();
             const bgColor = cell.getBgColor();
 
-            if (
-                bold !== prevBold
-                || dim !== prevDim
-                || italic !== prevItalic
-                || underline !== prevUnderline
-                || inverse !== prevInverse
-                || fgMode !== prevFgMode
-                || fgColor !== prevFgColor
-                || bgMode !== prevBgMode
-                || bgColor !== prevBgColor
-            ) {
+            if (bold !== prevBold || dim !== prevDim || italic !== prevItalic || underline !== prevUnderline || inverse !== prevInverse || fgMode !== prevFgMode || fgColor !== prevFgColor || bgMode !== prevBgMode || bgColor !== prevBgColor) {
                 const sgr = [];
                 const styles = [];
                 if (cell.isAttributeDefault()) {
@@ -1297,11 +1276,7 @@ export async function hoverInlineLinks() {
     if (screenElement && buf) {
         const rect = screenElement.getBoundingClientRect();
         const rowHeight = rect.height / term.rows;
-        const colPositions = [
-            rect.left + rect.width * 0.25,
-            rect.left + rect.width * 0.50,
-            rect.left + rect.width * 0.72,
-        ];
+        const colPositions = [rect.left + rect.width * 0.25, rect.left + rect.width * 0.5, rect.left + rect.width * 0.72];
         const scrollTargets = [0, Math.floor(buf.length / 2), Math.max(0, buf.length - term.rows)];
 
         for (let s = 0; s < scrollTargets.length; s++) {
@@ -1449,12 +1424,7 @@ export async function ncursesColorUI() {
                     | (cell.isFgPalette() ? 128 : 0)
                     | (cell.isBgPalette() ? 256 : 0);
 
-                if (
-                    prevCodes[idx] !== code
-                    || prevFg[idx] !== fg
-                    || prevBg[idx] !== bg
-                    || prevStyle[idx] !== style
-                ) {
+                if (prevCodes[idx] !== code || prevFg[idx] !== fg || prevBg[idx] !== bg || prevStyle[idx] !== style) {
                     prevCodes[idx] = code;
                     prevFg[idx] = fg;
                     prevBg[idx] = bg;
@@ -1535,10 +1505,7 @@ export async function switchTabsAndResize() {
     flushSync(ncursesTerm);
 
     switchTab("git", false);
-    writeSync(
-        gitTerm,
-        `\x1b[33m* ${(0xb100000 + tabSwitchCounter).toString(16)}\x1b[0m [git-status] Workspace reflow check #${++tabSwitchCounter} (3 files modified)\r\n`
-    );
+    writeSync(gitTerm, `\x1b[33m* ${(0xb100000 + tabSwitchCounter).toString(16)}\x1b[0m [git-status] Workspace reflow check #${++tabSwitchCounter} (3 files modified)\r\n`);
     warmUpVisibleViewportAtlas(gitTerm);
     flushSync(gitTerm);
 
