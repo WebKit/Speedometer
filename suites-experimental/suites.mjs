@@ -689,4 +689,51 @@ export const ExperimentalSuites = freezeSuites([
             }),
         ],
     },
+    {
+        name: "Terminal-Xterm",
+        url: "suites-experimental/terminal-xterm/dist/index.html",
+        resources: "suites-experimental/terminal-xterm/dist/resources.txt",
+        tags: ["terminal", "xterm", "experimental"],
+        type: "async",
+        async prepare(page) {
+            await page.waitForElement('#terminal-container[data-fonts-ready="true"]');
+        },
+        tests: [
+            new BenchmarkTestStep("InitTerminals", async (page) => {
+                const stepComplete = new Promise((resolve) => {
+                    page.addEventListener("step-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-init").click();
+                await stepComplete;
+            }),
+            new BenchmarkTestStep("DumpAndScrollOutput", async (page) => {
+                const stepComplete = new Promise((resolve) => {
+                    page.addEventListener("step-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-dump-scroll").click();
+                await stepComplete;
+            }),
+            new BenchmarkTestStep("ParseAndHoverInlineLinks", async (page) => {
+                const stepComplete = new Promise((resolve) => {
+                    page.addEventListener("step-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-hover-links").click();
+                await stepComplete;
+            }),
+            new BenchmarkTestStep("NcursesColorUI", async (page) => {
+                const stepComplete = new Promise((resolve) => {
+                    page.addEventListener("step-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-ncurses").click();
+                await stepComplete;
+            }),
+            new BenchmarkTestStep("SwitchTabsAndResize", async (page) => {
+                const stepComplete = new Promise((resolve) => {
+                    page.addEventListener("step-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-switch-tabs").click();
+                await stepComplete;
+            }),
+        ],
+    },
 ]);
