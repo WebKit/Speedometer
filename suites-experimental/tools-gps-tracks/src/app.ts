@@ -13,12 +13,27 @@ import { MapView } from './map';
 import { ChartView } from './charts';
 import { renderDetails, initDetails, resetDetails } from './tabs/details';
 import { renderInsights, initInsights, resetInsights } from './tabs/insights';
-import { renderCombined, initCombined, resizeCombined, resetCombined } from './tabs/combined';
-import { renderEvolution, resetEvolution } from './tabs/progress';
+import {
+  renderCombined,
+  initCombined,
+  resizeCombined,
+  resetCombined,
+  setCombinedMetrics,
+  setCombinedPolar,
+  setCombinedSliderProgress,
+} from './tabs/combined';
+import {
+  renderEvolution,
+  resetEvolution,
+  setEvolutionGrouping,
+  setEvolutionRange,
+  setEvolutionPinnedDuration,
+} from './tabs/progress';
 import {
   renderCourses,
   initCourses,
   prepareBenchmarkCourses,
+  getBenchmarkCourseIds,
   resetCourses,
   selectCourse,
 } from './tabs/courses';
@@ -890,16 +905,34 @@ async function preloadBenchmarkFiles(): Promise<
       const warmList = [warmTrack, warmTrack2];
       Parsers.ensureCurvesAndZones(warmTrack);
       Parsers.ensureCurvesAndZones(warmTrack2);
+      warmTrack.stats.sections = Parsers.analyzeTrackSections(warmTrack.points);
+      warmTrack2.stats.sections = Parsers.analyzeTrackSections(warmTrack2.points);
+      Parsers.findOverlaps(warmList);
       MapView.addTracks(warmList);
       ChartView.loadTrack(warmTrack, warmList, false);
       ChartView.restoreSelection(10, 50, true);
       ChartView.setCursorAt(25, true);
+      ChartView.setSmooth('power', true);
+      ChartView.setSmooth('power', false);
+      ChartView.setXAxis('distance');
+      ChartView.setXAxis('time');
       ChartView.setActiveMetrics(['elevation', 'speed', 'power']);
       ChartView.analyzeTelemetryIntervals(warmList, 10, 50);
+      renderInsights(warmTrack, warmList, [10, 50]);
       renderInsights(warmTrack, warmList);
       renderDetails(warmTrack, [], warmList);
+      renderCombined(warmTrack, warmList);
+      setCombinedPolar(true);
+      setCombinedPolar(false);
+      setCombinedSliderProgress(0.5);
       renderCombined(warmList, warmList);
       renderEvolution(warmTrack, warmList);
+      setEvolutionGrouping('month');
+      setEvolutionGrouping('week');
+      setEvolutionRange('6m');
+      setEvolutionRange('all');
+      setEvolutionPinnedDuration(60);
+      setEvolutionPinnedDuration(null);
       prepareBenchmarkCourses(warmList);
       selectCourse('course-1', true);
       await resetBenchmarkState();
@@ -945,6 +978,24 @@ function initBenchmarkTriggers() {
       const loadedFiles: File[] = payloads.map((p) => p.file);
       await handleFiles(loadedFiles);
       const allTracks = Object.values(tracks);
+      Parsers.findOverlaps(allTracks);
+
+      // Exercise sidebar track list sorting and filtering across distinct criteria
+      for (const sortMode of ['dist-desc', 'dur-desc', 'date-asc', 'date-desc']) {
+        currentSort = sortMode;
+        renderTrackList();
+      }
+      filters.sport = 'cycling';
+      applyFilters();
+      filters.sport = null;
+      filters.metrics.add('power');
+      applyFilters();
+      filters.metrics.clear();
+      searchQuery = 'Alpine';
+      applyFilters();
+      searchQuery = '';
+      applyFilters();
+
       if (!selectedId && allTracks.length > 0) selectTrack(allTracks[0].id);
     } finally {
       window.dispatchEvent(new CustomEvent('load-and-parse-complete'));
@@ -956,26 +1007,44 @@ function initBenchmarkTriggers() {
       const allTracks = Object.values(tracks);
       activateTab('graphs');
       if (!selectedId && allTracks.length > 0) {
-        selectTrack(allTracks[0].id);
+        selectTrack(allTracks[0].id, false);
       }
-      ChartView.restoreSelection(120, 900, true);
-      ChartView.setCursorAt(300, true);
       const availableMetrics = ChartView.getAvailableMetrics();
-      const analysisMetrics = ['elevation', 'speed', 'power'].filter((m) =>
-        availableMetrics.has(m),
-      );
-      if (analysisMetrics.length > 0) {
-        document.querySelectorAll('#metric-pills .metric-pill').forEach((el) => {
-          const metric = (el as HTMLElement).dataset.metric;
-          if (metric) el.classList.toggle('active', analysisMetrics.includes(metric));
-        });
-        updateToolbarLayout();
-        ChartView.setActiveMetrics(analysisMetrics);
-      } else {
-        updateToolbarLayout();
+      const metricSets = [
+        ['elevation', 'speed', 'power', 'hr'],
+        ['elevation', 'speed', 'power'],
+      ];
+      for (const mSet of metricSets) {
+        const filtered = mSet.filter((m) => availableMetrics.has(m));
+        if (filtered.length > 0) {
+          document.querySelectorAll('#metric-pills .metric-pill').forEach((el) => {
+            const metric = (el as HTMLElement).dataset.metric;
+            if (metric) el.classList.toggle('active', filtered.includes(metric));
+          });
+          updateToolbarLayout();
+          ChartView.setActiveMetrics(filtered);
+        }
       }
-      ChartView.analyzeTelemetryIntervals(allTracks, 120, 900);
-      onChartRangeChange(120, 900, ChartView.getXAxis(), false);
+
+      // Exercise smoothing, map metric coloring, and X-axis mode switching
+      ChartView.setSmooth('power', true, true);
+      ChartView.toggleMapColor('power', true);
+      ChartView.toggleMapColor(null, true);
+      ChartView.setXAxis('distance');
+      ChartView.setSmooth('power', false, true);
+      ChartView.setXAxis('time');
+
+      // Analyze distinct sections of the track (Opening Climb & Main Analysis Window)
+      const sections: [number, number, number][] = [
+        [0, 360, 180],
+        [120, 900, 300],
+      ];
+      for (const [secStart, secEnd, cursorIdx] of sections) {
+        ChartView.restoreSelection(secStart, secEnd, true);
+        ChartView.setCursorAt(cursorIdx, true);
+        ChartView.analyzeTelemetryIntervals(allTracks, secStart, secEnd);
+        onChartRangeChange(secStart, secEnd, ChartView.getXAxis(), false);
+      }
     } finally {
       window.dispatchEvent(new CustomEvent('analysis-complete'));
     }
@@ -987,7 +1056,24 @@ function initBenchmarkTriggers() {
       allTracks.forEach((t) => Parsers.ensureCurvesAndZones(t));
       activateTab('insights');
       const primaryTrack = (selectedId && tracks[selectedId]) || allTracks[0] || null;
-      renderInsights(primaryTrack, allTracks);
+      // Analyze insights across GPX, TCX, and FIT tracks and across distinct track sections (Opening, Middle, Final thirds, Full)
+      for (const tIdx of [1, 2, 4]) {
+        const trk = allTracks[tIdx];
+        if (trk) {
+          renderInsights(trk, allTracks, [0, 540]);
+          renderInsights(trk, allTracks, [540, 1140]);
+          renderInsights(trk, allTracks, null);
+        }
+      }
+      if (allTracks[3]) {
+        renderInsights(allTracks[3], allTracks, [200, 900]);
+      }
+      if (primaryTrack) {
+        renderInsights(primaryTrack, allTracks, [0, 480]);
+        renderInsights(primaryTrack, allTracks, [480, 960]);
+        renderInsights(primaryTrack, allTracks, [960, 1440]);
+      }
+      renderInsights(primaryTrack, allTracks, null);
     } finally {
       window.dispatchEvent(new CustomEvent('insights-complete'));
     }
@@ -997,8 +1083,34 @@ function initBenchmarkTriggers() {
     try {
       const allTracks = Object.values(tracks);
       activateTab('details');
+      const globalTags = getGlobalTags();
       const primaryTrack = (selectedId && tracks[selectedId]) || allTracks[0] || null;
-      renderDetails(primaryTrack, getGlobalTags(), allTracks);
+      // Render and analyze telemetry details, splits, gear matrices, and zones across all 6 tracks and terrain sections
+      for (let i = 0; i < allTracks.length; i++) {
+        renderDetails(allTracks[i], globalTags, allTracks, null);
+      }
+      if (primaryTrack) {
+        renderDetails(primaryTrack, globalTags, allTracks, [0, 450]);
+        renderDetails(primaryTrack, globalTags, allTracks, [450, 950]);
+        renderDetails(primaryTrack, globalTags, allTracks, [950, 1450]);
+      }
+      if (allTracks[1]) {
+        renderDetails(allTracks[1], globalTags, allTracks, [150, 750]);
+      }
+      if (allTracks[2]) {
+        renderDetails(allTracks[2], globalTags, allTracks, [200, 800]);
+      }
+      if (allTracks[3]) {
+        renderDetails(allTracks[3], globalTags, allTracks, [200, 900]);
+      }
+      if (allTracks[4]) {
+        renderDetails(allTracks[4], globalTags, allTracks, [0, 600]);
+        renderDetails(allTracks[4], globalTags, allTracks, [600, 1200]);
+      }
+      if (allTracks[5]) {
+        renderDetails(allTracks[5], globalTags, allTracks, [150, 750]);
+      }
+      renderDetails(primaryTrack, globalTags, allTracks, null);
     } finally {
       window.dispatchEvent(new CustomEvent('details-complete'));
     }
@@ -1008,8 +1120,29 @@ function initBenchmarkTriggers() {
     try {
       const allTracks = Object.values(tracks);
       if (allTracks.length >= 2) {
-        const selectedTwo = [allTracks[0], allTracks[1]];
         activateTab('combined');
+        // 1. Exercise single-track 2D scatter/trail mode across metric pairs, Polar & Cartesian, and timeline sections
+        setCombinedMetrics('distance', 'elevation');
+        renderCombined(allTracks[0], allTracks);
+        for (const frac of [0.25, 0.5, 0.75, 1.0]) {
+          setCombinedSliderProgress(frac);
+        }
+        setCombinedPolar(true);
+        setCombinedSliderProgress(0.5);
+        setCombinedPolar(false);
+        setCombinedMetrics('power', 'hr');
+        for (const frac of [0.3, 0.7]) {
+          setCombinedSliderProgress(frac);
+        }
+
+        // 2. Exercise multi-track comparison mode across regional pairs and all 6 tracks
+        if (allTracks.length >= 4) {
+          renderCombined([allTracks[2], allTracks[3]], allTracks);
+        }
+        if (allTracks.length >= 6) {
+          renderCombined(allTracks, allTracks);
+        }
+        const selectedTwo = [allTracks[0], allTracks[1]];
         renderCombined(selectedTwo, allTracks);
       }
     } finally {
@@ -1022,13 +1155,27 @@ function initBenchmarkTriggers() {
       const allTracks = Object.values(tracks);
       activateTab('evolution');
       const primaryTrack = (selectedId && tracks[selectedId]) || allTracks[0] || null;
-      renderEvolution(primaryTrack, allTracks, (trackId, range) => {
+      const onSelectCb = (trackId: string, range: [number, number] | null) => {
         selectTrack(trackId, true);
         if (range) {
           ChartView.restoreSelection(range[0], range[1]);
           onChartRangeChange(range[0], range[1], 'time', true);
         }
-      });
+      };
+
+      // Exercise evolution view across different reference tracks, groupings ('month' & 'week'), time ranges, and pinned durations
+      const refTracks = [allTracks[2] || primaryTrack, allTracks[4] || primaryTrack, primaryTrack];
+      for (const refTrk of refTracks) {
+        renderEvolution(refTrk, allTracks, onSelectCb);
+        setEvolutionGrouping('month');
+        for (const rng of ['1m', '2m', '6m', '1y', 'all']) {
+          setEvolutionRange(rng);
+        }
+        setEvolutionGrouping('week');
+        for (const dur of [5, 30, 60, 300, 1200, null]) {
+          setEvolutionPinnedDuration(dur);
+        }
+      }
     } finally {
       window.dispatchEvent(new CustomEvent('evolution-complete'));
     }
@@ -1039,6 +1186,10 @@ function initBenchmarkTriggers() {
       const allTracks = Object.values(tracks);
       activateTab('courses');
       prepareBenchmarkCourses(allTracks);
+      const courseIds = getBenchmarkCourseIds();
+      for (const cId of courseIds) {
+        selectCourse(cId, true);
+      }
       selectCourse('course-1', true);
     } finally {
       window.dispatchEvent(new CustomEvent('courses-complete'));

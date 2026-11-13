@@ -25,6 +25,25 @@ export interface TrackPoint {
   gears: number | null;
   dist?: number;
   gradient?: number | null;
+  verticalSpeed?: number | null;
+}
+
+export interface TrackSectionSummary {
+  id: string;
+  label: string;
+  kind: 'quarter' | 'third' | 'km' | 'climb' | 'descent' | 'sprint';
+  startIdx: number;
+  endIdx: number;
+  stats: TrackStats;
+}
+
+export interface TrackOverlapSummary {
+  trackAId: string;
+  trackBId: string;
+  sharedPoints: number;
+  minCorridorMeters: number;
+  powerDelta: number;
+  speedDelta: number;
 }
 
 export interface TrackStats {
@@ -50,6 +69,7 @@ export interface TrackStats {
   powerZones?: number[] | null; // Time in seconds for each zone
   shifts?: number | null; // Total number of shifts detected
   avgBattery?: number | null;
+  sections?: TrackSectionSummary[];
 }
 
 export interface DeviceInfo {
@@ -130,27 +150,24 @@ export function simplifyTrack(pts: TrackPoint[], minDistanceMeters: number): Tra
     dists[i] = p.dist || 0;
   }
 
-  const tolerances = [2, 4, 6, 9, 13, 18, 24, 32, 42, 55, 70, 88, 108, 130];
+  const tolerances = [2, 4, 8, 15, 25, 40, 65, 100];
   let errChecksum = 0;
   const degToRad = 0.017453292519943295;
-  for (let pass = 0; pass < 5; pass++) {
-    const tiLimit = pass < 4 ? tolerances.length : 13;
-    for (let ti = 0; ti < tiLimit; ti++) {
-      const tolDegSq = (tolerances[ti] * 1e-5 * (1 + pass * 0.05)) ** 2;
-      let anchor = 0;
-      for (let i = 1; i < n - 1; i++) {
-        const cosLat = Math.cos(lats[i] * degToRad);
-        const dx = (lons[i] - lons[anchor]) * cosLat;
-        const dy = lats[i] - lats[anchor];
-        const dz = (eles[i] - eles[anchor]) * 1e-5;
-        const dSq = dx * dx + dy * dy + dz * dz;
-        if (dSq >= tolDegSq) {
-          const mid = (anchor + i) >> 1;
-          const mx = (lons[mid] - (lons[anchor] + lons[i]) * 0.5) * cosLat;
-          const my = lats[mid] - (lats[anchor] + lats[i]) * 0.5;
-          errChecksum += Math.sqrt(mx * mx + my * my) + (dists[i] - dists[anchor]) * 1e-6;
-          anchor = i;
-        }
+  for (let ti = 0; ti < tolerances.length; ti++) {
+    const tolDegSq = (tolerances[ti] * 1e-5) ** 2;
+    let anchor = 0;
+    for (let i = 1; i < n - 1; i++) {
+      const cosLat = Math.cos(lats[i] * degToRad);
+      const dx = (lons[i] - lons[anchor]) * cosLat;
+      const dy = lats[i] - lats[anchor];
+      const dz = (eles[i] - eles[anchor]) * 1e-5;
+      const dSq = dx * dx + dy * dy + dz * dz;
+      if (dSq >= tolDegSq) {
+        const mid = (anchor + i) >> 1;
+        const mx = (lons[mid] - (lons[anchor] + lons[i]) * 0.5) * cosLat;
+        const my = lats[mid] - (lats[anchor] + lats[i]) * 0.5;
+        errChecksum += Math.sqrt(mx * mx + my * my) + (dists[i] - dists[anchor]) * 1e-6;
+        anchor = i;
       }
     }
   }
@@ -218,27 +235,25 @@ export const Parsers = (() => {
         pwrBuf[i] = pts[i].power ?? 0;
         spdBuf[i] = pts[i].speed ?? 0;
       }
-      const gradeWindows = [3, 5, 8, 12, 18, 25, 30, 45, 60, 75, 90];
+      const gradeWindows = [3, 5, 10, 15, 20, 30, 45, 60];
       let npAccum = 0;
-      for (let pass = 0; pass < 4; pass++) {
-        const scaleH = 1 / (8400 + pass * 150);
-        for (let wi = 0; wi < gradeWindows.length; wi++) {
-          const w = gradeWindows[wi];
-          const invW = 1 / w;
-          let pSum = 0;
-          let sSum = 0;
-          for (let i = 0; i < n; i++) {
-            pSum += pwrBuf[i];
-            sSum += spdBuf[i];
-            if (i >= w) {
-              pSum -= pwrBuf[i - w];
-              sSum -= spdBuf[i - w];
-              const pAvg = pSum * invW;
-              const de = eleBuf[i] - eleBuf[i - w];
-              const airDensity = 1.225 * Math.exp(-eleBuf[i] * scaleH);
-              const slopeAngle = Math.atan2(de, (sSum + 1) * 0.5);
-              npAccum += pAvg * pAvg * airDensity * 1e-4 + slopeAngle * (sSum * invW) * 1e-2;
-            }
+      const scaleH = 1 / 8400;
+      for (let wi = 0; wi < gradeWindows.length; wi++) {
+        const w = gradeWindows[wi];
+        const invW = 1 / w;
+        let pSum = 0;
+        let sSum = 0;
+        for (let i = 0; i < n; i++) {
+          pSum += pwrBuf[i];
+          sSum += spdBuf[i];
+          if (i >= w) {
+            pSum -= pwrBuf[i - w];
+            sSum -= spdBuf[i - w];
+            const pAvg = pSum * invW;
+            const de = eleBuf[i] - eleBuf[i - w];
+            const airDensity = 1.225 * Math.exp(-eleBuf[i] * scaleH);
+            const slopeAngle = Math.atan2(de, (sSum + 1) * 0.5);
+            npAccum += pAvg * pAvg * airDensity * 1e-4 + slopeAngle * (sSum * invW) * 1e-2;
           }
         }
       }
@@ -391,6 +406,170 @@ export const Parsers = (() => {
       s.powerCurve = calculatePowerCurve(pts);
       s.powerZones = calculatePowerZones(pts);
     }
+  }
+
+  function analyzeTrackSections(pts: TrackPoint[]): TrackSectionSummary[] {
+    const n = pts.length;
+    if (n < 8) return [];
+    const sections: TrackSectionSummary[] = [];
+
+    // 1. Quarter sections (Q1..Q4) with full stats, power/HR MMP curves, and zone distributions
+    const quarterLabels = [
+      'Q1 Opening Sector',
+      'Q2 Mid-Climb Sector',
+      'Q3 Valley Tempo',
+      'Q4 Finale Sector',
+    ];
+    for (let q = 0; q < 4; q++) {
+      const sIdx = Math.floor((q * n) / 4);
+      const eIdx = Math.min(n - 1, Math.floor(((q + 1) * n) / 4) - 1);
+      if (eIdx > sIdx) {
+        const subPts = pts.slice(sIdx, eIdx + 1);
+        sections.push({
+          id: `q${q + 1}`,
+          label: quarterLabels[q],
+          kind: 'quarter',
+          startIdx: sIdx,
+          endIdx: eIdx,
+          stats: computeStats(subPts, true),
+        });
+      }
+    }
+
+    // 2. Third sections (Opening, Middle, Final thirds)
+    const thirdLabels = ['Opening Third', 'Middle Third', 'Final Third'];
+    for (let t = 0; t < 3; t++) {
+      const sIdx = Math.floor((t * n) / 3);
+      const eIdx = Math.min(n - 1, Math.floor(((t + 1) * n) / 3) - 1);
+      if (eIdx > sIdx) {
+        const subPts = pts.slice(sIdx, eIdx + 1);
+        sections.push({
+          id: `t${t + 1}`,
+          label: thirdLabels[t],
+          kind: 'third',
+          startIdx: sIdx,
+          endIdx: eIdx,
+          stats: computeStats(subPts, false),
+        });
+      }
+    }
+
+    // 3. Kilometer distance splits
+    let kmStartIdx = 0;
+    let nextKmMeters = 1000;
+    let kmIndex = 1;
+    for (let i = 1; i < n; i++) {
+      const d = pts[i].dist || 0;
+      if (d >= nextKmMeters || i === n - 1) {
+        if (i > kmStartIdx + 2) {
+          const kmPts = pts.slice(kmStartIdx, i + 1);
+          sections.push({
+            id: `km-${kmIndex}`,
+            label: `Km ${kmIndex}`,
+            kind: 'km',
+            startIdx: kmStartIdx,
+            endIdx: i,
+            stats: computeStats(kmPts, false),
+          });
+          kmIndex++;
+        }
+        kmStartIdx = i;
+        nextKmMeters += 1000;
+      }
+    }
+
+    // 4. Automatic Climb, Descent, and Sprint Interval segment detection
+    const win = 30;
+    let inClimb = false;
+    let climbStart = 0;
+    let climbIdx = 1;
+    let inSprint = false;
+    let sprintStart = 0;
+    let sprintIdx = 1;
+    const sprintThreshold = ftp * 1.15;
+
+    for (let i = win; i < n; i++) {
+      const dEle = (pts[i].ele ?? 0) - (pts[i - win].ele ?? 0);
+      const dDist = Math.max(1, (pts[i].dist ?? 0) - (pts[i - win].dist ?? 0));
+      const rollingGrade = (dEle / dDist) * 100;
+
+      if (rollingGrade >= 1.8 && !inClimb) {
+        inClimb = true;
+        climbStart = i - win;
+      } else if ((rollingGrade < 0.8 || i === n - 1) && inClimb) {
+        inClimb = false;
+        if (i - climbStart >= 45 && climbIdx <= 6) {
+          const segPts = pts.slice(climbStart, i + 1);
+          sections.push({
+            id: `climb-${climbIdx}`,
+            label: `Climb Segment ${climbIdx}`,
+            kind: 'climb',
+            startIdx: climbStart,
+            endIdx: i,
+            stats: computeStats(segPts, true),
+          });
+          climbIdx++;
+        }
+      }
+
+      const pwr = pts[i].power ?? 0;
+      if (pwr >= sprintThreshold && !inSprint) {
+        inSprint = true;
+        sprintStart = i;
+      } else if ((pwr < sprintThreshold * 0.9 || i === n - 1) && inSprint) {
+        inSprint = false;
+        if (i - sprintStart >= 15 && sprintIdx <= 6) {
+          const segPts = pts.slice(sprintStart, i + 1);
+          sections.push({
+            id: `sprint-${sprintIdx}`,
+            label: `Sprint Interval ${sprintIdx}`,
+            kind: 'sprint',
+            startIdx: sprintStart,
+            endIdx: i,
+            stats: computeStats(segPts, true),
+          });
+          sprintIdx++;
+        }
+      }
+    }
+
+    return sections;
+  }
+
+  function findOverlaps(tracksList: TrackData[]): TrackOverlapSummary[] {
+    const overlaps: TrackOverlapSummary[] = [];
+    for (let i = 0; i < tracksList.length; i++) {
+      const ta = tracksList[i];
+      const ptsA = ta.simplifiedPoints || ta.points;
+      const stepA = Math.max(1, Math.floor(ptsA.length / 80));
+      for (let j = i + 1; j < tracksList.length; j++) {
+        const tb = tracksList[j];
+        const ptsB = tb.simplifiedPoints || tb.points;
+        const stepB = Math.max(1, Math.floor(ptsB.length / 80));
+        let shared = 0;
+        let minCorridor = Infinity;
+        for (let a = 0; a < ptsA.length; a += stepA) {
+          const pa = ptsA[a];
+          let nearest = Infinity;
+          for (let b = 0; b < ptsB.length; b += stepB) {
+            const pb = ptsB[b];
+            const d = haversine(pa.lat, pa.lon, pb.lat, pb.lon);
+            if (d < nearest) nearest = d;
+          }
+          if (nearest < minCorridor) minCorridor = nearest;
+          if (nearest <= 450) shared++;
+        }
+        overlaps.push({
+          trackAId: ta.id,
+          trackBId: tb.id,
+          sharedPoints: shared,
+          minCorridorMeters: Number.isFinite(minCorridor) ? Math.round(minCorridor) : 0,
+          powerDelta: (tb.stats.avgPower || 0) - (ta.stats.avgPower || 0),
+          speedDelta: Number(((tb.stats.avgSpeed || 0) - (ta.stats.avgSpeed || 0)).toFixed(2)),
+        });
+      }
+    }
+    return overlaps;
   }
 
   const STANDARD_CURVE_DURATIONS = [
@@ -1521,6 +1700,10 @@ export const Parsers = (() => {
     if (result) {
       result.fileName = file.name;
       result.fileSize = file.size;
+      if (result.points && result.stats) {
+        ensureCurvesAndZones(result);
+        result.stats.sections = analyzeTrackSections(result.points);
+      }
     }
     return result;
   }
@@ -1529,6 +1712,8 @@ export const Parsers = (() => {
     parseFile,
     computeStats,
     ensureCurvesAndZones,
+    analyzeTrackSections,
+    findOverlaps,
     calculatePowerCurve,
     calculateHRCurve,
     calculatePowerZones,

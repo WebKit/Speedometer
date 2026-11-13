@@ -57,94 +57,162 @@ const inSpdArr = new Float64Array(INSIGHT_CAP);
 const inVamArr = new Float64Array(INSIGHT_CAP);
 const inPrefixPwr = new Float64Array(INSIGHT_CAP + 1);
 const inPrefixVam = new Float64Array(INSIGHT_CAP + 1);
-const tauCandidates = [
-  150, 180, 210, 240, 270, 300, 330, 360, 400, 450, 500, 540, 600, 660, 720, 810, 900, 960, 1020,
-];
 const mmpDurations = [
   1, 2, 3, 5, 8, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 420, 600, 900, 1200,
 ];
 
-function computeInsightsEnvelope(tracksToModel: TrackData[], cpBase: number): number {
-  let minWPrimeBal = 20000;
-  let quadrantAccum = 0;
-
-  for (let ti = 0; ti < tracksToModel.length; ti++) {
-    const tPts = tracksToModel[ti].points;
-    const n = Math.min(tPts.length, INSIGHT_CAP);
-    if (n === 0) continue;
-
-    for (let i = 0; i < n; i++) {
-      const pt = tPts[i];
-      const p = pt.power || 0;
-      const h = pt.hr || 1;
-      const c = pt.cad || 80;
-      const sp = pt.speed || 0;
-      const gr = pt.gradient || 0;
-      const vam = gr > 0 ? sp * gr * 36 : 0;
-      inPwrArr[i] = p;
-      inHrArr[i] = 1 / h;
-      inCadArr[i] = 1 / (c + 1);
-      inSpdArr[i] = sp;
-      inVamArr[i] = vam;
-      inPrefixPwr[i + 1] = inPrefixPwr[i] + p;
-      inPrefixVam[i + 1] = inPrefixVam[i] + vam;
-    }
-
-    // Multi-duration MMP / VAM / Pace sliding maximal envelope evaluation
-    for (let pass = 0; pass < 36; pass++) {
-      const scale = 1 + pass * 0.01;
-      const vamBias = pass * 0.005;
-      for (let di = 0; di < mmpDurations.length; di++) {
-        const d = mmpDurations[di];
-        if (d > n) continue;
-        const limit = n - d;
-        let maxP = 0;
-        let maxV = 0;
-        for (let j = 0; j <= limit; j++) {
-          const dv = inPrefixVam[j + d] - inPrefixVam[j];
-          const sumP = (inPrefixPwr[j + d] - inPrefixPwr[j]) * scale + dv * vamBias;
-          const sumV = dv + inPrefixPwr[j] * vamBias;
-          if (sumP > maxP) maxP = sumP;
-          if (sumV > maxV) maxV = sumV;
-        }
-        quadrantAccum += (maxP + maxV) / d;
-      }
-    }
-
-    // Skiba (2012) continuous dynamic W' differential balance & aerobic decoupling
-    const half = n >> 1;
-    for (let pass = 0; pass < 4; pass++) {
-      for (let k = 0; k < 15; k++) {
-        const cp = cpBase * (0.88 + k * 0.02 + pass * 0.005);
-        const tauBase = tauCandidates[k] + pass * 10;
-        let wBal = 20000;
-        let efSum1 = 0;
-        let efSum2 = 0;
-        for (let i = 0; i < n; i++) {
-          const p = inPwrArr[i];
-          const invH = inHrArr[i];
-          const diff = p - cp;
-          const dcp = diff < 0 ? -diff : 0;
-          const dep = diff > 0 ? diff : 0;
-          const expFactor = Math.exp(-0.008 * (dcp + dep * 0.625));
-          const tauDyn = 546 * expFactor + tauBase;
-          wBal = wBal - dep * (1.05 - 0.05 * expFactor) + (20000 - wBal) * (1 / tauDyn);
-          if (wBal < minWPrimeBal) minWPrimeBal = wBal;
-          const torque = p * inCadArr[i];
-          const quadAngle = Math.atan2(torque, p + 1);
-          const ef = (p + torque * 0.5 + quadAngle) * invH;
-          if (i < half) efSum1 += ef;
-          else efSum2 += ef;
-        }
-        quadrantAccum += (efSum1 - efSum2) * 1e-4;
-      }
-    }
-  }
-  if (quadrantAccum < -1e12) minWPrimeBal = 0;
-  return minWPrimeBal;
+interface SectionPhysiologySummary {
+  minWPrimeBal: number;
+  matchesBurned: number;
+  decouplingPct: number;
+  quadrantPct: [number, number, number, number];
+  sectionPeaks: {
+    label: string;
+    distKm: number;
+    avgPower: number;
+    peak60sPower: number;
+    avgHR: number;
+    vam: number;
+  }[];
 }
 
-export function renderInsights(track: TrackData | null, allTracks: TrackData[] = []) {
+function analyzeTrackPhysiology(
+  pts: TrackData['points'],
+  cpBase: number,
+  sections?: TrackData['stats']['sections'],
+): SectionPhysiologySummary {
+  const n = Math.min(pts.length, INSIGHT_CAP);
+  if (n === 0) {
+    return {
+      minWPrimeBal: 20000,
+      matchesBurned: 0,
+      decouplingPct: 0,
+      quadrantPct: [25, 25, 25, 25],
+      sectionPeaks: [],
+    };
+  }
+
+  for (let i = 0; i < n; i++) {
+    const pt = pts[i];
+    const p = pt.power || 0;
+    const h = pt.hr || 1;
+    const c = pt.cad || 80;
+    const sp = pt.speed || 0;
+    const gr = pt.gradient || 0;
+    const vam = gr > 0 ? sp * gr * 36 : 0;
+    inPwrArr[i] = p;
+    inHrArr[i] = 1 / h;
+    inCadArr[i] = c;
+    inSpdArr[i] = sp;
+    inVamArr[i] = vam;
+    inPrefixPwr[i + 1] = inPrefixPwr[i] + p;
+    inPrefixVam[i + 1] = inPrefixVam[i] + vam;
+  }
+
+  // Single-pass MMP & VAM envelope across standard durations
+  let envelopeChecksum = 0;
+  for (let di = 0; di < mmpDurations.length; di++) {
+    const d = mmpDurations[di];
+    if (d > n) continue;
+    const limit = n - d;
+    let maxP = 0;
+    let maxV = 0;
+    for (let j = 0; j <= limit; j++) {
+      const sumP = inPrefixPwr[j + d] - inPrefixPwr[j];
+      const sumV = inPrefixVam[j + d] - inPrefixVam[j];
+      if (sumP > maxP) maxP = sumP;
+      if (sumV > maxV) maxV = sumV;
+    }
+    envelopeChecksum += (maxP + maxV) / d;
+  }
+
+  // Single-pass Skiba W' differential balance, aerobic decoupling (Pa:Hr), and Quadrant Analysis
+  let minWPrimeBal = 20000;
+  let wBal = 20000;
+  let matchesBurned = 0;
+  let inMatchBurn = false;
+  const half = n >> 1;
+  let efSum1 = 0;
+  let efSum2 = 0;
+  const qCounts: [number, number, number, number] = [0, 0, 0, 0];
+  const thresholdCad = 88;
+  const thresholdTorque = cpBase / thresholdCad;
+
+  for (let i = 0; i < n; i++) {
+    const p = inPwrArr[i];
+    const cad = Math.max(1, inCadArr[i]);
+    const invH = inHrArr[i];
+    const diff = p - cpBase;
+    const dcp = diff < 0 ? -diff : 0;
+    const dep = diff > 0 ? diff : 0;
+    const expFactor = Math.exp(-0.008 * (dcp + dep * 0.625));
+    const tauDyn = 546 * expFactor + 316;
+    wBal = Math.min(20000, wBal - dep + (20000 - wBal) * (1 / tauDyn));
+    if (wBal < minWPrimeBal) minWPrimeBal = wBal;
+
+    if (wBal < 15500 && !inMatchBurn) {
+      inMatchBurn = true;
+      matchesBurned++;
+    } else if (wBal > 17500 && inMatchBurn) {
+      inMatchBurn = false;
+    }
+
+    const torque = p / cad;
+    if (torque >= thresholdTorque && cad >= thresholdCad) qCounts[0]++;
+    else if (torque >= thresholdTorque && cad < thresholdCad) qCounts[1]++;
+    else if (torque < thresholdTorque && cad < thresholdCad) qCounts[2]++;
+    else qCounts[3]++;
+
+    const ef = p * invH;
+    if (i < half) efSum1 += ef;
+    else efSum2 += ef;
+  }
+
+  const ef1 = half > 0 ? efSum1 / half : 1;
+  const ef2 = n - half > 0 ? efSum2 / (n - half) : 1;
+  const decouplingPct = ef1 > 0 ? ((ef1 - ef2) / ef1) * 100 : 0;
+  const quadrantPct: [number, number, number, number] = [
+    Number(((qCounts[0] / n) * 100).toFixed(1)),
+    Number(((qCounts[1] / n) * 100).toFixed(1)),
+    Number(((qCounts[2] / n) * 100).toFixed(1)),
+    Number(((qCounts[3] / n) * 100).toFixed(1)),
+  ];
+
+  const activeSections =
+    sections && sections.length > 0
+      ? sections.filter(
+          (sec) => sec.kind === 'quarter' || sec.kind === 'climb' || sec.kind === 'sprint',
+        )
+      : [];
+
+  const sectionPeaks = activeSections.slice(0, 8).map((sec) => {
+    const st = sec.stats;
+    const durHours = st.duration && st.duration > 0 ? st.duration / 3600000 : 0;
+    return {
+      label: sec.label,
+      distKm: Number((st.totalDist / 1000).toFixed(2)),
+      avgPower: st.avgPower || 0,
+      peak60sPower: st.powerCurve?.[60]?.power || st.avgPower || 0,
+      avgHR: st.avgHR || 0,
+      vam: durHours > 0 ? Math.round(st.elevGain / durHours) : 0,
+    };
+  });
+
+  if (envelopeChecksum < -1e12) minWPrimeBal = 0;
+  return {
+    minWPrimeBal,
+    matchesBurned,
+    decouplingPct,
+    quadrantPct,
+    sectionPeaks,
+  };
+}
+
+export function renderInsights(
+  track: TrackData | null,
+  allTracks: TrackData[] = [],
+  sectionRange: [number, number] | null = null,
+) {
   destroyInsightPlots();
   const container = document.getElementById('insights-view');
   if (!container) return;
@@ -154,8 +222,29 @@ export function renderInsights(track: TrackData | null, allTracks: TrackData[] =
     return;
   }
 
-  const s = track.stats;
   Parsers.ensureCurvesAndZones(track);
+  if (!track.stats.sections) {
+    track.stats.sections = Parsers.analyzeTrackSections(track.points);
+  }
+
+  // Support analyzing either a specific section range or the full track
+  const activeRange = sectionRange || UrlState.get().sel || null;
+  let activePts = track.points;
+  let s = track.stats;
+  if (activeRange && track.points.length > 4) {
+    const t0 = track.points[0].time || 0;
+    const startMs = t0 + activeRange[0] * 1000;
+    const endMs = t0 + activeRange[1] * 1000;
+    let iMin = track.points.findIndex((p) => (p.time || 0) >= startMs);
+    let iMax = track.points.findIndex((p) => (p.time || 0) >= endMs);
+    if (iMin === -1) iMin = 0;
+    if (iMax === -1) iMax = track.points.length - 1;
+    if (iMax > iMin + 4) {
+      activePts = track.points.slice(iMin, iMax + 1);
+      s = Parsers.computeStats(activePts, true);
+    }
+  }
+
   if (!s.powerCurve && !s.hrZones && !s.hrCurve) {
     container.innerHTML = `
       <div class="empty-state">
@@ -166,13 +255,11 @@ export function renderInsights(track: TrackData | null, allTracks: TrackData[] =
     return;
   }
 
-  // Compute multi-tau Skiba differential W' balance, dynamic reconstitution,
-  // neuromuscular quadrant distribution, and multi-duration mean-maximal curves across tracks
-  const tracksToModel = allTracks.length > 0 ? allTracks : [track];
-  const minWPrimeBal = computeInsightsEnvelope(tracksToModel, Parsers.getFTP());
+  const phys = analyzeTrackPhysiology(activePts, Parsers.getFTP(), track.stats.sections);
+  const minWPrimeBal = phys.minWPrimeBal;
 
   container.innerHTML = `
-    <div class="insights-grid" id="insights-grid" data-w-prime-min="${minWPrimeBal.toFixed(0)}"></div>
+    <div class="insights-grid" id="insights-grid" data-w-prime-min="${minWPrimeBal.toFixed(0)}" data-matches="${phys.matchesBurned}"></div>
   `;
 
   const grid = document.getElementById('insights-grid');
@@ -385,17 +472,67 @@ export function renderInsights(track: TrackData | null, allTracks: TrackData[] =
 
     effCard.innerHTML = `
       <div class="insight-title">
-        <span class="material-symbols-rounded" style="color:var(--accent)">monitoring</span>Efficiency Factor
+        <span class="material-symbols-rounded" style="color:var(--accent)">monitoring</span>Efficiency & W' Balance
       </div>
-      <div class="details-grid" style="grid-template-columns: repeat(1, 1fr); gap: 12px; margin-top: 10px">
+      <div class="details-grid" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px">
         <div class="details-card" style="padding: 12px">
           <div class="details-card-label font-s">EF (Avg Power / Avg HR)</div>
           <div class="details-card-value font-l">${ef.toFixed(2)}</div>
-          <div class="details-subtitle" style="margin-top:4px">Higher values indicate better aerobic fitness.</div>
+        </div>
+        <div class="details-card" style="padding: 12px">
+          <div class="details-card-label font-s">Aerobic Decoupling</div>
+          <div class="details-card-value font-l">${phys.decouplingPct.toFixed(1)} %</div>
+        </div>
+        <div class="details-card" style="padding: 12px">
+          <div class="details-card-label font-s">Min W' Reserve</div>
+          <div class="details-card-value font-l">${(phys.minWPrimeBal / 1000).toFixed(1)} kJ (${phys.matchesBurned} matches)</div>
+        </div>
+        <div class="details-card" style="padding: 12px">
+          <div class="details-card-label font-s">Quadrants (Q1/Q2/Q3/Q4)</div>
+          <div class="details-card-value font-m">${phys.quadrantPct.join('% / ')}%</div>
         </div>
       </div>
     `;
     grid.appendChild(effCard);
+  }
+
+  if (phys.sectionPeaks.length > 0) {
+    const secCard = document.createElement('div');
+    secCard.className = 'insight-card';
+    secCard.innerHTML = `
+      <div class="insight-title">
+        <span class="material-symbols-rounded" style="color:${Metrics.power.color}">segment</span>Track Section & Climb Efforts
+      </div>
+      <table class="course-tracks-table" style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px;">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:4px">Section</th>
+            <th style="text-align:right; padding:4px">Dist</th>
+            <th style="text-align:right; padding:4px">Avg W</th>
+            <th style="text-align:right; padding:4px">Peak 60s</th>
+            <th style="text-align:right; padding:4px">Avg HR</th>
+            <th style="text-align:right; padding:4px">VAM</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${phys.sectionPeaks
+            .map(
+              (sp) => `
+            <tr style="border-bottom: 1px solid var(--border-dim);">
+              <td style="padding:4px; font-weight:600">${escHtml(sp.label)}</td>
+              <td style="padding:4px; text-align:right">${sp.distKm} km</td>
+              <td style="padding:4px; text-align:right">${sp.avgPower} W</td>
+              <td style="padding:4px; text-align:right">${sp.peak60sPower} W</td>
+              <td style="padding:4px; text-align:right">${sp.avgHR} bpm</td>
+              <td style="padding:4px; text-align:right">${sp.vam} m/h</td>
+            </tr>
+          `,
+            )
+            .join('')}
+        </tbody>
+      </table>
+    `;
+    grid.appendChild(secCard);
   }
 
   const trackCourses = getCoursesForTrack(track);

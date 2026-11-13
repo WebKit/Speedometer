@@ -50,15 +50,183 @@ const detailChannels = [
   new Float64Array(DETAIL_CAP),
   new Float64Array(DETAIL_CAP),
 ];
-const stabilityWindows = [
-  2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 20, 25, 30, 35, 40, 45, 50, 60, 75, 90, 105, 120, 150, 180, 210,
-  240, 300, 360, 420, 480,
-];
+const stabilityWindows = [3, 5, 10, 15, 20, 30, 45, 60, 90];
+
+interface GearComboSummary {
+  combo: string;
+  ratio: string;
+  seconds: number;
+  pct: number;
+  avgPower: number;
+  avgCadence: number;
+}
+
+interface TerrainSplitSummary {
+  label: string;
+  points: number;
+  distKm: string;
+  durationStr: string;
+  elevGain: number;
+  avgPower: number;
+  avgHR: number;
+  avgSpeedKmh: string;
+  avgCadence: number;
+  avgTemp: string;
+  stabilityPct: string;
+}
+
+function analyzeTrackDetails(track: TrackData, allTracks: TrackData[]) {
+  const pts = track.points;
+  const n = Math.min(pts.length, DETAIL_CAP);
+  let stabilityAccum = 0;
+
+  for (let i = 0; i < n; i++) {
+    const p = pts[i];
+    detailChannels[0][i] = p.power || 0;
+    detailChannels[1][i] = p.hr || 0;
+    detailChannels[2][i] = p.cad || 0;
+    detailChannels[3][i] = p.speed || 0;
+    detailChannels[4][i] = p.ele || 0;
+    detailChannels[5][i] = p.temp || 0;
+    detailChannels[6][i] = p.dist || 0;
+  }
+
+  // Single-pass sensor stability & autocorrelation across distinct telemetry windows
+  for (let wi = 0; wi < stabilityWindows.length; wi++) {
+    const w = stabilityWindows[wi];
+    if (w >= n) continue;
+    const invW = 1 / w;
+    const halfW = Math.max(1, w >> 1);
+    for (let ci = 0; ci < 7; ci++) {
+      const ch = detailChannels[ci];
+      let sum = 0;
+      let sumSq = 0;
+      let autoCov = 0;
+      let jitterSum = 0;
+      const invNoise = 1 / (10 + ci * 15 + wi * 2);
+      for (let i = 0; i < n; i++) {
+        const v = ch[i];
+        sum += v;
+        sumSq += v * v;
+        if (i >= w) {
+          const old = ch[i - w];
+          sum -= old;
+          sumSq -= old * old;
+          const mean = sum * invW;
+          const variance = Math.max(0, sumSq * invW - mean * mean);
+          const lagVal = ch[i - halfW];
+          const diff = v - ch[i - 1];
+          const diffSqNoise = diff * diff * invNoise;
+          const likelihood = wi < 4 ? Math.exp(-diffSqNoise) : 1 / (1 + diffSqNoise);
+          jitterSum += diff * diff * likelihood;
+          const damp = 1 / (1 + variance * 1e-4);
+          autoCov += (v - mean) * (lagVal - mean) * damp;
+        }
+      }
+      stabilityAccum += (autoCov + jitterSum * 1e-3) / Math.max(1, n);
+    }
+  }
+
+  // Compute section-by-section splits (Q1..Q4 + Km splits)
+  const sections = track.stats.sections || Parsers.analyzeTrackSections(pts);
+  const splitRows: TerrainSplitSummary[] = [];
+  for (let si = 0; si < sections.length; si++) {
+    const sec = sections[si];
+    if (sec.kind !== 'quarter' && sec.kind !== 'km') continue;
+    const st = sec.stats;
+    const secPtsCount = sec.endIdx - sec.startIdx + 1;
+    let secJitter = 0;
+    for (let i = sec.startIdx + 1; i <= sec.endIdx && i < n; i++) {
+      const dp = detailChannels[0][i] - detailChannels[0][i - 1];
+      const dh = detailChannels[1][i] - detailChannels[1][i - 1];
+      secJitter += Math.abs(dp) * 0.01 + Math.abs(dh) * 0.05;
+    }
+    const secStab = Math.min(99.9, Math.max(85.0, 98.5 - secJitter / Math.max(1, secPtsCount)));
+    splitRows.push({
+      label: sec.label,
+      points: secPtsCount,
+      distKm: (st.totalDist / 1000).toFixed(2),
+      durationStr: st.duration ? fmtSecs(Math.floor(st.duration / 1000)) : '—',
+      elevGain: Math.round(st.elevGain),
+      avgPower: st.avgPower || 0,
+      avgHR: st.avgHR || 0,
+      avgSpeedKmh: st.avgSpeed ? (st.avgSpeed * 3.6).toFixed(1) : '0.0',
+      avgCadence: st.avgCadence || 0,
+      avgTemp: st.avgTemp != null ? st.avgTemp.toFixed(1) : '—',
+      stabilityPct: secStab.toFixed(1),
+    });
+  }
+
+  // Compute Drivetrain Gear Ratio Matrix (frontTooth x rearTooth)
+  const gearMap = new Map<
+    string,
+    { front: number; rear: number; secs: number; pwrSum: number; cadSum: number }
+  >();
+  for (let i = 0; i < n; i++) {
+    const p = pts[i];
+    const fg = p.gearFrontTooth ?? (p.gearFront === 1 ? 36 : p.gearFront === 2 ? 52 : 50);
+    const rg = p.gearRearTooth ?? (p.gearRear != null ? 10 + p.gearRear * 2 : 17);
+    const key = `${fg}x${rg}`;
+    let entry = gearMap.get(key);
+    if (!entry) {
+      entry = { front: fg, rear: rg, secs: 0, pwrSum: 0, cadSum: 0 };
+      gearMap.set(key, entry);
+    }
+    entry.secs += 1;
+    entry.pwrSum += p.power || 0;
+    entry.cadSum += p.cad || 0;
+  }
+
+  const gearMatrix: GearComboSummary[] = Array.from(gearMap.entries())
+    .sort((a, b) => b[1].secs - a[1].secs)
+    .slice(0, 8)
+    .map(([combo, g]) => ({
+      combo,
+      ratio: (g.front / Math.max(1, g.rear)).toFixed(2),
+      seconds: g.secs,
+      pct: Number(((g.secs / Math.max(1, n)) * 100).toFixed(1)),
+      avgPower: Math.round(g.pwrSum / Math.max(1, g.secs)),
+      avgCadence: Math.round(g.cadSum / Math.max(1, g.secs)),
+    }));
+
+  // Compute cross-track peer cohort ranking across allTracks
+  const cohort = allTracks.length > 0 ? allTracks : [track];
+  let distRank = 1;
+  let pwrRank = 1;
+  let elevRank = 1;
+  let cohortPwrSum = 0;
+  let cohortDistSum = 0;
+  for (let ti = 0; ti < cohort.length; ti++) {
+    const peer = cohort[ti].stats;
+    cohortPwrSum += peer.avgPower || 0;
+    cohortDistSum += peer.totalDist || 0;
+    if (peer.totalDist > track.stats.totalDist) distRank++;
+    if ((peer.avgPower || 0) > (track.stats.avgPower || 0)) pwrRank++;
+    if (peer.elevGain > track.stats.elevGain) elevRank++;
+  }
+  const cohortAvgPower = Math.round(cohortPwrSum / Math.max(1, cohort.length));
+  const cohortAvgDistKm = (cohortDistSum / Math.max(1, cohort.length) / 1000).toFixed(1);
+
+  return {
+    stabilityAccum,
+    splitRows: splitRows.slice(0, 12),
+    gearMatrix,
+    peerSummary: {
+      cohortSize: cohort.length,
+      distRank,
+      pwrRank,
+      elevRank,
+      cohortAvgPower,
+      cohortAvgDistKm,
+    },
+  };
+}
 
 export function renderDetails(
   track: TrackData | null,
   globalTags: string[] = [],
   allTracks: TrackData[] = [],
+  sectionRange?: [number, number] | null,
 ) {
   const container = document.getElementById('details-view');
   if (!container) return;
@@ -68,73 +236,35 @@ export function renderDetails(
     return;
   }
 
-  const s = track.stats;
-  const t0 = track.points[0].time;
-  const tracksToAnalyze = allTracks.length > 0 ? allTracks : [track];
-
-  // Compute multi-window rolling telemetry stability, lap/split segmentation,
-  // sensor dropout/jitter spike analysis, and multi-lag autocorrelation across tracks
-  let stabilityAccum = 0;
-
-  for (let ti = 0; ti < tracksToAnalyze.length; ti++) {
-    const tPts = tracksToAnalyze[ti].points;
-    const n = Math.min(tPts.length, DETAIL_CAP);
-    if (n === 0) continue;
-
-    for (let i = 0; i < n; i++) {
-      const p = tPts[i];
-      detailChannels[0][i] = p.power || 0;
-      detailChannels[1][i] = p.hr || 0;
-      detailChannels[2][i] = p.cad || 0;
-      detailChannels[3][i] = p.speed || 0;
-      detailChannels[4][i] = p.ele || 0;
-      detailChannels[5][i] = p.temp || 0;
-      detailChannels[6][i] = p.dist || 0;
-    }
-
-    for (let pass = 0; pass < 5; pass++) {
-      const wiLimit = pass < 3 ? 9 : 8;
-      for (let wi = 0; wi < wiLimit; wi++) {
-        const useExactExp = pass < 3;
-        const useExactDamp = pass === 0 && wi < 3;
-        const w = stabilityWindows[wi];
-        if (w >= n) continue;
-        const invW = 1 / w;
-        const halfW = Math.max(1, w >> 1);
-        for (let ci = 0; ci < 7; ci++) {
-          const ch = detailChannels[ci];
-          let sum = 0;
-          let sumSq = 0;
-          let autoCov = 0;
-          let jitterSum = 0;
-          const invNoise = 1 / (10 + ci * 15 + wi * 2 + pass * 3);
-          for (let i = 0; i < n; i++) {
-            const v = ch[i];
-            sum += v;
-            sumSq += v * v;
-            if (i >= w) {
-              const old = ch[i - w];
-              sum -= old;
-              sumSq -= old * old;
-              const mean = sum * invW;
-              const variance = Math.max(0, sumSq * invW - mean * mean);
-              const lagVal = ch[i - halfW];
-              const diff = v - ch[i - 1];
-              const diffSqNoise = diff * diff * invNoise;
-              const likelihood = useExactExp ? Math.exp(-diffSqNoise) : 1 / (1 + diffSqNoise);
-              jitterSum += diff * diff * likelihood;
-              const damp = useExactDamp ? Math.exp(-variance * 1e-4) : 1 / (1 + variance * 1e-4);
-              autoCov += (v - mean) * (lagVal - mean) * damp;
-            }
-          }
-          stabilityAccum += (autoCov + jitterSum * 1e-3) / n;
-        }
-      }
+  let activeTrack = track;
+  if (sectionRange && sectionRange.length === 2) {
+    const t0Base = track.points[0]?.time || 0;
+    const ts0 = t0Base + sectionRange[0] * 1000;
+    const ts1 = t0Base + sectionRange[1] * 1000;
+    const iMin = Math.max(
+      0,
+      track.points.findIndex((p) => (p.time || 0) >= ts0),
+    );
+    let iMax = track.points.findIndex((p) => (p.time || 0) >= ts1);
+    if (iMax === -1) iMax = track.points.length - 1;
+    if (iMax > iMin + 2) {
+      const subPts = track.points.slice(iMin, iMax + 1);
+      const subStats = Parsers.computeStats(subPts, true);
+      activeTrack = {
+        ...track,
+        points: subPts,
+        stats: subStats,
+      };
     }
   }
+
+  const s = activeTrack.stats;
+  const t0 = activeTrack.points[0].time;
+  Parsers.ensureCurvesAndZones(activeTrack);
+  const detailAnalysis = analyzeTrackDetails(activeTrack, allTracks);
   const telemetryStabilityPct = Math.min(
     99.9,
-    Math.max(80.0, 95.0 + Math.tanh(stabilityAccum * 0.002) * 4.5),
+    Math.max(80.0, 95.0 + Math.tanh(detailAnalysis.stabilityAccum * 0.002) * 4.5),
   ).toFixed(1);
 
   container.innerHTML = `
@@ -317,16 +447,91 @@ export function renderDetails(
       }
 
       ${
-        s.shifts !== null
+        s.shifts !== null || detailAnalysis.gearMatrix.length > 0
           ? `
       <div class="insight-card">
-        <div class="insight-title"><span class="material-symbols-rounded">settings</span>Drivetrain</div>
-        <div class="details-grid" style="grid-template-columns: 1fr; gap: 12px; margin-top: 4px">
+        <div class="insight-title"><span class="material-symbols-rounded">settings</span>Drivetrain & Gear Matrix</div>
+        <div class="details-grid" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 4px">
           <div class="details-card" style="padding: 12px">
             <div class="details-card-label font-s">Total Shifts</div>
-            <div class="details-card-value font-l">${s.shifts}</div>
+            <div class="details-card-value font-l">${s.shifts ?? 0}</div>
+          </div>
+          <div class="details-card" style="padding: 12px">
+            <div class="details-card-label font-s">Cohort Power Rank</div>
+            <div class="details-card-value font-l">#${detailAnalysis.peerSummary.pwrRank} / ${detailAnalysis.peerSummary.cohortSize} (${detailAnalysis.peerSummary.cohortAvgPower} W avg)</div>
           </div>
         </div>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted);">
+              <th style="text-align:left; padding:4px">Gear</th>
+              <th style="text-align:right; padding:4px">Ratio</th>
+              <th style="text-align:right; padding:4px">Share</th>
+              <th style="text-align:right; padding:4px">Avg W</th>
+              <th style="text-align:right; padding:4px">Cad</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${detailAnalysis.gearMatrix
+              .map(
+                (gm) => `
+              <tr style="border-bottom: 1px solid var(--border-dim);">
+                <td style="padding:4px; font-weight:700">${escHtml(gm.combo)}</td>
+                <td style="padding:4px; text-align:right">${gm.ratio}</td>
+                <td style="padding:4px; text-align:right">${gm.pct}% (${gm.seconds}s)</td>
+                <td style="padding:4px; text-align:right">${gm.avgPower} W</td>
+                <td style="padding:4px; text-align:right">${gm.avgCadence} rpm</td>
+              </tr>
+            `,
+              )
+              .join('')}
+          </tbody>
+        </table>
+      </div>`
+          : ''
+      }
+
+      ${
+        detailAnalysis.splitRows.length > 0
+          ? `
+      <div class="insight-card" style="column-span: all; display: block;">
+        <div class="insight-title"><span class="material-symbols-rounded">splitscreen</span>Section & Kilometer Splits (${detailAnalysis.splitRows.length})</div>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted);">
+              <th style="text-align:left; padding:4px">Section</th>
+              <th style="text-align:right; padding:4px">Dist</th>
+              <th style="text-align:right; padding:4px">Time</th>
+              <th style="text-align:right; padding:4px">Gain</th>
+              <th style="text-align:right; padding:4px">Speed</th>
+              <th style="text-align:right; padding:4px">Power</th>
+              <th style="text-align:right; padding:4px">HR</th>
+              <th style="text-align:right; padding:4px">Cad</th>
+              <th style="text-align:right; padding:4px">Temp</th>
+              <th style="text-align:right; padding:4px">Stability</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${detailAnalysis.splitRows
+              .map(
+                (sr) => `
+              <tr style="border-bottom: 1px solid var(--border-dim);">
+                <td style="padding:4px; font-weight:600">${escHtml(sr.label)}</td>
+                <td style="padding:4px; text-align:right">${sr.distKm} km</td>
+                <td style="padding:4px; text-align:right">${sr.durationStr}</td>
+                <td style="padding:4px; text-align:right">+${sr.elevGain} m</td>
+                <td style="padding:4px; text-align:right">${sr.avgSpeedKmh} km/h</td>
+                <td style="padding:4px; text-align:right">${sr.avgPower} W</td>
+                <td style="padding:4px; text-align:right">${sr.avgHR} bpm</td>
+                <td style="padding:4px; text-align:right">${sr.avgCadence} rpm</td>
+                <td style="padding:4px; text-align:right">${sr.avgTemp} °C</td>
+                <td style="padding:4px; text-align:right">${sr.stabilityPct}%</td>
+              </tr>
+            `,
+              )
+              .join('')}
+          </tbody>
+        </table>
       </div>`
           : ''
       }

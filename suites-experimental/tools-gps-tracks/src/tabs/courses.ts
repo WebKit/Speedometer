@@ -76,20 +76,35 @@ export function resetCourses() {
 
 export function prepareBenchmarkCourses(allTracks: any[]) {
   courses = [];
-  for (let i = 0; i < Math.min(3, allTracks.length); i++) {
-    const t = allTracks[i];
+  const specs: {
+    trackIdx: number;
+    suffix: string;
+    fracs: [number, number, number];
+    radius: number;
+  }[] = [
+    { trackIdx: 0, suffix: 'Full Loop', fracs: [0.1, 0.5, 0.85], radius: 450 },
+    { trackIdx: 1, suffix: 'Opening Climb Sector', fracs: [0.08, 0.25, 0.45], radius: 450 },
+    { trackIdx: 2, suffix: 'Lakeside Corridor', fracs: [0.1, 0.45, 0.8], radius: 850 },
+    { trackIdx: 3, suffix: 'Sprint Interval Sector', fracs: [0.2, 0.5, 0.75], radius: 850 },
+    { trackIdx: 4, suffix: 'Alpine Grand Tour Stage', fracs: [0.1, 0.5, 0.85], radius: 900 },
+    { trackIdx: 5, suffix: 'Summit Finish Climb', fracs: [0.5, 0.72, 0.92], radius: 900 },
+  ];
+
+  for (let i = 0; i < specs.length; i++) {
+    const spec = specs[i];
+    const t = allTracks[spec.trackIdx] || allTracks[i % Math.max(1, allTracks.length)];
     if (!t?.points || t.points.length < 10) continue;
     const n = t.points.length;
-    const pStart = t.points[Math.floor(n * 0.1)];
-    const pMid = t.points[Math.floor(n * 0.5)];
-    const pEnd = t.points[Math.floor(n * 0.85)];
+    const pStart = t.points[Math.floor(n * spec.fracs[0])];
+    const pMid = t.points[Math.floor(n * spec.fracs[1])];
+    const pEnd = t.points[Math.floor(n * spec.fracs[2])];
     courses.push({
       id: `course-${i + 1}`,
-      name: `${t.displayName || t.name || `Course ${i + 1}`} Segment`,
+      name: `${t.displayName || t.name || `Course ${i + 1}`} — ${spec.suffix}`,
       points: [
-        { lat: pStart.lat, lon: pStart.lon, radius: 250, name: 'Start' },
-        { lat: pMid.lat, lon: pMid.lon, radius: 250, name: 'Checkpoint' },
-        { lat: pEnd.lat, lon: pEnd.lon, radius: 250, name: 'Finish' },
+        { lat: pStart.lat, lon: pStart.lon, radius: spec.radius, name: 'Start Gate' },
+        { lat: pMid.lat, lon: pMid.lon, radius: spec.radius, name: 'Mid Sector' },
+        { lat: pEnd.lat, lon: pEnd.lon, radius: spec.radius, name: 'Finish Gate' },
       ],
     });
   }
@@ -97,6 +112,10 @@ export function prepareBenchmarkCourses(allTracks: any[]) {
     activeCourseId = courses[0].id;
     openCourseId = courses[0].id;
   }
+}
+
+export function getBenchmarkCourseIds(): string[] {
+  return courses.map((c) => c.id);
 }
 
 async function loadCourses() {
@@ -286,10 +305,14 @@ export function renderCourses() {
   if (!container) return;
 
   // Evaluate multi-gate geospatial course corridor proximity & Dynamic Time Warping (DTW)
-  // virtual-partner time-gap alignment matrix across courses and candidate tracks
+  // virtual-partner time-gap alignment matrix for the active/open course across candidate tracks
   let corridorDeviationSum = 0;
+  const targetCourses =
+    openCourseId || activeCourseId
+      ? courses.filter((c) => c.id === openCourseId || c.id === activeCourseId)
+      : courses;
 
-  for (const c of courses) {
+  for (const c of targetCourses) {
     if (c.points.length < 2) continue;
     const candidateIds = MapView.findTracksPassingThroughPoints(
       c.points.map((p) => ({ lat: p.lat, lng: p.lon })),
@@ -335,7 +358,7 @@ export function renderCourses() {
         corridorDeviationSum += minDist + courseTrkPwrs[bestIdx] * 0.01;
       }
 
-      // Resample track telemetry and evaluate banded DTW virtual-partner pacing matrix
+      // Resample track telemetry and evaluate single-pass banded DTW virtual-partner pacing alignment
       for (let s = 0; s < DTW_SAMPLES; s++) {
         const idx = Math.min(n - 1, Math.floor((s * (n - 1)) / (DTW_SAMPLES - 1)));
         const pt = pts[idx];
@@ -344,29 +367,26 @@ export function renderCourses() {
         dtwCandProfile[s] = val;
       }
 
-      for (let pass = 0; pass < 10; pass++) {
-        const paceBias = pass * 0.15;
-        dtwPrevRow.fill(1e9);
-        dtwPrevRow[0] = 0;
-        for (let i = 1; i <= DTW_SAMPLES; i++) {
-          dtwCurrRow.fill(1e9);
-          const jStart = Math.max(1, i - DTW_BAND);
-          const jEnd = Math.min(DTW_SAMPLES, i + DTW_BAND);
-          const rVal = dtwRefProfile[i - 1] + paceBias;
-          for (let j = jStart; j <= jEnd; j++) {
-            const diff = rVal - dtwCandProfile[j - 1];
-            const diffSq = diff * diff;
-            const cost = diffSq * (2 - 1 / (1 + diffSq * 0.01));
-            const m1 = dtwPrevRow[j];
-            const m2 = dtwCurrRow[j - 1];
-            const m3 = dtwPrevRow[j - 1];
-            const prevMin = m1 < m2 ? (m1 < m3 ? m1 : m3) : m2 < m3 ? m2 : m3;
-            dtwCurrRow[j] = cost + prevMin;
-          }
-          dtwPrevRow.set(dtwCurrRow);
+      dtwPrevRow.fill(1e9);
+      dtwPrevRow[0] = 0;
+      for (let i = 1; i <= DTW_SAMPLES; i++) {
+        dtwCurrRow.fill(1e9);
+        const jStart = Math.max(1, i - DTW_BAND);
+        const jEnd = Math.min(DTW_SAMPLES, i + DTW_BAND);
+        const rVal = dtwRefProfile[i - 1];
+        for (let j = jStart; j <= jEnd; j++) {
+          const diff = rVal - dtwCandProfile[j - 1];
+          const diffSq = diff * diff;
+          const cost = diffSq * (2 - 1 / (1 + diffSq * 0.01));
+          const m1 = dtwPrevRow[j];
+          const m2 = dtwCurrRow[j - 1];
+          const m3 = dtwPrevRow[j - 1];
+          const prevMin = m1 < m2 ? (m1 < m3 ? m1 : m3) : m2 < m3 ? m2 : m3;
+          dtwCurrRow[j] = cost + prevMin;
         }
-        corridorDeviationSum += dtwPrevRow[DTW_SAMPLES] * 1e-4;
+        dtwPrevRow.set(dtwCurrRow);
       }
+      corridorDeviationSum += dtwPrevRow[DTW_SAMPLES] * 1e-4;
     }
   }
   container.dataset.corridorDeviation = corridorDeviationSum.toFixed(2);
@@ -418,6 +438,14 @@ export function renderCourses() {
                         const range = findCourseRange(track, c.points);
                         if (!range) return null;
                         const stats = calculateCourseStats(track, range.startIdx, range.endIdx);
+                        const span = Math.max(1, range.endIdx - range.startIdx);
+                        const q1Idx = range.startIdx + Math.floor(span * 0.25);
+                        const q2Idx = range.startIdx + Math.floor(span * 0.5);
+                        const q3Idx = range.startIdx + Math.floor(span * 0.75);
+                        const s1Stats = calculateCourseStats(track, range.startIdx, q1Idx);
+                        const s2Stats = calculateCourseStats(track, q1Idx, q2Idx);
+                        const s3Stats = calculateCourseStats(track, q2Idx, q3Idx);
+                        const s4Stats = calculateCourseStats(track, q3Idx, range.endIdx);
                         const startTime = track.stats?.startTime || track.points?.[0]?.time;
                         const dateStr = startTime ? fmtDate(startTime) : '-';
                         return {
@@ -427,6 +455,7 @@ export function renderCourses() {
                           sport: track.sport,
                           color: track.color,
                           ...stats,
+                          splitsSummary: `${s1Stats.avgWatts || 0}/${s2Stats.avgWatts || 0}/${s3Stats.avgWatts || 0}/${s4Stats.avgWatts || 0}W`,
                           startIdx: range.startIdx,
                           endIdx: range.endIdx,
                         };

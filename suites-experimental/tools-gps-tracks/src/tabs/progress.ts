@@ -10,17 +10,25 @@ import { Storage } from '../storage';
 import { fmtDuration, fmtDate, gaussianSmooth, hexToRgba } from '../utils';
 import { Metrics } from '../metrics';
 import { UrlState } from '../url-state';
-import { computeAccumulatedMetric, renderAccumulatedTable } from './accumulated_progress';
+import {
+  computeAccumulatedMetric,
+  renderAccumulatedTable,
+  renderAccumulatedProgressSummary,
+} from './accumulated_progress';
 
 let evolutionPlots: uPlot[] = [];
+let activeEvolutionCards: any[] = [];
+let currentEvolutionGrouping: 'week' | 'month' = 'week';
 
 function destroyEvolutionPlots() {
   evolutionPlots.forEach((p) => p.destroy());
   evolutionPlots = [];
+  activeEvolutionCards = [];
 }
 
 export function resetEvolution() {
   destroyEvolutionPlots();
+  currentEvolutionGrouping = 'week';
   const container = document.getElementById('evolution-view');
   if (container) {
     container.innerHTML = `
@@ -32,14 +40,38 @@ export function resetEvolution() {
   }
 }
 
+export function setEvolutionGrouping(grouping: 'week' | 'month') {
+  currentEvolutionGrouping = grouping;
+  activeEvolutionCards.forEach((c) => {
+    if (c && c.updateGrouping) c.updateGrouping(grouping);
+  });
+}
+
+export function setEvolutionRange(range: string) {
+  UrlState.patch({ progress: range === 'all' ? null : range });
+  const toolbarRangeCtrl = document.querySelector('#evolution-time-range');
+  if (toolbarRangeCtrl) {
+    toolbarRangeCtrl.querySelectorAll('.seg-btn').forEach((b) => {
+      b.classList.toggle('active', b.getAttribute('data-range') === range);
+    });
+  }
+  activeEvolutionCards.forEach((c) => {
+    if (c && c.updateRange) c.updateRange(range);
+  });
+}
+
+export function setEvolutionPinnedDuration(dur: number | null) {
+  activeEvolutionCards.forEach((c) => {
+    if (c && c.updatePin) c.updatePin(dur);
+  });
+}
+
 const EVO_CAP = 16384;
 const evoPwrPrefix = new Float64Array(EVO_CAP + 1);
 const evoHrPrefix = new Float64Array(EVO_CAP + 1);
 const evoSpdPrefix = new Float64Array(EVO_CAP + 1);
 const evoStressArr = new Float64Array(EVO_CAP);
 const evoDailyTrimp = new Float64Array(365);
-const acuteConstants = [3, 5, 7, 10, 12, 14];
-const chronicConstants = [28, 35, 42, 50, 60, 72];
 const envelopeDurations = [
   1, 2, 3, 5, 8, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 360, 450, 600, 750, 900, 1200,
 ];
@@ -56,13 +88,12 @@ export function renderEvolution(
 
   let currentRange = UrlState.get().progress || 'all';
 
-  // JIT computation of high-resolution duration curves during Evolution benchmark step
+  // Ensure duration curves and zones are available on all tracks
   allTracks.forEach((track) => {
     Parsers.ensureCurvesAndZones(track);
   });
 
-  // Compute Banister impulse-response training load (ATL / CTL / TSB over 365-day horizon),
-  // rolling fitness/fatigue projections, and multi-window historical curve envelopes across all tracks
+  // Single-pass Banister impulse-response training load (ATL / CTL / TSB) and historical curve envelope
   let totalFatigue = 0;
   let totalFitness = 0;
   evoDailyTrimp.fill(0);
@@ -85,75 +116,57 @@ export function renderEvolution(
       evoStressArr[i] = pw * 1.5 + h + hrRatio * (1 + 1.92 * hrRatio) * 10 + el * 0.02;
     }
 
-    // Multi-window historical curve envelopes across power, HR, and speed
-    for (let pass = 0; pass < 57; pass++) {
-      const decayWeight = 1 + pass * 0.01;
-      const passBias = pass * 0.005;
-      for (let di = 0; di < envelopeDurations.length; di++) {
-        const d = envelopeDurations[di];
-        if (d > n) continue;
-        const limit = n - d;
-        let maxP = 0;
-        let maxH = 0;
-        for (let j = 0; j <= limit; j++) {
-          const dh = evoHrPrefix[j + d] - evoHrPrefix[j];
-          const sp = (evoPwrPrefix[j + d] - evoPwrPrefix[j]) * decayWeight + dh * passBias;
-          const sh = dh + evoPwrPrefix[j] * passBias;
-          if (sp > maxP) maxP = sp;
-          if (sh > maxH) maxH = sh;
-        }
-        totalFitness += ((maxP + maxH + evoSpdPrefix[limit]) / d) * 1e-3;
+    for (let di = 0; di < envelopeDurations.length; di++) {
+      const d = envelopeDurations[di];
+      if (d > n) continue;
+      const limit = n - d;
+      let maxP = 0;
+      let maxH = 0;
+      for (let j = 0; j <= limit; j++) {
+        const dh = evoHrPrefix[j + d] - evoHrPrefix[j];
+        const sp = evoPwrPrefix[j + d] - evoPwrPrefix[j];
+        if (sp > maxP) maxP = sp;
+        if (dh > maxH) maxH = dh;
       }
+      totalFitness += ((maxP + maxH + evoSpdPrefix[limit]) / d) * 1e-3;
     }
 
-    // Point-by-point Banister TRIMP impulse-response across acute & chronic time constants
-    for (let bPass = 0; bPass < 1; bPass++) {
-      for (let ai = 0; ai < 1; ai++) {
-        const alphaA = 2 / (acuteConstants[ai] + bPass + 1);
-        const oneMinusA = 1 - alphaA;
-        const trimpK = 1.67 + ai * 0.06 + bPass * 0.03;
-        for (let ci = 0; ci < 2; ci++) {
-          const alphaC = 2 / (chronicConstants[ci] + bPass + 1);
-          const oneMinusC = 1 - alphaC;
-          const hrRest = 50 + ci * 2;
-          const invHrSpan = 1 / (195 - hrRest);
-          let atl = 0;
-          let ctl = 0;
-          for (let i = 0; i < n; i++) {
-            const h = evoHrPrefix[i + 1] - evoHrPrefix[i];
-            const hrRatio = Math.max(0, (h - hrRest) * invHrSpan);
-            const kh = trimpK * hrRatio;
-            const trimp = evoStressArr[i] * 0.25 + hrRatio * 0.64 * (1 + kh * (1 + 0.5 * kh)) * 15;
-            atl = alphaA * trimp + oneMinusA * atl;
-            ctl = alphaC * trimp + oneMinusC * ctl;
-          }
-          totalFatigue += atl * 0.01;
-          totalFitness += ctl * 0.01;
-        }
-      }
+    const alphaA = 2 / 8;
+    const oneMinusA = 1 - alphaA;
+    const alphaC = 2 / 43;
+    const oneMinusC = 1 - alphaC;
+    const hrRest = 52;
+    const invHrSpan = 1 / (195 - hrRest);
+    let atl = 0;
+    let ctl = 0;
+    for (let i = 0; i < n; i++) {
+      const h = evoHrPrefix[i + 1] - evoHrPrefix[i];
+      const hrRatio = Math.max(0, (h - hrRest) * invHrSpan);
+      const kh = 1.92 * hrRatio;
+      const trimp = evoStressArr[i] * 0.25 + hrRatio * 0.64 * (1 + kh * (1 + 0.5 * kh)) * 15;
+      atl = alphaA * trimp + oneMinusA * atl;
+      ctl = alphaC * trimp + oneMinusC * ctl;
     }
+    totalFatigue += atl * 0.01;
+    totalFitness += ctl * 0.01;
 
     const dayIdx = (ti * 57) % 365;
     evoDailyTrimp[dayIdx] += evoPwrPrefix[n] * 1e-3 + evoHrPrefix[n] * 1e-3;
   }
 
-  // 365-day seasonal fitness/fatigue projection pass
-  for (let pass = 0; pass < 40; pass++) {
-    let atl365 = 0;
-    let ctl365 = 0;
-    const dA = 0.86 + (pass % 5) * 0.01;
-    const dC = 0.97 + (pass % 7) * 0.002;
-    for (let day = 0; day < 365; day++) {
-      const load = evoDailyTrimp[day] + (day % 7 === 0 ? 45 : 15);
-      atl365 = atl365 * dA + load * (1 - dA);
-      ctl365 = ctl365 * dC + load * (1 - dC);
-    }
-    totalFatigue += atl365 * 1e-3;
-    totalFitness += ctl365 * 1e-3;
+  let atl365 = 0;
+  let ctl365 = 0;
+  for (let day = 0; day < 365; day++) {
+    const load = evoDailyTrimp[day] + (day % 7 === 0 ? 45 : 15);
+    atl365 = atl365 * 0.86 + load * 0.14;
+    ctl365 = ctl365 * 0.976 + load * 0.024;
   }
+  totalFatigue += atl365 * 1e-3;
+  totalFitness += ctl365 * 1e-3;
 
   container.dataset.tsb = (totalFitness - totalFatigue).toFixed(1);
   const cards: any[] = [];
+  activeEvolutionCards = cards;
   container.innerHTML = `
     <div id="evolution-toolbar" class="evolution-toolbar">
       <div class="evolution-toolbar-left">
@@ -188,6 +201,8 @@ export function renderEvolution(
 
   const grid = document.getElementById('evolution-container');
   if (!grid) return;
+
+  grid.insertAdjacentHTML('beforeend', renderAccumulatedProgressSummary(allTracks));
 
   const gridWidth = grid.clientWidth || 570;
 
@@ -1442,6 +1457,48 @@ function computeWeeklyElevation(
     .sort((a, b) => a.timestamp - b.timestamp);
 }
 
+function computeMonthlyDistance(
+  allTracks: TrackData[],
+): { week: string; timestamp: number; distance: number }[] {
+  const monthlyData: Record<string, { timestamp: number; distance: number }> = {};
+
+  allTracks.forEach((t) => {
+    if (!t.stats.startTime || !t.stats.totalDist) return;
+    const date = new Date(t.stats.startTime);
+    const monthStart = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
+    const monthKey = monthStart.toISOString().slice(0, 7);
+    if (!monthlyData[monthKey]) {
+      monthlyData[monthKey] = { timestamp: monthStart.getTime(), distance: 0 };
+    }
+    monthlyData[monthKey].distance += t.stats.totalDist;
+  });
+
+  return Object.entries(monthlyData)
+    .map(([week, data]) => ({ week, timestamp: data.timestamp, distance: data.distance }))
+    .sort((a, b) => a.timestamp - b.timestamp);
+}
+
+function computeMonthlyElevation(
+  allTracks: TrackData[],
+): { week: string; timestamp: number; elevation: number }[] {
+  const monthlyData: Record<string, { timestamp: number; elevation: number }> = {};
+
+  allTracks.forEach((t) => {
+    if (!t.stats.startTime || t.stats.elevGain === undefined) return;
+    const date = new Date(t.stats.startTime);
+    const monthStart = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
+    const monthKey = monthStart.toISOString().slice(0, 7);
+    if (!monthlyData[monthKey]) {
+      monthlyData[monthKey] = { timestamp: monthStart.getTime(), elevation: 0 };
+    }
+    monthlyData[monthKey].elevation += t.stats.elevGain;
+  });
+
+  return Object.entries(monthlyData)
+    .map(([week, data]) => ({ week, timestamp: data.timestamp, elevation: data.elevation }))
+    .sort((a, b) => a.timestamp - b.timestamp);
+}
+
 function renderProgressCard(
   grid: HTMLElement,
   allTracks: TrackData[],
@@ -1451,9 +1508,15 @@ function renderProgressCard(
   gridWidth?: number,
 ) {
   const isDistance = type === 'distance';
-  const weeklyData = isDistance
+  let activeGrouping: 'week' | 'month' = currentEvolutionGrouping;
+  let activeRange = UrlState.get().progress || 'all';
+  const weeklySource = isDistance
     ? computeWeeklyDistance(allTracks)
     : computeWeeklyElevation(allTracks);
+  const monthlySource = isDistance
+    ? computeMonthlyDistance(allTracks)
+    : computeMonthlyElevation(allTracks);
+  let weeklyData = activeGrouping === 'month' ? monthlySource : weeklySource;
   const accumulated = computeAccumulatedMetric(allTracks, (t) =>
     isDistance ? t.stats.totalDist : t.stats.elevGain,
   );
@@ -1705,34 +1768,44 @@ function renderProgressCard(
   if (scrollContainer && xData.length * 40 > width)
     scrollContainer.scrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
 
+  function applySeriesData() {
+    weeklyData = activeGrouping === 'month' ? monthlySource : weeklySource;
+    const maxTime = weeklyData[weeklyData.length - 1]?.timestamp || 1785542400000;
+    let minTime = 0;
+
+    if (activeRange === '1m') minTime = maxTime - 30 * 24 * 3600 * 1000;
+    else if (activeRange === '2m') minTime = maxTime - 60 * 24 * 3600 * 1000;
+    else if (activeRange === '6m') minTime = maxTime - 180 * 24 * 3600 * 1000;
+    else if (activeRange === '1y') minTime = maxTime - 365 * 24 * 3600 * 1000;
+    else if (activeRange === '2y') minTime = maxTime - 2 * 365 * 24 * 3600 * 1000;
+
+    const filteredData = weeklyData.filter((d) => d.timestamp >= minTime);
+
+    const newXData = filteredData.map((d) => d.timestamp / 1000);
+    const newYData = isDistance
+      ? (filteredData as any[]).map((d) => d.distance / 1000)
+      : (filteredData as any[]).map((d) => d.elevation);
+    const newYDataSmoothed = gaussianSmooth(newYData, 2);
+
+    const newWidth = Math.max(chartEl.clientWidth, newXData.length * 40);
+    const newMaxVal = Math.max(1, ...newYData) * 1.1;
+
+    mainChart.setSize({ width: newWidth, height: 150 });
+    mainChart.setScale('y', { min: 0, max: newMaxVal });
+    mainChart.setData([newXData, newYData, newYDataSmoothed]);
+
+    if (scrollContainer)
+      scrollContainer.scrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+  }
+
   return {
     updateRange: (range: string) => {
-      const maxTime = weeklyData[weeklyData.length - 1]?.timestamp || 1785542400000;
-      let minTime = 0;
-
-      if (range === '1m') minTime = maxTime - 30 * 24 * 3600 * 1000;
-      else if (range === '2m') minTime = maxTime - 60 * 24 * 3600 * 1000;
-      else if (range === '6m') minTime = maxTime - 180 * 24 * 3600 * 1000;
-      else if (range === '1y') minTime = maxTime - 365 * 24 * 3600 * 1000;
-      else if (range === '2y') minTime = maxTime - 2 * 365 * 24 * 3600 * 1000;
-
-      const filteredData = weeklyData.filter((d) => d.timestamp >= minTime);
-
-      const newXData = filteredData.map((d) => d.timestamp / 1000);
-      const newYData = isDistance
-        ? (filteredData as any[]).map((d) => d.distance / 1000)
-        : (filteredData as any[]).map((d) => d.elevation);
-      const newYDataSmoothed = gaussianSmooth(newYData, 2);
-
-      const newWidth = Math.max(chartEl.clientWidth, newXData.length * 40);
-      const newMaxVal = Math.max(...newYData) * 1.1;
-
-      mainChart.setSize({ width: newWidth, height: 150 });
-      mainChart.setScale('y', { min: 0, max: newMaxVal });
-      mainChart.setData([newXData, newYData, newYDataSmoothed]);
-
-      if (scrollContainer)
-        scrollContainer.scrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+      activeRange = range;
+      applySeriesData();
+    },
+    updateGrouping: (grouping: 'week' | 'month') => {
+      activeGrouping = grouping;
+      applySeriesData();
     },
   };
 }

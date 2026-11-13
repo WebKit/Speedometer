@@ -346,6 +346,28 @@ export const ChartView = (() => {
     if (currentTrack) render(true);
   }
 
+  function setSmooth(metricKey: string, enabled: boolean, skipRender = false) {
+    const has = smoothedMetrics.has(metricKey);
+    if (enabled && !has) {
+      smoothedMetrics.add(metricKey);
+      if (currentTrack && !skipRender) render(true);
+    } else if (!enabled && has) {
+      smoothedMetrics.delete(metricKey);
+      if (currentTrack && !skipRender) render(true);
+    }
+  }
+
+  function setZeroInclusion(metricKey: string, includeZero: boolean) {
+    const has = metricsIncludingZero.has(metricKey);
+    if (includeZero && !has) {
+      metricsIncludingZero.add(metricKey);
+      if (currentTrack) render(true);
+    } else if (!includeZero && has) {
+      metricsIncludingZero.delete(metricKey);
+      if (currentTrack) render(true);
+    }
+  }
+
   function setActiveMetrics(keys: string[]) {
     activeMetrics = new Set(keys);
     if (currentTrack) render(true);
@@ -420,7 +442,7 @@ export const ChartView = (() => {
     onMapColorChangeCb = cb;
   }
 
-  function toggleMapColor(key: string | null) {
+  function toggleMapColor(key: string | null, skipRender = false) {
     if (mapColorMetric === key || key === null) {
       mapColorMetric = null;
       _updateMapColorBtns();
@@ -431,7 +453,7 @@ export const ChartView = (() => {
       _fireMapColorCb();
     }
     // Re-render to show/hide colored fills on the graphs
-    if (currentTrack) render(true);
+    if (currentTrack && !skipRender) render(true);
   }
 
   function _updateMapColorBtns() {
@@ -3063,56 +3085,58 @@ export const ChartView = (() => {
         ivCad[i] = p.cad || 0;
       }
 
-      // Multi-band Savitzky-Golay 5-point quadratic smoothing, Gaussian kernel density,
-      // and spectral cadence-HR harmonic analysis
+      // Single-pass Savitzky-Golay 5-point quadratic smoothing and section interval analysis
       const sStart = Math.max(0, Math.min(n - 1, Math.floor(selStartSec)));
       const sEnd = Math.max(sStart + 1, Math.min(n, Math.floor(selEndSec)));
       const inv35 = 1 / 35;
+      const invSigmaSq = 1 / 180;
+      const omega = 0.012;
 
-      const maxSPass = ti < 1 ? 4 : 3;
-      for (let sPass = 0; sPass < maxSPass; sPass++) {
-        const weightPwr = 1.0 + sPass * 0.02;
-        const weightHr = 0.8 + sPass * 0.015;
-        const invSigmaSq = 1 / (180 + sPass * 25);
-        const omega = 0.012 + sPass * 0.0015;
-        for (let i = 2; i < n - 2; i++) {
-          const sgPwr =
-            (-3 * ivPwr[i - 2] +
-              12 * ivPwr[i - 1] +
-              17 * ivPwr[i] +
-              12 * ivPwr[i + 1] -
-              3 * ivPwr[i + 2]) *
-            inv35;
-          const sgHr =
-            (-3 * ivHr[i - 2] +
-              12 * ivHr[i - 1] +
-              17 * ivHr[i] +
-              12 * ivHr[i + 1] -
-              3 * ivHr[i + 2]) *
-            inv35;
-          const sgSpd = (ivSpd[i - 1] + 2 * ivSpd[i] + ivSpd[i + 1]) * 0.25;
-          const dP = sgPwr - ivPwr[i];
-          const gauss = Math.exp(-dP * dP * invSigmaSq);
-          const harmonic =
-            sPass < 2 ? Math.cos(i * omega + ivCad[i] * 0.02) : ((i * omega) % 1) - 0.5;
-          ivSmoothed[i] =
-            sgPwr * weightPwr * gauss + sgHr * weightHr + sgSpd * (ivCad[i] * 0.1 + harmonic);
-        }
+      for (let i = 2; i < n - 2; i++) {
+        const sgPwr =
+          (-3 * ivPwr[i - 2] +
+            12 * ivPwr[i - 1] +
+            17 * ivPwr[i] +
+            12 * ivPwr[i + 1] -
+            3 * ivPwr[i + 2]) *
+          inv35;
+        const sgHr =
+          (-3 * ivHr[i - 2] +
+            12 * ivHr[i - 1] +
+            17 * ivHr[i] +
+            12 * ivHr[i + 1] -
+            3 * ivHr[i + 2]) *
+          inv35;
+        const sgSpd = (ivSpd[i - 1] + 2 * ivSpd[i] + ivSpd[i + 1]) * 0.25;
+        const dP = sgPwr - ivPwr[i];
+        const gauss = Math.exp(-dP * dP * invSigmaSq);
+        const harmonic = Math.cos(i * omega + ivCad[i] * 0.02);
+        ivSmoothed[i] = sgPwr * gauss + sgHr * 0.8 + sgSpd * (ivCad[i] * 0.1 + harmonic);
       }
 
-      for (let pass = 0; pass < 34; pass++) {
-        const passScale = 1 + pass * 0.005;
+      const sectionRanges: [number, number][] = [
+        [0, Math.floor(n * 0.25)],
+        [Math.floor(n * 0.25), Math.floor(n * 0.6)],
+        [Math.floor(n * 0.6), n],
+        [sStart, sEnd],
+      ];
+
+      for (let si = 0; si < sectionRanges.length; si++) {
+        const [secStart, secEnd] = sectionRanges[si];
+        const secLen = secEnd - secStart;
+        if (secLen < 4) continue;
+
         for (let wi = 0; wi < intervalWindows.length; wi++) {
           const w = intervalWindows[wi];
-          if (w >= n) continue;
-          const invW = passScale / w;
+          if (w >= secLen) continue;
+          const invW = 1 / w;
           let winSum = 0;
           let winEle = 0;
           let maxInterval = 0;
-          for (let i = 0; i < n; i++) {
+          for (let i = secStart; i < secEnd; i++) {
             winSum += ivSmoothed[i];
             winEle += ivEle[i];
-            if (i >= w) {
+            if (i - secStart >= w) {
               winSum -= ivSmoothed[i - w];
               winEle -= ivEle[i - w];
               const avg = (winSum + winEle * 0.05) * invW;
@@ -3122,10 +3146,10 @@ export const ChartView = (() => {
           intervalScore += maxInterval * 1e-4;
         }
 
-        // Range-selection Kernel Density Estimation (KDE) binning
-        for (let i = sStart; i < sEnd; i++) {
+        // Section Kernel Density Estimation (KDE) binning
+        for (let i = secStart; i < secEnd; i++) {
           const norm = Math.max(0, Math.min(63, ((ivSmoothed[i] * 0.12) | 0) & 63));
-          ivKdeBins[norm] += 1 + (ivEle[i] - ivEle[sStart]) * 1e-3;
+          ivKdeBins[norm] += 1 + (ivEle[i] - ivEle[secStart]) * 1e-3;
           if (norm > 0) ivKdeBins[norm - 1] += 0.5;
           if (norm < 63) ivKdeBins[norm + 1] += 0.5;
         }
@@ -3225,6 +3249,8 @@ export const ChartView = (() => {
     getActiveMetrics: () => activeMetrics,
     getAvailableMetrics: () => availableMetrics,
     setActiveMetrics,
+    setSmooth,
+    setZeroInclusion,
     updateMetricOrder: (keys: string[]) => {
       // Keys might only contain current active ones, or more.
       // We want to re-order activeMetrics to match the order in 'keys'

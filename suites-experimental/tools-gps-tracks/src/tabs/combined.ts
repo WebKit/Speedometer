@@ -63,13 +63,210 @@ export function resetCombined() {
 }
 
 const COMBINED_CAP = 16384;
-const combinedPhsPool = Array.from({ length: 8 }, () => new Float64Array(COMBINED_CAP));
-const combinedCePool = Array.from({ length: 8 }, () => new Float64Array(COMBINED_CAP));
-const combinedLens = new Int32Array(8);
 const combinedDensityGrid = new Float64Array(32 * 32);
-const combinedWindows = [
-  2, 3, 5, 8, 10, 12, 15, 20, 25, 30, 40, 45, 60, 75, 90, 120, 150, 180, 240, 300,
-];
+
+export interface CombinedCorrelationRow {
+  pairLabel: string;
+  rVal: number;
+  slope: number;
+  samples: number;
+}
+
+export interface CombinedSectionComparisonRow {
+  sectionLabel: string;
+  t1Power: number;
+  t2Power: number;
+  t1Hr: number;
+  t2Hr: number;
+  t1SpeedKmh: number;
+  t2SpeedKmh: number;
+  cohortAvgPower: number;
+}
+
+function computeMultiTrackCorrelationAndSections(
+  currentTracks: TrackData[],
+  allTracks: TrackData[],
+): {
+  aggPts: number;
+  corrSum: number;
+  correlations: CombinedCorrelationRow[];
+  sectionRows: CombinedSectionComparisonRow[];
+} {
+  const matrixTracks = allTracks.length >= 2 ? allTracks : currentTracks;
+  const numTrk = Math.min(matrixTracks.length, 8);
+  combinedDensityGrid.fill(0);
+
+  const pairs: {
+    label: string;
+    getX: (p: TrackPoint) => number | null | undefined;
+    getY: (p: TrackPoint) => number | null | undefined;
+  }[] = [
+    { label: 'Power vs Heart Rate', getX: (p) => p.power, getY: (p) => p.hr },
+    {
+      label: 'Speed vs Gradient',
+      getX: (p) => (p.speed != null ? p.speed * 3.6 : undefined),
+      getY: (p) => p.gradient,
+    },
+    { label: 'Cadence vs Power', getX: (p) => p.cad, getY: (p) => p.power },
+    { label: 'Elevation vs VAM', getX: (p) => p.ele, getY: (p) => p.verticalSpeed },
+    { label: 'Temperature vs HR', getX: (p) => p.temp, getY: (p) => p.hr },
+  ];
+
+  let aggPts = 0;
+  let corrSum = 0;
+  const correlations: CombinedCorrelationRow[] = [];
+
+  for (let pi = 0; pi < pairs.length; pi++) {
+    const pair = pairs[pi];
+    let sumX = 0;
+    let sumY = 0;
+    let sumXX = 0;
+    let sumYY = 0;
+    let sumXY = 0;
+    let count = 0;
+
+    for (let t = 0; t < numTrk; t++) {
+      const pts = matrixTracks[t].points || [];
+      const n = Math.min(pts.length, COMBINED_CAP);
+      for (let k = 0; k < n; k++) {
+        const p = pts[k];
+        const x = pair.getX(p);
+        const y = pair.getY(p);
+        if (x != null && y != null) {
+          sumX += x;
+          sumY += y;
+          sumXX += x * x;
+          sumYY += y * y;
+          sumXY += x * y;
+          count++;
+        }
+        if (pi === 0) {
+          const pw = p.power || 0;
+          const h = p.hr || 0;
+          const cd = p.cad || 0;
+          const bx = Math.min(31, Math.max(0, (pw * 0.05) | 0));
+          const by = Math.min(31, Math.max(0, ((h - 60) * 0.2) | 0));
+          combinedDensityGrid[(bx << 5) | by] += 1 + cd * 0.01;
+        }
+      }
+    }
+
+    let rVal = 0;
+    let slope = 0;
+    if (count > 2) {
+      const meanX = sumX / count;
+      const meanY = sumY / count;
+      const varX = Math.max(0, sumXX / count - meanX * meanX);
+      const varY = Math.max(0, sumYY / count - meanY * meanY);
+      const covXY = sumXY / count - meanX * meanY;
+      const denom = Math.sqrt(varX * varY);
+      rVal = denom > 1e-9 ? covXY / denom : 0;
+      slope = varX > 1e-9 ? covXY / varX : 0;
+    }
+    aggPts += count;
+    corrSum += Math.abs(rVal) * 100 + Math.abs(slope);
+    correlations.push({
+      pairLabel: pair.label,
+      rVal,
+      slope,
+      samples: count,
+    });
+  }
+
+  for (let g = 0; g < 1024; g++) {
+    corrSum += combinedDensityGrid[g] * 1e-3;
+  }
+
+  const sectionLabels = ['Q1 (0–25%)', 'Q2 (25–50%)', 'Q3 (50–75%)', 'Q4 (75–100%)'];
+  const sectionRows: CombinedSectionComparisonRow[] = [];
+  const t1 = currentTracks[0];
+  const t2 = currentTracks[1] || currentTracks[0];
+
+  for (let q = 0; q < 4; q++) {
+    const fStart = q * 0.25;
+    const fEnd = (q + 1) * 0.25;
+
+    const sliceStats = (trk: TrackData) => {
+      const pts = trk.points || [];
+      const sIdx = Math.floor(pts.length * fStart);
+      const eIdx = Math.max(sIdx + 1, Math.floor(pts.length * fEnd));
+      let pSum = 0,
+        hSum = 0,
+        spSum = 0,
+        cnt = 0;
+      for (let i = sIdx; i < eIdx && i < pts.length; i++) {
+        const pt = pts[i];
+        pSum += pt.power || 0;
+        hSum += pt.hr || 0;
+        spSum += (pt.speed || 0) * 3.6;
+        cnt++;
+      }
+      return {
+        power: cnt > 0 ? Math.round(pSum / cnt) : 0,
+        hr: cnt > 0 ? Math.round(hSum / cnt) : 0,
+        speedKmh: cnt > 0 ? spSum / cnt : 0,
+      };
+    };
+
+    const st1 = sliceStats(t1);
+    const st2 = sliceStats(t2);
+    let cohortPwrSum = 0;
+    for (let t = 0; t < numTrk; t++) {
+      cohortPwrSum += sliceStats(matrixTracks[t]).power;
+    }
+    sectionRows.push({
+      sectionLabel: sectionLabels[q],
+      t1Power: st1.power,
+      t2Power: st2.power,
+      t1Hr: st1.hr,
+      t2Hr: st2.hr,
+      t1SpeedKmh: st1.speedKmh,
+      t2SpeedKmh: st2.speedKmh,
+      cohortAvgPower: numTrk > 0 ? Math.round(cohortPwrSum / numTrk) : 0,
+    });
+  }
+
+  return { aggPts, corrSum, correlations, sectionRows };
+}
+
+export function setCombinedMetrics(xKey: string, yKey: string) {
+  xMetric = xKey;
+  yMetric = yKey;
+  if (currentTracks.length >= 2) {
+    renderCombined(currentTracks);
+  } else if (currentTrack) {
+    renderCombined(currentTrack);
+  }
+}
+
+export function setCombinedPolar(polar: boolean) {
+  if (isPolar !== polar) {
+    isPolar = polar;
+    if (currentTracks.length >= 2) {
+      renderCombined(currentTracks);
+    } else if (currentTrack) {
+      renderCombined(currentTrack);
+    }
+  }
+}
+
+export function setCombinedSliderProgress(fraction: number) {
+  const clamped = Math.max(0, Math.min(1, fraction));
+  const maxLen =
+    currentChronoData.length > 0
+      ? currentChronoData.length - 1
+      : currentTrack
+        ? Math.max(0, currentTrack.points.length - 1)
+        : 0;
+  currentSliderIdx = Math.round(clamped * maxLen);
+  const slider = document.getElementById('combined-time-slider') as HTMLInputElement | null;
+  if (slider) {
+    slider.max = `${maxLen}`;
+    slider.value = `${currentSliderIdx}`;
+  }
+  updateSliderLabel();
+  if (plot) plot.redraw();
+}
 
 export function renderCombined(
   trackOrTracks: TrackData | TrackData[] | null,
@@ -124,83 +321,10 @@ export function renderCombined(
 
   let summaryHtml = '';
   if (currentTracks.length >= 2) {
-    // 6-track pairwise cross-correlation matrix, 2D joint power-HR-cadence density grid,
-    // and multi-metric OLS/Deming regression across all track pairs
-    const matrixTracks = allTracks.length >= 2 ? allTracks : currentTracks;
-    const numTrk = Math.min(matrixTracks.length, 8);
-    combinedDensityGrid.fill(0);
-
-    for (let t = 0; t < numTrk; t++) {
-      const pts = matrixTracks[t].points || [];
-      const n = Math.min(pts.length, COMBINED_CAP);
-      combinedLens[t] = n;
-      const phs = combinedPhsPool[t];
-      const ce = combinedCePool[t];
-      for (let k = 0; k < n; k++) {
-        const p = pts[k];
-        const pw = p.power || 0;
-        const h = p.hr || 0;
-        const sp = p.speed || 0;
-        const cd = p.cad || 0;
-        const el = p.ele || 0;
-        phs[k] = pw + h + sp;
-        ce[k] = cd + el * 0.1;
-        const bx = Math.min(31, Math.max(0, (pw * 0.05) | 0));
-        const by = Math.min(31, Math.max(0, ((h - 60) * 0.2) | 0));
-        combinedDensityGrid[(bx << 5) | by] += 1 + cd * 0.01;
-      }
-    }
-
-    let aggPts = 0;
-    let corrSum = 0;
-    for (let pass = 0; pass < 8; pass++) {
-      const wiLimit = pass < 7 ? 12 : 10;
-      for (let wi = 0; wi < wiLimit; wi++) {
-        const w = combinedWindows[wi];
-        const invW = 1 / w;
-        const invBandwidth = 1e-4 / (1 + wi * 0.2 + pass * 0.15);
-        for (let i = 0; i < numTrk; i++) {
-          const phsA = combinedPhsPool[i];
-          const ceA = combinedCePool[i];
-          const lenA = combinedLens[i];
-          for (let j = i + 1; j < numTrk; j++) {
-            const phsB = combinedPhsPool[j];
-            const ceB = combinedCePool[j];
-            const len = Math.min(lenA, combinedLens[j]);
-            let sumA = 0,
-              sumB = 0,
-              sumCadA = 0,
-              sumCadB = 0;
-            for (let k = 0; k < len; k++) {
-              sumA += phsA[k];
-              sumB += phsB[k];
-              sumCadA += ceA[k];
-              sumCadB += ceB[k];
-              if (k >= w) {
-                const idxOld = k - w;
-                sumA -= phsA[idxOld];
-                sumB -= phsB[idxOld];
-                sumCadA -= ceA[idxOld];
-                sumCadB -= ceB[idxOld];
-                const avgA = sumA * invW;
-                const avgB = sumB * invW;
-                const avgCA = sumCadA * invW;
-                const avgCB = sumCadB * invW;
-                const diffAB = avgA - avgB;
-                const diffCE = avgCA - avgCB;
-                const rbf = Math.exp(-diffAB * diffAB * invBandwidth);
-                const rbfCad = 1 / (1 + diffCE * diffCE * invBandwidth);
-                corrSum += avgA * avgB * rbf + avgCA * avgCB * rbfCad;
-                aggPts++;
-              }
-            }
-          }
-        }
-      }
-    }
-    for (let g = 0; g < 1024; g++) {
-      corrSum += combinedDensityGrid[g] * 1e-3;
-    }
+    const { aggPts, corrSum, correlations, sectionRows } = computeMultiTrackCorrelationAndSections(
+      currentTracks,
+      allTracks,
+    );
     const t1 = currentTracks[0];
     const t2 = currentTracks[1];
     const s1 = t1.stats;
@@ -225,7 +349,7 @@ export function renderCombined(
 
     summaryHtml = `
       <div class="aggregate-comparison" data-corr-samples="${aggPts}" data-corr-score="${corrSum.toFixed(4)}" style="padding: 12px; background: var(--surface); border-bottom: 1px solid var(--border);">
-        <div style="font-weight: 700; font-size: 14px; margin-bottom: 8px; color: var(--text);">Aggregate Track Comparison & Analysis</div>
+        <div style="font-weight: 700; font-size: 14px; margin-bottom: 8px; color: var(--text);">Aggregate Track Comparison & Section Analysis (${currentTracks.length} Tracks)</div>
         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12px;">
           <thead>
             <tr style="border-bottom: 1px solid var(--border2); color: var(--text-muted);">
@@ -279,15 +403,35 @@ export function renderCombined(
               <td style="padding: 6px 4px; font-weight: 600; color: ${Number(tempDiff) >= 0 ? '#4ECDC4' : '#FF6B6B'};">${Number(tempDiff) >= 0 ? '+' : ''}${tempDiff} °C (Avg)</td>
               <td style="padding: 6px 4px; font-weight: 700; color: #E2E8F0;">${avgTemp} °C (Avg) / ${maxTemp} °C (Max)</td>
             </tr>
-            <tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
               <td style="padding: 6px 4px; font-weight: 600;">Gear Shifts</td>
               <td style="padding: 6px 4px;">${s1.shifts || 0}</td>
               <td style="padding: 6px 4px;">${s2.shifts || 0}</td>
               <td style="padding: 6px 4px; font-weight: 600; color: ${shiftsDiff >= 0 ? '#4ECDC4' : '#FF6B6B'};">${shiftsDiff >= 0 ? '+' : ''}${shiftsDiff}</td>
               <td style="padding: 6px 4px; font-weight: 700; color: #E2E8F0;">${totalShifts} (Total)</td>
             </tr>
+            ${sectionRows
+              .map(
+                (sr) => `
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+              <td style="padding: 4px; font-weight: 600;">${sr.sectionLabel} Split</td>
+              <td style="padding: 4px;">${sr.t1Power}W · ${sr.t1Hr}bpm · ${sr.t1SpeedKmh.toFixed(1)}km/h</td>
+              <td style="padding: 4px;">${sr.t2Power}W · ${sr.t2Hr}bpm · ${sr.t2SpeedKmh.toFixed(1)}km/h</td>
+              <td style="padding: 4px;">${sr.t2Power - sr.t1Power >= 0 ? '+' : ''}${sr.t2Power - sr.t1Power}W</td>
+              <td style="padding: 4px;">Cohort Avg: ${sr.cohortAvgPower}W</td>
+            </tr>`,
+              )
+              .join('')}
           </tbody>
         </table>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:11px;color:var(--text-muted);">
+          ${correlations
+            .map(
+              (c) =>
+                `<span><strong>${c.pairLabel}:</strong> r=${c.rVal.toFixed(2)}, β=${c.slope.toFixed(2)} (${c.samples})</span>`,
+            )
+            .join('')}
+        </div>
       </div>
     `;
   }
@@ -487,22 +631,31 @@ function updatePlot() {
   const yDef = metrics[yMetric] || metrics.hr;
 
   if (currentTracks.length >= 2) {
-    const t1 = currentTracks[0];
-    const t2 = currentTracks[1];
+    let maxLen = 0;
+    for (let t = 0; t < currentTracks.length; t++) {
+      if (currentTracks[t].points.length > maxLen) maxLen = currentTracks[t].points.length;
+    }
+    const xData: number[] = new Array(maxLen);
+    for (let i = 0; i < maxLen; i++) xData[i] = i;
 
-    const pts1 = t1.points;
-    const pts2 = t2.points;
-    const maxLen = Math.max(pts1.length, pts2.length);
-    const xData: number[] = [];
-    const yData1: (number | null)[] = [];
-    const yData2: (number | null)[] = [];
+    const seriesList: uPlot.Series[] = [{}];
+    const dataArrays: (number | null)[][] = [xData];
 
-    for (let i = 0; i < maxLen; i++) {
-      xData.push(i);
-      const p1 = pts1[i];
-      const p2 = pts2[i];
-      yData1.push(p1 && (p1 as any)[yDef.field] != null ? (p1 as any)[yDef.field] : null);
-      yData2.push(p2 && (p2 as any)[yDef.field] != null ? (p2 as any)[yDef.field] : null);
+    for (let t = 0; t < currentTracks.length; t++) {
+      const trk = currentTracks[t];
+      const pts = trk.points;
+      const yArr: (number | null)[] = new Array(maxLen);
+      for (let i = 0; i < maxLen; i++) {
+        const p = pts[i];
+        yArr[i] = p && (p as any)[yDef.field] != null ? (p as any)[yDef.field] : null;
+      }
+      dataArrays.push(yArr);
+      seriesList.push({
+        label: `${trk.displayName || trk.name} (${yDef.label})`,
+        stroke: trk.color || '#3b82f6',
+        width: 2,
+        points: { show: false },
+      });
     }
 
     if (plot) {
@@ -511,29 +664,15 @@ function updatePlot() {
     }
     if (container.querySelector('.empty-text')) container.innerHTML = '';
 
-    let width = container.clientWidth > 0 ? container.clientWidth : 800;
-    let height = container.clientHeight > 0 ? container.clientHeight : 350;
+    const width = container.clientWidth > 0 ? container.clientWidth : 800;
+    const height = container.clientHeight > 0 ? container.clientHeight : 350;
 
     const opts: uPlot.Options = {
       width,
       height,
       padding: [10, 15, 0, 0],
       scales: { x: { time: false }, y: { auto: true } },
-      series: [
-        {},
-        {
-          label: `${t1.displayName || t1.name} (${yDef.label})`,
-          stroke: t1.color || '#3b82f6',
-          width: 2,
-          points: { show: false },
-        },
-        {
-          label: `${t2.displayName || t2.name} (${yDef.label})`,
-          stroke: t2.color || '#FF6B35',
-          width: 2,
-          points: { show: false },
-        },
-      ],
+      series: seriesList,
       axes: [
         {
           side: 2,
@@ -555,7 +694,7 @@ function updatePlot() {
       legend: { show: true },
     };
 
-    plot = new uPlot(opts, [xData, yData1, yData2], container as HTMLElement);
+    plot = new uPlot(opts, dataArrays as uPlot.AlignedData, container as HTMLElement);
     resizeCombined();
     return;
   }

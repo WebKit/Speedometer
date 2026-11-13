@@ -164,3 +164,111 @@ export function renderAccumulatedTable(
     </table>
   `;
 }
+
+export interface MultiMetricAccumulatedSummary {
+  distance: AccumulatedData;
+  elevation: AccumulatedData;
+  durationHours: AccumulatedData;
+  tss: AccumulatedData;
+  workKj: AccumulatedData;
+  climbCount: AccumulatedData;
+}
+
+export function computeMultiMetricAccumulated(
+  allTracks: TrackData[],
+): MultiMetricAccumulatedSummary {
+  const distance = computeAccumulatedMetric(allTracks, (t) => t.stats.totalDist);
+  const elevation = computeAccumulatedMetric(allTracks, (t) => t.stats.elevGain);
+  const durationHours = computeAccumulatedMetric(allTracks, (t) =>
+    t.stats.duration ? t.stats.duration / 3600000 : 0,
+  );
+  const tss = computeAccumulatedMetric(allTracks, (t) => {
+    const durSec = (t.stats.duration || 0) / 1000;
+    const avgPwr = t.stats.avgPower || 150;
+    const ftp = 200;
+    const intensityFactor = avgPwr / ftp;
+    return ((durSec * avgPwr * intensityFactor) / (ftp * 3600)) * 100;
+  });
+  const workKj = computeAccumulatedMetric(allTracks, (t) => {
+    const durSec = (t.stats.duration || 0) / 1000;
+    const avgPwr = t.stats.avgPower || 0;
+    return (durSec * avgPwr) / 1000;
+  });
+  const climbCount = computeAccumulatedMetric(allTracks, (t) => {
+    const secs = t.stats.sections || [];
+    return secs.filter((s) => s.kind === 'climb').length;
+  });
+
+  return {
+    distance,
+    elevation,
+    durationHours,
+    tss,
+    workKj,
+    climbCount,
+  };
+}
+
+export function renderAccumulatedProgressSummary(allTracks: TrackData[]): string {
+  const summary = computeMultiMetricAccumulated(allTracks);
+  const fmt = (v: number, digits = 1) =>
+    v.toLocaleString('en-US', {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    });
+
+  const rows: {
+    label: string;
+    unit: string;
+    data: AccumulatedData;
+    scale: number;
+    digits: number;
+  }[] = [
+    { label: 'Distance', unit: 'km', data: summary.distance, scale: 0.001, digits: 1 },
+    { label: 'Elevation Gain', unit: 'm', data: summary.elevation, scale: 1, digits: 0 },
+    { label: 'Moving Duration', unit: 'h', data: summary.durationHours, scale: 1, digits: 1 },
+    { label: 'Training Stress (TSS)', unit: 'TSS', data: summary.tss, scale: 1, digits: 0 },
+    { label: 'Mechanical Work', unit: 'kJ', data: summary.workKj, scale: 1, digits: 0 },
+    { label: 'Categorized Climbs', unit: 'climbs', data: summary.climbCount, scale: 1, digits: 0 },
+  ];
+
+  return `
+    <div class="chart-row accumulated-multi-card" id="accumulated-summary-card" style="padding: 10px 14px;">
+      <div class="chart-row-header" style="margin-bottom: 6px;">
+        <div class="chart-row-label-group">
+          <span class="material-symbols-rounded chart-row-icon" style="--chart-color:#4ECDC4">monitoring</span>
+          <span class="chart-row-label">Accumulated Longitudinal Progress Summary</span>
+        </div>
+      </div>
+      <table class="accumulated-table" style="width: 100%; font-size: 11px;">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Past 1M</th>
+            <th>Past 6M</th>
+            <th>Past Year</th>
+            <th>Current Year</th>
+            <th>Total</th>
+            <th>Weekly Avg</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows
+            .map(
+              (r) => `
+            <tr>
+              <td style="font-weight: 600;">${r.label}</td>
+              <td>${fmt(r.data.past1m * r.scale, r.digits)}&nbsp;${r.unit}</td>
+              <td>${fmt(r.data.past6m * r.scale, r.digits)}&nbsp;${r.unit}</td>
+              <td>${fmt(r.data.pastYear * r.scale, r.digits)}&nbsp;${r.unit}</td>
+              <td>${fmt(r.data.currentYear * r.scale, r.digits)}&nbsp;${r.unit}</td>
+              <td style="font-weight: 700;">${fmt(r.data.total * r.scale, r.digits)}&nbsp;${r.unit}</td>
+              <td>${fmt(r.data.totalAvg * r.scale, r.digits)}&nbsp;${r.unit}/wk</td>
+            </tr>`,
+            )
+            .join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
