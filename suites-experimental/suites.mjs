@@ -305,9 +305,9 @@ export const ExperimentalSuites = freezeSuites([
         ],
     },
     {
-        name: "Tools-GPS-Tracks",
-        url: "suites-experimental/tools-gps-tracks/dist/index.html",
-        resources: "suites-experimental/tools-gps-tracks/dist/resources.txt",
+        name: "Tools-GPS-Tracks-Angular",
+        url: "suites-experimental/tools-gps-tracks-angular/dist/index.html",
+        resources: "suites-experimental/tools-gps-tracks-angular/dist/resources.txt",
         tags: ["experimental", "charts", "gpx"],
         type: "async",
         async prepare(page) {

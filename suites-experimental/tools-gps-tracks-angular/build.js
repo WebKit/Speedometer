@@ -57,7 +57,7 @@ async function collectLicenses() {
 
   try {
     const rootLicense = await readFile('LICENSE', 'utf-8');
-    output += `TOOLS-GPS-TRACKS LICENSE\n===========\n\n${rootLicense}\n\n`;
+    output += `TOOLS-GPS-TRACKS-ANGULAR LICENSE\n===========\n\n${rootLicense}\n\n`;
   } catch (e) {}
 
   for (const dep of deps) {
@@ -89,7 +89,7 @@ async function collectLicenses() {
   output += `MODIFICATION AND SUBSETTING NOTICE (Apache License 2.0, Section 4(b)):\n`;
   output += `These font binaries are subsetted and modified derivatives of the original\n`;
   output += `Google Material Symbols font files, containing only the\n`;
-  output += `specific glyphs and icons utilized by the Tools-GPS-Tracks benchmark workload.\n`;
+  output += `specific glyphs and icons utilized by the Tools-GPS-Tracks-Angular benchmark workload.\n`;
 
   try {
     const testDataDir = path.join('dist', 'test-data');
@@ -151,7 +151,7 @@ async function build() {
   const ctxWeg = await esbuild.context({
     ...baseConfig,
     entryPoints: ['src/app.ts'],
-    entryNames: 'tools-gps-tracks',
+    entryNames: 'tools-gps-tracks-angular',
     external: ['uplot', 'fit-file-parser'],
   });
 

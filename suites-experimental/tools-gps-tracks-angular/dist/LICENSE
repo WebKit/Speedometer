@@ -1,4 +1,4 @@
-TOOLS-GPS-TRACKS LICENSE
+TOOLS-GPS-TRACKS-ANGULAR LICENSE
 ===========
 
 BSD 3-Clause License
@@ -377,7 +377,7 @@ limitations under the License.
 MODIFICATION AND SUBSETTING NOTICE (Apache License 2.0, Section 4(b)):
 These font binaries are subsetted and modified derivatives of the original
 Google Material Symbols font files, containing only the
-specific glyphs and icons utilized by the Tools-GPS-Tracks benchmark workload.
+specific glyphs and icons utilized by the Tools-GPS-Tracks-Angular benchmark workload.
 
 
 ------------------------------------------------------------------------------

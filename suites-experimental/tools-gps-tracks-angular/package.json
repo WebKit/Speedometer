@@ -1,5 +1,5 @@
 {
-  "name": "tools-gps-tracks",
+  "name": "tools-gps-tracks-angular",
   "version": "1.0.0",
   "private": true,
   "description": "Speedometer benchmark workload for GPS file parsing, metrics computation, and chart visualization",

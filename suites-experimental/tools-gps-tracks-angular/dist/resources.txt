@@ -14,7 +14,7 @@ test-data/activity_4_intervals.tcx.gz
 test-data/activity_5_grand_tour.fit.gz
 test-data/activity_6_weekend_ride.fit.gz
 test-data/manifest.json
-tools-gps-tracks.mjs
-tools-gps-tracks.mjs.map
+tools-gps-tracks-angular.mjs
+tools-gps-tracks-angular.mjs.map
 uplot.mjs
 uplot.mjs.map

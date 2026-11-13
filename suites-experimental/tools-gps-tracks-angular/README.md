@@ -1,4 +1,4 @@
-# Tools-GPS-Tracks Workload (Angular)
+# Tools-GPS-Tracks-Angular Workload
 
 ## Description
 
@@ -20,9 +20,9 @@ Please always compile inside the latest `node` LTS requirement (`>=24.0.0`).
 
 ## Building
 
-Run `npm install` inside `/suites-experimental/tools-gps-tracks`, then run `npm run build` to typecheck, generate deterministic compressed test tracks in `test-data/`, bundle the application and sourcemaps into `dist/`, and generate `dist/resources.txt`.
+Run `npm install` inside `/suites-experimental/tools-gps-tracks-angular`, then run `npm run build` to typecheck, generate deterministic compressed test tracks in `test-data/`, bundle the application and sourcemaps into `dist/`, and generate `dist/resources.txt`.
 
 ## Develop & Run Locally
 
-1. Run `npm install` inside `/suites-experimental/tools-gps-tracks`.
+1. Run `npm install` inside `/suites-experimental/tools-gps-tracks-angular`.
 2. Run `npm run dev` to watch, rebuild on source changes, and start a local development server for `dist/`.

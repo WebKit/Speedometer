@@ -48,5 +48,5 @@ package-lock.json
 /suites/react-stockcharts
 
 /suites-experimental/responsive-design/build-dev/
-/suites-experimental/tools-gps-tracks
-/suites-experimental/tools-gps-tracks/**
+/suites-experimental/tools-gps-tracks-angular
+/suites-experimental/tools-gps-tracks-angular/**
