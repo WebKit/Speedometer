@@ -26,16 +26,17 @@ class MainBenchmarkClient {
     _steppingPromise = null;
     _steppingResolver = null;
     _benchmarkConfiguratorPromise = null;
+    _isInitialized = false;
+
+    get isInitialized() {
+        return this._isInitialized;
+    }
 
     constructor() {
         this._benchmarkConfiguratorPromise = import("./benchmark-configurator.mjs");
         this.prepareUI();
         this.evaluateParams();
         this._showSection(window.location.hash);
-
-        this._benchmarkConfiguratorPromise.then(() => {
-            window.dispatchEvent(new Event("SpeedometerReady"));
-        });
     }
 
     isRunning() {
@@ -392,10 +393,14 @@ class MainBenchmarkClient {
             document.body.append(this._developerModeContainer);
         }
 
+        if (!params.startAutomatically)
+            this._setBenchmarkState(BENCHMARK_STATE.READY);
+
+        this._isInitialized = true;
+        window.dispatchEvent(new Event("SpeedometerReady"));
+
         if (params.startAutomatically)
             this.start();
-        else
-            this._setBenchmarkState(BENCHMARK_STATE.READY);
     }
 
     async _setBenchmarkState(state) {

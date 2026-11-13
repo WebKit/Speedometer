@@ -18,7 +18,7 @@ async function testPage(url) {
     await driver.get(`http://localhost:${port}/${url}`);
 
     await driver.executeAsyncScript((callback) => {
-        if (globalThis.benchmarkClient)
+        if (globalThis.benchmarkClient.isInitialized)
             callback();
         else
             globalThis.addEventListener("SpeedometerReady", () => callback(), { once: true });
