@@ -7,15 +7,13 @@ export class StepRunner {
     #params;
     #suite;
     #step;
-    #type;
 
-    constructor(frame, page, params, suite, step, type) {
+    constructor(frame, page, params, suite, step) {
         this.#suite = suite;
         this.#step = step;
         this.#params = params;
         this.#page = page;
         this.#frame = frame;
-        this.#type = type;
     }
 
     get page() {
@@ -24,6 +22,10 @@ export class StepRunner {
 
     get step() {
         return this.#step;
+    }
+
+    get isAsync() {
+        return false;
     }
 
     _runSyncStep(step, page) {
@@ -54,7 +56,7 @@ export class StepRunner {
             performance.mark(syncStartLabel);
             const syncStartTime = performance.now();
 
-            if (this.#type === "async")
+            if (this.isAsync)
                 await this._runSyncStep(this.step, this.page);
             else
                 this._runSyncStep(this.step, this.page);
@@ -96,6 +98,10 @@ export class StepRunner {
 }
 
 export class AsyncStepRunner extends StepRunner {
+    get isAsync() {
+        return true;
+    }
+
     async _runSyncStep(step, page) {
         await step.run(page);
     }
