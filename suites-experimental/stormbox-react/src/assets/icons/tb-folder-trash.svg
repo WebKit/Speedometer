@@ -1,0 +1,7 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<svg xmlns="http://www.w3.org/2000/svg" fill-opacity="context-fill-opacity" viewBox="0 0 20 20" height="20" width="20">
+  <path d="M4.5 3C3.669 3 3 3.669 3 4.5V6h14V4.5c0-.831-.669-1.5-1.5-1.5ZM4 7v9.5c0 .831.669 1.5 1.5 1.5h9c.831 0 1.5-.669 1.5-1.5V7Z" fill="context-fill"/>
+  <path d="M8 1c-.545 0-1 .455-1 1H4.5A2.506 2.506 0 0 0 2 4.5V6c0 .545.455 1 1 1v9.5C3 17.876 4.124 19 5.5 19h9c1.376 0 2.5-1.124 2.5-2.5V7c.545 0 1-.455 1-1V4.5C18 3.124 16.876 2 15.5 2H13c0-.545-.455-1-1-1ZM4.5 3h11c.84 0 1.5.66 1.5 1.5V6H3V4.5C3 3.66 3.66 3 4.5 3ZM4 7h12v9.5c0 .84-.66 1.5-1.5 1.5h-9c-.84 0-1.5-.66-1.5-1.5Zm2.5 2c-.277 0-.5.223-.5.5v6a.5.5 0 1 0 1 0v-6c0-.277-.223-.5-.5-.5Zm2 0c-.277 0-.5.223-.5.5v6a.5.5 0 1 0 1 0v-6c0-.277-.223-.5-.5-.5Zm3 0c-.277 0-.5.223-.5.5v6a.5.5 0 1 0 1 0v-6c0-.277-.223-.5-.5-.5Zm2 0c-.277 0-.5.223-.5.5v6a.5.5 0 1 0 1 0v-6c0-.277-.223-.5-.5-.5Z" fill="context-stroke"/>
+</svg>
