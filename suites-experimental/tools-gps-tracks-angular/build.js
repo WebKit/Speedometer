@@ -20,6 +20,9 @@ const baseConfig = {
   outdir: 'dist',
   assetNames: '[name]',
   outExtension: { '.js': '.mjs' },
+  define: {
+    ngDevMode: 'false',
+  },
   loader: {
     '.woff2': 'file',
     '.png': 'file',

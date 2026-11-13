@@ -32,7 +32,7 @@ const detailChannels = [
   new Float64Array(DETAIL_CAP),
   new Float64Array(DETAIL_CAP),
 ];
-const stabilityWindows = [3, 5, 10, 15, 20, 30, 45, 60, 90];
+const stabilityWindows = [5, 15, 30, 60];
 
 export interface GearComboSummary {
   combo: string;

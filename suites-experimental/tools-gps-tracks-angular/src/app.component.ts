@@ -8,6 +8,7 @@ import {
   ApplicationRef,
   AfterViewInit,
   OnInit,
+  OnDestroy,
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -92,38 +93,18 @@ function isSameDay(t1: number, t2: number): boolean {
   );
 }
 
+export interface PreloadedBenchmarkPayload {
+  cleanName: string;
+  buf: ArrayBuffer;
+  text?: string;
+  file: File;
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    GraphsTabComponent,
-    InsightsTabComponent,
-    DetailsTabComponent,
-    CombinedTabComponent,
-    EvolutionTabComponent,
-    CoursesTabComponent,
-  ],
+  imports: [CommonModule, FormsModule],
   template: `
-    <div id="benchmark-controls" style="display: none">
-      <button id="btn-step-load" (click)="runBenchmarkLoad()">Step 1: Load and Parse Files</button>
-      <button id="btn-step-analysis" (click)="runBenchmarkAnalysis()">
-        Step 2: Display Analysis Metrics
-      </button>
-      <button id="btn-step-insights" (click)="runBenchmarkInsights()">
-        Step 3: Display Insights
-      </button>
-      <button id="btn-step-details" (click)="runBenchmarkDetails()">Step 4: Display Details</button>
-      <button id="btn-step-aggregate" (click)="runBenchmarkAggregate()">
-        Step 5: Display Aggregate Metrics
-      </button>
-      <button id="btn-step-evolution" (click)="runBenchmarkEvolution()">
-        Step 6: Display Evolution Metrics
-      </button>
-      <button id="btn-step-courses" (click)="runBenchmarkCourses()">Step 7: Display Courses</button>
-    </div>
-
     <div id="global-loader" [class.hidden]="!loaderVisible">
       <div class="loader-box">
         <button
@@ -541,19 +522,27 @@ function isSameDay(t1: number, t2: number): boolean {
         </div>
 
         <div id="tab-graphs" class="tab-content" [class.active]="state.activeTab === 'graphs'">
-          <app-graphs-tab></app-graphs-tab>
+          <ng-container *ngIf="mountedTabs.has('graphs')">
+            <ng-container *ngComponentOutlet="graphsTabComponent"></ng-container>
+          </ng-container>
         </div>
 
         <div id="tab-insights" class="tab-content" [class.active]="state.activeTab === 'insights'">
-          <app-insights-tab></app-insights-tab>
+          <ng-container *ngIf="mountedTabs.has('insights')">
+            <ng-container *ngComponentOutlet="insightsTabComponent"></ng-container>
+          </ng-container>
         </div>
 
         <div id="tab-details" class="tab-content" [class.active]="state.activeTab === 'details'">
-          <app-details-tab></app-details-tab>
+          <ng-container *ngIf="mountedTabs.has('details')">
+            <ng-container *ngComponentOutlet="detailsTabComponent"></ng-container>
+          </ng-container>
         </div>
 
         <div id="tab-combined" class="tab-content" [class.active]="state.activeTab === 'combined'">
-          <app-combined-tab></app-combined-tab>
+          <ng-container *ngIf="mountedTabs.has('combined')">
+            <ng-container *ngComponentOutlet="combinedTabComponent"></ng-container>
+          </ng-container>
         </div>
 
         <div
@@ -562,26 +551,38 @@ function isSameDay(t1: number, t2: number): boolean {
           [class.active]="state.activeTab === 'evolution'"
         >
           <div id="evolution-view">
-            <app-evolution-tab></app-evolution-tab>
+            <ng-container *ngIf="mountedTabs.has('evolution')">
+              <ng-container *ngComponentOutlet="evolutionTabComponent"></ng-container>
+            </ng-container>
           </div>
         </div>
 
         <div id="tab-courses" class="tab-content" [class.active]="state.activeTab === 'courses'">
           <div id="courses-view">
-            <app-courses-tab></app-courses-tab>
+            <ng-container *ngIf="mountedTabs.has('courses')">
+              <ng-container *ngComponentOutlet="coursesTabComponent"></ng-container>
+            </ng-container>
           </div>
         </div>
       </div>
     </div>
   `,
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public state = inject(TrackStateService);
   private cdr = inject(ChangeDetectorRef);
   private appRef = inject(ApplicationRef);
+  private destroyAbortController = new AbortController();
 
   readonly tabs = TABS;
   readonly filterMetricOptions = FILTER_METRIC_OPTIONS;
+  readonly graphsTabComponent = GraphsTabComponent;
+  readonly insightsTabComponent = InsightsTabComponent;
+  readonly detailsTabComponent = DetailsTabComponent;
+  readonly combinedTabComponent = CombinedTabComponent;
+  readonly evolutionTabComponent = EvolutionTabComponent;
+  readonly coursesTabComponent = CoursesTabComponent;
+  mountedTabs: Set<string> = new Set();
 
   displayedTracks: TrackData[] = [];
   allSportOptions: string[] = [];
@@ -599,15 +600,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   loaderIcon: string = 'download';
   loaderIconColor: string = 'var(--accent)';
   loaderWarningCount: number = 0;
-
-  private preloadedBenchmarkPayloads:
-    | {
-        cleanName: string;
-        buf: ArrayBuffer;
-        text?: string;
-        file: File;
-      }[]
-    | null = null;
 
   constructor() {
     this.state.appRef = this.appRef;
@@ -647,7 +639,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    void this.initApp();
+    this.initSubsystems();
+  }
+
+  ngOnDestroy(): void {
+    this.destroyAbortController.abort();
   }
 
   trackById(_index: number, item: TrackData): string {
@@ -876,9 +872,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   activateTab(tabName: string, pushUrl = false): void {
+    const wasMounted = this.mountedTabs.has(tabName);
+    if (!wasMounted) {
+      this.mountedTabs.add(tabName);
+    }
     this.state.activeTab = tabName;
     UrlState.patch({ tab: tabName }, pushUrl);
     this.cdr.detectChanges();
+    if (!wasMounted && tabName === 'graphs') {
+      this.state.graphsTab?.syncFromChartView();
+    }
   }
 
   updateSportFilterOptions(): void {
@@ -1135,24 +1138,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.renderTrackList();
   }
 
-  async initApp(): Promise<void> {
-    let fontTimerId: number | null = null;
-    const fontTimeout = new Promise<void>((resolve) => {
-      fontTimerId = window.setTimeout(resolve, 1000);
-    });
-    try {
-      const fontLoadPromise = document.fonts
-        ? Promise.all([
-            document.fonts.load('24px "Material Symbols Rounded"').catch(() => {}),
-            document.fonts.ready,
-          ])
-        : Promise.resolve();
-      await Promise.race([fontLoadPromise, fontTimeout]);
-    } finally {
-      if (fontTimerId !== null) window.clearTimeout(fontTimerId);
-    }
-    document.body.classList.remove('loading-fonts');
-
+  initSubsystems(): void {
     const urlState = UrlState.get();
 
     initInsights((msg: string, type?: string) =>
@@ -1216,29 +1202,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.applyState(urlState);
 
-    await Storage.openDB();
-    await this.resetBenchmarkState();
-
     this.initResizeHandle();
     this.initSidebarResizer();
     this.initDropZone();
     this.initGlobalListeners();
     this.state.graphsTab?.updateToolbarLayout();
-
-    this.bindBenchmarkSteps();
-    await this.preloadBenchmarkFiles();
-
-    const readyEl = document.createElement('div');
-    readyEl.id = 'app-is-ready';
-    readyEl.setAttribute('data-ready', 'true');
-    readyEl.style.display = 'none';
-    document.body.appendChild(readyEl);
-
-    const camelReadyEl = document.createElement('div');
-    camelReadyEl.id = 'appIsReady';
-    camelReadyEl.setAttribute('data-ready', 'true');
-    camelReadyEl.style.display = 'none';
-    document.body.appendChild(camelReadyEl);
   }
 
   applyState(urlState: AppState): void {
@@ -1308,186 +1276,242 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   initGlobalListeners(): void {
-    document.addEventListener('select-track', (e: any) => {
-      const id = e.detail.id;
-      const idx = e.detail.idx;
-      const dur = e.detail.dur;
-      if (id && this.state.tracks[id]) {
-        this.selectTrack(id);
-        if (idx != null && dur != null) {
-          const t = this.state.tracks[id];
-          const pts = t.points;
-          if (idx >= 0 && idx < pts.length) {
-            const pIdx = pts[idx];
-            if (pIdx && pIdx.time != null) {
-              const t0 = pts.find((p) => p.time != null)?.time || 0;
-              const tMin = (pIdx.time - t0) / 1000;
-              const tMax = tMin + dur;
+    const signal = this.destroyAbortController.signal;
+    document.addEventListener(
+      'select-track',
+      (e: any) => {
+        const id = e.detail.id;
+        const idx = e.detail.idx;
+        const dur = e.detail.dur;
+        if (id && this.state.tracks[id]) {
+          this.selectTrack(id);
+          if (idx != null && dur != null) {
+            const t = this.state.tracks[id];
+            const pts = t.points;
+            if (idx >= 0 && idx < pts.length) {
+              const pIdx = pts[idx];
+              if (pIdx && pIdx.time != null) {
+                const t0 = pts.find((p) => p.time != null)?.time || 0;
+                const tMin = (pIdx.time - t0) / 1000;
+                const tMax = tMin + dur;
 
-              ChartView.restoreSelection(tMin, tMax);
+                ChartView.restoreSelection(tMin, tMax);
 
-              let iMax = pts.findIndex((p) => (p.time || 0) >= pIdx.time! + dur * 1000);
-              if (iMax === -1) iMax = pts.length - 1;
+                let iMax = pts.findIndex((p) => (p.time || 0) >= pIdx.time! + dur * 1000);
+                if (iMax === -1) iMax = pts.length - 1;
 
-              const selPts = pts.slice(idx, iMax + 1);
-              const stats = Parsers.computeStats(selPts);
-              ChartView.setSelectionStats(stats);
+                const selPts = pts.slice(idx, iMax + 1);
+                const stats = Parsers.computeStats(selPts);
+                ChartView.setSelectionStats(stats);
 
-              renderInsights(t);
+                renderInsights(t);
 
-              MapView.highlightSegment(id, pts, idx, iMax, false, this.state.currentMapColors);
-              MapView.ensureVisible(selPts.map((p) => [p.lat, p.lon] as [number, number]));
+                MapView.highlightSegment(id, pts, idx, iMax, false, this.state.currentMapColors);
+                MapView.ensureVisible(selPts.map((p) => [p.lat, p.lon] as [number, number]));
 
-              UrlState.patch({ sel: [tMin, tMax] });
+                UrlState.patch({ sel: [tMin, tMax] });
+              }
             }
           }
         }
-      }
-    });
+      },
+      { signal },
+    );
 
-    document.addEventListener('click', (e) => {
-      if (this.sportDropdownOpen) {
-        const dropdownContent = document.getElementById('sport-dropdown-content');
-        const burgerBtn = document.getElementById('sport-burger-btn');
-        if (
-          dropdownContent &&
-          !dropdownContent.contains(e.target as Node) &&
-          e.target !== burgerBtn
-        ) {
-          this.sportDropdownOpen = false;
-          this.cdr.detectChanges();
+    document.addEventListener(
+      'click',
+      (e) => {
+        if (this.sportDropdownOpen) {
+          const dropdownContent = document.getElementById('sport-dropdown-content');
+          const burgerBtn = document.getElementById('sport-burger-btn');
+          if (
+            dropdownContent &&
+            !dropdownContent.contains(e.target as Node) &&
+            e.target !== burgerBtn
+          ) {
+            this.sportDropdownOpen = false;
+            this.cdr.detectChanges();
+          }
         }
-      }
-    });
+      },
+      { signal },
+    );
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        MapView.hideCursor();
-        MapView.closePopup?.();
-        document
-          .querySelectorAll(
-            '.color-picker-popup, .metric-menu-popup, .sort-menu-popup, .modal-backdrop',
-          )
-          .forEach((el) => el.remove());
-      }
-    });
+    document.addEventListener(
+      'keydown',
+      (e) => {
+        if (e.key === 'Escape') {
+          MapView.hideCursor();
+          MapView.closePopup?.();
+          document
+            .querySelectorAll(
+              '.color-picker-popup, .metric-menu-popup, .sort-menu-popup, .modal-backdrop',
+            )
+            .forEach((el) => el.remove());
+        }
+      },
+      { signal },
+    );
 
-    window.addEventListener('resize', () => {
-      ChartView.resize();
-      resizeCombined();
-      MapView.invalidateSize?.();
-      this.state.graphsTab?.updateToolbarLayout();
-    });
+    window.addEventListener(
+      'resize',
+      () => {
+        ChartView.resize();
+        resizeCombined();
+        MapView.invalidateSize?.();
+        this.state.graphsTab?.updateToolbarLayout();
+      },
+      { signal },
+    );
   }
 
   initResizeHandle(): void {
     const handle = document.getElementById('resize-handle');
     const panel = document.getElementById('chart-panel');
     if (!handle || !panel) return;
+    const signal = this.destroyAbortController.signal;
 
     let isDragging = false;
-    handle.addEventListener('mousedown', () => {
-      isDragging = true;
-      document.body.style.cursor = 'ns-resize';
-    });
+    handle.addEventListener(
+      'mousedown',
+      () => {
+        isDragging = true;
+        document.body.style.cursor = 'ns-resize';
+      },
+      { signal },
+    );
 
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      const h = window.innerHeight - e.clientY;
-      const clampedH = Math.max(100, Math.min(window.innerHeight - 100, h));
-      panel.style.height = `${clampedH}px`;
-      ChartView.resize();
-      resizeCombined();
-      MapView.invalidateSize?.();
-    });
+    document.addEventListener(
+      'mousemove',
+      (e) => {
+        if (!isDragging) return;
+        const h = window.innerHeight - e.clientY;
+        const clampedH = Math.max(100, Math.min(window.innerHeight - 100, h));
+        panel.style.height = `${clampedH}px`;
+        ChartView.resize();
+        resizeCombined();
+        MapView.invalidateSize?.();
+      },
+      { signal },
+    );
 
-    document.addEventListener('mouseup', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      document.body.style.cursor = '';
-    });
+    document.addEventListener(
+      'mouseup',
+      () => {
+        if (!isDragging) return;
+        isDragging = false;
+        document.body.style.cursor = '';
+      },
+      { signal },
+    );
   }
 
   initSidebarResizer(): void {
     const resizer = document.getElementById('sidebar-resizer');
     const sidebar = document.getElementById('sidebar');
     if (!resizer || !sidebar) return;
+    const signal = this.destroyAbortController.signal;
 
     let isDragging = false;
-    resizer.addEventListener('mousedown', () => {
-      isDragging = true;
-      resizer.classList.add('dragging');
-      document.body.classList.add('dragging-sidebar');
-    });
+    resizer.addEventListener(
+      'mousedown',
+      () => {
+        isDragging = true;
+        resizer.classList.add('dragging');
+        document.body.classList.add('dragging-sidebar');
+      },
+      { signal },
+    );
 
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      const w = e.clientX;
-      const clampedW = Math.max(200, Math.min(600, w));
-      sidebar.style.width = `${clampedW}px`;
-      sidebar.style.setProperty('--sidebar-w', `${clampedW}px`);
-      ChartView.resize();
-      MapView.invalidateSize?.();
-    });
+    document.addEventListener(
+      'mousemove',
+      (e) => {
+        if (!isDragging) return;
+        const w = e.clientX;
+        const clampedW = Math.max(200, Math.min(600, w));
+        sidebar.style.width = `${clampedW}px`;
+        sidebar.style.setProperty('--sidebar-w', `${clampedW}px`);
+        ChartView.resize();
+        MapView.invalidateSize?.();
+      },
+      { signal },
+    );
 
-    document.addEventListener('mouseup', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      resizer.classList.remove('dragging');
-      document.body.classList.remove('dragging-sidebar');
-    });
+    document.addEventListener(
+      'mouseup',
+      () => {
+        if (!isDragging) return;
+        isDragging = false;
+        resizer.classList.remove('dragging');
+        document.body.classList.remove('dragging-sidebar');
+      },
+      { signal },
+    );
   }
 
   initDropZone(): void {
-    window.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      this.dropActive = true;
-      this.cdr.detectChanges();
-    });
+    const signal = this.destroyAbortController.signal;
+    window.addEventListener(
+      'dragover',
+      (e) => {
+        e.preventDefault();
+        this.dropActive = true;
+        this.cdr.detectChanges();
+      },
+      { signal },
+    );
 
-    window.addEventListener('dragleave', (e) => {
-      if (e.relatedTarget === null) {
+    window.addEventListener(
+      'dragleave',
+      (e) => {
+        if (e.relatedTarget === null) {
+          this.dropActive = false;
+          this.cdr.detectChanges();
+        }
+      },
+      { signal },
+    );
+
+    window.addEventListener(
+      'drop',
+      async (e) => {
+        e.preventDefault();
         this.dropActive = false;
         this.cdr.detectChanges();
-      }
-    });
 
-    window.addEventListener('drop', async (e) => {
-      e.preventDefault();
-      this.dropActive = false;
-      this.cdr.detectChanges();
+        const items = e.dataTransfer?.items;
+        if (!items) return;
 
-      const items = e.dataTransfer?.items;
-      if (!items) return;
+        const files: File[] = [];
+        const queue: FileSystemEntry[] = [];
 
-      const files: File[] = [];
-      const queue: FileSystemEntry[] = [];
-
-      for (let i = 0; i < items.length; i++) {
-        const entry = items[i].webkitGetAsEntry();
-        if (entry) queue.push(entry);
-      }
-
-      async function readAllEntries(entry: FileSystemEntry) {
-        if (entry.isFile) {
-          const file = await new Promise<File>((res) => (entry as FileSystemFileEntry).file(res));
-          files.push(file);
-        } else if (entry.isDirectory) {
-          const reader = (entry as FileSystemDirectoryEntry).createReader();
-          const entries: FileSystemEntry[] = [];
-          let chunk: FileSystemEntry[];
-          do {
-            chunk = await new Promise<FileSystemEntry[]>((res) => reader.readEntries(res));
-            entries.push(...chunk);
-          } while (chunk.length > 0);
-
-          for (const child of entries) await readAllEntries(child);
+        for (let i = 0; i < items.length; i++) {
+          const entry = items[i].webkitGetAsEntry();
+          if (entry) queue.push(entry);
         }
-      }
 
-      for (const entry of queue) await readAllEntries(entry);
-      if (files.length) await this.handleFiles(files);
-    });
+        async function readAllEntries(entry: FileSystemEntry) {
+          if (entry.isFile) {
+            const file = await new Promise<File>((res) => (entry as FileSystemFileEntry).file(res));
+            files.push(file);
+          } else if (entry.isDirectory) {
+            const reader = (entry as FileSystemDirectoryEntry).createReader();
+            const entries: FileSystemEntry[] = [];
+            let chunk: FileSystemEntry[];
+            do {
+              chunk = await new Promise<FileSystemEntry[]>((res) => reader.readEntries(res));
+              entries.push(...chunk);
+            } while (chunk.length > 0);
+
+            for (const child of entries) await readAllEntries(child);
+          }
+        }
+
+        for (const entry of queue) await readAllEntries(entry);
+        if (files.length) await this.handleFiles(files);
+      },
+      { signal },
+    );
   }
 
   onShowSkippedImportsModal(e: MouseEvent): void {
@@ -1582,7 +1606,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
-  async handleFiles(files: File[]): Promise<void> {
+  async handleFiles(files: File[], deferChartRender = false): Promise<void> {
     if (!files.length) return;
     this.state.cancelProcessing = false;
     const initialSkipCount = this.state.skippedImports.length;
@@ -1751,7 +1775,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (count > 0) {
         this.state.showToast(`Imported ${count} track${count > 1 ? 's' : ''}`);
         this.applyFilters(!!firstId && firstId !== this.state.selectedId);
-        if (firstId) this.selectTrack(firstId);
+        if (firstId) this.selectTrack(firstId, true, deferChartRender);
       }
 
       if (newWarnings) {
@@ -1765,156 +1789,27 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async preloadBenchmarkFiles(): Promise<
-    { cleanName: string; buf: ArrayBuffer; text?: string; file: File }[]
-  > {
-    if (this.preloadedBenchmarkPayloads) return this.preloadedBenchmarkPayloads;
+  async runBenchmarkLoad(payloads: PreloadedBenchmarkPayload[]): Promise<void> {
     try {
-      const manifestResp = await fetch('./test-data/manifest.json');
-      const fileNames: string[] = await manifestResp.json();
-      const decoder = new TextDecoder();
-      this.preloadedBenchmarkPayloads = await Promise.all(
-        fileNames.map(async (name) => {
-          const fileResp = await fetch(`./test-data/${name}`);
-          let buf = await fileResp.arrayBuffer();
-          let cleanName = name;
-          if (name.toLowerCase().endsWith('.gz')) {
-            cleanName = name.slice(0, -3);
-            const bytes = new Uint8Array(buf);
-            if (bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b) {
-              const ds = new DecompressionStream('gzip');
-              const stream = new Blob([buf]).stream().pipeThrough(ds);
-              buf = await new Response(stream).arrayBuffer();
-            }
-          }
-          const text = cleanName.toLowerCase().endsWith('.fit') ? undefined : decoder.decode(buf);
-          const file = new File([buf], cleanName, { type: 'application/octet-stream' });
-          (file as any)._buf = buf;
-          if (text !== undefined) (file as any)._text = text;
-          return { cleanName, buf, text, file };
-        }),
-      );
-
-      let warmSample: any = null;
-      for (const idx of [0, 2, 4]) {
-        if (this.preloadedBenchmarkPayloads[idx]) {
-          const parsed = await Parsers.parseFile(this.preloadedBenchmarkPayloads[idx].file);
-          if (idx === 0) warmSample = parsed;
-        }
-      }
-      if (warmSample) {
-        const warmPts = warmSample.points.slice(0, 1250);
-        const warmTrack: TrackData = {
-          ...warmSample,
-          id: 'warmup',
-          fileName: 'warmup.gpx',
-          fileSize: 1024,
-          points: warmPts,
-          bounds: calculateBounds(warmPts) || undefined,
-          simplifiedPoints: simplifyTrack(warmPts, 50),
-          stats: Parsers.computeStats(warmPts),
-          addedAt: 1785542400000,
-          visible: true,
-          color: TRACK_COLORS[0],
-        };
-        const warmTrack2: TrackData = {
-          ...warmTrack,
-          id: 'warmup-2',
-          fileName: 'warmup2.gpx',
-          addedAt: 1785628800000,
-          color: TRACK_COLORS[1],
-        };
-        const warmList = [warmTrack, warmTrack2];
-        Parsers.ensureCurvesAndZones(warmTrack);
-        Parsers.ensureCurvesAndZones(warmTrack2);
-        warmTrack.stats.sections = Parsers.analyzeTrackSections(warmTrack.points);
-        warmTrack2.stats.sections = Parsers.analyzeTrackSections(warmTrack2.points);
-        Parsers.findOverlaps(warmList);
-        MapView.addTracks(warmList);
-        ChartView.loadTrack(warmTrack, warmList, false);
-        ChartView.restoreSelection(10, 50, true);
-        ChartView.setCursorAt(25, true);
-        ChartView.setSmooth('power', true);
-        ChartView.setSmooth('power', false);
-        ChartView.setXAxis('distance');
-        ChartView.setXAxis('time');
-        ChartView.setActiveMetrics(['elevation', 'speed', 'power']);
-        ChartView.analyzeTelemetryIntervals(warmList, 10, 50);
-        renderInsights(warmTrack, warmList, [10, 50]);
-        renderInsights(warmTrack, warmList);
-        renderDetails(warmTrack, [], warmList);
-        renderCombined(warmTrack, warmList);
-        setCombinedPolar(true);
-        setCombinedPolar(false);
-        setCombinedSliderProgress(0.5);
-        renderCombined(warmList, warmList);
-        renderEvolution(warmTrack, warmList);
-        setEvolutionGrouping('month');
-        setEvolutionGrouping('week');
-        setEvolutionRange('6m');
-        setEvolutionRange('all');
-        setEvolutionPinnedDuration(60);
-        setEvolutionPinnedDuration(null);
-        prepareBenchmarkCourses(warmList);
-        selectCourse('course-1', true);
-        await this.resetBenchmarkState();
-        void document.body.offsetHeight;
-        await new Promise((r) => window.setTimeout(r, 0));
-      } else if (typeof (window as any).__resetBenchmarkSeed === 'function') {
-        (window as any).__resetBenchmarkSeed();
-      }
-      return this.preloadedBenchmarkPayloads;
-    } catch {
-      return [];
-    }
-  }
-
-  bindBenchmarkSteps(): void {
-    (window as any).benchmarkSteps = {
-      loadAndParseFiles: () => document.getElementById('btn-step-load')?.click(),
-      displayAnalysisMetrics: () => document.getElementById('btn-step-analysis')?.click(),
-      displayInsights: () => document.getElementById('btn-step-insights')?.click(),
-      displayDetails: () => document.getElementById('btn-step-details')?.click(),
-      displayAggregateMetrics: () => document.getElementById('btn-step-aggregate')?.click(),
-      displayEvolutionMetrics: () => document.getElementById('btn-step-evolution')?.click(),
-      displayCourses: () => document.getElementById('btn-step-courses')?.click(),
-    };
-  }
-
-  async runBenchmarkLoad(): Promise<void> {
-    try {
-      if (
-        Object.keys(this.state.tracks).length > 0 ||
-        this.state.skippedImports.length > 0 ||
-        this.state.selectedId !== null
-      ) {
-        await Storage.openDB();
-        await this.resetBenchmarkState();
-      } else if (typeof (window as any).__resetBenchmarkSeed === 'function') {
-        (window as any).__resetBenchmarkSeed();
-      }
-      const payloads = await this.preloadBenchmarkFiles();
+      await Storage.openDB();
+      await this.resetBenchmarkState();
       const loadedFiles: File[] = payloads.map((p) => p.file);
-      await this.handleFiles(loadedFiles);
+      await this.handleFiles(loadedFiles, true);
       const allTracks = this.state.allTracks;
       Parsers.findOverlaps(allTracks);
 
-      for (const sortMode of ['dist-desc', 'dur-desc', 'date-asc', 'date-desc']) {
+      for (const sortMode of ['dist-desc', 'date-desc']) {
         this.state.currentSort = sortMode;
         this.renderTrackList();
       }
       this.state.filters.sport = 'cycling';
       this.applyFilters();
       this.state.filters.sport = null;
-      this.state.filters.metrics.add('power');
-      this.applyFilters();
-      this.state.filters.metrics.clear();
-      this.state.searchQuery = 'Alpine';
-      this.applyFilters();
-      this.state.searchQuery = '';
       this.applyFilters();
 
-      if (!this.state.selectedId && allTracks.length > 0) this.selectTrack(allTracks[0].id);
+      if (!this.state.selectedId && allTracks.length > 0) {
+        this.selectTrack(allTracks[0].id, true, true);
+      }
     } finally {
       window.dispatchEvent(new CustomEvent('load-and-parse-complete'));
     }
@@ -1925,13 +1820,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       const allTracks = this.state.allTracks;
       this.activateTab('graphs');
       if (!this.state.selectedId && allTracks.length > 0) {
-        this.selectTrack(allTracks[0].id, false);
+        this.selectTrack(allTracks[0].id, false, true);
       }
       const availableMetrics = ChartView.getAvailableMetrics();
-      const metricSets = [
-        ['elevation', 'speed', 'power', 'hr'],
-        ['elevation', 'speed', 'power'],
-      ];
+      const metricSets = [['elevation', 'speed', 'power']];
       for (const mSet of metricSets) {
         const filtered = mSet.filter((m) => availableMetrics.has(m));
         if (filtered.length > 0) {
@@ -1946,10 +1838,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       ChartView.setSmooth('power', false, true);
       ChartView.setXAxis('time');
 
-      const sections: [number, number, number][] = [
-        [0, 360, 180],
-        [120, 900, 300],
-      ];
+      const sections: [number, number, number][] = [[120, 900, 300]];
       for (const [secStart, secEnd, cursorIdx] of sections) {
         ChartView.restoreSelection(secStart, secEnd, true);
         ChartView.setCursorAt(cursorIdx, true);
@@ -1967,21 +1856,15 @@ export class AppComponent implements OnInit, AfterViewInit {
       allTracks.forEach((t) => Parsers.ensureCurvesAndZones(t));
       this.activateTab('insights');
       const primaryTrack = this.state.selectedTrack || allTracks[0] || null;
-      for (const tIdx of [1, 2, 4]) {
-        const trk = allTracks[tIdx];
-        if (trk) {
-          renderInsights(trk, allTracks, [0, 540]);
-          renderInsights(trk, allTracks, [540, 1140]);
-          renderInsights(trk, allTracks, null);
-        }
+      if (allTracks[1]) {
+        renderInsights(allTracks[1], allTracks, [0, 600]);
+        renderInsights(allTracks[1], allTracks, null);
       }
-      if (allTracks[3]) {
-        renderInsights(allTracks[3], allTracks, [200, 900]);
+      if (allTracks[4]) {
+        renderInsights(allTracks[4], allTracks, null);
       }
       if (primaryTrack) {
-        renderInsights(primaryTrack, allTracks, [0, 480]);
-        renderInsights(primaryTrack, allTracks, [480, 960]);
-        renderInsights(primaryTrack, allTracks, [960, 1440]);
+        renderInsights(primaryTrack, allTracks, [0, 600]);
       }
       renderInsights(primaryTrack, allTracks, null);
     } finally {
@@ -1999,25 +1882,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         renderDetails(allTracks[i], globalTags, allTracks, null);
       }
       if (primaryTrack) {
-        renderDetails(primaryTrack, globalTags, allTracks, [0, 450]);
-        renderDetails(primaryTrack, globalTags, allTracks, [450, 950]);
-        renderDetails(primaryTrack, globalTags, allTracks, [950, 1450]);
-      }
-      if (allTracks[1]) {
-        renderDetails(allTracks[1], globalTags, allTracks, [150, 750]);
-      }
-      if (allTracks[2]) {
-        renderDetails(allTracks[2], globalTags, allTracks, [200, 800]);
-      }
-      if (allTracks[3]) {
-        renderDetails(allTracks[3], globalTags, allTracks, [200, 900]);
-      }
-      if (allTracks[4]) {
-        renderDetails(allTracks[4], globalTags, allTracks, [0, 600]);
-        renderDetails(allTracks[4], globalTags, allTracks, [600, 1200]);
-      }
-      if (allTracks[5]) {
-        renderDetails(allTracks[5], globalTags, allTracks, [150, 750]);
+        renderDetails(primaryTrack, globalTags, allTracks, [0, 600]);
       }
       renderDetails(primaryTrack, globalTags, allTracks, null);
     } finally {
@@ -2070,15 +1935,15 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       };
 
-      const refTracks = [allTracks[2] || primaryTrack, allTracks[4] || primaryTrack, primaryTrack];
+      const refTracks = [allTracks[2] || primaryTrack, primaryTrack];
       for (const refTrk of refTracks) {
         renderEvolution(refTrk, allTracks, onSelectCb);
         setEvolutionGrouping('month');
-        for (const rng of ['1m', '2m', '6m', '1y', 'all']) {
+        for (const rng of ['1m', '6m', '1y', 'all']) {
           setEvolutionRange(rng);
         }
         setEvolutionGrouping('week');
-        for (const dur of [5, 30, 60, 300, 1200, null]) {
+        for (const dur of [5, 60, 300, 1200, null]) {
           setEvolutionPinnedDuration(dur);
         }
       }
@@ -2093,7 +1958,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.activateTab('courses');
       prepareBenchmarkCourses(allTracks);
       const courseIds = getBenchmarkCourseIds();
-      for (const cId of courseIds) {
+      for (const cId of courseIds.slice(0, 4)) {
         selectCourse(cId, true);
       }
       selectCourse('course-1', true);
