@@ -1,0 +1,27 @@
+{
+  "name": "tools-gps-tracks",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Speedometer benchmark workload for GPS file parsing, metrics computation, and chart visualization",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && node build.js",
+    "dev": "node build.js --watch",
+    "check": "tsc --noEmit",
+    "format": "prettier --write 'src/**/*.{ts,html}' 'src/css/styles.css' 'scripts/**/*.mjs' './*.js' README.md"
+  },
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=8.19.3"
+  },
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "fit-file-parser": "2.3.3",
+    "uplot": "1.6.32"
+  },
+  "devDependencies": {
+    "esbuild": "0.20.2",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  }
+}

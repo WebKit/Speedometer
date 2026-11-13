@@ -304,4 +304,72 @@ export const ExperimentalSuites = freezeSuites([
             }),
         ],
     },
+    {
+        name: "Tools-GPS-Tracks",
+        url: "suites-experimental/tools-gps-tracks/dist/index.html",
+        resources: "suites-experimental/tools-gps-tracks/dist/resources.txt",
+        tags: ["experimental", "charts", "gpx"],
+        type: "async",
+        async prepare(page) {
+            await page.waitForElement("#app-is-ready");
+        },
+        tests: [
+            new BenchmarkTestStep("LoadAndParseFiles", async (page) => {
+                const complete = new Promise((resolve) => {
+                    page.addEventListener("load-and-parse-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-step-load").click();
+                await complete;
+                page.layout();
+            }),
+            new BenchmarkTestStep("DisplayAnalysisMetrics", async (page) => {
+                const complete = new Promise((resolve) => {
+                    page.addEventListener("analysis-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-step-analysis").click();
+                await complete;
+                page.layout();
+            }),
+            new BenchmarkTestStep("DisplayInsights", async (page) => {
+                const complete = new Promise((resolve) => {
+                    page.addEventListener("insights-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-step-insights").click();
+                await complete;
+                page.layout();
+            }),
+            new BenchmarkTestStep("DisplayDetails", async (page) => {
+                const complete = new Promise((resolve) => {
+                    page.addEventListener("details-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-step-details").click();
+                await complete;
+                page.layout();
+            }),
+            new BenchmarkTestStep("DisplayAggregateMetrics", async (page) => {
+                const complete = new Promise((resolve) => {
+                    page.addEventListener("aggregate-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-step-aggregate").click();
+                await complete;
+                page.layout();
+            }),
+            new BenchmarkTestStep("DisplayEvolutionMetrics", async (page) => {
+                const complete = new Promise((resolve) => {
+                    page.addEventListener("evolution-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-step-evolution").click();
+                await complete;
+                page.layout();
+            }),
+            new BenchmarkTestStep("DisplayCourses", async (page) => {
+                const complete = new Promise((resolve) => {
+                    page.addEventListener("courses-complete", resolve, { once: true });
+                });
+                page.querySelector("#btn-step-courses").click();
+                await complete;
+                page.layout();
+            }),
+        ],
+    },
 ]);

@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weg — GPS Analysis</title>
+    <link rel="icon" href="data:," />
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "uplot": "./uplot.mjs",
+          "fit-file-parser": "./fit-file-parser.mjs"
+        }
+      }
+    </script>
+    <script type="module" src="benchmark-override.mjs"></script>
+  </head>
+  <body class="loading-fonts">
+    <div id="app">
+      <div id="benchmark-controls" style="display: none">
+        <button id="btn-step-load">Step 1: Load and Parse Files</button>
+        <button id="btn-step-analysis">Step 2: Display Analysis Metrics</button>
+        <button id="btn-step-insights">Step 3: Display Insights</button>
+        <button id="btn-step-details">Step 4: Display Details</button>
+        <button id="btn-step-aggregate">Step 5: Display Aggregate Metrics</button>
+        <button id="btn-step-evolution">Step 6: Display Evolution Metrics</button>
+        <button id="btn-step-courses">Step 7: Display Courses</button>
+      </div>
+      <div id="global-loader" class="hidden">
+        <div class="loader-box">
+          <button id="loader-close" class="material-symbols-rounded" title="Cancel import">
+            close
+          </button>
+          <div class="loader-icon-wrap">
+            <span class="material-symbols-rounded">download</span>
+            <div id="loader-warning-count">
+              <span>0</span>
+              <span class="material-symbols-rounded font-l">description</span>
+            </div>
+          </div>
+          <div class="loader-content">
+            <div id="loader-text">Importing tracks</div>
+            <div id="loader-filename"></div>
+            <div id="loader-progress-wrap">
+              <div id="loader-progress-bar"></div>
+            </div>
+            <div id="loader-subtext"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Sidebar ── -->
+      <aside id="sidebar">
+        <div id="sidebar-header">
+          <div class="logo">
+            <span class="logo-icon material-symbols-rounded">terrain</span>
+            <div>
+              <div class="logo-title">Weg</div>
+              <div class="logo-sub">GPS Analysis</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="drop-zone" class="drop-idle" style="cursor: pointer">
+          <div
+            id="import-warning"
+            class="material-symbols-rounded hidden"
+            style="color: #f59e0b; cursor: pointer; position: absolute; top: 10px; right: 10px"
+            title="Show skipped imports"
+          >
+            warning
+          </div>
+          <div class="drop-icon material-symbols-rounded">download</div>
+          <div class="drop-primary">Drop GPS files here</div>
+          <div class="drop-formats">
+            <span class="badge">GPX</span>
+            <span class="badge">FIT</span>
+            <span class="badge">TCX</span>
+            <span class="badge">KML</span>
+          </div>
+          <div class="drop-browse-container">
+            <label class="drop-browse" for="file-input">
+              <span class="material-symbols-rounded">upload_file</span>Files
+              <input type="file" id="file-input" multiple accept=".gpx,.fit,.tcx,.kml" hidden />
+            </label>
+            <span class="drop-separator">·</span>
+            <label class="drop-browse" id="folder-label" for="folder-input">
+              <span class="material-symbols-rounded">folder_open</span>Folders
+              <input
+                type="file"
+                id="folder-input"
+                webkitdirectory
+                directory
+                mozdirectory
+                odirectory
+                multiple
+                hidden
+              />
+            </label>
+          </div>
+        </div>
+
+        <div id="track-list-header">
+          <span class="section-label">Tracks</span>
+          <div class="header-actions">
+            <button id="btn-toggle-filters" title="Filter tracks" class="icon-btn">
+              <span class="material-symbols-rounded">filter_alt</span>
+            </button>
+            <button id="btn-fit-all" title="Fit all tracks on map" class="icon-btn">
+              <span class="material-symbols-rounded">zoom_out_map</span>
+            </button>
+            <button id="btn-clear-all" title="Remove all tracks" class="icon-btn danger">
+              <span class="material-symbols-rounded">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="track-controls">
+          <div class="search-bar">
+            <span class="material-symbols-rounded search-icon">search</span>
+            <input type="text" id="track-search" placeholder="Search tracks..." />
+            <button id="btn-regex-toggle" class="icon-btn mini" title="Use Regular Expression">
+              .*
+            </button>
+          </div>
+        </div>
+
+        <div id="filter-panel" class="hidden">
+          <div class="filter-group">
+            <label><span class="material-symbols-rounded">calendar_month</span>Date Range</label>
+            <div class="filter-row">
+              <input type="date" id="filter-date-start" />
+              <span>to</span>
+              <input type="date" id="filter-date-end" />
+            </div>
+          </div>
+          <div class="filter-group">
+            <label><span class="material-symbols-rounded">route</span>Distance (km)</label>
+            <div class="filter-row">
+              <input type="number" id="filter-dist-min" placeholder="Min" min="0" step="1" />
+              <span>–</span>
+              <input type="number" id="filter-dist-max" placeholder="Max" min="0" step="1" />
+            </div>
+          </div>
+          <div class="filter-group">
+            <label><span class="material-symbols-rounded">schedule</span>Duration (h)</label>
+            <div class="filter-row">
+              <input type="number" id="filter-dur-min" placeholder="Min" min="0" step="0.5" />
+              <span>–</span>
+              <input type="number" id="filter-dur-max" placeholder="Max" min="0" step="0.5" />
+            </div>
+          </div>
+          <div class="filter-group">
+            <label><span class="material-symbols-rounded">category</span>Sport</label>
+            <div
+              class="filter-row"
+              id="sport-filter-container"
+              style="display: flex; gap: 4px; align-items: center; flex-wrap: wrap"
+            >
+              <div id="common-sports" style="display: flex; gap: 4px"></div>
+              <div
+                class="dropdown"
+                id="sport-burger-dropdown"
+                style="position: relative; display: inline-block"
+              >
+                <button class="mini-pill" id="sport-burger-btn" title="More sports">
+                  <span class="material-symbols-rounded">menu</span>
+                </button>
+                <div
+                  class="dropdown-content"
+                  id="sport-dropdown-content"
+                  style="
+                    display: none;
+                    position: absolute;
+                    background-color: var(--surface);
+                    min-width: 160px;
+                    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+                    z-index: 100;
+                    border: 1px solid var(--border);
+                    border-radius: 4px;
+                    right: 0;
+                  "
+                >
+                  <!-- Other sports inserted here -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label><span class="material-symbols-rounded">label</span>Tags</label>
+            <div class="filter-row">
+              <input
+                type="text"
+                id="filter-tags"
+                placeholder="e.g. race, commute"
+                style="flex: 1"
+              />
+            </div>
+          </div>
+          <div class="filter-group">
+            <label><span class="material-symbols-rounded">query_stats</span>Has Metrics</label>
+            <div id="filter-metrics" class="filter-metrics-grid">
+              <button class="mini-pill" data-metric="power" title="Power">
+                <span class="material-symbols-rounded">bolt</span>
+              </button>
+              <button class="mini-pill" data-metric="hr" title="Heart Rate">
+                <span class="material-symbols-rounded">favorite</span>
+              </button>
+              <button class="mini-pill" data-metric="cadence" title="Cadence">
+                <span class="material-symbols-rounded">directions_run</span>
+              </button>
+              <button class="mini-pill" data-metric="temperature" title="Temperature">
+                <span class="material-symbols-rounded">thermostat</span>
+              </button>
+              <button class="mini-pill" data-metric="battery" title="Battery">
+                <span class="material-symbols-rounded">battery_full</span>
+              </button>
+              <button class="mini-pill" data-metric="gearRear" title="Rear Gear">
+                <span class="material-symbols-rounded">settings</span>
+              </button>
+              <button class="mini-pill" data-metric="gearFront" title="Front Gear">
+                <span class="material-symbols-rounded">settings_input_component</span>
+              </button>
+            </div>
+          </div>
+          <div class="filter-footer">
+            <button id="btn-reset-filters" class="icon-btn" title="Reset Filters">
+              <span class="material-symbols-rounded">filter_alt_off</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="sort-controls">
+          <div class="sort-ctrl">
+            <label>Sort:</label>
+            <button id="btn-sort-menu" class="sort-select-btn">
+              <span id="sort-current-icon" class="material-symbols-rounded">calendar_today</span>
+              <span id="sort-current-label">Date</span>
+              <span class="material-symbols-rounded arrow">expand_more</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="track-list">
+          <div id="track-list-empty">No tracks loaded yet</div>
+        </div>
+      </aside>
+
+      <div id="sidebar-resizer"></div>
+
+      <!-- ── Main ── -->
+      <div id="main">
+        <!-- Map (removed for benchmark workload) -->
+        <div id="map-container" style="display: none">
+          <div id="map-loader" class="hidden"><span></span></div>
+        </div>
+        <div id="resize-handle" style="display: none"></div>
+
+        <!-- Chart panel -->
+        <div id="chart-panel">
+          <div id="tab-nav">
+            <button class="tab-btn active" data-tab="graphs">
+              <span class="material-symbols-rounded">monitoring</span>Analysis
+            </button>
+            <button class="tab-btn" data-tab="insights">
+              <span class="material-symbols-rounded">analytics</span>Insights
+            </button>
+            <button class="tab-btn" data-tab="details">
+              <span class="material-symbols-rounded">list_alt</span>Details
+            </button>
+            <button class="tab-btn" data-tab="combined">
+              <span class="material-symbols-rounded">layers</span>Combined
+            </button>
+            <button class="tab-btn" data-tab="evolution" style="margin-left: auto">
+              <span class="material-symbols-rounded">timeline</span>Progress
+            </button>
+            <button class="tab-btn" data-tab="courses">
+              <span class="material-symbols-rounded">route</span>Courses
+            </button>
+          </div>
+
+          <div id="tab-graphs" class="tab-content active">
+            <div id="chart-toolbar">
+              <div id="metric-pills">
+                <button
+                  class="metric-pill active"
+                  data-metric="elevation"
+                  style="--pill-color: #4ecdc4"
+                  title="Toggle Elevation graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">height</span>Elevation
+                </button>
+                <button
+                  class="metric-pill"
+                  data-metric="vam"
+                  style="--pill-color: #ffa07a"
+                  title="Toggle VAM graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">trending_up</span>VAM
+                </button>
+                <button
+                  class="metric-pill active"
+                  data-metric="speed"
+                  style="--pill-color: #45b7d1"
+                  title="Toggle Speed graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">speed</span>Speed
+                </button>
+                <button
+                  class="metric-pill"
+                  data-metric="gradient"
+                  style="--pill-color: #a8c8a0"
+                  title="Toggle Gradient graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">trending_up</span>Gradient
+                </button>
+                <button
+                  class="metric-pill active"
+                  data-metric="power"
+                  style="--pill-color: #f7dc6f"
+                  title="Toggle Power graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">bolt</span>Power
+                </button>
+                <button
+                  class="metric-pill active"
+                  data-metric="hr"
+                  style="--pill-color: #ff6b6b"
+                  title="Toggle Heart Rate graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">favorite</span>Heart Rate
+                </button>
+                <button
+                  class="metric-pill"
+                  data-metric="cadence"
+                  style="--pill-color: #bb8fce"
+                  title="Toggle Cadence graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">directions_run</span>Cadence
+                </button>
+                <button
+                  class="metric-pill active"
+                  data-metric="temperature"
+                  style="--pill-color: #f8c471"
+                  title="Toggle Temperature graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">thermostat</span>Temp
+                </button>
+                <button
+                  class="metric-pill"
+                  data-metric="battery"
+                  style="--pill-color: #45b7d1"
+                  title="Toggle Battery graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">battery_full</span>Battery
+                </button>
+                <button
+                  class="metric-pill"
+                  data-metric="gearRear"
+                  style="--pill-color: #82e0aa"
+                  title="Toggle Rear Gear graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">settings</span>Rear Gear
+                </button>
+                <button
+                  class="metric-pill"
+                  data-metric="gearFront"
+                  style="--pill-color: #a8c8a0"
+                  title="Toggle Front Gear graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">settings_input_component</span>Front Gear
+                </button>
+                <button
+                  class="metric-pill"
+                  data-metric="gears"
+                  style="--pill-color: #ff8c00"
+                  title="Toggle Gears graph"
+                  draggable="true"
+                >
+                  <span class="material-symbols-rounded">settings</span>Gears
+                </button>
+                <span id="pill-overflow" class="hidden">...</span>
+              </div>
+              <button
+                id="btn-metric-menu"
+                class="sort-select-btn"
+                title="Select metrics to display"
+              >
+                <span class="material-symbols-rounded">bar_chart</span>
+                <span class="btn-label">Graphs</span>
+                <span class="material-symbols-rounded">expand_more</span>
+              </button>
+              <div id="chart-options">
+                <div id="x-axis-ctrl" class="seg-ctrl">
+                  <button class="seg-btn" data-axis="distance" title="Switch X-axis to Distance">
+                    <span class="material-symbols-rounded">route</span>Distance
+                  </button>
+                  <button class="seg-btn active" data-axis="time" title="Switch X-axis to Time">
+                    <span class="material-symbols-rounded">schedule</span>Time
+                  </button>
+                </div>
+                <button id="btn-follow-dot" class="icon-btn" title="Toggle Follow Point on Map">
+                  <span class="material-symbols-rounded">my_location</span>
+                </button>
+                <button id="btn-reset-zoom" class="icon-btn" title="Reset Zoom and Clear Selection">
+                  <span class="material-symbols-rounded">restart_alt</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="chart-stats" class="hidden">
+              <div id="chart-stats-wrap">
+                <!-- Row: Total -->
+                <div id="chart-stats-total" class="stats-row">
+                  <div class="stats-row-label">Total</div>
+                  <div class="stats-cell" id="stat-distance" title="Total Distance">
+                    <span class="stat-label">Dist</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="stat-duration" title="Total Duration">
+                    <span class="stat-label">Time</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="stat-elevation" title="Total Elevation Gain">
+                    <span class="stat-label">Elev</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="stat-avg-speed" title="Average Speed">
+                    <span class="stat-label">Avg Spd</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="stat-avg-power" title="Average Power">
+                    <span class="stat-label">Avg Pwr</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="stat-avg-hr" title="Average Heart Rate">
+                    <span class="stat-label">Avg HR</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="stat-avg-temp" title="Average Temperature">
+                    <span class="stat-label">Avg Temp</span><span class="stat-value">--</span>
+                  </div>
+                </div>
+                <!-- Row: Selection -->
+                <div id="chart-stats-sel" class="stats-row sel-row hidden">
+                  <div class="stats-row-label sel-label">
+                    Sel
+                    <button
+                      id="sel-cancel-btn"
+                      class="icon-btn danger"
+                      title="Clear selection and reset range"
+                    >
+                      <span class="material-symbols-rounded">close</span>
+                    </button>
+                  </div>
+                  <div class="stats-cell" id="sel-distance" title="Selection Distance">
+                    <span class="stat-label">Dist</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="sel-duration" title="Selection Duration">
+                    <span class="stat-label">Time</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="sel-elevation" title="Selection Elevation Gain">
+                    <span class="stat-label">Elev</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="sel-avg-speed" title="Selection Average Speed">
+                    <span class="stat-label">Avg Spd</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="sel-avg-power" title="Selection Average Power">
+                    <span class="stat-label">Avg Pwr</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="sel-avg-hr" title="Selection Average Heart Rate">
+                    <span class="stat-label">Avg HR</span><span class="stat-value">--</span>
+                  </div>
+                  <div class="stats-cell" id="sel-avg-temp" title="Selection Average Temperature">
+                    <span class="stat-label">Avg Temp</span><span class="stat-value">--</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="charts-container">
+              <div id="chart-empty" class="empty-state">
+                <span class="material-symbols-rounded empty-icon">no_sim</span>
+                <div class="empty-text">Select a track to view analysis</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-insights" class="tab-content">
+            <div id="insights-view">
+              <div id="insights-empty" class="empty-state">
+                <span class="material-symbols-rounded empty-icon">no_sim</span>
+                <div class="empty-text">Select a track for insights</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-details" class="tab-content">
+            <div id="details-view">
+              <div id="details-empty" class="empty-state">
+                <span class="material-symbols-rounded empty-icon">no_sim</span>
+                <div class="empty-text">Select a track for details</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-combined" class="tab-content">
+            <div id="combined-view">
+              <div id="combined-empty" class="empty-state">
+                <span class="material-symbols-rounded empty-icon">no_sim</span>
+                <div class="empty-text">Select a track for combined analysis</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-evolution" class="tab-content">
+            <div id="evolution-view">
+              <div id="evolution-empty" class="empty-state">
+                <span class="material-symbols-rounded empty-icon">no_sim</span>
+                <div class="empty-text">Select a track for progress analysis</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-courses" class="tab-content">
+            <div id="courses-view">
+              <div id="courses-empty" class="empty-state">
+                <span class="material-symbols-rounded empty-icon">route</span>
+                <div class="empty-text">No courses created yet</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <div id="hist-tooltip"></div>
+    <div id="hist-line"></div>
+
+    <script src="tools-gps-tracks.mjs" type="module"></script>
+  </body>
+</html>

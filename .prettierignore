@@ -48,3 +48,5 @@ package-lock.json
 /suites/react-stockcharts
 /suites-experimental/responsive-design/build-dev/
 /suites-experimental/responsive-design/**/*.generated.css
+/suites-experimental/tools-gps-tracks
+/suites-experimental/tools-gps-tracks/**
