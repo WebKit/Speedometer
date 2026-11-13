@@ -29,7 +29,10 @@
 
             const cacheBust = Date.now();
             await import("./unittests/benchmark-runner.mjs?t=" + cacheBust);
+            await import("./unittests/benchmark-configurator.mjs?t=" + cacheBust);
             await import("./unittests/params.mjs?t=" + cacheBust);
+            await import("./unittests/preloader.mjs?t=" + cacheBust);
+            await import("./unittests/request-limiter.mjs?t=" + cacheBust);
             await import("./unittests/suites.mjs?t=" + cacheBust);
 
             globalThis.testResults = undefined;

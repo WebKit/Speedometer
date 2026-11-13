@@ -39,6 +39,8 @@ export class Params {
     measurePrepare = false;
     // External config url to override internal tests.
     config = "";
+    // Use service worker for resource preloading.
+    preload = false;
 
     constructor(searchParams = undefined, warnUnused = false) {
         if (searchParams)
@@ -74,6 +76,7 @@ export class Params {
         this.layoutMode = this._parseEnumParam(searchParams, "layoutMode", LAYOUT_MODES);
         this.measurePrepare = this._parseBooleanParam(searchParams, "measurePrepare");
         this.config = this._parseConfig(searchParams);
+        this.preload = this._parseBooleanParam(searchParams, "preload");
 
         if (warnUnused) {
             const unused = Array.from(searchParams.keys());
@@ -85,8 +88,9 @@ export class Params {
     _parseBooleanParam(searchParams, paramKey) {
         if (!searchParams.has(paramKey))
             return false;
+        const value = searchParams.get(paramKey)?.toLowerCase();
         searchParams.delete(paramKey);
-        return true;
+        return value !== "false" && value !== "0";
     }
 
     _parseIntParam(searchParams, paramKey, minValue) {
@@ -210,6 +214,10 @@ export class Params {
 
     toSearchParams() {
         return this.toSearchParamsObject().toString();
+    }
+
+    isDefault() {
+        return this === defaultParams;
     }
 }
 
