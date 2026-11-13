@@ -385,6 +385,11 @@ function initTerminalsCore() {
             term._core._renderService._isPaused = true;
     }
 
+    if (window.__activeTimers && window.__activeTimers.size > 0) {
+        for (const timerId of Array.from(window.__activeTimers))
+            window.clearTimeout(timerId);
+    }
+
     isInitialized = true;
 }
 
@@ -478,6 +483,12 @@ function initTerminalForTab(tabId) {
         });
     }
 
+    if (term._core && typeof term._core.onWillOpen === "function") {
+        term._core.onWillOpen(() => {
+            normalizeCharSizeService(term._core._charSizeService);
+        });
+    }
+
     // Load performance rendering backend
     if (rendererType === "webgl") {
         try {
@@ -491,15 +502,10 @@ function initTerminalForTab(tabId) {
         tryLoadCanvas(term);
     }
 
-    if (term._core && typeof term._core.onWillOpen === "function") {
-        term._core.onWillOpen(() => {
-            normalizeCharSizeService(term._core._charSizeService);
-        });
-    }
-
     term.open(container);
 
     const core = term._core;
+    core?._renderService?._observerDisposable?.dispose?.();
     if (core && core._charSizeService) {
         normalizeCharSizeService(core._charSizeService);
         core._charSizeService.measure();
