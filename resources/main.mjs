@@ -51,8 +51,12 @@ class MainBenchmarkClient {
         return this._state === BENCHMARK_STATE.PRELOADING;
     }
 
+    hasError() {
+        return this._state === BENCHMARK_STATE.ERROR;
+    }
+
     hasFinished() {
-        return this._state === BENCHMARK_STATE.DONE || this._state === BENCHMARK_STATE.ERROR;
+        return this._state === BENCHMARK_STATE.DONE || this.hasError();
     }
 
     async start() {
@@ -120,7 +124,7 @@ class MainBenchmarkClient {
             this._developerModeContainer?.remove();
 
         await this._preloadResources(benchmarkConfigurator);
-        if (this._state === BENCHMARK_STATE.ERROR)
+        if (this.hasError())
             return false;
 
         this._progressCompleted = document.getElementById("progress-completed");
@@ -149,7 +153,7 @@ class MainBenchmarkClient {
     }
 
     _assertNotAborted() {
-        if (this._state === BENCHMARK_STATE.ERROR)
+        if (this.hasError())
             throw new Error("Benchmark aborted by another process.");
     }
 
@@ -210,7 +214,7 @@ class MainBenchmarkClient {
     }
 
     handleError(error) {
-        if (this._state === BENCHMARK_STATE.ERROR)
+        if (this.hasError())
             return;
         this._clearStepping();
         this._metrics = Object.create(null);
@@ -419,7 +423,7 @@ class MainBenchmarkClient {
         if (!params.developerMode)
             await this._preloadResources(benchmarkConfigurator);
 
-        if (this._state !== BENCHMARK_STATE.ERROR) {
+        if (!this.hasError()) {
             this._setBenchmarkState(BENCHMARK_STATE.READY);
             if (params.startAutomatically)
                 await this.start();
