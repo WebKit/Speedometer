@@ -307,3 +307,93 @@ describe("BenchmarkRunner", () => {
         });
     });
 });
+
+describe("PageElement", () => {
+    describe("observeResizeEvents", () => {
+        before(function () {
+            skipInShell(this);
+        });
+
+        async function withPageElement(configureFrame, callback) {
+            let fixtureNode;
+            let result;
+            const runner = new BenchmarkRunner(
+                [
+                    {
+                        name: "PageElement fixture",
+                        enabled: true,
+                        url: "about:blank",
+                        async prepare(page) {
+                            result = await callback(page.getElementById("resize-target"), fixtureNode);
+                        },
+                        tests: [],
+                    },
+                ],
+                {}
+            );
+            sinon.stub(SuiteRunner.prototype, "_loadFrame").callsFake(async function () {
+                fixtureNode = configureFrame(this.frame);
+            });
+            sinon.stub(SuiteRunner.prototype, "_runSuite").callsFake(async () => {});
+            await runner.runAllSuites();
+            return result;
+        }
+
+        // A fake ResizeObserver drives callbacks synchronously for exact-count assertions.
+        async function createTracker() {
+            let deliver;
+            const disconnect = sinon.stub();
+            class FakeResizeObserver {
+                constructor(callback) {
+                    deliver = (...widths) => callback(widths.map((width) => ({ contentBoxSize: [{ inlineSize: width }] })));
+                }
+                observe() {}
+                disconnect() {
+                    disconnect();
+                }
+            }
+            return withPageElement(
+                (frame) => {
+                    Object.defineProperty(frame.contentWindow, "ResizeObserver", { configurable: true, value: FakeResizeObserver });
+                    const node = frame.contentDocument.createElement("div");
+                    node.id = "resize-target";
+                    frame.contentDocument.body.appendChild(node);
+                    return node;
+                },
+                (element) => ({
+                    resizeEventsPromise: element.observeResizeEvents(),
+                    deliver: (...widths) => deliver(...widths),
+                    disconnect,
+                })
+            );
+        }
+
+        it("treats the first callback as the baseline without counting it", async () => {
+            const { resizeEventsPromise, deliver, disconnect } = await createTracker();
+            deliver(200);
+            const resizeEvents = await resizeEventsPromise;
+            expect(resizeEvents.stop()).to.equal(0);
+            sinon.assert.calledOnce(disconnect);
+        });
+
+        it("counts each distinct width change exactly once", async () => {
+            const { resizeEventsPromise, deliver } = await createTracker();
+            deliver(200); // seed
+            const resizeEvents = await resizeEventsPromise;
+            deliver(300);
+            deliver(400);
+            deliver(500);
+            expect(resizeEvents.stop()).to.equal(3);
+        });
+
+        it("does not count callbacks that report the same width", async () => {
+            const { resizeEventsPromise, deliver } = await createTracker();
+            deliver(200); // seed
+            const resizeEvents = await resizeEventsPromise;
+            deliver(300);
+            deliver(300);
+            deliver(300);
+            expect(resizeEvents.stop()).to.equal(1);
+        });
+    });
+});

@@ -25,6 +25,7 @@ src/storage/base-storage-manager.js
 src/storage/dexieDB-manager.js
 src/storage/indexedDB-manager.js
 src/storage/storage-factory.js
+src/storage/storage-type.js
 src/utils/nanoid.js
 src/workload-test.mjs
 styles/app.constructable.js

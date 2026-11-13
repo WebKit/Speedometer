@@ -1,4 +1,5 @@
 app.js
+app.js.map
 index.html
 public/images/5-healthy-smoothie.webp
 public/images/beef-stroganoff.webp

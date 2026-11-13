@@ -2,7 +2,7 @@ import { BenchmarkStep, BenchmarkSuite } from "speedometer-utils/benchmark.mjs";
 import { forceLayout, getElement } from "speedometer-utils/helpers.mjs";
 
 const suites = {
-    default: new BenchmarkSuite("default", [
+    default: new BenchmarkSuite("NewsSite-PostMessage", [
         new BenchmarkStep("Navigate-to-US-page", () => {
             for (let i = 0; i < 25; i++) {
                 getElement("#navbar-dropdown-toggle").click();

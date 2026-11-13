@@ -9,13 +9,24 @@ on:
     # Allows you to run this workflow manually from the Actions tab
     workflow_dispatch:
 
+permissions:
+    contents: read
+
+env:
+    NPM_CONFIG_IGNORE_SCRIPTS: "true"
+    NPM_CONFIG_AUDIT: "false"
+    NPM_CONFIG_FUND: "false"
+
 jobs:
     linters:
         name: Linters
         runs-on: macos-latest
+        timeout-minutes: 15
         steps:
             - name: Checkout Branch
               uses: actions/checkout@v4
+              with:
+                  persist-credentials: false
 
             - name: Setup Node
               uses: actions/setup-node@v4
@@ -24,7 +35,7 @@ jobs:
                   cache: "npm"
 
             - name: Install Node Packages
-              run: npm ci
+              run: npm ci --ignore-scripts
 
             - name: Run package.json linter
               run: npm run lint:pkg
@@ -38,7 +49,7 @@ jobs:
                   if [ -n "$git_status" ]; then
                       printf "Some file(s) changed as the result of formatting, this means that you need to run the formatter on your patch.\n"
                       printf "Here is what changed:\n"
-                      printf -- "$git_status\n\n"
+                      printf "%s\n\n" "$git_status"
                       printf "And here is the diff:\n"
                       git diff -U8
                       exit 1
@@ -47,9 +58,12 @@ jobs:
     test-node:
         name: Node Unit Tests
         runs-on: ubuntu-latest
+        timeout-minutes: 15
         steps:
             - name: Checkout Branch
               uses: actions/checkout@v4
+              with:
+                  persist-credentials: false
 
             - name: Setup Node
               uses: actions/setup-node@v4
@@ -58,7 +72,7 @@ jobs:
                   cache: "npm"
 
             - name: Install Node Packages
-              run: npm ci
+              run: npm ci --ignore-scripts
 
             - name: Run Node Unit Tests
               run: npm test
@@ -66,16 +80,17 @@ jobs:
     build:
         name: Build
         runs-on: macos-latest
+        timeout-minutes: 30
         strategy:
             matrix:
                 browser: [chrome, firefox, safari]
+        env:
+            BROWSER: ${{ matrix.browser }}
         steps:
-            - name: Install Firefox
-              if: ${{ matrix.browser == 'firefox' }}
-              run: brew install --cask firefox
-
             - name: Checkout Branch
               uses: actions/checkout@v4
+              with:
+                  persist-credentials: false
 
             - name: Setup Node
               uses: actions/setup-node@v4
@@ -84,14 +99,14 @@ jobs:
                   cache: "npm"
 
             - name: Install Node Packages
-              run: npm ci
+              run: npm ci --ignore-scripts
 
             - name: Run Unit Tests
               run: |
                   echo "Running in $BROWSER"
-                  npm run test:${{ matrix.browser }}
+                  npm run "test:$BROWSER"
 
             - name: Run end2end Tests
               run: |
                   echo "Running in $BROWSER"
-                  npm run test-e2e:${{ matrix.browser }}
+                  npm run "test-e2e:$BROWSER"

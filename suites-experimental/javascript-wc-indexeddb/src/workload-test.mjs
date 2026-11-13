@@ -1,6 +1,7 @@
 import { BenchmarkStep, BenchmarkSuite } from "./speedometer-utils/benchmark.mjs";
 import { getTodoText, defaultLanguage } from "/node_modules/speedometer-utils/translations.mjs";
 import { numberOfItemsToAdd } from "/node_modules/speedometer-utils/todomvc-utils.mjs";
+import { getStorageType } from "./storage/storage-type.js";
 
 export const appName = "todomvc-indexeddb";
 export const appVersion = "1.0.0";
@@ -28,8 +29,10 @@ function waitForPreviousPageLoaded() {
     });
 }
 
+const suiteName = getStorageType() === "dexie" ? "TodoMVC-WebComponents-DexieJS" : "TodoMVC-WebComponents-IndexedDB";
+
 const suites = {
-    default: new BenchmarkSuite("indexeddb", [
+    default: new BenchmarkSuite(suiteName, [
         new BenchmarkStep(`Adding${numberOfItemsToAdd}Items`, async () => {
             const input = document.querySelector("todo-app").shadowRoot.querySelector("todo-topbar").shadowRoot.querySelector(".new-todo-input");
             for (let i = 0; i < numberOfItemsToAdd; i++) {
