@@ -106,7 +106,7 @@ export class Params {
     _parserNumberParam(searchParams, paramKey, minValue) {
         if (!searchParams.has(paramKey))
             return defaultParams[paramKey];
-        const parsedValue = this._parseNumber(searchParams.get(paramKey), "waitBeforeSync", minValue);
+        const parsedValue = this._parseNumber(searchParams.get(paramKey), paramKey, minValue);
         searchParams.delete(paramKey);
         return parsedValue;
     }
@@ -114,7 +114,7 @@ export class Params {
     _parseIntParam(searchParams, paramKey, minValue) {
         if (!searchParams.has(paramKey))
             return defaultParams[paramKey];
-        const parsedValue = this._parseInt(searchParams.get(paramKey), "waitBeforeSync", minValue);
+        const parsedValue = this._parseInt(searchParams.get(paramKey), paramKey, minValue);
         searchParams.delete(paramKey);
         return parsedValue;
     }
@@ -123,13 +123,14 @@ export class Params {
         if (!searchParams.has("viewport"))
             return defaultParams.viewport;
         const viewportParam = searchParams.get("viewport");
-        const [width, height] = viewportParam.split("x");
-        const viewport = {
-            width: this._parseInt(width, "viewport.width"),
-            height: this._parseInt(height, "viewport.height"),
-        };
-        if (this.viewport.width < 800 || this.viewport.height < 600)
+        const parts = viewportParam.split("x");
+        if (parts.length !== 2 || !parts[0] || !parts[1])
             throw new Error(`Invalid viewport param: ${viewportParam}`);
+        const [width, height] = parts;
+        const viewport = {
+            width: this._parseInt(width, "viewport.width", 1),
+            height: this._parseInt(height, "viewport.height", 1),
+        };
         searchParams.delete("viewport");
         return viewport;
     }
@@ -175,7 +176,7 @@ export class Params {
         let shuffleSeed = searchParams.get("shuffleSeed");
         if (shuffleSeed !== "off") {
             if (shuffleSeed === "generate") {
-                shuffleSeed = Math.floor((Math.random() * 1) << 16);
+                shuffleSeed = Math.floor(Math.random() * (1 << 16));
                 console.log(`Generated a random suite order seed: ${shuffleSeed}`);
             } else {
                 shuffleSeed = parseInt(shuffleSeed);

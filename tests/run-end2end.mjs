@@ -60,14 +60,30 @@ async function testPage(url) {
 
 function validateMetrics(metrics) {
     for (const [name, metric] of Object.entries(metrics))
-        validateMetric(name, metric);
+        validateMetric(name, metric, metrics);
     assert(metrics.Geomean.mean > 0);
     assert(metrics.Score.mean > 0);
+    for (let i = 0; i < metrics.Geomean.values.length; i++) {
+        const expectedScore = 1000 / metrics.Geomean.values[i];
+        assert(Math.abs(metrics.Score.values[i] - expectedScore) < 1e-5, `Iteration ${i} Score (${metrics.Score.values[i]}) !== 1000 / Geomean (${expectedScore})`);
+    }
 }
 
-function validateMetric(name, metric) {
+function validateMetric(name, metric, metrics) {
     assert(metric.name === name);
     assert(metric.mean >= 0);
+
+    // Note: serialized metrics from driver.executeAsyncScript do not carry non-enumerable
+    // parent/children references, so we also check hierarchical step metrics by prefix!
+    const prefix = `${name}/`;
+    const directChildren = metric.children?.length > 0 ? metric.children : Object.values(metrics).filter((m) => m.name.startsWith(prefix) && !m.name.slice(prefix.length).includes("/"));
+
+    if (directChildren.length > 0) {
+        for (let i = 0; i < metric.values.length; i++) {
+            const sumOfChildren = directChildren.reduce((sum, child) => sum + child.values[i], 0);
+            assert(Math.abs(metric.values[i] - sumOfChildren) < 1e-5, `Metric ${name} iteration ${i} value (${metric.values[i]}) !== sum of children (${sumOfChildren})`);
+        }
+    }
 }
 
 async function testIterations() {

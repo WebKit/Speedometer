@@ -44,7 +44,9 @@ export class Metric {
     }
 
     get shortName() {
-        return this.parent ? this.name.replace(`${this.parent.name}-`, "") : this.name;
+        if (!this.parent)
+            return this.name;
+        return this.name.replace(`${this.parent.name}${Metric.separator}`, "").replace(`${this.parent.name}-`, "");
     }
 
     get valueString() {
@@ -78,6 +80,8 @@ export class Metric {
     }
 
     computeAggregatedMetrics() {
+        if (!this.values.length)
+            return;
         // Avoid the loss of significance for the sum.
         const sortedValues = this.values.concat().sort((a, b) => a - b);
         this.sum = Statistics.sum(sortedValues);
@@ -89,7 +93,7 @@ export class Metric {
         if (this.values.length > 1) {
             const squareSum = Statistics.squareSum(sortedValues);
             this.delta = Statistics.confidenceIntervalDelta(0.95, this.values.length, this.sum, squareSum);
-            this.percentDelta = isNaN(this.delta) ? undefined : (this.delta * 100) / this.mean;
+            this.percentDelta = isNaN(this.delta) ? undefined : this.mean === 0 ? 0 : (this.delta * 100) / this.mean;
         }
     }
 }

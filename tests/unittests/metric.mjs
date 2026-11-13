@@ -1,4 +1,3 @@
-import expect from "expect.js";
 import { Metric } from "../../resources/metric.mjs";
 
 describe("Metric (Data Trees & Serialization)", () => {
@@ -53,11 +52,18 @@ describe("Metric (Data Trees & Serialization)", () => {
             expect(metric.shortName).to.be("Suite-Test");
         });
 
-        it("should strip the parent name prefix when parent is set", () => {
+        it("should strip the parent name prefix when parent is set (both '-' and Metric.separator '/')", () => {
             const parent = new Metric("Suite");
-            const child = new Metric("Suite-Test");
-            parent.addChild(child);
-            expect(child.shortName).to.be("Test");
+            const dashChild = new Metric("Suite-Test");
+            const slashChild = new Metric(`Suite${Metric.separator}Adding100Items`);
+            const grandChild = new Metric(`Suite${Metric.separator}Adding100Items${Metric.separator}Sync`);
+            parent.addChild(dashChild);
+            parent.addChild(slashChild);
+            slashChild.addChild(grandChild);
+
+            expect(dashChild.shortName).to.be("Test");
+            expect(slashChild.shortName).to.be("Adding100Items");
+            expect(grandChild.shortName).to.be("Sync");
         });
     });
 
@@ -105,13 +111,28 @@ describe("Metric (Data Trees & Serialization)", () => {
     });
 
     describe("computeAggregatedMetrics()", () => {
-        it("should correctly compute sum, min, max, mean, and geomean for numeric samples", () => {
-            const metric = new Metric("Test");
-            metric.add(10);
-            metric.add(20);
-            metric.add(30);
+        it("should preserve zeroed defaults when called with empty values", () => {
+            const metric = new Metric("Empty");
             metric.computeAggregatedMetrics();
 
+            expect(metric.sum).to.be(0);
+            expect(metric.min).to.be(0);
+            expect(metric.max).to.be(0);
+            expect(metric.mean).to.be(0);
+            expect(metric.geomean).to.be(0);
+            expect(metric.delta).to.be(0);
+            expect(metric.percentDelta).to.be(0);
+            expect(metric.valueString).to.be("0.00 ms");
+        });
+
+        it("should correctly compute sum, min, max, mean, and geomean for numeric samples without mutating values order", () => {
+            const metric = new Metric("Test");
+            metric.add(30);
+            metric.add(10);
+            metric.add(20);
+            metric.computeAggregatedMetrics();
+
+            expect(metric.values).to.eql([30, 10, 20]);
             expect(metric.sum).to.be(60);
             expect(metric.min).to.be(10);
             expect(metric.max).to.be(30);
@@ -132,6 +153,35 @@ describe("Metric (Data Trees & Serialization)", () => {
             expect(metric.max).to.be(42);
             expect(metric.mean).to.be(42);
             expect(metric.geomean).to.be(42);
+            expect(metric.delta).to.be(0);
+            expect(metric.percentDelta).to.be(0);
+        });
+
+        it("should handle identical floating-point samples without producing NaN delta or undefined percentDelta", () => {
+            const metric = new Metric("IdenticalFloats");
+            for (let i = 0; i < 10; i++)
+                metric.add(1000 / 3);
+            metric.computeAggregatedMetrics();
+
+            expect(metric.min).to.be(1000 / 3);
+            expect(metric.max).to.be(1000 / 3);
+            expect(metric.mean).to.be.within(333.333, 333.334);
+            expect(metric.geomean).to.be.within(333.333, 333.334);
+            expect(isNaN(metric.delta)).to.be(false);
+            expect(metric.delta).to.be(0);
+            expect(metric.percentDelta).to.be(0);
+            expect(metric.valueString).to.be("333.33 ms");
+        });
+
+        it("should handle all-zero samples without producing NaN percentDelta", () => {
+            const metric = new Metric("AllZeros");
+            metric.add(0);
+            metric.add(0);
+            metric.computeAggregatedMetrics();
+
+            expect(metric.sum).to.be(0);
+            expect(metric.mean).to.be(0);
+            expect(metric.geomean).to.be(0);
             expect(metric.delta).to.be(0);
             expect(metric.percentDelta).to.be(0);
         });

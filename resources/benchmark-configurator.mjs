@@ -62,6 +62,8 @@ export class BenchmarkConfigurator {
                 suite.tags.unshift("all");
             suite.enabled = suite.tags.includes("default");
             Object.freeze(suite.tags);
+            if (suite.tests)
+                Object.freeze(suite.tests);
             Object.freeze(suite.steps);
         });
     }

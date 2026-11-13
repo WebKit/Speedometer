@@ -28,6 +28,12 @@ for (const [name, suites] of Object.entries(Suites)) {
                 expect(Object.isFrozen(suite.steps)).to.be(true);
             });
         });
+        it("should have frozen tests array when present", () => {
+            suites.forEach((suite) => {
+                if (suite.tests)
+                    expect(Object.isFrozen(suite.tests)).to.be(true);
+            });
+        });
         it("should not have duplicate tags", () => {
             suites.forEach((suite) => {
                 const uniqueTags = new Set(suite.tags);

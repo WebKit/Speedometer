@@ -48,7 +48,8 @@ export function squareSum(values) {
 export function sampleStandardDeviation(numberOfSamples, sum, squareSum) {
     if (numberOfSamples < 2)
         return 0;
-    return Math.sqrt(squareSum / (numberOfSamples - 1) - (sum * sum) / (numberOfSamples - 1) / numberOfSamples);
+    const variance = squareSum / (numberOfSamples - 1) - (sum * sum) / (numberOfSamples - 1) / numberOfSamples;
+    return Math.sqrt(Math.max(0, variance));
 }
 
 export function supportedConfidenceLevels() {
@@ -71,7 +72,7 @@ export function confidenceIntervalDelta(confidenceLevel, numberOfSamples, sum, s
     const cdfForProbability = tDistributionInverseCDF[probability];
     let degreesOfFreedom = numberOfSamples - 1;
     if (degreesOfFreedom > cdfForProbability.length)
-        degreesOfFreedom = cdfForProbability.length - 1;
+        degreesOfFreedom = cdfForProbability.length;
 
     // tDistributionQuantile(degreesOfFreedom, confidenceLevel) * sampleStandardDeviation / sqrt(numberOfSamples) * S/sqrt(numberOfSamples)
     const quantile = cdfForProbability[degreesOfFreedom - 1]; // The first entry is for the one degree of freedom.

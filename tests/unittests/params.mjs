@@ -145,5 +145,32 @@ describe("Params", () => {
                 consoleErrorStub.restore();
             }
         });
+        it("should generate a random integer shuffleSeed in [0, 65536) when shuffleSeed is 'generate'", () => {
+            sinon.stub(Math, "random").returns(0.5);
+            sinon.stub(console, "log");
+            const params = new Params(
+                new URLSearchParams({
+                    shuffleSeed: "generate",
+                })
+            );
+            expect(params.shuffleSeed).to.equal(32768);
+        });
+        it("should parse explicit integer shuffleSeed and reject invalid shuffleSeed", () => {
+            const validParams = new Params(new URLSearchParams({ shuffleSeed: "12345" }));
+            expect(validParams.shuffleSeed).to.equal(12345);
+
+            expect(() => new Params(new URLSearchParams({ shuffleSeed: "not-a-seed" }))).to.throwError(/Invalid shuffle seed: 'NaN', must be either 'off', 'generate' or an integer\./);
+        });
+        it("should include the actual parameter key in error messages for invalid int or number params", () => {
+            expect(() => new Params(new URLSearchParams({ iterationCount: "0" }))).to.throwError(/Invalid iterationCount param: '0', value must be >= 1\./);
+            expect(() => new Params(new URLSearchParams({ warmupBeforeSync: "abc" }))).to.throwError(/Invalid warmupBeforeSync param: 'abc', expected Number\./);
+            expect(() => new Params(new URLSearchParams({ complexity: "-1" }))).to.throwError(/Invalid complexity param: '-1', value must be >= 0\./);
+        });
+        it("should reject invalid viewport dimensions", () => {
+            expect(() => new Params(new URLSearchParams({ viewport: "0x600" }))).to.throwError(/Invalid viewport\.width param: '0', value must be >= 1\./);
+            expect(() => new Params(new URLSearchParams({ viewport: "800x0" }))).to.throwError(/Invalid viewport\.height param: '0', value must be >= 1\./);
+            expect(() => new Params(new URLSearchParams({ viewport: "800" }))).to.throwError(/Invalid viewport param: 800/);
+            expect(() => new Params(new URLSearchParams({ viewport: "abcxdef" }))).to.throwError(/Invalid viewport\.width param: 'abc', expected Number\./);
+        });
     });
 });

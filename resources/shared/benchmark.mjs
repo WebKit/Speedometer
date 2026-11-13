@@ -8,13 +8,14 @@ import { Params } from "./params.mjs";
  * A single test step, with a common interface to interact with.
  */
 export class BenchmarkStep {
-    constructor(name, run) {
+    constructor(name, run, ignoreResult = false) {
         this.name = name;
         this.run = run;
+        this.ignoreResult = ignoreResult;
     }
 
     async runAndRecordStep(params, suite, step) {
-        const stepRunner = new StepRunner(null, null, params, suite, step);
+        const stepRunner = new StepRunner(null, null, params, suite, step, "default");
         const result = await stepRunner.runStep();
         return result;
     }
@@ -22,7 +23,7 @@ export class BenchmarkStep {
 
 export class AsyncBenchmarkStep extends BenchmarkStep {
     async runAndRecordStep(params, suite, step) {
-        const stepRunner = new AsyncStepRunner(null, null, params, suite, step);
+        const stepRunner = new AsyncStepRunner(null, null, params, suite, step, "async");
         const result = await stepRunner.runStep();
         return result;
     }
@@ -141,8 +142,10 @@ export class BenchmarkConnector {
                 const params = new Params(new URLSearchParams(window.location.search));
                 const { name } = message.payload;
                 const suite = this.suites[name];
-                if (!suite)
+                if (!suite) {
                     console.error(`Suite with the name of "${name}" not found!`);
+                    return;
+                }
                 const onProgress = (step) => this._sendMessage(MESSAGE_TYPE.stepComplete, { name: this.name, step });
                 const { result } = await suite.runAndRecordSuite(params, onProgress);
                 this._sendMessage(MESSAGE_TYPE.suiteComplete, { result });

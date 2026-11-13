@@ -28,7 +28,10 @@
             });
 
             await import("./unittests/benchmark-runner.mjs");
+            await import("./unittests/metric.mjs");
             await import("./unittests/params.mjs");
+            await import("./unittests/shared-benchmark.mjs");
+            await import("./unittests/statistics.mjs");
             await import("./unittests/suites.mjs");
 
             globalThis.testResults = undefined;

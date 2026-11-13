@@ -361,16 +361,17 @@ class WakeLock {
 }
 
 export class BenchmarkRunner {
-    constructor(suites, client) {
+    constructor(suites, client, runnerParams = params) {
+        this._params = runnerParams;
         this._suites = suites;
-        if (params.useWarmupSuite)
+        if (this._params.useWarmupSuite)
             this._suites = [WarmupSuite, ...suites];
         this._client = client;
         this._page = null;
         this._metrics = null;
-        this._iterationCount = params.iterationCount;
-        if (params.shuffleSeed !== "off")
-            this._suiteOrderRandomNumberGenerator = seededHashRandomNumberGenerator(params.shuffleSeed);
+        this._iterationCount = this._params.iterationCount;
+        if (this._params.shuffleSeed !== "off")
+            this._suiteOrderRandomNumberGenerator = seededHashRandomNumberGenerator(this._params.shuffleSeed);
         this._wakeLock = new WakeLock();
     }
 
@@ -412,8 +413,8 @@ export class BenchmarkRunner {
     async _appendFrame() {
         const frame = document.createElement("iframe");
         const style = frame.style;
-        style.width = `${params.viewport.width}px`;
-        style.height = `${params.viewport.height}px`;
+        style.width = `${this._params.viewport.width}px`;
+        style.height = `${this._params.viewport.height}px`;
         style.border = "0px none";
         style.position = "absolute";
         frame.setAttribute("scrolling", "no");
@@ -491,23 +492,23 @@ export class BenchmarkRunner {
     async runSuite(suite) {
         // FIXME: Encapsulate more state in the SuiteRunner.
         // FIXME: Return and use measured values from SuiteRunner.
-        const type = suite.type ?? ((params.useAsyncSteps && "async") || "default");
+        const type = suite.type ?? ((this._params.useAsyncSteps && "async") || "default");
         const suiteRunnerClass = SUITE_RUNNER_LOOKUP[type];
-        const suiteRunner = new suiteRunnerClass(this._frame, this._page, params, suite, this._client, this._measuredValues);
+        const suiteRunner = new suiteRunnerClass(this._frame, this._page, this._params, suite, this._client, this._measuredValues);
         await suiteRunner.run();
     }
 
     async _finalize() {
         this._appendIterationMetrics();
-        if (this._client?.didRunSuites) {
-            let product = 1;
-            const values = [];
-            for (const suiteName in this._measuredValues.tests) {
-                const suiteTotal = this._measuredValues.tests[suiteName].total;
-                product *= suiteTotal;
-                values.push(suiteTotal);
-            }
+        let product = 1;
+        const values = [];
+        for (const suiteName in this._measuredValues.tests) {
+            const suiteTotal = this._measuredValues.tests[suiteName].total;
+            product *= suiteTotal;
+            values.push(suiteTotal);
+        }
 
+        if (values.length > 0) {
             values.sort((a, b) => a - b); // Avoid the loss of significance for the sum.
             const total = values.reduce((a, b) => a + b);
             const geomean = Math.pow(product, 1 / values.length);
@@ -516,14 +517,15 @@ export class BenchmarkRunner {
             this._measuredValues.mean = total / values.length;
             this._measuredValues.geomean = geomean;
             this._measuredValues.score = geomeanToScore(geomean);
-            await this._client.didRunSuites(this._measuredValues);
         }
+        if (this._client?.didRunSuites)
+            await this._client.didRunSuites(this._measuredValues);
     }
 
     _appendIterationMetrics() {
         const getMetric = (name, unit = "ms") => this._metrics[name] || (this._metrics[name] = new Metric(name, unit));
         const iterationMetric = (i, name) => {
-            if (i >= params.iterationCount)
+            if (i >= this._iterationCount)
                 throw new Error(`Requested iteration=${i} does not exist.`);
             return getMetric(`Iteration-${i}-${name}`);
         };
@@ -553,7 +555,7 @@ export class BenchmarkRunner {
                 iterationMetric(i, "Total").description = `Test totals for iteration ${i}`;
             getMetric("Geomean", "ms").description = "Geomean of test totals";
             getMetric("Score", "score").description = "Scaled inverse of the Geomean";
-            if (params.measurePrepare)
+            if (this._params.measurePrepare)
                 getMetric("Prepare", "ms").description = "Geomean of workload prepare times";
         }
 
@@ -566,7 +568,7 @@ export class BenchmarkRunner {
         geomean.add(iterationTotal.geomean);
         getMetric("Score").add(geomeanToScore(iterationTotal.geomean));
 
-        if (params.measurePrepare) {
+        if (this._params.measurePrepare) {
             const iterationPrepare = iterationMetric(iteration, "Prepare");
             for (const results of Object.values(iterationResults))
                 iterationPrepare.add(results.prepare);
