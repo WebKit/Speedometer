@@ -31,14 +31,24 @@ export interface AppState {
 }
 
 export const UrlState = (() => {
-  // Internal state object, initialized from current URL.
+  const initialPathname = typeof location !== 'undefined' ? location.pathname : '/';
+  const initialSearch = typeof location !== 'undefined' ? location.search.replace(/^\?/, '') : '';
+
+  // Internal state and local in-memory query/navigation stack.
   let _state: AppState = {};
+  let localSearch: string = initialSearch;
   let _lastSearch: string | null = null;
   let _syncTimeout: any = null;
   let _shouldPush = false;
+  let historyEntries: Array<{ state: unknown; url: string }> = [
+    {
+      state: null,
+      url: initialPathname + (initialSearch ? `?${initialSearch}` : ''),
+    },
+  ];
 
   function read(): AppState {
-    const p = new URLSearchParams(location.search);
+    const p = new URLSearchParams(localSearch);
     const s: AppState = {};
 
     if (p.has('track')) s.track = p.get('track')!;
@@ -154,17 +164,21 @@ export const UrlState = (() => {
       search += `${search ? '&' : ''}sel=${val}`;
     }
 
+    localSearch = search;
     if (search !== _lastSearch) {
-      const url = location.pathname + (search ? `?${search}` : '');
-      try {
-        if (_shouldPush) {
-          history.pushState(null, '', url);
-          _shouldPush = false;
-        } else {
-          history.replaceState(null, '', url);
+      const pathname = typeof location !== 'undefined' ? location.pathname : '/';
+      const url = pathname + (search ? `?${search}` : '');
+      const entryState = read();
+      if (_shouldPush) {
+        historyEntries.push({ state: entryState, url });
+        if (historyEntries.length > 100) {
+          historyEntries.shift();
         }
-      } catch (_) {
         _shouldPush = false;
+      } else if (historyEntries.length > 0) {
+        historyEntries[historyEntries.length - 1] = { state: entryState, url };
+      } else {
+        historyEntries.push({ state: entryState, url });
       }
       _lastSearch = search;
     }
@@ -198,11 +212,11 @@ export const UrlState = (() => {
     }
     _state = {};
     _shouldPush = false;
+    localSearch = '';
     _lastSearch = '';
-    try {
-      history.replaceState(null, '', location.pathname);
-    } catch (_) {}
+    const pathname = typeof location !== 'undefined' ? location.pathname : '/';
+    historyEntries = [{ state: null, url: pathname }];
   }
 
-  return { get, patch, refresh, reset };
+  return { read, get, patch, refresh, reset };
 })();

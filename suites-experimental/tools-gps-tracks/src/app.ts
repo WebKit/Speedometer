@@ -810,12 +810,6 @@ async function init() {
     updateToolbarLayout();
   });
 
-  // Handle back/forward navigation
-  window.addEventListener('popstate', () => {
-    UrlState.refresh();
-    applyState(UrlState.get());
-  });
-
   initBenchmarkTriggers();
   await preloadBenchmarkFiles();
 
