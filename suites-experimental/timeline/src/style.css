@@ -839,12 +839,10 @@ button.btn-nav:hover .desc {
 }
 
 /* Search Highlight */
-.highlight {
-    background: rgba(251, 191, 36, 0.25);
+::highlight(search-results) {
+    background-color: rgba(251, 191, 36, 0.25);
     color: #fcd34d;
-    padding: 2px 4px;
-    border-radius: 4px;
-    border-bottom: 2px solid #fbbf24;
+    text-decoration: underline solid #fbbf24 2px;
     text-shadow: 0 0 8px rgba(251, 191, 36, 0.5);
 }
 
