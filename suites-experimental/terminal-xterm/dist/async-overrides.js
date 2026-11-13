@@ -63,7 +63,6 @@ window.setTimeout = (cb, delay, ...args) => {
             cb(...args);
         else if (typeof cb === "string")
             eval(cb);
-
     }, 0);
     window.__activeTimers.add(id);
     return id;

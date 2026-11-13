@@ -81,7 +81,7 @@ export function generateLinksSession() {
         let chunk = "";
         chunk += `[Test Worker #${(i % 8) + 1}] RUNNING: https://github.com/WebKit/Speedometer/issues/${1000 + i}\r\n`;
         chunk += "  ↳ Reference spec: https://html.spec.whatwg.org/multipage/webappapis.html#event-loops\r\n";
-        chunk += `  ↳ Local fixture: file:///usr/local/google/home/cbruni/Documents/Speedometer/suites/editors/codemirror.html:${10 + i}:${(i % 20) + 1}\r\n`;
+        chunk += `  ↳ Local fixture: file:///workspace/speedometer/suites/editors/codemirror.html:${10 + i}:${(i % 20) + 1}\r\n`;
         chunk += `  ↳ Stack trace: at Object.runTest (src/speedometer-utils/benchmark.mjs:${50 + i}:12)\r\n`;
         chunk += "  ↳ Documentation: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext\r\n";
         chunk += `  ↳ NPM Registry: https://registry.npmjs.org/@xterm/xterm/-/xterm-5.5.${i % 10}.tgz\r\n`;
@@ -102,16 +102,16 @@ function rgbBg(r, g, b, text) {
 export function generateNcursesSession() {
     const frames = [];
     const procList = [
-        { pid: 1420, user: "cbruni", pri: 20, ni: 0, virt: "4820M", res: "312M", shr: "84M", s: "R", cpu: 45.2, mem: 1.9, time: "4:12.08", cmd: "/usr/bin/google-chrome-stable --type=renderer" },
-        { pid: 1842, user: "cbruni", pri: 20, ni: 0, virt: "8920M", res: "1.2G", shr: "120M", s: "S", cpu: 32.8, mem: 7.4, time: "18:45.12", cmd: "node tests/server.mjs --port 8000" },
-        { pid: 2901, user: "cbruni", pri: 20, ni: 0, virt: "1420M", res: "180M", shr: "64M", s: "R", cpu: 28.4, mem: 1.1, time: "1:02.45", cmd: "vite build --watch" },
-        { pid: 3105, user: "cbruni", pri: 20, ni: 0, virt: "980M", res: "92M", shr: "45M", s: "S", cpu: 14.1, mem: 0.6, time: "0:45.90", cmd: "python3 sidecar.py --daemon" },
+        { pid: 1420, user: "developer", pri: 20, ni: 0, virt: "4820M", res: "312M", shr: "84M", s: "R", cpu: 45.2, mem: 1.9, time: "4:12.08", cmd: "/usr/bin/google-chrome-stable --type=renderer" },
+        { pid: 1842, user: "developer", pri: 20, ni: 0, virt: "8920M", res: "1.2G", shr: "120M", s: "S", cpu: 32.8, mem: 7.4, time: "18:45.12", cmd: "node tests/server.mjs --port 8000" },
+        { pid: 2901, user: "developer", pri: 20, ni: 0, virt: "1420M", res: "180M", shr: "64M", s: "R", cpu: 28.4, mem: 1.1, time: "1:02.45", cmd: "vite build --watch" },
+        { pid: 3105, user: "developer", pri: 20, ni: 0, virt: "980M", res: "92M", shr: "45M", s: "S", cpu: 14.1, mem: 0.6, time: "0:45.90", cmd: "python3 sidecar.py --daemon" },
         { pid: 402, user: "root", pri: 20, ni: 0, virt: "310M", res: "24M", shr: "18M", s: "S", cpu: 5.0, mem: 0.2, time: "12:10.01", cmd: "/lib/systemd/systemd-journald" },
         { pid: 881, user: "root", pri: -20, ni: -20, virt: "0", res: "0", shr: "0", s: "I", cpu: 1.2, mem: 0.0, time: "0:04.12", cmd: "[kworker/u16:2-events_unbound]" },
-        { pid: 5120, user: "cbruni", pri: 20, ni: 0, virt: "2100M", res: "410M", shr: "95M", s: "S", cpu: 0.8, mem: 2.5, time: "2:14.50", cmd: "code /usr/local/google/home/cbruni/Documents/Speedometer" },
-        { pid: 6012, user: "cbruni", pri: 20, ni: 0, virt: "650M", res: "45M", shr: "28M", s: "S", cpu: 0.4, mem: 0.3, time: "0:12.80", cmd: "bash -i" },
-        { pid: 7100, user: "cbruni", pri: 20, ni: 0, virt: "520M", res: "38M", shr: "22M", s: "S", cpu: 0.1, mem: 0.2, time: "0:05.10", cmd: "git status -uall" },
-        { pid: 8192, user: "cbruni", pri: 20, ni: 0, virt: "120M", res: "8M", shr: "6M", s: "R", cpu: 0.0, mem: 0.1, time: "0:00.05", cmd: "ps aux --sort=-pcpu" },
+        { pid: 5120, user: "developer", pri: 20, ni: 0, virt: "2100M", res: "410M", shr: "95M", s: "S", cpu: 0.8, mem: 2.5, time: "2:14.50", cmd: "code /workspace/speedometer" },
+        { pid: 6012, user: "developer", pri: 20, ni: 0, virt: "650M", res: "45M", shr: "28M", s: "S", cpu: 0.4, mem: 0.3, time: "0:12.80", cmd: "bash -i" },
+        { pid: 7100, user: "developer", pri: 20, ni: 0, virt: "520M", res: "38M", shr: "22M", s: "S", cpu: 0.1, mem: 0.2, time: "0:05.10", cmd: "git status -uall" },
+        { pid: 8192, user: "developer", pri: 20, ni: 0, virt: "120M", res: "8M", shr: "6M", s: "R", cpu: 0.0, mem: 0.1, time: "0:00.05", cmd: "ps aux --sort=-pcpu" },
     ];
 
     for (let frameIdx = 0; frameIdx < 4; frameIdx++) {

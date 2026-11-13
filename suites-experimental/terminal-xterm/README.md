@@ -31,3 +31,10 @@ To run the application in development mode with live reloading:
 ```bash
 npm run dev
 ```
+
+## Bundled Font & License
+
+To ensure identical glyph metrics and terminal grid dimensions across all browsers and operating systems without external network requests, this workload bundles unmodified copies of **DejaVu Sans Mono** v2.37 (`fonts/DejaVuSansMono-Regular.woff2` and `fonts/DejaVuSansMono-Bold.woff2`):
+
+- **Copyright**: Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. DejaVu changes are in public domain.
+- **License**: Bitstream Vera Fonts License and Public Domain (`https://dejavu-fonts.github.io/License.html`). See `fonts/LICENSE` and `dist/assets/DejaVuSansMono-LICENSE.txt`.

@@ -42,6 +42,10 @@ function renameIndexHtml() {
             const dest = resolve(__dirname, "dist/index.html");
             if (fs.existsSync(src))
                 fs.renameSync(src, dest);
+            const licenseSrc = resolve(__dirname, "fonts/LICENSE");
+            const licenseDest = resolve(__dirname, "dist/assets/DejaVuSansMono-LICENSE.txt");
+            if (fs.existsSync(licenseSrc) && fs.existsSync(resolve(__dirname, "dist/assets")))
+                fs.copyFileSync(licenseSrc, licenseDest);
         },
     };
 }
