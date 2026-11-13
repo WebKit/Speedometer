@@ -131,7 +131,11 @@ export default function Feed({ edges, scrollerRef, onNearEnd, label }) {
             guard("feed.resume", update, false);
     }, [backgrounded, update]);
 
-    useEffect(() => {
+    // A layout effect, so the listener goes away in the same commit that detaches the
+    // list. As a passive effect it outlived the list for a moment, and a scroll queued in
+    // that commit (the page shown instead restoring its position) reached a feed that
+    // was no longer there.
+    useLayoutEffect(() => {
         const scroller = scrollerRef.current;
         const onScroll = () =>
             guard("feed.scroll", () => {
