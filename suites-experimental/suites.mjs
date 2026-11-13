@@ -328,7 +328,7 @@ export const ExperimentalSuites = freezeSuites([
                 const searchInput = page.querySelector("input.search-input");
                 if (!searchInput)
                     return;
-                const queries = ["C", "Co", "Com", "Comp", "Compu", "Comput", "Compute", "Computer", "", "I", "In", "Int", "Inte", "Intel", "", "A", "Ap", "App", "Appl", "Apple", ""];
+                const queries = ["", "I", "In", "Int", "Inte", "Intel", "", "A", "Ap", "App", "Appl", "Apple", "", "C", "Co", "Com", "Comp", "Compu", "Comput", "Compute", "Computer"];
                 for (let round = 0; round < 2; round++) {
                     for (const q of queries) {
                         searchInput.setValue(q);
