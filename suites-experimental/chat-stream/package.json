@@ -1,0 +1,18 @@
+{
+    "name": "chat-stream",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "build": "vite build octane",
+        "dev": "vite octane"
+    },
+    "dependencies": {
+        "octane": "0.16.7"
+    },
+    "devDependencies": {
+        "@tsrx/oxc": "0.23.0",
+        "typescript": "^5.9.3",
+        "vite": "^8.0.16"
+    }
+}
