@@ -2,7 +2,6 @@ import {
   useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
 import type { CSSProperties, KeyboardEvent, RefCallback } from 'react';
-import DOMPurify from 'dompurify';
 import {
   ArrowLeft, ChevronDown, ChevronUp, Clock, Download, Moon, Paperclip, Sun, Trash2,
 } from 'lucide-react';
@@ -20,11 +19,11 @@ import { useComposeStore } from '../store/compose-store';
 import { useUiStore } from '../store/ui-store';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import {
-  ALLOWED_URI_REGEXP, BODY_THEME_COLORS, IFRAME_SANDBOX, buildMessageSrcDoc, sanitizeMessageDocument,
+  BODY_THEME_COLORS, IFRAME_SANDBOX, buildMessageSrcDoc, sanitizeMessageDocument,
 } from '../utils/message-html';
 import { adaptHtmlForDarkMode } from '../utils/dark-email';
 import { formatAddressList } from '../utils/address-parse';
-import { plaintextToHtml } from '../utils/plaintext-html';
+import { renderPlaintextBody } from '../utils/plaintext-body';
 import { shortFrom } from '../utils/sender-avatar';
 import { formatBytes } from '../utils/format-bytes';
 import { DEFAULT_MESSAGE_TAGS, resolveMessageTags } from '../utils/message-tags';
@@ -196,10 +195,10 @@ export function MessageView({ maximized, onToggleMaximized }: { maximized: boole
   const bodyScheme = effectiveScheme === 'dark' && forceLightBody ? 'light' : effectiveScheme;
   const iframeBackground = BODY_THEME_COLORS[bodyScheme].background;
 
-  const textHtml = useMemo(() => {
-    if (!body?.text || body.html) return '';
-    return DOMPurify.sanitize(plaintextToHtml(body.text), { ALLOWED_URI_REGEXP, ADD_ATTR: ['target'] }) as string;
-  }, [body]);
+  const textBody = useMemo(
+    () => (body?.text && !body.html ? renderPlaintextBody(body.text) : null),
+    [body],
+  );
 
   const srcDoc = useMemo(() => {
     if (!body?.html) return '';
@@ -509,8 +508,8 @@ export function MessageView({ maximized, onToggleMaximized }: { maximized: boole
                 onLoad={onIframeLoad}
               />
             </div>
-          ) : textHtml ? (
-            <div className="message-view__text" dangerouslySetInnerHTML={{ __html: textHtml }} />
+          ) : textBody ? (
+            <div className="message-view__text">{textBody}</div>
           ) : (
             <p className="message-view__placeholder">This message has no content.</p>
           )}

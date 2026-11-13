@@ -13,7 +13,6 @@
   "dependencies": {
     "@tanstack/react-virtual": "3.13.26",
     "dompurify": "3.4.7",
-    "linkify-string": "4.3.3",
     "linkifyjs": "4.3.3",
     "lucide-react": "1.16.0",
     "react": "19.3.1",

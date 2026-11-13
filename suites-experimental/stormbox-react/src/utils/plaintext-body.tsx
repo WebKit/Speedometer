@@ -1,5 +1,5 @@
 /**
- * Render a text/plain message body as display HTML, mirroring how
+ * Render a text/plain message body as a React tree, mirroring how
  * Thunderbird Desktop presents plaintext mail.
  *
  * Thunderbird (mailnews mime + mozITXTToHTMLConv) escapes the text,
@@ -13,10 +13,11 @@
  *   - line breaks / blank lines / indentation are preserved because the
  *     host element uses `white-space: pre-wrap` (so the `\n` separators
  *     below render as breaks);
- *   - link detection is delegated to `linkify-string` (linkifyjs), which
- *     is more robust than a hand-rolled regex and escapes HTML itself,
- *     so its output is safe to inject (the caller still runs DOMPurify
- *     for defence in depth);
+ *   - link detection is delegated to linkifyjs's tokenizer; link tokens
+ *     become `<a>` elements and everything else stays a plain string,
+ *     so React's own escaping makes the output safe without an HTML
+ *     sanitizer. Hrefs are still checked against the same scheme
+ *     allowlist the HTML path uses;
  *   - consecutive quoted lines are grouped into nested
  *     `<blockquote class="pt-quote pt-quote--lN">` with the `>` markers
  *     stripped; the bar colour per level is styled by the viewer.
@@ -26,18 +27,13 @@
  * asks for the line breaks of the MIME content to stay visible.
  */
 
-import linkifyStr from 'linkify-string';
+import type { ReactNode } from 'react';
+import { tokenize } from 'linkifyjs';
 
-// Bare hosts (www.example.com) and schemeless domains resolve to https;
-// every generated link opens in a new tab without leaking the opener.
-const LINKIFY_OPTIONS = {
-  defaultProtocol: 'https',
-  target: '_blank',
-  rel: 'noopener noreferrer',
-  // Keep newlines as-is; the host renders with white-space: pre-wrap, so
-  // converting them to <br> would double the line breaks.
-  nl2br: false,
-} as const;
+import { ALLOWED_URI_REGEXP } from './message-html';
+
+// Bare hosts (www.example.com) and schemeless domains resolve to https.
+const DEFAULT_PROTOCOL = 'https';
 
 // One quote marker: optional leading whitespace, a single '>', then an
 // optional single space-stuffing character. Applied repeatedly to count
@@ -67,46 +63,61 @@ function quoteClass(depth: number): string {
   return `pt-quote pt-quote--l${level}`;
 }
 
-/**
- * Render the lines at `level` (0 = unquoted). Consecutive deeper lines
- * are wrapped in a nested blockquote. Returns the HTML for this level
- * and the index of the first line that belongs to an ancestor level.
- */
-function renderLevel(lines: ParsedLine[], start: number, level: number): [string, number] {
-  let html = '';
-  let buffer: string[] = [];
-  let i = start;
-
-  const flush = () => {
-    if (buffer.length) {
-      html += buffer.join('\n');
-      buffer = [];
+/** Append one line's text and links to `out`; every link opens in a new tab without leaking the opener. */
+function renderLine(content: string, lineIndex: number, out: ReactNode[]): void {
+  const tokens = tokenize(content);
+  for (let t = 0; t < tokens.length; t += 1) {
+    const token = tokens[t];
+    const text = token.toString();
+    if (token.isLink) {
+      const href = token.toHref(DEFAULT_PROTOCOL);
+      if (ALLOWED_URI_REGEXP.test(href)) {
+        out.push(
+          <a key={`${lineIndex}.${t}`} href={href} target="_blank" rel="noopener noreferrer">{text}</a>,
+        );
+        continue;
+      }
     }
-  };
-
-  while (i < lines.length) {
-    const { depth } = lines[i];
-    if (depth < level) break;
-    if (depth === level) {
-      buffer.push(linkifyStr(lines[i].content, LINKIFY_OPTIONS));
-      i += 1;
-    } else {
-      flush();
-      const [inner, next] = renderLevel(lines, i, level + 1);
-      html += `<blockquote class="${quoteClass(level + 1)}">${inner}</blockquote>`;
-      i = next;
-    }
+    out.push(text);
   }
-  flush();
-  return [html, i];
 }
 
 /**
- * Convert a decoded text/plain body into display HTML. Intended to be
- * placed inside an element styled with `white-space: pre-wrap`.
+ * Render the lines at `level` (0 = unquoted). Consecutive deeper lines
+ * are wrapped in a nested blockquote. Returns the nodes for this level
+ * and the index of the first line that belongs to an ancestor level.
  */
-export function plaintextToHtml(text: string | null | undefined): string {
-  if (!text) return '';
+function renderLevel(lines: ParsedLine[], start: number, level: number): [ReactNode[], number] {
+  const out: ReactNode[] = [];
+  // Lines at the same level are separated by '\n'; a blockquote breaks the run.
+  let inRun = false;
+  let i = start;
+
+  while (i < lines.length) {
+    const { depth, content } = lines[i];
+    if (depth < level) break;
+    if (depth === level) {
+      if (inRun) out.push('\n');
+      renderLine(content, i, out);
+      inRun = true;
+      i += 1;
+    } else {
+      const [inner, next] = renderLevel(lines, i, level + 1);
+      out.push(<blockquote key={`q${i}`} className={quoteClass(level + 1)}>{inner}</blockquote>);
+      inRun = false;
+      i = next;
+    }
+  }
+  return [out, i];
+}
+
+/**
+ * Convert a decoded text/plain body into display nodes, or null when there
+ * is no text. Intended to be placed inside an element styled with
+ * `white-space: pre-wrap`.
+ */
+export function renderPlaintextBody(text: string | null | undefined): ReactNode[] | null {
+  if (!text) return null;
   const normalized = String(text).replace(/\r\n?/g, '\n');
   const lines = normalized.split('\n').map(parseLine);
   return renderLevel(lines, 0, 0)[0];
