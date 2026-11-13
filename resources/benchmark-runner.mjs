@@ -114,6 +114,10 @@ class Page {
         }, 0);
     }
 
+    async callAsyncBlocking(functionName, ...args) {
+        return this._frame.contentWindow[functionName](...args);
+    }
+
     callToGetElement(functionName) {
         return this._wrapElement(this._frame.contentWindow[functionName]());
     }
