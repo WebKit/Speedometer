@@ -15,6 +15,7 @@ import Pressable from "./pressable.jsx";
 import RichText from "./rich-text.jsx";
 import { ReactionStack } from "./reactions.jsx";
 import { GlimmerRow } from "./glimmer.jsx";
+import { UIBox, UIImage, UILink, UIText } from "./ui.jsx";
 
 const expandReplies = guarded("comment.replies", (storyId, commentId) => {
     beginInteraction("replies-loaded", { comment: commentId });
@@ -32,10 +33,10 @@ function Attachment({ attachmentRef }) {
     if (!attachment)
         return null;
     if (attachment.__typename === "Sticker")
-        return <img className="mt-1 h-[120px] w-[120px]" src={photo(attachment.seed, 120, 120)} width="120" height="120" alt={attachment.label} />;
+        return <UIImage className="mt-1 h-[120px] w-[120px]" src={photo(attachment.seed, 120, 120)} width="120" height="120" alt={attachment.label} />;
     return (
         <Pressable className="mt-1 block w-fit overflow-hidden rounded-xl" label={attachment.alt} data-log="comment_photo">
-            <img className="max-h-[200px] object-cover" src={photo(attachment.seed, attachment.width, attachment.height)} width={attachment.width / 2} height={attachment.height / 2} alt={attachment.alt} />
+            <UIImage className="max-h-[200px] object-cover" src={photo(attachment.seed, attachment.width, attachment.height)} width={attachment.width / 2} height={attachment.height / 2} alt={attachment.alt} />
         </Pressable>
     );
 }
@@ -55,52 +56,52 @@ export function CommentBody({ commentRef, small = false, children }) {
     const { author } = comment;
     const when = relativeTime(comment.created_time);
     return (
-        <div className="comment flex gap-2" role="article" aria-label={t("Comment by {name} {when} ago", { name: author.name, when })} data-log-scope="comment">
+        <UIBox className="comment flex gap-2" role="article" aria-label={t("Comment by {name} {when} ago", { name: author.name, when })} data-log-scope="comment">
             <HovercardTrigger kind="user" id={author.id}>
-                <a href={`#/profile/${author.id}`} onClick={(event) => event.preventDefault()} tabIndex={-1}>
+                <UILink href={`#/profile/${author.id}`} onClick={(event) => event.preventDefault()} tabIndex={-1}>
                     <Avatar seed={author.avatar_seed} size={small ? 24 : 32} label={author.name} />
-                </a>
+                </UILink>
             </HovercardTrigger>
-            <div className="min-w-0 flex-1">
-                <div className="group/bubble flex items-center gap-1">
-                    <div className={`bg-surface-alt relative min-w-0 rounded-2xl px-3 py-2 ${comment.reaction_count > 0 ? "mb-2" : ""}`}>
-                        <div className="flex flex-wrap items-center gap-x-1.5">
+            <UIBox className="min-w-0 flex-1">
+                <UIBox className="group/bubble flex items-center gap-1">
+                    <UIBox className={`bg-surface-alt relative min-w-0 rounded-2xl px-3 py-2 ${comment.reaction_count > 0 ? "mb-2" : ""}`}>
+                        <UIBox className="flex flex-wrap items-center gap-x-1.5">
                             <HovercardTrigger kind="user" id={author.id}>
-                                <a className="text-primary text-[13px] font-semibold hover:underline" href={`#/profile/${author.id}`} onClick={(event) => event.preventDefault()}>
-                                    <span>{author.name}</span>
-                                </a>
+                                <UILink className="text-primary text-[13px] font-semibold hover:underline" href={`#/profile/${author.id}`} onClick={(event) => event.preventDefault()}>
+                                    <UIText>{author.name}</UIText>
+                                </UILink>
                             </HovercardTrigger>
                             {author.is_verified && <Icon name="verified" size={12} className="text-accent" label={t("Verified account")} />}
                             {comment.badges.map((badge) =>
-                                <span key={badge} className="bg-accent-soft text-accent flex items-center gap-0.5 rounded px-1 text-[11px] font-semibold">
+                                <UIText key={badge} className="bg-accent-soft text-accent flex items-center gap-0.5 rounded px-1 text-[11px] font-semibold">
                                     <Icon name="star" size={10} />
-                                    <span>{badge}</span>
-                                </span>
+                                    <UIText>{badge}</UIText>
+                                </UIText>
                             )}
-                        </div>
+                        </UIBox>
                         <RichText className="text-primary text-[15px] leading-5" text={comment.body.text} ranges={comment.body.ranges} />
                         {comment.reaction_count > 0
-                            && <span className="absolute -bottom-2.5 right-1">
+                            && <UIText className="absolute -bottom-2.5 right-1">
                                 <Pressable
                                     className="bg-surface shadow-card flex items-center gap-1 rounded-full py-0.5 pl-0.5 pr-1.5 text-[12px]"
                                     label={t("{count, plural, one {# reaction} other {# reactions}}; see who reacted", { count: comment.reaction_count })}
                                     data-log="comment_reactors"
                                 >
                                     <ReactionStack reactions={comment.top_reactions} size={16} />
-                                    <span className="text-secondary">{t("{count, number}", { count: comment.reaction_count })}</span>
+                                    <UIText className="text-secondary">{t("{count, number}", { count: comment.reaction_count })}</UIText>
                                 </Pressable>
-                            </span>
+                            </UIText>
                         }
-                    </div>
+                    </UIBox>
                     <Pressable className="text-secondary hover:bg-hover shrink-0 rounded-full p-1.5 opacity-0 group-hover/bubble:opacity-100" label={t("Edit or delete this")} aria-haspopup="menu" data-log="comment_menu">
                         <Icon name="dots" size={16} strokeWidth={3} />
                     </Pressable>
-                </div>
+                </UIBox>
                 {comment.attachment && <Attachment attachmentRef={comment.attachment} />}
-                <div className="text-secondary mt-0.5 flex items-center gap-3 px-3 text-xs">
-                    <a className="hover:underline" href={`#/comment/${comment.id}`} title={absoluteTime(comment.created_time)} onClick={(event) => event.preventDefault()}>
-                        <span>{when}</span>
-                    </a>
+                <UIBox className="text-secondary mt-0.5 flex items-center gap-3 px-3 text-xs">
+                    <UILink className="hover:underline" href={`#/comment/${comment.id}`} title={absoluteTime(comment.created_time)} onClick={(event) => event.preventDefault()}>
+                        <UIText>{when}</UIText>
+                    </UILink>
                     <Pressable className="font-semibold hover:underline" data-log="comment_like">
                         {t("Like")}
                     </Pressable>
@@ -110,16 +111,16 @@ export function CommentBody({ commentRef, small = false, children }) {
                     <Pressable className="font-semibold hover:underline" data-log="comment_share">
                         {t("Share")}
                     </Pressable>
-                    {comment.is_edited && <span>{t("Edited")}</span>}
-                </div>
+                    {comment.is_edited && <UIText>{t("Edited")}</UIText>}
+                </UIBox>
                 {comment.can_translate
                     && <Pressable className="text-secondary mt-0.5 px-3 text-xs font-semibold hover:underline" onPress={() => translate(comment.id)} data-log="comment_translate">
                         {t("See translation")}
                     </Pressable>
                 }
                 {children}
-            </div>
-        </div>
+            </UIBox>
+        </UIBox>
     );
 }
 
@@ -154,7 +155,7 @@ function Replies({ storyId, comment }) {
     }
     const remaining = (connection.total_count ?? comment.reply_count) - connection.edges.length;
     return (
-        <div className="border-divider mt-2 flex flex-col gap-2 border-l-2 pl-3">
+        <UIBox className="border-divider mt-2 flex flex-col gap-2 border-l-2 pl-3">
             {connection.edges.map((edge) =>
                 <Comment key={edge.node.__id} commentRef={edge.node} storyId={storyId} depth={1} />
             )}
@@ -164,18 +165,18 @@ function Replies({ storyId, comment }) {
                     {t("{count, plural, one {View # more reply} other {View # more replies}}", { count: remaining })}
                 </Pressable>
             }
-        </div>
+        </UIBox>
     );
 }
 
 function Comment({ commentRef, storyId, depth = 0 }) {
     const comment = useFragment(Comment_comment, commentRef);
     return (
-        <div className={depth ? "" : "px-4"}>
+        <UIBox className={depth ? "" : "px-4"}>
             <CommentBody commentRef={comment} small={depth > 0}>
                 {depth === 0 && comment.reply_count > 0 && <Replies storyId={storyId} comment={comment} />}
             </CommentBody>
-        </div>
+        </UIBox>
     );
 }
 

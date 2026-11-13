@@ -10,6 +10,7 @@ import Avatar from "./avatar.jsx";
 import Icon from "./icon.jsx";
 import Popover from "./popover.jsx";
 import { buildSearchIndex, normalizeText, searchIndex } from "../search-index.js";
+import { UIBox, UILink, UIText } from "./ui.jsx";
 
 const MAX_LOCAL = 8;
 const NO_RANGES = [];
@@ -43,7 +44,14 @@ function Highlight({ text, ranges }) {
     for (let i = 1; i <= text.length; i++) {
         if (i === text.length || marks[i] !== marks[start]) {
             const chunk = text.slice(start, i);
-            parts.push(marks[start] ? <strong key={start}>{chunk}</strong> : <span key={start}>{chunk}</span>);
+            parts.push(
+                marks[start]
+                    ? <UIText as="strong" key={start}>
+                        {chunk}
+                    </UIText>
+                    : <UIText key={start}>{chunk}</UIText>
+
+            );
             start = i;
         }
     }
@@ -53,22 +61,22 @@ function Highlight({ text, ranges }) {
 const ResultRow = memo(function ResultRow({ entry, ranges, active }) {
     const icon = entry.type === "keyword" || entry.type === "post";
     return (
-        <li role="option" aria-selected={active}>
-            <a className={`flex items-center gap-3 rounded-md px-2 py-1.5 ${active ? "bg-hover" : "hover:bg-hover"}`} href={`#/search/${encodeURIComponent(entry.name)}`} data-log="search_result" onClick={(event) => event.preventDefault()}>
+        <UIBox as="li" role="option" aria-selected={active}>
+            <UILink className={`flex items-center gap-3 rounded-md px-2 py-1.5 ${active ? "bg-hover" : "hover:bg-hover"}`} href={`#/search/${encodeURIComponent(entry.name)}`} data-log="search_result" onClick={(event) => event.preventDefault()}>
                 {icon
-                    ? <span className="bg-surface-alt text-secondary flex h-9 w-9 items-center justify-center rounded-full">
+                    ? <UIText className="bg-surface-alt text-secondary flex h-9 w-9 items-center justify-center rounded-full">
                         <Icon name="search" size={16} />
-                    </span>
+                    </UIText>
                     : <Avatar seed={entry.avatar_seed} size={36} square={entry.type !== "user" && entry.type !== "person"} label="" />
                 }
-                <span className="min-w-0">
-                    <span className="text-primary block truncate text-[15px]">
+                <UIText className="min-w-0">
+                    <UIText className="text-primary block truncate text-[15px]">
                         <Highlight text={entry.name} ranges={ranges} />
-                    </span>
-                    {entry.subtitle && <span className="text-secondary block truncate text-[13px]">{entry.subtitle}</span>}
-                </span>
-            </a>
-        </li>
+                    </UIText>
+                    {entry.subtitle && <UIText className="text-secondary block truncate text-[13px]">{entry.subtitle}</UIText>}
+                </UIText>
+            </UILink>
+        </UIBox>
     );
 });
 
@@ -156,7 +164,7 @@ export default function SearchBox() {
     const recent = ready ? bootstrap.root.search_bootstrap.recent : [];
 
     return (
-        <div ref={anchorRef} className="relative">
+        <UIBox ref={anchorRef} className="relative">
             <label className="bg-surface-alt text-secondary flex h-10 w-[200px] items-center gap-2 rounded-xl px-3">
                 <Icon name="search" size={16} />
                 <input
@@ -179,15 +187,15 @@ export default function SearchBox() {
             </label>
             {open
                 && <Popover label="Search" anchorRef={anchorRef} onClose={close} className="left-0 top-12 w-[320px] p-2" role="presentation" autoFocus={false}>
-                    <ul id="search-results" role="listbox" aria-label="Search results" className="max-h-[440px] overflow-y-auto">
+                    <UIBox as="ul" id="search-results" role="listbox" aria-label="Search results" className="max-h-[440px] overflow-y-auto">
                         {!query
                             && <>
-                                <li className="flex items-center justify-between px-2 py-1">
-                                    <span className="text-primary text-[17px] font-semibold">Recent</span>
+                                <UIBox as="li" className="flex items-center justify-between px-2 py-1">
+                                    <UIText className="text-primary text-[17px] font-semibold">Recent</UIText>
                                     <button type="button" className="text-accent hover:bg-hover rounded-md px-2 py-1 text-[15px]">
                                         Edit
                                     </button>
-                                </li>
+                                </UIBox>
                                 {recent.map((entry, i) =>
                                     <ResultRow key={entry.id} entry={entry} ranges={NO_RANGES} active={i === active} />
                                 )}
@@ -200,18 +208,18 @@ export default function SearchBox() {
                             <ResultRow key={entry.id} entry={entry} ranges={rangesFor(entry.name, query)} active={local.length + i === active} />
                         )}
                         {query
-                            && <li>
-                                <a className="text-accent hover:bg-hover flex items-center gap-3 rounded-md px-2 py-2 text-[15px]" href={`#/search/${encodeURIComponent(query)}`} onClick={(event) => event.preventDefault()}>
-                                    <span className="bg-accent flex h-9 w-9 items-center justify-center rounded-full text-white">
+                            && <UIBox as="li">
+                                <UILink className="text-accent hover:bg-hover flex items-center gap-3 rounded-md px-2 py-2 text-[15px]" href={`#/search/${encodeURIComponent(query)}`} onClick={(event) => event.preventDefault()}>
+                                    <UIText className="bg-accent flex h-9 w-9 items-center justify-center rounded-full text-white">
                                         <Icon name="search" size={16} />
-                                    </span>
+                                    </UIText>
                                     Search for {query}
-                                </a>
-                            </li>
+                                </UILink>
+                            </UIBox>
                         }
-                    </ul>
+                    </UIBox>
                 </Popover>
             }
-        </div>
+        </UIBox>
     );
 }

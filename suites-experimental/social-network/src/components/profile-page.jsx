@@ -11,22 +11,25 @@ import Avatar from "./avatar.jsx";
 import Feed, { FeedEdge } from "./feed.jsx";
 import Icon from "./icon.jsx";
 import { GlimmerLine, GlimmerStory } from "./glimmer.jsx";
+import { UIBox, UIImage, UILink, UIText } from "./ui.jsx";
 
 const TABS = ["Activity", "About", "Connections", "Albums", "Events"];
 
 function Card({ title, action, children }) {
     return (
-        <section className="bg-surface shadow-card rounded-lg p-4">
-            <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-primary text-xl font-bold">{title}</h2>
+        <UIBox as="section" className="bg-surface shadow-card rounded-lg p-4">
+            <UIBox className="mb-3 flex items-center justify-between">
+                <UIText as="h2" className="text-primary text-xl font-bold">
+                    {title}
+                </UIText>
                 {action
-                    && <a className="text-accent hover:bg-hover rounded-md px-2 py-1 text-[15px]" href="#/" onClick={(event) => event.preventDefault()}>
+                    && <UILink className="text-accent hover:bg-hover rounded-md px-2 py-1 text-[15px]" href="#/" onClick={(event) => event.preventDefault()}>
                         {action}
-                    </a>
+                    </UILink>
                 }
-            </div>
+            </UIBox>
             {children}
-        </section>
+        </UIBox>
     );
 }
 
@@ -34,28 +37,30 @@ function Intro({ user, own }) {
     const v3 = gate("profile_intro_card_v3");
     return (
         <Card title="About">
-            <p className="text-primary mb-3 text-center text-[15px]">{user.bio}</p>
+            <UIText as="p" className="text-primary mb-3 text-center text-[15px]">
+                {user.bio}
+            </UIText>
             {own
                 && <button type="button" className="bg-surface-alt text-primary hover:bg-hover mb-3 w-full rounded-md py-2 text-[15px] font-semibold">
                     Update bio
                 </button>
             }
-            <ul className="flex flex-col gap-3">
+            <UIBox as="ul" className="flex flex-col gap-3">
                 {(user.intro ?? []).map((item) =>
-                    <li key={item.text} className="text-primary flex items-center gap-3 text-[15px]">
+                    <UIBox as="li" key={item.text} className="text-primary flex items-center gap-3 text-[15px]">
                         <Icon name={item.icon} size={20} className="text-secondary" />
-                        <span>{item.text}</span>
-                    </li>
+                        <UIText>{item.text}</UIText>
+                    </UIBox>
                 )}
-            </ul>
+            </UIBox>
             {own
-                && <div className={`mt-3 flex ${v3 ? "flex-row" : "flex-col"} gap-2`}>
+                && <UIBox className={`mt-3 flex ${v3 ? "flex-row" : "flex-col"} gap-2`}>
                     {["Edit details", "Add interests"].map((label) =>
                         <button key={label} type="button" className="bg-surface-alt text-primary hover:bg-hover flex-1 rounded-md py-2 text-[15px] font-semibold">
                             {label}
                         </button>
                     )}
-                </div>
+                </UIBox>
             }
         </Card>
     );
@@ -77,38 +82,38 @@ const ProfileQueryStatus = fragment("ProfileQueryStatus", { status: true });
 function PhotoCell({ photoRef }) {
     const item = useFragment(PhotoCell_photo, photoRef);
     return (
-        <a href={`#/photo/${item.id}`} className="block aspect-square overflow-hidden" onClick={(event) => event.preventDefault()}>
-            <img className="h-full w-full object-cover" src={photo(item.seed, 200, 200)} width="200" height="200" alt={item.alt} />
-        </a>
+        <UILink href={`#/photo/${item.id}`} className="block aspect-square overflow-hidden" onClick={(event) => event.preventDefault()}>
+            <UIImage className="h-full w-full object-cover" src={photo(item.seed, 200, 200)} width="200" height="200" alt={item.alt} />
+        </UILink>
     );
 }
 
 function FriendCell({ friendRef }) {
     const friend = useFragment(FriendCell_user, friendRef);
     return (
-        <a href={`#/profile/${friend.id}`} className="block" onClick={(event) => event.preventDefault()}>
-            <img className="aspect-square w-full rounded-lg object-cover" src={`${photo(friend.avatar_seed * 3, 200, 200)}`} width="200" height="200" alt="" />
-            <span className="text-primary mt-1 block truncate text-[13px] font-semibold">{friend.name}</span>
-        </a>
+        <UILink href={`#/profile/${friend.id}`} className="block" onClick={(event) => event.preventDefault()}>
+            <UIImage className="aspect-square w-full rounded-lg object-cover" src={`${photo(friend.avatar_seed * 3, 200, 200)}`} width="200" height="200" alt="" />
+            <UIText className="text-primary mt-1 block truncate text-[13px] font-semibold">{friend.name}</UIText>
+        </UILink>
     );
 }
 
 function FriendStack({ friends }) {
     return (
-        <div className="flex -space-x-2">
+        <UIBox className="flex -space-x-2">
             {friends.map((ref) =>
                 <StackAvatar key={ref.__id} friendRef={ref} />
             )}
-        </div>
+        </UIBox>
     );
 }
 
 function StackAvatar({ friendRef }) {
     const friend = useFragment(FriendCell_user, friendRef);
     return (
-        <span className="border-surface rounded-full border-2">
+        <UIText className="border-surface rounded-full border-2">
             <Avatar seed={friend.avatar_seed} size={32} label={friend.name} />
-        </span>
+        </UIText>
     );
 }
 
@@ -131,40 +136,40 @@ export default function ProfilePage({ userId, scrollerRef }) {
 
     const headerLoaded = user && user.cover_seed !== undefined;
     return (
-        <div className="pb-6" data-log-scope="profile">
-            <div className="bg-surface shadow-card">
-                <div className="mx-auto max-w-[740px]">
-                    <div className="bg-surface-alt relative h-[220px] overflow-hidden rounded-b-lg">
-                        {headerLoaded && <img className="h-full w-full object-cover" src={photo(user.cover_seed, 740, 220)} width="740" height="220" alt="Cover photo" />}
+        <UIBox className="pb-6" data-log-scope="profile">
+            <UIBox className="bg-surface shadow-card">
+                <UIBox className="mx-auto max-w-[740px]">
+                    <UIBox className="bg-surface-alt relative h-[220px] overflow-hidden rounded-b-lg">
+                        {headerLoaded && <UIImage className="h-full w-full object-cover" src={photo(user.cover_seed, 740, 220)} width="740" height="220" alt="Cover photo" />}
                         {own
                             && <button type="button" className="bg-surface text-primary absolute bottom-3 right-3 flex items-center gap-2 rounded-md px-3 py-1.5 text-[15px] font-semibold">
                                 <Icon name="camera" size={16} />
                                 Change cover
                             </button>
                         }
-                    </div>
-                    <div className="flex items-end gap-4 px-6 pb-4">
-                        <span className="border-surface bg-surface -mt-12 rounded-[36px] border-4">
-                            {user ? <Avatar seed={user.avatar_seed} size={150} square label={user.name} /> : <span className="bg-glimmer block h-[150px] w-[150px] rounded-[30px]" />}
-                        </span>
-                        <div className="flex-1 pb-2">
+                    </UIBox>
+                    <UIBox className="flex items-end gap-4 px-6 pb-4">
+                        <UIText className="border-surface bg-surface -mt-12 rounded-[36px] border-4">
+                            {user ? <Avatar seed={user.avatar_seed} size={150} square label={user.name} /> : <UIText className="bg-glimmer block h-[150px] w-[150px] rounded-[30px]" />}
+                        </UIText>
+                        <UIBox className="flex-1 pb-2">
                             {headerLoaded
                                 ? <>
-                                    <h1 id="profile-name" className="text-primary text-[28px] font-bold leading-8">
+                                    <UIText as="h1" id="profile-name" className="text-primary text-[28px] font-bold leading-8">
                                         {user.name}
-                                    </h1>
-                                    <p className="text-secondary text-[15px] font-semibold">
+                                    </UIText>
+                                    <UIText as="p" className="text-secondary text-[15px] font-semibold">
                                         {compactNumber(user.friend_count)} connections · {compactNumber(user.follower_count)} followers
-                                    </p>
+                                    </UIText>
                                     <FriendStack friends={user.friends_preview} />
                                 </>
-                                : <div className="flex flex-col gap-2">
+                                : <UIBox className="flex flex-col gap-2">
                                     <GlimmerLine width="50%" height={24} />
                                     <GlimmerLine width="30%" />
-                                </div>
+                                </UIBox>
                             }
-                        </div>
-                        <div className="flex gap-2 pb-2">
+                        </UIBox>
+                        <UIBox className="flex gap-2 pb-2">
                             <button type="button" className="bg-accent flex items-center gap-2 rounded-md px-3 py-2 text-[15px] font-semibold text-white">
                                 <Icon name="share" size={16} />
                                 {own ? "Share profile" : "Connect"}
@@ -173,9 +178,9 @@ export default function ProfilePage({ userId, scrollerRef }) {
                                 <Icon name="pencil" size={16} />
                                 {own ? "Edit" : "Message"}
                             </button>
-                        </div>
-                    </div>
-                    <nav className="border-divider flex gap-1 border-t px-4" role="tablist" aria-label="Profile sections">
+                        </UIBox>
+                    </UIBox>
+                    <UIBox as="nav" className="border-divider flex gap-1 border-t px-4" role="tablist" aria-label="Profile sections">
                         {TABS.map((name) =>
                             <button
                                 key={name}
@@ -189,43 +194,47 @@ export default function ProfilePage({ userId, scrollerRef }) {
                                 {name}
                             </button>
                         )}
-                    </nav>
-                </div>
-            </div>
-            <div className="mx-auto mt-4 grid max-w-[740px] grid-cols-[300px_1fr] gap-4 px-2">
-                <div className="flex flex-col gap-4">
+                    </UIBox>
+                </UIBox>
+            </UIBox>
+            <UIBox className="mx-auto mt-4 grid max-w-[740px] grid-cols-[300px_1fr] gap-4 px-2">
+                <UIBox className="flex flex-col gap-4">
                     {user && user.intro ? <Intro user={user} own={own} /> : <GlimmerStory />}
                     {user && user.photos
                         && <Card title="Albums" action="Browse">
-                            <div className="grid grid-cols-3 gap-1 overflow-hidden rounded-lg">
+                            <UIBox className="grid grid-cols-3 gap-1 overflow-hidden rounded-lg">
                                 {user.photos.map((ref) =>
                                     <PhotoCell key={ref.__id} photoRef={ref} />
                                 )}
-                            </div>
+                            </UIBox>
                         </Card>
                     }
                     {user && user.friends
                         && <Card title="Connections" action="Browse">
-                            <p className="text-secondary -mt-2 mb-2 text-[15px]">{compactNumber(user.friend_count)} connections</p>
-                            <div className="grid grid-cols-3 gap-2">
+                            <UIText as="p" className="text-secondary -mt-2 mb-2 text-[15px]">
+                                {compactNumber(user.friend_count)} connections
+                            </UIText>
+                            <UIBox className="grid grid-cols-3 gap-2">
                                 {user.friends.map((ref) =>
                                     <FriendCell key={ref.__id} friendRef={ref} />
                                 )}
-                            </div>
+                            </UIBox>
                         </Card>
                     }
-                </div>
-                <div className="flex min-w-0 flex-col gap-4">
-                    <div className="bg-surface shadow-card flex items-center justify-between rounded-lg px-4 py-3">
-                        <h2 className="text-primary text-xl font-bold">Activity</h2>
+                </UIBox>
+                <UIBox className="flex min-w-0 flex-col gap-4">
+                    <UIBox className="bg-surface shadow-card flex items-center justify-between rounded-lg px-4 py-3">
+                        <UIText as="h2" className="text-primary text-xl font-bold">
+                            Activity
+                        </UIText>
                         <button type="button" className="bg-surface-alt text-primary flex items-center gap-2 rounded-md px-3 py-1.5 text-[15px] font-semibold">
                             <Icon name="filter" size={16} />
                             Sort
                         </button>
-                    </div>
+                    </UIBox>
                     {user && user.timeline ? <Feed edges={user.timeline.edges} scrollerRef={scrollerRef} label={`${user.name}'s posts`} /> : <GlimmerStory />}
-                </div>
-            </div>
-        </div>
+                </UIBox>
+            </UIBox>
+        </UIBox>
     );
 }

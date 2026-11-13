@@ -39,7 +39,7 @@ function FeedUnit({ id, position, register }) {
  * away from the viewport collapse to empty placeholders that keep their measured
  * height, so the scroll position never jumps.
  */
-export default function Feed({ edges, scrollerRef, onNearEnd, initialScrollTop = 0, label }) {
+export default function Feed({ edges, scrollerRef, onNearEnd, label }) {
     const listRef = useRef(null);
     const elements = useRef(new Map());
     const [range, setRange] = useState({ start: 0, end: Math.min(edges.length, 2) });
@@ -112,11 +112,12 @@ export default function Feed({ edges, scrollerRef, onNearEnd, initialScrollTop =
         [computeRange, scrollerRef]
     );
 
+    // A page kept alive while hidden comes back where the reader left it: layout effects
+    // run again when it is shown, before the window below is recomputed.
     useLayoutEffect(() => {
-        if (initialScrollTop)
-            scrollerRef.current.scrollTop = initialScrollTop;
-        // Only on mount: restoring later would fight the reader.
-    }, []);
+        if (lastScroll.current.top > 0)
+            scrollerRef.current.scrollTop = lastScroll.current.top;
+    }, [scrollerRef]);
 
     useLayoutEffect(() => {
         update(false);

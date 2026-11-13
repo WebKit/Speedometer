@@ -20,6 +20,7 @@ import { ReactionStack } from "./reactions.jsx";
 import RichText, { truncate } from "./rich-text.jsx";
 import { GlimmerLine } from "./glimmer.jsx";
 import { MeasureContext } from "./measure.js";
+import { UIBox, UIImage, UILink, UIText } from "./ui.jsx";
 
 const TRUNCATE_AT = 260;
 const PRIVACY_ICONS = { public: "globe", private: "lock", friends: "friends" };
@@ -53,50 +54,50 @@ function ActorLine({ storyRef }) {
     const story = useFragment(ActorLine_story, storyRef);
     const { actor, to_group: group } = story;
     return (
-        <div className="flex min-w-0 flex-1 flex-col">
-            <h3 className="flex min-w-0 flex-wrap items-center text-[15px] leading-5">
+        <UIBox className="flex min-w-0 flex-1 flex-col">
+            <UIText as="h3" className="flex min-w-0 flex-wrap items-center text-[15px] leading-5">
                 <HovercardTrigger kind={actor.__typename === "Page" ? "page" : "user"} id={actor.id}>
-                    <a className="text-primary font-semibold hover:underline" href={`#/profile/${actor.id}`} onClick={(event) => openActor(event, actor.id)} data-log="story_actor">
-                        <strong>
-                            <span>{actor.name}</span>
-                        </strong>
-                    </a>
+                    <UILink className="text-primary font-semibold hover:underline" href={`#/profile/${actor.id}`} onClick={(event) => openActor(event, actor.id)} data-log="story_actor">
+                        <UIText as="strong">
+                            <UIText>{actor.name}</UIText>
+                        </UIText>
+                    </UILink>
                 </HovercardTrigger>
                 {actor.is_verified && <Icon name="verified" size={14} className="text-accent ml-1" label={t("Verified account")} />}
                 {group
                     && <>
                         <Icon name="chevronRight" size={14} className="text-secondary mx-0.5" />
                         <HovercardTrigger kind="group" id={group.id}>
-                            <a className="text-primary font-semibold hover:underline" href={`#/groups/${group.id}`} data-log="story_group">
-                                <span>{group.name}</span>
-                            </a>
+                            <UILink className="text-primary font-semibold hover:underline" href={`#/groups/${group.id}`} data-log="story_group">
+                                <UIText>{group.name}</UIText>
+                            </UILink>
                         </HovercardTrigger>
                     </>
                 }
                 {!story.viewer_follows_actor
                     && <>
-                        <span className="text-secondary mx-1" aria-hidden="true">
+                        <UIText className="text-secondary mx-1" aria-hidden="true">
                             ·
-                        </span>
+                        </UIText>
                         <Pressable className="text-link font-semibold hover:underline" onPress={() => follow(story.id, actor.id)} data-log="story_follow">
                             {t("Follow")}
                         </Pressable>
                     </>
                 }
-            </h3>
-            <div className="text-secondary flex items-center gap-1 text-[13px] leading-4">
+            </UIText>
+            <UIBox className="text-secondary flex items-center gap-1 text-[13px] leading-4">
                 {story.sponsored
-                    ? <span>{t("Promoted")}</span>
-                    : <a className="hover:underline" href={story.url} title={absoluteTime(story.created_time)} data-log="story_timestamp">
-                        <span>{relativeTime(story.created_time)}</span>
-                    </a>
+                    ? <UIText>{t("Promoted")}</UIText>
+                    : <UILink className="hover:underline" href={story.url} title={absoluteTime(story.created_time)} data-log="story_timestamp">
+                        <UIText>{relativeTime(story.created_time)}</UIText>
+                    </UILink>
                 }
-                <span aria-hidden="true">·</span>
+                <UIText aria-hidden="true">·</UIText>
                 <Pressable className="rounded-full" label={t("Shared with: {audience}", { audience: PRIVACY_LABELS[story.privacy] })} data-log="story_audience">
                     <Icon name={PRIVACY_ICONS[story.privacy]} size={12} />
                 </Pressable>
-            </div>
-        </div>
+            </UIBox>
+        </UIBox>
     );
 }
 
@@ -110,22 +111,22 @@ function StoryHeader({ storyRef }) {
     const story = useFragment(StoryHeader_story, storyRef);
     const { actor } = story;
     return (
-        <header className="flex items-start gap-2 px-4 pt-3">
+        <UIBox as="header" className="flex items-start gap-2 px-4 pt-3">
             <HovercardTrigger kind={actor.__typename === "Page" ? "page" : "user"} id={actor.id}>
-                <a href={`#/profile/${actor.id}`} onClick={(event) => openActor(event, actor.id)} aria-label={actor.name} tabIndex={-1}>
+                <UILink href={`#/profile/${actor.id}`} onClick={(event) => openActor(event, actor.id)} aria-label={actor.name} tabIndex={-1}>
                     <Avatar seed={actor.avatar_seed} size={40} square={actor.__typename === "Page"} label={actor.name} />
-                </a>
+                </UILink>
             </HovercardTrigger>
             <ActorLine storyRef={story} />
-            <div className="flex items-center">
+            <UIBox className="flex items-center">
                 <Pressable className="text-secondary hover:bg-hover rounded-full p-2" label={t("Actions for this post by {name}", { name: actor.name })} aria-haspopup="menu" data-log="story_menu">
                     <Icon name="dots" size={20} strokeWidth={3} />
                 </Pressable>
                 <Pressable className="text-secondary hover:bg-hover rounded-full p-2" label={t("Hide post")} onPress={() => hideStory(story.id)} data-log="story_hide">
                     <Icon name="close" size={20} />
                 </Pressable>
-            </div>
-        </header>
+            </UIBox>
+        </UIBox>
     );
 }
 
@@ -134,11 +135,11 @@ function StoryMessage({ message, expanded, onExpand, translatable }) {
     const shown = short ?? message;
     const large = !expanded && message.text.length < 90;
     return (
-        <div className={`px-4 pb-3 pt-2 ${large ? "text-2xl leading-8" : "text-[15px] leading-5"} text-primary`}>
+        <UIBox className={`px-4 pb-3 pt-2 ${large ? "text-2xl leading-8" : "text-[15px] leading-5"} text-primary`}>
             <RichText text={shown.text} ranges={shown.ranges} />
             {short
                 && <>
-                    <span>… </span>
+                    <UIText>… </UIText>
                     <Pressable className="read-more text-link font-semibold hover:underline" onPress={onExpand} data-log="story_read_more">
                         {t("Read more")}
                     </Pressable>
@@ -150,7 +151,7 @@ function StoryMessage({ message, expanded, onExpand, translatable }) {
                     {t("See translation")}
                 </Pressable>
             }
-        </div>
+        </UIBox>
     );
 }
 
@@ -160,11 +161,11 @@ function PhotoTile({ photoRef, count, index, extra, span }) {
     const record = useFragment(PhotoTile_photo, photoRef);
     const height = count === 1 ? Math.round((600 * record.height) / record.width) : 600;
     return (
-        <a href={`#/photo/${record.id}`} className={`relative block overflow-hidden ${span}`} data-log="story_photo" onClick={(event) => event.preventDefault()}>
-            <img className="h-full w-full object-cover" src={photo(record.seed, 600, height)} alt={record.alt} width="600" height={height} decoding="async" />
-            <span className="pointer-events-none absolute inset-0 bg-black opacity-0 hover:opacity-10" aria-hidden="true" />
-            {extra > 0 && index === count - 1 && <span className="absolute inset-0 flex items-center justify-center bg-black/40 text-3xl font-bold text-white">{t("+{count, number}", { count: extra })}</span>}
-        </a>
+        <UILink href={`#/photo/${record.id}`} className={`relative block overflow-hidden ${span}`} data-log="story_photo" onClick={(event) => event.preventDefault()}>
+            <UIImage className="h-full w-full object-cover" src={photo(record.seed, 600, height)} alt={record.alt} width="600" height={height} decoding="async" />
+            <UIText className="pointer-events-none absolute inset-0 bg-black opacity-0 hover:opacity-10" aria-hidden="true" />
+            {extra > 0 && index === count - 1 && <UIText className="absolute inset-0 flex items-center justify-center bg-black/40 text-3xl font-bold text-white">{t("+{count, number}", { count: extra })}</UIText>}
+        </UILink>
     );
 }
 
@@ -187,11 +188,11 @@ function PhotoGrid({ attachments }) {
         return "";
     };
     return (
-        <div className={`grid gap-0.5 ${layouts[count]} ${count === 1 ? "" : "aspect-square"} bg-surface-alt overflow-hidden`}>
+        <UIBox className={`grid gap-0.5 ${layouts[count]} ${count === 1 ? "" : "aspect-square"} bg-surface-alt overflow-hidden`}>
             {photos.map((ref, index) =>
                 <PhotoTile key={ref.__id} photoRef={ref} count={count} index={index} extra={extra} span={spans(index)} />
             )}
-        </div>
+        </UIBox>
     );
 }
 
@@ -200,21 +201,21 @@ const LinkCard_link = fragment("LinkCard_link", scalars("id url domain title des
 function LinkCard({ linkRef, sponsored }) {
     const link = useFragment(LinkCard_link, linkRef);
     return (
-        <a className="border-divider bg-surface-alt block border-y hover:brightness-95" href={link.url} target="_blank" rel="noreferrer" data-log="story_link_card">
-            <img className="aspect-[1.91/1] w-full object-cover" src={photo(link.image_seed, 600, 314)} width="600" height="314" alt="" />
-            <div className="flex items-center gap-3 px-3 py-2">
-                <div className="min-w-0 flex-1">
-                    <div className="text-secondary truncate text-xs uppercase">{link.domain}</div>
-                    <div className="text-primary line-clamp-2 text-[16px] font-semibold leading-5">{link.title}</div>
-                    <div className="text-secondary line-clamp-1 text-sm">{link.description}</div>
-                </div>
+        <UILink className="border-divider bg-surface-alt block border-y hover:brightness-95" href={link.url} target="_blank" rel="noreferrer" data-log="story_link_card">
+            <UIImage className="aspect-[1.91/1] w-full object-cover" src={photo(link.image_seed, 600, 314)} width="600" height="314" alt="" />
+            <UIBox className="flex items-center gap-3 px-3 py-2">
+                <UIBox className="min-w-0 flex-1">
+                    <UIBox className="text-secondary truncate text-xs uppercase">{link.domain}</UIBox>
+                    <UIBox className="text-primary line-clamp-2 text-[16px] font-semibold leading-5">{link.title}</UIBox>
+                    <UIBox className="text-secondary line-clamp-1 text-sm">{link.description}</UIBox>
+                </UIBox>
                 {sponsored
                     && <Pressable className="bg-hover text-primary shrink-0 rounded-md px-3 py-1.5 text-sm font-semibold" data-log="ad_cta">
                         {t("Learn more")}
                     </Pressable>
                 }
-            </div>
-        </a>
+            </UIBox>
+        </UILink>
     );
 }
 
@@ -246,15 +247,15 @@ function InlineComposer({ storyId }) {
     const draft = useFragment(InlineComposer_draft, draftId(storyId));
     const hasDraft = draft && draft.text.trim();
     return (
-        <div className="flex items-center gap-2 px-4 pb-3 pt-1">
+        <UIBox className="flex items-center gap-2 px-4 pb-3 pt-1">
             {viewer && <Avatar seed={viewer.avatar_seed} size={32} label="" />}
-            <div className="bg-surface-alt flex flex-1 items-center rounded-full pr-1">
+            <UIBox className="bg-surface-alt flex flex-1 items-center rounded-full pr-1">
                 <Pressable className={`min-w-0 flex-1 px-3 py-2 text-[15px] ${hasDraft ? "text-primary" : "text-secondary"}`} onPress={() => openComments(storyId, "inline_composer")} data-log="story_inline_composer">
                     {hasDraft
-                        ? <span className="flex min-w-0 items-baseline gap-1.5">
-                            <span className="text-accent shrink-0 text-xs font-semibold uppercase">{t("Draft")}</span>
+                        ? <UIText className="flex min-w-0 items-baseline gap-1.5">
+                            <UIText className="text-accent shrink-0 text-xs font-semibold uppercase">{t("Draft")}</UIText>
                             <RichText className="truncate" text={draft.text} ranges={draft.ranges} />
-                        </span>
+                        </UIText>
                         : t("Write a comment…")
                     }
                 </Pressable>
@@ -268,31 +269,31 @@ function InlineComposer({ storyId }) {
                         <Icon name={icon} size={16} />
                     </Pressable>
                 )}
-            </div>
-        </div>
+            </UIBox>
+        </UIBox>
     );
 }
 
 function CommentPreviews({ storyId, comments, total }) {
     return (
-        <div className="border-divider border-t pt-2">
-            <div className="flex items-center justify-between px-4 pb-2">
+        <UIBox className="border-divider border-t pt-2">
+            <UIBox className="flex items-center justify-between px-4 pb-2">
                 <Pressable className="text-secondary flex items-center gap-1 text-[15px] font-semibold hover:underline" data-log="story_comment_order">
                     {t("Most relevant")}
                     <Icon name="chevronDown" size={16} />
                 </Pressable>
-            </div>
-            <div className="flex flex-col gap-2 px-4">
+            </UIBox>
+            <UIBox className="flex flex-col gap-2 px-4">
                 {comments.map((ref) =>
                     <CommentBody key={ref.__id} commentRef={ref} />
                 )}
-            </div>
+            </UIBox>
             {total > comments.length
                 && <Pressable className="text-secondary mx-4 mt-2 text-[15px] font-semibold hover:underline" onPress={() => openComments(storyId, "preview")} data-log="story_view_more_comments">
                     {t("{count, plural, one {View # more comment} other {View # more comments}}", { count: total - comments.length })}
                 </Pressable>
             }
-        </div>
+        </UIBox>
     );
 }
 
@@ -309,7 +310,7 @@ function ReactionSummary({ feedback, summaryV2 }) {
     return (
         <Pressable className="flex min-w-0 items-center gap-1.5 hover:underline" label={t("See who reacted to this")} data-log="story_reactors">
             <ReactionStack reactions={feedback.top_reactions} />
-            <span className="truncate">{label}</span>
+            <UIText className="truncate">{label}</UIText>
         </Pressable>
     );
 }
@@ -324,7 +325,7 @@ function ActionButton({ icon, label, active, onPress, className = "", ...rest })
     return (
         <Pressable className={`${className} hover:bg-hover flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-[14px] font-semibold ${active ? "text-accent" : "text-secondary"}`} onPress={onPress} {...rest}>
             <Icon name={icon} size={18} />
-            <span>{label}</span>
+            <UIText>{label}</UIText>
         </Pressable>
     );
 }
@@ -333,10 +334,10 @@ function Engagement({ storyId, feedbackRef, inDialog }) {
     const feedback = useFragment(Engagement_feedback, feedbackRef);
     if (feedback.reaction_count === undefined) {
         return (
-            <div className="flex items-center justify-between px-4 py-3" aria-busy="true">
+            <UIBox className="flex items-center justify-between px-4 py-3" aria-busy="true">
                 <GlimmerLine width="30%" />
                 <GlimmerLine width="20%" />
-            </div>
+            </UIBox>
         );
     }
     const summaryV2 = gate("story_reaction_summary_v2");
@@ -344,9 +345,9 @@ function Engagement({ storyId, feedbackRef, inDialog }) {
     const commentsLabel = t("{count, plural, one {# comment} other {# comments}}", { count: feedback.comment_count });
     return (
         <>
-            <div className="text-secondary flex items-center justify-between gap-2 px-4 py-2.5 text-[15px]">
-                {feedback.reaction_count > 0 ? <ReactionSummary feedback={feedback} summaryV2={summaryV2} /> : <span />}
-                <div className="flex shrink-0 gap-3">
+            <UIBox className="text-secondary flex items-center justify-between gap-2 px-4 py-2.5 text-[15px]">
+                {feedback.reaction_count > 0 ? <ReactionSummary feedback={feedback} summaryV2={summaryV2} /> : <UIText />}
+                <UIBox className="flex shrink-0 gap-3">
                     {feedback.comment_count > 0
                         && <Pressable className="story-comments-count hover:underline" onPress={inDialog ? focusComposer : () => openComments(storyId, "count")} data-log="story_comment_count">
                             {commentsLabel}
@@ -357,9 +358,9 @@ function Engagement({ storyId, feedbackRef, inDialog }) {
                             {t("{count, plural, one {# share} other {# shares}}", { count: feedback.share_count })}
                         </Pressable>
                     }
-                </div>
-            </div>
-            <div className="border-divider mx-3 flex border-t py-1">
+                </UIBox>
+            </UIBox>
+            <UIBox className="border-divider mx-3 flex border-t py-1">
                 <ActionButton icon="like" label={t("Like")} active={!!feedback.viewer_reaction} onPress={() => toggleLike(feedback.id)} aria-pressed={feedback.viewer_reaction === "like"} data-log="story_like" />
                 <ActionButton
                     icon="comment"
@@ -372,7 +373,7 @@ function Engagement({ storyId, feedbackRef, inDialog }) {
                 />
                 <ActionButton icon="share" label={t("Share")} data-log="story_share" />
                 <ActionButton icon="send" label={t("Send")} data-log="story_send" />
-            </div>
+            </UIBox>
             {!inDialog && feedback.top_comments.length > 0 && <CommentPreviews storyId={storyId} comments={feedback.top_comments} total={feedback.comment_count} />}
             {!inDialog && <InlineComposer storyId={storyId} />}
         </>
@@ -403,21 +404,21 @@ function Story({ id, position, expandable = true, inDialog = false }) {
     });
 
     return (
-        <article className="story bg-surface shadow-card overflow-hidden rounded-lg" aria-label={t("Post {position, number}", { position: position + 1 })} data-log-scope="story">
+        <UIBox as="article" className="story bg-surface shadow-card overflow-hidden rounded-lg" aria-label={t("Post {position, number}", { position: position + 1 })} data-log-scope="story">
             <StoryHeader storyRef={story} />
             <StoryMessage message={story.message} expanded={expanded} onExpand={expand} translatable={story.can_translate} />
             {story.attachments.length > 0 && <PhotoGrid attachments={story.attachments} />}
             {story.link && <LinkCard linkRef={story.link} sponsored={story.sponsored} />}
             {story.sponsored
-                && <div className="bg-surface-alt flex items-center justify-between px-4 py-2">
-                    <span className="text-secondary text-sm">{t("Offer ends soon")}</span>
+                && <UIBox className="bg-surface-alt flex items-center justify-between px-4 py-2">
+                    <UIText className="text-secondary text-sm">{t("Offer ends soon")}</UIText>
                     <Pressable className="bg-hover text-primary rounded-md px-3 py-1.5 text-sm font-semibold" data-log="ad_cta">
                         {t("Learn more")}
                     </Pressable>
-                </div>
+                </UIBox>
             }
             <Engagement storyId={id} feedbackRef={story.feedback} inDialog={inDialog} />
-        </article>
+        </UIBox>
     );
 }
 

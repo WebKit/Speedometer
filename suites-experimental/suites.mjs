@@ -928,26 +928,25 @@ export const ExperimentalSuites = freezeSuites([
                 await typeInto(composer, "This brings back so many memories, @an the harbour one is my favourite :) #goldenhour");
                 page.layout();
             }),
-            // Closes the post, which hands the feed back its focus and viewability, then
-            // goes to the viewer's profile and scrolls through it.
-            new BenchmarkTestStep("OpenOwnProfile", async (page) => {
+            // Closes the post, which hands the feed back its focus and viewability, goes
+            // to the viewer's profile and scrolls through it, then returns to the home
+            // feed, which was kept alive while hidden and comes back where it was left.
+            new BenchmarkTestStep("VisitOwnProfile", async (page) => {
                 page.querySelector("#post-dialog-close").click();
                 await commitPendingUpdates();
                 page.layout();
-                const ready = waitForAppEvent(page, "profile-ready");
+                const profileReady = waitForAppEvent(page, "profile-ready");
                 page.querySelector("#rail-profile").click();
-                await ready;
+                await profileReady;
                 const scroller = page.querySelector("#main-scroller");
-                for (const unit of page.querySelectorAll(".feed-unit")) {
+                for (const unit of page.querySelectorAll('[data-log-scope="profile"] .feed-unit')) {
                     unit.scrollIntoView({ block: "start", behavior: "instant" });
                     scroller.dispatchEvent("scroll");
                     page.layout();
                 }
-            }),
-            new BenchmarkTestStep("BackToHomeFeed", async (page) => {
-                const ready = waitForAppEvent(page, "home-ready");
+                const homeReady = waitForAppEvent(page, "home-ready");
                 page.querySelector("#tab-home").click();
-                await ready;
+                await homeReady;
             }),
             // Every keystroke filters the local index and asks the server; the step
             // waits for each answer, the way a typeahead keeps up with typing.

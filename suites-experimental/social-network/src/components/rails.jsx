@@ -9,6 +9,7 @@ import { loadProfile } from "../queries.js";
 import Avatar from "./avatar.jsx";
 import Icon from "./icon.jsx";
 import { GlimmerRow } from "./glimmer.jsx";
+import { UIBox, UIImage, UILink, UIText } from "./ui.jsx";
 
 const NAV = [
     { icon: "friends", label: "Connections" },
@@ -35,9 +36,9 @@ const ShortcutsQuery = fragment("ShortcutsQuery", { status: true, root: { shortc
 function Shortcut({ groupRef }) {
     const group = useFragment(RailGroup, groupRef);
     return (
-        <a className="hover:bg-hover flex h-11 w-11 items-center justify-center rounded-lg" href={`#/groups/${group.id}`} title={group.name} aria-label={group.name} data-log="rail_shortcut" onClick={(event) => event.preventDefault()}>
-            <img className="h-9 w-9 rounded-lg object-cover" src={photo(group.cover_seed, 72, 72)} width="36" height="36" alt="" />
-        </a>
+        <UILink className="hover:bg-hover flex h-11 w-11 items-center justify-center rounded-lg" href={`#/groups/${group.id}`} title={group.name} aria-label={group.name} data-log="rail_shortcut" onClick={(event) => event.preventDefault()}>
+            <UIImage className="h-9 w-9 rounded-lg object-cover" src={photo(group.cover_seed, 72, 72)} width="36" height="36" alt="" />
+        </UILink>
     );
 }
 
@@ -45,12 +46,12 @@ export function LeftRail() {
     const viewer = useFragment(RailViewer, VIEWER_ID);
     const shortcuts = useFragment(ShortcutsQuery, queryStatusId(queryKey("Shortcuts")));
     return (
-        <nav className="flex w-14 shrink-0 flex-col items-center gap-1 overflow-y-auto py-3" aria-label="Shortcuts" data-log-scope="left_rail">
-            <a id="rail-profile" className="hover:bg-hover flex h-11 w-11 items-center justify-center rounded-lg" href={`#/profile/${VIEWER_ID}`} aria-label={viewer ? viewer.name : "Your profile"} onClick={openProfile} data-log="rail_profile">
-                {viewer ? <Avatar seed={viewer.avatar_seed} size={36} label="" /> : <span className="bg-glimmer h-9 w-9 rounded-full" />}
-            </a>
+        <UIBox as="nav" className="flex w-14 shrink-0 flex-col items-center gap-1 overflow-y-auto py-3" aria-label="Shortcuts" data-log-scope="left_rail">
+            <UILink id="rail-profile" className="hover:bg-hover flex h-11 w-11 items-center justify-center rounded-lg" href={`#/profile/${VIEWER_ID}`} aria-label={viewer ? viewer.name : "Your profile"} onClick={openProfile} data-log="rail_profile">
+                {viewer ? <Avatar seed={viewer.avatar_seed} size={36} label="" /> : <UIText className="bg-glimmer h-9 w-9 rounded-full" />}
+            </UILink>
             {NAV.map((item) =>
-                <a
+                <UILink
                     key={item.label}
                     className="text-accent hover:bg-hover flex h-11 w-11 items-center justify-center rounded-lg"
                     href={`#/${item.label.toLowerCase()}`}
@@ -60,11 +61,11 @@ export function LeftRail() {
                     onClick={(event) => event.preventDefault()}
                 >
                     <Icon name={item.icon} size={24} />
-                </a>
+                </UILink>
             )}
-            <div className="border-divider my-2 w-8 border-t" />
+            <UIBox className="border-divider my-2 w-8 border-t" />
             {shortcuts && shortcuts.root && shortcuts.root.shortcuts.map((ref) => <Shortcut key={ref.__id} groupRef={ref} />)}
-        </nav>
+        </UIBox>
     );
 }
 
@@ -73,50 +74,50 @@ const Contact_user = fragment("Contact_user", scalars("id name avatar_seed onlin
 function Contact({ contactRef }) {
     const contact = useFragment(Contact_user, contactRef);
     return (
-        <li>
-            <a className="hover:bg-hover flex items-center gap-3 rounded-md px-2 py-1.5" href={`#/messages/${contact.id}`} data-log="rail_contact" onClick={(event) => event.preventDefault()}>
+        <UIBox as="li">
+            <UILink className="hover:bg-hover flex items-center gap-3 rounded-md px-2 py-1.5" href={`#/messages/${contact.id}`} data-log="rail_contact" onClick={(event) => event.preventDefault()}>
                 <Avatar seed={contact.avatar_seed} size={32} online={contact.online} label="" />
-                <span className="text-primary truncate text-[15px] font-medium">{contact.name}</span>
-            </a>
-        </li>
+                <UIText className="text-primary truncate text-[15px] font-medium">{contact.name}</UIText>
+            </UILink>
+        </UIBox>
     );
 }
 
 function PromotedCard({ ad }) {
     return (
-        <a className="hover:bg-hover flex items-center gap-3 rounded-md p-2" href={`https://${ad.domain}`} target="_blank" rel="noreferrer" data-log="rail_ad">
-            <img className="h-[90px] w-[90px] shrink-0 rounded-lg object-cover" src={photo(ad.seed, 180, 180)} width="90" height="90" alt="" />
-            <span className="min-w-0">
-                <span className="text-primary line-clamp-2 block text-[15px] font-medium leading-5">{ad.title}</span>
-                <span className="text-secondary block truncate text-[13px]">{ad.domain}</span>
-            </span>
-        </a>
+        <UILink className="hover:bg-hover flex items-center gap-3 rounded-md p-2" href={`https://${ad.domain}`} target="_blank" rel="noreferrer" data-log="rail_ad">
+            <UIImage className="h-[90px] w-[90px] shrink-0 rounded-lg object-cover" src={photo(ad.seed, 180, 180)} width="90" height="90" alt="" />
+            <UIText className="min-w-0">
+                <UIText className="text-primary line-clamp-2 block text-[15px] font-medium leading-5">{ad.title}</UIText>
+                <UIText className="text-secondary block truncate text-[13px]">{ad.domain}</UIText>
+            </UIText>
+        </UILink>
     );
 }
 
 function Birthday({ userRef }) {
     const user = useFragment(Contact_user, userRef);
     return (
-        <div className="text-primary flex items-center gap-3 px-2 py-1.5 text-[15px]">
-            <span className="bg-accent-soft text-accent flex h-9 w-9 shrink-0 items-center justify-center rounded-xl">
+        <UIBox className="text-primary flex items-center gap-3 px-2 py-1.5 text-[15px]">
+            <UIText className="bg-accent-soft text-accent flex h-9 w-9 shrink-0 items-center justify-center rounded-xl">
                 <Icon name="gift" size={18} />
-            </span>
-            <span>
-                <strong>{user.name}</strong> turns a year older today
-            </span>
-        </div>
+            </UIText>
+            <UIText>
+                <UIText as="strong">{user.name}</UIText> turns a year older today
+            </UIText>
+        </UIBox>
     );
 }
 
 function GroupChat({ groupRef }) {
     const group = useFragment(RailGroup, groupRef);
     return (
-        <li>
-            <a className="hover:bg-hover flex items-center gap-3 rounded-md px-2 py-1.5" href={`#/groups/${group.id}/chat`} onClick={(event) => event.preventDefault()}>
-                <img className="h-8 w-8 rounded-full object-cover" src={photo(group.cover_seed, 64, 64)} width="32" height="32" alt="" />
-                <span className="text-primary truncate text-[15px] font-medium">{group.name}</span>
-            </a>
-        </li>
+        <UIBox as="li">
+            <UILink className="hover:bg-hover flex items-center gap-3 rounded-md px-2 py-1.5" href={`#/groups/${group.id}/chat`} onClick={(event) => event.preventDefault()}>
+                <UIImage className="h-8 w-8 rounded-full object-cover" src={photo(group.cover_seed, 64, 64)} width="32" height="32" alt="" />
+                <UIText className="text-primary truncate text-[15px] font-medium">{group.name}</UIText>
+            </UILink>
+        </UIBox>
     );
 }
 
@@ -138,42 +139,50 @@ export function RightRail() {
     const status = useFragment(RightRailQuery, queryStatusId(queryKey("RightRail")));
     const rail = status && status.root ? status.root.right_rail : null;
     return (
-        <aside className="w-[232px] shrink-0 overflow-y-auto px-2 py-3" aria-label="Promoted and people online" data-log-scope="right_rail">
+        <UIBox as="aside" className="w-[232px] shrink-0 overflow-y-auto px-2 py-3" aria-label="Promoted and people online" data-log-scope="right_rail">
             {rail
                 ? <>
-                    <h2 className="text-secondary px-2 pb-1 text-[17px] font-semibold">Promoted</h2>
+                    <UIText as="h2" className="text-secondary px-2 pb-1 text-[17px] font-semibold">
+                        Promoted
+                    </UIText>
                     {rail.sponsored.map((ref) =>
                         <PromotedRef key={ref.__id} adRef={ref} />
                     )}
-                    <div className="border-divider mx-2 my-2 border-t" />
-                    <h2 className="text-secondary px-2 pb-1 text-[17px] font-semibold">Celebrations</h2>
+                    <UIBox className="border-divider mx-2 my-2 border-t" />
+                    <UIText as="h2" className="text-secondary px-2 pb-1 text-[17px] font-semibold">
+                        Celebrations
+                    </UIText>
                     {rail.birthdays.map((ref) =>
                         <Birthday key={ref.__id} userRef={ref} />
                     )}
-                    <div className="border-divider mx-2 my-2 border-t" />
-                    <div className="flex items-center justify-between px-2 pb-1">
-                        <h2 className="text-secondary text-[17px] font-semibold">Online now</h2>
-                        <span className="text-secondary flex gap-1">
+                    <UIBox className="border-divider mx-2 my-2 border-t" />
+                    <UIBox className="flex items-center justify-between px-2 pb-1">
+                        <UIText as="h2" className="text-secondary text-[17px] font-semibold">
+                            Online now
+                        </UIText>
+                        <UIText className="text-secondary flex gap-1">
                             <Icon name="search" size={16} />
                             <Icon name="dots" size={16} strokeWidth={3} />
-                        </span>
-                    </div>
-                    <ul>
+                        </UIText>
+                    </UIBox>
+                    <UIBox as="ul">
                         {rail.contacts.map((ref) =>
                             <Contact key={ref.__id} contactRef={ref} />
                         )}
-                    </ul>
-                    <div className="border-divider mx-2 my-2 border-t" />
-                    <h2 className="text-secondary px-2 pb-1 text-[17px] font-semibold">Community chats</h2>
-                    <ul>
+                    </UIBox>
+                    <UIBox className="border-divider mx-2 my-2 border-t" />
+                    <UIText as="h2" className="text-secondary px-2 pb-1 text-[17px] font-semibold">
+                        Community chats
+                    </UIText>
+                    <UIBox as="ul">
                         {rail.group_chats.map((ref) =>
                             <GroupChat key={ref.__id} groupRef={ref} />
                         )}
-                    </ul>
+                    </UIBox>
                 </>
                 : [0, 1, 2, 3].map((i) => <GlimmerRow key={i} avatarSize={32} lines={1} />)
             }
-        </aside>
+        </UIBox>
     );
 }
 

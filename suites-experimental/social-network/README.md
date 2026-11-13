@@ -24,6 +24,13 @@ text and pictures are generated or written for it.
     it renders and receives masked references for its children, every publish
     re-reads the subscriptions that touched a changed record and keeps the
     identity of unchanged data, and released queries are garbage collected
+-   A design-system layer: every box, text run, link, image and control is a
+    component that reads theme, logging surface and route from context, keeps
+    its own interaction state, and registers with interaction and
+    visual-completion trackers, so a page runs about two hooks per element
+-   A home page kept mounted inside `<Activity>` while the profile is shown, so
+    leaving it tears down its effects and returning reconnects them, re-checks
+    its cached data and restores its scroll position
 -   Component and event interception through the app's JSX runtime: every
     component render is tracked and every event handler is wrapped, so an
     interaction can be attributed to the component that rendered it
@@ -66,10 +73,10 @@ wait on those instead of on timers.
 -   `LoadMoreComments`: scrolls the dialog to load more pages of comments.
 -   `TypeComment`: types a comment key by key, with a mention typeahead,
     emoticon replacement and highlighting.
--   `OpenOwnProfile`: closes the dialog, which saves the draft and hands the
-    feed back its focus and viewability, then navigates to the viewer's profile
-    and scrolls through it.
--   `BackToHomeFeed`: returns to the cached home feed at its old position.
+-   `VisitOwnProfile`: closes the dialog, which saves the draft and hands the
+    feed back its focus and viewability, navigates to the viewer's profile and
+    scrolls through it, then returns to the home feed, which stays mounted while
+    hidden and comes back at its old position.
 -   `SearchTypeahead`: types a name into search; each key filters the local
     index and asks the server.
 -   `OpenHeaderMenus`: opens and closes the menu, chats, notifications and

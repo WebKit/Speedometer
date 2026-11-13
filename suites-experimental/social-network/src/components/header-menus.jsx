@@ -10,6 +10,7 @@ import { signal } from "../signals.js";
 import Avatar from "./avatar.jsx";
 import Icon from "./icon.jsx";
 import { GlimmerRow } from "./glimmer.jsx";
+import { UIBox, UILink, UIText } from "./ui.jsx";
 
 function useReadySignal(ready) {
     useEffect(() => {
@@ -20,10 +21,12 @@ function useReadySignal(ready) {
 
 function MenuHeader({ title, children }) {
     return (
-        <div className="flex items-center justify-between px-4 pb-2 pt-3">
-            <h2 className="text-primary text-2xl font-bold">{title}</h2>
-            <div className="flex gap-1">{children}</div>
-        </div>
+        <UIBox className="flex items-center justify-between px-4 pb-2 pt-3">
+            <UIText as="h2" className="text-primary text-2xl font-bold">
+                {title}
+            </UIText>
+            <UIBox className="flex gap-1">{children}</UIBox>
+        </UIBox>
     );
 }
 
@@ -45,10 +48,10 @@ export function MainMenu() {
     }, [filter]);
     useReadySignal(true);
     return (
-        <div className="w-[560px]">
+        <UIBox className="w-[560px]">
             <MenuHeader title="Explore" />
-            <div className="bg-canvas flex max-h-[480px] gap-3 overflow-y-auto p-3">
-                <div className="bg-surface shadow-card flex-1 rounded-lg p-3">
+            <UIBox className="bg-canvas flex max-h-[480px] gap-3 overflow-y-auto p-3">
+                <UIBox className="bg-surface shadow-card flex-1 rounded-lg p-3">
                     <label className="bg-surface-alt text-secondary flex items-center gap-2 rounded-full px-3 py-2">
                         <Icon name="search" size={16} />
                         <input
@@ -60,39 +63,43 @@ export function MainMenu() {
                         />
                     </label>
                     {sections.map((section) =>
-                        <section key={section.title} className="border-divider border-b py-2 last:border-0">
-                            <h3 className="text-primary px-2 py-1 text-[17px] font-semibold">{section.title}</h3>
-                            <ul>
+                        <UIBox as="section" key={section.title} className="border-divider border-b py-2 last:border-0">
+                            <UIText as="h3" className="text-primary px-2 py-1 text-[17px] font-semibold">
+                                {section.title}
+                            </UIText>
+                            <UIBox as="ul">
                                 {section.items.map((item) =>
-                                    <li key={item.label}>
-                                        <a className="hover:bg-hover flex items-start gap-3 rounded-md p-2" href={`#/${item.label.toLowerCase().replace(/\s+/g, "-")}`} data-log="menu_item" onClick={(event) => event.preventDefault()}>
-                                            <span className="bg-accent-soft text-accent flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">
+                                    <UIBox as="li" key={item.label}>
+                                        <UILink className="hover:bg-hover flex items-start gap-3 rounded-md p-2" href={`#/${item.label.toLowerCase().replace(/\s+/g, "-")}`} data-log="menu_item" onClick={(event) => event.preventDefault()}>
+                                            <UIText className="bg-accent-soft text-accent flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">
                                                 <Icon name={item.icon} size={20} />
-                                            </span>
-                                            <span className="min-w-0">
-                                                <span className="text-primary block text-[15px] font-medium">{item.label}</span>
-                                                <span className="text-secondary block text-[13px] leading-4">{item.description}</span>
-                                            </span>
-                                        </a>
-                                    </li>
+                                            </UIText>
+                                            <UIText className="min-w-0">
+                                                <UIText className="text-primary block text-[15px] font-medium">{item.label}</UIText>
+                                                <UIText className="text-secondary block text-[13px] leading-4">{item.description}</UIText>
+                                            </UIText>
+                                        </UILink>
+                                    </UIBox>
                                 )}
-                            </ul>
-                        </section>
+                            </UIBox>
+                        </UIBox>
                     )}
-                </div>
-                <div className="bg-surface shadow-card w-[180px] shrink-0 self-start rounded-lg p-2">
-                    <h3 className="text-primary px-2 py-1 text-[17px] font-semibold">Start something</h3>
+                </UIBox>
+                <UIBox className="bg-surface shadow-card w-[180px] shrink-0 self-start rounded-lg p-2">
+                    <UIText as="h3" className="text-primary px-2 py-1 text-[17px] font-semibold">
+                        Start something
+                    </UIText>
                     {CREATE_ITEMS.map((item) =>
                         <button key={item.label} type="button" className="text-primary hover:bg-hover flex w-full items-center gap-3 rounded-md p-2 text-left text-[15px] font-medium" data-log="menu_create">
-                            <span className="bg-surface-alt flex h-8 w-8 items-center justify-center rounded-full">
+                            <UIText className="bg-surface-alt flex h-8 w-8 items-center justify-center rounded-full">
                                 <Icon name={item.icon} size={18} />
-                            </span>
+                            </UIText>
                             {item.label}
                         </button>
                     )}
-                </div>
-            </div>
-        </div>
+                </UIBox>
+            </UIBox>
+        </UIBox>
     );
 }
 
@@ -108,25 +115,25 @@ const ThreadsQuery = fragment("ThreadsQuery", { status: true, root: { threads: s
 function ThreadRow({ thread, previews }) {
     const { participant } = thread;
     return (
-        <li>
-            <a className="hover:bg-hover flex items-center gap-3 rounded-lg p-2" href={`#/messages/${thread.id}`} data-log="messages_thread" onClick={(event) => event.preventDefault()}>
+        <UIBox as="li">
+            <UILink className="hover:bg-hover flex items-center gap-3 rounded-lg p-2" href={`#/messages/${thread.id}`} data-log="messages_thread" onClick={(event) => event.preventDefault()}>
                 <Avatar seed={participant.avatar_seed} size={56} online={thread.online} label={participant.name} />
-                <span className="min-w-0 flex-1">
-                    <span className={`block truncate text-[15px] ${thread.unread ? "font-semibold" : ""} text-primary`}>{participant.name}</span>
+                <UIText className="min-w-0 flex-1">
+                    <UIText className={`block truncate text-[15px] ${thread.unread ? "font-semibold" : ""} text-primary`}>{participant.name}</UIText>
                     {previews
-                        && <span className={`flex gap-1 text-[13px] ${thread.unread ? "text-primary font-semibold" : "text-secondary"}`}>
-                            <span className="truncate">
+                        && <UIText className={`flex gap-1 text-[13px] ${thread.unread ? "text-primary font-semibold" : "text-secondary"}`}>
+                            <UIText className="truncate">
                                 {thread.from_viewer ? "You: " : ""}
                                 {thread.snippet}
-                            </span>
-                            <span aria-hidden="true">·</span>
-                            <span className="shrink-0">{relativeTime(thread.updated_time)}</span>
-                        </span>
+                            </UIText>
+                            <UIText aria-hidden="true">·</UIText>
+                            <UIText className="shrink-0">{relativeTime(thread.updated_time)}</UIText>
+                        </UIText>
                     }
-                </span>
-                {thread.unread && <span className="bg-accent h-3 w-3 shrink-0 rounded-full" aria-label="Unread" />}
-            </a>
-        </li>
+                </UIText>
+                {thread.unread && <UIText className="bg-accent h-3 w-3 shrink-0 rounded-full" aria-label="Unread" />}
+            </UILink>
+        </UIBox>
     );
 }
 
@@ -138,16 +145,16 @@ export function MessagesMenu() {
     const previews = gate("menu_message_previews");
     useReadySignal(ready);
     return (
-        <div className="w-[360px]">
+        <UIBox className="w-[360px]">
             <MenuHeader title="Messages">
                 <RoundButton icon="edit" label="Write a message" />
             </MenuHeader>
-            <div className="px-4 pb-2">
+            <UIBox className="px-4 pb-2">
                 <label className="bg-surface-alt text-secondary flex items-center gap-2 rounded-full px-3 py-2">
                     <Icon name="search" size={16} />
                     <input className="placeholder:text-secondary w-full bg-transparent text-[15px] outline-none" placeholder="Search messages" data-log="messages_search" />
                 </label>
-                <div className="mt-2 flex gap-1" role="tablist">
+                <UIBox className="mt-2 flex gap-1" role="tablist">
                     {["all", "unread", "requests"].map((name) =>
                         <button
                             key={name}
@@ -160,15 +167,15 @@ export function MessagesMenu() {
                             {name}
                         </button>
                     )}
-                </div>
-            </div>
-            <ul className="max-h-[420px] overflow-y-auto px-2 pb-2">
+                </UIBox>
+            </UIBox>
+            <UIBox as="ul" className="max-h-[420px] overflow-y-auto px-2 pb-2">
                 {ready ? status.root.threads.map((ref) => <ThreadRowLoader key={ref.__id} threadRef={ref} previews={previews} />) : [0, 1, 2, 3, 4].map((i) => <GlimmerRow key={i} avatarSize={56} />)}
-            </ul>
-            <a className="border-divider text-accent hover:bg-hover block border-t py-3 text-center text-[15px] font-semibold" href="#/messages">
+            </UIBox>
+            <UILink className="border-divider text-accent hover:bg-hover block border-t py-3 text-center text-[15px] font-semibold" href="#/messages">
                 Open messages
-            </a>
-        </div>
+            </UILink>
+        </UIBox>
     );
 }
 
@@ -190,7 +197,14 @@ const NOTIFICATION_BADGES = {
 
 function BoldMarkup({ text }) {
     const parts = text.split("**");
-    return parts.map((part, index) => index % 2 ? <strong key={index}>{part}</strong> : <span key={index}>{part}</span>);
+    return parts.map((part, index) =>
+        index % 2
+            ? <UIText as="strong" key={index}>
+                {part}
+            </UIText>
+            : <UIText key={index}>{part}</UIText>
+
+    );
 }
 
 const NotificationRow_notification = fragment("NotificationRow_notification", {
@@ -208,33 +222,33 @@ function NotificationRow({ notificationRef }) {
     const { actor } = notification;
     const [icon, color] = NOTIFICATION_BADGES[notification.kind];
     return (
-        <li>
-            <a className="hover:bg-hover flex items-start gap-3 rounded-lg p-2" href={`#/notifications/${notification.id}`} data-log="notification" onClick={(event) => event.preventDefault()}>
-                <span className="relative shrink-0">
+        <UIBox as="li">
+            <UILink className="hover:bg-hover flex items-start gap-3 rounded-lg p-2" href={`#/notifications/${notification.id}`} data-log="notification" onClick={(event) => event.preventDefault()}>
+                <UIText className="relative shrink-0">
                     <Avatar seed={actor.avatar_seed} size={56} label={actor.name} />
-                    <span className={`absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full text-white ${color}`}>
+                    <UIText className={`absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full text-white ${color}`}>
                         <Icon name={icon} size={14} />
-                    </span>
-                </span>
-                <span className="min-w-0 flex-1">
-                    <span className={`line-clamp-3 text-[15px] leading-5 ${notification.unread ? "text-primary" : "text-secondary"}`}>
+                    </UIText>
+                </UIText>
+                <UIText className="min-w-0 flex-1">
+                    <UIText className={`line-clamp-3 text-[15px] leading-5 ${notification.unread ? "text-primary" : "text-secondary"}`}>
                         <BoldMarkup text={notification.text} />
-                    </span>
-                    <span className={`text-[13px] ${notification.unread ? "text-accent font-semibold" : "text-secondary"}`}>{relativeTime(notification.created_time)}</span>
+                    </UIText>
+                    <UIText className={`text-[13px] ${notification.unread ? "text-accent font-semibold" : "text-secondary"}`}>{relativeTime(notification.created_time)}</UIText>
                     {notification.has_action
-                        && <span className="mt-2 flex gap-2">
+                        && <UIText className="mt-2 flex gap-2">
                             <button type="button" className="bg-accent flex-1 rounded-md py-1.5 text-sm font-semibold text-white">
                                 Accept
                             </button>
                             <button type="button" className="bg-surface-alt text-primary flex-1 rounded-md py-1.5 text-sm font-semibold">
                                 Ignore
                             </button>
-                        </span>
+                        </UIText>
                     }
-                </span>
-                {notification.unread && <span className="bg-accent mt-6 h-3 w-3 shrink-0 rounded-full" aria-label="Unread" />}
-            </a>
-        </li>
+                </UIText>
+                {notification.unread && <UIText className="bg-accent mt-6 h-3 w-3 shrink-0 rounded-full" aria-label="Unread" />}
+            </UILink>
+        </UIBox>
     );
 }
 
@@ -254,11 +268,11 @@ export function NotificationsMenu() {
         ];
     }, [ready, status]);
     return (
-        <div className="w-[360px]">
+        <UIBox className="w-[360px]">
             <MenuHeader title="Activity">
                 <RoundButton icon="settings" label="Activity settings" />
             </MenuHeader>
-            <div className="flex gap-1 px-4 pb-2" role="tablist">
+            <UIBox className="flex gap-1 px-4 pb-2" role="tablist">
                 {["everything", "mentions"].map((name) =>
                     <button
                         key={name}
@@ -271,29 +285,31 @@ export function NotificationsMenu() {
                         {name}
                     </button>
                 )}
-            </div>
-            <div className="max-h-[460px] overflow-y-auto px-2 pb-2">
+            </UIBox>
+            <UIBox className="max-h-[460px] overflow-y-auto px-2 pb-2">
                 {ready
                     ? sections.map((section) =>
-                        <section key={section.title}>
-                            <div className="flex items-center justify-between px-2 py-1">
-                                <h3 className="text-primary text-[17px] font-semibold">{section.title}</h3>
+                        <UIBox as="section" key={section.title}>
+                            <UIBox className="flex items-center justify-between px-2 py-1">
+                                <UIText as="h3" className="text-primary text-[17px] font-semibold">
+                                    {section.title}
+                                </UIText>
                                 {section.title === "Today"
-                                      && <a className="text-accent text-[15px] hover:underline" href="#/notifications">
+                                      && <UILink className="text-accent text-[15px] hover:underline" href="#/notifications">
                                           Mark all read
-                                      </a>
+                                      </UILink>
                                 }
-                            </div>
-                            <ul>
+                            </UIBox>
+                            <UIBox as="ul">
                                 {section.items.map((ref) =>
                                     <NotificationRow key={ref.__id} notificationRef={ref} />
                                 )}
-                            </ul>
-                        </section>
+                            </UIBox>
+                        </UIBox>
                     )
                     : [0, 1, 2, 3, 4].map((i) => <GlimmerRow key={i} avatarSize={56} lines={3} />)}
-            </div>
-        </div>
+            </UIBox>
+        </UIBox>
     );
 }
 
@@ -314,7 +330,7 @@ function ProfileSwitchRow({ profileRef }) {
     return (
         <button type="button" className="hover:bg-hover flex w-full items-center gap-3 rounded-md p-2 text-left">
             <Avatar seed={profile.avatar_seed} size={36} square label={profile.name} />
-            <span className="text-primary text-[15px] font-medium">{profile.name}</span>
+            <UIText className="text-primary text-[15px] font-medium">{profile.name}</UIText>
         </button>
     );
 }
@@ -327,40 +343,42 @@ export function AccountMenu() {
     const account = ready ? status.root.account : null;
     const viewer = account ? account.viewer : null;
     return (
-        <div className="w-[360px] p-3">
+        <UIBox className="w-[360px] p-3">
             {ready
                 ? <>
-                    <div className="shadow-card rounded-lg p-1">
-                        <a className="hover:bg-hover flex items-center gap-3 rounded-md p-2" href={`#/profile/${viewer.id}`} onClick={(event) => openOwnProfile(event, viewer.id)} data-log="account_profile">
+                    <UIBox className="shadow-card rounded-lg p-1">
+                        <UILink className="hover:bg-hover flex items-center gap-3 rounded-md p-2" href={`#/profile/${viewer.id}`} onClick={(event) => openOwnProfile(event, viewer.id)} data-log="account_profile">
                             <Avatar seed={viewer.avatar_seed} size={40} label={viewer.name} />
-                            <span className="text-primary text-[17px] font-semibold">{viewer.name}</span>
-                        </a>
-                        <div className="border-divider mx-2 border-t" />
+                            <UIText className="text-primary text-[17px] font-semibold">{viewer.name}</UIText>
+                        </UILink>
+                        <UIBox className="border-divider mx-2 border-t" />
                         {account.profiles.map((ref) =>
                             <ProfileSwitchRow key={ref.__id} profileRef={ref} />
                         )}
                         <button type="button" className="bg-surface-alt text-primary hover:bg-hover m-1 w-[calc(100%-8px)] rounded-md py-2 text-[15px] font-semibold">
                             Switch profile
                         </button>
-                    </div>
-                    <ul className="mt-2">
+                    </UIBox>
+                    <UIBox as="ul" className="mt-2">
                         {account.rows.map((row) =>
-                            <li key={row.label}>
+                            <UIBox as="li" key={row.label}>
                                 <button type="button" className="hover:bg-hover flex w-full items-center gap-3 rounded-md p-2 text-left" data-log="account_row">
-                                    <span className="bg-surface-alt text-primary flex h-9 w-9 items-center justify-center rounded-full">
+                                    <UIText className="bg-surface-alt text-primary flex h-9 w-9 items-center justify-center rounded-full">
                                         <Icon name={row.icon} size={20} />
-                                    </span>
-                                    <span className="text-primary flex-1 text-[15px] font-medium">{row.label}</span>
-                                    {row.shortcut && <span className="text-secondary text-xs">{row.shortcut}</span>}
+                                    </UIText>
+                                    <UIText className="text-primary flex-1 text-[15px] font-medium">{row.label}</UIText>
+                                    {row.shortcut && <UIText className="text-secondary text-xs">{row.shortcut}</UIText>}
                                     {row.chevron && <Icon name="chevronRight" size={20} className="text-secondary" />}
                                 </button>
-                            </li>
+                            </UIBox>
                         )}
-                    </ul>
-                    <p className="text-secondary px-2 pt-2 text-xs">About · Privacy · Terms · Accessibility · Commons © 2026</p>
+                    </UIBox>
+                    <UIText as="p" className="text-secondary px-2 pt-2 text-xs">
+                        About · Privacy · Terms · Accessibility · Commons © 2026
+                    </UIText>
                 </>
                 : <GlimmerRow lines={2} />
             }
-        </div>
+        </UIBox>
     );
 }

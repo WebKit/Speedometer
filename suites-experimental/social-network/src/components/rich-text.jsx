@@ -1,6 +1,7 @@
 import { memo, useMemo } from "react";
 import { navigate } from "../router.jsx";
 import { guarded } from "../analytics/guard.js";
+import { UIBox, UILink, UIText } from "./ui.jsx";
 
 // Server ranges mark mentions; hashtags, links and emoji are found on the client.
 const INLINE = /(#[\p{L}\p{N}_]+)|(https?:\/\/[^\s]+)|(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic})*)/gu;
@@ -56,27 +57,27 @@ function Token({ token }) {
     switch (token.type) {
         case "mention":
             return (
-                <a className="text-link font-semibold hover:underline" href={`#/profile/${token.id}`} data-log="mention" onClick={(event) => openProfile(event, token.id)}>
+                <UILink className="text-link font-semibold hover:underline" href={`#/profile/${token.id}`} data-log="mention" onClick={(event) => openProfile(event, token.id)}>
                     {token.value}
-                </a>
+                </UILink>
             );
         case "hashtag":
             return (
-                <a className="text-link font-semibold hover:underline" href={`#/hashtag/${token.value.slice(1)}`} data-log="hashtag">
+                <UILink className="text-link font-semibold hover:underline" href={`#/hashtag/${token.value.slice(1)}`} data-log="hashtag">
                     {token.value}
-                </a>
+                </UILink>
             );
         case "link":
             return (
-                <a className="text-link underline decoration-1 underline-offset-2" href={token.value} target="_blank" rel="noreferrer" data-log="outbound_link">
+                <UILink className="text-link underline decoration-1 underline-offset-2" href={token.value} target="_blank" rel="noreferrer" data-log="outbound_link">
                     {token.value}
-                </a>
+                </UILink>
             );
         case "emoji":
             return (
-                <span className="emoji inline-block align-[-0.15em] text-[1.15em] leading-none" role="img" aria-label="emoji">
+                <UIText className="emoji inline-block align-[-0.15em] text-[1.15em] leading-none" role="img" aria-label="emoji">
                     {token.value}
-                </span>
+                </UIText>
             );
         default:
             return token.value;
@@ -98,15 +99,15 @@ function RichText({ text, ranges, className = "" }) {
     }, [text, ranges]);
 
     return (
-        <div className={`break-words ${className}`} dir="auto">
+        <UIBox className={`break-words ${className}`} dir="auto">
             {paragraphs.map((tokens, index) =>
-                <p key={index} className={index ? "mt-3" : ""}>
+                <UIText as="p" key={index} className={index ? "mt-3" : ""}>
                     {tokens.map((token, tokenIndex) =>
                         <Token key={tokenIndex} token={token} />
                     )}
-                </p>
+                </UIText>
             )}
-        </div>
+        </UIBox>
     );
 }
 

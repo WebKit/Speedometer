@@ -1,6 +1,6 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { queryKey, queryStatusId } from "../store/network.js";
-import { fragment, scalars, spread, useFragment } from "../store/fragment.js";
+import { checkFragment, fragment, scalars, spread, useFragment } from "../store/fragment.js";
 import { photo } from "../data/graphics.js";
 import { VIEWER_ID } from "../data/server.js";
 import { guarded } from "../analytics/guard.js";
@@ -12,23 +12,23 @@ import Avatar from "./avatar.jsx";
 import Feed, { FeedEdge } from "./feed.jsx";
 import Icon from "./icon.jsx";
 import { GlimmerStory } from "./glimmer.jsx";
+import { UIBox, UIImage, UILink, UIText } from "./ui.jsx";
 
 const TRAY_VISIBLE = 4;
-let savedScrollTop = 0;
 
 const HomeViewer = fragment("HomeViewer", scalars("id name short_name avatar_seed"));
 
 function ComposerBox() {
     const viewer = useFragment(HomeViewer, VIEWER_ID);
     return (
-        <div className="bg-surface shadow-card rounded-lg px-4 pb-2 pt-3" data-log-scope="composer">
-            <div className="flex items-center gap-2">
+        <UIBox className="bg-surface shadow-card rounded-lg px-4 pb-2 pt-3" data-log-scope="composer">
+            <UIBox className="flex items-center gap-2">
                 {viewer && <Avatar seed={viewer.avatar_seed} size={40} label="" />}
                 <button type="button" className="bg-surface-alt text-secondary hover:bg-hover h-10 flex-1 rounded-full px-3 text-left text-[17px]" data-log="composer_open">
                     Share something with your neighbours{viewer ? `, ${viewer.short_name}` : ""}
                 </button>
-            </div>
-            <div className="border-divider mt-3 flex border-t pt-2">
+            </UIBox>
+            <UIBox className="border-divider mt-3 flex border-t pt-2">
                 {[
                     ["photo", "Photo", "text-badge-green"],
                     ["calendar", "Event", "text-badge-blue"],
@@ -39,8 +39,8 @@ function ComposerBox() {
                         {label}
                     </button>
                 )}
-            </div>
-        </div>
+            </UIBox>
+        </UIBox>
     );
 }
 
@@ -58,13 +58,13 @@ function StoryCard({ cardRef }) {
     const card = useFragment(StoryCard_card, cardRef);
     const { owner } = card;
     return (
-        <a className="bg-surface-alt relative block h-[200px] w-[112px] shrink-0 overflow-hidden rounded-lg" href={`#/stories/${card.id}`} data-log="stories_tray_card" onClick={(event) => event.preventDefault()}>
-            <img className="h-full w-full object-cover transition-transform hover:scale-105" src={photo(card.seed, 224, 400)} width="112" height="200" alt="" />
-            <span className="absolute left-2 top-2">
+        <UILink className="bg-surface-alt relative block h-[200px] w-[112px] shrink-0 overflow-hidden rounded-lg" href={`#/stories/${card.id}`} data-log="stories_tray_card" onClick={(event) => event.preventDefault()}>
+            <UIImage className="h-full w-full object-cover transition-transform hover:scale-105" src={photo(card.seed, 224, 400)} width="112" height="200" alt="" />
+            <UIText className="absolute left-2 top-2">
                 <Avatar seed={owner.avatar_seed} size={32} ring={!card.seen} label="" />
-            </span>
-            <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 px-2 pb-2 pt-6 text-[13px] font-semibold leading-4 text-white">{owner.name}</span>
-        </a>
+            </UIText>
+            <UIText className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 px-2 pb-2 pt-6 text-[13px] font-semibold leading-4 text-white">{owner.name}</UIText>
+        </UILink>
     );
 }
 
@@ -78,19 +78,19 @@ function StoriesTray() {
         log("stories_tray_page", { delta });
     });
     return (
-        <div className="relative overflow-hidden" aria-label="Stories" role="region" data-log-scope="stories_tray">
-            <div className="flex gap-2 transition-transform duration-300" style={{ transform: `translateX(-${offset * 120}px)` }}>
+        <UIBox className="relative overflow-hidden" aria-label="Stories" role="region" data-log-scope="stories_tray">
+            <UIBox className="flex gap-2 transition-transform duration-300" style={{ transform: `translateX(-${offset * 120}px)` }}>
                 <button type="button" className="bg-surface shadow-card relative h-[200px] w-[112px] shrink-0 overflow-hidden rounded-lg" data-log="stories_create">
-                    {viewer && <img className="h-[150px] w-full object-cover" src={photo(viewer.avatar_seed * 31, 224, 300)} width="112" height="150" alt="" />}
-                    <span className="border-surface bg-accent absolute left-1/2 top-[134px] flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border-4 text-white">
+                    {viewer && <UIImage className="h-[150px] w-full object-cover" src={photo(viewer.avatar_seed * 31, 224, 300)} width="112" height="150" alt="" />}
+                    <UIText className="border-surface bg-accent absolute left-1/2 top-[134px] flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border-4 text-white">
                         <Icon name="plus" size={16} strokeWidth={3} />
-                    </span>
-                    <span className="text-primary absolute inset-x-0 bottom-2 text-center text-[13px] font-semibold">Add a moment</span>
+                    </UIText>
+                    <UIText className="text-primary absolute inset-x-0 bottom-2 text-center text-[13px] font-semibold">Add a moment</UIText>
                 </button>
                 {cards.map((ref) =>
                     <StoryCard key={ref.__id} cardRef={ref} />
                 )}
-            </div>
+            </UIBox>
             {offset > 0
                 && <button type="button" className="bg-surface shadow-popover absolute left-2 top-[84px] flex h-10 w-10 items-center justify-center rounded-full" aria-label="Previous stories" onClick={() => page(-2)}>
                     <Icon name="chevronLeft" size={20} />
@@ -101,7 +101,7 @@ function StoriesTray() {
                     <Icon name="chevronRight" size={20} />
                 </button>
             }
-        </div>
+        </UIBox>
     );
 }
 
@@ -121,15 +121,19 @@ export default function HomePage({ scrollerRef }) {
     const status = feed ? feed.status : "loading";
     const count = feed ? feed.edges.length : 0;
 
-    // The scroller is the parent <main>, whose ref attaches after this effect first
-    // runs, so it is read when leaving rather than captured on mount.
-    useLayoutEffect(
-        () => () => {
-            if (scrollerRef.current)
-                savedScrollTop = scrollerRef.current.scrollTop;
-        },
-        [scrollerRef]
-    );
+    const shown = useRef(false);
+
+    // The page stays mounted while another one is shown. Coming back reconnects its
+    // effects; it checks that everything it reads is still in the store, the way a
+    // cached query is checked before it renders, and reports that it is ready.
+    useEffect(() => {
+        if (shown.current) {
+            const availability = checkFragment(HomeFeedConnection, HOME_FEED);
+            log("query_availability", { query: "HomeFeed", ...availability });
+            signal("home-ready");
+        }
+        shown.current = true;
+    }, []);
 
     useEffect(() => {
         if (status !== "ready")
@@ -147,17 +151,17 @@ export default function HomePage({ scrollerRef }) {
 
     const hasStories = feed && feed.edges.length > 0;
     return (
-        <div className="home mx-auto flex w-full max-w-[500px] flex-col gap-4 px-2 py-4" data-feed-status={status}>
+        <UIBox className="home mx-auto flex w-full max-w-[500px] flex-col gap-4 px-2 py-4" data-feed-status={status}>
             <ComposerBox />
             <StoriesTray />
             {hasStories
-                ? <Feed key={feed.generation} edges={feed.edges} scrollerRef={scrollerRef} onNearEnd={onNearEnd} initialScrollTop={signaled.current.generation === -1 ? savedScrollTop : 0} label="Stories" />
+                ? <Feed key={feed.generation} edges={feed.edges} scrollerRef={scrollerRef} onNearEnd={onNearEnd} label="Stories" />
                 : <>
                     <GlimmerStory />
                     <GlimmerStory />
                 </>
             }
             {feed && feed.status === "loading-more" && <GlimmerStory />}
-        </div>
+        </UIBox>
     );
 }

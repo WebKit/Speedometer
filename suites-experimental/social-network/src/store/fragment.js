@@ -9,6 +9,7 @@ import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
 import { getRecord, retain, storeEpoch, subscribeSnapshot } from "./store.js";
 
 const SPREAD = "...";
+const fragments = new Map();
 
 /**
  * `selections` maps each field to `true` for a scalar (or an opaque object, such as rich
@@ -16,7 +17,9 @@ const SPREAD = "...";
  * object. `spread(...)` masks a record for child fragments.
  */
 export function fragment(name, selections) {
-    return { name, selections };
+    const node = { name, selections };
+    fragments.set(name, node);
+    return node;
 }
 
 export function spread(...fragments) {
@@ -68,6 +71,49 @@ export function readFragment(fragmentNode, id, seen = new Set()) {
     seen.add(id);
     const record = getRecord(id);
     return record === undefined ? undefined : readObject(record, fragmentNode.selections, seen);
+}
+
+function checkSelections(source, selections, state) {
+    for (const key in selections) {
+        const selection = selections[key];
+        if (key === SPREAD) {
+            for (const name of selection)
+                checkSelections(source, fragments.get(name).selections, state);
+            continue;
+        }
+        state.fields++;
+        const value = source[key];
+        if (value === undefined)
+            state.missing++;
+        else if (selection !== true && value !== null && Array.isArray(value))
+            value.forEach((item) => checkLinked(item, selection, state));
+        else if (selection !== true && value !== null)
+            checkLinked(value, selection, state);
+    }
+}
+
+function checkLinked(value, selections, state) {
+    if (value.__ref === undefined) {
+        checkSelections(value, selections, state);
+        return;
+    }
+    const record = getRecord(value.__ref);
+    if (record === undefined) {
+        state.missing++;
+        return;
+    }
+    state.records++;
+    checkSelections(record, selections, state);
+}
+
+/**
+ * Walks `fragmentNode` over the store from `id`, into every child fragment it spreads,
+ * and counts the fields it finds and the ones that are missing.
+ */
+export function checkFragment(fragmentNode, id) {
+    const state = { records: 0, fields: 0, missing: 0 };
+    checkLinked({ __ref: id }, fragmentNode.selections, state);
+    return state;
 }
 
 /**

@@ -15,6 +15,7 @@ import Icon from "./icon.jsx";
 import Popover from "./popover.jsx";
 import Story from "./story.jsx";
 import { GlimmerRow, GlimmerStory } from "./glimmer.jsx";
+import { UIBox, UIText } from "./ui.jsx";
 
 const ORDERS = [
     { id: "relevant", label: "Top", description: "Conversations with the most replies and reactions." },
@@ -30,7 +31,7 @@ function OrderMenu({ order, onChange }) {
     const current = ORDERS.find((item) => item.id === order);
     const close = useCallback(() => setOpen(false), []);
     return (
-        <div className="relative px-4 py-2">
+        <UIBox className="relative px-4 py-2">
             <button
                 ref={anchorRef}
                 type="button"
@@ -59,13 +60,13 @@ function OrderMenu({ order, onChange }) {
                                 onChange(item.id);
                             }}
                         >
-                            <span className="text-primary block text-[15px] font-semibold">{item.label}</span>
-                            <span className="text-secondary block text-[13px] leading-4">{item.description}</span>
+                            <UIText className="text-primary block text-[15px] font-semibold">{item.label}</UIText>
+                            <UIText className="text-secondary block text-[13px] leading-4">{item.description}</UIText>
                         </button>
                     )}
                 </Popover>
             }
-        </div>
+        </UIBox>
     );
 }
 
@@ -167,8 +168,8 @@ export default function PostDialog({ storyId }) {
     const exhausted = ready && connection.page_info && !connection.page_info.has_next_page;
 
     return (
-        <div className="bg-scrim fixed inset-0 z-50 flex items-center justify-center" onMouseDown={(event) => event.target === event.currentTarget && close()}>
-            <div
+        <UIBox className="bg-scrim fixed inset-0 z-50 flex items-center justify-center" onMouseDown={(event) => event.target === event.currentTarget && close()}>
+            <UIBox
                 id="post-dialog"
                 role="dialog"
                 aria-modal="true"
@@ -176,8 +177,10 @@ export default function PostDialog({ storyId }) {
                 className="bg-surface shadow-popover flex h-[calc(100%-32px)] w-[min(700px,calc(100%-32px))] flex-col overflow-hidden rounded-lg"
                 data-log-scope="post_dialog"
             >
-                <header className="border-divider relative flex h-14 shrink-0 items-center justify-center border-b">
-                    <h2 className="text-primary text-xl font-bold">Discussion</h2>
+                <UIBox as="header" className="border-divider relative flex h-14 shrink-0 items-center justify-center border-b">
+                    <UIText as="h2" className="text-primary text-xl font-bold">
+                        Discussion
+                    </UIText>
                     <button
                         type="button"
                         id="post-dialog-close"
@@ -188,18 +191,18 @@ export default function PostDialog({ storyId }) {
                     >
                         <Icon name="close" size={20} />
                     </button>
-                </header>
-                <div ref={bodyRef} id="post-dialog-body" className="min-h-0 flex-1 overflow-y-auto">
+                </UIBox>
+                <UIBox ref={bodyRef} id="post-dialog-body" className="min-h-0 flex-1 overflow-y-auto">
                     {story ? <Story id={storyId} position={0} expandable={false} inDialog /> : <GlimmerStory />}
                     <OrderMenu order={order} onChange={changeOrder} />
-                    <div className="flex flex-col gap-3 pb-4" aria-label="Comments" aria-busy={!ready}>
+                    <UIBox className="flex flex-col gap-3 pb-4" aria-label="Comments" aria-busy={!ready}>
                         {connection && connection.edges.map((edge) => <Comment key={edge.node.__id} commentRef={edge.node} storyId={storyId} />)}
                         {!ready && [0, 1, 2].map((i) => <GlimmerRow key={i} avatarSize={32} />)}
-                        {exhausted && <div className="comments-end text-secondary px-4 text-center text-[13px]">You&apos;ve seen all {connection.total_count} comments</div>}
-                    </div>
-                </div>
+                        {exhausted && <UIBox className="comments-end text-secondary px-4 text-center text-[13px]">You&apos;ve seen all {connection.total_count} comments</UIBox>}
+                    </UIBox>
+                </UIBox>
                 <CommentComposer key={storyId} storyId={storyId} viewer={viewer} people={people} inputRef={composerRef} />
-            </div>
-        </div>
+            </UIBox>
+        </UIBox>
     );
 }
