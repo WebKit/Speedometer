@@ -7,7 +7,7 @@ import {
 import archiveIcon from '../assets/icons/tb-folder-archive.svg?raw';
 import junkIcon from '../assets/icons/tb-folder-spam.svg?raw';
 import type { Folder } from '../types';
-import { AppDropdown, closeContainingDropdown, menuKeyDown } from './base';
+import { AppDropdown, RawIcon, closeContainingDropdown, menuKeyDown } from './base';
 
 type IconComponent = ComponentType<{ size?: number; strokeWidth?: number; fill?: string }>;
 
@@ -149,7 +149,7 @@ export function MessageBulkActions({ items, renderTag }: { items: readonly BulkA
           >
             {item.variant === 'whitelist' ? item.label : null}
             {item.variant !== 'whitelist' && item.rawIcon ? (
-              <span className="msg-list__bulk-icon msg-list__bulk-icon--folder" aria-hidden="true" dangerouslySetInnerHTML={{ __html: item.rawIcon }} />
+              <RawIcon className="msg-list__bulk-icon msg-list__bulk-icon--folder" svg={item.rawIcon} />
             ) : null}
             {item.variant !== 'whitelist' && !item.rawIcon && Icon ? (
               <Icon
@@ -224,7 +224,7 @@ export function MessageListMoreMenu({ groups, label = 'More actions' }: { groups
                   >
                     <span className="msg-list__more-icon" aria-hidden="true">
                       {item.rawIcon
-                        ? <span className="msg-list__more-icon-raw" dangerouslySetInnerHTML={{ __html: item.rawIcon }} />
+                        ? <RawIcon className="msg-list__more-icon-raw" svg={item.rawIcon} />
                         : Icon ? <Icon size={16} strokeWidth={1.75} /> : null}
                     </span>
                     <span className="msg-list__more-label">{item.label}</span>

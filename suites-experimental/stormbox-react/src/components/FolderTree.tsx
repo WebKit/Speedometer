@@ -11,6 +11,7 @@ import {
   STARRED_KEYWORD, folderCounts, isTagViewId, tagViewIdFor, tagViewKeyword, useMailStore,
 } from '../store/mail-store';
 import { readMessageDrag, useMessageDrag } from '../hooks/useMessageDrag';
+import { RawIcon } from './base';
 
 interface TreeNode extends Folder {
   depth: number;
@@ -124,7 +125,7 @@ const FolderNode = memo(function FolderNode({
         )}
         <button type="button" className="folder-node__button" onClick={() => onPick(folder.id)}>
           <span className="folder-node__icon-wrap">
-            <span className="folder-node__icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: folder.icon }} />
+            <RawIcon className="folder-node__icon" svg={folder.icon} />
             {folder.is_starred === 1 ? (
               <Star className="folder-node__star" size={10} strokeWidth={2} aria-label="Starred folder" />
             ) : null}
