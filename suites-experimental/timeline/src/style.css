@@ -396,7 +396,6 @@ button.btn-nav:hover .desc {
     overflow-x: auto;
     overflow-y: hidden;
     padding: 0;
-    scroll-behavior: smooth;
     display: flex;
     align-items: center;
     scrollbar-width: thin;

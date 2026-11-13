@@ -8,11 +8,12 @@ import { getLanguage, t } from "../i18n.js";
 
 export const Timeline = () => {
     let scrollLeft = 0;
-    let clientWidth = 0;
+    let clientWidth = typeof document !== "undefined" && document.documentElement ? document.documentElement.clientWidth : 0;
     let containerEl = null;
     let lastVersion = null;
     let lastData = null;
     let lastLang = null;
+    let currentAttrs: any = {};
 
     const gap = 50;
     const paddingLeft = 50;
@@ -43,12 +44,14 @@ export const Timeline = () => {
 
     return {
         oninit(vnode) {
+            currentAttrs = vnode.attrs;
             lastVersion = vnode.attrs.version;
             lastData = vnode.attrs.data;
             lastLang = vnode.attrs.language || getLanguage();
             calculatePositions(vnode.attrs.data);
         },
         onbeforeupdate(vnode) {
+            currentAttrs = vnode.attrs;
             let needsRecalc = false;
             const currentLang = vnode.attrs.language || getLanguage();
             // IMPORTANT: We must check if data, version, or active language changed!
@@ -67,88 +70,95 @@ export const Timeline = () => {
                 lastLang = currentLang;
                 needsRecalc = true;
             }
-            if (needsRecalc)
-                calculatePositions(vnode.attrs.data);
+            if (needsRecalc) calculatePositions(vnode.attrs.data);
         },
         oncreate(vnode) {
+            currentAttrs = vnode.attrs;
             containerEl = vnode.dom;
-            clientWidth = containerEl.clientWidth;
+            clientWidth = containerEl.clientWidth || clientWidth;
             scrollLeft = containerEl.scrollLeft;
 
             let currentScrollIndex = 0;
             let scrollDirection = 1;
             (window as any).stepScrollTimeline = () => {
-                if (!containerEl || !vnode.attrs.data || vnode.attrs.data.length === 0)
-                    return;
+                const data = currentAttrs.data;
+                if (!containerEl || !data || data.length === 0) return;
+                if (data !== lastData) {
+                    lastData = data;
+                    calculatePositions(data);
+                }
                 currentScrollIndex += scrollDirection * 12;
-                if (currentScrollIndex >= vnode.attrs.data.length - 1) {
-                    currentScrollIndex = vnode.attrs.data.length - 1;
+                if (currentScrollIndex >= data.length - 1) {
+                    currentScrollIndex = data.length - 1;
                     scrollDirection = -1;
                 } else if (currentScrollIndex <= 0) {
                     currentScrollIndex = 0;
                     scrollDirection = 1;
                 }
                 const x = xPositions[currentScrollIndex] || 0;
-                containerEl.scrollLeft = x;
                 scrollLeft = x;
-                clientWidth = containerEl.clientWidth;
+                clientWidth = containerEl.clientWidth || clientWidth;
+                if (currentAttrs.onActiveIndexChange) currentAttrs.onActiveIndexChange(currentScrollIndex);
                 m.redraw.sync();
+                containerEl.scrollTo({
+                    left: x,
+                    behavior: "instant" as ScrollBehavior,
+                });
+                scrollLeft = containerEl.scrollLeft;
             };
 
             if (vnode.attrs.handle) {
-                vnode.attrs.handle.scrollToIndex = (index, requestedBehavior = "smooth") => {
-                    if (index < 0 || index >= vnode.attrs.data.length || !containerEl)
-                        return;
-
-                    const doScroll = (behavior) => {
-                        const x = xPositions[index];
-                        const card = vnode.attrs.data[index];
-                        const width = getCardWidth(card, index);
-                        const currentClientWidth = containerEl.clientWidth;
-                        const targetScrollLeft = Math.max(0, x - (currentClientWidth - width) / 2);
-
-                        scrollLeft = targetScrollLeft;
+                vnode.attrs.handle.scrollToIndex = (index, requestedBehavior = "instant", dataOverride) => {
+                    const data = dataOverride || currentAttrs.data || [];
+                    if (data !== lastData) {
+                        lastData = data;
+                        calculatePositions(data);
+                    }
+                    if (!containerEl || data.length === 0) {
                         try {
                             m.redraw.sync();
                         } catch (e) {
                             void e;
                         }
+                        return;
+                    }
+                    if (index < 0 || index >= data.length) return;
 
-                        containerEl.scrollTo({
-                            left: targetScrollLeft,
-                            behavior,
-                        });
+                    const x = xPositions[index];
+                    const card = data[index];
+                    const width = getCardWidth(card, index);
+                    const currentClientWidth = containerEl.clientWidth || clientWidth;
+                    const targetScrollLeft = Math.max(0, x - (currentClientWidth - width) / 2);
 
-                        setTimeout(() => {
-                            const cardId = getCardId(card, index);
-                            const cardEl = containerEl.querySelector(`[id="${CSS.escape(String(cardId))}"]`) || containerEl.querySelector(".card-active");
-                            if (cardEl && typeof cardEl.focus === "function") {
-                                try {
-                                    cardEl.focus({ preventScroll: true });
-                                } catch (e) {
-                                    void e;
-                                }
-                            }
-                        }, 50);
-                    };
+                    scrollLeft = targetScrollLeft;
+                    try {
+                        m.redraw.sync();
+                    } catch (e) {
+                        void e;
+                    }
 
-                    doScroll(requestedBehavior);
+                    containerEl.scrollTo({
+                        left: targetScrollLeft,
+                        behavior: requestedBehavior as ScrollBehavior,
+                    });
+                    scrollLeft = containerEl.scrollLeft;
                 };
             }
 
             this.onScroll = (e) => {
+                if (e.target.scrollLeft === scrollLeft) return;
                 scrollLeft = e.target.scrollLeft;
                 clientWidth = e.target.clientWidth;
 
-                if (xPositions.length > 0) {
+                const data = currentAttrs.data || [];
+                if (xPositions.length > 0 && data.length > 0) {
                     const maxScroll = Math.max(0, totalWidth - clientWidth);
-                    let closestIndex = vnode.attrs.activeIndex !== undefined ? vnode.attrs.activeIndex : 0;
-                    if (closestIndex < 0 || closestIndex >= xPositions.length)
-                        closestIndex = 0;
+                    let closestIndex = currentAttrs.activeIndex !== undefined ? currentAttrs.activeIndex : 0;
+                    if (closestIndex < 0 || closestIndex >= xPositions.length) closestIndex = 0;
 
                     const getClampedScroll = (idx) => {
                         const x = xPositions[idx];
-                        const card = vnode.attrs.data[idx];
+                        const card = data[idx];
                         const w = getCardWidth(card, idx);
                         const targetScroll = x - (clientWidth - w) / 2;
                         return Math.max(0, Math.min(maxScroll, targetScroll));
@@ -164,27 +174,24 @@ export const Timeline = () => {
                         }
                     }
 
-                    if (vnode.attrs.onActiveIndexChange)
-                        vnode.attrs.onActiveIndexChange(closestIndex);
+                    if (currentAttrs.onActiveIndexChange) currentAttrs.onActiveIndexChange(closestIndex);
                 }
 
-                m.redraw();
+                m.redraw.sync();
             };
             containerEl.addEventListener("scroll", this.onScroll);
 
             this.onResize = () => {
                 clientWidth = containerEl.clientWidth;
-                m.redraw();
+                m.redraw.sync();
             };
             window.addEventListener("resize", this.onResize);
         },
         onremove(vnode) {
             (window as any).stepScrollTimeline = () => {};
-            if (vnode.dom && this.onScroll)
-                vnode.dom.removeEventListener("scroll", this.onScroll);
+            if (vnode.dom && this.onScroll) vnode.dom.removeEventListener("scroll", this.onScroll);
 
-            if (this.onResize)
-                window.removeEventListener("resize", this.onResize);
+            if (this.onResize) window.removeEventListener("resize", this.onResize);
         },
         view(vnode) {
             const { data, renderItem, layoutMode, cardBuffer = 10 } = vnode.attrs;
@@ -211,8 +218,7 @@ export const Timeline = () => {
             for (let i = firstVisibleIndex; i < data.length; i++) {
                 const x = xPositions[i];
                 lastVisibleIndex = i;
-                if (x > scrollLeft + clientWidth)
-                    break;
+                if (x > scrollLeft + clientWidth) break;
             }
 
             const startIdx = isVirtual ? Math.max(0, firstVisibleIndex - cardBuffer) : 0;
@@ -243,70 +249,68 @@ export const Timeline = () => {
                 [
                     data.length === 0
                         ? m(
-                            ".empty-state",
-                            {
-                                style: {
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    width: "100%",
-                                    height: "100%",
-                                    color: "#94a3b8",
-                                    fontSize: "1.2rem",
-                                    fontWeight: "600",
-                                    letterSpacing: "0.05em",
-                                    position: "absolute",
-                                    top: "0",
-                                    left: "0",
-                                },
-                            },
-                            t("noMatches")
-                        )
+                              ".empty-state",
+                              {
+                                  style: {
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      width: "100%",
+                                      height: "100%",
+                                      color: "#94a3b8",
+                                      fontSize: "1.2rem",
+                                      fontWeight: "600",
+                                      letterSpacing: "0.05em",
+                                      position: "absolute",
+                                      top: "0",
+                                      left: "0",
+                                  },
+                              },
+                              t("noMatches")
+                          )
                         : m(
-                            "#document-content",
-                            {
-                                class: isVirtual ? "virtual-layout" : "browser-layout",
-                                style: isVirtual
-                                    ? {
-                                        position: "relative",
-                                        width: `${totalWidth}px`,
-                                        height: "100%",
-                                        flexShrink: "0",
-                                    }
-                                    : {
-                                        position: "relative",
-                                        display: "flex",
-                                        gap: `${gap}px`,
-                                        paddingLeft: `${paddingLeft}px`,
-                                        paddingRight: `${paddingLeft}px`,
-                                        height: "100%",
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        width: "max-content",
-                                    },
-                            },
-                            [
-                                visibleItems.map((d) => {
-                                    const cardId = getCardId(d.item, d.index);
-                                    const childVnode = renderItem(d.item);
+                              "#document-content",
+                              {
+                                  class: isVirtual ? "virtual-layout" : "browser-layout",
+                                  style: isVirtual
+                                      ? {
+                                            position: "relative",
+                                            width: `${totalWidth}px`,
+                                            height: "100%",
+                                            flexShrink: "0",
+                                        }
+                                      : {
+                                            position: "relative",
+                                            display: "flex",
+                                            gap: `${gap}px`,
+                                            paddingLeft: `${paddingLeft}px`,
+                                            paddingRight: `${paddingLeft}px`,
+                                            height: "100%",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            width: "max-content",
+                                        },
+                              },
+                              [
+                                  visibleItems.map((d) => {
+                                      const cardId = getCardId(d.item, d.index);
+                                      const childVnode = renderItem(d.item);
 
-                                    if (!childVnode.attrs)
-                                        childVnode.attrs = {};
-                                    if (!childVnode.attrs.style)
-                                        childVnode.attrs.style = {};
+                                      if (!childVnode.attrs) childVnode.attrs = {};
+                                      if (!childVnode.attrs.style) childVnode.attrs.style = {};
 
-                                    if (isVirtual) {
-                                        childVnode.attrs.style = Object.assign({}, childVnode.attrs.style, {
-                                            position: "absolute",
-                                            top: "50%",
-                                            "--x-pos": `${d.x}px`,
-                                        });
-                                    }
-                                    childVnode.key = cardId;
-                                    return childVnode;
-                                }),
-                            ]
-                        ),
+                                      if (isVirtual) {
+                                          childVnode.attrs.style = Object.assign({}, childVnode.attrs.style, {
+                                              position: "absolute",
+                                              top: "50%",
+                                              "--x-pos": `${d.x}px`,
+                                          });
+                                      }
+                                      childVnode.key = cardId;
+                                      return childVnode;
+                                  }),
+                              ]
+                          ),
                 ]
             );
         },

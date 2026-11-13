@@ -3,7 +3,6 @@
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted under the terms of the BSD 2-Clause License (see root LICENSE file).
 
-import "./rAF-override.js";
 import m from "mithril";
 import staticData from "./data/index.js";
 import { Controls } from "./components/Controls.js";
@@ -25,10 +24,9 @@ const App = () => {
     let activeIndex = 0;
     let layoutMode = "virtual";
     let dataVersion = 1;
-    const timelineHandle: { scrollToIndex?: (idx: number, behavior?: string) => void } = {};
+    const timelineHandle: { scrollToIndex?: (idx: number, behavior?: string, dataOverride?: any[]) => void } = {};
 
-    if (typeof window !== "undefined")
-        (window as any).stepScrollTimeline = () => {};
+    if (typeof window !== "undefined") (window as any).stepScrollTimeline = () => {};
 
     function startDataProcessing() {
         allData.forEach((card, index) => {
@@ -37,14 +35,10 @@ const App = () => {
                 return;
             }
             const identifier = card.id ? `ID: ${card.id}` : `index: ${index}`;
-            if (!card.title)
-                console.error(`Validation Error: Card (${identifier}) is missing a 'title'.`);
-            if (!Array.isArray(card.tags) || card.tags.length === 0)
-                console.error(`Validation Error: Card (${identifier}) must have at least one tag in the 'tags' array.`);
-            if (!card.description)
-                console.error(`Validation Error: Card (${identifier}) is missing a 'description'.`);
-            if (!card.links || !card.links.wikipedia)
-                console.error(`Validation Error: Card (${identifier}) is missing a Wikipedia link in 'links.wikipedia'.`);
+            if (!card.title) console.error(`Validation Error: Card (${identifier}) is missing a 'title'.`);
+            if (!Array.isArray(card.tags) || card.tags.length === 0) console.error(`Validation Error: Card (${identifier}) must have at least one tag in the 'tags' array.`);
+            if (!card.description) console.error(`Validation Error: Card (${identifier}) is missing a 'description'.`);
+            if (!card.links || !card.links.wikipedia) console.error(`Validation Error: Card (${identifier}) is missing a Wikipedia link in 'links.wikipedia'.`);
         });
 
         tagCounts = {};
@@ -63,8 +57,7 @@ const App = () => {
             try {
                 const params = new URLSearchParams(window.location.search);
                 const searchParam = params.get("search") || params.get("q");
-                if (searchParam !== null)
-                    searchQuery = searchParam;
+                if (searchParam !== null) searchQuery = searchParam;
 
                 const tabParam = params.get("tab") || params.get("tags") || params.get("tag") || params.get("filter");
                 if (tabParam !== null) {
@@ -72,18 +65,15 @@ const App = () => {
                         .split(",")
                         .map((t) => t.trim())
                         .filter((t) => activeCategories.includes(t));
-                    if (parsedTags.length > 0)
-                        activeFilters = parsedTags;
+                    if (parsedTags.length > 0) activeFilters = parsedTags;
                 }
                 const layoutParam = params.get("layout") || params.get("mode") || params.get("layoutMode");
-                if (layoutParam === "virtual" || layoutParam === "browser")
-                    layoutMode = layoutParam;
+                if (layoutParam === "virtual" || layoutParam === "browser") layoutMode = layoutParam;
 
                 const langParam = params.get("lang") || params.get("language") || params.get("l");
                 if (langParam !== null) {
                     const upperLang = langParam.toUpperCase() as any;
-                    if (["DE", "FR", "IT", "ZH", "JP"].includes(upperLang))
-                        setLanguage(upperLang);
+                    if (["DE", "FR", "IT", "ZH", "JP"].includes(upperLang) && upperLang !== getLanguage()) setLanguage(upperLang);
                 }
                 applyFilters();
 
@@ -118,7 +108,6 @@ const App = () => {
         }
 
         applyFilters();
-        updateURLParams();
     }
 
     function applyFilters() {
@@ -127,8 +116,7 @@ const App = () => {
 
     function updateFilterSelection() {
         let currentCardDate = null;
-        if (filteredData[activeIndex])
-            currentCardDate = filteredData[activeIndex].date;
+        if (filteredData[activeIndex]) currentCardDate = filteredData[activeIndex].date;
 
         applyFilters();
 
@@ -151,54 +139,8 @@ const App = () => {
         }
 
         dataVersion++;
-        if (timelineHandle.scrollToIndex)
-            timelineHandle.scrollToIndex(activeIndex, "instant");
-
-        updateURLParams();
-    }
-
-    let lastURLString = "";
-    function updateURLParams() {
-        if (!isStarted || typeof window === "undefined" || !window.history || !window.location)
-            return;
-        try {
-            const url = new URL(window.location.href);
-            if (searchQuery.trim().length > 0)
-                url.searchParams.set("search", searchQuery.trim());
-            else
-                url.searchParams.delete("search");
-
-            if (activeFilters.length > 0 && activeFilters.length < activeCategories.length)
-                url.searchParams.set("tags", activeFilters.join(","));
-            else
-                url.searchParams.delete("tags");
-
-            if (layoutMode !== "virtual")
-                url.searchParams.set("layout", layoutMode);
-            else
-                url.searchParams.delete("layout");
-
-            const currentLang = getLanguage();
-            if (currentLang && currentLang !== "DE")
-                url.searchParams.set("lang", currentLang);
-            else
-                url.searchParams.delete("lang");
-
-            if (filteredData[activeIndex] && filteredData[activeIndex].date)
-                url.searchParams.set("time", filteredData[activeIndex].date.substring(0, 4));
-            else if (allData[activeIndex] && allData[activeIndex].date)
-                url.searchParams.set("time", allData[activeIndex].date.substring(0, 4));
-            else
-                url.searchParams.delete("time");
-
-            const newURLString = url.toString();
-            if (newURLString !== lastURLString) {
-                lastURLString = newURLString;
-                window.history.replaceState(null, "", newURLString);
-            }
-        } catch (e) {
-            // Ignore in non-browser/test environments
-        }
+        if (timelineHandle.scrollToIndex) timelineHandle.scrollToIndex(activeIndex, "instant", filteredData);
+        else m.redraw.sync();
     }
 
     return {
@@ -264,7 +206,8 @@ const App = () => {
                                 m(
                                     "button#btn-explore.explore-btn",
                                     {
-                                        onclick: () => {
+                                        onclick: (e: any) => {
+                                            if (e) e.redraw = false;
                                             startDataProcessing();
                                             isStarted = true;
                                             m.redraw.sync();
@@ -300,16 +243,12 @@ const App = () => {
                         const titleStr = translateContent(card.title).toLowerCase();
                         const descStr = translateContent(card.description).toLowerCase();
                         let score = 0;
-                        if (titleStr.startsWith(query))
-                            score += 100;
-                        else if (titleStr.includes(query))
-                            score += 50;
-                        if (descStr.includes(query))
-                            score += 10;
+                        if (titleStr.startsWith(query)) score += 100;
+                        else if (titleStr.includes(query)) score += 50;
+                        if (descStr.includes(query)) score += 10;
 
                         const yearStr = card.date.substring(0, 4);
-                        if (yearStr.includes(query))
-                            score += 20;
+                        if (yearStr.includes(query)) score += 20;
 
                         return {
                             card,
@@ -365,32 +304,35 @@ const App = () => {
                     onSearchChange: (q: string) => {
                         searchQuery = q;
                         showSuggestions = q.trim().length > 0;
-                        updateURLParams();
+                        m.redraw.sync();
                     },
                     onFocusSearch: () => {
-                        if (searchQuery.trim().length > 0)
+                        if (searchQuery.trim().length > 0 && !showSuggestions) {
                             showSuggestions = true;
+                            m.redraw.sync();
+                        }
                     },
                     onCloseSuggestions: () => {
-                        showSuggestions = false;
+                        if (showSuggestions) {
+                            showSuggestions = false;
+                            m.redraw.sync();
+                        }
                     },
                     onLayoutModeChange: (mode: string) => {
                         layoutMode = mode;
                         dataVersion++;
-                        updateURLParams();
+                        m.redraw.sync();
                     },
                     onJumpToCard: (idx: number) => {
                         activeIndex = idx;
                         showSuggestions = false;
                         dataVersion++;
-                        updateURLParams();
-                        if (timelineHandle.scrollToIndex)
-                            timelineHandle.scrollToIndex(idx, "instant");
+                        if (timelineHandle.scrollToIndex) timelineHandle.scrollToIndex(idx, "instant", filteredData);
+                        else m.redraw.sync();
                     },
                     onFilterChange: (tag: string, checked: boolean) => {
                         if (checked) {
-                            if (!activeFilters.includes(tag))
-                                activeFilters.push(tag);
+                            if (!activeFilters.includes(tag)) activeFilters.push(tag);
                         } else {
                             activeFilters = activeFilters.filter((t) => t !== tag);
                         }
@@ -410,7 +352,6 @@ const App = () => {
                     },
                     onLanguageChange: (lang: string) => {
                         dataVersion++;
-                        updateURLParams();
                     },
                 }),
                 m("#main-content", [
@@ -424,14 +365,13 @@ const App = () => {
                         cardBuffer: 10,
                         onActiveIndexChange: (idx) => {
                             activeIndex = idx;
-                            updateURLParams();
                         },
                         renderItem: (item) =>
                             m(Card, {
                                 card: item,
                                 searchQuery: searchQuery,
                                 language: getLanguage(),
-                                isActive: (filteredData[activeIndex] && item.id === filteredData[activeIndex].id) || (allData[activeIndex] && item.id === allData[activeIndex].id),
+                                isActive: Boolean(filteredData[activeIndex] && item.id === filteredData[activeIndex].id),
                             }),
                     }),
                 ]),
@@ -442,9 +382,9 @@ const App = () => {
                     matchingCards: matchingCards,
                     activeIndex: activeIndex,
                     language: getLanguage(),
-                    onJumpToIndex: (idx, behavior = "smooth") => {
-                        if (timelineHandle.scrollToIndex)
-                            timelineHandle.scrollToIndex(idx, behavior);
+                    onJumpToIndex: (idx, behavior = "instant") => {
+                        activeIndex = idx;
+                        if (timelineHandle.scrollToIndex) timelineHandle.scrollToIndex(idx, behavior, filteredData);
                     },
                 }),
             ]);

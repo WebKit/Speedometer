@@ -11,12 +11,12 @@ let activeLanguage: Language = "DE";
 
 export const getLanguage = (): Language => activeLanguage;
 
-// IMPORTANT: setLanguage updates activeLanguage and calls m.redraw() to trigger live translation of cards across the timeline.
-// Do not remove m.redraw() or alter this state mechanism, as live translation requires Mithril to re-evaluate components on language switch.
+// IMPORTANT: setLanguage updates activeLanguage and calls m.redraw.sync() to trigger live translation of cards across the timeline.
+// Do not remove m.redraw.sync() or alter this state mechanism, as live translation requires Mithril to re-evaluate components on language switch.
 export const setLanguage = (lang: Language) => {
     activeLanguage = lang;
     try {
-        m.redraw();
+        m.redraw.sync();
     } catch (e) {
         // Ignore error in non-DOM/test environments
     }
@@ -183,20 +183,14 @@ export const t = (key: TranslationKey | string): string => {
 };
 
 export function translateContent(field: any): string {
-    if (!field)
-        return "";
+    if (!field) return "";
     if (typeof field === "object") {
         const lang = activeLanguage;
-        if (field[lang])
-            return field[lang];
-        if (lang === "JP" && field.JA)
-            return field.JA;
-        if (lang === "ZH" && field.TW)
-            return field.TW;
-        if (field.ZH)
-            return field.ZH;
-        if (field.TW)
-            return field.TW;
+        if (field[lang]) return field[lang];
+        if (lang === "JP" && field.JA) return field.JA;
+        if (lang === "ZH" && field.TW) return field.TW;
+        if (field.ZH) return field.ZH;
+        if (field.TW) return field.TW;
         return field.DE || Object.values(field)[0] || "";
     }
     return String(field);

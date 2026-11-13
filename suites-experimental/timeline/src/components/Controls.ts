@@ -31,10 +31,8 @@ export const Controls = {
         const categories = Object.keys(TAGS).filter((cat) => !hasCounts || (tagCounts[cat] || 0) > 0);
 
         const resetAllTags = () => {
-            if (onSelectAllTags)
-                onSelectAllTags();
-            else if (onResetFilters)
-                onResetFilters();
+            if (onSelectAllTags) onSelectAllTags();
+            else if (onResetFilters) onResetFilters();
         };
 
         return m("header#app-header", [
@@ -45,8 +43,10 @@ export const Controls = {
                 {
                     style: { width: "100%", height: "auto", padding: "8px 16px" },
                     ondblclick: (e: any) => {
-                        if (e && e.stopPropagation)
-                            e.stopPropagation();
+                        if (e) {
+                            e.redraw = false;
+                            if (e.stopPropagation) e.stopPropagation();
+                        }
                         resetAllTags();
                     },
                 },
@@ -57,7 +57,10 @@ export const Controls = {
                             style: { cursor: "pointer", userSelect: "none" },
                             title: "Double-click to select all tags",
                             ondblclick: (e: any) => {
-                                e.stopPropagation();
+                                if (e) {
+                                    e.redraw = false;
+                                    if (e.stopPropagation) e.stopPropagation();
+                                }
                                 resetAllTags();
                             },
                         },
@@ -67,7 +70,10 @@ export const Controls = {
                         "#filter-panel",
                         {
                             ondblclick: (e: any) => {
-                                e.stopPropagation();
+                                if (e) {
+                                    e.redraw = false;
+                                    if (e.stopPropagation) e.stopPropagation();
+                                }
                                 resetAllTags();
                             },
                         },
@@ -81,11 +87,16 @@ export const Controls = {
                                 {
                                     key: cat,
                                     class: `tag tag-${cat} ${activeFilters.includes(cat) ? "" : "inactive"}`,
-                                    onclick: () => onFilterChange(cat, !activeFilters.includes(cat)),
+                                    onclick: (e: any) => {
+                                        if (e) e.redraw = false;
+                                        onFilterChange(cat, !activeFilters.includes(cat));
+                                    },
                                     ondblclick: (e: any) => {
-                                        e.stopPropagation();
-                                        if (onFilterOnly)
-                                            onFilterOnly(cat);
+                                        if (e) {
+                                            e.redraw = false;
+                                            if (e.stopPropagation) e.stopPropagation();
+                                        }
+                                        if (onFilterOnly) onFilterOnly(cat);
                                     },
                                 },
                                 label
@@ -100,26 +111,32 @@ export const Controls = {
                         type: "text",
                         placeholder: t("searchPlaceholder"),
                         value: searchQuery,
-                        oninput: (e: any) => onSearchChange(e.target.value),
-                        onfocus: () => onFocusSearch(),
-                        onclick: () => onFocusSearch(),
-                        onblur: () => {
-                            setTimeout(() => {
-                                onCloseSuggestions();
-                                m.redraw();
-                            }, 200);
+                        oninput: (e: any) => {
+                            if (e) e.redraw = false;
+                            onSearchChange(e.target.value);
+                        },
+                        onfocus: (e: any) => {
+                            if (e) e.redraw = false;
+                            onFocusSearch();
+                        },
+                        onclick: (e: any) => {
+                            if (e) e.redraw = false;
+                            onFocusSearch();
+                        },
+                        onblur: (e: any) => {
+                            if (e) e.redraw = false;
+                            onCloseSuggestions();
                         },
                         onkeydown: (e: any) => {
-                            if (e.key === "Enter" && suggestions.length > 0)
-                                onJumpToCard(suggestions[0].index);
-                            else if (e.key === "Escape")
-                                onCloseSuggestions();
+                            if (e) e.redraw = false;
+                            if (e.key === "Enter" && suggestions.length > 0) onJumpToCard(suggestions[0].index);
+                            else if (e.key === "Escape") onCloseSuggestions();
                         },
                     }),
-                    showSuggestions
-                        && searchQuery
-                        && suggestions.length > 0
-                        && m(
+                    showSuggestions &&
+                        searchQuery &&
+                        suggestions.length > 0 &&
+                        m(
                             ".suggestions-panel",
                             {
                                 style: {
@@ -157,7 +174,10 @@ export const Controls = {
                                             "span.close-suggestions-btn",
                                             {
                                                 onclick: (e: any) => {
-                                                    e.stopPropagation();
+                                                    if (e) {
+                                                        e.redraw = false;
+                                                        if (e.stopPropagation) e.stopPropagation();
+                                                    }
                                                     onCloseSuggestions();
                                                 },
                                                 style: {
@@ -168,9 +188,11 @@ export const Controls = {
                                                     padding: "2px 6px",
                                                 },
                                                 onmouseover: (e: any) => {
+                                                    if (e) e.redraw = false;
                                                     e.target.style.color = "#fff";
                                                 },
                                                 onmouseout: (e: any) => {
+                                                    if (e) e.redraw = false;
                                                     e.target.style.color = "#64748b";
                                                 },
                                             },
@@ -184,10 +206,14 @@ export const Controls = {
                                         {
                                             key: s.index,
                                             onmousedown: (e: any) => {
-                                                e.preventDefault();
+                                                if (e) {
+                                                    e.redraw = false;
+                                                    if (e.preventDefault) e.preventDefault();
+                                                }
                                                 onJumpToCard(s.index);
                                             },
-                                            onclick: () => {
+                                            onclick: (e: any) => {
+                                                if (e) e.redraw = false;
                                                 onJumpToCard(s.index);
                                             },
                                             style: {
@@ -200,10 +226,12 @@ export const Controls = {
                                                 textAlign: "left",
                                             },
                                             onmouseover: (e: any) => {
+                                                if (e) e.redraw = false;
                                                 e.target.style.background = "rgba(56, 189, 248, 0.15)";
                                                 e.target.style.color = "#38bdf8";
                                             },
                                             onmouseout: (e: any) => {
+                                                if (e) e.redraw = false;
                                                 e.target.style.background = "";
                                                 e.target.style.color = "";
                                             },
@@ -221,7 +249,10 @@ export const Controls = {
                             "button.lang-btn",
                             {
                                 class: layoutMode === "browser" ? "active" : "",
-                                onclick: () => onLayoutModeChange("browser"),
+                                onclick: (e: any) => {
+                                    if (e) e.redraw = false;
+                                    onLayoutModeChange("browser");
+                                },
                             },
                             "Native Composited"
                         ),
@@ -229,7 +260,10 @@ export const Controls = {
                             "button.lang-btn",
                             {
                                 class: layoutMode === "virtual" ? "active" : "",
-                                onclick: () => onLayoutModeChange("virtual"),
+                                onclick: (e: any) => {
+                                    if (e) e.redraw = false;
+                                    onLayoutModeChange("virtual");
+                                },
                             },
                             "JS Virtualized"
                         ),
@@ -248,10 +282,10 @@ export const Controls = {
                                 "button.lang-btn",
                                 {
                                     class: getLanguage() === lang ? "active" : "",
-                                    onclick: () => {
+                                    onclick: (e: any) => {
+                                        if (e) e.redraw = false;
+                                        if (vnode.attrs.onLanguageChange) vnode.attrs.onLanguageChange(lang);
                                         setLanguage(lang);
-                                        if (vnode.attrs.onLanguageChange)
-                                            vnode.attrs.onLanguageChange(lang);
                                     },
                                 },
                                 lang
