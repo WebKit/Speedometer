@@ -59,14 +59,18 @@ class MainBenchmarkClient {
     }
 
     async step() {
+        if (this._state === BENCHMARK_STATE.PRELOADING)
+            return;
         const currentSteppingResolver = this._steppingResolver;
         this._steppingPromise = new Promise((resolve) => {
             this._steppingResolver = resolve;
         });
         currentSteppingResolver?.();
         if (!this.isRunning()) {
-            await this._startBenchmark();
-            this._showSection("#running");
+            if (await this._startBenchmark())
+                this._showSection("#running");
+            else
+                this._clearStepping();
         }
     }
 
@@ -87,7 +91,7 @@ class MainBenchmarkClient {
     }
 
     async _startBenchmark() {
-        if (this.isRunning())
+        if (this.isRunning() || this._state === BENCHMARK_STATE.PRELOADING)
             return false;
 
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
@@ -110,6 +114,8 @@ class MainBenchmarkClient {
             this._developerModeContainer?.remove();
 
         await this._preloadResources(benchmarkConfigurator);
+        if (this._state === BENCHMARK_STATE.ERROR)
+            return false;
 
         this._progressCompleted = document.getElementById("progress-completed");
         if (params.iterationCount < 50) {
@@ -405,10 +411,11 @@ class MainBenchmarkClient {
         if (!params.developerMode)
             await this._preloadResources(benchmarkConfigurator);
 
-        if (params.startAutomatically)
-            this.start();
-        else
+        if (this._state !== BENCHMARK_STATE.ERROR) {
             this._setBenchmarkState(BENCHMARK_STATE.READY);
+            if (params.startAutomatically)
+                await this.start();
+        }
 
         this._isInitialized = true;
         window.dispatchEvent(new Event("SpeedometerReady"));
@@ -416,10 +423,14 @@ class MainBenchmarkClient {
 
     async _preloadResources(benchmarkConfigurator) {
         await this._resourcePreloader.stopPreloading();
-        if (this._resourcePreloader.isCached())
+        await this._resourcePreloader.setup();
+        if (!params.preload)
             return;
 
         const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
+        if (this._resourcePreloader.isCached(enabledSuites))
+            return;
+
         const clearCache = !params.isDefault();
         const preloadStatusUpdater = new PreloadStatusUpdater();
 
@@ -427,6 +438,8 @@ class MainBenchmarkClient {
             this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
             preloadStatusUpdater.start();
             await this._resourcePreloader.preloadSuites(enabledSuites, clearCache, preloadStatusUpdater.onProgress.bind(preloadStatusUpdater));
+        } catch (error) {
+            this.handleError(error);
         } finally {
             preloadStatusUpdater.stop();
         }
@@ -438,18 +451,21 @@ class MainBenchmarkClient {
         const startButtons = document.querySelectorAll(".start-tests-button");
         if (state === BENCHMARK_STATE.PRELOADING) {
             startButtons.forEach((btn) => {
+                btn.disabled = true;
                 btn.innerHTML = "<div>Preloading</div>";
             });
-        } else if (state !== BENCHMARK_STATE.RUNNING) {
+        } else if (state === BENCHMARK_STATE.RUNNING) {
             document.body.style.removeProperty("--preload-progress");
             startButtons.forEach((btn) => {
-                btn.innerHTML = "<div>Start Test</div>";
+                btn.disabled = true;
             });
-            if (state === BENCHMARK_STATE.READY) {
-                startButtons.forEach((btn) => {
-                    btn.disabled = false;
-                });
-            }
+        } else {
+            document.body.style.removeProperty("--preload-progress");
+            const isDisabled = state !== BENCHMARK_STATE.READY && state !== BENCHMARK_STATE.DONE && state !== BENCHMARK_STATE.IDLE;
+            startButtons.forEach((btn) => {
+                btn.innerHTML = "<div>Start Test</div>";
+                btn.disabled = isDisabled;
+            });
         }
     }
 
@@ -473,7 +489,7 @@ class MainBenchmarkClient {
 
     _logoClickHandler(event) {
         // Prevent any accidental UI changes during benchmark runs.
-        if (!this.isRunning())
+        if (!this.isRunning() && this._state !== BENCHMARK_STATE.PRELOADING)
             this._showSection("#home");
         event.preventDefault();
         return false;

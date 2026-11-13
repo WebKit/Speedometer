@@ -4,54 +4,124 @@ import { params } from "./shared/params.mjs";
 const PRELOAD_TIMEOUT_MS = 60_000;
 
 export class ResourcePreloader {
-    constructor() {
+    constructor(customParams = params) {
+        this._params = customParams;
         this._registration = null;
         this._sw = null;
-        this._preloadParams = "";
+        this._preloadParams = null;
         this._pendingRequest = null;
         this._onPreloadProgress = null;
+        this._activePreloadPromise = null;
+        this._nextRequestId = 1;
+        this._boundOnMessage = this.onMessage.bind(this);
+        this._messageListenerAdded = false;
     }
 
-    isCached() {
-        if (!params.preload)
-            return true;
-        return params.toSearchParams() === this._preloadParams;
+    _isServiceWorkerSupported() {
+        return "serviceWorker" in navigator && Boolean(navigator.serviceWorker);
+    }
+
+    _serializeParams(suitesOrParams = this._params, maybeSuites = undefined) {
+        const targetParams = suitesOrParams && typeof suitesOrParams.toSearchParams === "function" ? suitesOrParams : this._params;
+        const suites = Array.isArray(suitesOrParams) ? suitesOrParams : maybeSuites;
+        const searchParamsStr = targetParams.toSearchParams();
+        if (!Array.isArray(suites))
+            return searchParamsStr;
+        const suiteNames = suites
+            .filter((s) => typeof s === "string" ? true : s.enabled !== false)
+            .map((s) => typeof s === "string" ? s : s.name)
+            .join(",");
+        return `${searchParamsStr}|suites:${suiteNames}`;
+    }
+
+    isCached(enabledSuites) {
+        if (!this._params.preload || (!this._registration && !this._sw) || !this._preloadParams)
+            return false;
+        if (enabledSuites === undefined)
+            return this._preloadParams.split("|suites:")[0] === this._params.toSearchParams();
+        return this._preloadParams === this._serializeParams(this._params, enabledSuites);
     }
 
     async setup() {
-        if (!params.preload) {
-            await this._unregisterOldServiceWorkers();
+        if (!this._isServiceWorkerSupported())
+            return;
+
+        if (!this._params.preload) {
+            if (this._registration || this._sw)
+                await this._unregisterOldServiceWorkers();
             return;
         }
+
+        if (this._registration && this._sw)
+            return;
 
         await this._registerServiceWorker();
         this._setupMessageListener();
     }
 
     async _unregisterOldServiceWorkers() {
-        const existingRegistrations = await navigator.serviceWorker.getRegistrations();
-        for (const existing of existingRegistrations)
-            await existing.unregister();
+        this._removeMessageListener();
+        const activeRegistration = this._registration;
         this._registration = null;
         this._sw = null;
+        this._preloadParams = null;
+
+        if (!this._isServiceWorkerSupported())
+            return;
+
+        const expectedScope = new URL("./", window.location.href).href;
+        let unregisteredActive = false;
+        if (typeof navigator.serviceWorker.getRegistrations === "function") {
+            const existingRegistrations = await navigator.serviceWorker.getRegistrations();
+            for (const existing of existingRegistrations) {
+                if (existing.scope === expectedScope) {
+                    await existing.unregister();
+                    if (existing === activeRegistration)
+                        unregisteredActive = true;
+                }
+            }
+        }
+        if (activeRegistration && !unregisteredActive && typeof activeRegistration.unregister === "function") {
+            if (!activeRegistration.scope || activeRegistration.scope === expectedScope)
+                await activeRegistration.unregister();
+        }
+
     }
 
     async _registerServiceWorker() {
+        if (!this._isServiceWorkerSupported())
+            return;
+
         this._registration = await navigator.serviceWorker.register("./sw.mjs", { type: "module" });
         await navigator.serviceWorker.ready;
-        this._sw = navigator.serviceWorker.controller || this._registration.active;
+        this._sw = navigator.serviceWorker.controller || this._registration?.active || null;
     }
 
     _setupMessageListener() {
-        navigator.serviceWorker.addEventListener("message", this.onMessage.bind(this));
+        if (!this._isServiceWorkerSupported() || this._messageListenerAdded)
+            return;
+        navigator.serviceWorker.addEventListener("message", this._boundOnMessage);
+        this._messageListenerAdded = true;
     }
 
-    _validateMessageRouting(data) {
+    _removeMessageListener() {
+        if (!this._isServiceWorkerSupported() || !this._messageListenerAdded)
+            return;
+        navigator.serviceWorker.removeEventListener("message", this._boundOnMessage);
+        this._messageListenerAdded = false;
+    }
+
+    _isValidMessage(data) {
         if (!this._pendingRequest)
-            throw new Error(`Received unexpected ServiceWorker message without any pending request: ${data.type}`);
+            return false;
+
+        if (data.requestId !== undefined && data.requestId !== this._pendingRequest.requestId)
+            return false;
 
         if (this._pendingRequest.type !== data.type)
-            throw new Error(`Received ServiceWorker message type '${data.type}' but expected '${this._pendingRequest.type}'`);
+            return false;
+
+        return true;
     }
 
     onMessage(event) {
@@ -62,10 +132,11 @@ export class ResourcePreloader {
             return;
         }
 
-        this._validateMessageRouting(data);
+        if (!this._isValidMessage(data))
+            return;
 
         if (data.status === SW_MESSAGES.PRELOAD_PROGRESS) {
-            this._onPreloadProgress(data);
+            this._onPreloadProgress?.(data);
             return;
         }
 
@@ -82,10 +153,10 @@ export class ResourcePreloader {
 
     _postMessage(messageData, timeoutMs = 0) {
         if (!this._sw)
-            return Promise.resolve();
+            return Promise.resolve(null);
 
         if (this._pendingRequest) {
-            const isCooperativePreemption = this._pendingRequest.type === SW_MESSAGES.PRELOAD_SUITES && messageData.type === SW_MESSAGES.STOP_PRELOADING;
+            const isCooperativePreemption = this._pendingRequest.type === SW_MESSAGES.PRELOAD_SUITES || messageData.type === SW_MESSAGES.STOP_PRELOADING;
 
             const logMessage = `Already waiting for ${this._pendingRequest.type}, overriding with ${messageData.type}`;
             if (isCooperativePreemption) {
@@ -96,18 +167,21 @@ export class ResourcePreloader {
             }
         }
 
+        const requestId = this._nextRequestId++;
+        const payload = { ...messageData, requestId };
+
         return new Promise((resolve, reject) => {
             let timeoutId = null;
 
             if (timeoutMs > 0) {
                 timeoutId = setTimeout(() => {
-                    if (this._pendingRequest?.type === messageData.type)
+                    if (this._pendingRequest?.requestId === requestId)
                         this._rejectPendingRequest(`Service worker message timed out: ${messageData.type}`);
                 }, timeoutMs);
             }
 
-            this._pendingRequest = { type: messageData.type, resolve, reject, timeoutId };
-            this._sw.postMessage(messageData);
+            this._pendingRequest = { type: messageData.type, requestId, resolve, reject, timeoutId };
+            this._sw.postMessage(payload);
         });
     }
 
@@ -131,10 +205,15 @@ export class ResourcePreloader {
     }
 
     async teardown() {
+        this._preloadParams = null;
+        if (!this._sw && !this._registration)
+            return;
+
         await this.stopPreloading();
 
         const response = await this.getFailedRequests();
-        if (response.requests?.length > 0) {
+        await this._unregisterOldServiceWorkers();
+        if (response?.requests?.length > 0) {
             console.warn("The following requests failed during the benchmark and bypassed the cache:");
             console.warn(response.requests.join("\n"));
             throw new Error("The benchmark had missing resources that were not cached. Check the console for details.");
@@ -145,19 +224,34 @@ export class ResourcePreloader {
         if (!this._sw)
             return;
 
+        if (this._activePreloadPromise || this._pendingRequest?.type === SW_MESSAGES.PRELOAD_SUITES)
+            this._preloadParams = null;
+
         await this._postMessage({ type: SW_MESSAGES.STOP_PRELOADING });
         if (this._activePreloadPromise)
             await this._activePreloadPromise;
     }
 
     async preloadSuites(suites, clearCache = true, onProgress) {
+        if (!this._isServiceWorkerSupported())
+            return undefined;
+
+        if (!this._params.preload) {
+            if (this._registration || this._sw)
+                await this._unregisterOldServiceWorkers();
+            return undefined;
+        }
+
+        if (!this._sw && !this._registration)
+            await this.setup();
+
         if (!this._sw)
             return undefined;
 
-        if (this._onPreloadProgress)
+        if (this._activePreloadPromise || this._onPreloadProgress)
             throw new Error("Preload already active");
 
-        this._onPreloadProgress = onProgress;
+        this._preloadParams = null;
 
         const suitesData = suites
             .filter((s) => s.resources)
@@ -170,27 +264,32 @@ export class ResourcePreloader {
         if (suitesData.length === 0)
             return undefined;
 
+        this._onPreloadProgress = onProgress;
         const startTime = performance.now();
-        this._activePreloadPromise = this._postMessage({ type: SW_MESSAGES.PRELOAD_SUITES, suites: suitesData, clearCache }, PRELOAD_TIMEOUT_MS);
-        const response = await this._activePreloadPromise;
-        this._activePreloadPromise = null;
+        try {
+            this._activePreloadPromise = this._postMessage({ type: SW_MESSAGES.PRELOAD_SUITES, suites: suitesData, clearCache }, PRELOAD_TIMEOUT_MS);
+            const response = await this._activePreloadPromise;
 
-        if (response?.status === SW_MESSAGES.PRELOAD_DONE) {
-            const timeTakenMs = performance.now() - startTime;
-            const sizeMB = (response.transferredSize / (1024 * 1024)).toFixed(2);
-            const timeSec = (timeTakenMs / 1000).toFixed(2);
-            console.log(`Preloaded ${response.count} files (${sizeMB} MB transferred) in ${timeSec}s`);
+            if (response?.status === SW_MESSAGES.PRELOAD_DONE) {
+                const timeTakenMs = performance.now() - startTime;
+                const sizeMB = ((response.transferredSize || 0) / (1024 * 1024)).toFixed(2);
+                const timeSec = (timeTakenMs / 1000).toFixed(2);
+                console.log(`Preloaded ${response.count} files (${sizeMB} MB transferred) in ${timeSec}s`);
+                this._preloadParams = this._serializeParams(this._params, suites);
+            }
+            return response;
+        } finally {
+            this._activePreloadPromise = null;
+            this._onPreloadProgress = null;
         }
-        this._preloadParams = params.toSearchParams();
-        this._onPreloadProgress = undefined;
-        return undefined;
     }
 
     async getFailedRequests() {
         if (!this._sw)
             return { requests: [] };
 
-        return this._postMessage({ type: SW_MESSAGES.GET_FAILED_REQUESTS });
+        const response = await this._postMessage({ type: SW_MESSAGES.GET_FAILED_REQUESTS });
+        return response || { requests: [] };
     }
 }
 
@@ -206,10 +305,20 @@ export class PreloadStatusUpdater {
     }
 
     start() {
-        this._progressCompletedElement.value = 0;
-        this._infoLabelElement.textContent = "";
-        this._infoProgressElement.textContent = "";
-        document.body.style.setProperty("--preload-progress", "0%");
+        if (this._rafId) {
+            cancelAnimationFrame(this._rafId);
+            this._rafId = null;
+        }
+        this._latestData = null;
+        if (this._progressCompletedElement) {
+            this._progressCompletedElement.max = 1;
+            this._progressCompletedElement.value = 0;
+        }
+        if (this._infoLabelElement)
+            this._infoLabelElement.textContent = "";
+        if (this._infoProgressElement)
+            this._infoProgressElement.textContent = "";
+        document.body?.style.setProperty("--preload-progress", "0%");
     }
 
     onProgress(data) {
@@ -225,13 +334,17 @@ export class PreloadStatusUpdater {
             return;
 
         const { loaded, total, url, suiteName } = data;
-        document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
-        this._progressCompletedElement.max = total;
-        this._progressCompletedElement.value = loaded;
-        const match = url.match(/(?:suites(?:-experimental)?|resources)\/(.+)$/);
+        document.body?.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
+        if (this._progressCompletedElement) {
+            this._progressCompletedElement.max = total > 0 ? total : 1;
+            this._progressCompletedElement.value = total > 0 ? loaded : 0;
+        }
+        const match = typeof url === "string" ? url.match(/(?:suites(?:-experimental)?|resources)\/(.+)$/) : null;
         const filename = match ? match[1] : "";
-        this._infoLabelElement.textContent = `${suiteName}: ${filename}`;
-        this._infoProgressElement.textContent = `${loaded} / ${total}`;
+        if (this._infoLabelElement)
+            this._infoLabelElement.textContent = `${suiteName}: ${filename}`;
+        if (this._infoProgressElement)
+            this._infoProgressElement.textContent = `${loaded} / ${total}`;
     }
 
     stop() {

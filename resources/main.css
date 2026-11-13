@@ -474,15 +474,6 @@ button.show-about {
     display: none;
 }
 
-#preload-progress {
-    display: none;
-}
-
-:root[data-benchmark-state="PRELOADING"] #preload-progress,
-:root[data-benchmark-state="PRELOADING"] #preload-info {
-    display: block;
-}
-
 #progress,
 #preload-progress {
     position: absolute;
@@ -1044,11 +1035,6 @@ section#about .note {
     background-size: 20px 20px;
     animation: barber-pole 1s linear infinite;
     pointer-events: none;
-}
-
-[data-benchmark-state="PRELOADING"] .developer-mode .start-tests-button {
-    pointer-events: auto;
-    cursor: pointer;
 }
 
 [data-benchmark-state="PRELOADING"] .start-tests-button > div {

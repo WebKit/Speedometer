@@ -11,7 +11,8 @@ const WORKER_STATE = {
 
 function replyToClient(event, status, msg = {}) {
     const type = event.data?.type;
-    event.source?.postMessage({ type, status, ...msg });
+    const requestId = event.data?.requestId;
+    event.source?.postMessage({ type, status, requestId, ...msg });
 }
 
 function replyError(event, message) {
@@ -23,13 +24,17 @@ async function handleStopPreloadingMessage(event) {
     replyToClient(event, SW_MESSAGES.STOP_PRELOADING);
 }
 
-async function stopPreloading(currentClientId) {
+function abortActivePreload() {
     if (WORKER_STATE.abortController) {
         WORKER_STATE.abortController.abort();
         WORKER_STATE.abortController = null;
     }
-    await stopAllOtherClients(currentClientId);
     WORKER_STATE.requestLimiter.clear();
+}
+
+async function stopPreloading(currentClientId) {
+    abortActivePreload();
+    await stopAllOtherClients(currentClientId);
 }
 
 async function stopAllOtherClients(currentClientId) {
@@ -42,20 +47,31 @@ async function stopAllOtherClients(currentClientId) {
 }
 
 async function handlePreloadSuitesMessage(event, { suites = [], clearCache = true }) {
+    abortActivePreload();
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+    WORKER_STATE.abortController = abortController;
+
     try {
-        await stopPreloading(event.source?.id);
+        await stopAllOtherClients(event.source?.id);
+        signal.throwIfAborted();
         // debounce on progress callbacks to limit overhead.
         const MAX_RATE_MS = 100;
         const onProgress = (payload) => {
-            replyToClient(event, SW_MESSAGES.PRELOAD_PROGRESS, payload);
+            if (!signal.aborted)
+                replyToClient(event, SW_MESSAGES.PRELOAD_PROGRESS, payload);
         };
-        const { transferredSize, count } = await preloadSuites(suites, clearCache, throttle(onProgress, MAX_RATE_MS));
+        const { transferredSize, count } = await preloadSuites(suites, clearCache, throttle(onProgress, MAX_RATE_MS), signal);
+        signal.throwIfAborted();
         replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { transferredSize, count });
     } catch (error) {
-        if (error.name === "AbortError")
+        if (error.name === "AbortError" || signal.aborted)
             return;
         console.error("Error during preload:", error);
         replyError(event, error.message || "Failed to preload resources.");
+    } finally {
+        if (WORKER_STATE.abortController === abortController)
+            WORKER_STATE.abortController = null;
     }
 }
 
@@ -70,24 +86,25 @@ function throttle(callback, max_rate_ms) {
     };
 }
 
-async function preloadSuites(suites, clearCache, onProgress) {
-    const abortController = new AbortController();
-    const signal = abortController.signal;
-    WORKER_STATE.abortController = abortController;
-
+async function preloadSuites(suites, clearCache, onProgress, signal) {
     WORKER_STATE.failedRequests.clear();
-    if (clearCache)
+    if (clearCache) {
         await caches.delete(CACHE_NAME);
+        signal.throwIfAborted();
+    }
 
     const cache = await caches.open(CACHE_NAME);
+    signal.throwIfAborted();
     const urlsToCache = await getUrlsToCache(suites, signal);
+    signal.throwIfAborted();
     const total = urlsToCache.length;
 
     let loaded = 0;
     let transferredSize = 0;
 
-    const promises = urlsToCache.map(async (item, index) => {
+    const promises = urlsToCache.map(async (item) => {
         const size = await fetchAndCache(cache, item.url, signal);
+        signal.throwIfAborted();
         transferredSize += size;
         loaded++;
         if (!signal.aborted)
@@ -95,6 +112,7 @@ async function preloadSuites(suites, clearCache, onProgress) {
     });
 
     await Promise.all(promises);
+    signal.throwIfAborted();
     return { transferredSize, count: urlsToCache.length };
 }
 
@@ -117,11 +135,14 @@ async function parseSuiteResources(suite, signal) {
         throw new Error(errorMsg);
     }
     const text = await response.text();
+    signal.throwIfAborted();
     return text
         .trim()
         .split("\n")
+        .map((resourceUrl) => resourceUrl.trim())
+        .filter(Boolean)
         .map((resourceUrl) => ({
-            url: new URL(resourceUrl.trim(), suite.url).href,
+            url: new URL(resourceUrl, suite.resources).href,
             suiteName: suite.name,
         }));
 }
@@ -133,19 +154,25 @@ async function fetchAndCache(cache, url, signal) {
         signal.throwIfAborted();
         const request = new Request(url, { cache: "no-cache", signal });
         const existing = await cache.match(request, { ignoreSearch: true });
+        signal.throwIfAborted();
         if (existing)
             return getResponseSize(existing);
 
         try {
             const response = await fetch(request);
-            if (!response.ok)
+            signal.throwIfAborted();
+            if (!response.ok) {
+                console.error(`Cache failed for ${url}: HTTP ${response.status}`);
+                WORKER_STATE.failedRequests.add(url);
                 return 0;
+            }
             const size = getResponseSize(response);
             await cache.put(request, response);
             return size;
         } catch (e) {
             signal.throwIfAborted();
             console.error("Cache failed for", url, e);
+            WORKER_STATE.failedRequests.add(url);
             return 0;
         }
     });

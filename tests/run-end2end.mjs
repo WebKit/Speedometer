@@ -17,12 +17,49 @@ async function testPage(url) {
     console.log(`Testing: ${url}`);
     await driver.get(`http://localhost:${port}/${url}`);
 
-    await driver.executeAsyncScript((callback) => {
-        if (globalThis.benchmarkClient?.isInitialized)
-            callback();
-        else
-            globalThis.addEventListener("SpeedometerReady", () => callback(), { once: true });
+    const initResult = await driver.executeAsyncScript((callback) => {
+        if (globalThis.benchmarkClient?.isInitialized) {
+            callback({});
+            return;
+        }
+        if (globalThis.benchmarkClient?.hasFinished?.()) {
+            callback({
+                error: {
+                    message: document.getElementById("invalid-score-text")?.textContent || "Benchmark failed during initialization",
+                },
+            });
+            return;
+        }
+        globalThis.addEventListener("SpeedometerReady", () => callback({}), { once: true });
+        globalThis.addEventListener("error", (event) => {
+            callback({
+                error: {
+                    message: event.message || "Unknown Runtime Error",
+                    source: event.filename,
+                    lineno: event.lineno,
+                    colno: event.colno,
+                    stack: event.error?.stack,
+                },
+            });
+        });
+        globalThis.addEventListener("unhandledrejection", (e) => {
+            const reason = e.reason;
+            const message = reason instanceof Error ? reason.message : typeof reason === "object" && reason !== null ? JSON.stringify(reason) : String(reason);
+            callback({
+                error: {
+                    message: `Unhandled Rejection: ${message}`,
+                    stack: reason?.stack,
+                },
+            });
+        });
     });
+
+    if (initResult?.error) {
+        const { error } = initResult;
+        const stackTrace = error.stack ? `\nBrowser Stack Trace:\n${error.stack}` : "";
+        const location = error.source ? ` at ${error.source}:${error.lineno}:${error.colno}` : "";
+        throw new Error(`${error.message}${location}${stackTrace}`);
+    }
 
     console.log("    - Awaiting Benchmark");
     const { error, metrics } = await driver.executeAsyncScript((callback) => {
