@@ -59,6 +59,10 @@ class MainBenchmarkClient {
         return this._state === BENCHMARK_STATE.DONE || this.hasError();
     }
 
+    isDisabled() {
+        return this._state !== BENCHMARK_STATE.READY && this._state !== BENCHMARK_STATE.DONE && this._state !== BENCHMARK_STATE.IDLE;
+    }
+
     async start() {
         if (this.isPreloading())
             return;
@@ -475,7 +479,7 @@ class MainBenchmarkClient {
             });
         } else {
             document.body.style.removeProperty("--preload-progress");
-            const isDisabled = state !== BENCHMARK_STATE.READY && state !== BENCHMARK_STATE.DONE && state !== BENCHMARK_STATE.IDLE;
+            const isDisabled = this.isDisabled();
             startButtons.forEach((btn) => {
                 btn.innerHTML = "<div>Start Test</div>";
                 btn.disabled = isDisabled;
