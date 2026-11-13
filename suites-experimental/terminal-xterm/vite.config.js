@@ -5,6 +5,7 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
 import fs from "fs";
+import { generateResourcesFile } from "../../resources/shared/generate-resources.mjs";
 
 /**
  * Rollup plugin to ingest source maps from node_modules dependencies (@xterm).
@@ -46,6 +47,7 @@ function renameIndexHtml() {
             const licenseDest = resolve(__dirname, "dist/assets/DejaVuSansMono-LICENSE.txt");
             if (fs.existsSync(licenseSrc) && fs.existsSync(resolve(__dirname, "dist/assets")))
                 fs.copyFileSync(licenseSrc, licenseDest);
+            generateResourcesFile(resolve(__dirname, "dist"));
         },
     };
 }
