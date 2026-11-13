@@ -5,9 +5,14 @@ import type {
 } from 'react';
 import { Expand, Shrink } from 'lucide-react';
 
-/** Renders one of the project's own SVG assets (never message content). */
-export function RawIcon({ svg, className }: { svg: string; className?: string }) {
-  return <span className={className} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
+import type { SvgComponent } from '../types';
+
+/**
+ * Renders one of the project's own SVG assets (imported with `?react`).
+ * The wrapper span carries the sizing/colour class that the CSS targets.
+ */
+export function SvgIcon({ icon: Icon, className }: { icon: SvgComponent; className?: string }) {
+  return <span className={className} aria-hidden="true"><Icon /></span>;
 }
 
 interface AppButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {

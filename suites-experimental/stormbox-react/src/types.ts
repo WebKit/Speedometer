@@ -1,3 +1,8 @@
+import type { FunctionComponent, SVGProps } from 'react';
+
+/** A static SVG asset imported as a React component via `*.svg?react`. */
+export type SvgComponent = FunctionComponent<SVGProps<SVGSVGElement>>;
+
 export type MailboxRole =
   | 'inbox'
   | 'sent'

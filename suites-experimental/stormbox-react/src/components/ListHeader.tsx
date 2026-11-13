@@ -4,10 +4,10 @@ import {
   Ellipsis, Mail, MailOpen, Star, Tag, Trash2, X,
 } from 'lucide-react';
 
-import archiveIcon from '../assets/icons/tb-folder-archive.svg?raw';
-import junkIcon from '../assets/icons/tb-folder-spam.svg?raw';
-import type { Folder } from '../types';
-import { AppDropdown, RawIcon, closeContainingDropdown, menuKeyDown } from './base';
+import archiveIcon from '../assets/icons/tb-folder-archive.svg?react';
+import junkIcon from '../assets/icons/tb-folder-spam.svg?react';
+import type { Folder, SvgComponent } from '../types';
+import { AppDropdown, SvgIcon, closeContainingDropdown, menuKeyDown } from './base';
 
 type IconComponent = ComponentType<{ size?: number; strokeWidth?: number; fill?: string }>;
 
@@ -20,7 +20,7 @@ export interface BulkActionItem {
   title: string;
   ariaLabel: string;
   icon: IconComponent | null;
-  rawIcon?: string;
+  svgIcon?: SvgComponent;
   variant: 'default' | 'danger' | 'star' | 'whitelist' | 'tag';
   pressed?: boolean;
   disabled?: boolean;
@@ -61,13 +61,13 @@ export function bulkActionItems({
   }
   if (!anyScheduled && role !== 'archive') {
     items.push({
-      id: 'archive', label: 'Archive', title: 'Archive', ariaLabel: 'Archive', icon: null, rawIcon: archiveIcon,
+      id: 'archive', label: 'Archive', title: 'Archive', ariaLabel: 'Archive', icon: null, svgIcon: archiveIcon,
       variant: 'default', slots: 1, overflowRank: 5, run: handlers.archive,
     });
   }
   if (!anyScheduled && role !== 'junk') {
     items.push({
-      id: 'junk', label: 'Mark as junk', title: 'Junk', ariaLabel: 'Mark as junk', icon: null, rawIcon: junkIcon,
+      id: 'junk', label: 'Mark as junk', title: 'Junk', ariaLabel: 'Mark as junk', icon: null, svgIcon: junkIcon,
       variant: 'default', slots: 1, overflowRank: 2, run: handlers.junk,
     });
   }
@@ -148,10 +148,10 @@ export function MessageBulkActions({ items, renderTag }: { items: readonly BulkA
             onClick={() => item.run()}
           >
             {item.variant === 'whitelist' ? item.label : null}
-            {item.variant !== 'whitelist' && item.rawIcon ? (
-              <RawIcon className="msg-list__bulk-icon msg-list__bulk-icon--folder" svg={item.rawIcon} />
+            {item.variant !== 'whitelist' && item.svgIcon ? (
+              <SvgIcon className="msg-list__bulk-icon msg-list__bulk-icon--folder" icon={item.svgIcon} />
             ) : null}
-            {item.variant !== 'whitelist' && !item.rawIcon && Icon ? (
+            {item.variant !== 'whitelist' && !item.svgIcon && Icon ? (
               <Icon
                 size={item.variant === 'star' ? 17 : item.variant === 'danger' ? 18 : 16}
                 strokeWidth={item.variant === 'danger' ? 1.65 : 1.75}
@@ -169,7 +169,7 @@ export interface MoreMenuItem {
   id: string;
   label: string;
   icon?: IconComponent | null;
-  rawIcon?: string;
+  svgIcon?: SvgComponent;
   disabled?: boolean;
   danger?: boolean;
   run: () => void;
@@ -223,8 +223,8 @@ export function MessageListMoreMenu({ groups, label = 'More actions' }: { groups
                     }}
                   >
                     <span className="msg-list__more-icon" aria-hidden="true">
-                      {item.rawIcon
-                        ? <RawIcon className="msg-list__more-icon-raw" svg={item.rawIcon} />
+                      {item.svgIcon
+                        ? <SvgIcon className="msg-list__more-icon-raw" icon={item.svgIcon} />
                         : Icon ? <Icon size={16} strokeWidth={1.75} /> : null}
                     </span>
                     <span className="msg-list__more-label">{item.label}</span>

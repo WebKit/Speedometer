@@ -302,7 +302,7 @@ export function MessageList({ quickFilterQuery }: { quickFilterQuery: string }) 
     moreMenuGroups.push({
       id: 'selection',
       items: bulkActions.overflow.map((item) => ({
-        id: item.id, label: item.label, icon: item.icon, rawIcon: item.rawIcon, disabled: item.disabled, danger: item.variant === 'danger', run: item.run,
+        id: item.id, label: item.label, icon: item.icon, svgIcon: item.svgIcon, disabled: item.disabled, danger: item.variant === 'danger', run: item.run,
       })),
     });
   }

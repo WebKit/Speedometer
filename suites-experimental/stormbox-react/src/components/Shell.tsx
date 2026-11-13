@@ -4,14 +4,14 @@ import {
   CircleUserRound, Grip, LogOut, Mail, Settings, Users,
 } from 'lucide-react';
 
-import appointmentGlyph from '../assets/icons/app-tile-appointment.svg?raw';
-import mailTileGlyph from '../assets/icons/app-tile-mail.svg?raw';
-import sendGlyph from '../assets/icons/app-tile-send.svg?raw';
-import supportIcon from '../assets/icons/tb-support.svg?raw';
+import appointmentGlyph from '../assets/icons/app-tile-appointment.svg?react';
+import mailTileGlyph from '../assets/icons/app-tile-mail.svg?react';
+import sendGlyph from '../assets/icons/app-tile-send.svg?react';
+import supportIcon from '../assets/icons/tb-support.svg?react';
 import { ACCOUNT } from '../data/mailbox';
 import { formatBytes } from '../utils/format-bytes';
 import { senderAvatarStyle, senderInitials } from '../utils/sender-avatar';
-import { AppToggleButton, RawIcon } from './base';
+import { AppToggleButton, SvgIcon } from './base';
 
 export function AppSpaces({
   active, unreadCount, folderListHidden, sidebarLabel, onChange, onToggleFolderList, inert,
@@ -97,7 +97,7 @@ export function AccountAvatarMenu() {
           <span>Account Settings</span>
         </a>
         <a className="account-menu__item" href="#support" role="menuitem" onClick={close}>
-          <RawIcon className="account-menu__support-icon" svg={supportIcon} />
+          <SvgIcon className="account-menu__support-icon" icon={supportIcon} />
           <span>Contact Support</span>
         </a>
         <button className="account-menu__item" type="button" role="menuitem" onClick={close}>
@@ -127,12 +127,12 @@ export function AppDrawer() {
       </summary>
       <div className="app-drawer__popover" role="menu" aria-label="Thunderbird Pro apps">
         <button className="app-drawer__tile app-drawer__tile--current" type="button" role="menuitem" aria-current="page" onClick={close}>
-          <RawIcon className="app-drawer__icon" svg={mailTileGlyph} />
+          <SvgIcon className="app-drawer__icon" icon={mailTileGlyph} />
           <span className="app-drawer__label">Mail</span>
         </button>
         {OTHER_APPS.map((app) => (
           <a key={app.id} className="app-drawer__tile" href={`#${app.id}`} role="menuitem" onClick={close}>
-            <RawIcon className="app-drawer__icon" svg={app.glyph} />
+            <SvgIcon className="app-drawer__icon" icon={app.glyph} />
             <span className="app-drawer__label">{app.name}</span>
           </a>
         ))}

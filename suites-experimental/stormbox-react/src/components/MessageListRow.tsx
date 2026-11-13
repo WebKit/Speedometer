@@ -2,14 +2,14 @@ import { memo, useMemo } from 'react';
 import type { DragEvent, MouseEvent } from 'react';
 import { Paperclip, Star, Trash2 } from 'lucide-react';
 
-import archiveIcon from '../assets/icons/tb-folder-archive.svg?raw';
+import archiveIcon from '../assets/icons/tb-folder-archive.svg?react';
 import type { JmapViewSort, Message } from '../types';
 import {
   correspondentLabel, fmtDate, rowCorrespondent, rowTimestamp,
 } from '../utils/message-row-presentation';
 import { resolveMessageTags, type MessageTagDefinition } from '../utils/message-tags';
 import { senderAvatarFor } from '../utils/sender-avatar';
-import { RawIcon } from './base';
+import { SvgIcon } from './base';
 import { MessageTagStack } from './Tags';
 
 export interface RowHandlers {
@@ -167,7 +167,7 @@ export const MessageListRow = memo(function MessageListRow({
                 </button>
                 {archiveAction ? (
                   <button type="button" className="msg-list__action" tabIndex={-1} data-message-control title="Archive" aria-label="Archive" onClick={() => handlers.archive(message.id)}>
-                    <RawIcon className="msg-list__action-icon--folder" svg={archiveIcon} />
+                    <SvgIcon className="msg-list__action-icon--folder" icon={archiveIcon} />
                   </button>
                 ) : null}
                 {deleteAction ? (

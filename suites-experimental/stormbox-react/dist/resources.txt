@@ -7,7 +7,7 @@ assets/Metropolis-Light-zcEanPsD.woff2
 assets/Metropolis-Regular-DKepXnDq.woff2
 assets/Metropolis-SemiBold-D_dLm6Ff.woff2
 assets/index-AWVjlOug.css
-assets/index-CBEgGFb_.js
-assets/index-CBEgGFb_.js.map
+assets/index-D2S-P1q-.js
+assets/index-D2S-P1q-.js.map
 favicon-32.png
 index.html

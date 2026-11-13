@@ -6,16 +6,16 @@ import { DEFAULT_MESSAGE_TAGS } from '../utils/message-tags';
 import {
   folderBadgeCount, folderCompare, folderPresentation, isMainFolder,
 } from '../utils/folder-presentation';
-import type { Folder, ViewId } from '../types';
+import type { Folder, SvgComponent, ViewId } from '../types';
 import {
   STARRED_KEYWORD, folderCounts, isTagViewId, tagViewIdFor, tagViewKeyword, useMailStore,
 } from '../store/mail-store';
 import { readMessageDrag, useMessageDrag } from '../hooks/useMessageDrag';
-import { RawIcon } from './base';
+import { SvgIcon } from './base';
 
 interface TreeNode extends Folder {
   depth: number;
-  icon: string;
+  icon: SvgComponent;
   tone: string;
   children: TreeNode[];
   unread_emails: number;
@@ -125,7 +125,7 @@ const FolderNode = memo(function FolderNode({
         )}
         <button type="button" className="folder-node__button" onClick={() => onPick(folder.id)}>
           <span className="folder-node__icon-wrap">
-            <RawIcon className="folder-node__icon" svg={folder.icon} />
+            <SvgIcon className="folder-node__icon" icon={folder.icon} />
             {folder.is_starred === 1 ? (
               <Star className="folder-node__star" size={10} strokeWidth={2} aria-label="Starred folder" />
             ) : null}

@@ -7,11 +7,11 @@ import {
   ArrowLeft, ChevronDown, ChevronUp, Clock, Download, Moon, Paperclip, Sun, Trash2,
 } from 'lucide-react';
 
-import archiveIcon from '../assets/icons/tb-folder-archive.svg?raw';
-import junkIcon from '../assets/icons/tb-folder-spam.svg?raw';
-import forwardIcon from '../assets/icons/tb-forward.svg?raw';
-import replyIcon from '../assets/icons/tb-reply.svg?raw';
-import replyAllIcon from '../assets/icons/tb-reply-all.svg?raw';
+import archiveIcon from '../assets/icons/tb-folder-archive.svg?react';
+import junkIcon from '../assets/icons/tb-folder-spam.svg?react';
+import forwardIcon from '../assets/icons/tb-forward.svg?react';
+import replyIcon from '../assets/icons/tb-reply.svg?react';
+import replyAllIcon from '../assets/icons/tb-reply-all.svg?react';
 import { LOCALE, NOW, TIME_ZONE } from '../clock';
 import { bodyFor } from '../data/bodies';
 import type { Attachment } from '../types';
@@ -28,7 +28,7 @@ import { plaintextToHtml } from '../utils/plaintext-html';
 import { shortFrom } from '../utils/sender-avatar';
 import { formatBytes } from '../utils/format-bytes';
 import { DEFAULT_MESSAGE_TAGS, resolveMessageTags } from '../utils/message-tags';
-import { AppIconButton, MaximizeButton, RawIcon } from './base';
+import { AppIconButton, MaximizeButton, SvgIcon } from './base';
 import { MessageTagChip, MessageTagStack, TagPickerPopover, type PopoverAnchor } from './Tags';
 
 const MIN_EMAIL_LAYOUT_WIDTH = 400;
@@ -355,25 +355,25 @@ export function MessageView({ maximized, onToggleMaximized }: { maximized: boole
             <>
               {!inArchive ? (
                 <AppIconButton className="message-view__action" title="Archive (A)" aria-label="Archive" onClick={() => mail().archiveMessages(ids)}>
-                  <RawIcon className="message-view__toolbar-icon message-view__toolbar-icon--folder" svg={archiveIcon} />
+                  <SvgIcon className="message-view__toolbar-icon message-view__toolbar-icon--folder" icon={archiveIcon} />
                 </AppIconButton>
               ) : null}
               {!inJunk ? (
                 <AppIconButton className="message-view__action" title="Junk" aria-label="Mark as junk" onClick={() => mail().junkMessages(ids)}>
-                  <RawIcon className="message-view__toolbar-icon message-view__toolbar-icon--folder" svg={junkIcon} />
+                  <SvgIcon className="message-view__toolbar-icon message-view__toolbar-icon--folder" icon={junkIcon} />
                 </AppIconButton>
               ) : null}
               <AppIconButton className="message-view__action" danger title="Delete (Delete)" aria-label="Delete" onClick={() => mail().destroyMessages(ids)}>
                 <Trash2 className="message-view__toolbar-icon" size={18} strokeWidth={1.65} />
               </AppIconButton>
               <AppIconButton className="message-view__action" title="Reply (R)" aria-label="Reply" onClick={() => compose().prepareReply(message, false)}>
-                <RawIcon className="message-view__toolbar-icon message-view__toolbar-icon--shape" svg={replyIcon} />
+                <SvgIcon className="message-view__toolbar-icon message-view__toolbar-icon--shape" icon={replyIcon} />
               </AppIconButton>
               <AppIconButton className="message-view__action" title="Reply All (Shift+R)" aria-label="Reply All" onClick={() => compose().prepareReply(message, true)}>
-                <RawIcon className="message-view__toolbar-icon message-view__toolbar-icon--shape" svg={replyAllIcon} />
+                <SvgIcon className="message-view__toolbar-icon message-view__toolbar-icon--shape" icon={replyAllIcon} />
               </AppIconButton>
               <AppIconButton className="message-view__action" title="Forward (F)" aria-label="Forward" onClick={() => compose().prepareForward(message)}>
-                <RawIcon className="message-view__toolbar-icon message-view__toolbar-icon--shape" svg={forwardIcon} />
+                <SvgIcon className="message-view__toolbar-icon message-view__toolbar-icon--shape" icon={forwardIcon} />
               </AppIconButton>
               <AppIconButton
                 ref={tagButtonRef}

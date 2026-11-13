@@ -11,20 +11,20 @@
  * docs/architecture/safe-rendering.md once that lands).
  */
 
-import archiveIcon from '../assets/icons/tb-folder-archive.svg?raw';
-import draftIcon from '../assets/icons/tb-folder-draft.svg?raw';
-import folderIcon from '../assets/icons/tb-folder.svg?raw';
-import inboxIcon from '../assets/icons/tb-folder-inbox.svg?raw';
-import newsletterIcon from '../assets/icons/tb-folder-newsletter.svg?raw';
-import rssFolderIcon from '../assets/icons/tb-folder-rss.svg?raw';
-import scheduledIcon from '../assets/icons/tb-folder-scheduled.svg?raw';
-import sentIcon from '../assets/icons/tb-folder-sent.svg?raw';
-import spamIcon from '../assets/icons/tb-folder-spam.svg?raw';
-import trashIcon from '../assets/icons/tb-folder-trash.svg?raw';
+import archiveIcon from '../assets/icons/tb-folder-archive.svg?react';
+import draftIcon from '../assets/icons/tb-folder-draft.svg?react';
+import folderIcon from '../assets/icons/tb-folder.svg?react';
+import inboxIcon from '../assets/icons/tb-folder-inbox.svg?react';
+import newsletterIcon from '../assets/icons/tb-folder-newsletter.svg?react';
+import rssFolderIcon from '../assets/icons/tb-folder-rss.svg?react';
+import scheduledIcon from '../assets/icons/tb-folder-scheduled.svg?react';
+import sentIcon from '../assets/icons/tb-folder-sent.svg?react';
+import spamIcon from '../assets/icons/tb-folder-spam.svg?react';
+import trashIcon from '../assets/icons/tb-folder-trash.svg?react';
 
-import type { MailboxRole } from '../types';
+import type { MailboxRole, SvgComponent } from '../types';
 
-export const ROLE_ICON: Partial<Record<MailboxRole, string>> = {
+export const ROLE_ICON: Partial<Record<MailboxRole, SvgComponent>> = {
   inbox: inboxIcon,
   sent: sentIcon,
   drafts: draftIcon,
@@ -48,7 +48,7 @@ export const ROLE_COLOR: Partial<Record<MailboxRole, string>> = {
 };
 
 export interface NamedFolderPresentation {
-  icon: string;
+  icon: SvgComponent;
   color: string;
 }
 

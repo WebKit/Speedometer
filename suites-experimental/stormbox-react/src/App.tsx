@@ -6,7 +6,7 @@ import {
   Bug, Lightbulb, Moon, Plus, Sun, X,
 } from 'lucide-react';
 
-import mailGlyph from './assets/icons/tb-mail-glyph.svg?raw';
+import mailGlyph from './assets/icons/tb-mail-glyph.svg?react';
 import { ACCOUNT } from './data/mailbox';
 import { INBOX_FOLDER_ID, folderCounts, useMailStore } from './store/mail-store';
 import { useComposeStore } from './store/compose-store';
@@ -15,7 +15,7 @@ import {
 } from './store/ui-store';
 import { useColumnResize } from './hooks/useColumnResize';
 import { useShortcuts } from './hooks/useShortcuts';
-import { AppButton, RawIcon } from './components/base';
+import { AppButton, SvgIcon } from './components/base';
 import {
   AccountAvatarMenu, AppDrawer, AppSpaces, StorageUsageBar,
 } from './components/Shell';
@@ -202,7 +202,7 @@ export function App() {
     <div ref={shellRef} className={shellClasses} style={shellStyle}>
       <header className="quick-filter" inert={maximized} aria-hidden={maximized || undefined}>
         <div className="quick-filter__brand">
-          <RawIcon className="quick-filter__glyph" svg={mailGlyph} />
+          <SvgIcon className="quick-filter__glyph" icon={mailGlyph} />
           <span className="quick-filter__wordmark">Mail</span>
         </div>
         <div className="quick-filter__search" role="search">
