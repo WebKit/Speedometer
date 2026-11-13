@@ -17,16 +17,20 @@ function reportRecipeCarouselResizeEvents(stepName, resizeEvents) {
 // resources/shared/step-runner.mjs), so the timer clamp would be reported as
 // workload time.
 //
-// Closed at both ends because an entangled port is a cycle collector root.
+// One channel for the whole run, so the measured window doesn't pay for
+// creating and tearing down a channel per yield. Created on first use: an
+// open port with a listener would keep Node alive when the unittests import
+// this module.
+let yieldChannel = null;
+const pendingYields = [];
 function yieldTask() {
+    if (!yieldChannel) {
+        yieldChannel = new MessageChannel();
+        yieldChannel.port1.onmessage = () => pendingYields.shift()();
+    }
     return new Promise((resolve) => {
-        const channel = new MessageChannel();
-        channel.port1.onmessage = () => {
-            channel.port1.close();
-            channel.port2.close();
-            resolve();
-        };
-        channel.port2.postMessage(0);
+        pendingYields.push(resolve);
+        yieldChannel.port2.postMessage(0);
     });
 }
 
