@@ -461,14 +461,14 @@ class MainBenchmarkClient {
         this._state = state;
         document.body.setAttribute("data-benchmark-state", state);
         const startButtons = document.querySelectorAll(".start-tests-button");
-        if (state === BENCHMARK_STATE.PRELOADING) {
+        if (this.isPreloading()) {
             if (document.documentElement.getAttribute("data-visible-section") !== "home")
                 this._showSection("#home");
             startButtons.forEach((btn) => {
                 btn.disabled = true;
                 btn.innerHTML = "<div>Preloading</div>";
             });
-        } else if (state === BENCHMARK_STATE.RUNNING) {
+        } else if (this.isRunning()) {
             document.body.style.removeProperty("--preload-progress");
             startButtons.forEach((btn) => {
                 btn.disabled = true;
