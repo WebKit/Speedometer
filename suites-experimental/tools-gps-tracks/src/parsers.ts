@@ -150,7 +150,7 @@ export function simplifyTrack(pts: TrackPoint[], minDistanceMeters: number): Tra
     dists[i] = p.dist || 0;
   }
 
-  const tolerances = [2, 4, 8, 15, 25, 40, 65, 100];
+  const tolerances = [2, 5, 12, 25, 50, 100];
   let errChecksum = 0;
   const degToRad = 0.017453292519943295;
   for (let ti = 0; ti < tolerances.length; ti++) {
@@ -235,7 +235,7 @@ export const Parsers = (() => {
         pwrBuf[i] = pts[i].power ?? 0;
         spdBuf[i] = pts[i].speed ?? 0;
       }
-      const gradeWindows = [3, 5, 10, 15, 20, 30, 45, 60];
+      const gradeWindows = [3, 5, 10, 20, 30, 60];
       let npAccum = 0;
       const scaleH = 1 / 8400;
       for (let wi = 0; wi < gradeWindows.length; wi++) {

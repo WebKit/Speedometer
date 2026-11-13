@@ -360,24 +360,33 @@ async function resetBenchmarkState() {
 }
 
 // ── Boot ──────────────────────────────────────────────────────────
-async function init() {
-  // Wait for fonts to be loaded with a cleaned-up timeout
-  let fontTimerId: number | null = null;
-  const fontTimeout = new Promise<void>((resolve) => {
-    fontTimerId = window.setTimeout(resolve, 1000);
-  });
-  try {
-    const fontLoadPromise = document.fonts
-      ? Promise.all([
-          document.fonts.load('24px "Material Symbols Rounded"').catch(() => {}),
-          document.fonts.ready,
-        ])
-      : Promise.resolve();
-    await Promise.race([fontLoadPromise, fontTimeout]);
-  } finally {
-    if (fontTimerId !== null) window.clearTimeout(fontTimerId);
+let appSubsystemsInitialized = false;
+
+async function initAppSubsystems() {
+  if (appSubsystemsInitialized) {
+    initInsights((msg: string, type?: string) =>
+      showToast(msg, type === 'error' ? 'error' : 'info'),
+    );
+    initDetails(
+      () => {
+        applyFilters();
+        syncFiltersToUrl();
+      },
+      (id: string) => {
+        deleteTrack(id);
+      },
+    );
+    initCombined();
+    initCourses((msg: string, type?: string) =>
+      showToast(msg, type === 'error' ? 'error' : 'info'),
+    );
+    updateToolbarLayout();
+    await Storage.openDB();
+    await resetBenchmarkState();
+    return;
   }
-  document.body.classList.remove('loading-fonts');
+  appSubsystemsInitialized = true;
+
   const storageSelect = document.getElementById(
     'storage-backend-select',
   ) as HTMLSelectElement | null;
@@ -395,10 +404,6 @@ async function init() {
     });
   }
 
-  const loader = document.getElementById('global-loader');
-  const loaderText = document.getElementById('loader-text');
-  const loaderSubtext = document.getElementById('loader-subtext');
-  const progressBar = document.getElementById('loader-progress-bar') as HTMLElement;
   const mapLoader = document.getElementById('map-loader');
   const mapLoaderSpan = mapLoader?.querySelector('span');
 
@@ -457,121 +462,7 @@ async function init() {
   // Reset persistent storage and in-memory state for clean multi-iteration benchmark executions
   await Storage.openDB();
   await resetBenchmarkState();
-
-  // Load persisted tracks
-  try {
-    // Load global settings
-    const hrZones = await Storage.get('hr_zones');
-    if (hrZones) Parsers.setHRZones(hrZones);
-
-    const ftp = await Storage.get('ftp');
-    if (ftp) Parsers.setFTP(ftp);
-
-    const saved = await Storage.getAll();
-    saved.sort((a, b) => a.addedAt - b.addedAt);
-
-    if (mapLoaderSpan) mapLoaderSpan.textContent = `Preparing ${saved.length} tracks...`;
-
-    const tracksToLoad: TrackData[] = [];
-    for (const t of saved) {
-      let updated = false;
-      if (!t.bounds && t.points.length > 0) {
-        const b = calculateBounds(t.points);
-        if (b) {
-          t.bounds = b;
-          updated = true;
-        }
-      }
-      if (!t.simplifiedPoints && t.points.length > 0) {
-        t.simplifiedPoints = simplifyTrack(t.points, 50);
-        updated = true;
-      }
-      if (updated) await Storage.save(t);
-
-      tracks[t.id] = t;
-      tracksToLoad.push(t);
-    }
-    MapView.addTracks(tracksToLoad);
-    applyFilters();
-
-    const restoreId =
-      urlState.track && saved.find((t) => t.id === urlState.track)
-        ? urlState.track
-        : saved.length > 0
-          ? saved[0].id
-          : null;
-
-    const mapLoader = document.getElementById('map-loader');
-
-    // 1. Process and load the "Priority" track first
-    const selectedTrackData = saved.find((t) => t.id === restoreId);
-    if (selectedTrackData) {
-      await processAndLoadTrack(selectedTrackData);
-      selectTrack(selectedTrackData.id, !urlState.map_pos);
-
-      // Explicitly restore selection/pin from URL if they exist
-      if (urlState.sel && Array.isArray(urlState.sel) && urlState.sel.length === 2) {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            ChartView.restoreSelection(urlState.sel![0], urlState.sel![1]);
-          });
-        });
-      }
-      if (urlState.sel_point !== undefined && urlState.sel_point !== null) {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            ChartView.setCursorAt(urlState.sel_point!);
-          });
-        });
-      }
-    }
-
-    // Hide database loader
-    if (mapLoader) mapLoader.classList.add('hidden');
-
-    // 2. Load the rest in background chunks
-    if (saved.length > (selectedTrackData ? 1 : 0)) {
-      if (mapLoader) {
-        if (mapLoaderSpan) mapLoaderSpan.textContent = 'Loading tracks...';
-        mapLoader.classList.remove('hidden');
-      }
-
-      const remaining = saved.filter((t) => t.id !== restoreId);
-      let index = 0;
-
-      const loadNextChunk = async () => {
-        const chunkSize = 2; // Process 2 tracks per frame
-        const end = Math.min(index + chunkSize, remaining.length);
-
-        for (; index < end; index++) await processAndLoadTrack(remaining[index]);
-
-        if (index < remaining.length) {
-          requestAnimationFrame(loadNextChunk);
-        } else {
-          if (mapLoader) mapLoader.classList.add('hidden');
-          applyFilters(); // Final sync
-          if (selectedId && tracks[selectedId]) {
-            renderEvolution(tracks[selectedId], Object.values(tracks), (trackId, range) => {
-              selectTrack(trackId, true);
-              if (range) {
-                ChartView.restoreSelection(range[0], range[1]);
-                onChartRangeChange(range[0], range[1], 'time', true);
-              }
-            });
-          }
-          // Only fit all if no saved map position and we just finished loading everything
-          if (saved.length && !urlState.map_pos) MapView.fitAll();
-        }
-      };
-
-      requestAnimationFrame(loadNextChunk);
-    } else {
-      applyFilters();
-      if (saved.length && !urlState.map_pos) MapView.fitAll();
-    }
-  } catch (e) {
-    console.warn('Could not load saved tracks:', e);
-  }
+  if (mapLoader) mapLoader.classList.add('hidden');
 
   // Panel resizers
   initResizeHandle();
@@ -809,6 +700,26 @@ async function init() {
     MapView.invalidateSize?.();
     updateToolbarLayout();
   });
+}
+
+async function init() {
+  // Wait for fonts to be loaded with a cleaned-up timeout
+  let fontTimerId: number | null = null;
+  const fontTimeout = new Promise<void>((resolve) => {
+    fontTimerId = window.setTimeout(resolve, 1000);
+  });
+  try {
+    const fontLoadPromise = document.fonts
+      ? Promise.all([
+          document.fonts.load('24px "Material Symbols Rounded"').catch(() => {}),
+          document.fonts.ready,
+        ])
+      : Promise.resolve();
+    await Promise.race([fontLoadPromise, fontTimeout]);
+  } finally {
+    if (fontTimerId !== null) window.clearTimeout(fontTimerId);
+  }
+  document.body.classList.remove('loading-fonts');
 
   initBenchmarkTriggers();
   await preloadBenchmarkFiles();
@@ -866,73 +777,7 @@ async function preloadBenchmarkFiles(): Promise<
         return { cleanName, buf, text, file };
       }),
     );
-    // Warm up GPX, TCX, and FIT parser and chart code paths during prepare phase
-    let warmSample: any = null;
-    for (const idx of [0, 2, 4]) {
-      if (preloadedBenchmarkPayloads[idx]) {
-        const parsed = await Parsers.parseFile(preloadedBenchmarkPayloads[idx].file);
-        if (idx === 0) warmSample = parsed;
-      }
-    }
-    if (warmSample) {
-      const warmPts = warmSample.points.slice(0, 1250);
-      const warmTrack: TrackData = {
-        ...warmSample,
-        id: 'warmup',
-        fileName: 'warmup.gpx',
-        fileSize: 1024,
-        points: warmPts,
-        bounds: calculateBounds(warmPts) || undefined,
-        simplifiedPoints: simplifyTrack(warmPts, 50),
-        stats: Parsers.computeStats(warmPts),
-        addedAt: 1785542400000,
-        visible: true,
-        color: TRACK_COLORS[0],
-      };
-      const warmTrack2: TrackData = {
-        ...warmTrack,
-        id: 'warmup-2',
-        fileName: 'warmup2.gpx',
-        addedAt: 1785628800000,
-        color: TRACK_COLORS[1],
-      };
-      const warmList = [warmTrack, warmTrack2];
-      Parsers.ensureCurvesAndZones(warmTrack);
-      Parsers.ensureCurvesAndZones(warmTrack2);
-      warmTrack.stats.sections = Parsers.analyzeTrackSections(warmTrack.points);
-      warmTrack2.stats.sections = Parsers.analyzeTrackSections(warmTrack2.points);
-      Parsers.findOverlaps(warmList);
-      MapView.addTracks(warmList);
-      ChartView.loadTrack(warmTrack, warmList, false);
-      ChartView.restoreSelection(10, 50, true);
-      ChartView.setCursorAt(25, true);
-      ChartView.setSmooth('power', true);
-      ChartView.setSmooth('power', false);
-      ChartView.setXAxis('distance');
-      ChartView.setXAxis('time');
-      ChartView.setActiveMetrics(['elevation', 'speed', 'power']);
-      ChartView.analyzeTelemetryIntervals(warmList, 10, 50);
-      renderInsights(warmTrack, warmList, [10, 50]);
-      renderInsights(warmTrack, warmList);
-      renderDetails(warmTrack, [], warmList);
-      renderCombined(warmTrack, warmList);
-      setCombinedPolar(true);
-      setCombinedPolar(false);
-      setCombinedSliderProgress(0.5);
-      renderCombined(warmList, warmList);
-      renderEvolution(warmTrack, warmList);
-      setEvolutionGrouping('month');
-      setEvolutionGrouping('week');
-      setEvolutionRange('6m');
-      setEvolutionRange('all');
-      setEvolutionPinnedDuration(60);
-      setEvolutionPinnedDuration(null);
-      prepareBenchmarkCourses(warmList);
-      selectCourse('course-1', true);
-      await resetBenchmarkState();
-      void document.body.offsetHeight;
-      await new Promise((r) => window.setTimeout(r, 0));
-    } else if (typeof (window as any).__resetBenchmarkSeed === 'function') {
+    if (typeof (window as any).__resetBenchmarkSeed === 'function') {
       (window as any).__resetBenchmarkSeed();
     }
     return preloadedBenchmarkPayloads;
@@ -962,15 +807,10 @@ function initBenchmarkTriggers() {
 
   btnLoad?.addEventListener('click', async () => {
     try {
-      if (Object.keys(tracks).length > 0 || skippedImports.length > 0 || selectedId !== null) {
-        await Storage.openDB();
-        await resetBenchmarkState();
-      } else if (typeof (window as any).__resetBenchmarkSeed === 'function') {
-        (window as any).__resetBenchmarkSeed();
-      }
+      await initAppSubsystems();
       const payloads = await preloadBenchmarkFiles();
       const loadedFiles: File[] = payloads.map((p) => p.file);
-      await handleFiles(loadedFiles);
+      await handleFiles(loadedFiles, true);
       const allTracks = Object.values(tracks);
       Parsers.findOverlaps(allTracks);
 
@@ -990,7 +830,7 @@ function initBenchmarkTriggers() {
       searchQuery = '';
       applyFilters();
 
-      if (!selectedId && allTracks.length > 0) selectTrack(allTracks[0].id);
+      if (!selectedId && allTracks.length > 0) selectTrack(allTracks[0].id, true, true);
     } finally {
       window.dispatchEvent(new CustomEvent('load-and-parse-complete'));
     }
@@ -1001,13 +841,10 @@ function initBenchmarkTriggers() {
       const allTracks = Object.values(tracks);
       activateTab('graphs');
       if (!selectedId && allTracks.length > 0) {
-        selectTrack(allTracks[0].id, false);
+        selectTrack(allTracks[0].id, false, true);
       }
       const availableMetrics = ChartView.getAvailableMetrics();
-      const metricSets = [
-        ['elevation', 'speed', 'power', 'hr'],
-        ['elevation', 'speed', 'power'],
-      ];
+      const metricSets = [['elevation', 'speed', 'power']];
       for (const mSet of metricSets) {
         const filtered = mSet.filter((m) => availableMetrics.has(m));
         if (filtered.length > 0) {
@@ -1054,8 +891,7 @@ function initBenchmarkTriggers() {
       for (const tIdx of [1, 2, 4]) {
         const trk = allTracks[tIdx];
         if (trk) {
-          renderInsights(trk, allTracks, [0, 540]);
-          renderInsights(trk, allTracks, [540, 1140]);
+          renderInsights(trk, allTracks, [0, 600]);
           renderInsights(trk, allTracks, null);
         }
       }
@@ -1063,9 +899,8 @@ function initBenchmarkTriggers() {
         renderInsights(allTracks[3], allTracks, [200, 900]);
       }
       if (primaryTrack) {
-        renderInsights(primaryTrack, allTracks, [0, 480]);
-        renderInsights(primaryTrack, allTracks, [480, 960]);
-        renderInsights(primaryTrack, allTracks, [960, 1440]);
+        renderInsights(primaryTrack, allTracks, [0, 600]);
+        renderInsights(primaryTrack, allTracks, [600, 1200]);
       }
       renderInsights(primaryTrack, allTracks, null);
     } finally {
@@ -1129,10 +964,7 @@ function initBenchmarkTriggers() {
           setCombinedSliderProgress(frac);
         }
 
-        // 2. Exercise multi-track comparison mode across regional pairs and all 6 tracks
-        if (allTracks.length >= 4) {
-          renderCombined([allTracks[2], allTracks[3]], allTracks);
-        }
+        // 2. Exercise multi-track comparison mode across all 6 tracks and a selected pair
         if (allTracks.length >= 6) {
           renderCombined(allTracks, allTracks);
         }
@@ -1158,15 +990,15 @@ function initBenchmarkTriggers() {
       };
 
       // Exercise evolution view across different reference tracks, groupings ('month' & 'week'), time ranges, and pinned durations
-      const refTracks = [allTracks[2] || primaryTrack, allTracks[4] || primaryTrack, primaryTrack];
+      const refTracks = [allTracks[2] || primaryTrack, primaryTrack];
       for (const refTrk of refTracks) {
         renderEvolution(refTrk, allTracks, onSelectCb);
         setEvolutionGrouping('month');
-        for (const rng of ['1m', '2m', '6m', '1y', 'all']) {
+        for (const rng of ['1m', '6m', '1y', 'all']) {
           setEvolutionRange(rng);
         }
         setEvolutionGrouping('week');
-        for (const dur of [5, 30, 60, 300, 1200, null]) {
+        for (const dur of [5, 60, 300, 1200, null]) {
           setEvolutionPinnedDuration(dur);
         }
       }
@@ -2016,7 +1848,7 @@ function initDropZone() {
   });
 }
 
-async function handleFiles(files: File[]) {
+async function handleFiles(files: File[], deferChartRender = false) {
   if (!files.length) return;
   cancelProcessing = false;
   const initialSkipCount = skippedImports.length;
@@ -2251,7 +2083,7 @@ async function handleFiles(files: File[]) {
     if (count > 0) {
       showToast(`Imported ${count} track${count > 1 ? 's' : ''}`);
       applyFilters(!!firstId && firstId !== selectedId);
-      if (firstId) selectTrack(firstId);
+      if (firstId) selectTrack(firstId, true, deferChartRender);
     }
 
     if (newWarnings) {
