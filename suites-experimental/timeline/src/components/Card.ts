@@ -207,25 +207,11 @@ export const Card = {
         if (vnode.attrs.onResize)
             vnode.attrs.onResize(vnode.dom.offsetWidth);
         updateCardSearchHighlights(vnode);
-        if (vnode.attrs.isActive && vnode.dom) {
-            try {
-                vnode.dom.focus({ preventScroll: true });
-            } catch (e) {
-                void e;
-            }
-        }
     },
     onupdate(vnode: any) {
         if (vnode.attrs.onResize)
             vnode.attrs.onResize(vnode.dom.offsetWidth);
         updateCardSearchHighlights(vnode);
-        if (vnode.attrs.isActive && vnode.dom && document.activeElement !== vnode.dom) {
-            try {
-                vnode.dom.focus({ preventScroll: true });
-            } catch (e) {
-                void e;
-            }
-        }
     },
     onremove(vnode: any) {
         clearCardSearchHighlights(vnode.dom);
