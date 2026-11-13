@@ -5,5 +5,6 @@
     cross-origin-opener-policy = "same-origin"
     X-Frame-Options = "SAMEORIGIN"
     x-content-type-options = "nosniff"
+    Cache-Control = "public, max-age=480"
 [build.environment]
   NODE_VERSION = "24"
