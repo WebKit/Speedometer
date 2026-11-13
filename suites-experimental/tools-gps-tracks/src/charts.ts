@@ -285,6 +285,7 @@ export const ChartView = (() => {
     } else {
       render();
     }
+    (window as any).__trackStateService?.graphsTab?.syncFromChartView();
   }
 
   function clear() {
@@ -293,6 +294,7 @@ export const ChartView = (() => {
     selEndVal = null;
     currentTrack = null;
     destroyPlots();
+    if (!emptyEl) emptyEl = document.getElementById('chart-empty');
     if (emptyEl) {
       emptyEl.style.display = 'flex';
       emptyEl.innerHTML = `
@@ -305,6 +307,7 @@ export const ChartView = (() => {
     clearSelectionStats();
     mapColorMetric = null;
     if (onMapColorChangeCb) onMapColorChangeCb(null);
+    (window as any).__trackStateService?.graphsTab?.syncFromChartView();
   }
 
   function resetState() {
@@ -338,12 +341,14 @@ export const ChartView = (() => {
     document.querySelectorAll('#x-axis-ctrl .seg-btn').forEach((b) => {
       b.classList.toggle('active', (b as HTMLElement).dataset.axis === 'time');
     });
+    (window as any).__trackStateService?.graphsTab?.syncFromChartView();
   }
 
   function toggleMetric(key: string) {
     if (activeMetrics.has(key)) activeMetrics.delete(key);
     else activeMetrics.add(key);
     if (currentTrack) render(true);
+    (window as any).__trackStateService?.graphsTab?.syncFromChartView();
   }
 
   function setSmooth(metricKey: string, enabled: boolean, skipRender = false) {
@@ -376,11 +381,13 @@ export const ChartView = (() => {
       const pill = el as HTMLElement;
       pill.classList.toggle('active', activeMetrics.has(pill.dataset.metric!));
     });
+    (window as any).__trackStateService?.graphsTab?.syncFromChartView();
   }
 
   function setXAxis(axis: string) {
     if (xAxis === axis || !currentTrack) {
       xAxis = axis;
+      (window as any).__trackStateService?.graphsTab?.syncFromChartView();
       return;
     }
 
@@ -532,6 +539,8 @@ export const ChartView = (() => {
   }
 
   function setSelectionStats(stats: TrackStats) {
+    (window as any).__trackStateService?.graphsTab?.setSelectionStats(stats);
+    if (!selStatsEl) selStatsEl = document.getElementById('chart-stats-sel');
     if (!selStatsEl) return;
     const fmt = (id: string, val: string) => {
       const el = document.querySelector(`#${id} .stat-value`);
@@ -555,6 +564,8 @@ export const ChartView = (() => {
   }
 
   function clearSelectionStats() {
+    (window as any).__trackStateService?.graphsTab?.setSelectionStats(null);
+    if (!selStatsEl) selStatsEl = document.getElementById('chart-stats-sel');
     if (selStatsEl) selStatsEl.classList.add('hidden');
     if (resetSelBtn) resetSelBtn.classList.add('hidden');
     [
@@ -612,6 +623,8 @@ export const ChartView = (() => {
   }
 
   function resize() {
+    if (!container || !container.isConnected)
+      container = document.getElementById('charts-container');
     if (!plots.length || !container) return;
     const w = Math.round(
       Math.max(
@@ -634,6 +647,9 @@ export const ChartView = (() => {
 
   // ── Render ────────────────────────────────────────────────────
   function render(keepState = false) {
+    if (!container || !container.isConnected)
+      container = document.getElementById('charts-container');
+    if (!emptyEl || !emptyEl.isConnected) emptyEl = document.getElementById('chart-empty');
     let savedRange: [number, number] | null = null;
     let savedScroll = 0;
     if (keepState && container) savedScroll = container.scrollTop;
@@ -3048,6 +3064,16 @@ export const ChartView = (() => {
 
     fmt('stat-avg-hr', s.avgHR != null ? `${s.avgHR} bpm` : '—');
     fmt('stat-avg-temp', s.avgTemp != null ? `${s.avgTemp.toFixed(1)} °C` : '—');
+
+    (window as any).__trackStateService?.graphsTab?.updateTotalStats({
+      dist: s.totalDist != null ? `${(s.totalDist / 1000).toFixed(1)} km` : '—',
+      duration: s.duration != null ? fmtSecs(Math.floor(s.duration / 1000)) : '—',
+      elevation: s.elevGain != null ? `${Math.round(s.elevGain)} m` : '—',
+      avgSpeed: avgSpeed != null ? `${(avgSpeed * 3.6).toFixed(1)} km/h` : '—',
+      avgPower: avgPower != null ? `${Math.round(avgPower)} W` : '—',
+      avgHr: s.avgHR != null ? `${s.avgHR} bpm` : '—',
+      avgTemp: s.avgTemp != null ? `${s.avgTemp.toFixed(1)} °C` : '—',
+    });
   }
 
   const INTERVAL_CAP = 16384;

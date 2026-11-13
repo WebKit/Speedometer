@@ -114,6 +114,15 @@ button {
   overflow: hidden;
 }
 
+app-graphs-tab,
+app-insights-tab,
+app-details-tab,
+app-combined-tab,
+app-evolution-tab,
+app-courses-tab {
+  display: contents;
+}
+
 .hidden {
   display: none !important;
 }

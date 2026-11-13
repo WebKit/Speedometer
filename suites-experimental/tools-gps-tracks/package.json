@@ -16,8 +16,15 @@
   },
   "license": "BSD-3-Clause",
   "dependencies": {
+    "@angular/common": "^19.2.25",
+    "@angular/compiler": "^19.2.25",
+    "@angular/core": "^19.2.25",
+    "@angular/forms": "^19.2.25",
+    "@angular/platform-browser": "^19.2.25",
     "fit-file-parser": "2.3.3",
-    "uplot": "1.6.32"
+    "rxjs": "^7.8.2",
+    "uplot": "1.6.32",
+    "zone.js": "^0.15.1"
   },
   "devDependencies": {
     "esbuild": "0.20.2",

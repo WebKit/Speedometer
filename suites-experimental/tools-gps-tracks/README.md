@@ -1,8 +1,8 @@
-# Tools-GPS-Tracks Workload
+# Tools-GPS-Tracks Workload (Angular)
 
 ## Description
 
-This workload simulates an offline-capable GPS track analyzer and activity dashboard (`weg-strasse`). It parses binary and XML activity tracks (`.fit`, `.gpx`, `.tcx`, `.kml`) compressed with `gzip`, persists activity data in IndexedDB, renders interactive Leaflet vector maps with Canvas polylines, and computes physiological and geospatial analytics plotted with `uPlot`.
+This workload simulates an offline-capable GPS track analyzer and activity dashboard (`weg-strasse`) built with Angular 19 standalone `@Component`s (`AppComponent`, `GraphsTabComponent`, `InsightsTabComponent`, `DetailsTabComponent`, `CombinedTabComponent`, `EvolutionTabComponent`, `CoursesTabComponent`) and `TrackStateService`. It parses binary and XML activity tracks (`.fit`, `.gpx`, `.tcx`, `.kml`) compressed with `gzip`, persists activity data in IndexedDB, and computes physiological and geospatial analytics rendered via Angular templates (`*ngIf`, `*ngFor`, `ChangeDetectorRef.detectChanges()`) and `uPlot` Canvas charts.
 
 ## Benchmark Steps
 

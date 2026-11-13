@@ -6,21 +6,73 @@
 
 import uPlot from 'uplot';
 import { TrackData, Parsers } from '../parsers';
-import { Storage } from '../storage';
 import { fmtDuration, fmtDate, gaussianSmooth, hexToRgba } from '../utils';
 import { Metrics } from '../metrics';
 import { UrlState } from '../url-state';
 import {
+  AccumulatedSummaryRow,
+  AccumulatedTableRow,
   computeAccumulatedMetric,
-  renderAccumulatedTable,
-  renderAccumulatedProgressSummary,
+  getAccumulatedSummaryRows,
+  getAccumulatedTableRows,
 } from './accumulated_progress';
+
+export interface CurveTableRow {
+  dur: number;
+  durLabel: string;
+  curValStr: string;
+  maxValStr: string;
+  mxId?: string;
+  mxIdx?: number;
+}
+
+export interface LongitudinalHistoryRow {
+  id: string;
+  dateStr: string;
+  name: string;
+  sport: string;
+  color: string;
+  distKm: string;
+  elevGainM: string;
+  durationStr: string;
+  avgPowerStr: string;
+  avgHrStr: string;
+  tssStr: string;
+}
+
+export interface EvolutionComputedPayload {
+  atlStr: string;
+  ctlStr: string;
+  tsbStr: string;
+  tsbStatus: string;
+  trackName: string;
+  hasPowerCurve: boolean;
+  hasHrCurve: boolean;
+  powerInitialDur: number;
+  hrInitialDur: number;
+  accumulatedSummaryRows: AccumulatedSummaryRow[];
+  distanceAccumulatedRows: AccumulatedTableRow[];
+  elevationAccumulatedRows: AccumulatedTableRow[];
+  powerCurveRows: CurveTableRow[];
+  hrCurveRows: CurveTableRow[];
+  historyRows: LongitudinalHistoryRow[];
+  availableSports: string[];
+}
 
 let evolutionPlots: uPlot[] = [];
 let activeEvolutionCards: any[] = [];
 let currentEvolutionGrouping: 'week' | 'month' = 'week';
+let evolutionComponentRef: any = null;
 
-function destroyEvolutionPlots() {
+export function registerEvolutionComponent(comp: any) {
+  evolutionComponentRef = comp;
+}
+
+function getEvolutionComponent(): any {
+  return evolutionComponentRef || (window as any).__trackStateService?.evolutionTab || null;
+}
+
+export function destroyEvolutionPlots() {
   evolutionPlots.forEach((p) => p.destroy());
   evolutionPlots = [];
   activeEvolutionCards = [];
@@ -29,6 +81,11 @@ function destroyEvolutionPlots() {
 export function resetEvolution() {
   destroyEvolutionPlots();
   currentEvolutionGrouping = 'week';
+  const comp = getEvolutionComponent();
+  if (comp && typeof comp.reset === 'function') {
+    comp.reset();
+    return;
+  }
   const container = document.getElementById('evolution-view');
   if (container) {
     container.innerHTML = `
@@ -40,30 +97,51 @@ export function resetEvolution() {
   }
 }
 
-export function setEvolutionGrouping(grouping: 'week' | 'month') {
+export function applyEvolutionGrouping(grouping: 'week' | 'month') {
   currentEvolutionGrouping = grouping;
   activeEvolutionCards.forEach((c) => {
     if (c && c.updateGrouping) c.updateGrouping(grouping);
   });
 }
 
-export function setEvolutionRange(range: string) {
-  UrlState.patch({ progress: range === 'all' ? null : range });
-  const toolbarRangeCtrl = document.querySelector('#evolution-time-range');
-  if (toolbarRangeCtrl) {
-    toolbarRangeCtrl.querySelectorAll('.seg-btn').forEach((b) => {
-      b.classList.toggle('active', b.getAttribute('data-range') === range);
-    });
+export function setEvolutionGrouping(grouping: 'week' | 'month') {
+  const comp = getEvolutionComponent();
+  if (comp && typeof comp.setGrouping === 'function') {
+    comp.setGrouping(grouping);
+    return;
   }
+  applyEvolutionGrouping(grouping);
+}
+
+export function applyEvolutionRange(range: string) {
+  UrlState.patch({ progress: range === 'all' ? null : range });
   activeEvolutionCards.forEach((c) => {
     if (c && c.updateRange) c.updateRange(range);
   });
 }
 
-export function setEvolutionPinnedDuration(dur: number | null) {
+export function setEvolutionRange(range: string) {
+  const comp = getEvolutionComponent();
+  if (comp && typeof comp.setRange === 'function') {
+    comp.setRange(range);
+    return;
+  }
+  applyEvolutionRange(range);
+}
+
+export function applyEvolutionPinnedDuration(dur: number | null) {
   activeEvolutionCards.forEach((c) => {
     if (c && c.updatePin) c.updatePin(dur);
   });
+}
+
+export function setEvolutionPinnedDuration(dur: number | null) {
+  const comp = getEvolutionComponent();
+  if (comp && typeof comp.setPinnedDuration === 'function') {
+    comp.setPinnedDuration(dur);
+    return;
+  }
+  applyEvolutionPinnedDuration(dur);
 }
 
 const EVO_CAP = 16384;
@@ -76,18 +154,65 @@ const envelopeDurations = [
   1, 2, 3, 5, 8, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 360, 450, 600, 750, 900, 1200,
 ];
 
-export function renderEvolution(
+function computeCurveRowsForMetric(
   currentTrack: TrackData | null,
   allTracks: TrackData[],
-  onTrackSelect?: (id: string, range: [number, number] | null) => void,
-  onDateRangeSelect?: (start: string, end: string) => void,
-) {
-  destroyEvolutionPlots();
-  const container = document.getElementById('evolution-view');
-  if (!container) return;
+  metricKey: 'power' | 'hr',
+  unit: string,
+): { rows: CurveTableRow[]; initialDur: number } {
+  const maxCurve: Record<
+    number,
+    { val: number; trackInfo: string; trackId?: string; idx?: number }
+  > = {};
+  allTracks.forEach((t) => {
+    const curve = metricKey === 'power' ? t.stats.powerCurve : t.stats.hrCurve;
+    if (!curve) return;
+    const name = t.name || 'Unnamed Track';
+    const date =
+      t.stats.startTime || t.addedAt ? fmtDate((t.stats.startTime || t.addedAt)!) : 'Unknown Date';
+    const trackInfo = `${name} (${date})`;
 
-  let currentRange = UrlState.get().progress || 'all';
+    Object.entries(curve).forEach(([dur, data]) => {
+      const d = Number(dur);
+      const val = (data as any).power || (data as any).hr;
+      if (!maxCurve[d] || val > maxCurve[d].val) {
+        maxCurve[d] = { val, trackInfo, trackId: t.id, idx: (data as any).idx };
+      }
+    });
+  });
 
+  const currentCurve =
+    (currentTrack &&
+      (metricKey === 'power' ? currentTrack.stats.powerCurve : currentTrack.stats.hrCurve)) ||
+    {};
+
+  const allDurations = new Set<number>();
+  Object.keys(maxCurve).forEach((d) => allDurations.add(Number(d)));
+  Object.keys(currentCurve).forEach((d) => allDurations.add(Number(d)));
+  const durations = Array.from(allDurations).sort((a, b) => a - b);
+
+  const rows: CurveTableRow[] = durations.map((d) => {
+    const cur = currentCurve[d]
+      ? (currentCurve[d] as any).power || (currentCurve[d] as any).hr
+      : '-';
+    const mx = maxCurve[d]?.val || '-';
+    return {
+      dur: d,
+      durLabel: fmtDuration(d),
+      curValStr: `${cur} ${unit}`,
+      maxValStr: `${mx} ${unit}`,
+      mxId: maxCurve[d]?.trackId,
+      mxIdx: maxCurve[d]?.idx,
+    };
+  });
+
+  return { rows, initialDur: durations[0] || 5 };
+}
+
+export function computeBanisterAndEvolutionData(
+  currentTrack: TrackData | null,
+  allTracks: TrackData[],
+): EvolutionComputedPayload {
   // Ensure duration curves and zones are available on all tracks
   allTracks.forEach((track) => {
     Parsers.ensureCurvesAndZones(track);
@@ -164,151 +289,177 @@ export function renderEvolution(
   totalFatigue += atl365 * 1e-3;
   totalFitness += ctl365 * 1e-3;
 
-  container.dataset.tsb = (totalFitness - totalFatigue).toFixed(1);
-  const cards: any[] = [];
-  activeEvolutionCards = cards;
-  container.innerHTML = `
-    <div id="evolution-toolbar" class="evolution-toolbar">
-      <div class="evolution-toolbar-left">
-        <div class="metric-pills">
-          <button class="metric-pill active" data-target="distance" style="--pill-color:${Metrics.distance.color}">
-            <span class="material-symbols-rounded">${Metrics.distance.icon}</span>Distance
-          </button>
-          <button class="metric-pill active" data-target="elevation" style="--pill-color:${Metrics.elevation.color}">
-            <span class="material-symbols-rounded">${Metrics.elevation.icon}</span>Elevation
-          </button>
-          <button class="metric-pill active" data-target="power" style="--pill-color:${Metrics.power.color}">
-            <span class="material-symbols-rounded">${Metrics.power.icon}</span>Power
-          </button>
-          <button class="metric-pill active" data-target="hr" style="--pill-color:${Metrics.hr.color}">
-            <span class="material-symbols-rounded">${Metrics.hr.icon}</span>Heart Rate
-          </button>
-        </div>
-      </div>
-      <div class="evolution-toolbar-right">
-        <div class="seg-ctrl" id="evolution-time-range">
-          <button class="seg-btn ${currentRange === '1m' ? 'active' : ''}" data-range="1m">1M</button>
-          <button class="seg-btn ${currentRange === '2m' ? 'active' : ''}" data-range="2m">2M</button>
-          <button class="seg-btn ${currentRange === '6m' ? 'active' : ''}" data-range="6m">6M</button>
-          <button class="seg-btn ${currentRange === '1y' ? 'active' : ''}" data-range="1y">1Y</button>
-          <button class="seg-btn ${currentRange === '2y' ? 'active' : ''}" data-range="2y">2Y</button>
-          <button class="seg-btn ${currentRange === 'all' ? 'active' : ''}" data-range="all">&infin;</button>
-        </div>
-      </div>
-    </div>
-    <div id="evolution-container" class="evolution-container"></div>
-  `;
+  const tsbNum = totalFitness - totalFatigue;
+  const tsbStr = tsbNum.toFixed(1);
+  const atlStr = totalFatigue.toFixed(1);
+  const ctlStr = totalFitness.toFixed(1);
+  const tsbStatus = tsbNum > 5 ? 'Fresh / Peak' : tsbNum >= -10 ? 'Optimal Load' : 'High Fatigue';
 
-  const grid = document.getElementById('evolution-container');
-  if (!grid) return;
+  const accumulatedSummaryRows = getAccumulatedSummaryRows(allTracks);
+  const distAcc = computeAccumulatedMetric(allTracks, (t) => t.stats.totalDist);
+  const elevAcc = computeAccumulatedMetric(allTracks, (t) => t.stats.elevGain);
+  const distanceAccumulatedRows = getAccumulatedTableRows(distAcc, true, 'km');
+  const elevationAccumulatedRows = getAccumulatedTableRows(elevAcc, false, 'm');
 
-  grid.insertAdjacentHTML('beforeend', renderAccumulatedProgressSummary(allTracks));
+  const hasPowerCurve = allTracks.some((t) => !!t.stats.powerCurve);
+  const hasHrCurve = allTracks.some((t) => !!t.stats.hrCurve);
 
-  const gridWidth = grid.clientWidth || 570;
+  const powerCurveInfo = hasPowerCurve
+    ? computeCurveRowsForMetric(currentTrack, allTracks, 'power', 'W')
+    : { rows: [], initialDur: 5 };
+  const hrCurveInfo = hasHrCurve
+    ? computeCurveRowsForMetric(currentTrack, allTracks, 'hr', 'bpm')
+    : { rows: [], initialDur: 5 };
 
-  const progressSync = uPlot.sync('progress-sync');
-  cards.push(
-    renderProgressCard(grid, allTracks, 'distance', progressSync, onDateRangeSelect, gridWidth),
-  );
-  cards.push(
-    renderProgressCard(grid, allTracks, 'elevation', progressSync, onDateRangeSelect, gridWidth),
-  );
-
-  const distanceScroll = grid.querySelector(
-    '.distance-progress-card .chart-scroll-container',
-  ) as HTMLElement;
-  const elevationScroll = grid.querySelector(
-    '.elevation-progress-card .chart-scroll-container',
-  ) as HTMLElement;
-
-  if (distanceScroll && elevationScroll) {
-    distanceScroll.addEventListener('scroll', () => {
-      if (elevationScroll.scrollLeft !== distanceScroll.scrollLeft)
-        elevationScroll.scrollLeft = distanceScroll.scrollLeft;
-    });
-    elevationScroll.addEventListener('scroll', () => {
-      if (distanceScroll.scrollLeft !== elevationScroll.scrollLeft)
-        distanceScroll.scrollLeft = elevationScroll.scrollLeft;
-    });
-  }
-
-  const toolbarRangeCtrl = container.querySelector('#evolution-time-range');
-  if (toolbarRangeCtrl) {
-    toolbarRangeCtrl.querySelectorAll('.seg-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const range = btn.getAttribute('data-range');
-        if (range) {
-          toolbarRangeCtrl
-            .querySelectorAll('.seg-btn')
-            .forEach((b) => b.classList.remove('active'));
-          btn.classList.add('active');
-          onRangeChange(range);
-        }
-      });
-    });
-  }
-
-  const pills = container.querySelectorAll('.metric-pill');
-  pills.forEach((pill) => {
-    pill.addEventListener('click', () => {
-      const target = pill.getAttribute('data-target');
-      if (target) {
-        const targetEl = document.getElementById(`${target}-evolution-card`);
-        targetEl?.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
+  const sportsSet = new Set<string>();
+  allTracks.forEach((t) => {
+    if (t.sport) sportsSet.add(t.sport);
   });
 
-  function onPinChange(dur: number | null) {
-    cards.forEach((c) => {
-      if (c && c.updatePin) c.updatePin(dur);
-    });
-  }
+  const sortedHistory = [...allTracks].sort(
+    (a, b) =>
+      (b.stats.startTime || b.addedAt || 0) - (a.stats.startTime || a.addedAt || 0) ||
+      a.id.localeCompare(b.id),
+  );
+  const historyRows: LongitudinalHistoryRow[] = sortedHistory.map((t) => {
+    const durSec = (t.stats.duration || 0) / 1000;
+    const avgPwr = t.stats.avgPower || 150;
+    const ftp = 200;
+    const intensityFactor = avgPwr / ftp;
+    const tss = ((durSec * avgPwr * intensityFactor) / (ftp * 3600)) * 100;
+    return {
+      id: t.id,
+      dateStr: t.stats.startTime ? fmtDate(t.stats.startTime) : '-',
+      name: t.displayName || t.name || t.id,
+      sport: t.sport || 'cycling',
+      color: t.color || '#FF6B35',
+      distKm: ((t.stats.totalDist || 0) / 1000).toFixed(1),
+      elevGainM: Math.round(t.stats.elevGain || 0).toString(),
+      durationStr: fmtDuration(Math.round(durSec)),
+      avgPowerStr: t.stats.avgPower != null ? `${Math.round(t.stats.avgPower)} W` : '-',
+      avgHrStr: t.stats.avgHR != null ? `${Math.round(t.stats.avgHR)} bpm` : '-',
+      tssStr: Math.round(tss).toString(),
+    };
+  });
 
-  function onRangeChange(range: string) {
-    UrlState.patch({ progress: range === 'all' ? null : range });
-    cards.forEach((c) => {
-      if (c && c.updateRange) c.updateRange(range);
-    });
+  return {
+    atlStr,
+    ctlStr,
+    tsbStr,
+    tsbStatus,
+    trackName: currentTrack ? currentTrack.name || 'Current Track' : 'Current Track',
+    hasPowerCurve,
+    hasHrCurve,
+    powerInitialDur: powerCurveInfo.initialDur,
+    hrInitialDur: hrCurveInfo.initialDur,
+    accumulatedSummaryRows,
+    distanceAccumulatedRows,
+    elevationAccumulatedRows,
+    powerCurveRows: powerCurveInfo.rows,
+    hrCurveRows: hrCurveInfo.rows,
+    historyRows,
+    availableSports: Array.from(sportsSet).sort(),
+  };
+}
+
+export function mountEvolutionPlots(
+  hostRoot: HTMLElement,
+  currentTrack: TrackData | null,
+  allTracks: TrackData[],
+  currentRange: string,
+  currentGrouping: 'week' | 'month',
+  onPinChange: (dur: number | null) => void,
+  onRangeChange: (range: string) => void,
+  onTrackSelect?: (id: string, range: [number, number] | null) => void,
+  onDateRangeSelect?: (start: string, end: string) => void,
+) {
+  currentEvolutionGrouping = currentGrouping;
+  const grid =
+    (hostRoot.querySelector('#evolution-container') as HTMLElement) ||
+    document.getElementById('evolution-container');
+  if (!grid) return;
+
+  const gridWidth = grid.clientWidth || 570;
+  const cards: any[] = [];
+  activeEvolutionCards = cards;
+
+  const progressSync = uPlot.sync('progress-sync');
+  const distCardEl =
+    (grid.querySelector('#distance-evolution-card') as HTMLElement) ||
+    document.getElementById('distance-evolution-card');
+  const elevCardEl =
+    (grid.querySelector('#elevation-evolution-card') as HTMLElement) ||
+    document.getElementById('elevation-evolution-card');
+
+  if (distCardEl) {
+    cards.push(
+      mountProgressCardPlot(
+        distCardEl,
+        allTracks,
+        'distance',
+        progressSync,
+        onDateRangeSelect,
+        gridWidth,
+      ),
+    );
+  }
+  if (elevCardEl) {
+    cards.push(
+      mountProgressCardPlot(
+        elevCardEl,
+        allTracks,
+        'elevation',
+        progressSync,
+        onDateRangeSelect,
+        gridWidth,
+      ),
+    );
   }
 
   if (allTracks.some((t) => t.stats.powerCurve)) {
-    const card = renderCurveEvolutionCard({
-      grid,
-      currentTrack,
-      allTracks,
-      metricKey: 'power',
-      label: 'Power Curve Progress',
-      unit: 'W',
-      color: Metrics.power.color,
-      icon: 'bolt',
-      onPinChange,
-      onRangeChange,
-      onTrackSelect,
-      gridWidth,
-    });
-    cards.push(card);
+    const powerCardEl =
+      (grid.querySelector('#power-evolution-card') as HTMLElement) ||
+      document.getElementById('power-evolution-card');
+    if (powerCardEl) {
+      cards.push(
+        mountCurveEvolutionPlots({
+          cardContainer: powerCardEl,
+          currentTrack,
+          allTracks,
+          metricKey: 'power',
+          unit: 'W',
+          color: Metrics.power.color,
+          onPinChange,
+          onRangeChange,
+          onTrackSelect,
+          gridWidth,
+        }),
+      );
+    }
   }
 
   if (allTracks.some((t) => t.stats.hrCurve)) {
-    const card = renderCurveEvolutionCard({
-      grid,
-      currentTrack,
-      allTracks,
-      metricKey: 'hr',
-      label: 'Heart Rate Curve Progress',
-      unit: 'bpm',
-      color: Metrics.hr.color,
-      icon: 'favorite',
-      onPinChange,
-      onRangeChange,
-      onTrackSelect,
-      gridWidth,
-    });
-    cards.push(card);
+    const hrCardEl =
+      (grid.querySelector('#hr-evolution-card') as HTMLElement) ||
+      document.getElementById('hr-evolution-card');
+    if (hrCardEl) {
+      cards.push(
+        mountCurveEvolutionPlots({
+          cardContainer: hrCardEl,
+          currentTrack,
+          allTracks,
+          metricKey: 'hr',
+          unit: 'bpm',
+          color: Metrics.hr.color,
+          onPinChange,
+          onRangeChange,
+          onTrackSelect,
+          gridWidth,
+        }),
+      );
+    }
   }
 
-  // Apply initial range when filtered
   if (currentRange !== 'all') {
     cards.forEach((c) => {
       if (c && c.updateRange) c.updateRange(currentRange);
@@ -320,106 +471,52 @@ export function renderEvolution(
   });
 }
 
-interface CurveEvolutionCardOptions {
-  grid: HTMLElement;
+export function renderEvolution(
+  currentTrack: TrackData | null,
+  allTracks: TrackData[],
+  onTrackSelect?: (id: string, range: [number, number] | null) => void,
+  onDateRangeSelect?: (start: string, end: string) => void,
+) {
+  const comp = getEvolutionComponent();
+  if (comp && typeof comp.render === 'function') {
+    comp.render(currentTrack, allTracks, onTrackSelect, onDateRangeSelect);
+    return;
+  }
+}
+
+interface MountCurveEvolutionOptions {
+  cardContainer: HTMLElement;
   currentTrack: TrackData | null;
   allTracks: TrackData[];
   metricKey: 'power' | 'hr';
-  label: string;
   unit: string;
   color: string;
-  icon: string;
   onPinChange: (dur: number | null) => void;
   onRangeChange: (range: string) => void;
   onTrackSelect?: (id: string, range: [number, number] | null) => void;
   gridWidth?: number;
 }
 
-function renderCurveEvolutionCard(opts: CurveEvolutionCardOptions) {
+function mountCurveEvolutionPlots(opts: MountCurveEvolutionOptions) {
   const {
-    grid,
+    cardContainer,
     currentTrack,
     allTracks,
     metricKey,
-    label,
     unit,
     color,
-    icon,
     onPinChange,
-    onRangeChange,
     onTrackSelect,
     gridWidth,
   } = opts;
 
-  const trackName = currentTrack ? currentTrack.name || 'Current Track' : 'Current Track';
-
   let mainChart: uPlot | null = null;
-
-  const cardContainer = document.createElement('div');
-  cardContainer.className = 'chart-row evolution-card-group';
-  cardContainer.id = `${metricKey}-evolution-card`;
-  grid.appendChild(cardContainer);
-
-  const row1 = document.createElement('div');
-  row1.className = 'chart-row progress-chart-row';
-  row1.style.setProperty('--chart-color', color);
-  row1.style.flex = '0 0 400px';
-  row1.style.borderBottom = 'none';
-  row1.innerHTML = `
-    <div class="chart-row-header">
-      <div class="chart-row-label-group">
-        <span class="material-symbols-rounded chart-row-icon" style="--chart-color:${color}">${icon}</span>
-        <span class="chart-row-label">${label}</span>
-      </div>
-    </div>
-    <div class="chart-row-body">
-      <div id="${metricKey}-evolution-chart" class="insight-chart-container evolution-chart-container"></div>
-    </div>
-  `;
-
-  const legendEl = document.createElement('div');
-  legendEl.className = 'evolution-legend';
-  legendEl.innerHTML = `
-    <div class="evolution-legend-item">
-      <span class="evolution-legend-line solid" style="--chart-color:${color}"></span>
-      <span>${trackName}</span>
-    </div>
-    <div class="evolution-legend-item">
-      <span class="evolution-legend-line dashed"></span>
-      <span>All-Time Max</span>
-    </div>
-  `;
-
   const urlState = UrlState.get();
   let currentRange = urlState.progress || 'all';
 
-  const row2 = document.createElement('div');
-  row2.className = 'chart-row progress-chart-row';
-  row2.style.setProperty('--chart-color', color);
-  row2.style.flex = '1';
-  row2.style.borderBottom = 'none';
-  row2.innerHTML = `
-    <div class="chart-row-header">
-      <div class="chart-row-label-group">
-        <span class="material-symbols-rounded chart-row-icon" style="--chart-color:${color}">${icon}</span>
-        <span class="chart-row-label" id="${metricKey}-timeline-label">Progress ${metricKey === 'power' ? 'Power' : 'HR'}</span>
-      </div>
-    </div>
-    <div class="chart-row-body">
-      <div id="${metricKey}-timeline-chart" class="insight-chart-container evolution-chart-container"></div>
-    </div>
-  `;
-
-  const sideBySide = document.createElement('div');
-  sideBySide.style.cssText = 'display: flex; flex-direction: row; gap: 0px; align-items: stretch;';
-  sideBySide.appendChild(row1);
-  sideBySide.appendChild(row2);
-
-  cardContainer.appendChild(sideBySide);
-  cardContainer.appendChild(legendEl);
-
-  const chartEl = row1.querySelector(`#${metricKey}-evolution-chart`) as HTMLElement;
+  const chartEl = cardContainer.querySelector(`#${metricKey}-evolution-chart`) as HTMLElement;
   if (!chartEl) return;
+  chartEl.innerHTML = '';
 
   // 1. Compute global max curve
   const maxCurve: Record<
@@ -522,199 +619,95 @@ function renderCurveEvolutionCard(opts: CurveEvolutionCardOptions) {
   chartEl.style.position = 'relative';
   chartEl.appendChild(curYVal);
 
-  const renderCharts = () => {
-    const optsUPlot: uPlot.Options = {
-      id: `${metricKey}-evolution`,
-      width: 400,
-      height: 250,
-      padding: [0, 10, 0, 10],
-      scales: {
-        x: { time: false, distr: 3, auto: true },
-        y: { auto: true },
+  const optsUPlot: uPlot.Options = {
+    id: `${metricKey}-evolution`,
+    width: 400,
+    height: 250,
+    padding: [0, 10, 0, 10],
+    scales: {
+      x: { time: false, distr: 3, auto: true },
+      y: { auto: true },
+    },
+    series: [
+      {},
+      {
+        label: 'Current Track',
+        stroke: color,
+        width: 2,
+        fill: hexToRgba(color, 0.1),
+        points: { show: true, size: 5, fill: color },
       },
-      series: [
-        {},
-        {
-          label: 'Current Track',
-          stroke: color,
-          width: 2,
-          fill: hexToRgba(color, 0.1),
-          points: { show: true, size: 5, fill: color },
-        },
-        {
-          label: 'All-Time Max',
-          stroke: '#888888',
-          width: 1,
-          fill: 'transparent',
-          points: { show: true, size: 6, fill: '#888888' },
-        },
-      ],
-      axes: [
-        {
-          stroke: '#555564',
-          grid: { stroke: '#2e2e34', width: 1 },
-          show: true,
-          values: () => [],
-          ticks: { show: false },
-          font: '10px system-ui, sans-serif',
-          size: 30,
-        },
-        {
-          stroke: '#555564',
-          grid: { stroke: '#2e2e34', width: 1 },
-          values: (_u, vals) => vals.map((v) => `${v}${unit}`),
-          font: '10px system-ui, sans-serif',
-          size: 50,
-        },
-      ],
-      cursor: {
-        drag: { x: false, y: false },
-        dataIdx: (u, seriesIdx, dataIdx) => dataIdx,
-        x: false,
-        y: false,
+      {
+        label: 'All-Time Max',
+        stroke: '#888888',
+        width: 1,
+        fill: 'transparent',
+        points: { show: true, size: 6, fill: '#888888' },
       },
-      hooks: {
-        draw: [
-          (u: uPlot) => {
-            const ctx = u.ctx;
-            const dpr = window.devicePixelRatio || 1;
-            const bb = u.bbox;
-            const benchmarks = [
-              1, 2, 5, 10, 20, 30, 60, 120, 300, 600, 1200, 1800, 3600, 7200, 10800,
-            ];
-            const maxDur = xData[xData.length - 1];
+    ],
+    axes: [
+      {
+        stroke: '#555564',
+        grid: { stroke: '#2e2e34', width: 1 },
+        show: true,
+        values: () => [],
+        ticks: { show: false },
+        font: '10px system-ui, sans-serif',
+        size: 30,
+      },
+      {
+        stroke: '#555564',
+        grid: { stroke: '#2e2e34', width: 1 },
+        values: (_u, vals) => vals.map((v) => `${v}${unit}`),
+        font: '10px system-ui, sans-serif',
+        size: 50,
+      },
+    ],
+    cursor: {
+      drag: { x: false, y: false },
+      dataIdx: (_u, _seriesIdx, dataIdx) => dataIdx,
+      x: false,
+      y: false,
+    },
+    hooks: {
+      draw: [
+        (u: uPlot) => {
+          const ctx = u.ctx;
+          const dpr = window.devicePixelRatio || 1;
+          const bb = u.bbox;
+          const benchmarks = [
+            1, 2, 5, 10, 20, 30, 60, 120, 300, 600, 1200, 1800, 3600, 7200, 10800,
+          ];
+          const maxDur = xData[xData.length - 1];
 
-            ctx.save();
-            ctx.fillStyle = '#555564';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'top';
-            ctx.font = `${10 * dpr}px system-ui, sans-serif`;
+          ctx.save();
+          ctx.fillStyle = '#555564';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.font = `${10 * dpr}px system-ui, sans-serif`;
 
-            let lastX = -100;
-            benchmarks.forEach((d) => {
-              if (d > maxDur) return;
-              const x = u.valToPos(d, 'x', true);
-              if (x > lastX + 30 * dpr && x < bb.left + bb.width + 5 * dpr) {
-                ctx.fillText(fmtDuration(d), x, bb.top + bb.height + 6 * dpr);
-                lastX = x;
-              }
-            });
-
-            // Draw pinned duration circle
-            if (pinnedDur !== null) {
-              const idx = xData.indexOf(pinnedDur);
-              if (idx >= 0) {
-                const pcx = u.valToPos(pinnedDur, 'x', true);
-                const pcy = u.valToPos(yDataCurrent[idx]! || yDataMax[idx]!, 'y', true);
-
-                ctx.save();
-                ctx.beginPath();
-                ctx.setLineDash([]);
-                const curVal = yDataCurrent[idx];
-                const dotRadius = curVal !== null ? 5 * dpr : 3 * dpr;
-                const dotColor = curVal !== null ? color : '#888888';
-                ctx.arc(pcx, pcy, dotRadius, 0, 2 * Math.PI);
-                ctx.fillStyle = dotColor;
-                ctx.fill();
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 2 * dpr;
-                ctx.stroke();
-                ctx.restore();
-              }
+          let lastX = -100;
+          benchmarks.forEach((d) => {
+            if (d > maxDur) return;
+            const x = u.valToPos(d, 'x', true);
+            if (x > lastX + 30 * dpr && x < bb.left + bb.width + 5 * dpr) {
+              ctx.fillText(fmtDuration(d), x, bb.top + bb.height + 6 * dpr);
+              lastX = x;
             }
+          });
 
-            ctx.restore();
-          },
-          (u: uPlot) => {
-            const ctx = u.ctx;
-            const dpr = window.devicePixelRatio || 1;
-            const bb = u.bbox;
+          if (pinnedDur !== null) {
+            const idx = xData.indexOf(pinnedDur);
+            if (idx >= 0) {
+              const pcx = u.valToPos(pinnedDur, 'x', true);
+              const pcy = u.valToPos(yDataCurrent[idx]! || yDataMax[idx]!, 'y', true);
 
-            let idx = u.cursor.idx;
-            let activeSeriesIdx = 1;
-            const cursorLeft = u.cursor.left;
-            const cursorTop = u.cursor.top;
-
-            if (cursorLeft != null && cursorTop != null && cursorLeft >= 0 && cursorTop >= 0) {
-              let minD2 = Infinity;
-              let nearestIdx = -1;
-              const radius = 30; // pixels
-              const maxD2 = radius * radius;
-
-              for (let i = 0; i < xData.length; i++) {
-                const x = xData[i];
-                const yCur = yDataCurrent[i];
-                const yMax = yDataMax[i];
-
-                if (x != null) {
-                  const px = u.valToPos(x, 'x', false);
-
-                  if (yCur != null) {
-                    const py = u.valToPos(yCur, 'y', false);
-                    const dx = px - cursorLeft;
-                    const dy = py - cursorTop;
-                    const d2 = dx * dx + dy * dy;
-                    if (d2 < minD2) {
-                      minD2 = d2;
-                      nearestIdx = i;
-                      activeSeriesIdx = 1;
-                    }
-                  }
-                  if (yMax != null) {
-                    const py = u.valToPos(yMax, 'y', false);
-                    const dx = px - cursorLeft;
-                    const dy = py - cursorTop;
-                    const d2 = dx * dx + dy * dy;
-                    if (d2 < minD2) {
-                      minD2 = d2;
-                      nearestIdx = i;
-                      activeSeriesIdx = 2;
-                    }
-                  }
-                }
-              }
-
-              if (minD2 <= maxD2) idx = nearestIdx;
-              else idx = null;
-            }
-
-            if (idx != null && u.data[0][idx] != null) {
-              const pcx = u.valToPos(u.data[0][idx]!, 'x', true);
-              const pcy = u.valToPos(
-                activeSeriesIdx === 1 ? yDataCurrent[idx]! : yDataMax[idx]!,
-                'y',
-                true,
-              );
-
-              // Draw lines
               ctx.save();
               ctx.beginPath();
-              ctx.setLineDash([2 * dpr, 2 * dpr]);
-              ctx.strokeStyle = hexToRgba(activeSeriesIdx === 1 ? color : '#888888', 0.4);
-              ctx.lineWidth = 1 * dpr;
-              // Vertical line
-              ctx.moveTo(pcx, bb.top);
-              ctx.lineTo(pcx, bb.top + bb.height);
-              // Horizontal line
-              ctx.moveTo(bb.left, pcy);
-              ctx.lineTo(bb.left + bb.width, pcy);
-              ctx.stroke();
-              ctx.restore();
-
-              // Draw hover halo
-              ctx.save();
-              ctx.beginPath();
-              ctx.setLineDash([]); // Reset to solid
-              ctx.arc(pcx, pcy, 12 * dpr, 0, 2 * Math.PI);
-              ctx.fillStyle = hexToRgba(activeSeriesIdx === 1 ? color : '#888888', 0.2);
-              ctx.fill();
-              ctx.restore();
-
-              // Draw center circle
-              ctx.save();
-              ctx.beginPath();
-              const dotRadius = activeSeriesIdx === 1 ? 5 * dpr : 6 * dpr;
-              const dotColor = activeSeriesIdx === 1 ? color : '#888888';
+              ctx.setLineDash([]);
+              const curVal = yDataCurrent[idx];
+              const dotRadius = curVal !== null ? 5 * dpr : 3 * dpr;
+              const dotColor = curVal !== null ? color : '#888888';
               ctx.arc(pcx, pcy, dotRadius, 0, 2 * Math.PI);
               ctx.fillStyle = dotColor;
               ctx.fill();
@@ -722,658 +715,655 @@ function renderCurveEvolutionCard(opts: CurveEvolutionCardOptions) {
               ctx.lineWidth = 2 * dpr;
               ctx.stroke();
               ctx.restore();
-
-              // Draw axis labels
-              ctx.save();
-              ctx.setLineDash([]); // Reset to solid
-
-              const xValStr = fmtDuration(xData[idx!]);
-              ctx.font = `bold ${10 * dpr}px system-ui, sans-serif`;
-              const xValWidth = ctx.measureText(xValStr).width;
-              const xbw = xValWidth + 10 * dpr;
-              const pillH = 16 * dpr;
-
-              const xLabelX = pcx - xbw / 2;
-              const clampedXBx = Math.max(bb.left, Math.min(bb.left + bb.width - xbw, xLabelX));
-              const xLabelY = bb.top + bb.height + 2 * dpr;
-
-              // X Label Pill
-              ctx.fillStyle = 'rgba(14, 14, 16, 0.92)';
-              ctx.beginPath();
-              if ((ctx as any).roundRect)
-                (ctx as any).roundRect(clampedXBx, xLabelY, xbw, pillH, 3 * dpr);
-              else ctx.rect(clampedXBx, xLabelY, xbw, pillH);
-              ctx.fill();
-              ctx.strokeStyle = hexToRgba(color, 0.27);
-              ctx.lineWidth = 1 * dpr;
-              ctx.stroke();
-
-              ctx.fillStyle = color;
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.fillText(xValStr, clampedXBx + xbw / 2, xLabelY + pillH / 2);
-
-              const yVal = yDataCurrent[idx!]! || yDataMax[idx!]!;
-              const yValStr = `${yVal.toFixed(0)} ${unit}`;
-              const yValWidth = ctx.measureText(yValStr).width;
-              const ybw = yValWidth + 10 * dpr;
-
-              const yLabelX = bb.left - ybw - 2 * dpr; // To the left
-              const yLabelY = pcy - pillH / 2;
-
-              // Y Label Pill
-              ctx.fillStyle = 'rgba(14, 14, 16, 0.92)';
-              ctx.beginPath();
-              if ((ctx as any).roundRect)
-                (ctx as any).roundRect(yLabelX, yLabelY, ybw, pillH, 3 * dpr);
-              else ctx.rect(yLabelX, yLabelY, ybw, pillH);
-              ctx.fill();
-              ctx.strokeStyle = hexToRgba(color, 0.27);
-              ctx.lineWidth = 1 * dpr;
-              ctx.stroke();
-
-              ctx.fillStyle = color;
-              ctx.textAlign = 'left';
-              ctx.textBaseline = 'middle';
-              ctx.fillText(yValStr, yLabelX + 5 * dpr, yLabelY + pillH / 2);
-
-              ctx.restore();
             }
-          },
-        ],
-        setCursor: [
-          (u: uPlot) => {
-            if (!(u as any)._ready) return;
-            u.redraw(false);
+          }
 
-            let idx = u.cursor.idx;
-            let activeSeriesIdx = 1;
-            const cursorLeft = u.cursor.left;
-            const cursorTop = u.cursor.top;
+          ctx.restore();
+        },
+        (u: uPlot) => {
+          const ctx = u.ctx;
+          const dpr = window.devicePixelRatio || 1;
+          const bb = u.bbox;
 
-            if (cursorLeft != null && cursorTop != null && cursorLeft >= 0 && cursorTop >= 0) {
-              let minD2 = Infinity;
-              let nearestIdx = -1;
-              const radius = 30; // pixels
-              const maxD2 = radius * radius;
+          let idx = u.cursor.idx;
+          let activeSeriesIdx = 1;
+          const cursorLeft = u.cursor.left;
+          const cursorTop = u.cursor.top;
 
-              for (let i = 0; i < xData.length; i++) {
-                const x = xData[i];
-                const yCur = yDataCurrent[i];
-                const yMax = yDataMax[i];
+          if (cursorLeft != null && cursorTop != null && cursorLeft >= 0 && cursorTop >= 0) {
+            let minD2 = Infinity;
+            let nearestIdx = -1;
+            const radius = 30;
+            const maxD2 = radius * radius;
 
-                if (x != null) {
-                  const px = u.valToPos(x, 'x', false);
+            for (let i = 0; i < xData.length; i++) {
+              const x = xData[i];
+              const yCur = yDataCurrent[i];
+              const yMax = yDataMax[i];
 
-                  if (yCur != null) {
-                    const py = u.valToPos(yCur, 'y', false);
-                    const dx = px - cursorLeft;
-                    const dy = py - cursorTop;
-                    const d2 = dx * dx + dy * dy;
-                    if (d2 < minD2) {
-                      minD2 = d2;
-                      nearestIdx = i;
-                      activeSeriesIdx = 1;
-                    }
+              if (x != null) {
+                const px = u.valToPos(x, 'x', false);
+
+                if (yCur != null) {
+                  const py = u.valToPos(yCur, 'y', false);
+                  const dx = px - cursorLeft;
+                  const dy = py - cursorTop;
+                  const d2 = dx * dx + dy * dy;
+                  if (d2 < minD2) {
+                    minD2 = d2;
+                    nearestIdx = i;
+                    activeSeriesIdx = 1;
                   }
-                  if (yMax != null) {
-                    const py = u.valToPos(yMax, 'y', false);
-                    const dx = px - cursorLeft;
-                    const dy = py - cursorTop;
-                    const d2 = dx * dx + dy * dy;
-                    if (d2 < minD2) {
-                      minD2 = d2;
-                      nearestIdx = i;
-                      activeSeriesIdx = 2;
-                    }
+                }
+                if (yMax != null) {
+                  const py = u.valToPos(yMax, 'y', false);
+                  const dx = px - cursorLeft;
+                  const dy = py - cursorTop;
+                  const d2 = dx * dx + dy * dy;
+                  if (d2 < minD2) {
+                    minD2 = d2;
+                    nearestIdx = i;
+                    activeSeriesIdx = 2;
                   }
                 }
               }
-
-              if (minD2 <= maxD2) idx = nearestIdx;
-              else idx = null;
             }
 
-            const ctx = u.ctx;
-            const dpr = window.devicePixelRatio || 1;
-            const bb = u.bbox;
+            if (minD2 <= maxD2) idx = nearestIdx;
+            else idx = null;
+          }
 
-            const hasFocus = idx != null && xData[idx] != null;
+          if (idx != null && u.data[0][idx] != null) {
+            const pcx = u.valToPos(u.data[0][idx]!, 'x', true);
+            const pcy = u.valToPos(
+              activeSeriesIdx === 1 ? yDataCurrent[idx]! : yDataMax[idx]!,
+              'y',
+              true,
+            );
 
-            if (hasFocus) {
-              const cx = u.valToPos(xData[idx!]!, 'x', false);
-              const cy = u.valToPos(yDataCurrent[idx!]! || yDataMax[idx!]!, 'y', false); // Fallback to max if current is null
+            ctx.save();
+            ctx.beginPath();
+            ctx.setLineDash([2 * dpr, 2 * dpr]);
+            ctx.strokeStyle = hexToRgba(activeSeriesIdx === 1 ? color : '#888888', 0.4);
+            ctx.lineWidth = 1 * dpr;
+            ctx.moveTo(pcx, bb.top);
+            ctx.lineTo(pcx, bb.top + bb.height);
+            ctx.moveTo(bb.left, pcy);
+            ctx.lineTo(bb.left + bb.width, pcy);
+            ctx.stroke();
+            ctx.restore();
 
-              const durVal = xData[idx!];
-              const curVal = yDataCurrent[idx!];
-              const mxVal = yDataMax[idx!];
+            ctx.save();
+            ctx.beginPath();
+            ctx.setLineDash([]);
+            ctx.arc(pcx, pcy, 12 * dpr, 0, 2 * Math.PI);
+            ctx.fillStyle = hexToRgba(activeSeriesIdx === 1 ? color : '#888888', 0.2);
+            ctx.fill();
+            ctx.restore();
 
-              let html = `<div class="evolution-tooltip-title">${fmtDuration(durVal)}</div>`;
-              if (curVal !== null) {
-                html += `
-                  <div class="evolution-tooltip-row">
-                    <span class="evolution-tooltip-label">Current:</span>
-                    <span class="evolution-tooltip-value">${curVal} ${unit}</span>
-                  </div>
-                `;
-              }
-              if (mxVal !== null) {
-                html += `
-                  <div class="evolution-tooltip-row">
-                    <span class="evolution-tooltip-label">Max:</span>
-                    <span class="evolution-tooltip-value">${mxVal} ${unit}</span>
-                  </div>
-                `;
-              }
+            ctx.save();
+            ctx.beginPath();
+            const dotRadius = activeSeriesIdx === 1 ? 5 * dpr : 6 * dpr;
+            const dotColor = activeSeriesIdx === 1 ? color : '#888888';
+            ctx.arc(pcx, pcy, dotRadius, 0, 2 * Math.PI);
+            ctx.fillStyle = dotColor;
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2 * dpr;
+            ctx.stroke();
+            ctx.restore();
 
-              curYVal.innerHTML = html;
+            ctx.save();
+            ctx.setLineDash([]);
 
-              if (timelineChart) {
-                if (pinnedDur === null) {
-                  currentDur = durVal;
-                  const { xFiltered, rawYFiltered, smoothedYFiltered } = getFilteredData(
-                    currentDur,
-                    currentRange,
-                  );
-                  const lowerBound = smoothedYFiltered.map((v) => (v !== null ? v * 0.9 : null));
-                  const upperBound = smoothedYFiltered.map((v) => (v !== null ? v * 1.1 : null));
-                  timelineChart.setData([
-                    xFiltered,
-                    rawYFiltered,
-                    smoothedYFiltered,
-                    lowerBound,
-                    upperBound,
-                  ]);
+            const xValStr = fmtDuration(xData[idx!]);
+            ctx.font = `bold ${10 * dpr}px system-ui, sans-serif`;
+            const xValWidth = ctx.measureText(xValStr).width;
+            const xbw = xValWidth + 10 * dpr;
+            const pillH = 16 * dpr;
 
-                  const labelEl = document.getElementById(`${metricKey}-timeline-label`);
-                  if (labelEl)
-                    labelEl.textContent = `Progress ${fmtDuration(durVal)} ${metricKey === 'power' ? 'Power' : 'HR'}`;
+            const xLabelX = pcx - xbw / 2;
+            const clampedXBx = Math.max(bb.left, Math.min(bb.left + bb.width - xbw, xLabelX));
+            const xLabelY = bb.top + bb.height + 2 * dpr;
+
+            ctx.fillStyle = 'rgba(14, 14, 16, 0.92)';
+            ctx.beginPath();
+            if ((ctx as any).roundRect)
+              (ctx as any).roundRect(clampedXBx, xLabelY, xbw, pillH, 3 * dpr);
+            else ctx.rect(clampedXBx, xLabelY, xbw, pillH);
+            ctx.fill();
+            ctx.strokeStyle = hexToRgba(color, 0.27);
+            ctx.lineWidth = 1 * dpr;
+            ctx.stroke();
+
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(xValStr, clampedXBx + xbw / 2, xLabelY + pillH / 2);
+
+            const yVal = yDataCurrent[idx!]! || yDataMax[idx!]!;
+            const yValStr = `${yVal.toFixed(0)} ${unit}`;
+            const yValWidth = ctx.measureText(yValStr).width;
+            const ybw = yValWidth + 10 * dpr;
+
+            const yLabelX = bb.left - ybw - 2 * dpr;
+            const yLabelY = pcy - pillH / 2;
+
+            ctx.fillStyle = 'rgba(14, 14, 16, 0.92)';
+            ctx.beginPath();
+            if ((ctx as any).roundRect)
+              (ctx as any).roundRect(yLabelX, yLabelY, ybw, pillH, 3 * dpr);
+            else ctx.rect(yLabelX, yLabelY, ybw, pillH);
+            ctx.fill();
+            ctx.strokeStyle = hexToRgba(color, 0.27);
+            ctx.lineWidth = 1 * dpr;
+            ctx.stroke();
+
+            ctx.fillStyle = color;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(yValStr, yLabelX + 5 * dpr, yLabelY + pillH / 2);
+
+            ctx.restore();
+          }
+        },
+      ],
+      setCursor: [
+        (u: uPlot) => {
+          if (!(u as any)._ready) return;
+          u.redraw(false);
+
+          let idx = u.cursor.idx;
+          const cursorLeft = u.cursor.left;
+          const cursorTop = u.cursor.top;
+
+          if (cursorLeft != null && cursorTop != null && cursorLeft >= 0 && cursorTop >= 0) {
+            let minD2 = Infinity;
+            let nearestIdx = -1;
+            const radius = 30;
+            const maxD2 = radius * radius;
+
+            for (let i = 0; i < xData.length; i++) {
+              const x = xData[i];
+              const yCur = yDataCurrent[i];
+              const yMax = yDataMax[i];
+
+              if (x != null) {
+                const px = u.valToPos(x, 'x', false);
+
+                if (yCur != null) {
+                  const py = u.valToPos(yCur, 'y', false);
+                  const dx = px - cursorLeft;
+                  const dy = py - cursorTop;
+                  const d2 = dx * dx + dy * dy;
+                  if (d2 < minD2) {
+                    minD2 = d2;
+                    nearestIdx = i;
+                  }
+                }
+                if (yMax != null) {
+                  const py = u.valToPos(yMax, 'y', false);
+                  const dx = px - cursorLeft;
+                  const dy = py - cursorTop;
+                  const d2 = dx * dx + dy * dy;
+                  if (d2 < minD2) {
+                    minD2 = d2;
+                    nearestIdx = i;
+                  }
                 }
               }
-              curYVal.style.display = '';
-              curYVal.style.left = `${cursorLeft! + bb.left}px`;
-              curYVal.style.top = `${cursorTop! + bb.top}px`;
-              curYVal.style.transform = 'translate(5px, -50%)';
-            } else {
-              curYVal.style.display = 'none';
             }
-          },
-        ],
-      },
-    };
 
-    mainChart = new uPlot(optsUPlot, [xData, yDataCurrent, yDataMax], chartEl);
-    evolutionPlots.push(mainChart);
+            if (minD2 <= maxD2) idx = nearestIdx;
+            else idx = null;
+          }
 
-    chartEl.addEventListener('click', () => {
-      if (!mainChart) return;
-      const idx = mainChart.cursor.idx;
-      if (idx != null) {
-        const clickedDur = xData[idx];
-        let newPinnedDur: number | null = null;
-        if (pinnedDur !== null) newPinnedDur = null;
-        else newPinnedDur = clickedDur;
+          const bb = u.bbox;
+          const hasFocus = idx != null && xData[idx] != null;
 
-        onPinChange(newPinnedDur);
+          if (hasFocus) {
+            const durVal = xData[idx!];
+            const curVal = yDataCurrent[idx!];
+            const mxVal = yDataMax[idx!];
 
-        // Also select the range for the current track if available
-        if (currentTrack) {
-          const stats = currentTrack.stats;
-          const curve = metricKey === 'power' ? stats.powerCurve : stats.hrCurve;
-          if (curve) {
-            const entry = curve[clickedDur];
-            if (entry) {
-              const bestIdx = entry.idx;
-              const duration = clickedDur;
-              const startPt = currentTrack.points[bestIdx];
-              const endPt = currentTrack.points[bestIdx + duration - 1];
-              if (startPt && endPt && startPt.time != null && endPt.time != null) {
-                const trackStart = currentTrack.points[0].time || 0;
-                const min = (startPt.time - trackStart) / 1000;
-                const max = (endPt.time - trackStart) / 1000;
-                onTrackSelect?.(currentTrack.id, [min, max]);
-              }
+            let html = `<div class="evolution-tooltip-title">${fmtDuration(durVal)}</div>`;
+            if (curVal !== null) {
+              html += `
+                <div class="evolution-tooltip-row">
+                  <span class="evolution-tooltip-label">Current:</span>
+                  <span class="evolution-tooltip-value">${curVal} ${unit}</span>
+                </div>
+              `;
+            }
+            if (mxVal !== null) {
+              html += `
+                <div class="evolution-tooltip-row">
+                  <span class="evolution-tooltip-label">Max:</span>
+                  <span class="evolution-tooltip-value">${mxVal} ${unit}</span>
+                </div>
+              `;
+            }
+
+            curYVal.innerHTML = html;
+
+            if (timelineChart && pinnedDur === null) {
+              currentDur = durVal;
+              const { xFiltered, rawYFiltered, smoothedYFiltered } = getFilteredData(
+                currentDur,
+                currentRange,
+              );
+              const lowerBound = smoothedYFiltered.map((v) => (v !== null ? v * 0.9 : null));
+              const upperBound = smoothedYFiltered.map((v) => (v !== null ? v * 1.1 : null));
+              timelineChart.setData([
+                xFiltered,
+                rawYFiltered,
+                smoothedYFiltered,
+                lowerBound,
+                upperBound,
+              ]);
+
+              const labelEl = cardContainer.querySelector(`#${metricKey}-timeline-label`);
+              if (labelEl)
+                labelEl.textContent = `Progress ${fmtDuration(durVal)} ${metricKey === 'power' ? 'Power' : 'HR'}`;
+            }
+            curYVal.style.display = '';
+            curYVal.style.left = `${cursorLeft! + bb.left}px`;
+            curYVal.style.top = `${cursorTop! + bb.top}px`;
+            curYVal.style.transform = 'translate(5px, -50%)';
+          } else {
+            curYVal.style.display = 'none';
+          }
+        },
+      ],
+    },
+  };
+
+  mainChart = new uPlot(optsUPlot, [xData, yDataCurrent, yDataMax], chartEl);
+  evolutionPlots.push(mainChart);
+
+  chartEl.addEventListener('click', () => {
+    if (!mainChart) return;
+    const idx = mainChart.cursor.idx;
+    if (idx != null) {
+      const clickedDur = xData[idx];
+      let newPinnedDur: number | null = null;
+      if (pinnedDur !== null) newPinnedDur = null;
+      else newPinnedDur = clickedDur;
+
+      onPinChange(newPinnedDur);
+
+      if (currentTrack) {
+        const stats = currentTrack.stats;
+        const curve = metricKey === 'power' ? stats.powerCurve : stats.hrCurve;
+        if (curve) {
+          const entry = curve[clickedDur];
+          if (entry) {
+            const bestIdx = entry.idx;
+            const duration = clickedDur;
+            const startPt = currentTrack.points[bestIdx];
+            const endPt = currentTrack.points[bestIdx + duration - 1];
+            if (startPt && endPt && startPt.time != null && endPt.time != null) {
+              const trackStart = currentTrack.points[0].time || 0;
+              const min = (startPt.time - trackStart) / 1000;
+              const max = (endPt.time - trackStart) / 1000;
+              onTrackSelect?.(currentTrack.id, [min, max]);
             }
           }
         }
       }
-    });
+    }
+  });
 
-    chartEl.addEventListener('mouseleave', () => {
-      if (mainChart) mainChart.redraw();
-    });
+  chartEl.addEventListener('mouseleave', () => {
+    if (mainChart) mainChart.redraw();
+  });
 
-    // 4. Add expandable table
-    const detailsEl = document.createElement('details');
-    detailsEl.classList.add('progress-details');
-    detailsEl.style.marginTop = '0px';
-    detailsEl.style.setProperty('--chart-color', color);
-    detailsEl.innerHTML = `
-      <summary>
-        <span class="material-symbols-rounded expand-icon">chevron_right</span>
-        <span class="material-symbols-rounded">table_chart</span>
-        Data Table
-      </summary>
-      <table class="power-curve-table">
-        <thead>
-          <tr>
-            <th>Duration</th>
-            <th>Current</th>
-            <th>All-Time Max</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${durations
-            .map((d) => {
-              const cur = currentCurve[d]
-                ? (currentCurve[d] as any).power || (currentCurve[d] as any).hr
-                : '-';
-              const mx = maxCurve[d]?.val || '-';
-              const mxId = maxCurve[d]?.trackId;
-              const mxIdx = maxCurve[d]?.idx;
-              return `
-              <tr>
-                <td>${fmtDuration(d)}</td>
-                <td>${cur} ${unit}</td>
-                <td>
-                  ${mx} ${unit}
-                  ${mxId ? `<button class="evolution-select-btn" data-id="${mxId}" data-idx="${mxIdx}" data-dur="${d}" title="Select track and range"><span class="material-symbols-rounded">gps_fixed</span></button>` : ''}
-                </td>
-              </tr>
-            `;
-            })
-            .join('')}
-        </tbody>
-      </table>
-    `;
-    cardContainer.appendChild(detailsEl);
+  let lastNearestIdx: number | null = null;
 
-    detailsEl.querySelectorAll('.evolution-select-btn').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const id = btn.getAttribute('data-id');
-        const idx = btn.getAttribute('data-idx');
-        const dur = btn.getAttribute('data-dur');
-        if (id) {
-          document.dispatchEvent(
-            new CustomEvent('select-track', {
-              detail: {
-                id,
-                idx: idx ? Number(idx) : null,
-                dur: dur ? Number(dur) : null,
-              },
-            }),
-          );
-        }
-      });
-    });
+  const timelineEl = cardContainer.querySelector(`#${metricKey}-timeline-chart`) as HTMLElement;
+  if (timelineEl) {
+    timelineEl.innerHTML = '';
+    timelineEl.style.position = 'relative';
+    const timelineTooltip = document.createElement('div');
+    timelineTooltip.className = 'timeline-tooltip font-m';
+    timelineTooltip.style.cssText =
+      'position:absolute;background:rgba(14, 14, 16, 0.9);color:#fff;padding:8px 12px;border-radius:4px;font-family:system-ui;pointer-events:none;z-index:1000;box-shadow:0 4px 6px rgba(0,0,0,0.3);border:1px solid #2e2e34;display:none;';
+    timelineEl.appendChild(timelineTooltip);
 
-    let lastNearestIdx: number | null = null;
+    if (xTimeline.length > 0) {
+      const { xFiltered, rawYFiltered, smoothedYFiltered } = getFilteredData(
+        currentDur,
+        currentRange,
+      );
+      const lowerBound = smoothedYFiltered.map((v) => (v !== null ? v * 0.9 : null));
+      const upperBound = smoothedYFiltered.map((v) => (v !== null ? v * 1.1 : null));
+      const dataTimeline = [xFiltered, rawYFiltered, smoothedYFiltered, lowerBound, upperBound];
 
-    // 5. Render timeline chart
-    const timelineEl = row2.querySelector(`#${metricKey}-timeline-chart`) as HTMLElement;
-    if (timelineEl) {
-      timelineEl.style.position = 'relative';
-      const timelineTooltip = document.createElement('div');
-      timelineTooltip.className = 'timeline-tooltip font-m';
-      timelineTooltip.style.cssText =
-        'position:absolute;background:rgba(14, 14, 16, 0.9);color:#fff;padding:8px 12px;border-radius:4px;font-family:system-ui;pointer-events:none;z-index:1000;box-shadow:0 4px 6px rgba(0,0,0,0.3);border:1px solid #2e2e34;display:none;';
-      timelineEl.appendChild(timelineTooltip);
+      const series: any[] = [
+        {
+          value: (_u: any, v: number) => {
+            if (v != null) return fmtDate(v * 1000);
+            return '-';
+          },
+        },
+        {
+          label: 'Value',
+          stroke: color,
+          width: 0,
+          points: { show: true, size: 6, fill: hexToRgba(color, 0.5) },
+        },
+        {
+          label: 'Trend',
+          stroke: color,
+          width: 2,
+          points: { show: false },
+          spanGaps: true,
+          fill: 'transparent',
+          dash: [5, 5],
+        },
+        {
+          label: 'Lower Bound',
+          stroke: 'transparent',
+          width: 0,
+          points: { show: false },
+          spanGaps: true,
+        },
+        {
+          label: 'Upper Bound',
+          stroke: 'transparent',
+          width: 0,
+          points: { show: false },
+          spanGaps: true,
+        },
+      ];
 
-      if (xTimeline.length > 0) {
-        const { xFiltered, rawYFiltered, smoothedYFiltered } = getFilteredData(
-          currentDur,
-          currentRange,
-        );
-        const lowerBound = smoothedYFiltered.map((v) => (v !== null ? v * 0.9 : null));
-        const upperBound = smoothedYFiltered.map((v) => (v !== null ? v * 1.1 : null));
-        const dataTimeline = [xFiltered, rawYFiltered, smoothedYFiltered, lowerBound, upperBound];
+      const labelEl = cardContainer.querySelector(`#${metricKey}-timeline-label`);
+      if (labelEl)
+        labelEl.textContent = `Progress ${fmtDuration(currentDur)} ${metricKey === 'power' ? 'Power' : 'HR'}`;
 
-        const series: any[] = [
-          {
-            value: (u: any, v: number) => {
-              if (v != null) return fmtDate(v * 1000);
-
-              return '-';
+      const optsTimeline: uPlot.Options = {
+        width: Math.max(100, (gridWidth || 570) - 400),
+        height: 250,
+        padding: [0, 10, 0, 10],
+        tzDate: (ts: number) => uPlot.tzDate(new Date(ts * 1000), 'Etc/UTC'),
+        cursor: {
+          points: {
+            show: false,
+          },
+          drag: { setScale: false },
+          x: false,
+          y: false,
+        },
+        scales: {
+          x: {
+            time: true,
+            range: (u) => {
+              const min = u.data[0][0];
+              const max = u.data[0][u.data[0].length - 1];
+              if (min === undefined || max === undefined) return [0, 100];
+              if (min === max) return [min - 3600, max + 3600];
+              return [min, max];
             },
           },
-          {
-            label: 'Value',
-            stroke: color,
-            width: 0,
-            points: { show: true, size: 6, fill: hexToRgba(color, 0.5) },
-          },
-          {
-            label: 'Trend',
-            stroke: color,
-            width: 2,
-            points: { show: false },
-            spanGaps: true,
-            fill: 'transparent',
-            dash: [5, 5],
-          },
-          {
-            label: 'Lower Bound',
-            stroke: 'transparent',
-            width: 0,
-            points: { show: false },
-            spanGaps: true,
-          },
-          {
-            label: 'Upper Bound',
-            stroke: 'transparent',
-            width: 0,
-            points: { show: false },
-            spanGaps: true,
-          },
-        ];
+          y: { range: (_u: any, min: number, max: number) => [min * 0.9, max * 1.1] },
+        },
+        series: series,
+        bands: [{ series: [4, 3], fill: hexToRgba(color, 0.2) }],
+        hooks: {
+          init: [
+            (u: uPlot) => {
+              u.over.addEventListener('click', () => {
+                if (lastNearestIdx != null) {
+                  const track = tracksFiltered[lastNearestIdx];
+                  if (track) {
+                    const stats = track.stats;
+                    const curve = metricKey === 'power' ? stats.powerCurve : stats.hrCurve;
+                    if (curve) {
+                      const entry = curve[currentDur];
+                      if (entry) {
+                        const bestIdx = entry.idx;
+                        const duration = currentDur;
 
-        const labelEl = document.getElementById(`${metricKey}-timeline-label`);
-        if (labelEl)
-          labelEl.textContent = `Progress ${fmtDuration(currentDur)} ${metricKey === 'power' ? 'Power' : 'HR'}`;
+                        const startPt = track.points[bestIdx];
+                        const endPt = track.points[bestIdx + duration - 1];
 
-        const optsTimeline: uPlot.Options = {
-          width: Math.max(100, (gridWidth || 570) - 400),
-          height: 250,
-          padding: [0, 10, 0, 10],
-          tzDate: (ts: number) => uPlot.tzDate(new Date(ts * 1000), 'Etc/UTC'),
-          cursor: {
-            points: {
-              show: false,
-            },
-            drag: { setScale: false },
-            x: false,
-            y: false,
-          },
-          scales: {
-            x: {
-              time: true,
-              range: (u) => {
-                const min = u.data[0][0];
-                const max = u.data[0][u.data[0].length - 1];
-                if (min === undefined || max === undefined) return [0, 100];
+                        if (startPt && endPt && startPt.time != null && endPt.time != null) {
+                          const trackStart = track.points[0].time || 0;
+                          const min = (startPt.time - trackStart) / 1000;
+                          const max = (endPt.time - trackStart) / 1000;
 
-                if (min === max) return [min - 3600, max + 3600];
-
-                return [min, max];
-              },
-            },
-            y: { range: (u: any, min: number, max: number) => [min * 0.9, max * 1.1] },
-          },
-          series: series,
-          bands: [{ series: [4, 3], fill: hexToRgba(color, 0.2) }],
-          hooks: {
-            init: [
-              (u: uPlot) => {
-                u.over.addEventListener('click', () => {
-                  if (lastNearestIdx != null) {
-                    const track = tracksFiltered[lastNearestIdx];
-                    if (track) {
-                      const stats = track.stats;
-                      const curve = metricKey === 'power' ? stats.powerCurve : stats.hrCurve;
-                      if (curve) {
-                        const entry = curve[currentDur];
-                        if (entry) {
-                          const bestIdx = entry.idx;
-                          const duration = currentDur;
-
-                          const startPt = track.points[bestIdx];
-                          const endPt = track.points[bestIdx + duration - 1];
-
-                          if (startPt && endPt && startPt.time != null && endPt.time != null) {
-                            const trackStart = track.points[0].time || 0;
-                            const min = (startPt.time - trackStart) / 1000;
-                            const max = (endPt.time - trackStart) / 1000;
-
-                            opts.onTrackSelect?.(track.id, [min, max]);
-                          } else {
-                            opts.onTrackSelect?.(track.id, null);
-                          }
+                          opts.onTrackSelect?.(track.id, [min, max]);
                         } else {
                           opts.onTrackSelect?.(track.id, null);
                         }
                       } else {
                         opts.onTrackSelect?.(track.id, null);
                       }
+                    } else {
+                      opts.onTrackSelect?.(track.id, null);
                     }
                   }
-                });
-              },
-            ],
-            draw: [
-              (u: uPlot) => {
-                let idx = u.cursor.idx;
-                if (idx != null && u.data[0][idx] != null) {
-                  const val = u.data[1][idx];
-                  if (val != null) {
-                    const tpcx = u.valToPos(u.data[0][idx]!, 'x', true);
-                    const tpcy = u.valToPos(val, 'y', true);
-
-                    const tctx = u.ctx;
-                    const tdpr = window.devicePixelRatio || 1;
-
-                    // Draw lines
-                    tctx.save();
-                    tctx.beginPath();
-                    tctx.setLineDash([2 * tdpr, 2 * tdpr]);
-                    tctx.strokeStyle = hexToRgba(color, 0.4);
-                    tctx.lineWidth = 1 * tdpr;
-                    // Vertical line
-                    tctx.moveTo(tpcx, u.bbox.top);
-                    tctx.lineTo(tpcx, u.bbox.top + u.bbox.height);
-                    // Horizontal line
-                    tctx.moveTo(u.bbox.left, tpcy);
-                    tctx.lineTo(u.bbox.left + u.bbox.width, tpcy);
-                    tctx.stroke();
-                    tctx.restore();
-
-                    // Draw hover halo
-                    tctx.save();
-                    tctx.beginPath();
-                    tctx.setLineDash([]); // Reset to solid
-                    tctx.arc(tpcx, tpcy, 12 * tdpr, 0, 2 * Math.PI);
-                    tctx.fillStyle = hexToRgba(color, 0.2);
-                    tctx.fill();
-                    tctx.restore();
-
-                    // Draw center circle
-                    tctx.save();
-                    tctx.beginPath();
-                    tctx.arc(tpcx, tpcy, 6 * tdpr, 0, 2 * Math.PI);
-                    tctx.fillStyle = color;
-                    tctx.fill();
-                    tctx.strokeStyle = '#fff';
-                    tctx.lineWidth = 2 * tdpr;
-                    tctx.stroke();
-                    tctx.restore();
-
-                    // Draw axis labels
-                    tctx.save();
-                    tctx.setLineDash([]); // Reset to solid
-
-                    const d = new Date(u.data[0][idx]! * 1000);
-                    const dateStr = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
-                    tctx.font = `bold ${10 * tdpr}px system-ui, sans-serif`;
-                    const dateWidth = tctx.measureText(dateStr).width;
-                    const xbw = dateWidth + 10 * tdpr;
-                    const pillH = 16 * tdpr;
-
-                    const xLabelX = tpcx - xbw / 2;
-                    const clampedXBx = Math.max(
-                      u.bbox.left,
-                      Math.min(u.bbox.left + u.bbox.width - xbw, xLabelX),
-                    );
-                    const xLabelY = u.bbox.top + u.bbox.height + 2 * tdpr;
-
-                    // X Label Pill
-                    tctx.fillStyle = 'rgba(14, 14, 16, 0.92)';
-                    tctx.beginPath();
-                    if ((tctx as any).roundRect)
-                      (tctx as any).roundRect(clampedXBx, xLabelY, xbw, pillH, 3 * tdpr);
-                    else tctx.rect(clampedXBx, xLabelY, xbw, pillH);
-                    tctx.fill();
-                    tctx.strokeStyle = hexToRgba(color, 0.27);
-                    tctx.lineWidth = 1 * tdpr;
-                    tctx.stroke();
-
-                    tctx.fillStyle = color;
-                    tctx.textAlign = 'center';
-                    tctx.textBaseline = 'middle';
-                    tctx.fillText(dateStr, clampedXBx + xbw / 2, xLabelY + pillH / 2);
-
-                    const valStr = `${val.toFixed(0)} ${unit}`;
-                    const valWidth = tctx.measureText(valStr).width;
-                    const ybw = valWidth + 10 * tdpr;
-
-                    const yLabelX = u.bbox.left - ybw - 2 * tdpr; // To the left
-                    const yLabelY = tpcy - pillH / 2;
-
-                    // Y Label Pill
-                    tctx.fillStyle = 'rgba(14, 14, 16, 0.92)';
-                    tctx.beginPath();
-                    if ((tctx as any).roundRect)
-                      (tctx as any).roundRect(yLabelX, yLabelY, ybw, pillH, 3 * tdpr);
-                    else tctx.rect(yLabelX, yLabelY, ybw, pillH);
-                    tctx.fill();
-                    tctx.strokeStyle = hexToRgba(color, 0.27);
-                    tctx.lineWidth = 1 * tdpr;
-                    tctx.stroke();
-
-                    tctx.fillStyle = color;
-                    tctx.textAlign = 'left';
-                    tctx.textBaseline = 'middle';
-                    tctx.fillText(valStr, yLabelX + 5 * tdpr, yLabelY + pillH / 2);
-
-                    tctx.restore();
-                  }
                 }
-              },
-            ],
-            setCursor: [
-              (u: uPlot) => {
-                if (!(u as any)._ready) return;
-                u.redraw(false);
+              });
+            },
+          ],
+          draw: [
+            (u: uPlot) => {
+              const idx = u.cursor.idx;
+              if (idx != null && u.data[0][idx] != null) {
+                const val = u.data[1][idx];
+                if (val != null) {
+                  const tpcx = u.valToPos(u.data[0][idx]!, 'x', true);
+                  const tpcy = u.valToPos(val, 'y', true);
 
-                let idx = u.cursor.idx;
-                const cursorLeft = u.cursor.left;
-                const cursorTop = u.cursor.top;
-                const bb = u.bbox;
+                  const tctx = u.ctx;
+                  const tdpr = window.devicePixelRatio || 1;
 
-                if (cursorLeft != null && cursorTop != null && cursorLeft >= 0 && cursorTop >= 0) {
-                  let minD2 = Infinity;
-                  let nearestIdx = -1;
-                  const radius = 30; // pixels
-                  const maxD2 = radius * radius;
+                  tctx.save();
+                  tctx.beginPath();
+                  tctx.setLineDash([2 * tdpr, 2 * tdpr]);
+                  tctx.strokeStyle = hexToRgba(color, 0.4);
+                  tctx.lineWidth = 1 * tdpr;
+                  tctx.moveTo(tpcx, u.bbox.top);
+                  tctx.lineTo(tpcx, u.bbox.top + u.bbox.height);
+                  tctx.moveTo(u.bbox.left, tpcy);
+                  tctx.lineTo(u.bbox.left + u.bbox.width, tpcy);
+                  tctx.stroke();
+                  tctx.restore();
 
-                  const xData = u.data[0];
-                  const yData = u.data[1];
+                  tctx.save();
+                  tctx.beginPath();
+                  tctx.setLineDash([]);
+                  tctx.arc(tpcx, tpcy, 12 * tdpr, 0, 2 * Math.PI);
+                  tctx.fillStyle = hexToRgba(color, 0.2);
+                  tctx.fill();
+                  tctx.restore();
 
-                  for (let i = 0; i < xData.length; i++) {
-                    const x = xData[i];
-                    const y = yData[i];
-                    if (x == null || y == null) continue;
+                  tctx.save();
+                  tctx.beginPath();
+                  tctx.arc(tpcx, tpcy, 6 * tdpr, 0, 2 * Math.PI);
+                  tctx.fillStyle = color;
+                  tctx.fill();
+                  tctx.strokeStyle = '#fff';
+                  tctx.lineWidth = 2 * tdpr;
+                  tctx.stroke();
+                  tctx.restore();
 
-                    const px = u.valToPos(x, 'x', false);
-                    const py = u.valToPos(y, 'y', false);
-
-                    const dx = px - cursorLeft;
-                    const dy = py - cursorTop;
-                    const d2 = dx * dx + dy * dy;
-
-                    if (d2 < minD2) {
-                      minD2 = d2;
-                      nearestIdx = i;
-                    }
-                  }
-
-                  if (minD2 <= maxD2) {
-                    idx = nearestIdx;
-                    lastNearestIdx = nearestIdx;
-                  } else {
-                    idx = null;
-                    lastNearestIdx = null;
-                  }
-                }
-
-                if (idx != null && u.data[0][idx] != null) {
-                  const track = tracksFiltered[idx];
-                  const cx = u.valToPos(u.data[0][idx], 'x', false);
-                  const cy = u.valToPos(u.data[1][idx]!, 'y', false);
+                  tctx.save();
+                  tctx.setLineDash([]);
 
                   const d = new Date(u.data[0][idx]! * 1000);
                   const dateStr = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+                  tctx.font = `bold ${10 * tdpr}px system-ui, sans-serif`;
+                  const dateWidth = tctx.measureText(dateStr).width;
+                  const xbw = dateWidth + 10 * tdpr;
+                  const pillH = 16 * tdpr;
 
-                  const val = u.data[1][idx];
-                  const valStr = val != null ? `${val} ${unit}` : '—';
+                  const xLabelX = tpcx - xbw / 2;
+                  const clampedXBx = Math.max(
+                    u.bbox.left,
+                    Math.min(u.bbox.left + u.bbox.width - xbw, xLabelX),
+                  );
+                  const xLabelY = u.bbox.top + u.bbox.height + 2 * tdpr;
 
-                  timelineTooltip.innerHTML = `
-                    <div class="evolution-tooltip-row">
-                      <span class="evolution-tooltip-label">Date:</span>
-                      <span class="evolution-tooltip-value">${dateStr}</span>
-                    </div>
-                    <div class="evolution-tooltip-row">
-                      <span class="evolution-tooltip-label">Value:</span>
-                      <span class="evolution-tooltip-value">${valStr}</span>
-                    </div>
-                  `;
-                  timelineTooltip.style.display = 'block';
-                  timelineTooltip.style.left = `${cursorLeft! + bb.left}px`;
-                  timelineTooltip.style.top = `${cursorTop! + bb.top}px`;
-                  timelineTooltip.style.transform = 'translate(5px, -50%)';
-                } else {
-                  timelineTooltip.style.display = 'none';
+                  tctx.fillStyle = 'rgba(14, 14, 16, 0.92)';
+                  tctx.beginPath();
+                  if ((tctx as any).roundRect)
+                    (tctx as any).roundRect(clampedXBx, xLabelY, xbw, pillH, 3 * tdpr);
+                  else tctx.rect(clampedXBx, xLabelY, xbw, pillH);
+                  tctx.fill();
+                  tctx.strokeStyle = hexToRgba(color, 0.27);
+                  tctx.lineWidth = 1 * tdpr;
+                  tctx.stroke();
+
+                  tctx.fillStyle = color;
+                  tctx.textAlign = 'center';
+                  tctx.textBaseline = 'middle';
+                  tctx.fillText(dateStr, clampedXBx + xbw / 2, xLabelY + pillH / 2);
+
+                  const valStr = `${val.toFixed(0)} ${unit}`;
+                  const valWidth = tctx.measureText(valStr).width;
+                  const ybw = valWidth + 10 * tdpr;
+
+                  const yLabelX = u.bbox.left - ybw - 2 * tdpr;
+                  const yLabelY = tpcy - pillH / 2;
+
+                  tctx.fillStyle = 'rgba(14, 14, 16, 0.92)';
+                  tctx.beginPath();
+                  if ((tctx as any).roundRect)
+                    (tctx as any).roundRect(yLabelX, yLabelY, ybw, pillH, 3 * tdpr);
+                  else tctx.rect(yLabelX, yLabelY, ybw, pillH);
+                  tctx.fill();
+                  tctx.strokeStyle = hexToRgba(color, 0.27);
+                  tctx.lineWidth = 1 * tdpr;
+                  tctx.stroke();
+
+                  tctx.fillStyle = color;
+                  tctx.textAlign = 'left';
+                  tctx.textBaseline = 'middle';
+                  tctx.fillText(valStr, yLabelX + 5 * tdpr, yLabelY + pillH / 2);
+
+                  tctx.restore();
                 }
-              },
-            ],
-          },
-          axes: [
-            {
-              space: 50,
-              stroke: '#555564',
-              grid: { stroke: '#2e2e34' },
-              show: true,
-              font: '10px system-ui, sans-serif',
-              size: 30,
-              values: (u: any, vals: any[]) =>
-                vals.map((v) => {
-                  const d = new Date(v * 1000);
-                  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
-                }),
-            },
-            {
-              stroke: '#555564',
-              grid: { stroke: '#2e2e34' },
-              font: '10px system-ui, sans-serif',
-              values: (u: any, vals: any[]) => vals.map((v) => `${v} ${unit}`),
-              show: true,
-              space: 15,
-              size: 50,
+              }
             },
           ],
-        };
+          setCursor: [
+            (u: uPlot) => {
+              if (!(u as any)._ready) return;
+              u.redraw(false);
 
-        timelineChart = new uPlot(optsTimeline, dataTimeline as any, timelineEl);
-        evolutionPlots.push(timelineChart);
+              let idx = u.cursor.idx;
+              const cursorLeft = u.cursor.left;
+              const cursorTop = u.cursor.top;
+              const bb = u.bbox;
 
-        timelineEl.addEventListener('mouseleave', () => {
-          timelineChart!.redraw();
-        });
+              if (cursorLeft != null && cursorTop != null && cursorLeft >= 0 && cursorTop >= 0) {
+                let minD2 = Infinity;
+                let nearestIdx = -1;
+                const radius = 30;
+                const maxD2 = radius * radius;
 
-        // Range control moved to toolbar
-      } else {
-        timelineEl.innerHTML = '<div class="evolution-empty-text">No data for the past year</div>';
-      }
+                const xData = u.data[0];
+                const yData = u.data[1];
+
+                for (let i = 0; i < xData.length; i++) {
+                  const x = xData[i];
+                  const y = yData[i];
+                  if (x == null || y == null) continue;
+
+                  const px = u.valToPos(x, 'x', false);
+                  const py = u.valToPos(y, 'y', false);
+
+                  const dx = px - cursorLeft;
+                  const dy = py - cursorTop;
+                  const d2 = dx * dx + dy * dy;
+
+                  if (d2 < minD2) {
+                    minD2 = d2;
+                    nearestIdx = i;
+                  }
+                }
+
+                if (minD2 <= maxD2) {
+                  idx = nearestIdx;
+                  lastNearestIdx = nearestIdx;
+                } else {
+                  idx = null;
+                  lastNearestIdx = null;
+                }
+              }
+
+              if (idx != null && u.data[0][idx] != null) {
+                const d = new Date(u.data[0][idx]! * 1000);
+                const dateStr = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+
+                const val = u.data[1][idx];
+                const valStr = val != null ? `${val} ${unit}` : '—';
+
+                timelineTooltip.innerHTML = `
+                  <div class="evolution-tooltip-row">
+                    <span class="evolution-tooltip-label">Date:</span>
+                    <span class="evolution-tooltip-value">${dateStr}</span>
+                  </div>
+                  <div class="evolution-tooltip-row">
+                    <span class="evolution-tooltip-label">Value:</span>
+                    <span class="evolution-tooltip-value">${valStr}</span>
+                  </div>
+                `;
+                timelineTooltip.style.display = 'block';
+                timelineTooltip.style.left = `${cursorLeft! + bb.left}px`;
+                timelineTooltip.style.top = `${cursorTop! + bb.top}px`;
+                timelineTooltip.style.transform = 'translate(5px, -50%)';
+              } else {
+                timelineTooltip.style.display = 'none';
+              }
+            },
+          ],
+        },
+        axes: [
+          {
+            space: 50,
+            stroke: '#555564',
+            grid: { stroke: '#2e2e34' },
+            show: true,
+            font: '10px system-ui, sans-serif',
+            size: 30,
+            values: (_u: any, vals: any[]) =>
+              vals.map((v) => {
+                const d = new Date(v * 1000);
+                return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+              }),
+          },
+          {
+            stroke: '#555564',
+            grid: { stroke: '#2e2e34' },
+            font: '10px system-ui, sans-serif',
+            values: (_u: any, vals: any[]) => vals.map((v) => `${v} ${unit}`),
+            show: true,
+            space: 15,
+            size: 50,
+          },
+        ],
+      };
+
+      timelineChart = new uPlot(optsTimeline, dataTimeline as any, timelineEl);
+      evolutionPlots.push(timelineChart);
+
+      timelineEl.addEventListener('mouseleave', () => {
+        timelineChart!.redraw();
+      });
+    } else {
+      timelineEl.innerHTML = '<div class="evolution-empty-text">No data for the past year</div>';
     }
-  };
-  renderCharts();
+  }
 
   return {
     updatePin: (dur: number | null) => {
       pinnedDur = dur;
       if (dur !== null) currentDur = dur;
 
-      const labelEl = document.getElementById(`${metricKey}-timeline-label`);
+      const labelEl = cardContainer.querySelector(`#${metricKey}-timeline-label`);
       if (labelEl)
         labelEl.textContent = `Progress ${fmtDuration(currentDur)} ${metricKey === 'power' ? 'Power' : 'HR'}${pinnedDur !== null ? ' (Pinned)' : ''}`;
 
@@ -1406,7 +1396,7 @@ function renderCurveEvolutionCard(opts: CurveEvolutionCardOptions) {
 function getWeekStart(date: Date): Date {
   const d = new Date(date);
   const day = d.getUTCDay();
-  const diff = d.getUTCDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+  const diff = d.getUTCDate() - day + (day === 0 ? -6 : 1);
   d.setUTCDate(diff);
   d.setUTCHours(0, 0, 0, 0);
   return d;
@@ -1499,8 +1489,8 @@ function computeMonthlyElevation(
     .sort((a, b) => a.timestamp - b.timestamp);
 }
 
-function renderProgressCard(
-  grid: HTMLElement,
+function mountProgressCardPlot(
+  cardContainer: HTMLElement,
   allTracks: TrackData[],
   type: 'distance' | 'elevation',
   syncKey?: any,
@@ -1517,45 +1507,17 @@ function renderProgressCard(
     ? computeMonthlyDistance(allTracks)
     : computeMonthlyElevation(allTracks);
   let weeklyData = activeGrouping === 'month' ? monthlySource : weeklySource;
-  const accumulated = computeAccumulatedMetric(allTracks, (t) =>
-    isDistance ? t.stats.totalDist : t.stats.elevGain,
-  );
+
   const color = isDistance ? Metrics.distance.color : Metrics.elevation.color;
   const unit = isDistance ? 'km' : 'm';
-  const icon = isDistance ? Metrics.distance.icon : Metrics.elevation.icon;
-
-  const cardContainer = document.createElement('div');
-  cardContainer.className = `chart-row ${type}-progress-card`;
-  cardContainer.id = `${type}-evolution-card`;
-
-  cardContainer.innerHTML = `
-    <div class="chart-row-header">
-      <div class="chart-row-label-group">
-        <span class="material-symbols-rounded chart-row-icon" id="progress-icon" style="--chart-color:${color}">${icon}</span>
-        <span class="chart-row-label" id="progress-label">${isDistance ? 'Distance Progress' : 'Elevation Progress'}</span>
-      </div>
-    </div>
-    <div class="card-content" style="display: flex;">
-      <div id="${type}-y-axis-chart" style="width: 50px;"></div>
-      <div class="chart-scroll-container" style="flex: 1; overflow-x: auto; position: relative;">
-        <div id="${type}-weekly-chart"></div>
-      </div>
-      <div class="accumulated-table-container" style="width: 320px; margin-left: 20px;">
-        ${renderAccumulatedTable(accumulated, isDistance, unit)}
-      </div>
-    </div>
-  `;
-
-  grid.appendChild(cardContainer);
 
   const chartEl = cardContainer.querySelector(`#${type}-weekly-chart`) as HTMLElement;
   const yAxisEl = cardContainer.querySelector(`#${type}-y-axis-chart`) as HTMLElement;
 
   if (!chartEl || !yAxisEl) return;
-
+  chartEl.innerHTML = '';
   chartEl.style.position = 'relative';
 
-  // Use inline tooltip style
   const tooltip = document.createElement('div');
   tooltip.className = 'cur-y-val';
   tooltip.style.cssText = `color:${color};display:none`;
@@ -1616,7 +1578,7 @@ function renderProgressCard(
               const item = weeklyData[idx];
               if (item) {
                 const start = new Date(item.timestamp);
-                const end = new Date(item.timestamp + 7 * 24 * 60 * 60 * 1000); // End of week
+                const end = new Date(item.timestamp + 7 * 24 * 60 * 60 * 1000);
                 const startStr = start.toISOString().split('T')[0];
                 const endStr = end.toISOString().split('T')[0];
                 onDateRangeSelect?.(startStr, endStr);
@@ -1665,31 +1627,26 @@ function renderProgressCard(
             const ctx = u.ctx;
             const bb = u.bbox;
 
-            // Draw lines
             ctx.save();
             ctx.beginPath();
             ctx.setLineDash([2 * dpr, 2 * dpr]);
             ctx.strokeStyle = hexToRgba(color, 0.4);
             ctx.lineWidth = 1 * dpr;
-            // Vertical line
             ctx.moveTo(pcx, bb.top);
             ctx.lineTo(pcx, bb.top + bb.height);
-            // Horizontal line
             ctx.moveTo(bb.left, pcy);
             ctx.lineTo(bb.left + bb.width, pcy);
             ctx.stroke();
             ctx.restore();
 
-            // Draw hover halo
             ctx.save();
             ctx.beginPath();
-            ctx.setLineDash([]); // Reset to solid
+            ctx.setLineDash([]);
             ctx.arc(pcx, pcy, 12 * dpr, 0, 2 * Math.PI);
             ctx.fillStyle = hexToRgba(color, 0.2);
             ctx.fill();
             ctx.restore();
 
-            // Draw center circle
             ctx.save();
             ctx.beginPath();
             ctx.arc(pcx, pcy, 6 * dpr, 0, 2 * Math.PI);
@@ -1700,11 +1657,9 @@ function renderProgressCard(
             ctx.stroke();
             ctx.restore();
 
-            // Draw axis labels
             ctx.save();
-            ctx.setLineDash([]); // Reset to solid
+            ctx.setLineDash([]);
 
-            // X Label Pill
             const d = new Date(u.data[0][idx]! * 1000);
             const xValStr = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
             ctx.font = `bold ${10 * dpr}px system-ui, sans-serif`;
@@ -1742,7 +1697,7 @@ function renderProgressCard(
         grid: { stroke: '#2e2e34', width: 1 },
         show: true,
         space: 40,
-        values: (self, splits) =>
+        values: (_self, splits) =>
           splits.map((s) => {
             const d = new Date(s * 1000);
             return `${d.getUTCMonth() + 1}/${d.getUTCDate()}`;
@@ -1754,7 +1709,7 @@ function renderProgressCard(
         stroke: '#555564',
         grid: { stroke: '#2e2e34', width: 1 },
         show: true,
-        values: (self, splits) => splits.map((s) => `${s.toFixed(0)} ${unit}`),
+        values: (_self, splits) => splits.map((s) => `${s.toFixed(0)} ${unit}`),
         font: '10px system-ui, sans-serif',
         size: 40,
       },

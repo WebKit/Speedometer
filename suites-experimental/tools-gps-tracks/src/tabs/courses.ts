@@ -7,10 +7,9 @@
 import { MapView } from '../map';
 import { Storage } from '../storage';
 import { UrlState } from '../url-state';
-import { escHtml, fmtPace, fmtDate, haversine } from '../utils';
+import { fmtPace, fmtDate, haversine } from '../utils';
 import { SPORTS } from '../sports';
 import { METRICS } from '../metrics';
-import { selectTrack } from '../app';
 import { ChartView } from '../charts';
 
 export interface CoursePoint {
@@ -26,7 +25,86 @@ export interface Course {
   points: CoursePoint[];
 }
 
+export interface CourseTrackEffortView {
+  id: string;
+  displayName: string;
+  date: string;
+  sport: string | null;
+  color: string;
+  duration: number;
+  dist: number;
+  avgWatts: number | null;
+  avgHR: number | null;
+  avgSpeed: number | null;
+  avgCadence: number | null;
+  avgVam: number | null;
+  splitsSummary: string;
+  gapLabel: string;
+  dtwDistance: number;
+  distStr: string;
+  durationStr: string;
+  speedStr: string;
+  paceStr: string;
+  vamStr: string;
+  wattsStr: string;
+  hrStr: string;
+  startIdx: number;
+  endIdx: number;
+  isSelected: boolean;
+}
+
+export interface CourseViewModel {
+  id: string;
+  name: string;
+  points: CoursePoint[];
+  pointsCount: number;
+  distanceKm: string;
+  matchingCount: number;
+  isOpen: boolean;
+  isActive: boolean;
+  matchedTracks: CourseTrackEffortView[];
+}
+
+export interface CoursesComputedPayload {
+  courseViews: CourseViewModel[];
+  selectedCourseSummary: CourseViewModel | null;
+  totalMatchesCount: number;
+  corridorDeviationStr: string;
+  isEditMode: boolean;
+  activeCourseId: string | null;
+  openCourseId: string | null;
+}
+
 let courses: Course[] = [];
+let activeCourseId: string | null = null;
+let isEditMode = false;
+let openCourseId: string | null = null;
+let toastFn: (msg: string, type?: string) => void = () => {};
+let coursesComponentRef: any = null;
+
+export function registerCoursesComponent(comp: any) {
+  coursesComponentRef = comp;
+}
+
+function getCoursesComponent(): any {
+  return coursesComponentRef || (window as any).__trackStateService?.coursesTab || null;
+}
+
+export function getCoursesList(): Course[] {
+  return courses;
+}
+
+export function getCoursesEditMode(): boolean {
+  return isEditMode;
+}
+
+export function setCoursesEditMode(mode: boolean) {
+  isEditMode = mode;
+  if (!mode) {
+    MapView.setCustomClickHandler(null);
+    document.getElementById('map-container')?.classList.remove('editing-mode');
+  }
+}
 
 export function getCoursesForTrack(track: any): Course[] {
   return courses.filter((c) => {
@@ -46,13 +124,6 @@ export function getCoursesForTrack(track: any): Course[] {
   });
 }
 
-let activeCourseId: string | null = null;
-let isEditMode = false;
-let openCourseId: string | null = null;
-let toastFn: (msg: string, type?: string) => void = () => {};
-let courseLayer: any = null;
-let zoomListener: (() => void) | null = null;
-
 export function initCourses(showToast: (msg: string, type?: string) => void) {
   toastFn = showToast;
   loadCourses();
@@ -63,6 +134,11 @@ export function resetCourses() {
   activeCourseId = null;
   openCourseId = null;
   isEditMode = false;
+  const comp = getCoursesComponent();
+  if (comp && typeof comp.reset === 'function') {
+    comp.reset();
+    return;
+  }
   const container = document.getElementById('courses-view');
   if (container) {
     container.innerHTML = `
@@ -127,7 +203,7 @@ async function loadCourses() {
   }
 }
 
-async function saveCourses() {
+export async function saveCourses() {
   try {
     await Storage.set('courses', courses);
   } catch (e) {
@@ -136,7 +212,7 @@ async function saveCourses() {
   }
 }
 
-function calculateCourseDistance(course: Course): number {
+export function calculateCourseDistance(course: Course): number {
   let total = 0;
   for (let i = 0; i < course.points.length - 1; i++) {
     const p1 = course.points[i];
@@ -244,7 +320,7 @@ export function calculateCourseStats(track: any, startIdx: number, endIdx: numbe
   };
 }
 
-function formatDuration(seconds: number): string {
+export function formatCourseDuration(seconds: number): string {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = Math.floor(seconds % 60);
@@ -278,7 +354,7 @@ export function renderCourseTableCells(stats: any, sport: string | null, dateStr
   return `
     <td>${dateStr}</td>
     <td>${stats.dist != null ? `${(stats.dist / 1000).toFixed(2)}&nbsp;km` : '-'}</td>
-    <td>${formatDuration(stats.duration)}</td>
+    <td>${formatCourseDuration(stats.duration)}</td>
     <td>${stats.avgSpeed != null ? `${(stats.avgSpeed * 3.6).toFixed(1)}&nbsp;km/h` : '-'}</td>
     <td>${paceStr}</td>
     <td>${stats.avgVam != null ? `${stats.avgVam}&nbsp;m/h` : '-'}</td>
@@ -300,13 +376,11 @@ const dtwCandProfile = new Float64Array(DTW_SAMPLES);
 const dtwPrevRow = new Float64Array(DTW_SAMPLES + 1);
 const dtwCurrRow = new Float64Array(DTW_SAMPLES + 1);
 
-export function renderCourses() {
-  const container = document.getElementById('courses-view');
-  if (!container) return;
-
+export function computeCoursesViewData(): CoursesComputedPayload {
   // Evaluate multi-gate geospatial course corridor proximity & Dynamic Time Warping (DTW)
   // virtual-partner time-gap alignment matrix for the active/open course across candidate tracks
   let corridorDeviationSum = 0;
+  const dtwByTrackId: Record<string, number> = {};
   const targetCourses =
     openCourseId || activeCourseId
       ? courses.filter((c) => c.id === openCourseId || c.id === activeCourseId)
@@ -386,315 +460,181 @@ export function renderCourses() {
         }
         dtwPrevRow.set(dtwCurrRow);
       }
-      corridorDeviationSum += dtwPrevRow[DTW_SAMPLES] * 1e-4;
+      const dtwScore = dtwPrevRow[DTW_SAMPLES] * 1e-4;
+      dtwByTrackId[id] = dtwScore;
+      corridorDeviationSum += dtwScore;
     }
   }
-  container.dataset.corridorDeviation = corridorDeviationSum.toFixed(2);
 
-  container.innerHTML = `
-    <div class="evolution-toolbar">
-      <div class="evolution-toolbar-left">
-      </div>
-      <div class="evolution-toolbar-right">
-        ${
-          isEditMode
-            ? `
-          <button id="btn-done-edit" class="icon-btn" title="Done Editing">
-            <span class="material-symbols-rounded">done</span>
-          </button>
-        `
-            : `
-          <button id="btn-new-course" class="icon-btn" title="New Course">
-            <span class="material-symbols-rounded">add_circle</span>
-          </button>
-        `
-        }
-      </div>
-    </div>
-    <div class="courses-container">
-      <div id="courses-list" class="courses-list">
-        ${
-          courses.length === 0
-            ? `
-          <div class="empty-state">
-            <span class="material-symbols-rounded empty-icon">route</span>
-            <div class="empty-text">No courses created yet</div>
-          </div>
-        `
-            : courses
-                .map((c) => {
-                  const pts = c.points.map((p) => ({ lat: p.lat, lng: p.lon }));
-                  const matchingIds = MapView.findTracksPassingThroughPoints(
-                    pts,
-                    c.points[0]?.radius || 20,
-                  );
-                  const isOpen = c.id === openCourseId;
-                  let tracksHtml = '';
-                  if (isOpen) {
-                    const matchedTracksWithStats = matchingIds
-                      .map((id) => {
-                        const track = MapView.getTrackData(id) as any;
-                        if (!track) return null;
-                        const range = findCourseRange(track, c.points);
-                        if (!range) return null;
-                        const stats = calculateCourseStats(track, range.startIdx, range.endIdx);
-                        const span = Math.max(1, range.endIdx - range.startIdx);
-                        const q1Idx = range.startIdx + Math.floor(span * 0.25);
-                        const q2Idx = range.startIdx + Math.floor(span * 0.5);
-                        const q3Idx = range.startIdx + Math.floor(span * 0.75);
-                        const s1Stats = calculateCourseStats(track, range.startIdx, q1Idx);
-                        const s2Stats = calculateCourseStats(track, q1Idx, q2Idx);
-                        const s3Stats = calculateCourseStats(track, q2Idx, q3Idx);
-                        const s4Stats = calculateCourseStats(track, q3Idx, range.endIdx);
-                        const startTime = track.stats?.startTime || track.points?.[0]?.time;
-                        const dateStr = startTime ? fmtDate(startTime) : '-';
-                        return {
-                          id,
-                          displayName: track.displayName || track.name || id,
-                          date: dateStr,
-                          sport: track.sport,
-                          color: track.color,
-                          ...stats,
-                          splitsSummary: `${s1Stats.avgWatts || 0}/${s2Stats.avgWatts || 0}/${s3Stats.avgWatts || 0}/${s4Stats.avgWatts || 0}W`,
-                          startIdx: range.startIdx,
-                          endIdx: range.endIdx,
-                        };
-                      })
-                      .filter((t) => t !== null) as any[];
+  const selectedTrackId = UrlState.get().track;
+  let totalMatchesCount = 0;
 
-                    // Sort by duration (fastest first), tie-break by id
-                    matchedTracksWithStats.sort(
-                      (a, b) => a.duration - b.duration || a.id.localeCompare(b.id),
-                    );
+  const courseViews: CourseViewModel[] = courses.map((c) => {
+    const pts = c.points.map((p) => ({ lat: p.lat, lng: p.lon }));
+    const matchingIds = MapView.findTracksPassingThroughPoints(pts, c.points[0]?.radius || 20);
+    totalMatchesCount += matchingIds.length;
+    const isOpen = c.id === openCourseId;
+    const isActive = c.id === activeCourseId;
+    let matchedTracks: CourseTrackEffortView[] = [];
 
-                    tracksHtml = `
-              <div class="course-tracks">
-                ${
-                  matchedTracksWithStats.length === 0
-                    ? `
-                  <div class="empty-text">No matching tracks</div>
-                `
-                    : `
-                  <table class="course-tracks-table">
-                    <thead>
-                      <tr>
-                        <th>Track (${matchedTracksWithStats.length})</th>
-                        ${renderCourseTableHeaders()}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      ${matchedTracksWithStats
-                        .map((t) => {
-                          const isSelected = t.id === UrlState.get().track;
-                          return `
-                        <tr class="course-track-row ${isSelected ? 'selected' : ''}" data-track-id="${t.id}" data-start="${t.startIdx}" data-end="${t.endIdx}">
-                          <td class="track-name-cell clickable">
-                            <div style="display: flex; align-items: center;">
-                              <div style="background:${t.color}; width: 3px; height: 16px; margin-right: 8px; border-radius: 1px; flex-shrink: 0;"></div>
-                              ${escHtml(t.displayName)}
-                            </div>
-                          </td>
-                          ${renderCourseTableCells(t, t.sport, t.date)}
-                        </tr>
-                      `;
-                        })
-                        .join('')}
-                    </tbody>
-                  </table>
-                `
-                }
-              </div>
-            `;
-                  }
-                  return `
-            <div class="course-item ${isOpen ? 'open' : ''}" data-id="${c.id}">
-              <div class="course-item-header">
-                <span class="material-symbols-rounded expand-icon">${isOpen ? 'expand_more' : 'chevron_right'}</span>
-                <div class="course-name">${escHtml(c.name)} <span class="material-symbols-rounded btn-rename-course clickable" style="font-size: 14px; color: var(--text-muted);" title="Rename">edit</span></div>
-                <div class="course-meta"><span class="material-symbols-rounded" style="font-size: 14px; vertical-align: middle;" title="Distance">straighten</span> ${calculateCourseDistance(c).toFixed(2)} km | ${c.points.length} points | ${matchingIds.length} matching tracks</div>
-                <div class="course-actions">
-                  <button class="btn-edit-course icon-btn" title="Edit Course"><span class="material-symbols-rounded">edit</span></button>
-                  <button class="btn-delete-course icon-btn danger" title="Delete Course"><span class="material-symbols-rounded">delete</span></button>
-                </div>
-              </div>
-              ${tracksHtml}
-            </div>
-          `;
-                })
-                .join('')
-        }
-      </div>
-    </div>
-  `;
+    if (isOpen) {
+      const rawMatched = matchingIds
+        .map((id) => {
+          const track = MapView.getTrackData(id) as any;
+          if (!track) return null;
+          const range = findCourseRange(track, c.points);
+          if (!range) return null;
+          const stats = calculateCourseStats(track, range.startIdx, range.endIdx);
+          const span = Math.max(1, range.endIdx - range.startIdx);
+          const q1Idx = range.startIdx + Math.floor(span * 0.25);
+          const q2Idx = range.startIdx + Math.floor(span * 0.5);
+          const q3Idx = range.startIdx + Math.floor(span * 0.75);
+          const s1Stats = calculateCourseStats(track, range.startIdx, q1Idx);
+          const s2Stats = calculateCourseStats(track, q1Idx, q2Idx);
+          const s3Stats = calculateCourseStats(track, q2Idx, q3Idx);
+          const s4Stats = calculateCourseStats(track, q3Idx, range.endIdx);
+          const startTime = track.stats?.startTime || track.points?.[0]?.time;
+          const dateStr = startTime ? fmtDate(startTime) : '-';
 
-  document.getElementById('btn-new-course')?.addEventListener('click', () => {
-    createNewCourse();
-  });
+          const sportDef = track.sport ? SPORTS[track.sport.toLowerCase()] : null;
+          const paceUnit = sportDef?.paceUnit || 'km';
+          let paceStr = '--';
+          if (stats.avgSpeed != null && stats.avgSpeed > 0.1) {
+            const paceSeconds = (paceUnit === 'km' ? 1000 : 100) / stats.avgSpeed;
+            paceStr = `${fmtPace(paceSeconds)}\u00a0min/${paceUnit}`;
+          }
 
-  document.getElementById('btn-done-edit')?.addEventListener('click', () => {
-    isEditMode = false;
-    MapView.setCustomClickHandler(null);
-    document.getElementById('map-container')?.classList.remove('editing-mode');
-    renderCourses();
-  });
+          return {
+            id,
+            displayName: track.displayName || track.name || id,
+            date: dateStr,
+            sport: track.sport || null,
+            color: track.color || '#FF6B35',
+            ...stats,
+            splitsSummary: `${s1Stats.avgWatts || 0}/${s2Stats.avgWatts || 0}/${s3Stats.avgWatts || 0}/${s4Stats.avgWatts || 0}W`,
+            gapLabel: 'CR',
+            dtwDistance: dtwByTrackId[id] || 0,
+            distStr: stats.dist != null ? `${(stats.dist / 1000).toFixed(2)}\u00a0km` : '-',
+            durationStr: formatCourseDuration(stats.duration),
+            speedStr:
+              stats.avgSpeed != null ? `${(stats.avgSpeed * 3.6).toFixed(1)}\u00a0km/h` : '-',
+            paceStr,
+            vamStr: stats.avgVam != null ? `${stats.avgVam}\u00a0m/h` : '-',
+            wattsStr: stats.avgWatts != null ? `${stats.avgWatts}\u00a0W` : '-',
+            hrStr: stats.avgHR != null ? `${stats.avgHR}\u00a0bpm` : '-',
+            startIdx: range.startIdx,
+            endIdx: range.endIdx,
+            isSelected: id === selectedTrackId,
+          } as CourseTrackEffortView;
+        })
+        .filter((t): t is CourseTrackEffortView => t !== null);
 
-  container.querySelectorAll('.course-item').forEach((el) => {
-    const id = (el as HTMLElement).dataset.id!;
-    el.querySelector('.btn-edit-course')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      editCourse(id);
-    });
-    el.querySelector('.btn-rename-course')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      renameCourse(id);
-    });
-    el.querySelector('.btn-delete-course')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      deleteCourse(id);
-    });
-    el.querySelector('.course-item-header')?.addEventListener('click', (e) => {
-      if (
-        (e.target as HTMLElement).closest('.course-actions') ||
-        (e.target as HTMLElement).closest('.btn-rename-course')
-      )
-        return;
-
-      selectCourse(id);
-      openCourseId = openCourseId === id ? null : id;
-      renderCourses();
-    });
-
-    el.querySelectorAll('.course-track-row').forEach((row) => {
-      const trackId = (row as HTMLElement).dataset.trackId!;
-      const startIdx = parseInt((row as HTMLElement).dataset.start!, 10);
-      const endIdx = parseInt((row as HTMLElement).dataset.end!, 10);
-
-      row.querySelector('.track-name-cell')?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const track = MapView.getTrackData(trackId);
-        if (track) {
-          // Select track (clears selection in app.ts)
-          selectTrack(trackId, false);
-
-          // Delay execution slightly to let selectTrack finish and ChartView to initialize
-          setTimeout(() => {
-            const pts = track.points;
-            const t0 = pts.find((p: any) => p.time != null)?.time || 0;
-
-            // Ensure indices are within bounds
-            const sIdx = Math.max(0, Math.min(startIdx, pts.length - 1));
-            const eIdx = Math.max(0, Math.min(endIdx, pts.length - 1));
-
-            const tMin = Math.max(0, ((pts[sIdx]?.time || 0) - t0) / 1000);
-            const tMax = Math.max(0, ((pts[eIdx]?.time || 0) - t0) / 1000);
-
-            const axis = ChartView.getXAxis();
-            let selMin = tMin;
-            let selMax = tMax;
-
-            if (axis === 'distance') {
-              selMin = Math.max(0, (pts[sIdx]?.dist || 0) / 1000);
-              selMax = Math.max(0, (pts[eIdx]?.dist || 0) / 1000);
-            }
-
-            // Set selection and switch tab
-            UrlState.patch({ sel: [selMin, selMax], tab: 'graphs' }, true);
-
-            // Manually restore selection in ChartView (expects seconds from start)
-            ChartView.restoreSelection(tMin, tMax);
-
-            // Highlight segment on map
-            MapView.highlightSegment(trackId, track.points, startIdx, endIdx, true);
-          }, 50);
+      // Sort by duration (fastest first), tie-break by id
+      rawMatched.sort((a, b) => a.duration - b.duration || a.id.localeCompare(b.id));
+      const bestDur = rawMatched[0]?.duration || 0;
+      rawMatched.forEach((effort, idx) => {
+        if (idx === 0) {
+          effort.gapLabel = 'KOM / CR';
+        } else {
+          const delta = Math.max(0, effort.duration - bestDur);
+          effort.gapLabel = `+${formatCourseDuration(delta)}`;
         }
       });
+      matchedTracks = rawMatched;
+    }
 
-      row.addEventListener('mouseenter', () => {
-        MapView.setTrackHover(trackId, true);
-      });
-
-      row.addEventListener('mouseleave', () => {
-        MapView.setTrackHover(trackId, false);
-      });
-    });
+    return {
+      id: c.id,
+      name: c.name,
+      points: c.points,
+      pointsCount: c.points.length,
+      distanceKm: calculateCourseDistance(c).toFixed(2),
+      matchingCount: matchingIds.length,
+      isOpen,
+      isActive,
+      matchedTracks,
+    };
   });
+
+  const selectedCourseSummary =
+    courseViews.find((c) => c.id === openCourseId || c.id === activeCourseId) ||
+    courseViews[0] ||
+    null;
+
+  return {
+    courseViews,
+    selectedCourseSummary,
+    totalMatchesCount,
+    corridorDeviationStr: corridorDeviationSum.toFixed(2),
+    isEditMode,
+    activeCourseId,
+    openCourseId,
+  };
 }
 
-function createNewCourse() {
-  const name = `Course ${courses.length + 1}`;
+export function renderCourses() {
+  const comp = getCoursesComponent();
+  if (comp && typeof comp.render === 'function') {
+    comp.render();
+    return;
+  }
+}
+
+export function createNewCourseItem(customName?: string, radius: number = 450): Course {
+  const name = customName?.trim() || `Course ${courses.length + 1}`;
+  const stateSvc = (window as any).__trackStateService;
+  const refTrack = stateSvc?.selectedTrack || stateSvc?.allTracks?.[0];
+  const points: CoursePoint[] = [];
+  if (refTrack?.points && refTrack.points.length >= 10) {
+    const n = refTrack.points.length;
+    const pStart = refTrack.points[Math.floor(n * 0.1)];
+    const pMid = refTrack.points[Math.floor(n * 0.5)];
+    const pEnd = refTrack.points[Math.floor(n * 0.85)];
+    points.push(
+      { lat: pStart.lat, lon: pStart.lon, radius, name: 'Start Gate' },
+      { lat: pMid.lat, lon: pMid.lon, radius, name: 'Mid Sector' },
+      { lat: pEnd.lat, lon: pEnd.lon, radius, name: 'Finish Gate' },
+    );
+  }
 
   const newCourse: Course = {
-    id: Math.random().toString(36).substring(2, 9),
-    name: name,
-    points: [],
+    id: `course-${courses.length + 1}-${Math.random().toString(36).substring(2, 6)}`,
+    name,
+    points,
   };
 
   courses.push(newCourse);
+  activeCourseId = newCourse.id;
+  openCourseId = newCourse.id;
+  isEditMode = true;
   saveCourses();
   renderCourses();
-  editCourse(newCourse.id);
+  return newCourse;
 }
 
-function renameCourse(id: string) {
+export function renameCourseById(id: string, newName: string) {
   const course = courses.find((c) => c.id === id);
   if (!course) return;
-
-  const el = document.querySelector(`.course-item[data-id="${id}"]`);
-  if (!el) return;
-
-  const nameEl = el.querySelector('.course-name');
-  if (!nameEl) return;
-
-  const currentName = course.name;
-  nameEl.innerHTML = `<input type="text" class="course-name-input" value="${escHtml(currentName)}" style="background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: inherit; padding: 2px 4px; border-radius: 4px; width: 80%;">`;
-
-  const input = nameEl.querySelector('.course-name-input') as HTMLInputElement;
-  input.focus();
-  input.select();
-
-  const save = () => {
-    const newName = input.value.trim();
-    if (newName !== '') {
-      course.name = newName;
-      saveCourses();
-    }
-    renderCourses();
-  };
-
-  input.addEventListener('blur', save);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') save();
-    else if (e.key === 'Escape') renderCourses();
-  });
+  const trimmed = newName.trim();
+  if (trimmed !== '') {
+    course.name = trimmed;
+    saveCourses();
+  }
+  renderCourses();
 }
 
-function editCourse(id: string) {
+export function editCourseById(id: string) {
   activeCourseId = id;
   isEditMode = true;
   renderCourses();
 }
 
-function clearCourseLayer() {
-  courseLayer = null;
-}
-
-function addPointToCourse(courseId: string, lat: number, lon: number) {
-  const course = courses.find((c) => c.id === courseId);
-  if (!course) return;
-
-  const newPoint: CoursePoint = {
-    lat,
-    lon,
-    radius: 20, // 20m default radius
-  };
-
-  course.points.push(newPoint);
-  saveCourses();
+export function toggleCourseHeader(id: string) {
+  activeCourseId = id;
+  openCourseId = openCourseId === id ? null : id;
+  isEditMode = false;
+  MapView.setCustomClickHandler(null);
   renderCourses();
-}
-
-function renderCourseOnMap(courseId: string) {
-  // Map rendering removed for benchmark
 }
 
 export function selectCourse(id: string, open: boolean = false) {
@@ -702,17 +642,57 @@ export function selectCourse(id: string, open: boolean = false) {
   if (open) openCourseId = id;
   isEditMode = false;
   MapView.setCustomClickHandler(null);
-  clearCourseLayer();
   renderCourses();
 }
 
-function deleteCourse(id: string) {
+export function deleteCourseById(id: string) {
   if (!confirm('Are you sure you want to delete this course?')) return;
   courses = courses.filter((c) => c.id !== id);
   if (activeCourseId === id) {
     activeCourseId = null;
-    clearCourseLayer();
+  }
+  if (openCourseId === id) {
+    openCourseId = null;
   }
   saveCourses();
   renderCourses();
+}
+
+export function selectCourseTrackEffort(trackId: string, startIdx: number, endIdx: number) {
+  const track = MapView.getTrackData(trackId);
+  if (!track) return;
+
+  const stateSvc = (window as any).__trackStateService;
+  if (stateSvc) {
+    stateSvc.selectTrack(trackId, false);
+  } else {
+    document.dispatchEvent(new CustomEvent('select-track', { detail: { id: trackId } }));
+  }
+
+  setTimeout(() => {
+    const pts = track.points;
+    const t0 = pts.find((p: any) => p.time != null)?.time || 0;
+
+    const sIdx = Math.max(0, Math.min(startIdx, pts.length - 1));
+    const eIdx = Math.max(0, Math.min(endIdx, pts.length - 1));
+
+    const tMin = Math.max(0, ((pts[sIdx]?.time || 0) - t0) / 1000);
+    const tMax = Math.max(0, ((pts[eIdx]?.time || 0) - t0) / 1000);
+
+    const axis = ChartView.getXAxis();
+    let selMin = tMin;
+    let selMax = tMax;
+
+    if (axis === 'distance') {
+      selMin = Math.max(0, (pts[sIdx]?.dist || 0) / 1000);
+      selMax = Math.max(0, (pts[eIdx]?.dist || 0) / 1000);
+    }
+
+    UrlState.patch({ sel: [selMin, selMax], tab: 'graphs' }, true);
+    if (stateSvc) {
+      stateSvc.activateTab('graphs', false);
+    }
+    ChartView.restoreSelection(tMin, tMax);
+    MapView.highlightSegment(trackId, track.points, startIdx, endIdx, true);
+  }, 50);
 }

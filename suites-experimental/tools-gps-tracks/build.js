@@ -52,7 +52,7 @@ async function copyStaticAssets() {
 }
 
 async function collectLicenses() {
-  const deps = ['uplot', 'fit-file-parser'];
+  const deps = ['uplot', 'fit-file-parser', '@angular/core', 'rxjs', 'zone.js'];
   let output = '';
 
   try {
@@ -62,8 +62,12 @@ async function collectLicenses() {
 
   for (const dep of deps) {
     try {
-      const licensePath = path.join('node_modules', dep, 'LICENSE');
-      const content = await readFile(licensePath, 'utf-8');
+      let content;
+      try {
+        content = await readFile(path.join('node_modules', dep, 'LICENSE'), 'utf-8');
+      } catch {
+        content = await readFile(path.join('node_modules', dep, 'LICENSE.txt'), 'utf-8');
+      }
       output += `\n\n------------------------------------------------------------------------------\n${dep.toUpperCase()} LICENSE\n------------------------------------------------------------------------------\n\n${content}\n`;
     } catch (e) {
       console.warn(`Could not find license for ${dep}`);

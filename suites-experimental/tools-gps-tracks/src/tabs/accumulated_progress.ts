@@ -19,6 +19,24 @@ export interface AccumulatedData {
   totalAvg: number;
 }
 
+export interface AccumulatedTableRow {
+  period: string;
+  valueFormatted: string;
+  weeklyAvgFormatted: string;
+  unit: string;
+}
+
+export interface AccumulatedSummaryRow {
+  label: string;
+  unit: string;
+  past1m: string;
+  past6m: string;
+  pastYear: string;
+  currentYear: string;
+  total: string;
+  weeklyAvg: string;
+}
+
 export function computeAccumulatedMetric(
   allTracks: TrackData[],
   extractor: (t: TrackData) => number | undefined,
@@ -111,11 +129,11 @@ export function computeAccumulatedMetric(
   };
 }
 
-export function renderAccumulatedTable(
+export function getAccumulatedTableRows(
   accumulated: AccumulatedData,
   isDistance: boolean,
   unit: string,
-): string {
+): AccumulatedTableRow[] {
   const factor = isDistance ? 1000 : 1;
   const format = (val: number) => {
     const formattedVal = isDistance ? val / factor : val;
@@ -124,6 +142,47 @@ export function renderAccumulatedTable(
       maximumFractionDigits: isDistance ? 1 : 0,
     });
   };
+
+  return [
+    {
+      period: 'Current Year',
+      valueFormatted: format(accumulated.currentYear),
+      weeklyAvgFormatted: format(accumulated.currentYearAvg),
+      unit,
+    },
+    {
+      period: 'Past Year',
+      valueFormatted: format(accumulated.pastYear),
+      weeklyAvgFormatted: format(accumulated.pastYearAvg),
+      unit,
+    },
+    {
+      period: 'Past 6 Months',
+      valueFormatted: format(accumulated.past6m),
+      weeklyAvgFormatted: format(accumulated.past6mAvg),
+      unit,
+    },
+    {
+      period: 'Past 1 Month',
+      valueFormatted: format(accumulated.past1m),
+      weeklyAvgFormatted: format(accumulated.past1mAvg),
+      unit,
+    },
+    {
+      period: 'Total',
+      valueFormatted: format(accumulated.total),
+      weeklyAvgFormatted: format(accumulated.totalAvg),
+      unit,
+    },
+  ];
+}
+
+export function renderAccumulatedTable(
+  accumulated: AccumulatedData,
+  isDistance: boolean,
+  unit: string,
+): string {
+  const rows = getAccumulatedTableRows(accumulated, isDistance, unit);
 
   return `
     <table class="accumulated-table">
@@ -135,31 +194,16 @@ export function renderAccumulatedTable(
         </tr>
       </thead>
       <tbody>
+        ${rows
+          .map(
+            (r) => `
         <tr>
-          <td>Current Year</td>
-          <td>${format(accumulated.currentYear)}&nbsp;${unit}</td>
-          <td>${format(accumulated.currentYearAvg)}&nbsp;${unit}</td>
-        </tr>
-        <tr>
-          <td>Past Year</td>
-          <td>${format(accumulated.pastYear)}&nbsp;${unit}</td>
-          <td>${format(accumulated.pastYearAvg)}&nbsp;${unit}</td>
-        </tr>
-        <tr>
-          <td>Past 6 Months</td>
-          <td>${format(accumulated.past6m)}&nbsp;${unit}</td>
-          <td>${format(accumulated.past6mAvg)}&nbsp;${unit}</td>
-        </tr>
-        <tr>
-          <td>Past 1 Month</td>
-          <td>${format(accumulated.past1m)}&nbsp;${unit}</td>
-          <td>${format(accumulated.past1mAvg)}&nbsp;${unit}</td>
-        </tr>
-        <tr>
-          <td>Total</td>
-          <td>${format(accumulated.total)}&nbsp;${unit}</td>
-          <td>${format(accumulated.totalAvg)}&nbsp;${unit}</td>
-        </tr>
+          <td>${r.period}</td>
+          <td>${r.valueFormatted}&nbsp;${r.unit}</td>
+          <td>${r.weeklyAvgFormatted}&nbsp;${r.unit}</td>
+        </tr>`,
+          )
+          .join('')}
       </tbody>
     </table>
   `;
@@ -209,7 +253,7 @@ export function computeMultiMetricAccumulated(
   };
 }
 
-export function renderAccumulatedProgressSummary(allTracks: TrackData[]): string {
+export function getAccumulatedSummaryRows(allTracks: TrackData[]): AccumulatedSummaryRow[] {
   const summary = computeMultiMetricAccumulated(allTracks);
   const fmt = (v: number, digits = 1) =>
     v.toLocaleString('en-US', {
@@ -217,7 +261,7 @@ export function renderAccumulatedProgressSummary(allTracks: TrackData[]): string
       maximumFractionDigits: digits,
     });
 
-  const rows: {
+  const specs: {
     label: string;
     unit: string;
     data: AccumulatedData;
@@ -231,6 +275,21 @@ export function renderAccumulatedProgressSummary(allTracks: TrackData[]): string
     { label: 'Mechanical Work', unit: 'kJ', data: summary.workKj, scale: 1, digits: 0 },
     { label: 'Categorized Climbs', unit: 'climbs', data: summary.climbCount, scale: 1, digits: 0 },
   ];
+
+  return specs.map((r) => ({
+    label: r.label,
+    unit: r.unit,
+    past1m: fmt(r.data.past1m * r.scale, r.digits),
+    past6m: fmt(r.data.past6m * r.scale, r.digits),
+    pastYear: fmt(r.data.pastYear * r.scale, r.digits),
+    currentYear: fmt(r.data.currentYear * r.scale, r.digits),
+    total: fmt(r.data.total * r.scale, r.digits),
+    weeklyAvg: fmt(r.data.totalAvg * r.scale, r.digits),
+  }));
+}
+
+export function renderAccumulatedProgressSummary(allTracks: TrackData[]): string {
+  const rows = getAccumulatedSummaryRows(allTracks);
 
   return `
     <div class="chart-row accumulated-multi-card" id="accumulated-summary-card" style="padding: 10px 14px;">
@@ -258,12 +317,12 @@ export function renderAccumulatedProgressSummary(allTracks: TrackData[]): string
               (r) => `
             <tr>
               <td style="font-weight: 600;">${r.label}</td>
-              <td>${fmt(r.data.past1m * r.scale, r.digits)}&nbsp;${r.unit}</td>
-              <td>${fmt(r.data.past6m * r.scale, r.digits)}&nbsp;${r.unit}</td>
-              <td>${fmt(r.data.pastYear * r.scale, r.digits)}&nbsp;${r.unit}</td>
-              <td>${fmt(r.data.currentYear * r.scale, r.digits)}&nbsp;${r.unit}</td>
-              <td style="font-weight: 700;">${fmt(r.data.total * r.scale, r.digits)}&nbsp;${r.unit}</td>
-              <td>${fmt(r.data.totalAvg * r.scale, r.digits)}&nbsp;${r.unit}/wk</td>
+              <td>${r.past1m}&nbsp;${r.unit}</td>
+              <td>${r.past6m}&nbsp;${r.unit}</td>
+              <td>${r.pastYear}&nbsp;${r.unit}</td>
+              <td>${r.currentYear}&nbsp;${r.unit}</td>
+              <td style="font-weight: 700;">${r.total}&nbsp;${r.unit}</td>
+              <td>${r.weeklyAvg}&nbsp;${r.unit}/wk</td>
             </tr>`,
             )
             .join('')}
