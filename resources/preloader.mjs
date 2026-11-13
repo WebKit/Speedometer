@@ -147,15 +147,22 @@ export class ResourcePreloader {
             resolve(data);
     }
 
+    // Allow preempting in-flight preloads or overriding any pending request with an explicit stop.
+    _isCooperativePreemption(messageData) {
+        return this._pendingRequest?.type === SW_MESSAGES.PRELOAD_SUITES || messageData?.type === SW_MESSAGES.STOP_PRELOADING;
+    }
+
+    isCooperativePreemption(messageData) {
+        return this._isCooperativePreemption(messageData);
+    }
+
     _postMessage(messageData, timeoutMs = 0) {
         if (!this._sw)
             return Promise.resolve(null);
 
         if (this._pendingRequest) {
-            const isCooperativePreemption = this._pendingRequest.type === SW_MESSAGES.PRELOAD_SUITES || messageData.type === SW_MESSAGES.STOP_PRELOADING;
-
             const logMessage = `Already waiting for ${this._pendingRequest.type}, overriding with ${messageData.type}`;
-            if (isCooperativePreemption) {
+            if (this._isCooperativePreemption(messageData)) {
                 console.warn(logMessage);
                 this._resolvePendingRequest(null);
             } else {
