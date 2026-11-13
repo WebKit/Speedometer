@@ -52,6 +52,8 @@ class MainBenchmarkClient {
     }
 
     async start() {
+        if (this._state === BENCHMARK_STATE.PRELOADING)
+            return;
         if (this._isStepping())
             this._clearStepping();
         else if (await this._startBenchmark())
@@ -184,6 +186,7 @@ class MainBenchmarkClient {
     async didFinishLastIteration(metrics) {
         console.assert(this.isRunning());
 
+        this._clearStepping();
         this._metrics = metrics;
         this._setBenchmarkState(BENCHMARK_STATE.DONE);
         await this._resourcePreloader.teardown();
@@ -205,6 +208,7 @@ class MainBenchmarkClient {
     handleError(error) {
         if (this._state === BENCHMARK_STATE.ERROR)
             return;
+        this._clearStepping();
         this._metrics = Object.create(null);
         this._setBenchmarkState(BENCHMARK_STATE.ERROR);
         this._populateErrorMessage(error.message);
@@ -445,11 +449,13 @@ class MainBenchmarkClient {
         }
     }
 
-    async _setBenchmarkState(state) {
+    _setBenchmarkState(state) {
         this._state = state;
         document.body.setAttribute("data-benchmark-state", state);
         const startButtons = document.querySelectorAll(".start-tests-button");
         if (state === BENCHMARK_STATE.PRELOADING) {
+            if (document.documentElement.getAttribute("data-visible-section") !== "home")
+                this._showSection("#home");
             startButtons.forEach((btn) => {
                 btn.disabled = true;
                 btn.innerHTML = "<div>Preloading</div>";

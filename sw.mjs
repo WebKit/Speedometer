@@ -136,13 +136,14 @@ async function parseSuiteResources(suite, signal) {
     }
     const text = await response.text();
     signal.throwIfAborted();
+    const baseUrl = new URL(suite.resources, self.location.href);
     return text
         .trim()
         .split("\n")
         .map((resourceUrl) => resourceUrl.trim())
         .filter(Boolean)
         .map((resourceUrl) => ({
-            url: new URL(resourceUrl, suite.resources).href,
+            url: new URL(resourceUrl, baseUrl).href,
             suiteName: suite.name,
         }));
 }

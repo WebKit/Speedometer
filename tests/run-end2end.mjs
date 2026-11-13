@@ -171,6 +171,115 @@ async function testDeveloperMode() {
     });
 }
 
+async function testDeveloperModePreload() {
+    const url = "index.html?developerMode=true&iterationCount=1&suites=Perf-Dashboard";
+    console.log(`Testing: ${url} (enabling preload via Developer Mode checkbox)`);
+    await driver.get(`http://localhost:${port}/${url}`);
+
+    const initResult = await driver.executeAsyncScript((callback) => {
+        if (globalThis.benchmarkClient?.isInitialized) {
+            callback({});
+            return;
+        }
+        globalThis.addEventListener("SpeedometerReady", () => callback({}), { once: true });
+        globalThis.addEventListener("error", (event) => {
+            callback({ error: { message: event.message || "Unknown Runtime Error", stack: event.error?.stack } });
+        });
+        globalThis.addEventListener("unhandledrejection", (e) => {
+            const reason = e.reason;
+            callback({ error: { message: `Unhandled Rejection: ${reason?.message || String(reason)}`, stack: reason?.stack } });
+        });
+    });
+
+    if (initResult?.error)
+        throw new Error(`${initResult.error.message}${initResult.error.stack ? `\n${initResult.error.stack}` : ""}`);
+
+    console.log("    - Toggling preload checkbox and awaiting Benchmark");
+    const result = await driver.executeAsyncScript((callback) => {
+        const labels = Array.from(document.querySelectorAll(".developer-mode label"));
+        const preloadLabel = labels.find((label) => label.textContent.includes("Use service worker for resource preloading"));
+        const preloadCheckbox = preloadLabel?.querySelector('input[type="checkbox"]');
+        if (!preloadCheckbox || preloadCheckbox.checked) {
+            callback({ error: { message: `Unexpected initial preload checkbox state: ${preloadCheckbox?.checked}` } });
+            return;
+        }
+
+        const preloadProgressEl = document.getElementById("preload-progress");
+        const preloadInfoEl = document.getElementById("preload-info");
+        const initialProgressHidden = getComputedStyle(preloadProgressEl).display === "none" && getComputedStyle(preloadInfoEl).display === "none";
+
+        preloadCheckbox.click();
+        if (!preloadCheckbox.checked || !window.location.search.includes("preload=true")) {
+            callback({ error: { message: `Preload checkbox click did not update state or URL: checked=${preloadCheckbox.checked}, search=${window.location.search}` } });
+            return;
+        }
+
+        const seenStates = [];
+        let preloadProgressVisibleDuringPreload = false;
+        let startButtonDisabledDuringPreload = false;
+        const observer = new MutationObserver(() => {
+            const state = document.body.getAttribute("data-benchmark-state");
+            seenStates.push(state);
+            if (state === "PRELOADING") {
+                preloadProgressVisibleDuringPreload = getComputedStyle(preloadProgressEl).display !== "none" && getComputedStyle(preloadInfoEl).display !== "none";
+                startButtonDisabledDuringPreload = document.querySelector(".start-tests-button")?.disabled === true;
+            }
+        });
+        observer.observe(document.body, { attributes: true, attributeFilter: ["data-benchmark-state"] });
+
+        let preloadResult = null;
+        const preloader = globalThis.benchmarkClient._resourcePreloader;
+        const origPreloadSuites = preloader.preloadSuites.bind(preloader);
+        preloader.preloadSuites = async (...args) => {
+            preloadResult = await origPreloadSuites(...args);
+            return preloadResult;
+        };
+
+        globalThis.addEventListener(
+            "SpeedometerDone",
+            () => {
+                observer.disconnect();
+                const preloadProgressHiddenAfterDone = getComputedStyle(preloadProgressEl).display === "none" && getComputedStyle(preloadInfoEl).display === "none";
+                callback({
+                    metrics: globalThis.benchmarkClient.metrics,
+                    initialProgressHidden,
+                    seenStates,
+                    preloadProgressVisibleDuringPreload,
+                    startButtonDisabledDuringPreload,
+                    preloadProgressHiddenAfterDone,
+                    preloadResult,
+                });
+            },
+            { once: true }
+        );
+        globalThis.addEventListener("error", (event) => {
+            observer.disconnect();
+            callback({ error: { message: event.message || "Unknown Runtime Error", stack: event.error?.stack } });
+        });
+        globalThis.addEventListener("unhandledrejection", (e) => {
+            observer.disconnect();
+            const reason = e.reason;
+            callback({ error: { message: `Unhandled Rejection: ${reason?.message || String(reason)}`, stack: reason?.stack } });
+        });
+
+        globalThis.benchmarkClient.start();
+    });
+
+    if (result?.error)
+        throw new Error(`${result.error.message}${result.error.stack ? `\n${result.error.stack}` : ""}`);
+
+    assert(result.initialProgressHidden, "Expected #preload-progress and #preload-info to be hidden before preloading");
+    assert(result.seenStates.includes("PRELOADING"), `Expected PRELOADING state, saw: ${result.seenStates.join(", ")}`);
+    assert(result.preloadProgressVisibleDuringPreload, "Expected #preload-progress and #preload-info to be visible during PRELOADING");
+    assert(result.startButtonDisabledDuringPreload, "Expected .start-tests-button to be disabled during PRELOADING");
+    assert(result.preloadProgressHiddenAfterDone, "Expected #preload-progress and #preload-info to be hidden after DONE");
+    assert(result.preloadResult?.status === "PRELOAD_DONE" && result.preloadResult?.count > 0, "Expected Service Worker preloadSuites to finish with PRELOAD_DONE");
+
+    validateMetrics(result.metrics);
+    assert("Perf-Dashboard" in result.metrics);
+    assert(result.metrics["Perf-Dashboard"].values.length === 1);
+}
+
 async function test() {
     try {
         await testWithRetries(retry);
@@ -204,6 +313,7 @@ async function tryTests() {
     await testPreloadEnabled();
     await testPreloadDisabled();
     await testDeveloperMode();
+    await testDeveloperModePreload();
     console.log("\nTests complete!");
 }
 

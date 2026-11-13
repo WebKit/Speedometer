@@ -12,6 +12,7 @@ export class ResourcePreloader {
         this._pendingRequest = null;
         this._onPreloadProgress = null;
         this._activePreloadPromise = null;
+        this._activeStopPromise = null;
         this._nextRequestId = 1;
         this._boundOnMessage = this.onMessage.bind(this);
         this._messageListenerAdded = false;
@@ -93,8 +94,8 @@ export class ResourcePreloader {
             return;
 
         this._registration = await navigator.serviceWorker.register("./sw.mjs", { type: "module" });
-        await navigator.serviceWorker.ready;
-        this._sw = navigator.serviceWorker.controller || this._registration?.active || null;
+        const readyRegistration = await navigator.serviceWorker.ready;
+        this._sw = this._registration?.active || readyRegistration?.active || navigator.serviceWorker.controller || null;
     }
 
     _setupMessageListener() {
@@ -224,12 +225,23 @@ export class ResourcePreloader {
         if (!this._sw)
             return;
 
+        if (this._activeStopPromise) {
+            await this._activeStopPromise;
+            return;
+        }
+
         if (this._activePreloadPromise || this._pendingRequest?.type === SW_MESSAGES.PRELOAD_SUITES)
             this._preloadParams = null;
 
-        await this._postMessage({ type: SW_MESSAGES.STOP_PRELOADING });
-        if (this._activePreloadPromise)
-            await this._activePreloadPromise;
+        const activePreloadPromise = this._activePreloadPromise;
+        this._activeStopPromise = this._postMessage({ type: SW_MESSAGES.STOP_PRELOADING });
+        try {
+            await this._activeStopPromise;
+            if (activePreloadPromise)
+                await activePreloadPromise;
+        } finally {
+            this._activeStopPromise = null;
+        }
     }
 
     async preloadSuites(suites, clearCache = true, onProgress) {
@@ -241,6 +253,9 @@ export class ResourcePreloader {
                 await this._unregisterOldServiceWorkers();
             return undefined;
         }
+
+        if (this._activeStopPromise)
+            await this._activeStopPromise;
 
         if (!this._sw && !this._registration)
             await this.setup();
@@ -269,6 +284,8 @@ export class ResourcePreloader {
         try {
             this._activePreloadPromise = this._postMessage({ type: SW_MESSAGES.PRELOAD_SUITES, suites: suitesData, clearCache }, PRELOAD_TIMEOUT_MS);
             const response = await this._activePreloadPromise;
+            if (this._activeStopPromise)
+                await this._activeStopPromise;
 
             if (response?.status === SW_MESSAGES.PRELOAD_DONE) {
                 const timeTakenMs = performance.now() - startTime;
