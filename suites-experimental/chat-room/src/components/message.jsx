@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useActions } from "../actions.js";
 import { AVATAR_COLORS } from "../data/rooms.js";
 import Reaction from "./reaction.jsx";
@@ -12,7 +13,7 @@ import RichText from "./rich-text.jsx";
 // The date separator and the unread divider are drawn inside the row they belong
 // to rather than as rows of their own, because the height cache, the spacers and
 // the offset search are all indexed by message.
-export default function Message({ index, message, highlighted, dateLabel, unreadBelow }) {
+function Message({ index, message, highlighted, dateLabel, unreadBelow }) {
     const { jumpToMessage } = useActions();
     const classNames = ["timeline-message"];
     if (message.grouped)
@@ -67,3 +68,5 @@ export default function Message({ index, message, highlighted, dateLabel, unread
         </li>
     );
 }
+
+export default memo(Message);
