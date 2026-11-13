@@ -1,0 +1,68 @@
+/* Design tokens and the BaseButton rules from @thunderbirdops/services-ui 1.6.5
+   (MPL-2.0), with the Vue scope attributes removed. Stormbox imports the full
+   stylesheet; only the parts its mail surfaces use are kept here. */
+html{--colour-user-red:#e53935;--colour-user-orange:#ff8c00;--colour-user-yellow:#f4c430;--colour-user-graphite:#b0b0b0;--colour-user-green:#34c759;--colour-user-blue:#0a84ff;--colour-user-purple:#7753cc;--colour-user-pink:#e91e63;--colour-neutral-900:#26272a;--colour-neutral-base:#feffff;--colour-neutral-lower:#f7f7f7;--colour-neutral-raised:var(--colour-neutral-base);--colour-neutral-subtle:var(--colour-neutral-lower);--colour-neutral-border:#e4e4e7;--colour-neutral-border-intense:#777580;--colour-primary-soft:#f0f8ff;--colour-primary-default:#1373d9;--colour-primary-default-light:#1373d9;--colour-primary-default-dark:#58c9ff;--colour-primary-hover:#175fb6;--colour-primary-hover-light:#175fb6;--colour-primary-pressed:#19518f;--colour-secondary-soft:#faf5ff;--colour-secondary-default:#6b21a8;--colour-secondary-hover:#571c87;--colour-secondary-pressed:#3a0764;--colour-success-soft:#f4f9f4;--colour-success-default:#1d783b;--colour-success-hover:#1c5f32;--colour-success-pressed:#194e2c;--colour-warning-soft:#fefae8;--colour-warning-default:#facc15;--colour-warning-hover:#eabd08;--colour-warning-pressed:#caa204;--colour-danger-soft:#fef2f2;--colour-danger-default:#991b1b;--colour-danger-hover:#7f1d1d;--colour-danger-pressed:#450a0a;--colour-ti-base:#1a202c;--colour-ti-base-light:#1a202c;--colour-ti-base-dark:#eeeef0;--colour-ti-secondary:#4c4d58;--colour-ti-muted:#737584;--colour-ti-highlight:#1373d9;--colour-ti-warning:#713f12;--colour-ti-critical:#dc2626;--colour-ti-success:#1d783b;--colour-accent-teal:#25a6a0;--colour-accent-blue:#37adf9;--colour-accent-purple:#ae55f7;--colour-accent-orange:#ea7308;--colour-accent-pink:#e247c4;--colour-accent-gray:#6e6f9b;--colour-apmt-soft:#f3f9fc;--colour-apmt-primary:teal;--colour-apmt-primary-hover:#066769;--colour-apmt-primary-pressed:#0a5757;--colour-apmt-secondary:#81d4b5;--colour-apmt-accent-1:#a3ece3;--colour-apmt-accent-2:#03afd7;--colour-send-soft:#fef7ec;--colour-send-primary:#f09d38;--colour-send-primary-hover:#f09d38;--colour-send-primary-pressed:#f09d38;--colour-send-primary-secondary:#aa6000;--colour-send-primary-accent-1:#1f8ddb;--colour-send-primary-accent-2:#1f8ddb}
+html.dark{--colour-neutral-base:#1a202c;--colour-neutral-lower:#18181b;--colour-neutral-raised:#262d3b;--colour-neutral-subtle:var(--colour-neutral-raised);--colour-neutral-border:#303a4a;--colour-neutral-border-intense:#3d4d67;--colour-primary-soft:#262c40;--colour-primary-default:#58c9ff;--colour-primary-hover:#32aeff;--colour-primary-pressed:#1b90f5;--colour-secondary-soft:#3a0764;--colour-secondary-default:#f5e8ff;--colour-secondary-hover:#ecd5ff;--colour-secondary-pressed:#ddb4fe;--colour-success-soft:#082b16;--colour-success-default:#defae7;--colour-success-hover:#c0f2cf;--colour-success-pressed:#8ee7aa;--colour-warning-soft:#423606;--colour-warning-default:#fef2c3;--colour-warning-hover:#fee78a;--colour-warning-pressed:#fdd847;--colour-danger-soft:#7f1d1d;--colour-danger-default:#fee2e2;--colour-danger-hover:#fecaca;--colour-danger-pressed:#fca5a5;--colour-ti-base:#eeeef0;--colour-ti-secondary:#d9d9de;--colour-ti-muted:#7f94ac;--colour-ti-highlight:#58c9ff;--colour-ti-warning:#fee78a;--colour-ti-critical:#ef4444;--colour-ti-success:#55d37e;--colour-accent-teal:#a3ece3;--colour-accent-blue:#58c9ff;--colour-accent-purple:#8022ce;--colour-accent-orange:#fec18a;--colour-accent-pink:#fbd3f6;--colour-accent-gray:#c3cade;--colour-apmt-soft:#152f3c;--colour-apmt-primary:#a3ece3;--colour-apmt-primary-hover:#6ddbd1;--colour-apmt-primary-pressed:#3ec3ba;--colour-apmt-secondary:#25a6a0;--colour-apmt-accent-1:#a3ece3;--colour-apmt-accent-2:#58c9ff;--colour-send-soft:#411107;--colour-send-primary:#f09d38;--colour-send-primary-hover:#f09d38;--colour-send-primary-pressed:#f09d38;--colour-send-primary-secondary:#aa6000;--colour-send-primary-accent-1:#1f8ddb;--colour-send-primary-accent-2:#1f8ddb}
+html{--colour-service-soft:var(--colour-primary-soft);--colour-service-primary:var(--colour-primary-default);--colour-service-primary-hover:var(--colour-primary-hover);--colour-service-primary-pressed:var(--colour-primary-pressed);--colour-service-secondary:var(--colour-secondary-default);--colour-service-accent-1:var(--colour-accent-purple);--colour-service-accent-2:var(--colour-accent-teal)}
+html[data-tbpro-service=apmt]{--colour-service-soft:var(--colour-apmt-soft);--colour-service-primary:var(--colour-apmt-primary);--colour-service-primary-hover:var(--colour-apmt-primary-hover);--colour-service-primary-pressed:var(--colour-apmt-primary-pressed);--colour-service-secondary:var(--colour-apmt-secondary);--colour-service-accent-1:var(--colour-apmt-accent-1);--colour-service-accent-2:var(--colour-apmt-accent-2)}
+html[data-tbpro-service=send]{--colour-service-soft:var(--colour-primary-soft);--colour-service-primary:var(--colour-primary-default);--colour-service-primary-hover:var(--colour-primary-hover);--colour-service-primary-pressed:var(--colour-primary-pressed);--colour-service-secondary:var(--colour-neutral-subtle);--colour-service-accent-1:var(--colour-send-primary-accent-1);--colour-service-accent-2:var(--colour-send-primary-accent-2)}
+html{--border-radius:.5rem;--txt-default:.875rem;--txt-input:var(--txt-default);--line-height-input:1.25rem;--font-sans:"Inter", sans-serif;--txt-colour:var(--colour-ti-base);--transition-timing-function:initial;--transition-duration:0}
+@media (prefers-reduced-motion:no-preference){html{--transition-timing-function:ease-in-out;--transition-duration:.25s}}
+.services-ui-base{font-family:Inter,sans-serif;font-size:.8125rem}
+.dark .services-ui-base{color:var(--txt-colour)}
+.is-light-mode{display:block}
+.is-dark-mode,.dark .is-light-mode{display:none}
+.dark .is-dark-mode{display:block}
+.modal-active{overflow:hidden}
+.screen-reader-only{clip:rect(0, 0, 0, 0);white-space:nowrap;border-width:0;width:1px;height:1px;margin:-1px;padding:0;position:absolute;overflow:hidden}
+html{--button-destructive-color:var(--colour-danger-default);--button-destructive-color-hover:var(--colour-danger-hover);--button-destructive-color-active:var(--colour-danger-pressed)}
+html.dark{--button-destructive-color:var(--colour-danger-pressed);--button-destructive-color-hover:#f87171;--button-destructive-color-active:var(--colour-ti-critical)}
+.link.icon-only{height:auto;padding:.5rem}
+.link.icon-only .icon,.link.icon-only .icon svg{width:1rem;height:1rem}
+.link.icon-only.small .icon,.link.icon-only.small .icon svg{width:.75rem;height:.75rem}
+.link.icon-only.medium .icon,.link.icon-only.medium .icon svg{width:1.25rem;height:1.25rem}
+.link.icon-only.large .icon,.link.icon-only.large .icon svg{width:1.5rem;height:1.5rem}
+.link.icon-only .text{display:none}
+html{--divider-background-colour:#e4e4e7;--divider-border-colour:#fff}
+html.dark{--divider-background-colour:#3d4d67;--divider-border-colour:#242d3c}
+.base{border-radius:var(--border-radius);height:2.875rem;font-family:Inter,sans-serif;font-size:var(--txt-input);cursor:pointer;-webkit-user-select:none;user-select:none;border:0;justify-content:center;align-items:center;gap:.5rem;padding:0 1.12rem;font-weight:400;line-height:1;display:flex;position:relative}
+.base .icon{justify-content:center;align-items:center;width:.75rem;height:.75rem;display:flex}
+:is(.base .icon) svg{width:100%;height:100%}
+.base:active{outline:none!important}
+.base:focus{outline:.125rem solid var(--colour-primary-default);outline-offset:.125rem}
+.base.filled:disabled{background:var(--colour-neutral-border);color:var(--colour-ti-muted);cursor:not-allowed}
+:is(.base.outline,.base.brand.filled):before{content:"";border-radius:inherit;background:var(--button-outline-border);box-sizing:border-box;-webkit-mask-composite:xor;pointer-events:none;padding:.0625rem;position:absolute;inset:0;-webkit-mask-image:linear-gradient(#000 0 0),linear-gradient(#000 0 0);mask-image:linear-gradient(#000 0 0),linear-gradient(#000 0 0);-webkit-mask-position:0 0,0 0;mask-position:0 0,0 0;-webkit-mask-size:auto,auto;mask-size:auto,auto;-webkit-mask-repeat:repeat,repeat;mask-repeat:repeat,repeat;-webkit-mask-clip:content-box,border-box;mask-clip:content-box,border-box;-webkit-mask-origin:content-box,border-box;mask-origin:content-box,border-box;-webkit-mask-composite:xor;mask-composite:exclude;-webkit-mask-source-type:auto,auto;mask-mode:match-source,match-source}
+:is(.base.outline,.base.brand.filled):disabled{--button-outline-border:var(--colour-neutral-border);background:var(--colour-neutral-base);color:var(--colour-ti-muted);cursor:not-allowed}
+.primary.filled{background:linear-gradient(180deg, var(--colour-accent-blue) -31.82%, var(--colour-primary-default) 8.74%, var(--colour-primary-hover) 100%) border-box;color:var(--colour-neutral-base)}
+.primary.filled:hover:not(:disabled){background:linear-gradient(180deg, var(--colour-primary-hover) 0%, var(--colour-primary-hover) 100%)}
+.primary.filled:active:not(:disabled){background:linear-gradient(180deg, var(--colour-primary-pressed) 0%, var(--colour-primary-pressed) 100%)}
+.primary.outline{--button-outline-border:var(--colour-primary-default);color:var(--colour-primary-hover);background:0 0;position:relative}
+.primary.outline:hover:not(:disabled):before{padding:.125rem}
+.primary.outline:active:not(:disabled){background:color-mix(in srgb, var(--colour-accent-blue), transparent 90%);transition:none}
+.primary.outline:active:not(:disabled):before{padding:.125rem}
+.brand{text-transform:uppercase;padding:1rem 1.5rem;font-size:.8125rem;font-weight:600}
+.brand.filled{--button-outline-border:linear-gradient(to bottom right, #7bc6f4 10%, #2b8cdc 60%) border-box;background:linear-gradient(329deg, var(--colour-primary-default) -21.06%, var(--colour-accent-blue) 64%);color:var(--colour-ti-base-light);position:relative}
+.brand.filled:hover:not(:disabled){background:linear-gradient(var(--colour-primary-hover), var(--colour-primary-hover));color:var(--colour-neutral-base)}
+.brand.filled:active:not(:disabled){background:linear-gradient(var(--colour-primary-pressed), var(--colour-primary-pressed));color:var(--colour-neutral-base)}
+.brand.outline{--button-outline-border:linear-gradient(99deg, var(--colour-accent-blue) 19.15%, var(--colour-accent-gray) 75.77%) border-box;color:var(--colour-ti-base);background:0 0;position:relative}
+.brand.outline:hover:not(:disabled){color:var(--colour-ti-base-light);background:#f2f2f2}
+.brand.outline:active:not(:disabled){color:var(--colour-ti-base-light);background:#e3e3e3}
+.danger.filled{background-color:var(--button-destructive-color);color:var(--colour-neutral-base)}
+.danger.filled:hover:not(:disabled){background-color:var(--button-destructive-color-hover)}
+.danger.filled:active:not(:disabled){background-color:var(--button-destructive-color-active)}
+.danger.outline{--button-outline-border:var(--button-destructive-color);color:var(--button-destructive-color);background:0 0;position:relative}
+.danger.outline:hover:not(:disabled){--button-outline-border:var(--button-destructive-color-hover);color:var(--button-destructive-color-hover)}
+.danger.outline:hover:not(:disabled):before{padding:.125rem}
+.danger.outline:active:not(:disabled){--button-outline-border:var(--button-destructive-color-active);color:var(--button-destructive-color-active)}
+.danger.outline:active:not(:disabled):before{padding:.125rem}
+.link{--colour-btn-border:transparent;color:var(--colour-service-primary);background-color:#0000;min-width:0;text-decoration:underline;box-shadow:none!important;border:none!important}
+.link .text{-webkit-user-select:none;user-select:none;padding:0;font-weight:400;line-height:1}
+.link.small .text{padding:0}
+.link:hover{box-shadow:none!important}
+.link.outline:disabled,.link.filled:disabled{color:var(--colour-ti-muted);cursor:not-allowed;background:0 0}
+.link.outline:disabled{--button-outline-border:transparent}
+.small{height:1.75rem;padding:0 .75rem}
+.small.brand .text{font-size:.6875rem}
+.small .text{font-size:.875rem}
+.small button{min-width:initial;height:2rem}
+@media (prefers-reduced-motion:no-preference){.base{transition:background-color .25s ease-in-out,background .25s ease-in-out,border .25s ease-in-out,color .25s ease-in-out,box-shadow .25s ease-in-out}}

@@ -324,6 +324,7 @@ export const WarmupSuite = {
             item.enter("keypress");
             item.dispatchEvent("input");
             item.enter("keyup");
+            item.scrollTop = item.scrollHeight - item.clientHeight;
         }),
         new BenchmarkTestStep("WarmingUpPageElementMouseMethods", (page) => {
             const item = page.getElementById("testItem");
