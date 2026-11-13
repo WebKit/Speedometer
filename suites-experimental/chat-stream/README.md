@@ -16,6 +16,12 @@ highlighting and scroll pinning added.
     reply's Markdown. Unchanged blocks keep their identity across parses (the
     memoized-Markdown pattern streaming chat UIs use), so `memo` skips all but
     the blocks that grew.
+-   Context reads in memoized components: the Markdown views are built like a
+    design-system component catalog. Every block renders in a memoized
+    boundary, frame and part, and each component reads the contexts it
+    depends on (theme, locale, layout, message, streaming state, typography,
+    density), so a commit walks long chains of memoized ancestors to resolve
+    them.
 -   Code blocks highlighted into one span per token, the way chat UIs' regex
     highlighters produce them.
 -   Scroll pinning with CSS scroll anchoring: an anchor element after the

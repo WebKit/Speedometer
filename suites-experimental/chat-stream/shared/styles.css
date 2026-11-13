@@ -173,7 +173,7 @@ button {
     white-space: pre-wrap;
 }
 
-.message.streaming .markdown > :last-child::after {
+.message.streaming .markdown > :last-child > :last-child::after {
     display: inline-block;
     width: 8px;
     height: 1em;
