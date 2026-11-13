@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { fetchQuery, loadQuery, queryKey } from "../store/network.js";
-import { useQueryStatus } from "../store/hooks.js";
+import { fetchQuery, loadQuery, queryKey, queryStatusId } from "../store/network.js";
+import { fragment, useFragment, useRetain } from "../store/fragment.js";
 import { gate } from "../analytics/experiments.js";
 import { guard, guarded } from "../analytics/guard.js";
 import { log } from "../analytics/logger.js";
@@ -9,62 +9,35 @@ import { signal } from "../signals.js";
 import Avatar from "./avatar.jsx";
 import Icon from "./icon.jsx";
 import Popover from "./popover.jsx";
+import { buildSearchIndex, normalizeText, searchIndex } from "../search-index.js";
 
 const MAX_LOCAL = 8;
-const TYPE_WEIGHT = { user: 3, group: 2, page: 2, keyword: 1 };
+const NO_RANGES = [];
+const SearchBootstrapQuery = fragment("SearchBootstrapQuery", { status: true, root: { search_bootstrap: true } });
 
-// The bootstrap payload is indexed once: every entry is split into lowercase word
-// tokens so a keystroke only has to prefix-match words.
-function buildIndex(entries) {
-    return entries.map((entry) => {
-        const lower = entry.name.toLowerCase();
-        return { entry, lower, tokens: lower.split(/[\s&\-·]+/).filter(Boolean) };
-    });
-}
-
-function searchIndex(index, text) {
-    const words = text.toLowerCase().split(/\s+/).filter(Boolean);
-    if (!words.length)
-        return [];
-    const scored = [];
-    for (const item of index) {
-        let score = 0;
-        let matched = true;
-        for (const word of words) {
-            let best = 0;
-            for (let i = 0; i < item.tokens.length; i++) {
-                if (item.tokens[i].startsWith(word))
-                    best = Math.max(best, i === 0 ? 3 : 2);
-            }
-
-            if (!best && item.lower.includes(word))
-                best = 1;
-            if (!best) {
-                matched = false;
-                break;
-            }
-            score += best;
-        }
-        if (matched)
-            scored.push({ item, score: score * 10 + TYPE_WEIGHT[item.entry.type] - item.lower.length / 100 });
-    }
-    scored.sort((a, b) => b.score - a.score);
-    return scored.slice(0, MAX_LOCAL).map((result) => result.item.entry);
-}
-
-function Highlight({ text, query }) {
-    const words = query.toLowerCase().split(/\s+/).filter(Boolean);
-    const lower = text.toLowerCase();
-    const marks = new Array(text.length).fill(false);
-    for (const word of words) {
+// Remote results arrive without match ranges, so they highlight every occurrence of the
+// query's words in the name.
+function rangesFor(text, query) {
+    const lower = normalizeText(text);
+    const ranges = [];
+    for (const word of normalizeText(query).split(/\s+/).filter(Boolean)) {
         let from = 0;
         let at;
         while ((at = lower.indexOf(word, from)) !== -1) {
-            for (let i = at; i < at + word.length; i++)
-                marks[i] = true;
+            ranges.push([at, at + word.length]);
             from = at + word.length;
         }
     }
+    return ranges;
+}
+
+function Highlight({ text, ranges }) {
+    const marks = new Array(text.length).fill(false);
+    for (const [from, to] of ranges) {
+        for (let i = from; i < to && i < text.length; i++)
+            marks[i] = true;
+    }
+
     const parts = [];
     let start = 0;
     for (let i = 1; i <= text.length; i++) {
@@ -77,7 +50,7 @@ function Highlight({ text, query }) {
     return parts;
 }
 
-const ResultRow = memo(function ResultRow({ entry, query, active }) {
+const ResultRow = memo(function ResultRow({ entry, ranges, active }) {
     const icon = entry.type === "keyword" || entry.type === "post";
     return (
         <li role="option" aria-selected={active}>
@@ -86,11 +59,11 @@ const ResultRow = memo(function ResultRow({ entry, query, active }) {
                     ? <span className="bg-surface-alt text-secondary flex h-9 w-9 items-center justify-center rounded-full">
                         <Icon name="search" size={16} />
                     </span>
-                    : <Avatar seed={entry.avatar_seed} size={36} square={entry.type !== "user"} label="" />
+                    : <Avatar seed={entry.avatar_seed} size={36} square={entry.type !== "user" && entry.type !== "person"} label="" />
                 }
                 <span className="min-w-0">
                     <span className="text-primary block truncate text-[15px]">
-                        <Highlight text={entry.name} query={query} />
+                        <Highlight text={entry.name} ranges={ranges} />
                     </span>
                     {entry.subtitle && <span className="text-secondary block truncate text-[13px]">{entry.subtitle}</span>}
                 </span>
@@ -107,10 +80,11 @@ export default function SearchBox() {
     const inputRef = useRef(null);
     const anchorRef = useRef(null);
     const pending = useRef(null);
-    const bootstrap = useQueryStatus(queryKey("SearchBootstrap"));
+    const bootstrap = useFragment(SearchBootstrapQuery, queryStatusId(queryKey("SearchBootstrap")));
+    useRetain(open ? queryStatusId(queryKey("SearchBootstrap")) : null);
     const ready = bootstrap && bootstrap.status === "ready";
-    const index = useMemo(() => ready ? buildIndex(bootstrap.root.search_bootstrap.entries) : null, [ready, bootstrap]);
-    const local = useMemo(() => index ? searchIndex(index, query) : [], [index, query]);
+    const index = useMemo(() => ready ? buildSearchIndex(bootstrap.root.search_bootstrap.entries) : null, [ready, bootstrap]);
+    const local = useMemo(() => index ? searchIndex(index, query, MAX_LOCAL) : [], [index, query]);
 
     useEffect(() => {
         if (open && ready)
@@ -178,7 +152,7 @@ export default function SearchBox() {
         }
     });
 
-    const remoteResults = remote.query === query ? remote.results.filter((result) => !local.some((entry) => entry.name === result.name)) : [];
+    const remoteResults = remote.query === query ? remote.results.filter((result) => !local.some((match) => match.entry.name === result.name)) : [];
     const recent = ready ? bootstrap.root.search_bootstrap.recent : [];
 
     return (
@@ -215,15 +189,15 @@ export default function SearchBox() {
                                     </button>
                                 </li>
                                 {recent.map((entry, i) =>
-                                    <ResultRow key={entry.id} entry={entry} query="" active={i === active} />
+                                    <ResultRow key={entry.id} entry={entry} ranges={NO_RANGES} active={i === active} />
                                 )}
                             </>
                         }
-                        {local.map((entry, i) =>
-                            <ResultRow key={entry.id} entry={entry} query={query} active={i === active} />
+                        {local.map((match, i) =>
+                            <ResultRow key={match.entry.id} entry={match.entry} ranges={match.highlights} active={i === active} />
                         )}
                         {remoteResults.map((entry, i) =>
-                            <ResultRow key={entry.id} entry={entry} query={query} active={local.length + i === active} />
+                            <ResultRow key={entry.id} entry={entry} ranges={rangesFor(entry.name, query)} active={local.length + i === active} />
                         )}
                         {query
                             && <li>

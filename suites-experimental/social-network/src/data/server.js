@@ -13,8 +13,8 @@ export const VIEWER_ID = "u0";
 const USER_COUNT = 240;
 const STORY_POOL = 120;
 const FEED_PAGE_SIZE = 5;
-const COMMENT_PAGE_SIZE = 10;
-const REPLY_PAGE_SIZE = 8;
+const COMMENT_PAGE_SIZE = 15;
+const REPLY_PAGE_SIZE = 10;
 const REACTIONS = ["like", "love", "thanks", "laugh", "celebrate", "wow"];
 
 const users = [];
@@ -56,6 +56,18 @@ function actorRef(actor) {
 
 function friendOf(random) {
     return users[random.int(1, USER_COUNT - 1)];
+}
+
+const TOKEN_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
+// Opaque ranking and attribution tokens ride along with every unit, the way production
+// feeds ship encrypted tracking blobs that the client only echoes back in its logs.
+function trackingToken(seed, length) {
+    const random = createRandom(seed);
+    let token = "";
+    for (let i = 0; i < length; i++)
+        token += TOKEN_ALPHABET[random.int(0, 63)];
+    return token;
 }
 
 function buildText(random, { minSentences, maxSentences }) {
@@ -154,6 +166,9 @@ function buildStory(index) {
         attachments,
         link,
         url: `#/post/${id}`,
+        tracking: trackingToken(hashString(`${id}:tracking`), 180),
+        viewer_follows_actor: actor.__typename === "User" || random.chance(0.5),
+        can_translate: random.chance(0.15),
         feedback: {
             __typename: "Feedback",
             id: `fb-${id}`,
@@ -211,6 +226,10 @@ function buildComment(storyId, index, parentId) {
         reaction_count: likes,
         top_reactions: likes ? reactionSummary(random, likes) : [],
         reply_count: 0,
+        badges: random.chance(0.18) ? [random.pick(["Top contributor", "Neighbour", "Rising voice"])] : [],
+        is_edited: random.chance(0.1),
+        can_translate: random.chance(0.12),
+        tracking: trackingToken(hashString(`${storyId}:${parentId ?? "r"}:${index}:t`), 64),
         is_spam: !isReply && random.chance(0.08),
         score: likes * 3 + text.length / 20 + random.next() * 4,
         depth: isReply ? 1 : 0,
@@ -233,7 +252,8 @@ function thread(storyId) {
         // Spread the replies over the whole thread instead of the first few comments.
         const odds = Math.min(0.8, repliesLeft / ((topLevel - i) * 3));
         if (repliesLeft > 0 && random.chance(odds)) {
-            const replies = Math.min(repliesLeft, random.int(1, 7));
+            // A few comments turn into long conversations of their own.
+            const replies = Math.min(repliesLeft, random.chance(0.2) ? random.int(10, 30) : random.int(1, 7));
             comment.reply_count = replies;
             repliesLeft -= replies;
         }
@@ -261,10 +281,18 @@ function publicComment(comment) {
     return result;
 }
 
-function topCommentFor(node) {
+function topCommentsFor(node) {
     if (!node.feedback.comment_count)
-        return null;
-    return publicComment(orderedThread(node.id, "relevant")[0]);
+        return [];
+    return orderedThread(node.id, "relevant").slice(0, 2).map(publicComment);
+}
+
+// The people the viewer knows among those who reacted, named in the summary line.
+function reactorsFor(node) {
+    if (!node.feedback.reaction_count)
+        return [];
+    const random = createRandom(hashString(`reactors:${node.id}`));
+    return random.sample(users.slice(1), Math.min(2, node.feedback.reaction_count)).map(actorRef);
 }
 
 function storyShell(node) {
@@ -273,7 +301,7 @@ function storyShell(node) {
 }
 
 function deferredFeedback(node) {
-    return { __typename: "Story", id: node.id, feedback: { ...node.feedback, top_comment: topCommentFor(node) } };
+    return { __typename: "Story", id: node.id, feedback: { ...node.feedback, top_comments: topCommentsFor(node), reactors: reactorsFor(node) } };
 }
 
 function page(items, cursor, hasNext) {
@@ -284,12 +312,28 @@ function stringify(chunks) {
     return chunks.map((chunk) => JSON.stringify(chunk));
 }
 
+function suggestionsUnit(seed, start) {
+    const random = createRandom(hashString(`pymk:${seed}:${start}`));
+    const people = random.sample(users.slice(1), 8).map((user) => ({
+        __typename: "Suggestion",
+        id: `sg-${seed}-${start}-${user.id}`,
+        user: actorRef(user),
+        mutual_count: user.mutual_friends,
+        mutual_friends: random.sample(users.slice(1), 2).map(actorRef),
+        tracking: trackingToken(hashString(`sg:${user.id}`), 48),
+    }));
+    return { __typename: "SuggestionsUnit", id: `pymk-${seed}-${start}`, title: "People you may know", suggestions: people };
+}
+
 function feedQuery({ cursor = 0, count = FEED_PAGE_SIZE, seed = 0 }) {
     const start = Number(cursor);
     const nodes = [];
     for (let i = 0; i < count; i++)
         nodes.push(story(seed * 1000 + start + i));
     const edges = nodes.map((node, i) => ({ cursor: String(start + i + 1), node: storyShell(node) }));
+    // Every other page carries a row of connection suggestions after its second story.
+    if ((start / count) % 2 === 1)
+        edges.splice(2, 0, { cursor: `${start}:pymk`, node: suggestionsUnit(seed, start) });
     const head = { data: { home_feed: page(edges, start + count, true) }, extensions: { is_final: false } };
     // Engagement arrives after the story shells, one deferred fragment per story.
     const deferred = nodes.map((node, i) => ({ incremental: [{ label: "StoryFeedback", path: ["home_feed", "edges", i, "node"], data: deferredFeedback(node) }], extensions: { is_final: i === nodes.length - 1 } }));
@@ -419,15 +463,16 @@ function profileQuery({ userId }) {
     return stringify([header, intro, posts, ...engagement]);
 }
 
-function storiesTrayQuery() {
-    const random = createRandom(11);
-    const cards = random.sample(users.slice(1), 9).map((user, i) => ({ __typename: "StoryCard", id: `card${i}`, owner: actorRef(user), seed: hashString(`card:${i}`), seen: i > 5 }));
+// The page chrome changes between refreshes: new moments, people coming online, new badges.
+function storiesTrayQuery({ refresh = 0 }) {
+    const random = createRandom(11 + refresh);
+    const cards = random.sample(users.slice(1), 9).map((user, i) => ({ __typename: "StoryCard", id: `card${refresh}-${i}`, owner: actorRef(user), seed: hashString(`card:${refresh}:${i}`), seen: i > 5 - refresh }));
     return stringify([{ data: { stories_tray: cards } }]);
 }
 
-function rightRailQuery() {
-    const random = createRandom(12);
-    const contacts = users.slice(1, 25).map((user) => ({ ...actorRef(user), online: user.online }));
+function rightRailQuery({ refresh = 0 }) {
+    const random = createRandom(12 + refresh);
+    const contacts = users.slice(1, 25).map((user) => ({ ...actorRef(user), online: refresh ? hashString(`${user.id}:${refresh}`) % 3 === 0 : user.online }));
     const ads = [
         ["Handmade ceramic mugs", "claystudio.example"],
         ["Weekend bike tune-up", "spokeshop.example"],
@@ -435,13 +480,14 @@ function rightRailQuery() {
         ["Learn to sail this summer", "sailschool.example"],
     ];
     const sponsored = random.sample(ads, 2).map(([title, domain], i) => ({ __typename: "Ad", id: `ad${i}`, title, domain, seed: hashString(`ad:${i}`) }));
-    const birthdays = [actorRef(users[37])];
+    const birthdays = [actorRef(users[37 + refresh])];
     const group_chats = groups.slice(0, 4).map((group) => ({ __typename: "Group", id: group.id, name: group.name, cover_seed: group.cover_seed }));
     return stringify([{ data: { right_rail: { sponsored, birthdays, contacts, group_chats } } }]);
 }
 
-function shortcutsQuery() {
-    return stringify([{ data: { shortcuts: groups.slice(0, 8).map((group) => ({ __typename: "Group", id: group.id, name: group.name, cover_seed: group.cover_seed })), badges: { notifications: 7, messages: 3 } } }]);
+function shortcutsQuery({ refresh = 0 }) {
+    const shortcuts = groups.slice(refresh % 4, 8 + (refresh % 4)).map((group) => ({ __typename: "Group", id: group.id, name: group.name, cover_seed: group.cover_seed }));
+    return stringify([{ data: { shortcuts, badges: { notifications: 7 + refresh, messages: 3 + refresh * 2 } } }]);
 }
 
 function notificationsQuery() {
@@ -507,17 +553,29 @@ function accountQuery() {
     ]);
 }
 
-// The typeahead's local index, shipped once so most keystrokes never wait on the network.
+const EXTENDED_NETWORK = 1400;
+
+// The typeahead's local index, shipped once so most keystrokes never wait on the network:
+// connections, the wider network around them, pages, groups and popular searches.
 function searchBootstrapQuery() {
     const entries = [];
     for (const user of users.slice(1))
-        entries.push({ id: user.id, type: "user", name: user.name, subtitle: user.mutual_friends ? `${user.mutual_friends} shared connections` : "Connection", avatar_seed: user.avatar_seed });
+        entries.push({ id: user.id, type: "user", name: user.name, subtitle: user.mutual_friends ? `${user.mutual_friends} shared connections` : "Connection", avatar_seed: user.avatar_seed, affinity: 40 + user.mutual_friends });
+    const random = createRandom(15);
+    for (let i = 0; i < EXTENDED_NETWORK; i++) {
+        const first = FIRST_NAMES[(i * 17 + 3) % FIRST_NAMES.length];
+        const last = LAST_NAMES[(i * 7 + (i >>> 4)) % LAST_NAMES.length];
+        const mutual = random.chance(0.4) ? random.int(1, 30) : 0;
+        entries.push({ id: `x${i}`, type: "person", name: `${first} ${last}`, subtitle: mutual ? `${mutual} shared connections` : `Lives in ${random.pick(PLACES)}`, avatar_seed: 1000 + i * 3, affinity: mutual });
+    }
     for (const p of pages)
-        entries.push({ id: p.id, type: "page", name: p.name, subtitle: `${p.category} · ${p.followers.toLocaleString("en-US")} followers`, avatar_seed: p.avatar_seed });
+        entries.push({ id: p.id, type: "page", name: p.name, subtitle: `${p.category} · ${p.followers.toLocaleString("en-US")} followers`, avatar_seed: p.avatar_seed, affinity: Math.log10(p.followers) * 4 });
     for (const g of groups)
-        entries.push({ id: g.id, type: "group", name: g.name, subtitle: `${g.privacy === "public" ? "Public" : "Private"} group · ${g.member_count.toLocaleString("en-US")} members`, avatar_seed: g.cover_seed });
+        entries.push({ id: g.id, type: "group", name: g.name, subtitle: `${g.privacy === "public" ? "Public" : "Private"} group · ${g.member_count.toLocaleString("en-US")} members`, avatar_seed: g.cover_seed, affinity: g.viewer_is_member ? 30 : 5 });
     for (const [i, keyword] of SEARCH_KEYWORDS.entries())
-        entries.push({ id: `k${i}`, type: "keyword", name: keyword, subtitle: "", avatar_seed: 0 });
+        entries.push({ id: `k${i}`, type: "keyword", name: keyword, subtitle: "", avatar_seed: 0, affinity: 10 });
+    for (const [i, tag] of HASHTAGS.entries())
+        entries.push({ id: `h${i}`, type: "keyword", name: `#${tag}`, subtitle: "", avatar_seed: 0, affinity: 8 });
     const recent = [entries[3], entries[250], entries[241], entries[270]].filter(Boolean);
     return stringify([{ data: { search_bootstrap: { entries, recent } } }]);
 }

@@ -891,9 +891,10 @@ export const ExperimentalSuites = freezeSuites([
                 page.querySelector('[data-unit-live] .story-comments-button[data-thread="busy"]').click();
                 await ready;
             }),
+            // Opens every reply thread on the first page, top to bottom, following "more
+            // replies" until each thread is fully shown.
             new BenchmarkTestStep("ExpandCommentReplies", async (page) => {
-                const buttons = page.querySelectorAll("#post-dialog .view-replies");
-                for (const button of buttons) {
+                for (let button = page.querySelector("#post-dialog .view-replies"); button; button = page.querySelector("#post-dialog .view-replies")) {
                     const loaded = waitForAppEvent(page, "replies-loaded");
                     button.click();
                     await loaded;
@@ -927,12 +928,12 @@ export const ExperimentalSuites = freezeSuites([
                 await typeInto(composer, "This brings back so many memories, @an the harbour one is my favourite :) #goldenhour");
                 page.layout();
             }),
-            new BenchmarkTestStep("ClosePostDialog", async (page) => {
+            // Closes the post, which hands the feed back its focus and viewability, then
+            // goes to the viewer's profile and scrolls through it.
+            new BenchmarkTestStep("OpenOwnProfile", async (page) => {
                 page.querySelector("#post-dialog-close").click();
                 await commitPendingUpdates();
                 page.layout();
-            }),
-            new BenchmarkTestStep("OpenOwnProfile", async (page) => {
                 const ready = waitForAppEvent(page, "profile-ready");
                 page.querySelector("#rail-profile").click();
                 await ready;

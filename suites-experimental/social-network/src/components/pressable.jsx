@@ -1,6 +1,10 @@
+import { useContext } from "react";
+import { BackgroundedContext } from "./measure.js";
+
 // The design system's interactive surface: a focusable role=button with its own hover
 // and focus-ring overlays, so every control draws its states the same way.
 export default function Pressable({ className = "", children, onPress, label, disabled = false, ...rest }) {
+    const backgrounded = useContext(BackgroundedContext);
     const onKeyDown = (event) => {
         if (disabled || !onPress || (event.key !== "Enter" && event.key !== " "))
             return;
@@ -10,7 +14,7 @@ export default function Pressable({ className = "", children, onPress, label, di
     return (
         <div
             role="button"
-            tabIndex={disabled ? -1 : 0}
+            tabIndex={disabled || backgrounded ? -1 : 0}
             aria-label={label}
             aria-disabled={disabled || undefined}
             className={`group relative cursor-pointer select-none outline-none ${className}`}

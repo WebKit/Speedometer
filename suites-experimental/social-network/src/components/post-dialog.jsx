@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { getRecord } from "../store/store.js";
 import { loadQuery } from "../store/network.js";
-import { useLinkedRecord, useRecord } from "../store/hooks.js";
+import { fragment, scalars, useFragment, useRetain } from "../store/fragment.js";
 import { VIEWER_ID } from "../data/server.js";
 import { guard, guarded } from "../analytics/guard.js";
 import { log } from "../analytics/logger.js";
@@ -9,7 +9,7 @@ import { beginInteraction } from "../analytics/perf.js";
 import { closePost } from "../router.jsx";
 import { commentsConnectionId, loadComments, loadMoreComments } from "../queries.js";
 import { signal } from "../signals.js";
-import Comment from "./comments.jsx";
+import Comment, { CommentConnection } from "./comments.jsx";
 import CommentComposer from "./comment-composer.jsx";
 import Icon from "./icon.jsx";
 import Popover from "./popover.jsx";
@@ -69,12 +69,15 @@ function OrderMenu({ order, onChange }) {
     );
 }
 
+const PostDialog_story = fragment("PostDialog_story", { id: true, actor: scalars("id name") });
+const PostDialog_viewer = fragment("PostDialog_viewer", scalars("id name short_name avatar_seed"));
+
 function useParticipants(connection) {
     const edges = connection ? connection.edges : null;
     return useMemo(() => {
         const seen = new Map();
         for (const edge of edges ?? []) {
-            const comment = getRecord(edge.node.__ref);
+            const comment = getRecord(edge.node.__id);
             const author = getRecord(comment.author.__ref);
             if (!seen.has(author.id))
                 seen.set(author.id, author);
@@ -84,11 +87,12 @@ function useParticipants(connection) {
 }
 
 export default function PostDialog({ storyId }) {
-    const story = useRecord(storyId);
-    const actor = useLinkedRecord(story ? story.actor : null);
-    const viewer = useRecord(VIEWER_ID);
+    const story = useFragment(PostDialog_story, storyId);
+    const actor = story ? story.actor : null;
+    const viewer = useFragment(PostDialog_viewer, VIEWER_ID);
     const [order, setOrder] = useState("relevant");
-    const connection = useRecord(commentsConnectionId(storyId, order));
+    const connection = useFragment(CommentConnection, commentsConnectionId(storyId, order));
+    useRetain(commentsConnectionId(storyId, order));
     const people = useParticipants(connection);
     const bodyRef = useRef(null);
     const composerRef = useRef(null);
@@ -189,7 +193,7 @@ export default function PostDialog({ storyId }) {
                     {story ? <Story id={storyId} position={0} expandable={false} inDialog /> : <GlimmerStory />}
                     <OrderMenu order={order} onChange={changeOrder} />
                     <div className="flex flex-col gap-3 pb-4" aria-label="Comments" aria-busy={!ready}>
-                        {connection && connection.edges.map((edge) => <Comment key={edge.node.__ref} commentRef={edge.node} storyId={storyId} />)}
+                        {connection && connection.edges.map((edge) => <Comment key={edge.node.__id} commentRef={edge.node} storyId={storyId} />)}
                         {!ready && [0, 1, 2].map((i) => <GlimmerRow key={i} avatarSize={32} />)}
                         {exhausted && <div className="comments-end text-secondary px-4 text-center text-[13px]">You&apos;ve seen all {connection.total_count} comments</div>}
                     </div>

@@ -1,24 +1,29 @@
 import { memo, useContext, useLayoutEffect, useState } from "react";
-import { useLinkedRecord, useRecord } from "../store/hooks.js";
+import { fragment, scalars, spread, useFragment } from "../store/fragment.js";
 import { publish, updateRecord } from "../store/store.js";
 import { photo } from "../data/graphics.js";
-import { absoluteTime, compactNumber, countLabel, relativeTime } from "../format.js";
+import { VIEWER_ID } from "../data/server.js";
+import { absoluteTime, relativeTime } from "../format.js";
+import { t } from "../i18n.js";
 import { guarded } from "../analytics/guard.js";
 import { log } from "../analytics/logger.js";
 import { beginInteraction } from "../analytics/perf.js";
 import { gate } from "../analytics/experiments.js";
 import { navigate, openPost } from "../router.jsx";
+import { draftId } from "../queries.js";
 import Avatar from "./avatar.jsx";
+import { CommentBody, CommentBody_comment } from "./comments.jsx";
+import HovercardTrigger from "./hovercard.jsx";
 import Icon from "./icon.jsx";
 import Pressable from "./pressable.jsx";
+import { ReactionStack } from "./reactions.jsx";
 import RichText, { truncate } from "./rich-text.jsx";
 import { GlimmerLine } from "./glimmer.jsx";
 import { MeasureContext } from "./measure.js";
 
 const TRUNCATE_AT = 260;
-const REACTION_GLYPHS = { like: "👍", love: "❤️", thanks: "🙏", laugh: "😂", celebrate: "🎉", wow: "🤩" };
 const PRIVACY_ICONS = { public: "globe", private: "lock", friends: "friends" };
-const REACTION_COLORS = { like: "bg-reaction-like", love: "bg-reaction-love", thanks: "bg-reaction-care", laugh: "bg-reaction-warm", celebrate: "bg-reaction-care", wow: "bg-reaction-warm" };
+const PRIVACY_LABELS = { public: "Anyone", private: "Members of the group", friends: "Your connections" };
 
 export const BUSY_THREAD = 60;
 
@@ -28,56 +33,103 @@ const openActor = guarded("story.actor", (event, actorId) => {
         navigate(`/profile/${actorId}`);
 });
 
-function ActorLine({ story, actor }) {
-    const group = useLinkedRecord(story.to_group);
+const follow = guarded("story.follow", (storyId, actorId) => {
+    updateRecord(storyId, () => ({ viewer_follows_actor: true }));
+    publish();
+    log("follow", { actor: actorId, surface: "story_header" });
+});
+
+const hideStory = guarded("story.hide", (storyId) => {
+    log("story_hide_intent", { story: storyId });
+});
+
+const ActorLine_story = fragment("ActorLine_story", {
+    ...scalars("id url created_time privacy sponsored viewer_follows_actor"),
+    actor: scalars("id __typename name is_verified"),
+    to_group: scalars("id name privacy"),
+});
+
+function ActorLine({ storyRef }) {
+    const story = useFragment(ActorLine_story, storyRef);
+    const { actor, to_group: group } = story;
     return (
         <div className="flex min-w-0 flex-1 flex-col">
-            <h3 className="truncate text-[15px] leading-5">
-                <a className="text-primary font-semibold hover:underline" href={`#/profile/${actor.id}`} onClick={(event) => openActor(event, actor.id)} data-log="story_actor">
-                    {actor.name}
-                </a>
-                {actor.is_verified && <Icon name="verified" size={14} className="text-accent ml-1" label="Verified account" />}
+            <h3 className="flex min-w-0 flex-wrap items-center text-[15px] leading-5">
+                <HovercardTrigger kind={actor.__typename === "Page" ? "page" : "user"} id={actor.id}>
+                    <a className="text-primary font-semibold hover:underline" href={`#/profile/${actor.id}`} onClick={(event) => openActor(event, actor.id)} data-log="story_actor">
+                        <strong>
+                            <span>{actor.name}</span>
+                        </strong>
+                    </a>
+                </HovercardTrigger>
+                {actor.is_verified && <Icon name="verified" size={14} className="text-accent ml-1" label={t("Verified account")} />}
                 {group
                     && <>
                         <Icon name="chevronRight" size={14} className="text-secondary mx-0.5" />
-                        <a className="text-primary font-semibold hover:underline" href={`#/groups/${group.id}`} data-log="story_group">
-                            {group.name}
-                        </a>
+                        <HovercardTrigger kind="group" id={group.id}>
+                            <a className="text-primary font-semibold hover:underline" href={`#/groups/${group.id}`} data-log="story_group">
+                                <span>{group.name}</span>
+                            </a>
+                        </HovercardTrigger>
+                    </>
+                }
+                {!story.viewer_follows_actor
+                    && <>
+                        <span className="text-secondary mx-1" aria-hidden="true">
+                            ·
+                        </span>
+                        <Pressable className="text-link font-semibold hover:underline" onPress={() => follow(story.id, actor.id)} data-log="story_follow">
+                            {t("Follow")}
+                        </Pressable>
                     </>
                 }
             </h3>
             <div className="text-secondary flex items-center gap-1 text-[13px] leading-4">
                 {story.sponsored
-                    ? <span>Promoted</span>
+                    ? <span>{t("Promoted")}</span>
                     : <a className="hover:underline" href={story.url} title={absoluteTime(story.created_time)} data-log="story_timestamp">
-                        {relativeTime(story.created_time)}
+                        <span>{relativeTime(story.created_time)}</span>
                     </a>
                 }
                 <span aria-hidden="true">·</span>
-                <Icon name={PRIVACY_ICONS[story.privacy]} size={12} label={`Shared with ${story.privacy}`} />
+                <Pressable className="rounded-full" label={t("Shared with: {audience}", { audience: PRIVACY_LABELS[story.privacy] })} data-log="story_audience">
+                    <Icon name={PRIVACY_ICONS[story.privacy]} size={12} />
+                </Pressable>
             </div>
         </div>
     );
 }
 
-function StoryHeader({ story }) {
-    const actor = useLinkedRecord(story.actor);
+const StoryHeader_story = fragment("StoryHeader_story", {
+    id: true,
+    actor: scalars("id __typename name avatar_seed"),
+    ...spread(ActorLine_story),
+});
+
+function StoryHeader({ storyRef }) {
+    const story = useFragment(StoryHeader_story, storyRef);
+    const { actor } = story;
     return (
         <header className="flex items-start gap-2 px-4 pt-3">
-            <a href={`#/profile/${actor.id}`} onClick={(event) => openActor(event, actor.id)} aria-label={actor.name} tabIndex={-1}>
-                <Avatar seed={actor.avatar_seed} size={40} square={actor.__typename === "Page"} label={actor.name} />
-            </a>
-            <ActorLine story={story} actor={actor} />
+            <HovercardTrigger kind={actor.__typename === "Page" ? "page" : "user"} id={actor.id}>
+                <a href={`#/profile/${actor.id}`} onClick={(event) => openActor(event, actor.id)} aria-label={actor.name} tabIndex={-1}>
+                    <Avatar seed={actor.avatar_seed} size={40} square={actor.__typename === "Page"} label={actor.name} />
+                </a>
+            </HovercardTrigger>
+            <ActorLine storyRef={story} />
             <div className="flex items-center">
-                <Pressable className="text-secondary hover:bg-hover rounded-full p-2" aria-label={`Actions for this post by ${actor.name}`} aria-haspopup="menu" data-log="story_menu">
+                <Pressable className="text-secondary hover:bg-hover rounded-full p-2" label={t("Actions for this post by {name}", { name: actor.name })} aria-haspopup="menu" data-log="story_menu">
                     <Icon name="dots" size={20} strokeWidth={3} />
+                </Pressable>
+                <Pressable className="text-secondary hover:bg-hover rounded-full p-2" label={t("Hide post")} onPress={() => hideStory(story.id)} data-log="story_hide">
+                    <Icon name="close" size={20} />
                 </Pressable>
             </div>
         </header>
     );
 }
 
-function StoryMessage({ message, expanded, onExpand }) {
+function StoryMessage({ message, expanded, onExpand, translatable }) {
     const short = expanded ? null : truncate(message.text, message.ranges, TRUNCATE_AT);
     const shown = short ?? message;
     const large = !expanded && message.text.length < 90;
@@ -88,21 +140,30 @@ function StoryMessage({ message, expanded, onExpand }) {
                 && <>
                     <span>… </span>
                     <Pressable className="read-more text-link font-semibold hover:underline" onPress={onExpand} data-log="story_read_more">
-                        Read more
+                        {t("Read more")}
                     </Pressable>
                 </>
+            }
+            {translatable
+                && <Pressable className="text-secondary mt-1 flex items-center gap-1 text-[13px] font-semibold hover:underline" data-log="story_translate">
+                    <Icon name="translate" size={14} />
+                    {t("See translation")}
+                </Pressable>
             }
         </div>
     );
 }
 
+const PhotoTile_photo = fragment("PhotoTile_photo", scalars("id seed width height alt"));
+
 function PhotoTile({ photoRef, count, index, extra, span }) {
-    const record = useLinkedRecord(photoRef);
+    const record = useFragment(PhotoTile_photo, photoRef);
     const height = count === 1 ? Math.round((600 * record.height) / record.width) : 600;
     return (
         <a href={`#/photo/${record.id}`} className={`relative block overflow-hidden ${span}`} data-log="story_photo" onClick={(event) => event.preventDefault()}>
             <img className="h-full w-full object-cover" src={photo(record.seed, 600, height)} alt={record.alt} width="600" height={height} decoding="async" />
-            {extra > 0 && index === count - 1 && <span className="absolute inset-0 flex items-center justify-center bg-black/40 text-3xl font-bold text-white">+{extra}</span>}
+            <span className="pointer-events-none absolute inset-0 bg-black opacity-0 hover:opacity-10" aria-hidden="true" />
+            {extra > 0 && index === count - 1 && <span className="absolute inset-0 flex items-center justify-center bg-black/40 text-3xl font-bold text-white">{t("+{count, number}", { count: extra })}</span>}
         </a>
     );
 }
@@ -128,40 +189,32 @@ function PhotoGrid({ attachments }) {
     return (
         <div className={`grid gap-0.5 ${layouts[count]} ${count === 1 ? "" : "aspect-square"} bg-surface-alt overflow-hidden`}>
             {photos.map((ref, index) =>
-                <PhotoTile key={ref.__ref} photoRef={ref} count={count} index={index} extra={extra} span={spans(index)} />
+                <PhotoTile key={ref.__id} photoRef={ref} count={count} index={index} extra={extra} span={spans(index)} />
             )}
         </div>
     );
 }
 
-function LinkCard({ linkRef }) {
-    const link = useLinkedRecord(linkRef);
+const LinkCard_link = fragment("LinkCard_link", scalars("id url domain title description image_seed"));
+
+function LinkCard({ linkRef, sponsored }) {
+    const link = useFragment(LinkCard_link, linkRef);
     return (
         <a className="border-divider bg-surface-alt block border-y hover:brightness-95" href={link.url} target="_blank" rel="noreferrer" data-log="story_link_card">
             <img className="aspect-[1.91/1] w-full object-cover" src={photo(link.image_seed, 600, 314)} width="600" height="314" alt="" />
-            <div className="px-3 py-2">
-                <div className="text-secondary truncate text-xs uppercase">{link.domain}</div>
-                <div className="text-primary line-clamp-2 text-[16px] font-semibold leading-5">{link.title}</div>
-                <div className="text-secondary line-clamp-1 text-sm">{link.description}</div>
+            <div className="flex items-center gap-3 px-3 py-2">
+                <div className="min-w-0 flex-1">
+                    <div className="text-secondary truncate text-xs uppercase">{link.domain}</div>
+                    <div className="text-primary line-clamp-2 text-[16px] font-semibold leading-5">{link.title}</div>
+                    <div className="text-secondary line-clamp-1 text-sm">{link.description}</div>
+                </div>
+                {sponsored
+                    && <Pressable className="bg-hover text-primary shrink-0 rounded-md px-3 py-1.5 text-sm font-semibold" data-log="ad_cta">
+                        {t("Learn more")}
+                    </Pressable>
+                }
             </div>
         </a>
-    );
-}
-
-export function ReactionStack({ reactions, size = 18 }) {
-    return (
-        <span className="flex -space-x-1">
-            {reactions.map((reaction) =>
-                <span
-                    key={reaction.key}
-                    className={`border-surface flex items-center justify-center rounded-full border-2 ${REACTION_COLORS[reaction.key]}`}
-                    style={{ width: size, height: size, fontSize: size * 0.55 }}
-                    aria-label={`${reaction.key}: ${reaction.count}`}
-                >
-                    {REACTION_GLYPHS[reaction.key]}
-                </span>
-            )}
-        </span>
     );
 }
 
@@ -185,8 +238,99 @@ const focusComposer = guarded("story.comment_inline", () => {
         composer.focus();
 });
 
+const InlineComposer_viewer = fragment("InlineComposer_viewer", scalars("id avatar_seed"));
+const InlineComposer_draft = fragment("InlineComposer_draft", scalars("id text ranges"));
+
+function InlineComposer({ storyId }) {
+    const viewer = useFragment(InlineComposer_viewer, VIEWER_ID);
+    const draft = useFragment(InlineComposer_draft, draftId(storyId));
+    const hasDraft = draft && draft.text.trim();
+    return (
+        <div className="flex items-center gap-2 px-4 pb-3 pt-1">
+            {viewer && <Avatar seed={viewer.avatar_seed} size={32} label="" />}
+            <div className="bg-surface-alt flex flex-1 items-center rounded-full pr-1">
+                <Pressable className={`min-w-0 flex-1 px-3 py-2 text-[15px] ${hasDraft ? "text-primary" : "text-secondary"}`} onPress={() => openComments(storyId, "inline_composer")} data-log="story_inline_composer">
+                    {hasDraft
+                        ? <span className="flex min-w-0 items-baseline gap-1.5">
+                            <span className="text-accent shrink-0 text-xs font-semibold uppercase">{t("Draft")}</span>
+                            <RichText className="truncate" text={draft.text} ranges={draft.ranges} />
+                        </span>
+                        : t("Write a comment…")
+                    }
+                </Pressable>
+                {[
+                    ["smile", "Insert an emoji"],
+                    ["camera", "Attach a photo or video"],
+                    ["gif", "Comment with a GIF"],
+                    ["sticker", "Comment with a sticker"],
+                ].map(([icon, label]) =>
+                    <Pressable key={icon} className="text-secondary hover:bg-hover rounded-full p-1.5" label={t(label)}>
+                        <Icon name={icon} size={16} />
+                    </Pressable>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function CommentPreviews({ storyId, comments, total }) {
+    return (
+        <div className="border-divider border-t pt-2">
+            <div className="flex items-center justify-between px-4 pb-2">
+                <Pressable className="text-secondary flex items-center gap-1 text-[15px] font-semibold hover:underline" data-log="story_comment_order">
+                    {t("Most relevant")}
+                    <Icon name="chevronDown" size={16} />
+                </Pressable>
+            </div>
+            <div className="flex flex-col gap-2 px-4">
+                {comments.map((ref) =>
+                    <CommentBody key={ref.__id} commentRef={ref} />
+                )}
+            </div>
+            {total > comments.length
+                && <Pressable className="text-secondary mx-4 mt-2 text-[15px] font-semibold hover:underline" onPress={() => openComments(storyId, "preview")} data-log="story_view_more_comments">
+                    {t("{count, plural, one {View # more comment} other {View # more comments}}", { count: total - comments.length })}
+                </Pressable>
+            }
+        </div>
+    );
+}
+
+function ReactionSummary({ feedback, summaryV2 }) {
+    const names = feedback.reactors.map((reactor) => reactor.name);
+    const others = feedback.reaction_count - names.length;
+    let label;
+    if (!summaryV2)
+        label = t("{count, plural, one {# reaction} other {# reactions}}", { count: feedback.reaction_count });
+    else if (others > 0)
+        label = t("{names} and {count, plural, one {# other} other {# others}}", { names: names.slice(0, 1), count: others + names.length - 1 });
+    else
+        label = t("{names}", { names });
+    return (
+        <Pressable className="flex min-w-0 items-center gap-1.5 hover:underline" label={t("See who reacted to this")} data-log="story_reactors">
+            <ReactionStack reactions={feedback.top_reactions} />
+            <span className="truncate">{label}</span>
+        </Pressable>
+    );
+}
+
+const Engagement_feedback = fragment("Engagement_feedback", {
+    ...scalars("id reaction_count top_reactions comment_count share_count viewer_reaction"),
+    reactors: scalars("id name"),
+    top_comments: spread(CommentBody_comment),
+});
+
+function ActionButton({ icon, label, active, onPress, className = "", ...rest }) {
+    return (
+        <Pressable className={`${className} hover:bg-hover flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-[14px] font-semibold ${active ? "text-accent" : "text-secondary"}`} onPress={onPress} {...rest}>
+            <Icon name={icon} size={18} />
+            <span>{label}</span>
+        </Pressable>
+    );
+}
+
 function Engagement({ storyId, feedbackRef, inDialog }) {
-    const feedback = useLinkedRecord(feedbackRef);
+    const feedback = useFragment(Engagement_feedback, feedbackRef);
     if (feedback.reaction_count === undefined) {
         return (
             <div className="flex items-center justify-between px-4 py-3" aria-busy="true">
@@ -197,90 +341,54 @@ function Engagement({ storyId, feedbackRef, inDialog }) {
     }
     const summaryV2 = gate("story_reaction_summary_v2");
     const busy = feedback.comment_count >= BUSY_THREAD;
+    const commentsLabel = t("{count, plural, one {# comment} other {# comments}}", { count: feedback.comment_count });
     return (
         <>
             <div className="text-secondary flex items-center justify-between gap-2 px-4 py-2.5 text-[15px]">
-                {feedback.reaction_count > 0
-                    ? <Pressable className="flex items-center gap-1.5 hover:underline" data-log="story_reactors">
-                        <ReactionStack reactions={feedback.top_reactions} />
-                        <span>{summaryV2 ? compactNumber(feedback.reaction_count) : countLabel(feedback.reaction_count, "reaction", "reactions")}</span>
-                    </Pressable>
-                    : <span />
-                }
-                <div className="flex gap-3">
+                {feedback.reaction_count > 0 ? <ReactionSummary feedback={feedback} summaryV2={summaryV2} /> : <span />}
+                <div className="flex shrink-0 gap-3">
                     {feedback.comment_count > 0
                         && <Pressable className="story-comments-count hover:underline" onPress={inDialog ? focusComposer : () => openComments(storyId, "count")} data-log="story_comment_count">
-                            {countLabel(feedback.comment_count, "comment", "comments")}
+                            {commentsLabel}
                         </Pressable>
                     }
-                    {feedback.share_count > 0 && <span>{countLabel(feedback.share_count, "share", "shares")}</span>}
+                    {feedback.share_count > 0
+                        && <Pressable className="hover:underline" data-log="story_shares">
+                            {t("{count, plural, one {# share} other {# shares}}", { count: feedback.share_count })}
+                        </Pressable>
+                    }
                 </div>
             </div>
             <div className="border-divider mx-3 flex border-t py-1">
-                <Pressable
-                    className={`hover:bg-hover flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[14px] font-semibold ${feedback.viewer_reaction ? "text-accent" : "text-secondary"}`}
-                    onPress={() => toggleLike(feedback.id)}
-                    aria-pressed={feedback.viewer_reaction === "like"}
-                    data-log="story_like"
-                >
-                    <Icon name="like" size={18} />
-                    Like
-                </Pressable>
-                <Pressable
-                    className="story-comments-button text-secondary hover:bg-hover flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[14px] font-semibold"
+                <ActionButton icon="like" label={t("Like")} active={!!feedback.viewer_reaction} onPress={() => toggleLike(feedback.id)} aria-pressed={feedback.viewer_reaction === "like"} data-log="story_like" />
+                <ActionButton
+                    icon="comment"
+                    label={t("Comment")}
+                    className="story-comments-button"
                     onPress={inDialog ? focusComposer : () => openComments(storyId, "button")}
-                    aria-label={`Comment on this post, ${countLabel(feedback.comment_count, "comment", "comments")}`}
+                    aria-label={t("Comment on this post, {comments}", { comments: commentsLabel })}
                     data-thread={busy ? "busy" : "quiet"}
                     data-log="story_comment"
-                >
-                    <Icon name="comment" size={18} />
-                    Comment
-                </Pressable>
-                <Pressable className="text-secondary hover:bg-hover flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[14px] font-semibold" data-log="story_share">
-                    <Icon name="share" size={18} />
-                    Share
-                </Pressable>
-                <Pressable className="text-secondary hover:bg-hover ml-auto flex items-center rounded-lg px-2 py-1.5" aria-label="Bookmark" data-log="story_bookmark">
-                    <Icon name="saved" size={18} />
-                </Pressable>
+                />
+                <ActionButton icon="share" label={t("Share")} data-log="story_share" />
+                <ActionButton icon="send" label={t("Send")} data-log="story_send" />
             </div>
-            {!inDialog && feedback.top_comment && <TopComment commentRef={feedback.top_comment} storyId={storyId} more={feedback.comment_count > 1} />}
+            {!inDialog && feedback.top_comments.length > 0 && <CommentPreviews storyId={storyId} comments={feedback.top_comments} total={feedback.comment_count} />}
+            {!inDialog && <InlineComposer storyId={storyId} />}
         </>
     );
 }
 
-function TopComment({ commentRef, storyId, more }) {
-    const comment = useLinkedRecord(commentRef);
-    const author = useLinkedRecord(comment.author);
-    return (
-        <div className="border-divider border-t px-4 pb-3 pt-2">
-            {more
-                && <Pressable className="text-secondary mb-2 text-[15px] font-semibold hover:underline" onPress={() => openComments(storyId, "preview")} data-log="story_view_more_comments">
-                    Join the discussion
-                </Pressable>
-            }
-            <div className="flex gap-2">
-                <Avatar seed={author.avatar_seed} size={32} label={author.name} />
-                <div className="min-w-0">
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-primary text-[14px] font-semibold">{author.name}</span>
-                        <span className="text-secondary text-xs" title={absoluteTime(comment.created_time)}>
-                            {relativeTime(comment.created_time)}
-                        </span>
-                    </div>
-                    <RichText className="text-primary line-clamp-3 text-[15px] leading-5" text={comment.body.text} ranges={comment.body.ranges} />
-                    <div className="text-secondary mt-0.5 flex gap-3 text-xs font-semibold">
-                        <Pressable className="hover:text-primary">Like</Pressable>
-                        <Pressable className="hover:text-primary">Reply</Pressable>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}
+export const Story_story = fragment("Story_story", {
+    ...scalars("id sponsored message can_translate tracking"),
+    attachments: spread(PhotoTile_photo),
+    link: spread(LinkCard_link),
+    feedback: spread(Engagement_feedback),
+    ...spread(StoryHeader_story),
+});
 
 function Story({ id, position, expandable = true, inDialog = false }) {
-    const story = useRecord(id);
+    const story = useFragment(Story_story, id);
     const [expanded, setExpanded] = useState(!expandable);
     const remeasure = useContext(MeasureContext);
 
@@ -291,20 +399,20 @@ function Story({ id, position, expandable = true, inDialog = false }) {
 
     const expand = guarded("story.see_more", () => {
         setExpanded(true);
-        log("story_expand", { story: id, position, length: story.message.text.length });
+        log("story_expand", { story: id, position, length: story.message.text.length, tracking: story.tracking });
     });
 
     return (
-        <article className="story bg-surface shadow-card overflow-hidden rounded-lg" aria-label={`Post ${position + 1}`} data-log-scope="story">
-            <StoryHeader story={story} />
-            <StoryMessage message={story.message} expanded={expanded} onExpand={expand} />
+        <article className="story bg-surface shadow-card overflow-hidden rounded-lg" aria-label={t("Post {position, number}", { position: position + 1 })} data-log-scope="story">
+            <StoryHeader storyRef={story} />
+            <StoryMessage message={story.message} expanded={expanded} onExpand={expand} translatable={story.can_translate} />
             {story.attachments.length > 0 && <PhotoGrid attachments={story.attachments} />}
-            {story.link && <LinkCard linkRef={story.link} />}
+            {story.link && <LinkCard linkRef={story.link} sponsored={story.sponsored} />}
             {story.sponsored
                 && <div className="bg-surface-alt flex items-center justify-between px-4 py-2">
-                    <span className="text-secondary text-sm">Offer ends soon</span>
+                    <span className="text-secondary text-sm">{t("Offer ends soon")}</span>
                     <Pressable className="bg-hover text-primary rounded-md px-3 py-1.5 text-sm font-semibold" data-log="ad_cta">
-                        Learn more
+                        {t("Learn more")}
                     </Pressable>
                 </div>
             }

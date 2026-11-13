@@ -16,9 +16,24 @@ text and pictures are generated or written for it.
 
 -   React reconciliation of deep, many-component stories, mounting and
     unmounting as a virtualized feed scrolls, with layout effects that measure
-    each unit
+    each unit. Stories, comment threads, the post dialog and the menus are sized
+    after a large production feed: a few hundred elements per story, and a
+    dialog that grows from about a thousand to about four thousand elements
 -   A normalized client cache fed by streamed, chunked responses with deferred
-    fragments, and per-record subscriptions through `useSyncExternalStore`
+    fragments. Components read it through fragments: each declares the fields
+    it renders and receives masked references for its children, every publish
+    re-reads the subscriptions that touched a changed record and keeps the
+    identity of unchanged data, and released queries are garbage collected
+-   Component and event interception through the app's JSX runtime: every
+    component render is tracked and every event handler is wrapped, so an
+    interaction can be attributed to the component that rendered it
+-   ICU-style message formatting (plurals, selects, numbers) for every UI
+    string, at render time
+-   A typo-tolerant typeahead index over a large bootstrap payload: prefix
+    lookup over sorted terms, bounded edit distance, and ranking by rarity,
+    match quality and affinity
+-   A modal layer that makes the page underneath inert while it is open, and
+    comment drafts that outlive the dialog and show up in the feed
 -   Transitions for page navigation, and synchronous scroll-driven updates
     (`flushSync`) for the feed window
 -   Forced layout from viewability checks (`getBoundingClientRect`,
@@ -39,19 +54,21 @@ The app fires a window event when the result of an interaction has committed
 (`feed-page-loaded`, `post-dialog-ready`, `search-results`, …), and the steps
 wait on those instead of on timers.
 
--   `RefreshHomeFeed`: clicks Home while on the home page, which fetches a new
-    ranking and remounts the feed.
+-   `RefreshHomeFeed`: clicks Home while on the home page, which refetches the
+    stories tray, rails and badges, fetches a new ranking and remounts the feed.
 -   `LoadMoreStories`: reads down the feed one story at a time, loading the next
     page whenever the end comes into range.
 -   `ExpandStoryTexts`: scrolls back to the top, expanding every truncated story.
 -   `OpenPostDialog`: opens a busy thread in the post dialog.
--   `ExpandCommentReplies`: expands every reply thread on the first page.
+-   `ExpandCommentReplies`: expands every reply thread on the first page,
+    following "more replies" until each thread is fully shown.
 -   `ChangeCommentOrder`: switches the comment order to "All comments".
 -   `LoadMoreComments`: scrolls the dialog to load more pages of comments.
 -   `TypeComment`: types a comment key by key, with a mention typeahead,
     emoticon replacement and highlighting.
--   `ClosePostDialog`: closes the dialog and restores focus.
--   `OpenOwnProfile`: navigates to the viewer's profile and scrolls through it.
+-   `OpenOwnProfile`: closes the dialog, which saves the draft and hands the
+    feed back its focus and viewability, then navigates to the viewer's profile
+    and scrolls through it.
 -   `BackToHomeFeed`: returns to the cached home feed at its old position.
 -   `SearchTypeahead`: types a name into search; each key filters the local
     index and asks the server.

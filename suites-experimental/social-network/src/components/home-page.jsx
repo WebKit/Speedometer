@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { queryKey } from "../store/network.js";
-import { useLinkedRecord, useQueryStatus, useRecord } from "../store/hooks.js";
+import { queryKey, queryStatusId } from "../store/network.js";
+import { fragment, scalars, spread, useFragment } from "../store/fragment.js";
 import { photo } from "../data/graphics.js";
 import { VIEWER_ID } from "../data/server.js";
 import { guarded } from "../analytics/guard.js";
@@ -9,15 +9,17 @@ import { gate } from "../analytics/experiments.js";
 import { HOME_FEED, loadMoreHomeFeed } from "../queries.js";
 import { signal } from "../signals.js";
 import Avatar from "./avatar.jsx";
-import Feed from "./feed.jsx";
+import Feed, { FeedEdge } from "./feed.jsx";
 import Icon from "./icon.jsx";
 import { GlimmerStory } from "./glimmer.jsx";
 
 const TRAY_VISIBLE = 4;
 let savedScrollTop = 0;
 
+const HomeViewer = fragment("HomeViewer", scalars("id name short_name avatar_seed"));
+
 function ComposerBox() {
-    const viewer = useRecord(VIEWER_ID);
+    const viewer = useFragment(HomeViewer, VIEWER_ID);
     return (
         <div className="bg-surface shadow-card rounded-lg px-4 pb-2 pt-3" data-log-scope="composer">
             <div className="flex items-center gap-2">
@@ -42,9 +44,19 @@ function ComposerBox() {
     );
 }
 
+const StoryCard_card = fragment("StoryCard_card", {
+    ...scalars("id seed seen"),
+    owner: scalars("id name avatar_seed"),
+});
+
+const StoriesTrayQuery = fragment("StoriesTrayQuery", {
+    status: true,
+    root: { stories_tray: spread(StoryCard_card) },
+});
+
 function StoryCard({ cardRef }) {
-    const card = useLinkedRecord(cardRef);
-    const owner = useLinkedRecord(card.owner);
+    const card = useFragment(StoryCard_card, cardRef);
+    const { owner } = card;
     return (
         <a className="bg-surface-alt relative block h-[200px] w-[112px] shrink-0 overflow-hidden rounded-lg" href={`#/stories/${card.id}`} data-log="stories_tray_card" onClick={(event) => event.preventDefault()}>
             <img className="h-full w-full object-cover transition-transform hover:scale-105" src={photo(card.seed, 224, 400)} width="112" height="200" alt="" />
@@ -57,10 +69,10 @@ function StoryCard({ cardRef }) {
 }
 
 function StoriesTray() {
-    const status = useQueryStatus(queryKey("StoriesTray"));
+    const status = useFragment(StoriesTrayQuery, queryStatusId(queryKey("StoriesTray")));
     const [offset, setOffset] = useState(0);
     const cards = status && status.root ? status.root.stories_tray : [];
-    const viewer = useRecord(VIEWER_ID);
+    const viewer = useFragment(HomeViewer, VIEWER_ID);
     const page = guarded("stories.page", (delta) => {
         setOffset((value) => Math.max(0, Math.min(cards.length - TRAY_VISIBLE, value + delta)));
         log("stories_tray_page", { delta });
@@ -76,7 +88,7 @@ function StoriesTray() {
                     <span className="text-primary absolute inset-x-0 bottom-2 text-center text-[13px] font-semibold">Add a moment</span>
                 </button>
                 {cards.map((ref) =>
-                    <StoryCard key={ref.__ref} cardRef={ref} />
+                    <StoryCard key={ref.__id} cardRef={ref} />
                 )}
             </div>
             {offset > 0
@@ -98,8 +110,13 @@ const onNearEnd = guarded("feed.near_end", () => {
         loadMoreHomeFeed();
 });
 
+const HomeFeedConnection = fragment("HomeFeedConnection", {
+    ...scalars("id status generation page_info"),
+    edges: FeedEdge,
+});
+
 export default function HomePage({ scrollerRef }) {
-    const feed = useRecord(HOME_FEED);
+    const feed = useFragment(HomeFeedConnection, HOME_FEED);
     const signaled = useRef({ generation: -1, count: 0 });
     const status = feed ? feed.status : "loading";
     const count = feed ? feed.edges.length : 0;

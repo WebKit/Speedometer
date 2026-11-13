@@ -1,11 +1,11 @@
 import { useCallback, useRef, useState } from "react";
-import { loadQuery, queryKey } from "../store/network.js";
-import { useQueryStatus } from "../store/hooks.js";
+import { loadQuery, queryKey, queryStatusId } from "../store/network.js";
+import { fragment, useFragment } from "../store/fragment.js";
 import { guarded } from "../analytics/guard.js";
 import { log } from "../analytics/logger.js";
 import { beginInteraction } from "../analytics/perf.js";
 import { navigate, useRoute } from "../router.jsx";
-import { refreshHomeFeed } from "../queries.js";
+import { refreshAppChrome, refreshHomeFeed } from "../queries.js";
 import Icon from "./icon.jsx";
 import Avatar from "./avatar.jsx";
 import Popover from "./popover.jsx";
@@ -27,12 +27,15 @@ const MENUS = {
 
 export const scrollerHandle = { current: null };
 
+const HeaderBadgesQuery = fragment("HeaderBadgesQuery", { status: true, root: { badges: true } });
+
 const goHome = guarded("header.home", (page) => {
     if (page === "/") {
-        // Home while already home re-ranks the feed and starts from the top.
+        // Home while already home refetches the page and re-ranks the feed from the top.
         beginInteraction("home-feed-refreshed");
         if (scrollerHandle.current)
             scrollerHandle.current.scrollTop = 0;
+        refreshAppChrome();
         refreshHomeFeed();
         return;
     }
@@ -72,7 +75,7 @@ function MenuButton({ id, open, onToggle, badge, viewerSeed }) {
 export default function Header({ viewerSeed }) {
     const { page } = useRoute();
     const [openMenu, setOpenMenu] = useState(null);
-    const badges = useQueryStatus(queryKey("Shortcuts"));
+    const badges = useFragment(HeaderBadgesQuery, queryStatusId(queryKey("Shortcuts")));
     const counts = badges && badges.root ? badges.root.badges : { notifications: 0, messages: 0 };
 
     const toggle = useCallback(

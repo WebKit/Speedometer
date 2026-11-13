@@ -4,7 +4,7 @@
 import { respond } from "../data/server.js";
 import { guard } from "../analytics/guard.js";
 import { log } from "../analytics/logger.js";
-import { normalize, publish, setClientRecord, getRecord } from "./store.js";
+import { normalize, publish, retain, setClientRecord, getRecord } from "./store.js";
 
 const wire = new MessageChannel();
 const deliveries = [];
@@ -38,11 +38,13 @@ export function fetchQuery(name, variables, { apply, key = queryKey(name, variab
     const statusId = queryStatusId(key);
     const markName = `q:${name}:${id}`;
     performance.mark(`${markName}:start`);
-    setClientRecord(statusId, { status: "loading", requestId: id, root: null });
+    // A refetch keeps showing what the query last returned until the new answer lands.
+    setClientRecord(statusId, { status: "loading", requestId: id, root: getRecord(statusId)?.root ?? null });
     publish();
     log("query_start", { query: name, request: id });
 
     const chunks = respond(name, variables);
+    const dispose = retain(statusId);
     let cancelled = false;
     let bytes = 0;
     let firstRoot = null;
@@ -51,8 +53,10 @@ export function fetchQuery(name, variables, { apply, key = queryKey(name, variab
         chunks.forEach((text, index) => {
             deliver(() =>
                 guard(`network.${name}`, () => {
-                    if (cancelled)
+                    if (cancelled) {
+                        dispose();
                         return;
+                    }
                     bytes += text.length;
                     const payload = JSON.parse(text);
                     const root = payload.data ? normalize(payload.data) : null;
@@ -77,6 +81,7 @@ export function fetchQuery(name, variables, { apply, key = queryKey(name, variab
                         performance.clearMarks(`${markName}:end`);
                         performance.clearMeasures(markName);
                         log("query_complete", { query: name, request: id, chunks: chunks.length, bytes, duration: Math.round(duration * 10) / 10 });
+                        dispose();
                         resolve(root);
                     }
                 })

@@ -1,5 +1,5 @@
 import { createContext, startTransition, useContext, useEffect, useState } from "react";
-import { log, setLoggerRoute } from "./analytics/logger.js";
+import { log, scheduleFlush, setLoggerRoute } from "./analytics/logger.js";
 
 // Routes live in memory only. The History API is rate limited per top-level page (WebKit
 // throws after 100 pushState/replaceState calls in 10s across every frame), so URL updates
@@ -29,16 +29,19 @@ export function navigate(path) {
     setLoggerRoute(routeName(path));
     log("page_view", { route: routeName(path), from: routeName(currentPage) });
     currentPage = path;
+    scheduleFlush("navigation");
     startTransition(() => controls.setPage(path));
 }
 
 export function openPost(storyId) {
     log("page_view", { route: "post", from: routeName(currentPage), overlay: true });
+    scheduleFlush("navigation");
     controls.setOverlay(storyId);
 }
 
 export function closePost() {
     log("overlay_dismiss", { route: "post" });
+    scheduleFlush("navigation");
     controls.setOverlay(null);
 }
 

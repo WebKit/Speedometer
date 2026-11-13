@@ -69,14 +69,15 @@ export function log(name, props = {}) {
         return;
     state.queue.push({ name, seq: ++state.seq, time: Math.round(performance.now() * 100) / 100, route: state.route, context: currentContext(), props });
     if (state.queue.length >= BATCH_SIZE)
-        scheduleFlush();
+        scheduleFlush("batch");
 }
 
-function scheduleFlush() {
+// Navigations flush what is queued, so a route's events never wait for the next batch.
+export function scheduleFlush(reason) {
     if (state.flushScheduled)
         return;
     state.flushScheduled = true;
-    queueMicrotask(() => guard("logger.flush", flush, "batch"));
+    queueMicrotask(() => guard("logger.flush", flush, reason));
 }
 
 function onOrBefore(a, b) {

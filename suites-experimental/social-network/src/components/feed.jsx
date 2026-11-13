@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { guard } from "../analytics/guard.js";
 import { checkImpressions } from "../analytics/impressions.js";
-import { useRecord } from "../store/hooks.js";
-import Story from "./story.jsx";
-import { MeasureContext } from "./measure.js";
+import { fragment, spread, useFragment } from "../store/fragment.js";
+import Story, { Story_story } from "./story.jsx";
+import SuggestionsUnit, { SuggestionsUnit_unit } from "./suggestions.jsx";
+import { BackgroundedContext, MeasureContext } from "./measure.js";
 
 const ESTIMATED_HEIGHT = 560;
 const GAP = 16;
@@ -13,9 +14,14 @@ const GAP = 16;
 // placeholders at their real size.
 const heights = new Map();
 
+const FeedUnit_story = fragment("FeedUnit_story", { id: true, __typename: true, sponsored: true, ...spread(Story_story, SuggestionsUnit_unit) });
+
+// What a page passes as `edges`: a connection's edges with the stories masked for the feed.
+export const FeedEdge = { cursor: true, node: spread(FeedUnit_story) };
+
 function FeedUnit({ id, position, register }) {
     const ref = useRef(null);
-    const story = useRecord(id);
+    const story = useFragment(FeedUnit_story, id);
     useLayoutEffect(() => {
         register(id, ref.current);
         heights.set(id, ref.current.getBoundingClientRect().height);
@@ -23,7 +29,7 @@ function FeedUnit({ id, position, register }) {
     }, [id, register]);
     return (
         <div ref={ref} data-unit-live="true" data-story-id={id} data-position={position} data-sponsored={story.sponsored || undefined}>
-            <Story id={id} position={position} />
+            {story.__typename === "SuggestionsUnit" ? <SuggestionsUnit id={id} position={position} /> : <Story id={id} position={position} />}
         </div>
     );
 }
@@ -43,6 +49,8 @@ export default function Feed({ edges, scrollerRef, onNearEnd, initialScrollTop =
     edgesRef.current = edges;
     const nearEndRef = useRef(onNearEnd);
     nearEndRef.current = onNearEnd;
+    const backgrounded = useContext(BackgroundedContext);
+    const backgroundedRef = useRef(backgrounded);
 
     const register = useCallback((id, element) => {
         if (element)
@@ -70,7 +78,7 @@ export default function Feed({ edges, scrollerRef, onNearEnd, initialScrollTop =
         let start = -1;
         let end = 0;
         for (let i = 0; i < items.length; i++) {
-            const height = heights.get(items[i].node.__ref) ?? ESTIMATED_HEIGHT;
+            const height = heights.get(items[i].node.__id) ?? ESTIMATED_HEIGHT;
             if (start === -1 && offset + height >= top)
                 start = i;
             if (offset <= bottom)
@@ -94,7 +102,8 @@ export default function Feed({ edges, scrollerRef, onNearEnd, initialScrollTop =
                 else
                     setRange(next);
             }
-            checkImpressions(scrollerRef.current, listRef.current.querySelectorAll("[data-unit-live]"));
+            if (!backgroundedRef.current)
+                checkImpressions(scrollerRef.current, listRef.current.querySelectorAll("[data-unit-live]"));
             // Only reading toward the end asks for more; re-laying out after a page
             // arrives never chains into another request.
             if (fromScroll && nearEndRef.current && next.end >= edgesRef.current.length)
@@ -112,6 +121,14 @@ export default function Feed({ edges, scrollerRef, onNearEnd, initialScrollTop =
     useLayoutEffect(() => {
         update(false);
     }, [edges.length, update]);
+
+    // Viewability pauses under a modal layer and catches up when it closes.
+    useEffect(() => {
+        const resumed = backgroundedRef.current && !backgrounded;
+        backgroundedRef.current = backgrounded;
+        if (resumed)
+            guard("feed.resume", update, false);
+    }, [backgrounded, update]);
 
     useEffect(() => {
         const scroller = scrollerRef.current;
@@ -132,7 +149,7 @@ export default function Feed({ edges, scrollerRef, onNearEnd, initialScrollTop =
         <MeasureContext.Provider value={remeasure}>
             <div ref={listRef} className="feed flex flex-col gap-4" role="feed" aria-label={label} aria-busy={false}>
                 {edges.map((edge, index) => {
-                    const id = edge.node.__ref;
+                    const id = edge.node.__id;
                     const live = index >= range.start && index < range.end;
                     return (
                         <div key={id} className="feed-unit" data-unit-index={index} aria-posinset={index + 1} aria-setsize={-1}>

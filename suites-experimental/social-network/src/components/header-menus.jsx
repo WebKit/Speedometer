@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { queryKey } from "../store/network.js";
-import { useLinkedRecord, useQueryStatus } from "../store/hooks.js";
+import { queryKey, queryStatusId } from "../store/network.js";
+import { fragment, scalars, spread, useFragment, useRetain } from "../store/fragment.js";
 import { CREATE_ITEMS, MENU_SECTIONS } from "../data/corpus.js";
 import { relativeTime } from "../format.js";
 import { gate } from "../analytics/experiments.js";
@@ -96,8 +96,17 @@ export function MainMenu() {
     );
 }
 
+const MenuActor = scalars("id name avatar_seed");
+
+const ThreadRow_thread = fragment("ThreadRow_thread", {
+    ...scalars("id snippet from_viewer updated_time unread online"),
+    participant: MenuActor,
+});
+
+const ThreadsQuery = fragment("ThreadsQuery", { status: true, root: { threads: spread(ThreadRow_thread) } });
+
 function ThreadRow({ thread, previews }) {
-    const participant = useLinkedRecord(thread.participant);
+    const { participant } = thread;
     return (
         <li>
             <a className="hover:bg-hover flex items-center gap-3 rounded-lg p-2" href={`#/messages/${thread.id}`} data-log="messages_thread" onClick={(event) => event.preventDefault()}>
@@ -122,7 +131,8 @@ function ThreadRow({ thread, previews }) {
 }
 
 export function MessagesMenu() {
-    const status = useQueryStatus(queryKey("Threads"));
+    const status = useFragment(ThreadsQuery, queryStatusId(queryKey("Threads")));
+    useRetain(queryStatusId(queryKey("Threads")));
     const ready = status && status.status === "ready";
     const [tab, setTab] = useState("all");
     const previews = gate("menu_message_previews");
@@ -153,7 +163,7 @@ export function MessagesMenu() {
                 </div>
             </div>
             <ul className="max-h-[420px] overflow-y-auto px-2 pb-2">
-                {ready ? status.root.threads.map((ref) => <ThreadRowLoader key={ref.__ref} threadRef={ref} previews={previews} />) : [0, 1, 2, 3, 4].map((i) => <GlimmerRow key={i} avatarSize={56} />)}
+                {ready ? status.root.threads.map((ref) => <ThreadRowLoader key={ref.__id} threadRef={ref} previews={previews} />) : [0, 1, 2, 3, 4].map((i) => <GlimmerRow key={i} avatarSize={56} />)}
             </ul>
             <a className="border-divider text-accent hover:bg-hover block border-t py-3 text-center text-[15px] font-semibold" href="#/messages">
                 Open messages
@@ -163,7 +173,7 @@ export function MessagesMenu() {
 }
 
 function ThreadRowLoader({ threadRef, previews }) {
-    const thread = useLinkedRecord(threadRef);
+    const thread = useFragment(ThreadRow_thread, threadRef);
     return <ThreadRow thread={thread} previews={previews} />;
 }
 
@@ -183,9 +193,19 @@ function BoldMarkup({ text }) {
     return parts.map((part, index) => index % 2 ? <strong key={index}>{part}</strong> : <span key={index}>{part}</span>);
 }
 
+const NotificationRow_notification = fragment("NotificationRow_notification", {
+    ...scalars("id kind text created_time unread has_action"),
+    actor: MenuActor,
+});
+
+const NotificationsQuery = fragment("NotificationsQuery", {
+    status: true,
+    root: { notifications: { unread_count: true, edges: spread(NotificationRow_notification) } },
+});
+
 function NotificationRow({ notificationRef }) {
-    const notification = useLinkedRecord(notificationRef);
-    const actor = useLinkedRecord(notification.actor);
+    const notification = useFragment(NotificationRow_notification, notificationRef);
+    const { actor } = notification;
     const [icon, color] = NOTIFICATION_BADGES[notification.kind];
     return (
         <li>
@@ -219,7 +239,8 @@ function NotificationRow({ notificationRef }) {
 }
 
 export function NotificationsMenu() {
-    const status = useQueryStatus(queryKey("Notifications"));
+    const status = useFragment(NotificationsQuery, queryStatusId(queryKey("Notifications")));
+    useRetain(queryStatusId(queryKey("Notifications")));
     const ready = status && status.status === "ready";
     const [tab, setTab] = useState("everything");
     useReadySignal(ready);
@@ -265,7 +286,7 @@ export function NotificationsMenu() {
                             </div>
                             <ul>
                                 {section.items.map((ref) =>
-                                    <NotificationRow key={ref.__ref} notificationRef={ref} />
+                                    <NotificationRow key={ref.__id} notificationRef={ref} />
                                 )}
                             </ul>
                         </section>
@@ -281,8 +302,15 @@ const openOwnProfile = guarded("menu.profile", (event, id) => {
     navigate(`/profile/${id}`);
 });
 
+const ProfileSwitchRow_profile = fragment("ProfileSwitchRow_profile", MenuActor);
+
+const AccountQuery = fragment("AccountQuery", {
+    status: true,
+    root: { account: { viewer: MenuActor, profiles: spread(ProfileSwitchRow_profile), rows: true } },
+});
+
 function ProfileSwitchRow({ profileRef }) {
-    const profile = useLinkedRecord(profileRef);
+    const profile = useFragment(ProfileSwitchRow_profile, profileRef);
     return (
         <button type="button" className="hover:bg-hover flex w-full items-center gap-3 rounded-md p-2 text-left">
             <Avatar seed={profile.avatar_seed} size={36} square label={profile.name} />
@@ -292,11 +320,12 @@ function ProfileSwitchRow({ profileRef }) {
 }
 
 export function AccountMenu() {
-    const status = useQueryStatus(queryKey("Account"));
+    const status = useFragment(AccountQuery, queryStatusId(queryKey("Account")));
+    useRetain(queryStatusId(queryKey("Account")));
     const ready = status && status.status === "ready";
     useReadySignal(ready);
     const account = ready ? status.root.account : null;
-    const viewer = useLinkedRecord(account ? account.viewer : null);
+    const viewer = account ? account.viewer : null;
     return (
         <div className="w-[360px] p-3">
             {ready
@@ -308,7 +337,7 @@ export function AccountMenu() {
                         </a>
                         <div className="border-divider mx-2 border-t" />
                         {account.profiles.map((ref) =>
-                            <ProfileSwitchRow key={ref.__ref} profileRef={ref} />
+                            <ProfileSwitchRow key={ref.__id} profileRef={ref} />
                         )}
                         <button type="button" className="bg-surface-alt text-primary hover:bg-hover m-1 w-[calc(100%-8px)] rounded-md py-2 text-[15px] font-semibold">
                             Switch profile

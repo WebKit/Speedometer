@@ -17,7 +17,14 @@ function resourcesManifest() {
 export default defineConfig({
     // Since this will be loaded from the project root.
     base: "./",
-    plugins: [react(), resourcesManifest()],
+    // Every element goes through the interaction interceptor's JSX runtime.
+    plugins: [react({ jsxImportSource: "social-network-jsx" }), resourcesManifest()],
+    resolve: {
+        alias: {
+            "social-network-jsx/jsx-runtime": resolve(__dirname, "src/analytics/jsx-runtime.js"),
+            "social-network-jsx/jsx-dev-runtime": resolve(__dirname, "src/analytics/jsx-runtime.js"),
+        },
+    },
     build: {
         modulePreload: { polyfill: false },
         // React 19 leaves minification to the bundler, so minify to ship a payload

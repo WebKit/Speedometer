@@ -1,6 +1,8 @@
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { getRecord, publish, setClientRecord } from "../store/store.js";
+import { draftId } from "../queries.js";
 import { gate } from "../analytics/experiments.js";
-import { guarded } from "../analytics/guard.js";
+import { guard, guarded } from "../analytics/guard.js";
 import { log } from "../analytics/logger.js";
 import Avatar from "./avatar.jsx";
 import Icon from "./icon.jsx";
@@ -16,8 +18,6 @@ const EMOTICONS = [
     [";)", "😉"],
     [":(", "🙁"],
 ];
-
-const drafts = new Map();
 
 function replaceEmoticons(value) {
     let next = value;
@@ -59,11 +59,24 @@ function highlightRanges(value, mentions) {
     return ranges;
 }
 
+function saveDraft(storyId, { value, mentions }) {
+    const existing = getRecord(draftId(storyId));
+    if (!value.trim() && !existing)
+        return;
+    setClientRecord(draftId(storyId), { text: value, ranges: highlightRanges(value, mentions), mentions: mentions.map((person) => person.id) });
+    publish();
+    log("composer_draft_saved", { story: storyId, length: value.length, mentions: mentions.length });
+}
+
 export default function CommentComposer({ storyId, viewer, people, inputRef }) {
-    const [value, setValue] = useState(() => drafts.get(storyId) ?? "");
+    const [value, setValue] = useState(() => getRecord(draftId(storyId))?.text ?? "");
     const [mentionQuery, setMentionQuery] = useState(null);
     const [activeSuggestion, setActiveSuggestion] = useState(0);
     const [mentions, setMentions] = useState([]);
+    const latest = useRef(null);
+    latest.current = { value, mentions };
+
+    useEffect(() => () => guard("composer.draft", saveDraft, storyId, latest.current), [storyId]);
     const overlayRef = useRef(null);
     const typeahead = gate("comments_mentions_typeahead");
 
@@ -92,7 +105,6 @@ export default function CommentComposer({ storyId, viewer, people, inputRef }) {
         setActiveSuggestion(0);
         if (!value && next)
             log("composer_start", { story: storyId });
-        drafts.set(storyId, next);
         setValue(next);
     });
 
@@ -102,7 +114,6 @@ export default function CommentComposer({ storyId, viewer, people, inputRef }) {
         textarea.value = next;
         setMentions((list) => list.some((item) => item.id === person.id) ? list : [...list, person]);
         setMentionQuery(null);
-        drafts.set(storyId, next);
         setValue(next);
         log("composer_mention", { story: storyId, position: suggestions.indexOf(person) });
     });

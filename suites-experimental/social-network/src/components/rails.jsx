@@ -1,5 +1,5 @@
-import { queryKey } from "../store/network.js";
-import { useLinkedRecord, useQueryStatus, useRecord } from "../store/hooks.js";
+import { queryKey, queryStatusId } from "../store/network.js";
+import { fragment, scalars, spread, useFragment } from "../store/fragment.js";
 import { photo } from "../data/graphics.js";
 import { VIEWER_ID } from "../data/server.js";
 import { guarded } from "../analytics/guard.js";
@@ -28,8 +28,12 @@ const openProfile = guarded("rail.profile", (event) => {
     navigate(`/profile/${VIEWER_ID}`);
 });
 
+const RailGroup = fragment("RailGroup", scalars("id name cover_seed"));
+const RailViewer = fragment("RailViewer", scalars("id name avatar_seed"));
+const ShortcutsQuery = fragment("ShortcutsQuery", { status: true, root: { shortcuts: spread(RailGroup) } });
+
 function Shortcut({ groupRef }) {
-    const group = useLinkedRecord(groupRef);
+    const group = useFragment(RailGroup, groupRef);
     return (
         <a className="hover:bg-hover flex h-11 w-11 items-center justify-center rounded-lg" href={`#/groups/${group.id}`} title={group.name} aria-label={group.name} data-log="rail_shortcut" onClick={(event) => event.preventDefault()}>
             <img className="h-9 w-9 rounded-lg object-cover" src={photo(group.cover_seed, 72, 72)} width="36" height="36" alt="" />
@@ -38,8 +42,8 @@ function Shortcut({ groupRef }) {
 }
 
 export function LeftRail() {
-    const viewer = useRecord(VIEWER_ID);
-    const shortcuts = useQueryStatus(queryKey("Shortcuts"));
+    const viewer = useFragment(RailViewer, VIEWER_ID);
+    const shortcuts = useFragment(ShortcutsQuery, queryStatusId(queryKey("Shortcuts")));
     return (
         <nav className="flex w-14 shrink-0 flex-col items-center gap-1 overflow-y-auto py-3" aria-label="Shortcuts" data-log-scope="left_rail">
             <a id="rail-profile" className="hover:bg-hover flex h-11 w-11 items-center justify-center rounded-lg" href={`#/profile/${VIEWER_ID}`} aria-label={viewer ? viewer.name : "Your profile"} onClick={openProfile} data-log="rail_profile">
@@ -59,13 +63,15 @@ export function LeftRail() {
                 </a>
             )}
             <div className="border-divider my-2 w-8 border-t" />
-            {shortcuts && shortcuts.root && shortcuts.root.shortcuts.map((ref) => <Shortcut key={ref.__ref} groupRef={ref} />)}
+            {shortcuts && shortcuts.root && shortcuts.root.shortcuts.map((ref) => <Shortcut key={ref.__id} groupRef={ref} />)}
         </nav>
     );
 }
 
+const Contact_user = fragment("Contact_user", scalars("id name avatar_seed online"));
+
 function Contact({ contactRef }) {
-    const contact = useLinkedRecord(contactRef);
+    const contact = useFragment(Contact_user, contactRef);
     return (
         <li>
             <a className="hover:bg-hover flex items-center gap-3 rounded-md px-2 py-1.5" href={`#/messages/${contact.id}`} data-log="rail_contact" onClick={(event) => event.preventDefault()}>
@@ -89,7 +95,7 @@ function PromotedCard({ ad }) {
 }
 
 function Birthday({ userRef }) {
-    const user = useLinkedRecord(userRef);
+    const user = useFragment(Contact_user, userRef);
     return (
         <div className="text-primary flex items-center gap-3 px-2 py-1.5 text-[15px]">
             <span className="bg-accent-soft text-accent flex h-9 w-9 shrink-0 items-center justify-center rounded-xl">
@@ -103,7 +109,7 @@ function Birthday({ userRef }) {
 }
 
 function GroupChat({ groupRef }) {
-    const group = useLinkedRecord(groupRef);
+    const group = useFragment(RailGroup, groupRef);
     return (
         <li>
             <a className="hover:bg-hover flex items-center gap-3 rounded-md px-2 py-1.5" href={`#/groups/${group.id}/chat`} onClick={(event) => event.preventDefault()}>
@@ -114,8 +120,22 @@ function GroupChat({ groupRef }) {
     );
 }
 
+const PromotedCard_ad = fragment("PromotedCard_ad", scalars("id title domain seed"));
+
+const RightRailQuery = fragment("RightRailQuery", {
+    status: true,
+    root: {
+        right_rail: {
+            sponsored: spread(PromotedCard_ad),
+            birthdays: spread(Contact_user),
+            contacts: spread(Contact_user),
+            group_chats: spread(RailGroup),
+        },
+    },
+});
+
 export function RightRail() {
-    const status = useQueryStatus(queryKey("RightRail"));
+    const status = useFragment(RightRailQuery, queryStatusId(queryKey("RightRail")));
     const rail = status && status.root ? status.root.right_rail : null;
     return (
         <aside className="w-[232px] shrink-0 overflow-y-auto px-2 py-3" aria-label="Promoted and people online" data-log-scope="right_rail">
@@ -123,12 +143,12 @@ export function RightRail() {
                 ? <>
                     <h2 className="text-secondary px-2 pb-1 text-[17px] font-semibold">Promoted</h2>
                     {rail.sponsored.map((ref) =>
-                        <PromotedRef key={ref.__ref} adRef={ref} />
+                        <PromotedRef key={ref.__id} adRef={ref} />
                     )}
                     <div className="border-divider mx-2 my-2 border-t" />
                     <h2 className="text-secondary px-2 pb-1 text-[17px] font-semibold">Celebrations</h2>
                     {rail.birthdays.map((ref) =>
-                        <Birthday key={ref.__ref} userRef={ref} />
+                        <Birthday key={ref.__id} userRef={ref} />
                     )}
                     <div className="border-divider mx-2 my-2 border-t" />
                     <div className="flex items-center justify-between px-2 pb-1">
@@ -140,14 +160,14 @@ export function RightRail() {
                     </div>
                     <ul>
                         {rail.contacts.map((ref) =>
-                            <Contact key={ref.__ref} contactRef={ref} />
+                            <Contact key={ref.__id} contactRef={ref} />
                         )}
                     </ul>
                     <div className="border-divider mx-2 my-2 border-t" />
                     <h2 className="text-secondary px-2 pb-1 text-[17px] font-semibold">Community chats</h2>
                     <ul>
                         {rail.group_chats.map((ref) =>
-                            <GroupChat key={ref.__ref} groupRef={ref} />
+                            <GroupChat key={ref.__id} groupRef={ref} />
                         )}
                     </ul>
                 </>
@@ -158,6 +178,6 @@ export function RightRail() {
 }
 
 function PromotedRef({ adRef }) {
-    const ad = useLinkedRecord(adRef);
+    const ad = useFragment(PromotedCard_ad, adRef);
     return <PromotedCard ad={ad} />;
 }

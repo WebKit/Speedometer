@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { queryKey } from "../store/network.js";
-import { useLinkedRecord, useQueryStatus, useRecord } from "../store/hooks.js";
+import { queryKey, queryStatusId } from "../store/network.js";
+import { fragment, scalars, spread, useFragment, useRetain } from "../store/fragment.js";
 import { photo } from "../data/graphics.js";
 import { VIEWER_ID } from "../data/server.js";
 import { gate } from "../analytics/experiments.js";
@@ -8,7 +8,7 @@ import { loadProfile } from "../queries.js";
 import { signal } from "../signals.js";
 import { compactNumber } from "../format.js";
 import Avatar from "./avatar.jsx";
-import Feed from "./feed.jsx";
+import Feed, { FeedEdge } from "./feed.jsx";
 import Icon from "./icon.jsx";
 import { GlimmerLine, GlimmerStory } from "./glimmer.jsx";
 
@@ -61,8 +61,21 @@ function Intro({ user, own }) {
     );
 }
 
+const PhotoCell_photo = fragment("PhotoCell_photo", scalars("id seed alt"));
+const FriendCell_user = fragment("FriendCell_user", scalars("id name avatar_seed"));
+
+const ProfilePage_user = fragment("ProfilePage_user", {
+    ...scalars("id name avatar_seed cover_seed bio friend_count follower_count intro"),
+    friends_preview: spread(FriendCell_user),
+    photos: spread(PhotoCell_photo),
+    friends: spread(FriendCell_user),
+    timeline: { page_info: true, edges: FeedEdge },
+});
+
+const ProfileQueryStatus = fragment("ProfileQueryStatus", { status: true });
+
 function PhotoCell({ photoRef }) {
-    const item = useLinkedRecord(photoRef);
+    const item = useFragment(PhotoCell_photo, photoRef);
     return (
         <a href={`#/photo/${item.id}`} className="block aspect-square overflow-hidden" onClick={(event) => event.preventDefault()}>
             <img className="h-full w-full object-cover" src={photo(item.seed, 200, 200)} width="200" height="200" alt={item.alt} />
@@ -71,7 +84,7 @@ function PhotoCell({ photoRef }) {
 }
 
 function FriendCell({ friendRef }) {
-    const friend = useLinkedRecord(friendRef);
+    const friend = useFragment(FriendCell_user, friendRef);
     return (
         <a href={`#/profile/${friend.id}`} className="block" onClick={(event) => event.preventDefault()}>
             <img className="aspect-square w-full rounded-lg object-cover" src={`${photo(friend.avatar_seed * 3, 200, 200)}`} width="200" height="200" alt="" />
@@ -84,14 +97,14 @@ function FriendStack({ friends }) {
     return (
         <div className="flex -space-x-2">
             {friends.map((ref) =>
-                <StackAvatar key={ref.__ref} friendRef={ref} />
+                <StackAvatar key={ref.__id} friendRef={ref} />
             )}
         </div>
     );
 }
 
 function StackAvatar({ friendRef }) {
-    const friend = useLinkedRecord(friendRef);
+    const friend = useFragment(FriendCell_user, friendRef);
     return (
         <span className="border-surface rounded-full border-2">
             <Avatar seed={friend.avatar_seed} size={32} label={friend.name} />
@@ -100,8 +113,9 @@ function StackAvatar({ friendRef }) {
 }
 
 export default function ProfilePage({ userId, scrollerRef }) {
-    const user = useRecord(userId);
-    const status = useQueryStatus(queryKey("Profile", { userId }));
+    const user = useFragment(ProfilePage_user, userId);
+    const status = useFragment(ProfileQueryStatus, queryStatusId(queryKey("Profile", { userId })));
+    useRetain(queryStatusId(queryKey("Profile", { userId })));
     const [tab, setTab] = useState("Activity");
     const ready = status && status.status === "ready";
     const own = userId === VIEWER_ID;
@@ -185,7 +199,7 @@ export default function ProfilePage({ userId, scrollerRef }) {
                         && <Card title="Albums" action="Browse">
                             <div className="grid grid-cols-3 gap-1 overflow-hidden rounded-lg">
                                 {user.photos.map((ref) =>
-                                    <PhotoCell key={ref.__ref} photoRef={ref} />
+                                    <PhotoCell key={ref.__id} photoRef={ref} />
                                 )}
                             </div>
                         </Card>
@@ -195,7 +209,7 @@ export default function ProfilePage({ userId, scrollerRef }) {
                             <p className="text-secondary -mt-2 mb-2 text-[15px]">{compactNumber(user.friend_count)} connections</p>
                             <div className="grid grid-cols-3 gap-2">
                                 {user.friends.map((ref) =>
-                                    <FriendCell key={ref.__ref} friendRef={ref} />
+                                    <FriendCell key={ref.__id} friendRef={ref} />
                                 )}
                             </div>
                         </Card>
