@@ -866,23 +866,42 @@ async function preloadBenchmarkFiles(): Promise<
       }
     }
     if (warmSample) {
-      const warmPts = warmSample.points.slice(0, 60);
+      const warmPts = warmSample.points.slice(0, 1250);
       const warmTrack: TrackData = {
         ...warmSample,
         id: 'warmup',
         fileName: 'warmup.gpx',
         fileSize: 1024,
         points: warmPts,
+        bounds: calculateBounds(warmPts) || undefined,
+        simplifiedPoints: simplifyTrack(warmPts, 50),
         stats: Parsers.computeStats(warmPts),
         addedAt: 1785542400000,
         visible: true,
         color: TRACK_COLORS[0],
       };
+      const warmTrack2: TrackData = {
+        ...warmTrack,
+        id: 'warmup-2',
+        fileName: 'warmup2.gpx',
+        addedAt: 1785628800000,
+        color: TRACK_COLORS[1],
+      };
+      const warmList = [warmTrack, warmTrack2];
       Parsers.ensureCurvesAndZones(warmTrack);
-      ChartView.loadTrack(warmTrack, [warmTrack], false);
+      Parsers.ensureCurvesAndZones(warmTrack2);
+      MapView.addTracks(warmList);
+      ChartView.loadTrack(warmTrack, warmList, false);
+      ChartView.restoreSelection(10, 50, true);
+      ChartView.setCursorAt(25, true);
       ChartView.setActiveMetrics(['elevation', 'speed', 'power']);
-      renderInsights(warmTrack);
-      renderEvolution(warmTrack, [warmTrack]);
+      ChartView.analyzeTelemetryIntervals(warmList, 10, 50);
+      renderInsights(warmTrack, warmList);
+      renderDetails(warmTrack, [], warmList);
+      renderCombined(warmList, warmList);
+      renderEvolution(warmTrack, warmList);
+      prepareBenchmarkCourses(warmList);
+      selectCourse('course-1', true);
       await resetBenchmarkState();
       void document.body.offsetHeight;
       await new Promise((r) => window.setTimeout(r, 0));
@@ -955,6 +974,7 @@ function initBenchmarkTriggers() {
       } else {
         updateToolbarLayout();
       }
+      ChartView.analyzeTelemetryIntervals(allTracks, 120, 900);
       onChartRangeChange(120, 900, ChartView.getXAxis(), false);
     } finally {
       window.dispatchEvent(new CustomEvent('analysis-complete'));
@@ -967,7 +987,7 @@ function initBenchmarkTriggers() {
       allTracks.forEach((t) => Parsers.ensureCurvesAndZones(t));
       activateTab('insights');
       const primaryTrack = (selectedId && tracks[selectedId]) || allTracks[0] || null;
-      renderInsights(primaryTrack);
+      renderInsights(primaryTrack, allTracks);
     } finally {
       window.dispatchEvent(new CustomEvent('insights-complete'));
     }
@@ -978,7 +998,7 @@ function initBenchmarkTriggers() {
       const allTracks = Object.values(tracks);
       activateTab('details');
       const primaryTrack = (selectedId && tracks[selectedId]) || allTracks[0] || null;
-      renderDetails(primaryTrack, getGlobalTags());
+      renderDetails(primaryTrack, getGlobalTags(), allTracks);
     } finally {
       window.dispatchEvent(new CustomEvent('details-complete'));
     }
@@ -990,8 +1010,7 @@ function initBenchmarkTriggers() {
       if (allTracks.length >= 2) {
         const selectedTwo = [allTracks[0], allTracks[1]];
         activateTab('combined');
-        renderCombined(selectedTwo);
-        resizeCombined();
+        renderCombined(selectedTwo, allTracks);
       }
     } finally {
       window.dispatchEvent(new CustomEvent('aggregate-complete'));
@@ -1020,7 +1039,6 @@ function initBenchmarkTriggers() {
       const allTracks = Object.values(tracks);
       activateTab('courses');
       prepareBenchmarkCourses(allTracks);
-      renderCourses();
       selectCourse('course-1', true);
     } finally {
       window.dispatchEvent(new CustomEvent('courses-complete'));

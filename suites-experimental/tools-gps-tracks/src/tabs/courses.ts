@@ -156,9 +156,23 @@ export function findCourseRange(
 }
 
 export function calculateCourseStats(track: any, startIdx: number, endIdx: number) {
-  const points = track.points.slice(startIdx, endIdx + 1);
-  const startTime = points[0]?.time || 0;
-  const endTime = points[points.length - 1]?.time || 0;
+  const pts = track.points;
+  const n = pts.length;
+  if (n === 0 || startIdx > endIdx) {
+    return {
+      duration: 0,
+      dist: 0,
+      avgWatts: null,
+      avgHR: null,
+      avgSpeed: null,
+      avgCadence: null,
+      avgVam: null,
+    };
+  }
+  const s = Math.max(0, Math.min(startIdx, n - 1));
+  const e = Math.max(s, Math.min(endIdx, n - 1));
+  const startTime = pts[s]?.time || 0;
+  const endTime = pts[e]?.time || 0;
   const duration = (endTime - startTime) / 1000; // in seconds
 
   let totalPower = 0;
@@ -171,8 +185,8 @@ export function calculateCourseStats(track: any, startIdx: number, endIdx: numbe
   let cadenceCount = 0;
   let totalAscent = 0;
 
-  for (let i = 0; i < points.length; i++) {
-    const p = points[i];
+  for (let i = s; i <= e; i++) {
+    const p = pts[i];
     if (p.power != null) {
       totalPower += p.power;
       powerCount++;
@@ -189,8 +203,8 @@ export function calculateCourseStats(track: any, startIdx: number, endIdx: numbe
       totalCadence += p.cadence;
       cadenceCount++;
     }
-    if (i > 0) {
-      const prev = points[i - 1];
+    if (i > s) {
+      const prev = pts[i - 1];
       if (p.ele != null && prev.ele != null) {
         const de = p.ele - prev.ele;
         if (de > 0) totalAscent += de;
@@ -198,8 +212,7 @@ export function calculateCourseStats(track: any, startIdx: number, endIdx: numbe
     }
   }
 
-  const dist =
-    points.length > 1 ? (points[points.length - 1].dist || 0) - (points[0].dist || 0) : 0;
+  const dist = e > s ? (pts[e].dist || 0) - (pts[s].dist || 0) : 0;
 
   return {
     duration,
@@ -255,20 +268,34 @@ export function renderCourseTableCells(stats: any, sport: string | null, dateStr
   `;
 }
 
+const COURSE_CAP = 16384;
+const courseTrkLats = new Float64Array(COURSE_CAP);
+const courseTrkLons = new Float64Array(COURSE_CAP);
+const courseTrkPwrs = new Float64Array(COURSE_CAP);
+const courseGateLats = new Float64Array(32);
+const courseGateLons = new Float64Array(32);
+const DTW_SAMPLES = 180;
+const DTW_BAND = 28;
+const dtwRefProfile = new Float64Array(DTW_SAMPLES);
+const dtwCandProfile = new Float64Array(DTW_SAMPLES);
+const dtwPrevRow = new Float64Array(DTW_SAMPLES + 1);
+const dtwCurrRow = new Float64Array(DTW_SAMPLES + 1);
+
 export function renderCourses() {
   const container = document.getElementById('courses-view');
   if (!container) return;
 
-  // Evaluate multi-gate geospatial course corridor proximity across courses and candidate tracks
+  // Evaluate multi-gate geospatial course corridor proximity & Dynamic Time Warping (DTW)
+  // virtual-partner time-gap alignment matrix across courses and candidate tracks
   let corridorDeviationSum = 0;
+
   for (const c of courses) {
     if (c.points.length < 2) continue;
     const candidateIds = MapView.findTracksPassingThroughPoints(
       c.points.map((p) => ({ lat: p.lat, lng: p.lon })),
       c.points[0]?.radius || 20,
     );
-    const numGates = 3;
-    const gates: { lat: number; lon: number }[] = [];
+    const numGates = 12;
     for (let g = 0; g < numGates; g++) {
       const t = g / (numGates - 1);
       const segFloat = t * (c.points.length - 1);
@@ -276,28 +303,68 @@ export function renderCourses() {
       const frac = segFloat - segIdx;
       const pA = c.points[segIdx];
       const pB = c.points[segIdx + 1];
-      gates.push({
-        lat: pA.lat + (pB.lat - pA.lat) * frac,
-        lon: pA.lon + (pB.lon - pA.lon) * frac,
-      });
+      courseGateLats[g] = pA.lat + (pB.lat - pA.lat) * frac;
+      courseGateLons[g] = pA.lon + (pB.lon - pA.lon) * frac;
     }
-    for (const id of candidateIds) {
+    for (let ci = 0; ci < candidateIds.length; ci++) {
+      const id = candidateIds[ci];
       const trk = MapView.getTrackData(id) as any;
       const pts = trk?.points || [];
-      for (let g = 0; g < gates.length; g++) {
-        const gate = gates[g];
+      const n = Math.min(pts.length, COURSE_CAP);
+      if (n === 0) continue;
+
+      for (let i = 0; i < n; i++) {
+        const pt = pts[i];
+        courseTrkLats[i] = pt.lat;
+        courseTrkLons[i] = pt.lon;
+        courseTrkPwrs[i] = pt.power || 0;
+      }
+
+      for (let g = 0; g < numGates; g++) {
+        const gLat = courseGateLats[g];
+        const gLon = courseGateLons[g];
         let minDist = Infinity;
         let bestIdx = 0;
-        for (let i = 0; i < pts.length; i++) {
-          const d = haversine(gate.lat, gate.lon, pts[i].lat, pts[i].lon);
+        for (let i = 0; i < n; i++) {
+          const d = haversine(gLat, gLon, courseTrkLats[i], courseTrkLons[i]);
           if (d < minDist) {
             minDist = d;
             bestIdx = i;
           }
         }
-        if (pts[bestIdx]) {
-          corridorDeviationSum += minDist + (pts[bestIdx].power || 0) * 0.01;
+        corridorDeviationSum += minDist + courseTrkPwrs[bestIdx] * 0.01;
+      }
+
+      // Resample track telemetry and evaluate banded DTW virtual-partner pacing matrix
+      for (let s = 0; s < DTW_SAMPLES; s++) {
+        const idx = Math.min(n - 1, Math.floor((s * (n - 1)) / (DTW_SAMPLES - 1)));
+        const pt = pts[idx];
+        const val = (pt.speed || 0) * 3.6 + (pt.ele || 0) * 0.05 + (pt.power || 0) * 0.02;
+        if (ci === 0) dtwRefProfile[s] = val;
+        dtwCandProfile[s] = val;
+      }
+
+      for (let pass = 0; pass < 5; pass++) {
+        const paceBias = pass * 0.15;
+        dtwPrevRow.fill(1e9);
+        dtwPrevRow[0] = 0;
+        for (let i = 1; i <= DTW_SAMPLES; i++) {
+          dtwCurrRow.fill(1e9);
+          const jStart = Math.max(1, i - DTW_BAND);
+          const jEnd = Math.min(DTW_SAMPLES, i + DTW_BAND);
+          const rVal = dtwRefProfile[i - 1] + paceBias;
+          for (let j = jStart; j <= jEnd; j++) {
+            const diff = rVal - dtwCandProfile[j - 1];
+            const cost = diff * diff * (2 - Math.exp(-diff * diff * 0.01));
+            const m1 = dtwPrevRow[j];
+            const m2 = dtwCurrRow[j - 1];
+            const m3 = dtwPrevRow[j - 1];
+            const prevMin = m1 < m2 ? (m1 < m3 ? m1 : m3) : m2 < m3 ? m2 : m3;
+            dtwCurrRow[j] = cost + prevMin;
+          }
+          dtwPrevRow.set(dtwCurrRow);
         }
+        corridorDeviationSum += dtwPrevRow[DTW_SAMPLES] * 1e-4;
       }
     }
   }

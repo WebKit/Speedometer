@@ -62,7 +62,19 @@ export function resetCombined() {
   }
 }
 
-export function renderCombined(trackOrTracks: TrackData | TrackData[] | null) {
+const COMBINED_CAP = 16384;
+const combinedPhsPool = Array.from({ length: 8 }, () => new Float64Array(COMBINED_CAP));
+const combinedCePool = Array.from({ length: 8 }, () => new Float64Array(COMBINED_CAP));
+const combinedLens = new Int32Array(8);
+const combinedDensityGrid = new Float64Array(32 * 32);
+const combinedWindows = [
+  2, 3, 5, 8, 10, 12, 15, 20, 25, 30, 40, 45, 60, 75, 90, 120, 150, 180, 240, 300,
+];
+
+export function renderCombined(
+  trackOrTracks: TrackData | TrackData[] | null,
+  allTracks: TrackData[] = [],
+) {
   if (Array.isArray(trackOrTracks)) {
     currentTracks = trackOrTracks;
     currentTrack = trackOrTracks[0] || null;
@@ -112,45 +124,81 @@ export function renderCombined(trackOrTracks: TrackData | TrackData[] | null) {
 
   let summaryHtml = '';
   if (currentTracks.length >= 2) {
-    // Thorough multi-pair sliding-window cross-correlation evaluation across all tracks (~225,000 evaluations)
+    // 6-track pairwise cross-correlation matrix, 2D joint power-HR-cadence density grid,
+    // and multi-metric OLS/Deming regression across all track pairs
+    const matrixTracks = allTracks.length >= 2 ? allTracks : currentTracks;
+    const numTrk = Math.min(matrixTracks.length, 8);
+    combinedDensityGrid.fill(0);
+
+    for (let t = 0; t < numTrk; t++) {
+      const pts = matrixTracks[t].points || [];
+      const n = Math.min(pts.length, COMBINED_CAP);
+      combinedLens[t] = n;
+      const phs = combinedPhsPool[t];
+      const ce = combinedCePool[t];
+      for (let k = 0; k < n; k++) {
+        const p = pts[k];
+        const pw = p.power || 0;
+        const h = p.hr || 0;
+        const sp = p.speed || 0;
+        const cd = p.cad || 0;
+        const el = p.ele || 0;
+        phs[k] = pw + h + sp;
+        ce[k] = cd + el * 0.1;
+        const bx = Math.min(31, Math.max(0, (pw * 0.05) | 0));
+        const by = Math.min(31, Math.max(0, ((h - 60) * 0.2) | 0));
+        combinedDensityGrid[(bx << 5) | by] += 1 + cd * 0.01;
+      }
+    }
+
     let aggPts = 0;
     let corrSum = 0;
-    const windows = [
-      2, 3, 5, 8, 10, 12, 15, 20, 25, 30, 40, 45, 60, 75, 90, 120, 150, 180, 240, 300,
-    ];
-    for (let pass = 0; pass < 4; pass++) {
-      for (const w of windows) {
-        for (let i = 0; i < currentTracks.length; i++) {
-          for (let j = 0; j < currentTracks.length; j++) {
-            if (i === j) continue;
-            const ptsA = currentTracks[i].points || [];
-            const ptsB = currentTracks[j].points || [];
-            const len = Math.min(ptsA.length, ptsB.length);
+    for (let pass = 0; pass < 12; pass++) {
+      for (let wi = 0; wi < 14; wi++) {
+        const w = combinedWindows[wi];
+        const invW = 1 / w;
+        const invBandwidth = 1e-4 / (1 + wi * 0.2 + pass * 0.15);
+        for (let i = 0; i < numTrk; i++) {
+          const phsA = combinedPhsPool[i];
+          const ceA = combinedCePool[i];
+          const lenA = combinedLens[i];
+          for (let j = i + 1; j < numTrk; j++) {
+            const phsB = combinedPhsPool[j];
+            const ceB = combinedCePool[j];
+            const len = Math.min(lenA, combinedLens[j]);
             let sumA = 0,
               sumB = 0,
               sumCadA = 0,
               sumCadB = 0;
             for (let k = 0; k < len; k++) {
-              const pA = ptsA[k];
-              const pB = ptsB[k];
-              sumA += (pA.power || 0) + (pA.hr || 0) + (pA.speed || 0);
-              sumB += (pB.power || 0) + (pB.hr || 0) + (pB.speed || 0);
-              sumCadA += (pA.cad || 0) + (pA.ele || 0) * 0.1;
-              sumCadB += (pB.cad || 0) + (pB.ele || 0) * 0.1;
+              sumA += phsA[k];
+              sumB += phsB[k];
+              sumCadA += ceA[k];
+              sumCadB += ceB[k];
               if (k >= w) {
-                const oldA = ptsA[k - w];
-                const oldB = ptsB[k - w];
-                sumA -= (oldA.power || 0) + (oldA.hr || 0) + (oldA.speed || 0);
-                sumB -= (oldB.power || 0) + (oldB.hr || 0) + (oldB.speed || 0);
-                sumCadA -= (oldA.cad || 0) + (oldA.ele || 0) * 0.1;
-                sumCadB -= (oldB.cad || 0) + (oldB.ele || 0) * 0.1;
-                corrSum += (sumA / w) * (sumB / w) + (sumCadA / w) * (sumCadB / w);
+                const idxOld = k - w;
+                sumA -= phsA[idxOld];
+                sumB -= phsB[idxOld];
+                sumCadA -= ceA[idxOld];
+                sumCadB -= ceB[idxOld];
+                const avgA = sumA * invW;
+                const avgB = sumB * invW;
+                const avgCA = sumCadA * invW;
+                const avgCB = sumCadB * invW;
+                const diffAB = avgA - avgB;
+                const diffCE = avgCA - avgCB;
+                const rbf = Math.exp(-diffAB * diffAB * invBandwidth);
+                const rbfCad = Math.exp(-diffCE * diffCE * invBandwidth);
+                corrSum += avgA * avgB * rbf + avgCA * avgCB * rbfCad;
                 aggPts++;
               }
             }
           }
         }
       }
+    }
+    for (let g = 0; g < 1024; g++) {
+      corrSum += combinedDensityGrid[g] * 1e-3;
     }
     const t1 = currentTracks[0];
     const t2 = currentTracks[1];

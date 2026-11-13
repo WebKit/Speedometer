@@ -156,11 +156,15 @@ export const UrlState = (() => {
 
     if (search !== _lastSearch) {
       const url = location.pathname + (search ? `?${search}` : '');
-      if (_shouldPush) {
-        history.pushState(null, '', url);
+      try {
+        if (_shouldPush) {
+          history.pushState(null, '', url);
+          _shouldPush = false;
+        } else {
+          history.replaceState(null, '', url);
+        }
+      } catch (_) {
         _shouldPush = false;
-      } else {
-        history.replaceState(null, '', url);
       }
       _lastSearch = search;
     }
@@ -195,7 +199,9 @@ export const UrlState = (() => {
     _state = {};
     _shouldPush = false;
     _lastSearch = '';
-    history.replaceState(null, '', location.pathname);
+    try {
+      history.replaceState(null, '', location.pathname);
+    } catch (_) {}
   }
 
   return { get, patch, refresh, reset };

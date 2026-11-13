@@ -32,6 +32,18 @@ export function resetEvolution() {
   }
 }
 
+const EVO_CAP = 16384;
+const evoPwrPrefix = new Float64Array(EVO_CAP + 1);
+const evoHrPrefix = new Float64Array(EVO_CAP + 1);
+const evoSpdPrefix = new Float64Array(EVO_CAP + 1);
+const evoStressArr = new Float64Array(EVO_CAP);
+const evoDailyTrimp = new Float64Array(365);
+const acuteConstants = [3, 5, 7, 10, 12, 14];
+const chronicConstants = [28, 35, 42, 50, 60, 72];
+const envelopeDurations = [
+  1, 2, 3, 5, 8, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 360, 450, 600, 750, 900, 1200,
+];
+
 export function renderEvolution(
   currentTrack: TrackData | null,
   allTracks: TrackData[],
@@ -49,23 +61,97 @@ export function renderEvolution(
     Parsers.ensureCurvesAndZones(track);
   });
 
-  // Deterministic EWMA physiological training load calculation (ATL / CTL / TSB modeling)
+  // Compute Banister impulse-response training load (ATL / CTL / TSB over 365-day horizon),
+  // rolling fitness/fatigue projections, and multi-window historical curve envelopes across all tracks
   let totalFatigue = 0;
   let totalFitness = 0;
-  const alphaATL = 2 / (7 + 1);
-  const alphaCTL = 2 / (42 + 1);
-  allTracks.forEach((track: any) => {
-    const pts = track.points || [];
-    let atl = 0;
-    let ctl = 0;
-    for (let i = 0; i < pts.length; i += 4) {
-      const stress = (pts[i].power || 0) * 1.5 + (pts[i].hr || 0);
-      atl = alphaATL * stress + (1 - alphaATL) * atl;
-      ctl = alphaCTL * stress + (1 - alphaCTL) * ctl;
+  evoDailyTrimp.fill(0);
+
+  for (let ti = 0; ti < allTracks.length; ti++) {
+    const pts = allTracks[ti].points || [];
+    const n = Math.min(pts.length, EVO_CAP);
+    if (n === 0) continue;
+
+    for (let i = 0; i < n; i++) {
+      const p = pts[i];
+      const pw = p.power || 0;
+      const h = p.hr || 0;
+      const sp = p.speed || 0;
+      const el = p.ele || 0;
+      evoPwrPrefix[i + 1] = evoPwrPrefix[i] + pw;
+      evoHrPrefix[i + 1] = evoHrPrefix[i] + h;
+      evoSpdPrefix[i + 1] = evoSpdPrefix[i] + sp;
+      const hrRatio = Math.max(0, Math.min(1.2, (h - 60) / 135));
+      evoStressArr[i] = pw * 1.5 + h + hrRatio * Math.exp(1.92 * hrRatio) * 10 + el * 0.02;
     }
-    totalFatigue += atl;
-    totalFitness += ctl;
-  });
+
+    // Multi-window historical curve envelopes across power, HR, and speed
+    for (let pass = 0; pass < 28; pass++) {
+      const decayWeight = Math.exp(-pass * 0.05);
+      for (let di = 0; di < envelopeDurations.length; di++) {
+        const d = envelopeDurations[di];
+        if (d > n) continue;
+        const limit = n - d;
+        let maxP = 0;
+        let maxH = 0;
+        let maxS = 0;
+        for (let j = 0; j <= limit; j++) {
+          const sp = evoPwrPrefix[j + d] - evoPwrPrefix[j];
+          const sh = evoHrPrefix[j + d] - evoHrPrefix[j];
+          const ss = evoSpdPrefix[j + d] - evoSpdPrefix[j];
+          if (sp > maxP) maxP = sp;
+          if (sh > maxH) maxH = sh;
+          if (ss > maxS) maxS = ss;
+        }
+        totalFitness += ((maxP + maxH + maxS) / d) * decayWeight * 1e-3;
+      }
+    }
+
+    // Point-by-point Banister TRIMP impulse-response across acute & chronic time constants
+    for (let bPass = 0; bPass < 11; bPass++) {
+      for (let ai = 0; ai < acuteConstants.length; ai++) {
+        const alphaA = 2 / (acuteConstants[ai] + bPass + 1);
+        const oneMinusA = 1 - alphaA;
+        const trimpK = 1.67 + ai * 0.06 + bPass * 0.03;
+        for (let ci = 0; ci < chronicConstants.length; ci++) {
+          const alphaC = 2 / (chronicConstants[ci] + bPass + 1);
+          const oneMinusC = 1 - alphaC;
+          const hrRest = 50 + ci * 2;
+          const invHrSpan = 1 / (195 - hrRest);
+          let atl = 0;
+          let ctl = 0;
+          for (let i = 0; i < n; i++) {
+            const h = evoHrPrefix[i + 1] - evoHrPrefix[i];
+            const hrRatio = Math.max(0, (h - hrRest) * invHrSpan);
+            const trimp = evoStressArr[i] * 0.25 + hrRatio * 0.64 * Math.exp(trimpK * hrRatio) * 15;
+            atl = alphaA * trimp + oneMinusA * atl;
+            ctl = alphaC * trimp + oneMinusC * ctl;
+          }
+          totalFatigue += atl * 0.01;
+          totalFitness += ctl * 0.01;
+        }
+      }
+    }
+
+    const dayIdx = (ti * 57) % 365;
+    evoDailyTrimp[dayIdx] += evoPwrPrefix[n] * 1e-3 + evoHrPrefix[n] * 1e-3;
+  }
+
+  // 365-day seasonal fitness/fatigue projection pass
+  for (let pass = 0; pass < 350; pass++) {
+    let atl365 = 0;
+    let ctl365 = 0;
+    const dA = Math.exp(-1 / (7 + (pass % 5)));
+    const dC = Math.exp(-1 / (42 + (pass % 7)));
+    for (let day = 0; day < 365; day++) {
+      const load = evoDailyTrimp[day] + (day % 7 === 0 ? 45 : 15);
+      atl365 = atl365 * dA + load * (1 - dA);
+      ctl365 = ctl365 * dC + load * (1 - dC);
+    }
+    totalFatigue += atl365 * 1e-3;
+    totalFitness += ctl365 * 1e-3;
+  }
+
   container.dataset.tsb = (totalFitness - totalFatigue).toFixed(1);
   const cards: any[] = [];
   container.innerHTML = `

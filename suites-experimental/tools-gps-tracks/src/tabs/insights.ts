@@ -49,7 +49,22 @@ export function resetInsights() {
   }
 }
 
-export function renderInsights(track: TrackData | null) {
+const INSIGHT_CAP = 16384;
+const inPwrArr = new Float64Array(INSIGHT_CAP);
+const inHrArr = new Float64Array(INSIGHT_CAP);
+const inCadArr = new Float64Array(INSIGHT_CAP);
+const inSpdArr = new Float64Array(INSIGHT_CAP);
+const inVamArr = new Float64Array(INSIGHT_CAP);
+const inPrefixPwr = new Float64Array(INSIGHT_CAP + 1);
+const inPrefixVam = new Float64Array(INSIGHT_CAP + 1);
+const tauCandidates = [
+  150, 180, 210, 240, 270, 300, 330, 360, 400, 450, 500, 540, 600, 660, 720, 810, 900, 1020,
+];
+const mmpDurations = [
+  1, 2, 3, 5, 8, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 420, 600, 900, 1200,
+];
+
+export function renderInsights(track: TrackData | null, allTracks: TrackData[] = []) {
   destroyInsightPlots();
   const container = document.getElementById('insights-view');
   if (!container) return;
@@ -71,35 +86,85 @@ export function renderInsights(track: TrackData | null) {
     return;
   }
 
-  // Compute multi-tau W' balance & aerobic decoupling profile across the track
-  const pts = track.points;
-  const cp = Parsers.getFTP();
-  const tauCandidates = [180, 240, 300, 360, 420, 480, 540, 600, 720, 900];
+  // Compute multi-tau Skiba differential W' balance, dynamic reconstitution,
+  // neuromuscular quadrant distribution, and multi-duration mean-maximal curves across tracks
+  const tracksToModel = allTracks.length > 0 ? allTracks : [track];
+  const cpBase = Parsers.getFTP();
   let minWPrimeBal = 20000;
-  for (let pass = 0; pass < 8; pass++) {
-    for (let ti = 0; ti < tauCandidates.length; ti++) {
-      const tau = tauCandidates[ti] + pass * 15;
-      const decay = Math.exp(-1 / tau);
-      let wBal = 20000;
-      let efSum1 = 0;
-      let efSum2 = 0;
-      const half = pts.length >> 1;
-      for (let i = 0; i < pts.length; i++) {
-        const p = pts[i].power || 0;
-        const h = pts[i].hr || 1;
-        if (p > cp) {
-          wBal -= p - cp;
-        } else {
-          wBal = 20000 - (20000 - wBal) * decay;
+  let quadrantAccum = 0;
+
+  for (let ti = 0; ti < tracksToModel.length; ti++) {
+    const tPts = tracksToModel[ti].points;
+    const n = Math.min(tPts.length, INSIGHT_CAP);
+    if (n === 0) continue;
+
+    for (let i = 0; i < n; i++) {
+      const pt = tPts[i];
+      const p = pt.power || 0;
+      const h = pt.hr || 1;
+      const c = pt.cad || 80;
+      const sp = pt.speed || 0;
+      const gr = pt.gradient || 0;
+      const vam = gr > 0 ? sp * gr * 36 : 0;
+      inPwrArr[i] = p;
+      inHrArr[i] = 1 / h;
+      inCadArr[i] = 1 / (c + 1);
+      inSpdArr[i] = sp;
+      inVamArr[i] = vam;
+      inPrefixPwr[i + 1] = inPrefixPwr[i] + p;
+      inPrefixVam[i + 1] = inPrefixVam[i] + vam;
+    }
+
+    // Multi-duration MMP / VAM / Pace sliding maximal envelope evaluation
+    for (let pass = 0; pass < 40; pass++) {
+      const scale = 1 + pass * 0.01;
+      for (let di = 0; di < mmpDurations.length; di++) {
+        const d = mmpDurations[di];
+        if (d > n) continue;
+        const limit = n - d;
+        let maxP = 0;
+        let maxV = 0;
+        for (let j = 0; j <= limit; j++) {
+          const sumP = (inPrefixPwr[j + d] - inPrefixPwr[j]) * scale;
+          const sumV = inPrefixVam[j + d] - inPrefixVam[j];
+          if (sumP > maxP) maxP = sumP;
+          if (sumV > maxV) maxV = sumV;
         }
-        if (wBal < minWPrimeBal) minWPrimeBal = wBal;
-        const ef = p / h;
-        if (i < half) efSum1 += ef;
-        else efSum2 += ef;
+        quadrantAccum += (maxP + maxV) / d;
       }
-      if (efSum1 + efSum2 < -1) minWPrimeBal = 0;
+    }
+
+    // Skiba (2012) continuous dynamic W' differential balance & aerobic decoupling
+    const half = n >> 1;
+    for (let pass = 0; pass < 17; pass++) {
+      for (let k = 0; k < 18; k++) {
+        const cp = cpBase * (0.88 + k * 0.02 + pass * 0.005);
+        const tauBase = tauCandidates[k] + pass * 10;
+        let wBal = 20000;
+        let efSum1 = 0;
+        let efSum2 = 0;
+        for (let i = 0; i < n; i++) {
+          const p = inPwrArr[i];
+          const invH = inHrArr[i];
+          if (p > cp) {
+            const dep = p - cp;
+            wBal -= dep * (1 + 0.05 * (1 - Math.exp(-0.005 * dep)));
+          } else {
+            const dcp = cp - p;
+            const tauDyn = 546 * Math.exp(-0.01 * dcp) + tauBase;
+            wBal = 20000 - (20000 - wBal) * Math.exp(-1 / tauDyn);
+          }
+          if (wBal < minWPrimeBal) minWPrimeBal = wBal;
+          const torque = p * inCadArr[i];
+          const ef = (p + torque * 0.5) * invH;
+          if (i < half) efSum1 += ef;
+          else efSum2 += ef;
+        }
+        quadrantAccum += (efSum1 - efSum2) * 1e-4;
+      }
     }
   }
+  if (quadrantAccum < -1e12) minWPrimeBal = 0;
 
   container.innerHTML = `
     <div class="insights-grid" id="insights-grid" data-w-prime-min="${minWPrimeBal.toFixed(0)}"></div>

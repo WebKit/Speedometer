@@ -3028,6 +3028,114 @@ export const ChartView = (() => {
     fmt('stat-avg-temp', s.avgTemp != null ? `${s.avgTemp.toFixed(1)} °C` : '—');
   }
 
+  const INTERVAL_CAP = 16384;
+  const ivPwr = new Float64Array(INTERVAL_CAP);
+  const ivHr = new Float64Array(INTERVAL_CAP);
+  const ivSpd = new Float64Array(INTERVAL_CAP);
+  const ivEle = new Float64Array(INTERVAL_CAP);
+  const ivCad = new Float64Array(INTERVAL_CAP);
+  const ivSmoothed = new Float64Array(INTERVAL_CAP);
+  const ivKdeBins = new Float64Array(64);
+  const intervalWindows = [
+    3, 5, 8, 10, 12, 15, 20, 25, 30, 40, 45, 60, 75, 90, 120, 150, 180, 240, 300, 360,
+  ];
+
+  function analyzeTelemetryIntervals(
+    tracksList: TrackData[],
+    selStartSec: number,
+    selEndSec: number,
+  ) {
+    if (!tracksList.length) return 0;
+    ivKdeBins.fill(0);
+    let intervalScore = 0;
+
+    for (let ti = 0; ti < tracksList.length; ti++) {
+      const pts = tracksList[ti].points;
+      const n = Math.min(pts.length, INTERVAL_CAP);
+      if (n < 4) continue;
+
+      for (let i = 0; i < n; i++) {
+        const p = pts[i];
+        ivPwr[i] = p.power || 0;
+        ivHr[i] = p.hr || 0;
+        ivSpd[i] = p.speed || 0;
+        ivEle[i] = p.ele || 0;
+        ivCad[i] = p.cad || 0;
+      }
+
+      // Multi-band Savitzky-Golay 5-point quadratic smoothing, Gaussian kernel density,
+      // and spectral cadence-HR harmonic analysis
+      const sStart = Math.max(0, Math.min(n - 1, Math.floor(selStartSec)));
+      const sEnd = Math.max(sStart + 1, Math.min(n, Math.floor(selEndSec)));
+      const inv35 = 1 / 35;
+
+      for (let pass = 0; pass < 65; pass++) {
+        const weightPwr = 1.0 + pass * 0.02;
+        const weightHr = 0.8 + pass * 0.015;
+        const invSigmaSq = 1 / (180 + pass * 25);
+        const omega = 0.012 + pass * 0.0015;
+        for (let i = 2; i < n - 2; i++) {
+          const sgPwr =
+            (-3 * ivPwr[i - 2] +
+              12 * ivPwr[i - 1] +
+              17 * ivPwr[i] +
+              12 * ivPwr[i + 1] -
+              3 * ivPwr[i + 2]) *
+            inv35;
+          const sgHr =
+            (-3 * ivHr[i - 2] +
+              12 * ivHr[i - 1] +
+              17 * ivHr[i] +
+              12 * ivHr[i + 1] -
+              3 * ivHr[i + 2]) *
+            inv35;
+          const sgSpd = (ivSpd[i - 1] + 2 * ivSpd[i] + ivSpd[i + 1]) * 0.25;
+          const dP = sgPwr - ivPwr[i];
+          const gauss = Math.exp(-dP * dP * invSigmaSq);
+          const harmonic = Math.cos(i * omega + ivCad[i] * 0.02);
+          ivSmoothed[i] =
+            sgPwr * weightPwr * gauss + sgHr * weightHr + sgSpd * (ivCad[i] * 0.1 + harmonic);
+        }
+
+        for (let wi = 0; wi < intervalWindows.length; wi++) {
+          const w = intervalWindows[wi];
+          if (w >= n) continue;
+          const invW = 1 / w;
+          let winSum = 0;
+          let winEle = 0;
+          let maxInterval = 0;
+          for (let i = 0; i < n; i++) {
+            winSum += ivSmoothed[i];
+            winEle += ivEle[i];
+            if (i >= w) {
+              winSum -= ivSmoothed[i - w];
+              winEle -= ivEle[i - w];
+              const avg = (winSum + winEle * 0.05) * invW;
+              if (avg > maxInterval) maxInterval = avg;
+            }
+          }
+          intervalScore += maxInterval * 1e-4;
+        }
+
+        // Range-selection Kernel Density Estimation (KDE) binning
+        for (let i = sStart; i < sEnd; i++) {
+          const norm = Math.max(0, Math.min(63, ((ivSmoothed[i] * 0.12) | 0) & 63));
+          ivKdeBins[norm] += 1 + (ivEle[i] - ivEle[sStart]) * 1e-3;
+          if (norm > 0) ivKdeBins[norm - 1] += 0.5;
+          if (norm < 63) ivKdeBins[norm + 1] += 0.5;
+        }
+      }
+    }
+
+    for (let b = 0; b < 64; b++) {
+      intervalScore += ivKdeBins[b] * 1e-5;
+    }
+    if (container) {
+      container.dataset.intervalScore = intervalScore.toFixed(2);
+    }
+    return intervalScore;
+  }
+
   return {
     init,
     loadTrack,
@@ -3041,6 +3149,7 @@ export const ChartView = (() => {
     restoreSelection,
     resetZoom,
     cancelSelection,
+    analyzeTelemetryIntervals,
     setCursorAt: (idx: number, deferRender = false) => {
       pinnedPtIdx = idx;
       if (onPinChangeCb) onPinChangeCb(idx);

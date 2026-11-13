@@ -24,6 +24,27 @@ window.cancelAnimationFrame = (id: number): void => {
   window.clearTimeout(id);
 };
 
+// Guard history.replaceState and history.pushState against browser rate-limiting
+// (e.g. WebKit's 100 calls per 10 seconds SecurityError across multi-iteration runs).
+if (typeof history !== 'undefined') {
+  const origReplace = history.replaceState?.bind(history);
+  const origPush = history.pushState?.bind(history);
+  if (origReplace) {
+    history.replaceState = function (data: any, unused: string, url?: string | URL | null): void {
+      try {
+        origReplace(data, unused, url);
+      } catch (_) {}
+    };
+  }
+  if (origPush) {
+    history.pushState = function (data: any, unused: string, url?: string | URL | null): void {
+      try {
+        origPush(data, unused, url);
+      } catch (_) {}
+    };
+  }
+}
+
 // Normalize devicePixelRatio to 1 so uPlot and canvas rendering execute
 // identical code paths (e.g. decimation thresholds and canvas dimensions) across browsers.
 try {

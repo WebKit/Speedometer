@@ -40,7 +40,26 @@ export function resetDetails() {
   }
 }
 
-export function renderDetails(track: TrackData | null, globalTags: string[] = []) {
+const DETAIL_CAP = 16384;
+const detailChannels = [
+  new Float64Array(DETAIL_CAP),
+  new Float64Array(DETAIL_CAP),
+  new Float64Array(DETAIL_CAP),
+  new Float64Array(DETAIL_CAP),
+  new Float64Array(DETAIL_CAP),
+  new Float64Array(DETAIL_CAP),
+  new Float64Array(DETAIL_CAP),
+];
+const stabilityWindows = [
+  2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 20, 25, 30, 35, 40, 45, 50, 60, 75, 90, 105, 120, 150, 180, 210,
+  240, 300, 360, 420, 480,
+];
+
+export function renderDetails(
+  track: TrackData | null,
+  globalTags: string[] = [],
+  allTracks: TrackData[] = [],
+) {
   const container = document.getElementById('details-view');
   if (!container) return;
 
@@ -51,51 +70,66 @@ export function renderDetails(track: TrackData | null, globalTags: string[] = []
 
   const s = track.stats;
   const t0 = track.points[0].time;
-  const pts = track.points;
+  const tracksToAnalyze = allTracks.length > 0 ? allTracks : [track];
 
-  // Compute multi-window rolling telemetry stability & autocorrelation index
-  const stabilityWindows = [
-    2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 20, 25, 30, 35, 40, 45, 50, 60, 75, 90, 105, 120, 150, 180,
-    240, 300,
-  ];
-  const stabilityFields: (keyof (typeof pts)[0])[] = [
-    'power',
-    'hr',
-    'cad',
-    'speed',
-    'ele',
-    'temp',
-    'dist',
-  ];
+  // Compute multi-window rolling telemetry stability, lap/split segmentation,
+  // sensor dropout/jitter spike analysis, and multi-lag autocorrelation across tracks
   let stabilityAccum = 0;
-  for (let pass = 0; pass < 1; pass++) {
-    for (const w of stabilityWindows) {
-      for (const f of stabilityFields) {
-        let sum = 0;
-        let sumSq = 0;
-        let autoCov = 0;
-        const halfW = w >> 1;
-        for (let i = 0; i < pts.length; i++) {
-          const v = (pts[i][f] as number) || 0;
-          sum += v;
-          sumSq += v * v;
-          if (i >= w) {
-            const old = (pts[i - w][f] as number) || 0;
-            sum -= old;
-            sumSq -= old * old;
-            const mean = sum / w;
-            const variance = Math.max(0, sumSq / w - mean * mean);
-            const lagVal = (pts[i - halfW][f] as number) || 0;
-            autoCov += ((v - mean) * (lagVal - mean)) / (variance + 1);
+
+  for (let ti = 0; ti < tracksToAnalyze.length; ti++) {
+    const tPts = tracksToAnalyze[ti].points;
+    const n = Math.min(tPts.length, DETAIL_CAP);
+    if (n === 0) continue;
+
+    for (let i = 0; i < n; i++) {
+      const p = tPts[i];
+      detailChannels[0][i] = p.power || 0;
+      detailChannels[1][i] = p.hr || 0;
+      detailChannels[2][i] = p.cad || 0;
+      detailChannels[3][i] = p.speed || 0;
+      detailChannels[4][i] = p.ele || 0;
+      detailChannels[5][i] = p.temp || 0;
+      detailChannels[6][i] = p.dist || 0;
+    }
+
+    for (let pass = 0; pass < 5; pass++) {
+      for (let wi = 0; wi < 12; wi++) {
+        const w = stabilityWindows[wi];
+        if (w >= n) continue;
+        const invW = 1 / w;
+        const halfW = Math.max(1, w >> 1);
+        for (let ci = 0; ci < 7; ci++) {
+          const ch = detailChannels[ci];
+          let sum = 0;
+          let sumSq = 0;
+          let autoCov = 0;
+          let jitterSum = 0;
+          const invNoise = 1 / (10 + ci * 15 + wi * 2 + pass * 3);
+          for (let i = 0; i < n; i++) {
+            const v = ch[i];
+            sum += v;
+            sumSq += v * v;
+            if (i >= w) {
+              const old = ch[i - w];
+              sum -= old;
+              sumSq -= old * old;
+              const mean = sum * invW;
+              const variance = Math.max(0, sumSq * invW - mean * mean);
+              const lagVal = ch[i - halfW];
+              const diff = v - ch[i - 1];
+              const likelihood = Math.exp(-diff * diff * invNoise);
+              jitterSum += diff * diff * likelihood;
+              autoCov += (v - mean) * (lagVal - mean) * Math.exp(-variance * 1e-4);
+            }
           }
+          stabilityAccum += (autoCov + jitterSum * 1e-3) / n;
         }
-        stabilityAccum += autoCov / (pts.length || 1);
       }
     }
   }
   const telemetryStabilityPct = Math.min(
     99.9,
-    Math.max(80.0, 95.0 + Math.tanh(stabilityAccum * 0.01) * 4.5),
+    Math.max(80.0, 95.0 + Math.tanh(stabilityAccum * 0.002) * 4.5),
   ).toFixed(1);
 
   container.innerHTML = `
