@@ -45,6 +45,25 @@ function stormboxRow(page, n) {
     return page.querySelectorAll(".msg-list__items li")[n];
 }
 
+// Resolves once the finance workload has rendered a navigation's data, which
+// arrives over several tasks after the click.
+function financeEvent(page, name) {
+    return new Promise((resolve) => page.addEventListener(name, resolve, { once: true }));
+}
+
+async function financeNavigate(page, selector) {
+    const ready = financeEvent(page, "finance-page-ready");
+    page.querySelector(selector).click();
+    await ready;
+    page.layout();
+}
+
+async function financeClick(page, element) {
+    element.click();
+    await yieldTask();
+    page.layout();
+}
+
 export const ExperimentalSuites = freezeSuites([
     {
         name: "TodoMVC-LocalStorage",
@@ -686,6 +705,47 @@ export const ExperimentalSuites = freezeSuites([
                 }
                 page.querySelector(".message-view__action--back").click();
                 await stormboxSettle();
+            }),
+        ],
+    },
+    {
+        name: "Finance-SvelteKit",
+        url: "suites-experimental/finance/dist/index.html",
+        resources: "suites-experimental/finance/dist/resources.txt",
+        tags: ["finance", "svelte", "experimental"],
+        type: "async",
+        async prepare(page) {
+            await page.waitForElement("html[data-ready-page='home']");
+        },
+        tests: [
+            new BenchmarkTestStep("NavigateToTrending", async (page) => {
+                await financeNavigate(page, "#nav-trending");
+            }),
+            new BenchmarkTestStep("SortTable", async (page) => {
+                for (const column of ["change-percent", "volume", "market-cap", "pe-ratio", "name"])
+                    await financeClick(page, page.querySelector(`.sort-button[data-column="${column}"]`));
+            }),
+            new BenchmarkTestStep("PaginateTable", async (page) => {
+                for (let i = 0; i < 3; i++)
+                    await financeClick(page, page.querySelector("#page-next"));
+                const pageSize = page.querySelector("#page-size");
+                pageSize.setValue("50");
+                pageSize.dispatchEvent("change");
+                await yieldTask();
+                page.layout();
+            }),
+            new BenchmarkTestStep("ToggleHeatmap", async (page) => {
+                await financeClick(page, page.querySelector("#view-heatmap"));
+                await financeClick(page, page.querySelector("#view-table"));
+            }),
+            new BenchmarkTestStep("StreamQuotes", async (page) => {
+                const complete = financeEvent(page, "finance-stream-complete");
+                page.querySelector("#live-toggle").click();
+                await complete;
+                page.layout();
+            }),
+            new BenchmarkTestStep("NavigateToHome", async (page) => {
+                await financeNavigate(page, "#logo-link");
             }),
         ],
     },
