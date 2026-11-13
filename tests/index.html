@@ -27,12 +27,13 @@
                 },
             });
 
-            await import("./unittests/benchmark-runner.mjs");
-            await import("./unittests/benchmark-configurator.mjs");
-            await import("./unittests/params.mjs");
-            await import("./unittests/preloader.mjs");
-            await import("./unittests/request-limiter.mjs");
-            await import("./unittests/suites.mjs");
+            const cacheBust = Date.now();
+            await import("./unittests/benchmark-runner.mjs?t=" + cacheBust);
+            await import("./unittests/benchmark-configurator.mjs?t=" + cacheBust);
+            await import("./unittests/params.mjs?t=" + cacheBust);
+            await import("./unittests/preloader.mjs?t=" + cacheBust);
+            await import("./unittests/request-limiter.mjs?t=" + cacheBust);
+            await import("./unittests/suites.mjs?t=" + cacheBust);
 
             globalThis.testResults = undefined;
             globalThis.testRunner = mocha.run();
@@ -54,6 +55,7 @@
                         error: {
                             name: test?.err?.name,
                             message: test?.err?.message,
+                            stack: test?.err?.stack,
                         },
                     });
                 }
