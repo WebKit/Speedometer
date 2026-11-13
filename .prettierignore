@@ -49,3 +49,5 @@ package-lock.json
 /suites-experimental/responsive-design/build-dev/
 /suites-experimental/responsive-design/**/*.generated.css
 /suites-experimental/stormbox-react/
+/suites-experimental/tools-gps-tracks-angular
+/suites-experimental/tools-gps-tracks-angular/**

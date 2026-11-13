@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weg — GPS Analysis (Angular)</title>
+    <link rel="icon" href="data:," />
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "uplot": "./uplot.mjs",
+          "fit-file-parser": "./fit-file-parser.mjs"
+        }
+      }
+    </script>
+    <script type="module" src="benchmark-override.mjs"></script>
+  </head>
+  <body class="loading-fonts">
+    <div id="benchmark-controls" style="display: none">
+      <button id="btn-step-load">Step 1: Load and Parse Files</button>
+      <button id="btn-step-analysis">Step 2: Display Analysis Metrics</button>
+      <button id="btn-step-insights">Step 3: Display Insights</button>
+      <button id="btn-step-details">Step 4: Display Details</button>
+      <button id="btn-step-aggregate">Step 5: Display Aggregate Metrics</button>
+      <button id="btn-step-evolution">Step 6: Display Evolution Metrics</button>
+      <button id="btn-step-courses">Step 7: Display Courses</button>
+    </div>
+
+    <app-root id="app"></app-root>
+
+    <div id="toast-container"></div>
+    <div id="hist-tooltip"></div>
+    <div id="hist-line"></div>
+
+    <script src="tools-gps-tracks-angular.mjs" type="module"></script>
+  </body>
+</html>
