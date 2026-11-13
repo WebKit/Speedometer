@@ -88,7 +88,7 @@ export class Params {
     _parseBooleanParam(searchParams, paramKey) {
         if (!searchParams.has(paramKey))
             return false;
-        const value = searchParams.get(paramKey).toLowerCase();
+        const value = searchParams.get(paramKey)?.toLowerCase();
         searchParams.delete(paramKey);
         return value !== "false" && value !== "0";
     }

@@ -19,11 +19,11 @@ export class ResourcePreloader {
     }
 
     _isServiceWorkerSupported() {
-        return "serviceWorker" in navigator && Boolean(navigator.serviceWorker);
+        return Boolean(globalThis.navigator?.serviceWorker);
     }
 
     _serializeParams(suitesOrParams = this._params, maybeSuites = undefined) {
-        const targetParams = suitesOrParams && typeof suitesOrParams.toSearchParams === "function" ? suitesOrParams : this._params;
+        const targetParams = typeof suitesOrParams?.toSearchParams === "function" ? suitesOrParams : this._params;
         const suites = Array.isArray(suitesOrParams) ? suitesOrParams : maybeSuites;
         const searchParamsStr = targetParams.toSearchParams();
         if (!Array.isArray(suites))
@@ -72,43 +72,38 @@ export class ResourcePreloader {
 
         const expectedScope = new URL("./", window.location.href).href;
         let unregisteredActive = false;
-        if (typeof navigator.serviceWorker.getRegistrations === "function") {
-            const existingRegistrations = await navigator.serviceWorker.getRegistrations();
-            for (const existing of existingRegistrations) {
-                if (existing.scope === expectedScope) {
-                    await existing.unregister();
-                    if (existing === activeRegistration)
-                        unregisteredActive = true;
-                }
+        const existingRegistrations = await navigator.serviceWorker?.getRegistrations?.() ?? [];
+        for (const existing of existingRegistrations) {
+            if (existing.scope === expectedScope) {
+                await existing.unregister?.();
+                if (existing === activeRegistration)
+                    unregisteredActive = true;
             }
         }
-        if (activeRegistration && !unregisteredActive && typeof activeRegistration.unregister === "function") {
-            if (!activeRegistration.scope || activeRegistration.scope === expectedScope)
-                await activeRegistration.unregister();
-        }
-
+        if (!unregisteredActive && (!activeRegistration?.scope || activeRegistration.scope === expectedScope))
+            await activeRegistration?.unregister?.();
     }
 
     async _registerServiceWorker() {
         if (!this._isServiceWorkerSupported())
             return;
 
-        this._registration = await navigator.serviceWorker.register("./sw.mjs", { type: "module" });
-        const readyRegistration = await navigator.serviceWorker.ready;
-        this._sw = this._registration?.active || readyRegistration?.active || navigator.serviceWorker.controller || null;
+        this._registration = await navigator.serviceWorker?.register("./sw.mjs", { type: "module" });
+        const readyRegistration = await navigator.serviceWorker?.ready;
+        this._sw = this._registration?.active || readyRegistration?.active || navigator.serviceWorker?.controller || null;
     }
 
     _setupMessageListener() {
         if (!this._isServiceWorkerSupported() || this._messageListenerAdded)
             return;
-        navigator.serviceWorker.addEventListener("message", this._boundOnMessage);
+        navigator.serviceWorker?.addEventListener("message", this._boundOnMessage);
         this._messageListenerAdded = true;
     }
 
     _removeMessageListener() {
         if (!this._isServiceWorkerSupported() || !this._messageListenerAdded)
             return;
-        navigator.serviceWorker.removeEventListener("message", this._boundOnMessage);
+        navigator.serviceWorker?.removeEventListener("message", this._boundOnMessage);
         this._messageListenerAdded = false;
     }
 
@@ -126,7 +121,7 @@ export class ResourcePreloader {
     }
 
     onMessage(event) {
-        const data = event.data || {};
+        const data = event?.data || {};
 
         if (data.type === SW_MESSAGES.FATAL_ERROR) {
             globalThis.benchmarkClient?.handleError(new Error(data.message));
@@ -182,27 +177,27 @@ export class ResourcePreloader {
             }
 
             this._pendingRequest = { type: messageData.type, requestId, resolve, reject, timeoutId };
-            this._sw.postMessage(payload);
+            this._sw?.postMessage(payload);
         });
     }
 
     _resolvePendingRequest(data = null) {
         const pendingRequest = this._pendingRequest;
         this._pendingRequest = null;
-        if (pendingRequest.timeoutId)
+        if (pendingRequest?.timeoutId)
             clearTimeout(pendingRequest.timeoutId);
 
-        pendingRequest.resolve(data);
+        pendingRequest?.resolve(data);
     }
 
     _rejectPendingRequest(errorMessage) {
         const pendingRequest = this._pendingRequest;
         this._pendingRequest = null;
-        if (pendingRequest.timeoutId)
+        if (pendingRequest?.timeoutId)
             clearTimeout(pendingRequest.timeoutId);
 
         console.warn(errorMessage);
-        pendingRequest.reject(new Error(errorMessage));
+        pendingRequest?.reject(new Error(errorMessage));
     }
 
     async teardown() {
@@ -322,20 +317,12 @@ export class PreloadStatusUpdater {
     }
 
     start() {
-        if (this._rafId) {
-            cancelAnimationFrame(this._rafId);
-            this._rafId = null;
-        }
-        this._latestData = null;
-        if (this._progressCompletedElement) {
-            this._progressCompletedElement.max = 1;
-            this._progressCompletedElement.value = 0;
-        }
-        if (this._infoLabelElement)
-            this._infoLabelElement.textContent = "";
-        if (this._infoProgressElement)
-            this._infoProgressElement.textContent = "";
-        document.body?.style.setProperty("--preload-progress", "0%");
+        this.stop();
+        this._progressCompletedElement.max = 1;
+        this._progressCompletedElement.value = 0;
+        this._infoLabelElement.textContent = "";
+        this._infoProgressElement.textContent = "";
+        document.body.style.setProperty("--preload-progress", "0%");
     }
 
     onProgress(data) {
@@ -351,17 +338,13 @@ export class PreloadStatusUpdater {
             return;
 
         const { loaded, total, url, suiteName } = data;
-        document.body?.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
-        if (this._progressCompletedElement) {
-            this._progressCompletedElement.max = total > 0 ? total : 1;
-            this._progressCompletedElement.value = total > 0 ? loaded : 0;
-        }
-        const match = typeof url === "string" ? url.match(/(?:suites(?:-experimental)?|resources)\/(.+)$/) : null;
-        const filename = match ? match[1] : "";
-        if (this._infoLabelElement)
-            this._infoLabelElement.textContent = `${suiteName}: ${filename}`;
-        if (this._infoProgressElement)
-            this._infoProgressElement.textContent = `${loaded} / ${total}`;
+        document.body.style.setProperty("--preload-progress", `${total > 0 ? (loaded / total) * 100 : 100}%`);
+        this._progressCompletedElement.max = total > 0 ? total : 1;
+        this._progressCompletedElement.value = total > 0 ? loaded : 0;
+        const match = url?.match(/(?:suites(?:-experimental)?|resources)\/(.+)$/);
+        const filename = match?.[1] ?? "";
+        this._infoLabelElement.textContent = `${suiteName}: ${filename}`;
+        this._infoProgressElement.textContent = `${loaded} / ${total}`;
     }
 
     stop() {

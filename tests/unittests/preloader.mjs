@@ -44,9 +44,7 @@ function createMockServiceWorkerEnv(scopeUrl) {
                 listeners.delete(type);
         }),
         emitMessage(data) {
-            const handler = listeners.get("message");
-            if (handler)
-                handler({ data });
+            listeners.get("message")?.({ data });
         },
     };
     return { serviceWorkerContainer, registration, activeWorker, listeners };

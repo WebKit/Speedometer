@@ -25,10 +25,8 @@ async function handleStopPreloadingMessage(event) {
 }
 
 function abortActivePreload() {
-    if (WORKER_STATE.abortController) {
-        WORKER_STATE.abortController.abort();
-        WORKER_STATE.abortController = null;
-    }
+    WORKER_STATE.abortController?.abort();
+    WORKER_STATE.abortController = null;
     WORKER_STATE.requestLimiter.clear();
 }
 
@@ -65,10 +63,10 @@ async function handlePreloadSuitesMessage(event, { suites = [], clearCache = tru
         signal.throwIfAborted();
         replyToClient(event, SW_MESSAGES.PRELOAD_DONE, { transferredSize, count });
     } catch (error) {
-        if (error.name === "AbortError" || signal.aborted)
+        if (error?.name === "AbortError" || signal.aborted)
             return;
         console.error("Error during preload:", error);
-        replyError(event, error.message || "Failed to preload resources.");
+        replyError(event, error?.message || "Failed to preload resources.");
     } finally {
         if (WORKER_STATE.abortController === abortController)
             WORKER_STATE.abortController = null;
@@ -108,7 +106,7 @@ async function preloadSuites(suites, clearCache, onProgress, signal) {
         transferredSize += size;
         loaded++;
         if (!signal.aborted)
-            onProgress({ loaded, total, url: item.url, suiteName: item.suiteName });
+            onProgress?.({ loaded, total, url: item.url, suiteName: item.suiteName });
     });
 
     await Promise.all(promises);
@@ -120,7 +118,7 @@ async function getUrlsToCache(suites, signal) {
     const urlsToCache = [];
     for (const suite of suites) {
         signal.throwIfAborted();
-        if (suite.resources)
+        if (suite?.resources)
             urlsToCache.push(...await parseSuiteResources(suite, signal));
     }
 
