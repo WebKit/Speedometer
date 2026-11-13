@@ -8,11 +8,11 @@ import { registerLockupElements } from "./lockup-elements.js";
 import { generateWatchResponse } from "./data.js";
 
 const SESSION_CONFIG = {
-    cachedCardCount: 32,
-    runtimeModuleCount: 220,
-    warmupNavigations: 22,
-    navigationsPerStep: 192,
-    warmupBindingCount: 730,
+    cachedCardCount: 104,
+    runtimeModuleCount: 110,
+    warmupNavigations: 15,
+    navigationsPerStep: 186,
+    warmupBindingCount: 600,
 };
 
 const NAVIGATION_CONFIG = {
@@ -24,13 +24,32 @@ const NAVIGATION_CONFIG = {
     transcriptCueCount: 16,
     visibleTranscriptCues: 8,
     bindingCount: 790,
-    domQueryPasses: 34,
-    retainDomQueryCount: 13,
-    maxRetainedDomSteps: 12,
+    retainDomQueryCount: 12,
+    maxRetainedDomSteps: 6,
     retainedCueGroups: 2,
-    maxHistoryEntries: 7,
-    routeCacheWindow: 12,
+    maxHistoryEntries: 4,
+    routeCacheWindow: 6,
 };
+
+const PANEL_DOM_QUERIES = [
+    { component: "watchMetadata", attr: "data-active-chapter", panelSelector: ".chapter-pill", hostSelector: ".vw-chapter-scope" },
+    { component: "playlistPanel", attr: "data-active-row", panelSelector: ".pl-row", hostSelector: ".vw-playlist-scope" },
+    { component: "transcriptPanel", attr: "data-active-cue", panelSelector: ".ytd-transcript-segment", hostSelector: ".vw-cue-scope" },
+    { component: "commentsSection", attr: "data-active-thread", panelSelector: "ytd-comment-thread-renderer", hostSelector: ".vw-thread-scope" },
+    { component: "secondaryResults", attr: "data-active-lockup", panelSelector: "yt-lockup-view-model", hostSelector: ".vw-lockup-scope" },
+    { component: "transcriptPanel", attr: "data-token-sync", panelSelector: ".segment-word-token", hostSelector: ".vw-token-scope" },
+    { component: "transcriptPanel", attr: "data-phoneme-sync", panelSelector: ".tok-phoneme", hostSelector: ".vw-phoneme-scope" },
+    { component: "transcriptPanel", attr: "data-surface-sync", panelSelector: ".tok-surface", hostSelector: ".vw-surface-scope" },
+    { component: "watchMetadata", attr: "data-control-focus", panelSelector: "button", hostSelector: ".vw-control-scope" },
+    { component: "secondaryResults", attr: "data-chip-sync", panelSelector: ".chip-pill", hostSelector: ".vw-chip-scope" },
+    { component: "transcriptPanel", attr: "data-svg-sync", panelSelector: "svg", hostSelector: ".vw-svg-scope" },
+    { component: "watchMetadata", attr: "data-path-sync", panelSelector: "path", hostSelector: ".vw-path-scope" },
+    { component: "transcriptPanel", attr: "data-timestamp-sync", panelSelector: ".segment-timestamp", hostSelector: ".vw-time-scope" },
+    { component: "commentsSection", attr: "data-header-sync", panelSelector: ".comments-title", hostSelector: ".vw-header-scope" },
+    { component: "playlistPanel", attr: "data-title-sync", panelSelector: ".pl-item-title", hostSelector: ".vw-title-scope" },
+];
+
+const HOST_SCOPE_CLASS_STRING = PANEL_DOM_QUERIES.map((q) => q.hostSelector.slice(1)).join(" ");
 
 const TRANSCRIPT_SEGMENT_TEMPLATE = (() => {
     const tpl = document.createElement("template");
@@ -56,12 +75,12 @@ const TRANSCRIPT_SEGMENT_TEMPLATE = (() => {
                 <div class="segment-confidence-bar">
                     <svg class="segment-wave-svg" viewBox="0 0 120 12" preserveAspectRatio="none">
                         <defs>
-                            <linearGradient id="segWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <linearGradient class="seg-wave-grad" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="0%" stop-color="#3ea6ff" stop-opacity="0.8"></stop>
                                 <stop offset="100%" stop-color="#f00" stop-opacity="0.5"></stop>
                             </linearGradient>
                         </defs>
-                        <rect x="0" y="2" width="120" height="8" rx="2" fill="url(#segWaveGrad)"></rect>
+                        <rect x="0" y="2" width="120" height="8" rx="2" fill="rgba(62, 166, 255, 0.45)"></rect>
                         <path class="segment-wave-path" d="M 0 6 Q 30 1 60 6 T 120 6" fill="none" stroke="#fff" stroke-width="1"></path>
                     </svg>
                 </div>
@@ -78,9 +97,9 @@ const COMMENT_REPLY_TEMPLATE = (() => {
             <span class="reply-avatar" aria-hidden="true">
                 <svg viewBox="0 0 24 24" width="16" height="16">
                     <defs>
-                        <clipPath id="avatarClip"><circle cx="12" cy="12" r="10"></circle></clipPath>
+                        <clipPath class="avatar-clip"><circle cx="12" cy="12" r="10"></circle></clipPath>
                     </defs>
-                    <g clip-path="url(#avatarClip)">
+                    <g>
                         <rect x="0" y="0" width="24" height="24" fill="rgba(255,255,255,0.12)"></rect>
                         <circle cx="12" cy="9" r="4" fill="currentColor"></circle>
                         <path d="M5 21c1.8-4 12.2-4 14 0" fill="currentColor"></path>
@@ -187,16 +206,16 @@ export class YtdWatchMetadata extends VideoWatchPolymerElement {
     }
 
     applyPlayerAndWatchNext(playerResponse, watchNextResponse) {
-        const details = playerResponse?.videoDetails || {};
-        this.titleText = details.title || "";
-        this.channelName = details.author || "";
-        this.channelSubs = details.subscriberCountText || "";
-        this.viewCountText = details.viewCount || "";
-        this.publishDateText = details.publishDate || "";
-        this.likeCountText = details.likeCountText || "0";
-        this.descriptionText = details.shortDescription || "";
-        this.cueRanges = (playerResponse?.playerCueRangeSet || []).slice();
-        this._retainedNextSummary = watchNextResponse?.contents?.twoColumnWatchNextResults?.results || null;
+        const details = playerResponse.videoDetails;
+        this.titleText = details.title;
+        this.channelName = details.author;
+        this.channelSubs = details.subscriberCountText;
+        this.viewCountText = details.viewCount;
+        this.publishDateText = details.publishDate;
+        this.likeCountText = details.likeCountText;
+        this.descriptionText = details.shortDescription;
+        this.cueRanges = playerResponse.playerCueRangeSet.slice();
+        this._retainedNextSummary = watchNextResponse.contents.twoColumnWatchNextResults.results;
     }
 }
 
@@ -232,19 +251,9 @@ export class YtdPlaylistPanelRenderer extends VideoWatchPolymerElement {
     }
 
     updatePlaylist(playlistData) {
-        if (!playlistData) {
-            this.items = [];
-            return;
-        }
-        this.playlistTitle = playlistData.title || "";
-        this.ownerName = playlistData.ownerName || "";
-        this.items = [];
-        const contents = playlistData.contents || [];
-        const chunkSize = 12;
-        for (let i = 0; i < contents.length; i += chunkSize) {
-            const slice = contents.slice(i, i + chunkSize);
-            this.push("items", ...slice);
-        }
+        this.playlistTitle = playlistData.title;
+        this.ownerName = playlistData.ownerName;
+        this.items = playlistData.contents.slice();
     }
 }
 
@@ -260,7 +269,6 @@ export class YtdCommentThreadRenderer extends VideoWatchPolymerElement {
             contentText: String,
             voteCount: String,
             viewRepliesText: String,
-            replies: { type: Array, value: () => [] },
         };
     }
 
@@ -282,17 +290,14 @@ export class YtdCommentThreadRenderer extends VideoWatchPolymerElement {
 
     ready() {
         super.ready();
-        if (this.$ && this.$.repliesBox && !this._hasDelegatedReplies) {
-            this._hasDelegatedReplies = true;
-            this.$.repliesBox.addEventListener("click", (ev) => {
-                const btn = ev.target && ev.target.closest ? ev.target.closest(".reply-like-btn") : null;
-                if (btn) {
-                    const itemEl = btn.closest(".reply-item");
-                    if (itemEl)
-                        itemEl.setAttribute("data-liked", "true");
-                }
-            });
-        }
+        this.$.repliesBox.addEventListener("click", (ev) => {
+            const btn = ev.target && ev.target.closest ? ev.target.closest(".reply-like-btn") : null;
+            if (btn) {
+                const itemEl = btn.closest(".reply-item");
+                if (itemEl)
+                    itemEl.setAttribute("data-liked", "true");
+            }
+        });
         if (this._pendingReplies) {
             const pending = this._pendingReplies;
             this._pendingReplies = null;
@@ -301,47 +306,34 @@ export class YtdCommentThreadRenderer extends VideoWatchPolymerElement {
     }
 
     bindThreadData(threadRenderer) {
-        const cmt = threadRenderer?.comment?.commentRenderer || {};
-        const repRenderer = threadRenderer?.replies?.commentRepliesRenderer || {};
-        this.authorText = cmt.authorText || "";
-        this.publishedTimeText = cmt.publishedTimeText || "";
-        this.contentText = cmt.contentText || "";
-        this.voteCount = cmt.voteCount || "0";
-        this.viewRepliesText = repRenderer.viewRepliesText || "";
-        const replies = (repRenderer.contents || []).slice();
-        this.replies = replies;
+        const cmt = threadRenderer.comment.commentRenderer;
+        const repRenderer = threadRenderer.replies.commentRepliesRenderer;
+        this.authorText = cmt.authorText;
+        this.publishedTimeText = cmt.publishedTimeText;
+        this.contentText = cmt.contentText;
+        this.voteCount = cmt.voteCount;
+        this.viewRepliesText = repRenderer.viewRepliesText;
+        const replies = repRenderer.contents;
         this._boundThreadModel = threadRenderer;
 
-        if (this.$ && this.$.repliesBox)
+        if (this.$)
             this._renderReplies(replies);
         else
             this._pendingReplies = replies;
     }
 
     _renderReplies(replies) {
-        const repliesBox = this.$?.repliesBox;
-        if (!repliesBox)
-            return;
-
+        const repliesBox = this.$.repliesBox;
         repliesBox.replaceChildren();
         const frag = document.createDocumentFragment();
         for (let i = 0; i < replies.length; i++) {
-            const rep = replies[i]?.commentRenderer || {};
+            const rep = replies[i].commentRenderer;
             const clone = COMMENT_REPLY_TEMPLATE.content.cloneNode(true);
             const itemEl = clone.firstElementChild;
-            itemEl.setAttribute("data-comment-id", rep.commentId || "");
-            const authorEl = itemEl.querySelector(".reply-author");
-            const textEl = itemEl.querySelector(".reply-text");
-            const voteLabel = itemEl.querySelector(".reply-vote-label");
-            if (authorEl)
-                authorEl.textContent = `${rep.authorText || ""}: `;
-
-            if (textEl)
-                textEl.textContent = rep.contentText || "";
-
-            if (voteLabel)
-                voteLabel.textContent = rep.voteCount || "0";
-
+            itemEl.setAttribute("data-comment-id", rep.commentId);
+            itemEl.querySelector(".reply-author").textContent = `${rep.authorText}: `;
+            itemEl.querySelector(".reply-text").textContent = rep.contentText;
+            itemEl.querySelector(".reply-vote-label").textContent = rep.voteCount;
             frag.appendChild(itemEl);
         }
         repliesBox.appendChild(frag);
@@ -350,7 +342,6 @@ export class YtdCommentThreadRenderer extends VideoWatchPolymerElement {
     resetPooledElement() {
         this._boundThreadModel = null;
         this._pendingReplies = null;
-        this.replies = [];
     }
 }
 
@@ -379,53 +370,36 @@ export class YtdEngagementPanelSectionListRenderer extends VideoWatchPolymerElem
 
     ready() {
         super.ready();
-        if (this.$ && this.$.segmentsContainer && !this._hasDelegatedClick) {
-            this._hasDelegatedClick = true;
-            this.$.segmentsContainer.addEventListener("click", (ev) => {
-                const segEl = ev.target && ev.target.closest ? ev.target.closest(".ytd-transcript-segment") : null;
-                if (segEl) {
-                    this.activeCueId = segEl.getAttribute("data-cue-id") || "";
-                    segEl.setAttribute("data-selected", "true");
-                }
-            });
-        }
+        this.$.segmentsContainer.addEventListener("click", (ev) => {
+            const segEl = ev.target && ev.target.closest ? ev.target.closest(".ytd-transcript-segment") : null;
+            if (segEl) {
+                this.activeCueId = segEl.getAttribute("data-cue-id") || "";
+                segEl.setAttribute("data-selected", "true");
+            }
+        });
     }
 
-    stampTranscriptCues(indexedCues, panelLabel = "Transcript") {
+    stampTranscriptCues(cueGroups, panelLabel = "Transcript") {
         this.panelTitle = panelLabel;
-        const entries = indexedCues || [];
-        this.cueCount = entries.length;
+        this.cueCount = cueGroups.length;
         const container = this.$.segmentsContainer;
-        if (!container)
-            return;
-
         container.replaceChildren();
         const frag = document.createDocumentFragment();
-        for (let idx = 0; idx < entries.length; idx++) {
-            const entry = entries[idx];
-            const firstBinding = entry.resolvedBindings?.[0];
+        for (let idx = 0; idx < cueGroups.length; idx++) {
+            const group = cueGroups[idx].transcriptCueGroupRenderer;
+            const cue = group.cues[0].transcriptCueRenderer;
             const clone = TRANSCRIPT_SEGMENT_TEMPLATE.content.cloneNode(true);
             const segEl = clone.firstElementChild;
-            const cueId = firstBinding ? entry.cueId : `cue_${idx}`;
-            segEl.setAttribute("data-cue-id", cueId);
+            segEl.setAttribute("data-cue-id", cue.cueId);
+            segEl.querySelector(".segment-timestamp").textContent = group.formattedStartOffset;
+            segEl.querySelector(".segment-text").textContent = cue.text;
 
-            const tsEl = segEl.querySelector(".segment-timestamp");
-            if (tsEl)
-                tsEl.textContent = entry.formattedOffset || "0:00";
+            const slotNodes = segEl.querySelector(".segment-tokens").children;
+            const words = cue.wordTimings;
+            const count = Math.min(slotNodes.length, words.length);
+            for (let w = 0; w < count; w++)
+                slotNodes[w].textContent = words[w].word;
 
-            const textEl = segEl.querySelector(".segment-text");
-            if (textEl)
-                textEl.textContent = entry.normalizedText || "";
-
-            const tokensEl = segEl.querySelector(".segment-tokens");
-            const words = entry.words || [];
-            const bigrams = entry.bigrams || [];
-            if (tokensEl && words.length > 0) {
-                const slotNodes = tokensEl.children;
-                const count = Math.min(slotNodes.length, words.length);
-                for (let w = 0; w < count; w++)
-                    slotNodes[w].textContent = bigrams[w] || words[w].word;
-            }
             frag.appendChild(segEl);
         }
         container.appendChild(frag);
@@ -456,8 +430,8 @@ export class YtdComments extends VideoWatchPolymerElement {
     }
 
     stampCommentSection(itemSectionRenderer) {
-        this.headerText = itemSectionRenderer?.headerText || "Comments";
-        const threads = itemSectionRenderer?.contents || [];
+        this.headerText = itemSectionRenderer.headerText;
+        const threads = itemSectionRenderer.contents;
         const container = this.$.threadsContainer;
         this._stamper.stampSubtree(container, threads, (item) => {
             const el = sharedElementPool.acquire("ytd-comment-thread-renderer");
@@ -499,54 +473,31 @@ export class YtdWatchNextSecondaryResultsRenderer extends VideoWatchPolymerEleme
 
     applySecondaryResults(secondaryResults, chipContinuations) {
         this._currentData = secondaryResults;
-        this._chipContinuations = chipContinuations || {};
-        const rawChips = secondaryResults?.chipCloud?.chipCloudRenderer?.chips || [];
+        this._chipContinuations = chipContinuations;
+        const rawChips = secondaryResults.chipCloud.chipCloudRenderer.chips;
         this.chips = rawChips.slice();
         this.selectedChipIndex = 0;
-
-        const initialCommand = rawChips[0]?.chipCloudChipRenderer?.navigationEndpoint?.continuationCommand;
-        if (initialCommand) {
-            initialCommand.contents = {
-                cachedAt: performance.now(),
-                continuationItems: (secondaryResults?.results || []).slice(),
-            };
-        }
-
-        this._stampLockupList(secondaryResults?.results || []);
+        this._stampLockupList(secondaryResults.results);
     }
 
     selectFilterChip(chipIdx) {
-        if (!this._currentData)
-            return;
-
-        const rawChips = this._currentData.chipCloud?.chipCloudRenderer?.chips || [];
-        const targetChip = rawChips[chipIdx]?.chipCloudChipRenderer;
-        if (!targetChip)
-            return;
-
+        const rawChips = this._currentData.chipCloud.chipCloudRenderer.chips;
+        const targetChip = rawChips[chipIdx].chipCloudChipRenderer;
         for (let i = 0; i < rawChips.length; i++)
             rawChips[i].chipCloudChipRenderer.isSelected = i === chipIdx;
 
         this.chips = rawChips.slice();
         this.selectedChipIndex = chipIdx;
 
-        const contCommand = targetChip.navigationEndpoint?.continuationCommand;
-        let items = [];
-        if (chipIdx === 0) {
-            const allItems = contCommand?.contents?.continuationItems || this._currentData.results || [];
-            items = allItems.slice(0, 8);
-        } else {
-            const continuationPayload = this._chipContinuations[chipIdx];
-            if (contCommand && continuationPayload) {
-                contCommand.contents = continuationPayload;
-                appStore.dispatch({
-                    type: ActionTypes.PATCH_CHIP_CONTINUATION,
-                    chipIndex: chipIdx,
-                    continuationResponse: continuationPayload,
-                });
-                items = continuationPayload.onResponseReceivedEndpoints?.[0]?.reloadContinuationItemsCommand?.continuationItems || [];
-            }
-        }
+        const contCommand = targetChip.navigationEndpoint.continuationCommand;
+        const continuationPayload = this._chipContinuations[chipIdx];
+        contCommand.contents = continuationPayload;
+        appStore.dispatch({
+            type: ActionTypes.PATCH_CHIP_CONTINUATION,
+            chipIndex: chipIdx,
+            continuationResponse: continuationPayload,
+        });
+        const items = continuationPayload.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems;
         this._stampLockupList(items);
     }
 
@@ -595,9 +546,6 @@ export class YtdWatchFlexy extends VideoWatchPolymerElement {
 
     bootstrapSessionAppShell(cachedCardCount = SESSION_CONFIG.cachedCardCount, runtimeModuleCount = SESSION_CONFIG.runtimeModuleCount) {
         const poolHost = this.$.pagePoolHost;
-        if (!poolHost || poolHost.childElementCount > 0)
-            return;
-
         const prewarmedThreads = [];
         const prewarmedLockups = [];
         for (let i = 0; i < 16; i++) {
@@ -609,6 +557,17 @@ export class YtdWatchFlexy extends VideoWatchPolymerElement {
             sharedElementPool.release(prewarmedLockups[i]);
         }
 
+        const cachedSegTemplate = TRANSCRIPT_SEGMENT_TEMPLATE.content.cloneNode(true);
+        const cachedRepTemplate = COMMENT_REPLY_TEMPLATE.content.cloneNode(true);
+        for (const el of cachedSegTemplate.querySelectorAll("*")) {
+            const cur = el.getAttribute("class");
+            el.setAttribute("class", cur ? `${cur} ${HOST_SCOPE_CLASS_STRING}` : HOST_SCOPE_CLASS_STRING);
+        }
+        for (const el of cachedRepTemplate.querySelectorAll("*")) {
+            const cur = el.getAttribute("class");
+            el.setAttribute("class", cur ? `${cur} ${HOST_SCOPE_CLASS_STRING}` : HOST_SCOPE_CLASS_STRING);
+        }
+
         const routes = ["home", "subscriptions", "channels", "guide"];
         const perRoute = Math.floor(cachedCardCount / routes.length);
         const outerFrag = document.createDocumentFragment();
@@ -618,11 +577,11 @@ export class YtdWatchFlexy extends VideoWatchPolymerElement {
             routeEl.setAttribute("data-page-subtype", routes[r]);
             for (let i = 0; i < perRoute; i++) {
                 const idx = r * perRoute + i;
-                const segClone = TRANSCRIPT_SEGMENT_TEMPLATE.content.cloneNode(true);
+                const segClone = cachedSegTemplate.cloneNode(true);
                 const segEl = segClone.firstElementChild;
                 segEl.setAttribute("data-cached-card", `${routes[r]}_${idx}`);
                 segEl.style.setProperty("--yt-card-order", String(idx));
-                const repClone = COMMENT_REPLY_TEMPLATE.content.cloneNode(true);
+                const repClone = cachedRepTemplate.cloneNode(true);
                 const repEl = repClone.firstElementChild;
                 repEl.setAttribute("data-cached-meta", `${routes[r]}_meta_${idx}`);
                 repEl.style.setProperty("--yt-meta-slot", String(i));
@@ -648,9 +607,6 @@ export class YtdWatchFlexy extends VideoWatchPolymerElement {
      * per-navigation state.
      */
     _bootstrapComponentRegistry(moduleCount = SESSION_CONFIG.runtimeModuleCount) {
-        if (this._componentRegistry)
-            return;
-
         const modules = new Array(moduleCount);
         const endpointIndex = new Map();
         for (let m = 0; m < moduleCount; m++) {
@@ -735,98 +691,64 @@ export class YtdWatchFlexy extends VideoWatchPolymerElement {
         };
     }
 
-    _stampPlayerHeatmap(cueRanges, tokenIndex) {
+    _stampPlayerHeatmap(cueRanges) {
         const container = this.$.playerHeatmap;
-        if (!container)
-            return;
-
         container.replaceChildren();
         const frag = document.createDocumentFragment();
-        const ranges = cueRanges || [];
-        const indexed = tokenIndex || [];
-        for (let i = 0; i < ranges.length; i++) {
-            const cue = ranges[i];
-            const cueTokens = indexed[i % Math.max(1, indexed.length)];
-            const midBinding = cueTokens?.resolvedBindings?.[cueTokens.resolvedBindings.length >> 1];
+        for (let i = 0; i < cueRanges.length; i++) {
+            const cue = cueRanges[i];
             const clone = HEATMAP_CHAPTER_TEMPLATE.content.cloneNode(true);
             const chEl = clone.firstElementChild;
-            const windowOffset = midBinding ? midBinding.timingWindow.durationMs - 250 : 0;
-            chEl.setAttribute("data-start-ms", String(cue.startTimeMs + windowOffset));
-            chEl.setAttribute("data-end-ms", String(cue.endTimeMs + windowOffset));
-
-            const pathEl = chEl.querySelector(".ytp-heat-map-path");
-            if (pathEl && cue.heatmapPath)
-                pathEl.setAttribute("d", cue.heatmapPath);
-
-            const markerEl = chEl.querySelector(".ytp-chapter-marker");
-            if (markerEl)
-                markerEl.textContent = cue.chapterTitle;
-
+            chEl.setAttribute("data-start-ms", String(cue.startTimeMs));
+            chEl.setAttribute("data-end-ms", String(cue.endTimeMs));
+            chEl.querySelector(".ytp-heat-map-path").setAttribute("d", cue.heatmapPath);
+            chEl.querySelector(".ytp-chapter-marker").textContent = cue.chapterTitle;
             frag.appendChild(chEl);
         }
         container.appendChild(frag);
     }
 
     /**
-     * Runs post-navigation DOM subtree queries across the stamped watch layout
-     * and caches a sliding window of recent DOM node snapshots.
-     *
-     * Why this models video streaming SPA watch navigations:
-     * 1. Post-Navigation Subsystem Passes (Visibility, Layout & A11y):
-     *    When a watch navigation completes, the application's visibility
-     *    monitor, layout controllers, and accessibility focus-scope manager
-     *    query the stamped watch host tree (`ytd-watch-flexy`) and child
-     *    component shadow roots (`watchMetadata`, `playlistPanel`,
-     *    `transcriptPanel`, `commentsSection`, `secondaryResults`) to register
-     *    `IntersectionObserver` targets, measure layout containers, and update
-     *    landmark registries.
-     * 2. Bounded Snapshot Retention (`_retainedDomSnapshots`):
-     *    While most `querySelectorAll` `NodeList` results are consumed
-     *    ephemerally during the navigation step, visibility-diffing and
-     *    back/forward restoration controllers retain a bounded FIFO ring
-     *    buffer of recent DOM snapshots across playlist transitions before
-     *    evicting older entries.
+     * Runs post-navigation subsystem DOM scans across the component shadow roots
+     * (`watchMetadata`, `playlistPanel`, `transcriptPanel`, `commentsSection`,
+     * `secondaryResults`) and the host shadow root, marking active cursor
+     * elements for the current navigation step and retaining a bounded FIFO
+     * window of recent `NodeList` snapshots to clear expired navigation markers.
      */
-    _collectNavigationDomSnapshots(passes = NAVIGATION_CONFIG.domQueryPasses, retainCount = NAVIGATION_CONFIG.retainDomQueryCount, maxRetainedSteps = NAVIGATION_CONFIG.maxRetainedDomSteps) {
+    _collectNavigationDomSnapshots(navStep, retainCount = NAVIGATION_CONFIG.retainDomQueryCount, maxRetainedSteps = NAVIGATION_CONFIG.maxRetainedDomSteps) {
         const root = this.shadowRoot;
-        if (!root)
-            return 0;
-
-        const componentShadowRoots = [
-            this.$.watchMetadata?.shadowRoot,
-            this.$.playlistPanel?.shadowRoot,
-            this.$.transcriptPanel?.shadowRoot,
-            this.$.commentsSection?.shadowRoot,
-            this.$.secondaryResults?.shadowRoot,
-        ];
-
-        let matched = 0;
-        for (let i = 0; i < componentShadowRoots.length; i++) {
-            const subRoot = componentShadowRoots[i];
-            if (subRoot)
-                matched += subRoot.querySelectorAll("*").length;
-        }
-
+        const stepLabel = String(navStep);
         const stepSnapshots = retainCount > 0 ? [] : null;
-        for (let p = 0; p < passes; p++) {
-            const list = root.querySelectorAll("*");
-            matched += list.length;
-            if (stepSnapshots && p < retainCount)
-                stepSnapshots.push(list);
+
+        for (let i = 0; i < PANEL_DOM_QUERIES.length; i++) {
+            const sub = PANEL_DOM_QUERIES[i];
+            const compNodes = this.$[sub.component].shadowRoot.querySelectorAll(sub.panelSelector);
+            if (compNodes.length > 0)
+                compNodes[(navStep + i) % compNodes.length].setAttribute(sub.attr, stepLabel);
+
+            const hostNodes = root.querySelectorAll(sub.hostSelector);
+            if (hostNodes.length > 0) {
+                const activeIndex = (navStep + i) % hostNodes.length;
+                hostNodes[activeIndex].setAttribute(sub.attr, stepLabel);
+                if (stepSnapshots && i < retainCount)
+                    stepSnapshots.push({ list: hostNodes, activeIndex, attr: sub.attr });
+            }
         }
+
         if (stepSnapshots && maxRetainedSteps > 0) {
             if (!this._retainedDomSnapshots)
                 this._retainedDomSnapshots = [];
 
-            const baselineCount = this._retainedDomSnapshots[0]?.[0]?.length || 0;
-            this._lastSnapshotDelta = (stepSnapshots[0]?.length || 0) - baselineCount;
             this._retainedDomSnapshots.push(stepSnapshots);
             while (this._retainedDomSnapshots.length > maxRetainedSteps) {
                 const evicted = this._retainedDomSnapshots.shift();
+                for (let j = 0; j < evicted.length; j++) {
+                    const entry = evicted[j];
+                    entry.list[entry.activeIndex].removeAttribute(entry.attr);
+                }
                 evicted.length = 0;
             }
         }
-        return matched;
     }
 
     /**
@@ -895,10 +817,11 @@ export class YtdWatchFlexy extends VideoWatchPolymerElement {
         this.videoId = payload.videoId;
         this.navStep = navStep + 1;
 
-        const cueGroups = payload.watchNextResponse?.engagementPanels?.[0]?.engagementPanelSectionListRenderer?.content?.transcriptRenderer?.cueGroups || [];
+        const cueGroups = payload.watchNextResponse.engagementPanels[0].engagementPanelSectionListRenderer.content.transcriptRenderer.cueGroups;
         const tokenIndex = this._buildTranscriptAndStoryboardIndex(cueGroups, navStep, config.bindingCount);
+        const tokenCount = tokenIndex.length;
         const reg = this._componentRegistry;
-        const mutations = payload.watchNextResponse?.frameworkUpdates?.entityBatchUpdate?.mutations || [];
+        const mutations = payload.watchNextResponse.frameworkUpdates.entityBatchUpdate.mutations;
         appStore.dispatch({
             type: ActionTypes.APPLY_ENTITY_BATCH,
             mutations,
@@ -906,10 +829,12 @@ export class YtdWatchFlexy extends VideoWatchPolymerElement {
         });
         const maxHistoryEntries = config.maxHistoryEntries;
         const retainedCueGroups = config.retainedCueGroups;
-        if (config.routeCacheWindow && reg && tokenIndex.length > 0 && (navStep & 1) === 0) {
+        if (config.routeCacheWindow && reg && tokenCount > 0 && (navStep & 1) === 0) {
             const slot = (navStep >> 1) % config.routeCacheWindow;
             reg.endpointIndex.set(`active_route_${slot}`, tokenIndex[0]);
         }
+        const retainedTokens = retainedCueGroups > 0 ? tokenIndex.slice(0, retainedCueGroups) : null;
+        tokenIndex.length = 0;
         appStore.dispatch({
             type: ActionTypes.RECORD_WATCH_RESPONSE,
             videoId: payload.videoId,
@@ -917,32 +842,30 @@ export class YtdWatchFlexy extends VideoWatchPolymerElement {
             playerResponse: payload.playerResponse.videoDetails,
             watchNextResponse: {
                 responseContext: payload.watchNextResponse.responseContext,
-                tokenCount: tokenIndex.length,
-                retainedTokens: retainedCueGroups > 0 ? tokenIndex.slice(0, retainedCueGroups) : null,
+                tokenCount,
+                retainedTokens,
             },
             maxEntries: maxHistoryEntries,
         });
 
-        this._stampPlayerHeatmap(payload.playerResponse?.playerCueRangeSet, tokenIndex);
+        this._stampPlayerHeatmap(payload.playerResponse.playerCueRangeSet);
 
         const twoCol = payload.watchNextResponse.contents.twoColumnWatchNextResults;
         this.$.watchMetadata.applyPlayerAndWatchNext(payload.playerResponse, payload.watchNextResponse);
-        this.$.playlistPanel.updatePlaylist(twoCol.playlist?.playlist);
+        this.$.playlistPanel.updatePlaylist(twoCol.playlist.playlist);
 
-        const secondaryResults = twoCol.secondaryResults?.secondaryResults;
+        const secondaryResults = twoCol.secondaryResults.secondaryResults;
         this.$.secondaryResults.applySecondaryResults(secondaryResults, payload.chipContinuations);
 
-        const primaryContents = twoCol.results?.results?.contents || [];
+        const primaryContents = twoCol.results.results.contents;
         const commentSection = primaryContents.find((c) => c.itemSectionRenderer?.sectionIdentifier === "comment-item-section");
-        if (commentSection)
-            this.$.commentsSection.stampCommentSection(commentSection.itemSectionRenderer);
+        this.$.commentsSection.stampCommentSection(commentSection.itemSectionRenderer);
 
         const chipKeys = Object.keys(payload.chipContinuations).map(Number);
-        if (chipKeys.length > 0)
-            this.$.secondaryResults.selectFilterChip(chipKeys[0]);
+        this.$.secondaryResults.selectFilterChip(chipKeys[0]);
 
-        this.$.transcriptPanel.stampTranscriptCues(tokenIndex.slice(0, config.visibleTranscriptCues), `Transcript • ${payload.videoId} (${tokenIndex.length} cues)`);
-        this._collectNavigationDomSnapshots(config.domQueryPasses, config.retainDomQueryCount, config.maxRetainedDomSteps);
+        this.$.transcriptPanel.stampTranscriptCues(cueGroups.slice(0, config.visibleTranscriptCues), `Transcript • ${payload.videoId} (${tokenCount} cues)`);
+        this._collectNavigationDomSnapshots(navStep, config.retainDomQueryCount, config.maxRetainedDomSteps);
     }
 }
 
@@ -964,7 +887,6 @@ export class YtdApp extends VideoWatchPolymerElement {
                 <div class="brand">▶ VideoWatch SPA</div>
                 <div class="nav-controls">
                     <span class="status-pill" id="watch-status-text">[[statusLabel]]</span>
-                    <button id="manual-watch-nav-btn" on-click="handleRunWatchSession">Run Watch Session</button>
                 </div>
             </header>
             <ytd-watch-flexy id="watchFlexy"></ytd-watch-flexy>
@@ -993,9 +915,6 @@ export class YtdApp extends VideoWatchPolymerElement {
 export function registerPolymerShell() {
     registerLockupElements();
     const classes = [YtdWatchMetadata, YtdPlaylistPanelRenderer, YtdCommentThreadRenderer, YtdEngagementPanelSectionListRenderer, YtdComments, YtdWatchNextSecondaryResultsRenderer, YtdWatchFlexy, YtdApp];
-    for (const ctor of classes) {
-        if (!customElements.get(ctor.is))
-            customElements.define(ctor.is, ctor);
-    }
-
+    for (const ctor of classes)
+        customElements.define(ctor.is, ctor);
 }

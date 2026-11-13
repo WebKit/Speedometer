@@ -121,23 +121,22 @@ export class YtLockupViewModel extends ReactiveLockupBaseElement {
     renderTemplate(model) {
         const contentId = this._contentId.value;
         const href = this._watchUrl.value;
-        const projNodes = this._retainedProjection?.reactiveNodes;
-        const tp = projNodes ? projNodes[0].peek() : model?.trackingParams || "";
-        const vss = model?.rendererContext?.loggingContext?.vssLoggingData?.serializedContextData || "";
-        const thumb = model?.contentImage?.thumbnailViewModel || {};
+        const tp = model.trackingParams;
+        const vss = model.rendererContext.loggingContext.vssLoggingData.serializedContextData;
+        const thumb = model.contentImage.thumbnailViewModel;
         const src = this._primarySrc.value;
         const badgeText = this._badgeText.value;
         const progress = this._progressWidth.value;
-        const hiResUrl = thumb?.image?.sources?.[1]?.url || "";
-        const meta = model?.metadata?.lockupMetadataViewModel || {};
+        const hiResUrl = thumb.image.sources[1].url;
+        const meta = model.metadata.lockupMetadataViewModel;
         const title = this._titleText.value;
         const rows = this._rows.value;
-        const channelName = rows[0]?.metadataParts?.[0]?.text?.content || "";
-        const statsParts = rows[1]?.metadataParts || [];
-        const viewsText = statsParts[0]?.text?.content || "";
-        const timeText = statsParts[1]?.text?.content || "";
-        const a11y = meta?.menuButton?.buttonViewModel?.accessibilityText || "More actions";
-        const metaTp = meta?.menuButton?.buttonViewModel?.trackingParams || "meta";
+        const channelName = rows[0].metadataParts[0].text.content;
+        const statsParts = rows[1].metadataParts;
+        const viewsText = statsParts[0].text.content;
+        const timeText = statsParts[1].text.content;
+        const a11y = meta.menuButton.buttonViewModel.accessibilityText;
+        const metaTp = meta.menuButton.buttonViewModel.trackingParams;
 
         return html`
             <div class="yt-lockup-view-model" data-content-id="${contentId}" data-tp="${tp}" data-vss="${vss}">
@@ -205,6 +204,5 @@ export class YtLockupViewModel extends ReactiveLockupBaseElement {
 }
 
 export function registerLockupElements() {
-    if (!customElements.get("yt-lockup-view-model"))
-        customElements.define("yt-lockup-view-model", YtLockupViewModel);
+    customElements.define("yt-lockup-view-model", YtLockupViewModel);
 }

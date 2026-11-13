@@ -61,16 +61,6 @@ yt-lockup-view-model {
     align-items: center;
     gap: 12px;
 }
-#manual-watch-nav-btn {
-    background: #cc0000;
-    color: #fff;
-    border: none;
-    border-radius: 18px;
-    padding: 7px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-}
 .status-pill {
     font-size: 12px;
     color: var(--vw-text-secondary);

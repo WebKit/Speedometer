@@ -7,9 +7,6 @@ import { createStore, combineReducers } from "redux";
 
 let cachedComponentSheet = null;
 export function adoptComponentStyles(shadowRoot) {
-    if (!shadowRoot)
-        return;
-
     if (!cachedComponentSheet) {
         cachedComponentSheet = new window.CSSStyleSheet();
         const docSheet = document.styleSheets[0];
@@ -134,15 +131,11 @@ export class ElementPool {
     }
 
     release(el) {
-        if (!el || !el.tagName)
-            return false;
-
         const tag = el.tagName.toLowerCase();
         if (el.parentNode)
             el.parentNode.removeChild(el);
 
-        if (typeof el.resetPooledElement === "function")
-            el.resetPooledElement();
+        el.resetPooledElement();
 
         let list = this.freelists.get(tag);
         if (!list) {

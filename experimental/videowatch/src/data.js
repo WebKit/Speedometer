@@ -281,13 +281,11 @@ export function generateWatchResponse(navStep, config = {}) {
         },
     }));
 
-    const chipContinuationTabs = config.chipContinuationTabs || 1;
-    const chipContinuations = {};
-    for (let c = 1; c <= chipContinuationTabs; c++) {
-        const cIdx = ((stepSpec.chipIndex + c - 1) % (CHIP_LABELS.length - 1)) + 1;
-        const items = Array.from({ length: chipContinuationCount }, (_, i) => buildLockupItem(rng, i, navStep * 10 + cIdx, `chip${cIdx}`));
-        chipContinuations[cIdx] = {
-            onResponseReceivedEndpoints: [reloadContinuationCommand("watch-next-feed", items)],
+    const cIdx = (stepSpec.chipIndex % (CHIP_LABELS.length - 1)) + 1;
+    const chipItems = Array.from({ length: chipContinuationCount }, (_, i) => buildLockupItem(rng, i, navStep * 10 + cIdx, `chip${cIdx}`));
+    const chipContinuations = {
+        [cIdx]: {
+            onResponseReceivedEndpoints: [reloadContinuationCommand("watch-next-feed", chipItems)],
             responseContext: {
                 visitorData: `vd_chip_${rng.hexString(32)}`,
                 serviceTrackingParams: [
@@ -300,8 +298,8 @@ export function generateWatchResponse(navStep, config = {}) {
                     },
                 ],
             },
-        };
-    }
+        },
+    };
 
     const commentThreads = Array.from({ length: commentCount }, (_, i) => buildCommentThread(rng, navStep, i));
 
