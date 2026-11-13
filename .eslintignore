@@ -48,5 +48,6 @@ package-lock.json
 /suites/react-stockcharts
 
 /suites-experimental/responsive-design/build-dev/
+/suites-experimental/stormbox-react/
 /suites-experimental/tools-gps-tracks
 /suites-experimental/tools-gps-tracks/**

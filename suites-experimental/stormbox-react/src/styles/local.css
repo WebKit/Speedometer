@@ -1,0 +1,15 @@
+/* Rules for surfaces this clone adds; everything else is ported. */
+.contacts--placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: var(--panel);
+}
+
+/* ?animations=off (src/motion.ts). */
+html.no-motion *,
+html.no-motion *::before,
+html.no-motion *::after {
+  transition: none !important;
+  animation: none !important;
+}
