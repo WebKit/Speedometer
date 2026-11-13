@@ -69,10 +69,12 @@ favicons (they come from a server-side proxy) and file attachments.
 
 - `src/utils/` holds Stormbox's framework-independent modules copied
   verbatim: HTML sanitizing and srcdoc building, dark-mode email
-  adaptation, plain-text rendering, address parsing, tag model, folder
-  presentation, sender avatars. Beyond import paths, only
-  `message-row-presentation.ts` and `compose-quote.ts` changed, to format
-  dates against the fixed clock in `src/clock.ts`.
+  adaptation, address parsing, tag model, folder presentation, sender
+  avatars. Beyond import paths, `message-row-presentation.ts` and
+  `compose-quote.ts` changed to format dates against the fixed clock in
+  `src/clock.ts`, and `folder-presentation.ts` maps roles to SVG
+  components instead of SVG strings. Stormbox's `plaintext-html.ts` is
+  replaced by `plaintext-body.tsx` (see below).
 - `src/styles/styles.css` and `app.css` are Stormbox's global and shell
   stylesheets. `components.css` is generated from the components' Vue
   `<style>` blocks by `scripts/port-vue-styles.mjs`, which reproduces the
@@ -80,7 +82,7 @@ favicons (they come from a server-side proxy) and file attachments.
   `services-ui.css` holds the design tokens and button rules from
   `@thunderbirdops/services-ui`.
 - The same library versions where Stormbox uses one: DOMPurify 3.4.7,
-  Squire 2.4.6, TanStack Virtual 3.13.26, linkify 4.3.3, Vite 8.0.16.
+  Squire 2.4.6, TanStack Virtual 3.13.26, linkifyjs 4.3.3, Vite 8.0.16.
 - Icons, fonts and the component markup and class names.
 
 ## What is different
@@ -93,6 +95,20 @@ favicons (they come from a server-side proxy) and file attachments.
   `<style>` blocks and table layouts, notifications and junk. No body
   loads anything from the network.
 - Dates format in `en-US` and UTC against a fixed clock.
+- Icons and plain-text bodies are built as React elements, not injected
+  as HTML. Icons are imported with `vite-plugin-svgr` (`*.svg?react`,
+  without SVGO) and rendered by `SvgIcon`. Plain-text bodies come from
+  `plaintext-body.tsx`, which returns nested `<blockquote>`s and `<a>`s
+  from linkifyjs's tokenizer, so they skip the DOMPurify pass. The markup
+  is the same as Stormbox's. HTML bodies still go through DOMPurify and
+  `srcdoc`.
+- Stormbox and Stormbox-Vue still inject icons as `?raw` strings with
+  `v-html`, and still build plain-text bodies as an HTML string run
+  through DOMPurify. The two workloads render the same DOM but do
+  different work for icons and plain-text bodies, so a React-vs-Vue
+  comparison includes that difference. Stormbox-React results from builds
+  that still used `?raw` icons and `plaintext-html.ts` (before November
+  2026) are not comparable with later ones.
 
 ## URL parameters
 
