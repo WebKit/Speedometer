@@ -248,61 +248,131 @@ function createStackTraceAndIssueLinkProvider(term) {
     };
 }
 
-/**
- * Initialize all 4 terminal panes and attach addons
- */
-export function initTerminals() {
-    if (isInitialized)
-        return;
+function initTerminalsCore() {
+    const tabs = ["build", "links", "ncurses", "git"];
+    if (isInitialized || Object.keys(terminals).length > 0) {
+        for (const tabId of tabs) {
+            clearTabDecorations(tabId);
+            terminals[tabId]?.dispose?.();
+            delete terminals[tabId];
+            delete fitAddons[tabId];
+            const pane = document.getElementById(`pane-${tabId}`);
+            if (pane)
+                pane.replaceChildren();
+            shellIntegrationState[tabId] = { prompts: 0, commands: 0, completions: 0, cwd: "" };
+        }
+        const container = document.getElementById("terminal-container");
+        if (container)
+            container.style.width = "100%";
+        activeTabId = "build";
+        isInitialized = false;
+    }
 
     tabSwitchCounter = 0;
 
-    const tabs = ["build", "links", "ncurses", "git"];
     tabs.forEach((tabId) => initTerminalForTab(tabId));
 
-    // Populate Git tab with initial git status, graph log, and diff output
+    // 1. Populate Git tab with initial git status, graph log, and diff output + markers/decorations
     if (terminals.git && gitChunks.length > 0) {
         for (let i = 0; i < gitChunks.length; i++)
             writeSync(terminals.git, gitChunks[i]);
+
+        const gitBuf = terminals.git.buffer.active;
+        const gitCols = terminals.git.cols || 80;
+        const gitCursorLine = gitBuf.baseY + gitBuf.cursorY;
+        for (let y = 0; y < gitBuf.length; y++) {
+            const line = gitBuf.getLine(y);
+            if (!line)
+                continue;
+            const text = line.translateToString(true);
+            const isHeader = text.startsWith("==>") || text.startsWith("diff --git") || text.startsWith("@@");
+            const isAdd = !isHeader && text.startsWith("+") && !text.startsWith("+++");
+            const isDel = !isHeader && !isAdd && text.startsWith("-") && !text.startsWith("---");
+            if (isHeader || isAdd || isDel) {
+                const marker = terminals.git.registerMarker(y - gitCursorLine);
+                if (marker) {
+                    const decoration = terminals.git.registerDecoration({
+                        marker,
+                        width: Math.min(12, gitCols),
+                        overviewRulerOptions: {
+                            color: isHeader ? "#3b8eea" : isAdd ? "#23d18b" : "#f14c4c",
+                            position: isHeader ? "left" : isAdd ? "center" : "right",
+                        },
+                    });
+                    activeDecorations.git.push({ marker, decoration });
+                }
+            }
+        }
         warmUpTerminalAtlas(terminals.git);
     }
 
-    // Display initial content in all terminals so font loading, glyph texture atlas
-    // generation, and canvas renderer warmup are covered in the setup phase.
+    // 2. Populate Build tab with initial build environment banner + shell startup + first 25 configure chunks
     if (terminals.build && buildLogChunks.length > 0) {
-        for (let i = 10; i < buildLogChunks.length; i++)
-            writeSync(terminals.build, buildLogChunks[i]);
-        writeSync(terminals.build, "\x1b[2m[Tab switched to build links ncurses git at 0123456789]\x1b[0m\r\n");
-        warmUpTerminalAtlas(terminals.build);
-        writeSync(terminals.build, "\x1b[2J\x1b[3J\x1b[H");
         writeSync(terminals.build, "\x1b[36m⚡ Speedometer Terminal Emulator Suite - Initializing Build Environment...\x1b[0m\r\n\r\n");
-        for (let i = 0; i < Math.min(10, buildLogChunks.length); i++)
+        const initialBuildCount = Math.min(25, buildLogChunks.length);
+        for (let i = 0; i < initialBuildCount; i++)
             writeSync(terminals.build, buildLogChunks[i]);
-    }
-    if (terminals.links && linksChunks.length > 0) {
-        for (let i = 10; i < linksChunks.length; i++)
-            writeSync(terminals.links, linksChunks[i]);
-        warmUpTerminalAtlas(terminals.links);
-        writeSync(terminals.links, "\x1b[2J\x1b[3J\x1b[H");
-        writeSync(terminals.links, "\x1b[36m🔗 Speedometer Web Links & Traces - Initializing Link Environment...\x1b[0m\r\n\r\n");
-        for (let i = 0; i < Math.min(10, linksChunks.length); i++)
-            writeSync(terminals.links, linksChunks[i]);
-    }
-    if (terminals.ncurses && ncursesFrames.length > 0) {
-        for (let i = 0; i < ncursesFrames.length; i++) {
-            writeSync(terminals.ncurses, ncursesFrames[i]);
-            warmUpTerminalAtlas(terminals.ncurses);
+
+        const buildBuf = terminals.build.buffer.active;
+        const buildCols = terminals.build.cols || 80;
+        const buildCursorLine = buildBuf.baseY + buildBuf.cursorY;
+        for (let y = 0; y < buildBuf.length; y++) {
+            const line = buildBuf.getLine(y);
+            if (!line || line.isWrapped)
+                continue;
+            const text = line.translateToString(true);
+            if (text.includes("==> Starting") || text.includes("warning:") || text.includes("[LINK]")) {
+                const marker = terminals.build.registerMarker(y - buildCursorLine);
+                if (marker) {
+                    const decoration = terminals.build.registerDecoration({
+                        marker,
+                        width: Math.min(12, buildCols),
+                        overviewRulerOptions: {
+                            color: text.includes("warning:") ? "#e5e510" : "#11a8cd",
+                            position: "left",
+                        },
+                    });
+                    activeDecorations.build.push({ marker, decoration });
+                }
+            }
         }
-        writeSync(terminals.ncurses, ncursesFrames[0]);
+        warmUpTerminalAtlas(terminals.build);
     }
 
-    // Pre-warm glyph texture atlas across all populated buffer lines before drawing
-    // to terminal screen canvases, avoiding interleaved putImageData/drawImage flushes.
-    Object.values(terminals).forEach((term) => warmUpTerminalAtlas(term));
+    // 3. Populate Links tab with initial link/trace banner + first 20 chunks + initial link discovery
+    if (terminals.links && linksChunks.length > 0) {
+        writeSync(terminals.links, "\x1b[36m🔗 Speedometer Web Links & Traces - Initializing Link Environment...\x1b[0m\r\n\r\n");
+        const initialLinksCount = Math.min(20, linksChunks.length);
+        for (let i = 0; i < initialLinksCount; i++)
+            writeSync(terminals.links, linksChunks[i]);
 
-    // Synchronously unpause and flush all terminals during setup so texture atlases
-    // and renderer backends are 100% warmed up before benchmark step measurement begins.
-    Object.values(terminals).forEach((term) => {
+        const linkProviders = terminals.links._core?._linkProviderService?.linkProviders;
+        const linksBuf = terminals.links.buffer.active;
+        if (Array.isArray(linkProviders) && linksBuf) {
+            const maxVisibleLine = Math.min(linksBuf.length, terminals.links.rows || 30);
+            let initLinksFound = 0;
+            for (let y = 1; y <= maxVisibleLine; y++) {
+                for (let p = 0; p < linkProviders.length; p++) {
+                    linkProviders[p].provideLinks(y, (links) => {
+                        if (links)
+                            initLinksFound += links.length;
+                    });
+                }
+            }
+            terminals.links._initLinksFound = initLinksFound;
+        }
+        warmUpTerminalAtlas(terminals.links);
+    }
+
+    // 4. Populate Ncurses tab with initial system monitor dashboard frame
+    if (terminals.ncurses && ncursesFrames.length > 0) {
+        writeSync(terminals.ncurses, ncursesFrames[0]);
+        warmUpTerminalAtlas(terminals.ncurses);
+    }
+
+    // Activate build tab and synchronously unpause and flush each terminal once
+    switchTab("build", false);
+    for (const [tabId, term] of Object.entries(terminals)) {
         if (term._core && term._core._renderService) {
             const rs = term._core._renderService;
             if (rs._isPaused) {
@@ -320,16 +390,22 @@ export function initTerminals() {
             }
         }
         flushSync(term);
-    });
+        if (tabId !== "build" && term._core?._renderService)
+            term._core._renderService._isPaused = true;
+    }
 
     isInitialized = true;
-    switchTab("build");
-    Object.values(terminals).forEach((t) => flushSync(t));
-    if (window.__activeTimers) {
-        for (const id of Array.from(window.__activeTimers))
-            window.clearTimeout(id);
-        window.__activeTimers.clear();
-    }
+}
+
+/**
+ * Benchmark Step 1: Initialize all 4 terminal panes, attach addons, and populate initial shell state
+ */
+export async function initTerminals() {
+    if (!(document.fonts && document.fonts.check('400 13px "DejaVu Sans Mono"') && document.fonts.check('700 13px "DejaVu Sans Mono"')))
+        await initialFontLoad;
+
+    initTerminalsCore();
+    await finishStep();
 }
 
 function initTerminalForTab(tabId) {
@@ -654,37 +730,50 @@ function warmUpTerminalAtlas(term) {
     const renderer = term?._core?._renderService?._renderer?.value;
     const textLayer = renderer?._renderLayers?.[0];
     const atlas = textLayer?._charAtlas;
-    const bufferService = term?._core?._bufferService;
-    if (!textLayer || !atlas || !bufferService || !textLayer._workCell || !textLayer._cellColorResolver)
+    if (!textLayer || !atlas)
         return;
 
-    // Warm up ASCII 33..125 synchronously so IdleTaskQueue._doWarmUp is a no-op
-    for (let code = 33; code < 126; code++)
-        atlas.getRasterizedGlyph(code, 0, 0, 0, true);
+    // Warm up ASCII 33..125 synchronously once per shared atlas so IdleTaskQueue._doWarmUp is a no-op
+    if (!atlas._asciiWarmedUp) {
+        atlas._asciiWarmedUp = true;
+        for (let code = 33; code < 126; code++)
+            atlas.getRasterizedGlyph(code, 0, 0, 0, true);
+    }
+
+    warmUpVisibleViewportAtlas(term);
+}
+
+function warmUpVisibleViewportAtlas(term) {
+    const renderer = term?._core?._renderService?._renderer?.value;
+    const textLayer = renderer?._renderLayers?.[0];
+    const atlas = textLayer?._charAtlas;
+    const bufferService = term?._core?._bufferService;
+    const buffer = bufferService?.buffer;
+    if (!textLayer || !atlas || !bufferService || !buffer || !textLayer._workCell || !textLayer._cellColorResolver)
+        return;
 
     const cols = bufferService.cols;
+    const rows = bufferService.rows;
     const cell = textLayer._workCell;
-    const candidateBuffers = [bufferService.buffers?.normal, bufferService.buffers?.alt].filter(Boolean);
+    const lines = buffer.lines;
+    const startY = buffer.ydisp ?? buffer.ybase ?? 0;
+    const endY = Math.min(lines.length, startY + rows);
 
-    for (const buffer of candidateBuffers) {
-        const lines = buffer.lines;
-        const maxLine = Math.min(lines.length, buffer.ybase + bufferService.rows);
-        for (let y = 0; y < maxLine; y++) {
-            const line = lines.get(y);
-            if (!line)
+    for (let y = startY; y < endY; y++) {
+        const line = lines.get(y);
+        if (!line)
+            continue;
+        for (let x = 0; x < cols; x++) {
+            line.loadCell(x, cell);
+            if (cell.getWidth() === 0)
                 continue;
-            for (let x = 0; x < cols; x++) {
-                line.loadCell(x, cell);
-                if (cell.getWidth() === 0)
-                    continue;
-                const chars = cell.getChars();
-                textLayer._cellColorResolver.resolve(cell, x, y, textLayer._deviceCellWidth);
-                const res = textLayer._cellColorResolver.result;
-                if (chars && chars.length > 1)
-                    atlas.getRasterizedGlyphCombinedChar(chars, res.bg, res.fg, res.ext, true);
-                else
-                    atlas.getRasterizedGlyph(cell.getCode() || 32, res.bg, res.fg, res.ext, true);
-            }
+            const chars = cell.getChars();
+            textLayer._cellColorResolver.resolve(cell, x, y, textLayer._deviceCellWidth);
+            const res = textLayer._cellColorResolver.result;
+            if (chars && chars.length > 1)
+                atlas.getRasterizedGlyphCombinedChar(chars, res.bg, res.fg, res.ext, true);
+            else
+                atlas.getRasterizedGlyph(cell.getCode() || 32, res.bg, res.fg, res.ext, true);
         }
     }
 }
@@ -1050,7 +1139,7 @@ function serializeBufferAsAnsiAndHtml(buf, startRow, endRow, cols) {
 export async function dumpAndScroll() {
     if (!isInitialized) {
         await ensureFontsLoaded();
-        initTerminals();
+        initTerminalsCore();
     }
     const term = terminals.build;
     if (!term) {
@@ -1160,18 +1249,23 @@ export async function dumpAndScroll() {
     const serialized = serializeBufferAsAnsiAndHtml(buf, 0, buf.length, cols);
     term._lastScannedChars = selectedChars + serialized.ansi.length + serialized.html.length + diagnostics.length;
 
+    warmUpVisibleViewportAtlas(term);
     flushSync(term);
     await finishStep();
 }
 
 /**
- * Benchmark Step 2: Inline Links & Hover
+ * Benchmark Step 3: Inline Links & Hover
  * 1. Single-pass 200-entry test trace log with Web URLs, OSC 8 hyperlinks, workspace file spans, and stack frames.
  * 2. Interactive mousemove hover across 3 viewport scroll regions (top, middle, bottom) to exercise Linkifier & LinkRenderLayer.
  * 3. Full-buffer link resolution across all 4 registered providers (OscLinkProvider, WebLinksAddon,
  *    WorkspaceFileLinkProvider, StackTraceAndIssueLinkProvider) with URL/path/symbol parsing and hover tooltip updates.
  */
 export async function hoverInlineLinks() {
+    if (!isInitialized) {
+        await ensureFontsLoaded();
+        initTerminalsCore();
+    }
     const term = terminals.links;
     if (!term) {
         await finishStep();
@@ -1272,13 +1366,14 @@ export async function hoverInlineLinks() {
         term._lastLinkCount = linkCount + parsedTargets;
     }
 
+    warmUpVisibleViewportAtlas(term);
     flushSync(term);
     await finishStep();
 }
 
 /**
- * Benchmark Step 3: Ncurses Color UI
- * 1. Runs 24 distinct interactive full-screen TUI frames in the Alternate Screen Buffer (\x1b[?1049h),
+ * Benchmark Step 4: Ncurses Color UI
+ * 1. Runs 80 distinct interactive full-screen TUI frames in the Alternate Screen Buffer (\x1b[?1049h),
  *    exercising DECSTBM scroll regions (\x1b[10;25r), DeleteLine (\x1b[M), InsertLine (\x1b[L),
  *    ReverseIndex (\x1bM), cursor save/restore (\x1b7/\x1b8), EraseChars (\x1b[X), and modal overlays.
  * 2. After each frame, performs a 2D IBufferCell differential compositor pass comparing cell codepoints,
@@ -1286,6 +1381,10 @@ export async function hoverInlineLinks() {
  *    dirty-span redraw patches, flushing the renderer on major interactive TUI phase transitions.
  */
 export async function ncursesColorUI() {
+    if (!isInitialized) {
+        await ensureFontsLoaded();
+        initTerminalsCore();
+    }
     switchTab("ncurses", false);
     const term = terminals.ncurses;
     if (!term) {
@@ -1394,12 +1493,13 @@ export async function ncursesColorUI() {
     const modesFlag = term.modes.applicationCursorKeysMode ? 1 : 0;
     term._lastCellChecksum = (totalDirtyCells + totalStyleRuns + diffPatchLength + inputBytesDispatched + modesFlag) | 0;
 
+    warmUpVisibleViewportAtlas(term);
     flushSync(term);
     await finishStep();
 }
 
 /**
- * Benchmark Step 4: Switch Tabs & Resize
+ * Benchmark Step 5: Switch Tabs & Resize
  * 1. Exercises BufferReflow (_reflowSmaller and _reflowLarger) across split-pane column widths
  *    on the git terminal while responsive container width changes trigger FitAddon.fit()
  *    reflows across build and links.
@@ -1407,6 +1507,10 @@ export async function ncursesColorUI() {
  *    each tab's terminal output and fitting the active viewport.
  */
 export async function switchTabsAndResize() {
+    if (!isInitialized) {
+        await ensureFontsLoaded();
+        initTerminalsCore();
+    }
     const buildTerm = terminals.build;
     const linksTerm = terminals.links;
     const ncursesTerm = terminals.ncurses;
@@ -1420,12 +1524,14 @@ export async function switchTabsAndResize() {
     container.style.width = "96%";
     switchTab("links", false);
     writeSync(linksTerm, `\x1b[2m[Tab switched to links at ${++tabSwitchCounter}]\x1b[0m\r\n`);
+    warmUpVisibleViewportAtlas(linksTerm);
     flushSync(linksTerm);
 
     container.style.width = "100%";
 
     switchTab("ncurses", false);
     writeSync(ncursesTerm, `\x1b[26;65H\x1b[48;2;30;75;50m\x1b[38;2;230;255;230m[Switch #${++tabSwitchCounter}]\x1b[0m`);
+    warmUpVisibleViewportAtlas(ncursesTerm);
     flushSync(ncursesTerm);
 
     switchTab("git", false);
@@ -1433,16 +1539,18 @@ export async function switchTabsAndResize() {
         gitTerm,
         `\x1b[33m* ${(0xb100000 + tabSwitchCounter).toString(16)}\x1b[0m [git-status] Workspace reflow check #${++tabSwitchCounter} (3 files modified)\r\n`
     );
+    warmUpVisibleViewportAtlas(gitTerm);
     flushSync(gitTerm);
 
     switchTab("build", false);
+    warmUpVisibleViewportAtlas(buildTerm);
     flushSync(buildTerm);
 
     await finishStep();
 }
 
 /**
- * Benchmark Step 5: Layout Check
+ * Layout Check
  */
 export function layoutCheck() {
     const body = document.body.getBoundingClientRect();
@@ -1470,12 +1578,8 @@ window.addEventListener("DOMContentLoaded", async () => {
             fitAddons[activeTabId].fit();
     });
 
-    if (document.fonts && document.fonts.check('400 13px "DejaVu Sans Mono"') && document.fonts.check('700 13px "DejaVu Sans Mono"')) {
-        initTerminals();
-    } else {
-        await initialFontLoad;
-        initTerminals();
-    }
+    await initialFontLoad;
+    document.getElementById("terminal-container")?.setAttribute("data-fonts-ready", "true");
 });
 
 // Expose benchmark steps globally for Speedometer suite runner and local experimentation
@@ -1489,4 +1593,7 @@ window.terminalBenchmark = {
     switchTab,
     terminals,
     fitAddons,
+    get isInitialized() {
+        return isInitialized;
+    },
 };
