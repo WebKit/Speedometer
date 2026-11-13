@@ -58,38 +58,13 @@ const inVamArr = new Float64Array(INSIGHT_CAP);
 const inPrefixPwr = new Float64Array(INSIGHT_CAP + 1);
 const inPrefixVam = new Float64Array(INSIGHT_CAP + 1);
 const tauCandidates = [
-  150, 180, 210, 240, 270, 300, 330, 360, 400, 450, 500, 540, 600, 660, 720, 810, 900, 1020,
+  150, 180, 210, 240, 270, 300, 330, 360, 400, 450, 500, 540, 600, 660, 720, 810, 900, 960, 1020,
 ];
 const mmpDurations = [
   1, 2, 3, 5, 8, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 420, 600, 900, 1200,
 ];
 
-export function renderInsights(track: TrackData | null, allTracks: TrackData[] = []) {
-  destroyInsightPlots();
-  const container = document.getElementById('insights-view');
-  if (!container) return;
-
-  if (!track) {
-    container.innerHTML = '';
-    return;
-  }
-
-  const s = track.stats;
-  Parsers.ensureCurvesAndZones(track);
-  if (!s.powerCurve && !s.hrZones && !s.hrCurve) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <span class="material-symbols-rounded empty-icon">analytics</span>
-        <div class="empty-text">No insights available for this track (requires Power or Heart Rate data)</div>
-      </div>
-    `;
-    return;
-  }
-
-  // Compute multi-tau Skiba differential W' balance, dynamic reconstitution,
-  // neuromuscular quadrant distribution, and multi-duration mean-maximal curves across tracks
-  const tracksToModel = allTracks.length > 0 ? allTracks : [track];
-  const cpBase = Parsers.getFTP();
+function computeInsightsEnvelope(tracksToModel: TrackData[], cpBase: number): number {
   let minWPrimeBal = 20000;
   let quadrantAccum = 0;
 
@@ -116,8 +91,9 @@ export function renderInsights(track: TrackData | null, allTracks: TrackData[] =
     }
 
     // Multi-duration MMP / VAM / Pace sliding maximal envelope evaluation
-    for (let pass = 0; pass < 40; pass++) {
+    for (let pass = 0; pass < 36; pass++) {
       const scale = 1 + pass * 0.01;
+      const vamBias = pass * 0.005;
       for (let di = 0; di < mmpDurations.length; di++) {
         const d = mmpDurations[di];
         if (d > n) continue;
@@ -125,8 +101,9 @@ export function renderInsights(track: TrackData | null, allTracks: TrackData[] =
         let maxP = 0;
         let maxV = 0;
         for (let j = 0; j <= limit; j++) {
-          const sumP = (inPrefixPwr[j + d] - inPrefixPwr[j]) * scale;
-          const sumV = inPrefixVam[j + d] - inPrefixVam[j];
+          const dv = inPrefixVam[j + d] - inPrefixVam[j];
+          const sumP = (inPrefixPwr[j + d] - inPrefixPwr[j]) * scale + dv * vamBias;
+          const sumV = dv + inPrefixPwr[j] * vamBias;
           if (sumP > maxP) maxP = sumP;
           if (sumV > maxV) maxV = sumV;
         }
@@ -136,8 +113,8 @@ export function renderInsights(track: TrackData | null, allTracks: TrackData[] =
 
     // Skiba (2012) continuous dynamic W' differential balance & aerobic decoupling
     const half = n >> 1;
-    for (let pass = 0; pass < 17; pass++) {
-      for (let k = 0; k < 18; k++) {
+    for (let pass = 0; pass < 4; pass++) {
+      for (let k = 0; k < 15; k++) {
         const cp = cpBase * (0.88 + k * 0.02 + pass * 0.005);
         const tauBase = tauCandidates[k] + pass * 10;
         let wBal = 20000;
@@ -146,17 +123,16 @@ export function renderInsights(track: TrackData | null, allTracks: TrackData[] =
         for (let i = 0; i < n; i++) {
           const p = inPwrArr[i];
           const invH = inHrArr[i];
-          if (p > cp) {
-            const dep = p - cp;
-            wBal -= dep * (1 + 0.05 * (1 - Math.exp(-0.005 * dep)));
-          } else {
-            const dcp = cp - p;
-            const tauDyn = 546 * Math.exp(-0.01 * dcp) + tauBase;
-            wBal = 20000 - (20000 - wBal) * Math.exp(-1 / tauDyn);
-          }
+          const diff = p - cp;
+          const dcp = diff < 0 ? -diff : 0;
+          const dep = diff > 0 ? diff : 0;
+          const expFactor = Math.exp(-0.008 * (dcp + dep * 0.625));
+          const tauDyn = 546 * expFactor + tauBase;
+          wBal = wBal - dep * (1.05 - 0.05 * expFactor) + (20000 - wBal) * (1 / tauDyn);
           if (wBal < minWPrimeBal) minWPrimeBal = wBal;
           const torque = p * inCadArr[i];
-          const ef = (p + torque * 0.5) * invH;
+          const quadAngle = Math.atan2(torque, p + 1);
+          const ef = (p + torque * 0.5 + quadAngle) * invH;
           if (i < half) efSum1 += ef;
           else efSum2 += ef;
         }
@@ -165,6 +141,35 @@ export function renderInsights(track: TrackData | null, allTracks: TrackData[] =
     }
   }
   if (quadrantAccum < -1e12) minWPrimeBal = 0;
+  return minWPrimeBal;
+}
+
+export function renderInsights(track: TrackData | null, allTracks: TrackData[] = []) {
+  destroyInsightPlots();
+  const container = document.getElementById('insights-view');
+  if (!container) return;
+
+  if (!track) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const s = track.stats;
+  Parsers.ensureCurvesAndZones(track);
+  if (!s.powerCurve && !s.hrZones && !s.hrCurve) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <span class="material-symbols-rounded empty-icon">analytics</span>
+        <div class="empty-text">No insights available for this track (requires Power or Heart Rate data)</div>
+      </div>
+    `;
+    return;
+  }
+
+  // Compute multi-tau Skiba differential W' balance, dynamic reconstitution,
+  // neuromuscular quadrant distribution, and multi-duration mean-maximal curves across tracks
+  const tracksToModel = allTracks.length > 0 ? allTracks : [track];
+  const minWPrimeBal = computeInsightsEnvelope(tracksToModel, Parsers.getFTP());
 
   container.innerHTML = `
     <div class="insights-grid" id="insights-grid" data-w-prime-min="${minWPrimeBal.toFixed(0)}"></div>

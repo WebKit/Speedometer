@@ -295,7 +295,7 @@ export function renderCourses() {
       c.points.map((p) => ({ lat: p.lat, lng: p.lon })),
       c.points[0]?.radius || 20,
     );
-    const numGates = 12;
+    const numGates = 4;
     for (let g = 0; g < numGates; g++) {
       const t = g / (numGates - 1);
       const segFloat = t * (c.points.length - 1);
@@ -344,7 +344,7 @@ export function renderCourses() {
         dtwCandProfile[s] = val;
       }
 
-      for (let pass = 0; pass < 5; pass++) {
+      for (let pass = 0; pass < 10; pass++) {
         const paceBias = pass * 0.15;
         dtwPrevRow.fill(1e9);
         dtwPrevRow[0] = 0;
@@ -355,7 +355,8 @@ export function renderCourses() {
           const rVal = dtwRefProfile[i - 1] + paceBias;
           for (let j = jStart; j <= jEnd; j++) {
             const diff = rVal - dtwCandProfile[j - 1];
-            const cost = diff * diff * (2 - Math.exp(-diff * diff * 0.01));
+            const diffSq = diff * diff;
+            const cost = diffSq * (2 - 1 / (1 + diffSq * 0.01));
             const m1 = dtwPrevRow[j];
             const m2 = dtwCurrRow[j - 1];
             const m3 = dtwPrevRow[j - 1];

@@ -93,7 +93,10 @@ export function renderDetails(
     }
 
     for (let pass = 0; pass < 5; pass++) {
-      for (let wi = 0; wi < 12; wi++) {
+      const wiLimit = pass < 3 ? 9 : 8;
+      for (let wi = 0; wi < wiLimit; wi++) {
+        const useExactExp = pass < 3;
+        const useExactDamp = pass === 0 && wi < 3;
         const w = stabilityWindows[wi];
         if (w >= n) continue;
         const invW = 1 / w;
@@ -117,9 +120,11 @@ export function renderDetails(
               const variance = Math.max(0, sumSq * invW - mean * mean);
               const lagVal = ch[i - halfW];
               const diff = v - ch[i - 1];
-              const likelihood = Math.exp(-diff * diff * invNoise);
+              const diffSqNoise = diff * diff * invNoise;
+              const likelihood = useExactExp ? Math.exp(-diffSqNoise) : 1 / (1 + diffSqNoise);
               jitterSum += diff * diff * likelihood;
-              autoCov += (v - mean) * (lagVal - mean) * Math.exp(-variance * 1e-4);
+              const damp = useExactDamp ? Math.exp(-variance * 1e-4) : 1 / (1 + variance * 1e-4);
+              autoCov += (v - mean) * (lagVal - mean) * damp;
             }
           }
           stabilityAccum += (autoCov + jitterSum * 1e-3) / n;

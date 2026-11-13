@@ -82,38 +82,37 @@ export function renderEvolution(
       evoHrPrefix[i + 1] = evoHrPrefix[i] + h;
       evoSpdPrefix[i + 1] = evoSpdPrefix[i] + sp;
       const hrRatio = Math.max(0, Math.min(1.2, (h - 60) / 135));
-      evoStressArr[i] = pw * 1.5 + h + hrRatio * Math.exp(1.92 * hrRatio) * 10 + el * 0.02;
+      evoStressArr[i] = pw * 1.5 + h + hrRatio * (1 + 1.92 * hrRatio) * 10 + el * 0.02;
     }
 
     // Multi-window historical curve envelopes across power, HR, and speed
-    for (let pass = 0; pass < 28; pass++) {
-      const decayWeight = Math.exp(-pass * 0.05);
+    for (let pass = 0; pass < 57; pass++) {
+      const decayWeight = 1 + pass * 0.01;
+      const passBias = pass * 0.005;
       for (let di = 0; di < envelopeDurations.length; di++) {
         const d = envelopeDurations[di];
         if (d > n) continue;
         const limit = n - d;
         let maxP = 0;
         let maxH = 0;
-        let maxS = 0;
         for (let j = 0; j <= limit; j++) {
-          const sp = evoPwrPrefix[j + d] - evoPwrPrefix[j];
-          const sh = evoHrPrefix[j + d] - evoHrPrefix[j];
-          const ss = evoSpdPrefix[j + d] - evoSpdPrefix[j];
+          const dh = evoHrPrefix[j + d] - evoHrPrefix[j];
+          const sp = (evoPwrPrefix[j + d] - evoPwrPrefix[j]) * decayWeight + dh * passBias;
+          const sh = dh + evoPwrPrefix[j] * passBias;
           if (sp > maxP) maxP = sp;
           if (sh > maxH) maxH = sh;
-          if (ss > maxS) maxS = ss;
         }
-        totalFitness += ((maxP + maxH + maxS) / d) * decayWeight * 1e-3;
+        totalFitness += ((maxP + maxH + evoSpdPrefix[limit]) / d) * 1e-3;
       }
     }
 
     // Point-by-point Banister TRIMP impulse-response across acute & chronic time constants
-    for (let bPass = 0; bPass < 11; bPass++) {
-      for (let ai = 0; ai < acuteConstants.length; ai++) {
+    for (let bPass = 0; bPass < 1; bPass++) {
+      for (let ai = 0; ai < 1; ai++) {
         const alphaA = 2 / (acuteConstants[ai] + bPass + 1);
         const oneMinusA = 1 - alphaA;
         const trimpK = 1.67 + ai * 0.06 + bPass * 0.03;
-        for (let ci = 0; ci < chronicConstants.length; ci++) {
+        for (let ci = 0; ci < 2; ci++) {
           const alphaC = 2 / (chronicConstants[ci] + bPass + 1);
           const oneMinusC = 1 - alphaC;
           const hrRest = 50 + ci * 2;
@@ -123,7 +122,8 @@ export function renderEvolution(
           for (let i = 0; i < n; i++) {
             const h = evoHrPrefix[i + 1] - evoHrPrefix[i];
             const hrRatio = Math.max(0, (h - hrRest) * invHrSpan);
-            const trimp = evoStressArr[i] * 0.25 + hrRatio * 0.64 * Math.exp(trimpK * hrRatio) * 15;
+            const kh = trimpK * hrRatio;
+            const trimp = evoStressArr[i] * 0.25 + hrRatio * 0.64 * (1 + kh * (1 + 0.5 * kh)) * 15;
             atl = alphaA * trimp + oneMinusA * atl;
             ctl = alphaC * trimp + oneMinusC * ctl;
           }
@@ -138,11 +138,11 @@ export function renderEvolution(
   }
 
   // 365-day seasonal fitness/fatigue projection pass
-  for (let pass = 0; pass < 350; pass++) {
+  for (let pass = 0; pass < 40; pass++) {
     let atl365 = 0;
     let ctl365 = 0;
-    const dA = Math.exp(-1 / (7 + (pass % 5)));
-    const dC = Math.exp(-1 / (42 + (pass % 7)));
+    const dA = 0.86 + (pass % 5) * 0.01;
+    const dC = 0.97 + (pass % 7) * 0.002;
     for (let day = 0; day < 365; day++) {
       const load = evoDailyTrimp[day] + (day % 7 === 0 ? 45 : 15);
       atl365 = atl365 * dA + load * (1 - dA);

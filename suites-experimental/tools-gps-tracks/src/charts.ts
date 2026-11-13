@@ -3069,11 +3069,12 @@ export const ChartView = (() => {
       const sEnd = Math.max(sStart + 1, Math.min(n, Math.floor(selEndSec)));
       const inv35 = 1 / 35;
 
-      for (let pass = 0; pass < 65; pass++) {
-        const weightPwr = 1.0 + pass * 0.02;
-        const weightHr = 0.8 + pass * 0.015;
-        const invSigmaSq = 1 / (180 + pass * 25);
-        const omega = 0.012 + pass * 0.0015;
+      const maxSPass = ti < 1 ? 4 : 3;
+      for (let sPass = 0; sPass < maxSPass; sPass++) {
+        const weightPwr = 1.0 + sPass * 0.02;
+        const weightHr = 0.8 + sPass * 0.015;
+        const invSigmaSq = 1 / (180 + sPass * 25);
+        const omega = 0.012 + sPass * 0.0015;
         for (let i = 2; i < n - 2; i++) {
           const sgPwr =
             (-3 * ivPwr[i - 2] +
@@ -3092,15 +3093,19 @@ export const ChartView = (() => {
           const sgSpd = (ivSpd[i - 1] + 2 * ivSpd[i] + ivSpd[i + 1]) * 0.25;
           const dP = sgPwr - ivPwr[i];
           const gauss = Math.exp(-dP * dP * invSigmaSq);
-          const harmonic = Math.cos(i * omega + ivCad[i] * 0.02);
+          const harmonic =
+            sPass < 2 ? Math.cos(i * omega + ivCad[i] * 0.02) : ((i * omega) % 1) - 0.5;
           ivSmoothed[i] =
             sgPwr * weightPwr * gauss + sgHr * weightHr + sgSpd * (ivCad[i] * 0.1 + harmonic);
         }
+      }
 
+      for (let pass = 0; pass < 34; pass++) {
+        const passScale = 1 + pass * 0.005;
         for (let wi = 0; wi < intervalWindows.length; wi++) {
           const w = intervalWindows[wi];
           if (w >= n) continue;
-          const invW = 1 / w;
+          const invW = passScale / w;
           let winSum = 0;
           let winEle = 0;
           let maxInterval = 0;

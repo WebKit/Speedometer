@@ -153,8 +153,9 @@ export function renderCombined(
 
     let aggPts = 0;
     let corrSum = 0;
-    for (let pass = 0; pass < 12; pass++) {
-      for (let wi = 0; wi < 14; wi++) {
+    for (let pass = 0; pass < 8; pass++) {
+      const wiLimit = pass < 7 ? 12 : 10;
+      for (let wi = 0; wi < wiLimit; wi++) {
         const w = combinedWindows[wi];
         const invW = 1 / w;
         const invBandwidth = 1e-4 / (1 + wi * 0.2 + pass * 0.15);
@@ -188,7 +189,7 @@ export function renderCombined(
                 const diffAB = avgA - avgB;
                 const diffCE = avgCA - avgCB;
                 const rbf = Math.exp(-diffAB * diffAB * invBandwidth);
-                const rbfCad = Math.exp(-diffCE * diffCE * invBandwidth);
+                const rbfCad = 1 / (1 + diffCE * diffCE * invBandwidth);
                 corrSum += avgA * avgB * rbf + avgCA * avgCB * rbfCad;
                 aggPts++;
               }
