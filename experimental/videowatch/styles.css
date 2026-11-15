@@ -168,6 +168,9 @@ yt-lockup-view-model {
     background: var(--vw-bg-base);
     border: 1px solid var(--vw-border-layer);
 }
+.ytd-transcript-segment[data-archived="true"] {
+    display: none;
+}
 .segment-timestamp {
     color: #065fd4;
     font-weight: 600;

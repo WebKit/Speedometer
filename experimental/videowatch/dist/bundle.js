@@ -15634,7 +15634,7 @@ function generateWatchResponse(navStep, config = {}) {
  */
 
 const SESSION_CONFIG = {
-    cachedCardCount: 104,
+    cachedCardCount: 16,
     runtimeModuleCount: 110,
     warmupNavigations: 15,
     navigationsPerStep: 186,
@@ -15648,9 +15648,9 @@ const NAVIGATION_CONFIG = {
     entityMutationCount: 24,
     chipContinuationCount: 8,
     transcriptCueCount: 16,
-    visibleTranscriptCues: 8,
+    maxTranscriptSegments: 312,
     bindingCount: 790,
-    retainDomQueryCount: 12,
+    retainDomQueryCount: 13,
     maxRetainedDomSteps: 6,
     retainedCueGroups: 2,
     maxHistoryEntries: 4,
@@ -15658,24 +15658,17 @@ const NAVIGATION_CONFIG = {
 };
 
 const PANEL_DOM_QUERIES = [
-    { component: "watchMetadata", attr: "data-active-chapter", panelSelector: ".chapter-pill", hostSelector: ".vw-chapter-scope" },
-    { component: "playlistPanel", attr: "data-active-row", panelSelector: ".pl-row", hostSelector: ".vw-playlist-scope" },
-    { component: "transcriptPanel", attr: "data-active-cue", panelSelector: ".ytd-transcript-segment", hostSelector: ".vw-cue-scope" },
-    { component: "commentsSection", attr: "data-active-thread", panelSelector: "ytd-comment-thread-renderer", hostSelector: ".vw-thread-scope" },
-    { component: "secondaryResults", attr: "data-active-lockup", panelSelector: "yt-lockup-view-model", hostSelector: ".vw-lockup-scope" },
-    { component: "transcriptPanel", attr: "data-token-sync", panelSelector: ".segment-word-token", hostSelector: ".vw-token-scope" },
-    { component: "transcriptPanel", attr: "data-phoneme-sync", panelSelector: ".tok-phoneme", hostSelector: ".vw-phoneme-scope" },
-    { component: "transcriptPanel", attr: "data-surface-sync", panelSelector: ".tok-surface", hostSelector: ".vw-surface-scope" },
-    { component: "watchMetadata", attr: "data-control-focus", panelSelector: "button", hostSelector: ".vw-control-scope" },
-    { component: "secondaryResults", attr: "data-chip-sync", panelSelector: ".chip-pill", hostSelector: ".vw-chip-scope" },
-    { component: "transcriptPanel", attr: "data-svg-sync", panelSelector: "svg", hostSelector: ".vw-svg-scope" },
-    { component: "watchMetadata", attr: "data-path-sync", panelSelector: "path", hostSelector: ".vw-path-scope" },
-    { component: "transcriptPanel", attr: "data-timestamp-sync", panelSelector: ".segment-timestamp", hostSelector: ".vw-time-scope" },
-    { component: "commentsSection", attr: "data-header-sync", panelSelector: ".comments-title", hostSelector: ".vw-header-scope" },
-    { component: "playlistPanel", attr: "data-title-sync", panelSelector: ".pl-item-title", hostSelector: ".vw-title-scope" },
+    { component: "watchMetadata", attr: "data-active-chapter", selector: ".chapter-pill" },
+    { component: "playlistPanel", attr: "data-active-row", selector: ".pl-row" },
+    { component: "transcriptPanel", attr: "data-active-cue", selector: ".ytd-transcript-segment" },
+    { component: "transcriptPanel", attr: "data-token-sync", selector: ".segment-word-token" },
+    { component: "transcriptPanel", attr: "data-slot-sync", selector: "[data-slot]" },
+    { component: "transcriptPanel", attr: "data-cue-span", selector: ".segment-tokens span" },
+    { component: "commentsSection", attr: "data-active-thread", selector: "ytd-comment-thread-renderer" },
+    { component: "commentsSection", attr: "data-active-reply", selector: ".reply-item" },
+    { component: "secondaryResults", attr: "data-active-lockup", selector: "yt-lockup-view-model" },
+    { component: "secondaryResults", attr: "data-active-chip", selector: ".chip-pill" },
 ];
-
-const HOST_SCOPE_CLASS_STRING = PANEL_DOM_QUERIES.map((q) => q.hostSelector.slice(1)).join(" ");
 
 const TRANSCRIPT_SEGMENT_TEMPLATE = (() => {
     const tpl = document.createElement("template");
@@ -15691,12 +15684,22 @@ const TRANSCRIPT_SEGMENT_TEMPLATE = (() => {
             <div class="segment-body">
                 <div class="segment-text"></div>
                 <div class="segment-tokens">
-                    <span class="segment-word-token" data-slot="0"><em class="tok-phoneme"></em><b class="tok-surface"></b></span>
-                    <span class="segment-word-token" data-slot="1"><em class="tok-phoneme"></em><b class="tok-surface"></b></span>
-                    <span class="segment-word-token" data-slot="2"><em class="tok-phoneme"></em><b class="tok-surface"></b></span>
-                    <span class="segment-word-token" data-slot="3"><em class="tok-phoneme"></em><b class="tok-surface"></b></span>
-                    <span class="segment-word-token" data-slot="4"><em class="tok-phoneme"></em><b class="tok-surface"></b></span>
-                    <span class="segment-word-token" data-slot="5"><em class="tok-phoneme"></em><b class="tok-surface"></b></span>
+                    <span class="segment-word-token" data-slot="0"></span>
+                    <span class="segment-word-token" data-slot="1"></span>
+                    <span class="segment-word-token" data-slot="2"></span>
+                    <span class="segment-word-token" data-slot="3"></span>
+                    <span class="segment-word-token" data-slot="4"></span>
+                    <span class="segment-word-token" data-slot="5"></span>
+                    <span class="segment-word-token" data-slot="6"></span>
+                    <span class="segment-word-token" data-slot="7"></span>
+                    <span class="segment-word-token" data-slot="8"></span>
+                    <span class="segment-word-token" data-slot="9"></span>
+                    <span class="segment-word-token" data-slot="10"></span>
+                    <span class="segment-word-token" data-slot="11"></span>
+                    <span class="segment-word-token" data-slot="12"></span>
+                    <span class="segment-word-token" data-slot="13"></span>
+                    <span class="segment-word-token" data-slot="14"></span>
+                    <span class="segment-word-token" data-slot="15"></span>
                 </div>
                 <div class="segment-confidence-bar">
                     <svg class="segment-wave-svg" viewBox="0 0 120 12" preserveAspectRatio="none">
@@ -15957,9 +15960,14 @@ class YtdCommentThreadRenderer extends VideoWatchPolymerElement {
             const clone = COMMENT_REPLY_TEMPLATE.content.cloneNode(true);
             const itemEl = clone.firstElementChild;
             itemEl.setAttribute("data-comment-id", rep.commentId);
-            itemEl.querySelector(".reply-author").textContent = `${rep.authorText}: `;
-            itemEl.querySelector(".reply-text").textContent = rep.contentText;
-            itemEl.querySelector(".reply-vote-label").textContent = rep.voteCount;
+            const itemChildren = itemEl.children;
+            itemChildren[1].textContent = `${rep.authorText}: `;
+            itemChildren[2].textContent = rep.contentText;
+            const actionsEl = itemChildren[3];
+            const likeBtn = actionsEl.firstElementChild;
+            likeBtn.setAttribute("aria-label", `Like reply from ${rep.authorText}`);
+            likeBtn.lastElementChild.textContent = rep.voteCount;
+            actionsEl.lastElementChild.setAttribute("aria-label", `Dislike reply from ${rep.authorText}`);
             frag.appendChild(itemEl);
         }
         repliesBox.appendChild(frag);
@@ -16005,30 +16013,53 @@ class YtdEngagementPanelSectionListRenderer extends VideoWatchPolymerElement {
         });
     }
 
-    stampTranscriptCues(cueGroups, panelLabel = "Transcript") {
+    /**
+     * Updates the transcript engagement panel for the active video while
+     * maintaining a bounded history of prior videos' transcript segments
+     * (`maxSegments`).
+     *
+     * Prior segments in `#segmentsContainer` are archived (`data-archived="true"`,
+     * hidden via CSS) and recycled FIFO once the container reaches `maxSegments`.
+     * As each cue is appended and reordered to the tail of `#segmentsContainer`,
+     * a live `.segment-word-token` `NodeList` snapshot is captured against the
+     * updated shadow root for navigation cursor tracking.
+     */
+    stampTranscriptCues(cueGroups, panelLabel = "Transcript", maxSegments = NAVIGATION_CONFIG.maxTranscriptSegments) {
         this.panelTitle = panelLabel;
-        this.cueCount = cueGroups.length;
         const container = this.$.segmentsContainer;
-        container.replaceChildren();
-        const frag = document.createDocumentFragment();
+        const root = this.shadowRoot;
+        for (let el = container.lastElementChild; el && !el.hasAttribute("data-archived"); el = el.previousElementSibling)
+            el.setAttribute("data-archived", "true");
+
+        const cueSnapshots = [];
         for (let idx = 0; idx < cueGroups.length; idx++) {
             const group = cueGroups[idx].transcriptCueGroupRenderer;
             const cue = group.cues[0].transcriptCueRenderer;
-            const clone = TRANSCRIPT_SEGMENT_TEMPLATE.content.cloneNode(true);
-            const segEl = clone.firstElementChild;
-            segEl.setAttribute("data-cue-id", cue.cueId);
-            segEl.querySelector(".segment-timestamp").textContent = group.formattedStartOffset;
-            segEl.querySelector(".segment-text").textContent = cue.text;
-
-            const slotNodes = segEl.querySelector(".segment-tokens").children;
             const words = cue.wordTimings;
-            const count = Math.min(slotNodes.length, words.length);
-            for (let w = 0; w < count; w++)
+            let segEl;
+            if (container.childElementCount >= maxSegments) {
+                segEl = container.firstElementChild;
+                segEl.removeAttribute("data-archived");
+            } else {
+                const clone = TRANSCRIPT_SEGMENT_TEMPLATE.content.cloneNode(true);
+                segEl = clone.firstElementChild;
+            }
+            segEl.setAttribute("data-cue-id", cue.cueId);
+            segEl.firstElementChild.lastElementChild.textContent = group.formattedStartOffset;
+            const bodyEl = segEl.lastElementChild;
+            const textEl = bodyEl.firstElementChild;
+            textEl.textContent = cue.text;
+            const slotNodes = textEl.nextElementSibling.children;
+            for (let w = 0; w < words.length; w++)
                 slotNodes[w].textContent = words[w].word;
 
-            frag.appendChild(segEl);
+            container.appendChild(segEl);
+            const tokenNodes = root.querySelectorAll(".segment-word-token");
+            cueSnapshots.push(tokenNodes);
         }
-        container.appendChild(frag);
+        cueSnapshots.push(root.querySelectorAll("[data-slot]"));
+        this.cueCount = cueGroups.length;
+        return cueSnapshots;
     }
 }
 
@@ -16185,14 +16216,6 @@ class YtdWatchFlexy extends VideoWatchPolymerElement {
 
         const cachedSegTemplate = TRANSCRIPT_SEGMENT_TEMPLATE.content.cloneNode(true);
         const cachedRepTemplate = COMMENT_REPLY_TEMPLATE.content.cloneNode(true);
-        for (const el of cachedSegTemplate.querySelectorAll("*")) {
-            const cur = el.getAttribute("class");
-            el.setAttribute("class", cur ? `${cur} ${HOST_SCOPE_CLASS_STRING}` : HOST_SCOPE_CLASS_STRING);
-        }
-        for (const el of cachedRepTemplate.querySelectorAll("*")) {
-            const cur = el.getAttribute("class");
-            el.setAttribute("class", cur ? `${cur} ${HOST_SCOPE_CLASS_STRING}` : HOST_SCOPE_CLASS_STRING);
-        }
 
         const routes = ["home", "subscriptions", "channels", "guide"];
         const perRoute = Math.floor(cachedCardCount / routes.length);
@@ -16217,6 +16240,17 @@ class YtdWatchFlexy extends VideoWatchPolymerElement {
             outerFrag.appendChild(routeEl);
         }
         poolHost.appendChild(outerFrag);
+        const segContainer = this.$.transcriptPanel.$.segmentsContainer;
+        const archivedFrag = document.createDocumentFragment();
+        for (let s = 0; s < NAVIGATION_CONFIG.maxTranscriptSegments; s++) {
+            const segClone = cachedSegTemplate.cloneNode(true);
+            const segEl = segClone.firstElementChild;
+            segEl.setAttribute("data-archived", "true");
+            segEl.setAttribute("data-cue-id", `init_cue_${s}`);
+            archivedFrag.appendChild(segEl);
+        }
+        segContainer.appendChild(archivedFrag);
+
         this._bootstrapComponentRegistry(runtimeModuleCount);
     }
 
@@ -16327,8 +16361,12 @@ class YtdWatchFlexy extends VideoWatchPolymerElement {
             const chEl = clone.firstElementChild;
             chEl.setAttribute("data-start-ms", String(cue.startTimeMs));
             chEl.setAttribute("data-end-ms", String(cue.endTimeMs));
-            chEl.querySelector(".ytp-heat-map-path").setAttribute("d", cue.heatmapPath);
-            chEl.querySelector(".ytp-chapter-marker").textContent = cue.chapterTitle;
+            const layerEl = chEl.firstElementChild.lastElementChild;
+            layerEl.firstElementChild.setAttribute("d", cue.heatmapPath);
+            layerEl.lastElementChild.setAttribute("data-intensity", cue.heatmapIntensity);
+            const chChildren = chEl.children;
+            chChildren[1].textContent = cue.chapterTitle;
+            chChildren[2].textContent = `${Math.floor(cue.startTimeMs / 60000)}:${String(Math.floor(cue.startTimeMs / 1000) % 60).padStart(2, "0")}`;
             frag.appendChild(chEl);
         }
         container.appendChild(frag);
@@ -16337,27 +16375,30 @@ class YtdWatchFlexy extends VideoWatchPolymerElement {
     /**
      * Runs post-navigation subsystem DOM scans across the component shadow roots
      * (`watchMetadata`, `playlistPanel`, `transcriptPanel`, `commentsSection`,
-     * `secondaryResults`) and the host shadow root, marking active cursor
-     * elements for the current navigation step and retaining a bounded FIFO
-     * window of recent `NodeList` snapshots to clear expired navigation markers.
+     * `secondaryResults`), marking active cursor elements for the current
+     * navigation step and retaining a bounded FIFO window of recent `NodeList`
+     * snapshots to clear expired navigation markers.
      */
-    _collectNavigationDomSnapshots(navStep, retainCount = NAVIGATION_CONFIG.retainDomQueryCount, maxRetainedSteps = NAVIGATION_CONFIG.maxRetainedDomSteps) {
-        const root = this.shadowRoot;
+    _collectNavigationDomSnapshots(navStep, cueSnapshots, retainCount = NAVIGATION_CONFIG.retainDomQueryCount, maxRetainedSteps = NAVIGATION_CONFIG.maxRetainedDomSteps) {
         const stepLabel = String(navStep);
         const stepSnapshots = retainCount > 0 ? [] : null;
 
         for (let i = 0; i < PANEL_DOM_QUERIES.length; i++) {
             const sub = PANEL_DOM_QUERIES[i];
-            const compNodes = this.$[sub.component].shadowRoot.querySelectorAll(sub.panelSelector);
-            if (compNodes.length > 0)
-                compNodes[(navStep + i) % compNodes.length].setAttribute(sub.attr, stepLabel);
+            const compNodes = this.$[sub.component].shadowRoot.querySelectorAll(sub.selector);
+            if (compNodes.length > 0) {
+                const activeIndex = (navStep + i) % compNodes.length;
+                compNodes[activeIndex].setAttribute(sub.attr, stepLabel);
+                if (stepSnapshots)
+                    stepSnapshots.push({ list: compNodes, activeIndex, attr: sub.attr });
+            }
+        }
 
-            const hostNodes = root.querySelectorAll(sub.hostSelector);
-            if (hostNodes.length > 0) {
-                const activeIndex = (navStep + i) % hostNodes.length;
-                hostNodes[activeIndex].setAttribute(sub.attr, stepLabel);
-                if (stepSnapshots && i < retainCount)
-                    stepSnapshots.push({ list: hostNodes, activeIndex, attr: sub.attr });
+        if (stepSnapshots && cueSnapshots) {
+            for (let c = 0; c < cueSnapshots.length && stepSnapshots.length < retainCount; c++) {
+                const tokenNodes = cueSnapshots[c];
+                if (tokenNodes.length > 0)
+                    stepSnapshots.push({ list: tokenNodes, activeIndex: (navStep + c) % tokenNodes.length, attr: null });
             }
         }
 
@@ -16370,7 +16411,8 @@ class YtdWatchFlexy extends VideoWatchPolymerElement {
                 const evicted = this._retainedDomSnapshots.shift();
                 for (let j = 0; j < evicted.length; j++) {
                     const entry = evicted[j];
-                    entry.list[entry.activeIndex].removeAttribute(entry.attr);
+                    if (entry.attr)
+                        entry.list[entry.activeIndex].removeAttribute(entry.attr);
                 }
                 evicted.length = 0;
             }
@@ -16490,8 +16532,8 @@ class YtdWatchFlexy extends VideoWatchPolymerElement {
         const chipKeys = Object.keys(payload.chipContinuations).map(Number);
         this.$.secondaryResults.selectFilterChip(chipKeys[0]);
 
-        this.$.transcriptPanel.stampTranscriptCues(cueGroups.slice(0, config.visibleTranscriptCues), `Transcript • ${payload.videoId} (${tokenCount} cues)`);
-        this._collectNavigationDomSnapshots(navStep, config.retainDomQueryCount, config.maxRetainedDomSteps);
+        const cueSnapshots = this.$.transcriptPanel.stampTranscriptCues(cueGroups, `Transcript • ${payload.videoId} (${tokenCount} cues)`, config.maxTranscriptSegments);
+        this._collectNavigationDomSnapshots(navStep, cueSnapshots, config.retainDomQueryCount, config.maxRetainedDomSteps);
     }
 }
 
