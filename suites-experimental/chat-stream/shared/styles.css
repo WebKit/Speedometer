@@ -83,6 +83,7 @@ button {
 
 /* Chat column */
 .chat {
+    position: relative;
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -118,10 +119,12 @@ button {
     overflow-y: auto;
 }
 
+/* The composer overlays the end of the transcript, which is padded by the
+   composer's height, as the composer's ResizeObserver publishes it. */
 .messages-inner {
     max-width: 760px;
     margin: 0 auto;
-    padding: 16px 24px 32px;
+    padding: 16px 24px calc(var(--composer-height, 110px) + 16px);
     /* Only .scroll-anchor may anchor the list's scroll position. */
     overflow-anchor: none;
 }
@@ -492,32 +495,71 @@ button {
     color: #89ddff;
 }
 
-/* Composer */
+/* Composer. It overlays the bottom of the chat column. Its textarea sizes
+   itself to its content, up to eight lines; once the text wraps, the
+   composer expands, the textarea over a row of actions, and its frame
+   animates to the new height. */
 .composer {
-    max-width: 760px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 24px 20px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 12px 24px 20px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff 12px);
 }
 
 .composer-box {
+    max-width: 712px;
+    margin: 0 auto;
+    padding: 8px 8px 8px 14px;
+    background-color: #fff;
+    border: 1px solid #d8dde3;
+    border-radius: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.composer-box[data-expanded] {
+    border-radius: 16px;
+}
+
+.composer-frame {
+    height: var(--frame-height, auto);
+    overflow: hidden;
+    transition: height 150ms ease-out;
+}
+
+.composer-content {
     display: flex;
     align-items: flex-end;
     gap: 8px;
-    padding: 8px 8px 8px 14px;
-    border: 1px solid #d8dde3;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.composer-box[data-expanded] .composer-content {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.composer-actions {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .prompt {
     flex: 1;
-    height: 72px;
-    padding: 4px 0;
+    min-height: 24px;
+    max-height: 192px;
+    padding: 0;
     font: inherit;
+    line-height: 24px;
+    field-sizing: content;
+    overflow-y: auto;
     resize: none;
     border: 0;
     outline: none;
+}
+
+.composer-box:not([data-has-text]) .send {
+    display: none;
 }
 
 .send {
@@ -535,7 +577,8 @@ button {
 }
 
 .composer-hint {
-    margin-top: 6px;
+    max-width: 712px;
+    margin: 6px auto 0;
     font-size: 12px;
     color: #8a929e;
     text-align: center;

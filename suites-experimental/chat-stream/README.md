@@ -59,9 +59,20 @@ highlighting and scroll pinning added.
     adjusts the scroll position during its own layout, so no script reads
     layout after a commit.
 -   Mounting and unmounting whole conversations, up to 200 messages.
--   A controlled composer updated on every keystroke. It owns the draft, as
-    the reference chat app's composer does, so a keystroke re-renders only
-    the composer, not the app and its transcript.
+-   A controlled composer updated on every keystroke, built the way the
+    reference chat app's is (measured on its live site, November 2026):
+    -   It owns the draft, so a keystroke re-renders only the composer, not
+        the app and its transcript.
+    -   The textarea sizes itself to its content in CSS (`field-sizing:
+        content`, one row of 24 px up to eight), so no script reads layout
+        while typing. The send button shows once the draft has text.
+    -   ResizeObservers do the rest: once the text wraps, the composer
+        expands (the textarea over a row of actions), its frame animates to
+        the content's height, and the composer's height is published to the
+        app as `--composer-height`, which the transcript, overlaid by the
+        composer, pads its end by.
+    -   The draft is saved to `localStorage` 250 ms after the last change and
+        at least once a second while it changes, and restored on load.
 
 ## How are we testing
 
@@ -77,7 +88,11 @@ deterministic and needs no timers. It also keeps the stream's virtual clock,
 Each streamed word's fade-in would end with its `animationend` event, after
 the step. Instead, once a reply is complete the steps end them all through
 `window.finishWordAnimations()`, so that work is measured in the step that
-started it and none of it lands in a later step.
+started it and none of it lands in a later step. For the same reason, a step
+that types ends by settling the composer's pending draft save and height
+transition through `window.flushComposer()`. The suite's `prepare` empties the
+composer and the draft an earlier iteration saved
+(`window.resetComposer()`), so every iteration starts from the same state.
 
 The app commits the way the Octane fixture of the chat-stream benchmark in the
 Octane repository does. Its event handlers only set state, and the steps commit
@@ -98,7 +113,9 @@ ends, so every browser paints once per step.
 -   `ExpandCards`: opens the details of every card in the 200-message
     conversation, one at a time.
 -   `TypePrompt`: types a 163-character prompt into the composer one character
-    at a time.
+    at a time, laying out each keystroke, as each gets its own frame when a
+    person types. The prompt wraps, so the composer expands; its
+    ResizeObservers report that once, when the step's frame is rendered.
 
 The composer uses `onInput`, which fires for every input event, including the
 ones the benchmark dispatches after setting the value from script.

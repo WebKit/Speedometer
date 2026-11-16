@@ -71,6 +71,9 @@ function chatStreamTests() {
                 throw new Error("drain never settled");
         }
         page.call("finishWordAnimations");
+        // The composer's pending draft save and height transition, from the
+        // send, likewise.
+        page.call("flushComposer");
         await flush(page);
     };
     const prompts = ["How do I stream a response and render it as it arrives?", "Can you show the same thing with cancellation?", "What should I watch out for with long replies?"];
@@ -111,13 +114,21 @@ function chatStreamTests() {
             }
         }),
         // Types a prompt into the controlled composer a character at a time.
+        // Each keystroke is laid out, as each gets its own frame when a person
+        // types: the textarea sizes itself to its content, and the prompt wraps
+        // onto a second line, which expands the composer. Then it settles the
+        // pending draft save and the composer's height transition, as the
+        // timers and frames after the typing would.
         new BenchmarkTestStep("TypePrompt", async (page) => {
             const prompt = page.querySelector(".prompt");
             const text = "Write a function that splits streamed text into Markdown blocks and memoizes each block by its source, then explain how it behaves when a code fence is still open.";
             for (let i = 1; i <= text.length; i++) {
                 typeInto(prompt, text.slice(0, i));
                 await flush(page);
+                page.layout();
             }
+            page.call("flushComposer");
+            await flush(page);
         }),
     ];
 }
@@ -574,6 +585,11 @@ export const ExperimentalSuites = freezeSuites([
         type: "async",
         async prepare(page) {
             await page.waitForElement(".conversation-item");
+            // The composer restores the draft an earlier iteration saved. Empty
+            // it, and let its observers and transition settle, so that every
+            // iteration starts from the same state.
+            page.call("resetComposer");
+            await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         },
         tests: chatStreamTests(),
     },
