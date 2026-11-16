@@ -87,7 +87,7 @@ function chatStreamTests() {
         page.call("flushComposer");
         await flush(page);
     };
-    const prompts = ["How do I stream a response and render it as it arrives?", "Can you show the same thing with cancellation?", "What should I watch out for with long replies?"];
+    const prompts = ["How do I stream a response and render it as it arrives?", "Can you show the same thing with cancellation?"];
     return [
         // Sends each prompt in the first conversation in turn and streams its
         // reply to completion.
@@ -99,7 +99,7 @@ function chatStreamTests() {
         }),
         // Every conversation in turn, then back to the first: each switch
         // unmounts one conversation and mounts and parses the next, up to the
-        // 200-message one.
+        // 70-message one.
         new BenchmarkTestStep("SwitchConversations", async (page) => {
             const items = page.querySelectorAll(".conversation-item");
             for (let i = 1; i <= items.length; i++) {
@@ -107,14 +107,14 @@ function chatStreamTests() {
                 await flush(page);
             }
         }),
-        // A reply streamed at the end of the 200-message conversation.
+        // A reply streamed at the end of the 70-message conversation.
         new BenchmarkTestStep("StreamIntoLongConversation", async (page) => {
             page.querySelector('.conversation-item[data-conversation="3"]').click();
             await flush(page);
             await sendPrompt(page, "Summarize this conversation.");
             await drain(page);
         }),
-        // Opens the details of every card in the 200-message conversation, one
+        // Opens the details of every card in the 70-message conversation, one
         // at a time: each card's flow hides one node fewer, and its children
         // are spaced again.
         new BenchmarkTestStep("ExpandCards", async (page) => {

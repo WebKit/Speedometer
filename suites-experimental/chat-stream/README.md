@@ -58,7 +58,7 @@ highlighting and scroll pinning added.
     newest text in view as replies grow and conversations switch. The browser
     adjusts the scroll position during its own layout, so no script reads
     layout after a commit.
--   Mounting and unmounting whole conversations, up to 200 messages.
+-   Mounting and unmounting whole conversations, up to 70 messages.
 -   A controlled composer updated on every keystroke, built the way the
     reference chat app's is (measured on its live site, November 2026):
     -   It owns the draft, so a keystroke re-renders only the composer, not
@@ -115,13 +115,13 @@ the reply loses its `streaming` class (see `chatStreamTests` in
 `suites-experimental/suites.mjs`). No step yields to the event loop before it
 ends, so every browser paints once per step.
 
--   `StreamReplies`: sends three prompts in turn in the first conversation,
+-   `StreamReplies`: sends two prompts in turn in the first conversation,
     streaming each reply to completion before sending the next.
 -   `SwitchConversations`: clicks every conversation in the sidebar, then returns
     to the first.
 -   `StreamIntoLongConversation`: streams one reply at the end of the
-    200-message conversation.
--   `ExpandCards`: opens the details of every card in the 200-message
+    70-message conversation.
+-   `ExpandCards`: opens the details of every card in the 70-message
     conversation, one at a time.
 -   `TypePrompt`: focuses the composer and types a 163-character prompt into
     it one character at a time, each with the events a keyboard produces

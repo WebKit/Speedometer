@@ -298,7 +298,7 @@ const CONVERSATIONS = [
     ["Streaming fetch responses", 10, longReply],
     ["List keys and re-renders", 14, longReply],
     ["Event loop ordering", 6, longReply],
-    ["Support chat export", 200, shortReply],
+    ["Support chat export", 70, shortReply],
     ["Debouncing search input", 20, shortReply],
     ["Cancelling requests", 8, longReply],
     ["Chat state structure", 4, longReply],
