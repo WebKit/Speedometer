@@ -62,6 +62,7 @@ for (const [name, suites] of Object.entries(Suites)) {
             suites.forEach((suite) => {
                 expect(suite.url).to.be.a("string");
                 expect(suite.url.length).to.be.greaterThan(0);
+                expect(suite.url.split(/[?#]/)[0].endsWith(".html")).to.be(true);
             });
         });
         it("should have resources.txt listing only valid files", async function () {
