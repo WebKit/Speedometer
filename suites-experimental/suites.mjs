@@ -57,7 +57,9 @@ function chatStreamTests() {
     // Calls window.deliverChunk until the reply is complete. run.mjs loops
     // while window.__pump(batch) returns a positive remaining count.
     // page.call drops return values, so this checks the DOM instead: the reply
-    // loses .streaming in the synchronous commit of its last chunk.
+    // loses .streaming in the synchronous commit of its last chunk. Then it
+    // ends the reply's word fade-ins, as their animationend events would, so
+    // none of that work lands in a later step.
     const drain = async (page) => {
         let guard = 0;
         for (;;) {
@@ -68,6 +70,7 @@ function chatStreamTests() {
             if (++guard > 10000)
                 throw new Error("drain never settled");
         }
+        page.call("finishWordAnimations");
         await flush(page);
     };
     const prompts = ["How do I stream a response and render it as it arrives?", "Can you show the same thing with cancellation?", "What should I watch out for with long replies?"];

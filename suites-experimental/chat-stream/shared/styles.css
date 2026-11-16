@@ -206,11 +206,13 @@ button {
     border-color: #dfe3e8;
 }
 
-/* Markdown */
+/* Markdown. Blocks and list items are spaced by the gap-* classes the layout
+   flow computes from each one's previous sibling. */
 .markdown p,
 .markdown ul,
-.markdown ol {
-    margin: 0 0 12px;
+.markdown ol,
+.markdown h3 {
+    margin: 0;
 }
 
 .markdown ul,
@@ -218,25 +220,61 @@ button {
     padding-left: 24px;
 }
 
-.markdown li + li {
-    margin-top: 4px;
-}
-
 .markdown h3 {
-    margin: 18px 0 8px;
     font-size: 16px;
 }
 
-.markdown .inline-code {
+.markdown .gap-0 {
+    margin-top: 0;
+}
+
+.markdown .gap-8 {
+    margin-top: 8px;
+}
+
+.markdown .gap-12 {
+    margin-top: 12px;
+}
+
+.markdown .gap-16 {
+    margin-top: 16px;
+}
+
+.markdown .gap-24 {
+    margin-top: 24px;
+}
+
+/* A streamed word fades in after its scheduled delay. */
+@keyframes word-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.word {
+    animation: word-fade-in var(--word-duration) ease-out var(--word-delay) both;
+}
+
+.inline-code {
     padding: 1px 4px;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.88em;
-    background-color: #f0f2f5;
     border-radius: 4px;
 }
 
+.inline-code.scheme-light {
+    background-color: #f0f2f5;
+}
+
+.inline-code.scheme-dark {
+    background-color: #2a2f37;
+}
+
 .code-block {
-    margin: 0 0 12px;
+    margin: 0;
     overflow: hidden;
     background-color: #1f2329;
     border-radius: 8px;
@@ -276,28 +314,28 @@ button {
     white-space: pre;
 }
 
-.tok-keyword {
+.scheme-light .tok-keyword {
     color: #c792ea;
 }
 
-.tok-function {
+.scheme-light .tok-function {
     color: #82aaff;
 }
 
-.tok-string {
+.scheme-light .tok-string {
     color: #c3e88d;
 }
 
-.tok-number {
+.scheme-light .tok-number {
     color: #f78c6c;
 }
 
-.tok-comment {
+.scheme-light .tok-comment {
     font-style: italic;
     color: #7f8794;
 }
 
-.tok-punctuation {
+.scheme-light .tok-punctuation {
     color: #89ddff;
 }
 

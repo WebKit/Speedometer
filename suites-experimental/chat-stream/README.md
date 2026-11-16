@@ -16,12 +16,23 @@ highlighting and scroll pinning added.
     reply's Markdown. Unchanged blocks keep their identity across parses (the
     memoized-Markdown pattern streaming chat UIs use), so `memo` skips all but
     the blocks that grew.
--   Context reads in memoized components: the Markdown views are built like a
-    design-system component catalog. Every block renders in a memoized
-    boundary, frame and part, and each component reads the contexts it
-    depends on (theme, locale, layout, message, streaming state, typography,
-    density), so a commit walks long chains of memoized ancestors to resolve
-    them.
+-   Context reads in memoized components, of the kinds the reply renderer of
+    a large chat service's web app reads (from its production bundle,
+    November 2026):
+    -   Layout flow. A reply and each list provide a new flow value every
+        time they render, with each child's previous sibling; each block's
+        wrapper and each list item read it and compute their spacing with
+        that renderer's spacing rules. So on every chunk every block's
+        wrapper re-renders, while `memo` skips the content of all but the
+        blocks that grew.
+    -   The colour scheme, read by code blocks and inline code.
+    -   Streamed words. Text in a reply that streams in renders one memoized
+        span per word. Each word reads four animation contexts (whether to
+        animate, whether the reply is eligible, the animation mode, and a
+        delay scheduler) and starts its fade-in from a layout effect with
+        the delay the scheduler gives it, the way that renderer staggers
+        words. Replies that are complete when they mount render their text
+        as is.
 -   Code blocks highlighted into one span per token, the way chat UIs' regex
     highlighters produce them.
 -   Scroll pinning with CSS scroll anchoring: an anchor element after the
@@ -40,7 +51,13 @@ conversations and streams the same replies.
 
 `shared/network.js` stands in for a streaming fetch. Each `window.deliverChunk()`
 call hands the open reply its next four tokens, so chunk arrival is
-deterministic and needs no timers.
+deterministic and needs no timers. It also keeps the stream's virtual clock,
+80 ms per chunk, which the word scheduler reads in place of `performance.now()`.
+
+Each streamed word's fade-in would end with its `animationend` event, after
+the step. Instead, once a reply is complete the steps end them all through
+`window.finishWordAnimations()`, so that work is measured in the step that
+started it and none of it lands in a later step.
 
 The app commits the way the Octane fixture of the chat-stream benchmark in the
 Octane repository does. Its event handlers only set state, and the steps commit
