@@ -1,0 +1,28 @@
+{
+    "name": "pdf-viewer",
+    "private": true,
+    "version": "1.0.0",
+    "description": "A pdf.js document viewer workload for Speedometer.",
+    "type": "module",
+    "scripts": {
+        "generate:pdf": "node scripts/generate-pdf.mjs",
+        "analyze:pdf": "node scripts/analyze-pdf.mjs",
+        "predev": "npm run generate:pdf",
+        "dev": "vite",
+        "prebuild": "npm run generate:pdf",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "license": "SEE LICENSE IN ../../LICENSE",
+    "dependencies": {
+        "pdfjs-dist": "^6.3.289",
+        "speedometer-utils": "../../resources/shared"
+    },
+    "devDependencies": {
+        "@fontsource/inter": "^5.2.5",
+        "@fontsource/source-code-pro": "^5.3.0",
+        "@fontsource/source-serif-4": "^5.2.5",
+        "pdfkit": "^0.20.2",
+        "vite": "^7.1.5"
+    }
+}

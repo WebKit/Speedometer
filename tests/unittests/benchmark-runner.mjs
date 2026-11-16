@@ -265,7 +265,7 @@ describe("BenchmarkRunner", () => {
 
         it("should run StepRunner and return { syncTime, asyncTime }", async () => {
             const step = new BenchmarkTestStep("SyncStep", sinon.stub());
-            const runner = new StepRunner(null, null, params, suite, step, "default");
+            const runner = new StepRunner(null, null, params, suite, step);
             const { syncTime, asyncTime } = await runner.runStep();
             expect(typeof syncTime).to.equal("number");
             expect(typeof asyncTime).to.equal("number");
@@ -277,7 +277,7 @@ describe("BenchmarkRunner", () => {
                 "AsyncStep",
                 sinon.stub().callsFake(async () => {})
             );
-            const runner = new AsyncStepRunner(null, null, params, suite, asyncStep, "async");
+            const runner = new AsyncStepRunner(null, null, params, suite, asyncStep);
             const { syncTime, asyncTime } = await runner.runStep();
             expect(typeof syncTime).to.equal("number");
             expect(typeof asyncTime).to.equal("number");

@@ -28,6 +28,7 @@
             });
 
             const cacheBust = Date.now();
+            await import("./unittests/benchmark.mjs?t=" + cacheBust);
             await import("./unittests/benchmark-runner.mjs?t=" + cacheBust);
             await import("./unittests/params.mjs?t=" + cacheBust);
             await import("./unittests/suites.mjs?t=" + cacheBust);

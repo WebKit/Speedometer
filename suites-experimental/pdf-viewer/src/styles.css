@@ -1,0 +1,248 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #2a2a2e;
+    color: #f9f9fa;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+}
+
+.pdf-app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.pdf-body {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* Toolbar */
+
+.pdf-toolbar {
+    display: flex;
+    flex: 0 0 36px;
+    align-items: center;
+    gap: 8px;
+    padding: 0 6px;
+    background-color: #38383d;
+    border-bottom: 1px solid #0c0c0d;
+}
+
+.pdf-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.pdf-toolbar-group-end {
+    margin-left: auto;
+}
+
+.pdf-toolbar-separator {
+    width: 1px;
+    height: 18px;
+    margin: 0 4px;
+    background-color: #5b5b60;
+}
+
+.pdf-toolbar-button {
+    display: flex;
+    width: 26px;
+    height: 26px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 3px;
+    background-color: transparent;
+    color: #f9f9fa;
+}
+
+.pdf-toolbar-button::before {
+    display: block;
+    width: 16px;
+    height: 16px;
+    background-color: currentcolor;
+    content: "";
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+
+.pdf-page-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pdf-page-input {
+    width: 30px;
+    padding: 3px 4px;
+    border: 1px solid #0c0c0d;
+    border-radius: 3px;
+    background-color: #2a2a2e;
+    color: #f9f9fa;
+    font: inherit;
+    text-align: end;
+}
+
+.pdf-page-total,
+.pdf-zoom-level {
+    min-width: 34px;
+    color: #cfcfd3;
+    text-align: center;
+}
+
+/* Sidebar */
+
+.pdf-sidebar {
+    display: flex;
+    flex: 0 0 200px;
+    flex-direction: column;
+    background-color: #313134;
+    border-right: 1px solid #0c0c0d;
+}
+
+.pdf-sidebar-tabs {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 2px;
+    padding: 4px 6px;
+    border-bottom: 1px solid #0c0c0d;
+}
+
+.pdf-sidebar-tab-active {
+    background-color: #4b4b50;
+}
+
+.pdf-thumbnails {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 0;
+    overflow-y: auto;
+}
+
+.pdf-thumbnail {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.pdf-thumbnail-box {
+    background-color: #ffffff;
+    box-shadow: 0 0 0 1px #0c0c0d;
+}
+
+.pdf-thumbnail-canvas {
+    display: block;
+}
+
+.pdf-thumbnail-label {
+    color: #cfcfd3;
+    font-size: 10px;
+}
+
+/* Pages */
+
+.pdf-viewer {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.pdf-page {
+    flex: 0 0 auto;
+    background-color: #ffffff;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 40%);
+}
+
+.pdf-page-canvas {
+    display: block;
+}
+
+/* Icons, from pdfjs-dist's web/images (Apache-2.0). */
+
+.pdf-toolbar-button[data-icon="views-manager"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-viewsManagerToggle.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-viewsManagerToggle.svg);
+}
+
+.pdf-toolbar-button[data-icon="zoom-out"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-zoomOut.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-zoomOut.svg);
+}
+
+.pdf-toolbar-button[data-icon="zoom-in"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-zoomIn.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-zoomIn.svg);
+}
+
+.pdf-toolbar-button[data-icon="search"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-search.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-search.svg);
+}
+
+.pdf-toolbar-button[data-icon="highlight"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-editorHighlight.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-editorHighlight.svg);
+}
+
+.pdf-toolbar-button[data-icon="free-text"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-editorFreeText.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-editorFreeText.svg);
+}
+
+.pdf-toolbar-button[data-icon="ink"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-editorInk.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-editorInk.svg);
+}
+
+.pdf-toolbar-button[data-icon="download"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-download.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-download.svg);
+}
+
+.pdf-toolbar-button[data-icon="print"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-print.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-print.svg);
+}
+
+.pdf-toolbar-button[data-icon="secondary"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-secondaryToolbarToggle.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-secondaryToolbarToggle.svg);
+}
+
+.pdf-toolbar-button[data-icon="view-thumbnails"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-viewThumbnail.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-viewThumbnail.svg);
+}
+
+.pdf-toolbar-button[data-icon="view-outline"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-viewOutline.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-viewOutline.svg);
+}
+
+.pdf-toolbar-button[data-icon="view-attachments"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-viewAttachments.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-viewAttachments.svg);
+}
+
+.pdf-toolbar-button[data-icon="view-layers"]::before {
+    -webkit-mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-viewLayers.svg);
+    mask-image: url(../node_modules/pdfjs-dist/web/images/toolbarButton-viewLayers.svg);
+}

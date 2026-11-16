@@ -1,0 +1,7 @@
+assets/index.css
+assets/index.js
+assets/index.js.map
+assets/pdf.worker.js
+assets/pdf.worker.js.map
+document.pdf
+index.html

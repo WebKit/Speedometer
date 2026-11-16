@@ -93,7 +93,7 @@ export class SuiteRunner {
 
             const stepRunnerType = this.#suite.type ?? this.params.useAsyncSteps ? "async" : "default";
             const stepRunnerClass = STEP_RUNNER_LOOKUP[stepRunnerType];
-            const stepRunner = new stepRunnerClass(this.#frame, this.#page, this.#params, this.#suite, step, stepRunnerType);
+            const stepRunner = new stepRunnerClass(this.#frame, this.#page, this.#params, this.#suite, step);
             let { syncTime, asyncTime } = await stepRunner.runStep();
             this._recordTestResults(step, syncTime, asyncTime);
         }

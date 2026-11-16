@@ -5,6 +5,7 @@ import serve, { DEFAULT_CACHE_DURATION } from "./server.mjs";
 import firefox from "selenium-webdriver/firefox.js";
 import chrome from "selenium-webdriver/chrome.js";
 import edge from "selenium-webdriver/edge.js";
+import safari from "selenium-webdriver/safari.js";
 
 import LogInspector from "selenium-webdriver/bidi/logInspector.js";
 import { Builder } from "selenium-webdriver";
@@ -68,7 +69,13 @@ export default async function testSetup(helpText) {
             if (isHeadless)
                 console.warn("Warning: --headless is not supported with safari, running in windowed mode.");
 
-            builder = new Builder().forBrowser(BROWSER);
+            // SAFARI_TECHNOLOGY_PREVIEW=1 drives Safari Technology Preview instead of the installed Safari.
+            const useTechnologyPreview = process.env.SAFARI_TECHNOLOGY_PREVIEW === "1";
+            const safariOptions = new safari.Options().setTechnologyPreview(useTechnologyPreview);
+            // Its safaridriver only accepts its own browser name.
+            if (useTechnologyPreview)
+                safariOptions.setBrowserName("Safari Technology Preview");
+            builder = new Builder().forBrowser(BROWSER).setSafariOptions(safariOptions);
             // No bidi and log support in safari.
             break;
         }

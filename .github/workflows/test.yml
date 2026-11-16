@@ -92,7 +92,20 @@ jobs:
                       os: macos-latest
         env:
             BROWSER: ${{ matrix.browser }}
+            SAFARI_TECHNOLOGY_PREVIEW: "1"
         steps:
+            # The Safari that ships on GitHub's Apple silicon macOS images (27.2 at the time of
+            # writing) throws InvalidStateError on any pixel readback from a hardware-accelerated
+            # 2D canvas inside the virtual machine, which hangs PDFViewer-PDFjs in the e2e test.
+            # WebKit trunk no longer does, so drive Safari Technology Preview instead. Drop this
+            # step and SAFARI_TECHNOLOGY_PREVIEW once the image ships a Safari whose e2e run passes.
+            - name: Install Safari Technology Preview
+              if: ${{ matrix.browser == 'safari' }}
+              run: |
+                  brew install --cask safari-technology-preview
+                  sudo "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --enable
+                  "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --version
+
             - name: Checkout Branch
               uses: actions/checkout@v4
               with:
