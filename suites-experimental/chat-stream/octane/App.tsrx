@@ -2,6 +2,7 @@ import { createContext, flushSync, memo, useCallback, useContext, useLayoutEffec
 import { initialConversations, nextReply, userMessage } from '../shared/corpus.js';
 import { parseMarkdown } from '../shared/markdown.js';
 import { streamReply, streamTime } from '../shared/network.js';
+import { Composer } from './Composer.tsrx';
 
 // A streaming LLM chat client in Octane: conversation state, memoized
 // Markdown blocks, effects and markup. It commits the way the Octane
@@ -198,141 +199,6 @@ export function App() @{
 		</div>
 	</ColorSchemeContext>
 }
-
-// The composer works the way the reference chat app's does:
-// - It owns the draft, so a keystroke re-renders only the composer, not the
-//   app and its transcript.
-// - The textarea sizes itself to its content in CSS (field-sizing), up to
-//   eight lines; script reads no layout while typing.
-// - Its send button shows once the draft has text.
-// - A ResizeObserver on the textarea expands the composer (the textarea over
-//   a row of actions) once the text wraps; it collapses when the draft is
-//   emptied.
-// - A frame animates its height to the content's, which a ResizeObserver
-//   measures, and a ResizeObserver on the footer publishes the composer's
-//   height to the app (--composer-height), which the transcript pads its end
-//   by, since the composer overlays it.
-// - The draft is saved to localStorage, debounced, and restored on load.
-const DRAFT_KEY = 'chat-stream/composerDraft/v1';
-const LINE_HEIGHT = 24;
-
-// Saves the draft 250 ms after the last change, and at least once a second
-// while it keeps changing, as the reference does.
-class DraftSaver {
-	pending: string | null = null;
-	debounce: ReturnType<typeof setTimeout> | undefined;
-	maxWait: ReturnType<typeof setTimeout> | undefined;
-	schedule(draft: string) {
-		this.pending = draft;
-		clearTimeout(this.debounce);
-		this.debounce = setTimeout(() => this.flush(), 250);
-		this.maxWait ??= setTimeout(() => this.flush(), 1000);
-	}
-	flush() {
-		clearTimeout(this.debounce);
-		clearTimeout(this.maxWait);
-		this.debounce = this.maxWait = undefined;
-		if (this.pending === null) return;
-		if (this.pending === '') localStorage.removeItem(DRAFT_KEY);
-		else localStorage.setItem(DRAFT_KEY, this.pending);
-		this.pending = null;
-	}
-}
-const draftSaver = new DraftSaver();
-window.addEventListener('pagehide', () => draftSaver.flush());
-
-const Composer = memo(function Composer(props: { streaming: boolean; onSend: (text: string) => void }) @{
-	const [draft, setDraft] = useState(() => localStorage.getItem(DRAFT_KEY) ?? '');
-	// Set once the text wraps; cleared when the draft is emptied.
-	const [expanded, setExpanded] = useState(false);
-	const [contentHeight, setContentHeight] = useState<number | null>(null);
-	const footer = useRef<HTMLElement | null>(null);
-	const content = useRef<HTMLDivElement | null>(null);
-	const textarea = useRef<HTMLTextAreaElement | null>(null);
-	const hasText = draft.trim() !== '';
-
-	const update = (value: string) => {
-		setDraft(value);
-		if (value === '') setExpanded(false);
-		draftSaver.schedule(value);
-	};
-	const submit = () => {
-		const text = draft.trim();
-		if (text === '' || props.streaming) return;
-		props.onSend(text);
-		update('');
-	};
-	useLayoutEffect(() => {
-		const app = footer.current!.closest('.app') as HTMLElement;
-		const observer = new ResizeObserver((entries) => {
-			for (const entry of entries) {
-				const height = entry.contentRect.height;
-				if (entry.target === textarea.current) {
-					// Once the text wraps, the composer stays expanded until it
-					// is emptied.
-					if (height > LINE_HEIGHT) setExpanded(true);
-				}
-				else if (entry.target === content.current) setContentHeight(Math.ceil(height));
-				else app.style.setProperty('--composer-height', entry.borderBoxSize[0].blockSize + 'px');
-			}
-		});
-		observer.observe(textarea.current!);
-		observer.observe(content.current!);
-		observer.observe(footer.current!);
-		return () => observer.disconnect();
-	}, []);
-
-	// Benchmark hooks. flushComposer settles the deferred work a burst of
-	// typing leaves (the pending draft save and the height transition), as the
-	// timers and frames after it would. resetComposer empties the composer and
-	// forgets the saved draft.
-	(window as any).flushComposer = () => {
-		draftSaver.flush();
-		for (const animation of footer.current!.getAnimations({ subtree: true })) animation.finish();
-	};
-	(window as any).resetComposer = () => {
-		flushSync(() => update(''));
-		draftSaver.flush();
-		for (const animation of footer.current!.getAnimations({ subtree: true })) animation.finish();
-	};
-
-	<footer class="composer" ref={footer}>
-		<form
-			class="composer-box"
-			data-has-text={hasText ? '' : undefined}
-			data-expanded={expanded ? '' : undefined}
-			onSubmit={(event: Event) => {
-				event.preventDefault();
-				submit();
-			}}
-		>
-			<div class="composer-frame" style={contentHeight === null ? undefined : { '--frame-height': contentHeight + 'px' }}>
-				<div class="composer-content" ref={content}>
-					<textarea
-						class="prompt"
-						ref={textarea}
-						rows={1}
-						placeholder="Ask anything"
-						value={draft}
-						onInput={(event: Event) => update((event.target as HTMLTextAreaElement).value)}
-						onKeyDown={(event: KeyboardEvent) => {
-							if (event.key === 'Enter' && !event.shiftKey) {
-								event.preventDefault();
-								submit();
-							}
-						}}
-					/>
-					<div class="composer-actions">
-						<button type="submit" class="send" disabled={!hasText || props.streaming}>
-							Send
-						</button>
-					</div>
-				</div>
-			</div>
-		</form>
-		<div class="composer-hint">Enter to send, Shift+Enter for a new line</div>
-	</footer>
-});
 
 function ConversationItemImpl(props: {
 	id: number;

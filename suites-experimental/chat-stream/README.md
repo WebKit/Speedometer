@@ -73,6 +73,17 @@ highlighting and scroll pinning added.
         composer, pads its end by.
     -   The draft is saved to `localStorage` 250 ms after the last change and
         at least once a second while it changes, and restored on load.
+    -   Its state is one signal scope (`octane/composer-state.tsrx`), as the
+        reference's composer controller is: the draft, focus, the streaming
+        state and what the ResizeObservers measure, and, derived from them,
+        the layout, the presentation controls, the submit inputs, whether
+        the draft can be submitted and what the actions show, under the
+        reference's names. The textarea's value is bound to the draft
+        signal, and each of the composer's parts (`octane/Composer.tsrx`)
+        reads the signals it shows as it renders, so a keystroke re-renders
+        the parts whose state it changes. Since a component reads signals,
+        Octane tracks the signal reads of every component's render, in the
+        transcript too, as on the reference.
 
 ## How are we testing
 
@@ -112,9 +123,10 @@ ends, so every browser paints once per step.
     200-message conversation.
 -   `ExpandCards`: opens the details of every card in the 200-message
     conversation, one at a time.
--   `TypePrompt`: types a 163-character prompt into the composer one character
-    at a time, laying out each keystroke, as each gets its own frame when a
-    person types. The prompt wraps, so the composer expands; its
+-   `TypePrompt`: focuses the composer and types a 163-character prompt into
+    it one character at a time, each with the events a keyboard produces
+    (keydown, keypress, beforeinput, the edit, input, keyup), laying out each
+    keystroke, as each gets its own frame when a person types. The prompt wraps, so the composer expands; its
     ResizeObservers report that once, when the step's frame is rendered.
 
 The composer uses `onInput`, which fires for every input event, including the

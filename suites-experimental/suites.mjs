@@ -48,6 +48,17 @@ function chatStreamTests() {
         element.setValue(text);
         element.dispatchEvent("input");
     };
+    // One keystroke, with the events a keyboard produces for a character:
+    // keydown, keypress, beforeinput, the edit, input, keyup.
+    const typeKey = (element, value, character) => {
+        const code = character.charCodeAt(0);
+        element.dispatchKeyEvent("keydown", code, character);
+        element.dispatchKeyEvent("keypress", code, character);
+        element.dispatchEvent("beforeinput", { bubbles: true, cancelable: true, inputType: "insertText", data: character }, InputEvent);
+        element.setValue(value);
+        element.dispatchEvent("input", { bubbles: true, inputType: "insertText", data: character }, InputEvent);
+        element.dispatchKeyEvent("keyup", code, character);
+    };
     const sendPrompt = async (page, text) => {
         typeInto(page.querySelector(".prompt"), text);
         await flush(page);
@@ -113,17 +124,20 @@ function chatStreamTests() {
                 await flush(page);
             }
         }),
-        // Types a prompt into the controlled composer a character at a time.
-        // Each keystroke is laid out, as each gets its own frame when a person
-        // types: the textarea sizes itself to its content, and the prompt wraps
-        // onto a second line, which expands the composer. Then it settles the
+        // Focuses the composer and types a prompt into it a character at a
+        // time, each with the events a keyboard produces. Each keystroke is
+        // laid out, as each gets its own frame when a person types: the
+        // textarea sizes itself to its content, and the prompt wraps onto a
+        // second line, which expands the composer. Then it settles the
         // pending draft save and the composer's height transition, as the
         // timers and frames after the typing would.
         new BenchmarkTestStep("TypePrompt", async (page) => {
             const prompt = page.querySelector(".prompt");
+            prompt.focus();
+            await flush(page);
             const text = "Write a function that splits streamed text into Markdown blocks and memoizes each block by its source, then explain how it behaves when a code fence is still open.";
             for (let i = 1; i <= text.length; i++) {
-                typeInto(prompt, text.slice(0, i));
+                typeKey(prompt, text.slice(0, i), text[i - 1]);
                 await flush(page);
                 page.layout();
             }
