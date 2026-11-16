@@ -4,8 +4,11 @@ import { renderMetricView } from "./metric-ui.mjs";
 import { defaultParams, params } from "./shared/params.mjs";
 import { createDeveloperModeContainer } from "./developer-mode.mjs";
 
+import { ResourcePreloader, PreloadStatusUpdater } from "./preloader.mjs";
+
 const BENCHMARK_STATE = Object.freeze({
     IDLE: "IDLE",
+    PRELOADING: "PRELOADING",
     READY: "READY",
     RUNNING: "RUNNING",
     DONE: "DONE",
@@ -23,30 +26,46 @@ class MainBenchmarkClient {
     _state = BENCHMARK_STATE.IDLE;
     _developerModeContainer = null;
     _metrics = Object.create(null);
+    _resourcePreloader = new ResourcePreloader();
     _steppingPromise = null;
     _steppingResolver = null;
     _benchmarkConfiguratorPromise = null;
+    _isInitialized = false;
+
+    get isInitialized() {
+        return this._isInitialized;
+    }
 
     constructor() {
         this._benchmarkConfiguratorPromise = import("./benchmark-configurator.mjs");
         this.prepareUI();
         this.evaluateParams();
         this._showSection(window.location.hash);
-
-        this._benchmarkConfiguratorPromise.then(() => {
-            window.dispatchEvent(new Event("SpeedometerReady"));
-        });
     }
 
     isRunning() {
         return this._state === BENCHMARK_STATE.RUNNING;
     }
 
+    isPreloading() {
+        return this._state === BENCHMARK_STATE.PRELOADING;
+    }
+
+    hasError() {
+        return this._state === BENCHMARK_STATE.ERROR;
+    }
+
     hasFinished() {
-        return this._state === BENCHMARK_STATE.DONE || this._state === BENCHMARK_STATE.ERROR;
+        return this._state === BENCHMARK_STATE.DONE || this.hasError();
+    }
+
+    isDisabled() {
+        return this._state !== BENCHMARK_STATE.READY && this._state !== BENCHMARK_STATE.DONE && this._state !== BENCHMARK_STATE.IDLE;
     }
 
     async start() {
+        if (this.isPreloading())
+            return;
         if (this._isStepping())
             this._clearStepping();
         else if (await this._startBenchmark())
@@ -54,14 +73,18 @@ class MainBenchmarkClient {
     }
 
     async step() {
+        if (this.isPreloading())
+            return;
         const currentSteppingResolver = this._steppingResolver;
         this._steppingPromise = new Promise((resolve) => {
             this._steppingResolver = resolve;
         });
         currentSteppingResolver?.();
         if (!this.isRunning()) {
-            await this._startBenchmark();
-            this._showSection("#running");
+            if (await this._startBenchmark())
+                this._showSection("#running");
+            else
+                this._clearStepping();
         }
     }
 
@@ -82,7 +105,7 @@ class MainBenchmarkClient {
     }
 
     async _startBenchmark() {
-        if (this.isRunning())
+        if (this.isRunning() || this.isPreloading())
             return false;
 
         const { benchmarkConfigurator } = await this._benchmarkConfiguratorPromise;
@@ -103,6 +126,11 @@ class MainBenchmarkClient {
         }
         if (!this._isStepping())
             this._developerModeContainer?.remove();
+
+        await this._preloadResources(benchmarkConfigurator);
+        if (this.hasError())
+            return false;
+
         this._progressCompleted = document.getElementById("progress-completed");
         if (params.iterationCount < 50) {
             const progressNode = document.getElementById("progress");
@@ -114,10 +142,10 @@ class MainBenchmarkClient {
         }
 
         this._metrics = Object.create(null);
-
         this.stepCount = params.iterationCount * totalSuitesCount;
         this._progressCompleted.max = this.stepCount;
         this.suitesCount = enabledSuites.length;
+
         this._setBenchmarkState(BENCHMARK_STATE.RUNNING);
         const runner = new BenchmarkRunner(benchmarkConfigurator.suites, this);
         runner.runMultipleIterations(params.iterationCount);
@@ -129,7 +157,7 @@ class MainBenchmarkClient {
     }
 
     _assertNotAborted() {
-        if (this._state === BENCHMARK_STATE.ERROR)
+        if (this.hasError())
             throw new Error("Benchmark aborted by another process.");
     }
 
@@ -167,11 +195,13 @@ class MainBenchmarkClient {
         this._finishedTestCount = 0;
     }
 
-    didFinishLastIteration(metrics) {
+    async didFinishLastIteration(metrics) {
         console.assert(this.isRunning());
 
+        this._clearStepping();
         this._metrics = metrics;
         this._setBenchmarkState(BENCHMARK_STATE.DONE);
+        await this._resourcePreloader.teardown();
 
         const scoreResults = this._computeResults(this._measuredValuesList, "score");
         if (scoreResults.isValid)
@@ -188,8 +218,9 @@ class MainBenchmarkClient {
     }
 
     handleError(error) {
-        if (this._state === BENCHMARK_STATE.ERROR)
+        if (this.hasError())
             return;
+        this._clearStepping();
         this._metrics = Object.create(null);
         this._setBenchmarkState(BENCHMARK_STATE.ERROR);
         this._populateErrorMessage(error.message);
@@ -392,25 +423,67 @@ class MainBenchmarkClient {
             document.body.append(this._developerModeContainer);
         }
 
-        if (params.startAutomatically)
-            this.start();
-        else
+        await this._resourcePreloader.setup();
+        if (!params.developerMode)
+            await this._preloadResources(benchmarkConfigurator);
+
+        if (!this.hasError()) {
             this._setBenchmarkState(BENCHMARK_STATE.READY);
+            if (params.startAutomatically)
+                await this.start();
+        }
+
+        this._isInitialized = true;
+        window.dispatchEvent(new Event("SpeedometerReady"));
     }
 
-    async _setBenchmarkState(state) {
+    async _preloadResources(benchmarkConfigurator) {
+        await this._resourcePreloader.stopPreloading();
+        await this._resourcePreloader.setup();
+        if (!params.preload)
+            return;
+
+        const enabledSuites = benchmarkConfigurator.suites.filter((suite) => suite.enabled);
+        if (this._resourcePreloader.isCached(enabledSuites))
+            return;
+
+        const clearCache = !params.isDefault();
+        const preloadStatusUpdater = new PreloadStatusUpdater();
+
+        try {
+            this._setBenchmarkState(BENCHMARK_STATE.PRELOADING);
+            preloadStatusUpdater.start();
+            await this._resourcePreloader.preloadSuites(enabledSuites, clearCache, preloadStatusUpdater.onProgress.bind(preloadStatusUpdater));
+        } catch (error) {
+            this.handleError(error);
+        } finally {
+            preloadStatusUpdater.stop();
+        }
+    }
+
+    _setBenchmarkState(state) {
         this._state = state;
         document.body.setAttribute("data-benchmark-state", state);
         const startButtons = document.querySelectorAll(".start-tests-button");
-        if (state !== BENCHMARK_STATE.RUNNING) {
+        if (this.isPreloading()) {
+            if (document.documentElement.getAttribute("data-visible-section") !== "home")
+                this._showSection("#home");
+            startButtons.forEach((btn) => {
+                btn.disabled = true;
+                btn.innerHTML = "<div>Preloading</div>";
+            });
+        } else if (this.isRunning()) {
+            document.body.style.removeProperty("--preload-progress");
+            startButtons.forEach((btn) => {
+                btn.disabled = true;
+            });
+        } else {
+            document.body.style.removeProperty("--preload-progress");
+            const isDisabled = this.isDisabled();
             startButtons.forEach((btn) => {
                 btn.innerHTML = "<div>Start Test</div>";
+                btn.disabled = isDisabled;
             });
-            if (state === BENCHMARK_STATE.READY) {
-                startButtons.forEach((btn) => {
-                    btn.disabled = false;
-                });
-            }
         }
     }
 
@@ -434,7 +507,7 @@ class MainBenchmarkClient {
 
     _logoClickHandler(event) {
         // Prevent any accidental UI changes during benchmark runs.
-        if (!this.isRunning())
+        if (!this.isRunning() && !this.isPreloading())
             this._showSection("#home");
         event.preventDefault();
         return false;

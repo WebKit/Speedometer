@@ -74,6 +74,22 @@ describe("Params", () => {
             );
             expect(params.toSearchParams()).to.equal("suites=");
         });
+        it("should contain preload when enabled", () => {
+            const params = new Params(
+                new URLSearchParams({
+                    preload: "true",
+                })
+            );
+            expect(params.toSearchParams()).to.equal("preload=true");
+        });
+        it("should not contain preload when disabled", () => {
+            const params = new Params(
+                new URLSearchParams({
+                    preload: "false",
+                })
+            );
+            expect(params.toSearchParams()).to.equal("");
+        });
     });
     describe("isDefault", () => {
         it("should return true for defaultParams", () => {
@@ -94,6 +110,14 @@ describe("Params", () => {
     });
 
     describe("parse input params", () => {
+        it("should parse preload boolean param", () => {
+            expect(new Params(new URLSearchParams("preload")).preload).to.be(true);
+            expect(new Params(new URLSearchParams({ preload: "true" })).preload).to.be(true);
+            expect(new Params(new URLSearchParams({ preload: "1" })).preload).to.be(true);
+            expect(new Params(new URLSearchParams({ preload: "false" })).preload).to.be(false);
+            expect(new Params(new URLSearchParams({ preload: "FALSE" })).preload).to.be(false);
+            expect(new Params(new URLSearchParams({ preload: "0" })).preload).to.be(false);
+        });
         it("should parse custom viewport", () => {
             const params = new Params(
                 new URLSearchParams({
