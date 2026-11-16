@@ -5,8 +5,10 @@
 //   { id, type: "heading", raw, level, inlines }
 //   { id, type: "list", raw, ordered, items: [{ id, inlines }] }
 //   { id, type: "code", raw, lang, lines: [{ id, tokens: [{ id, kind, text }] }] }
+//   { id, type: "ui", raw, root }
 //
-// where inlines are [{ id, kind: "text" | "strong" | "em" | "code", text }].
+// where inlines are [{ id, kind: "text" | "strong" | "em" | "code", text }],
+// and root is the tree of a ```ui fence (see parseUi).
 // Ids are positions, which stay stable because a streamed reply only grows.
 //
 // A streaming reply is re-parsed on every chunk, as chat clients do. Passing
@@ -30,7 +32,7 @@ export function parseMarkdown(text, previous = EMPTY) {
         if (reusable !== undefined && reusable.type === type && reusable.raw === raw)
             blocks.push(reusable);
         else
-            blocks.push({ id: index, type, raw, ...build() });
+            blocks.push({ id: index, type, raw, ...build(reusable?.type === type ? reusable : undefined) });
     };
 
     let i = 0;
@@ -44,6 +46,11 @@ export function parseMarkdown(text, previous = EMPTY) {
             const bodyEnd = i;
             if (i < lines.length)
                 i++; // The closing fence.
+            if (lang === "ui") {
+                const body = lines.slice(start + 1, bodyEnd);
+                emit("ui", lines.slice(start, i).join("\n"), (reusable) => ({ root: share(reusable?.root, parseUi(body)) }));
+                continue;
+            }
             emit("code", lines.slice(start, i).join("\n"), () => ({
                 lang,
                 lines: lines.slice(start + 1, bodyEnd).map((source, id) => ({ id, tokens: highlight(source) })),
@@ -79,6 +86,63 @@ export function parseMarkdown(text, previous = EMPTY) {
         emit("paragraph", paragraphLines.join("\n"), () => ({ inlines: parseInline(paragraphLines.join(" ")) }));
     }
     return blocks;
+}
+
+// A ```ui fence holds an indented tree, two spaces per level, one node per
+// line: `type [variant] [text]`. Containers (row, col, card, details) hold
+// the nodes indented below them; `row gap` and `col gap` space their children
+// with a fixed gap instead of the layout rules. Top-level nodes go in an
+// implicit col.
+//
+//   { id, type, props: { variant?, gap? }, text, inline?, children }
+//
+// where text nodes (title, text, caption) carry their text as an inline. A
+// line whose type has not fully arrived yet is skipped.
+const UI_TYPES = new Set(["row", "col", "card", "details", "title", "text", "caption", "badge", "button", "divider"]);
+const UI_TEXT_TYPES = new Set(["title", "text", "caption"]);
+
+function parseUi(lines) {
+    const root = { id: 0, type: "col", props: {}, text: "", children: [] };
+    const stack = [{ indent: -1, node: root }];
+    for (const line of lines) {
+        const match = /^( *)(\S+)(?: (.*))?$/.exec(line);
+        if (match === null || !UI_TYPES.has(match[2]))
+            continue;
+        const indent = match[1].length;
+        const type = match[2];
+        const rest = match[3] ?? "";
+        while (stack[stack.length - 1].indent >= indent)
+            stack.pop();
+        const parent = stack[stack.length - 1].node;
+        const node = { id: parent.children.length, type, props: {}, text: "", children: [] };
+        if (type === "button") {
+            const space = rest.indexOf(" ");
+            node.props.variant = space < 0 ? rest : rest.slice(0, space);
+            node.text = space < 0 ? "" : rest.slice(space + 1);
+        } else if (type === "row" || type === "col") {
+            if (rest === "gap")
+                node.props.gap = true;
+        } else {
+            node.text = rest;
+        }
+        if (UI_TEXT_TYPES.has(type))
+            node.inline = { id: 0, kind: "text", text: node.text };
+        parent.children.push(node);
+        stack.push({ indent, node });
+    }
+    return root;
+}
+
+// Reuses the previous parse's node wherever a subtree is unchanged, so the
+// views can skip it while the rest of the tree streams in.
+function share(previous, next) {
+    if (previous === undefined || previous.type !== next.type || previous.text !== next.text
+        || previous.props.variant !== next.props.variant || previous.props.gap !== next.props.gap)
+        return next;
+    const children = next.children.map((child, i) => share(previous.children[i], child));
+    if (children.length === previous.children.length && children.every((child, i) => child === previous.children[i]))
+        return previous;
+    return { ...next, inline: previous.inline ?? next.inline, children };
 }
 
 function parseInline(source) {

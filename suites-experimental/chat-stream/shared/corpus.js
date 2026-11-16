@@ -202,9 +202,68 @@ function codeBlock() {
     return `\`\`\`${ lang }\n${ body.join("\n") }\n\`\`\``;
 }
 
+const OPTIONS = ["Debounce", "Throttle", "requestAnimationFrame", "Web Worker", "Virtual list", "content-visibility", "AbortController", "Incremental parse", "Memoized blocks", "Full re-render", "Structural sharing", "Scroll anchoring"];
+const BADGES = ["Recommended", "Fastest", "Simplest", "Built in", "Experimental", "Low memory"];
+const ACTIONS = ["Use this", "Show code", "Compare", "Try it"];
+const SOURCES = ["MDN", "web.dev", "Spec", "Blog post", "Release notes", "Issue tracker"];
+
+// A sentence without Markdown, for generated UI.
+function plainSentence(lo, hi) {
+    const n = between(lo, hi);
+    const words = [];
+    for (let i = 0; i < n; i++)
+        words.push(pick(WORDS));
+    return `${words.join(" ").replace(/^./, (c) => c.toUpperCase())}.`;
+}
+
+// A ```ui block, the way chat replies lay out options: an optional row of
+// sources with a fixed gap, then a row of option cards, each with a header
+// row, a hidden details section and a row of buttons; sometimes a divider and
+// a footnote.
+function uiBlock() {
+    const lines = ["```ui"];
+    if (rand() < 0.5) {
+        lines.push("row gap");
+        const n = between(2, 4);
+        for (let i = 0; i < n; i++)
+            lines.push(`  badge ${pick(SOURCES)}`);
+    }
+    lines.push("row");
+    const cards = between(2, 3);
+    for (let i = 0; i < cards; i++) {
+        lines.push("  card");
+        lines.push("    row");
+        lines.push(`      title ${pick(OPTIONS)}`);
+        if (rand() < 0.5)
+            lines.push(`      badge ${pick(BADGES)}`);
+        lines.push(`    text ${plainSentence(8, 16)}`);
+        // Hidden until the card's Details button opens it; the text after it
+        // is spaced from whichever of the two is its previous visible sibling.
+        lines.push("    details");
+        lines.push(`      text ${plainSentence(10, 20)}`);
+        if (rand() < 0.5)
+            lines.push(`      text ${plainSentence(6, 12)}`);
+        lines.push(`      caption ${plainSentence(3, 6)}`);
+        lines.push(`    text ${plainSentence(5, 9)}`);
+        lines.push(`    caption ${plainSentence(3, 6)}`);
+        lines.push("    row");
+        lines.push(`      button primary ${pick(ACTIONS)}`);
+        lines.push("      button ghost Details");
+    }
+    if (rand() < 0.4) {
+        lines.push("divider");
+        lines.push(`caption ${plainSentence(5, 10)}`);
+    }
+    lines.push("```");
+    return lines.join("\n");
+}
+
 // A long reply: the shape of a typical answer to a technical question.
-function longReply() {
+// withUi forces a ```ui block; otherwise about a third of replies get one.
+function longReply(withUi = false) {
     const blocks = [paragraph(2, 3)];
+    if (withUi || rand() < 0.33)
+        blocks.push(uiBlock());
     if (rand() < 0.6)
         blocks.push(`### ${ pick(HEADINGS)}`);
     blocks.push(list(rand() < 0.4));
@@ -220,6 +279,8 @@ function longReply() {
 
 function shortReply() {
     const blocks = [paragraph(1, 3)];
+    if (rand() < 0.33)
+        blocks.push(uiBlock());
     if (rand() < 0.3)
         blocks.push(list(false));
     if (rand() < 0.15)
@@ -257,8 +318,9 @@ const PRISTINE = CONVERSATIONS.map(([title, count, reply], id) => {
     return { id, title, messages };
 });
 
-// The replies streamed in response to sends, cycled in order.
-const STREAMED_REPLIES = Array.from({ length: 6 }, longReply);
+// The replies streamed in response to sends, cycled in order. Each has a
+// ```ui block.
+const STREAMED_REPLIES = Array.from({ length: 6 }, () => longReply(true));
 let replyCursor = 0;
 
 export function initialConversations() {

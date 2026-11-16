@@ -245,6 +245,18 @@ button {
     margin-top: 0;
 }
 
+.markdown .gap-2 {
+    margin-top: 2px;
+}
+
+.markdown .gap-4 {
+    margin-top: 4px;
+}
+
+.markdown .gap-6 {
+    margin-top: 6px;
+}
+
 .markdown .gap-8 {
     margin-top: 8px;
 }
@@ -259,6 +271,130 @@ button {
 
 .markdown .gap-24 {
     margin-top: 24px;
+}
+
+.markdown .inline-0 {
+    margin-left: 0;
+}
+
+.markdown .inline-2 {
+    margin-left: 2px;
+}
+
+.markdown .inline-6 {
+    margin-left: 6px;
+}
+
+.markdown .inline-8 {
+    margin-left: 8px;
+}
+
+.markdown .inline-12 {
+    margin-left: 12px;
+}
+
+/* Generated UI (```ui blocks). Rows and columns space their children with the
+   gap-* and inline-* classes the layout flow computes, unless they set a
+   fixed gap. */
+.ui-col,
+.ui-details,
+.ui-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 0;
+}
+
+.ui-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+.ui-row.fixed-gap {
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ui-row > .ui-card {
+    flex: 1 1 0;
+}
+
+.ui-card {
+    padding: 12px 14px;
+    border: 1px solid #e1e5eb;
+    border-radius: 10px;
+}
+
+.ui-card.scheme-light {
+    background-color: #fbfcfd;
+}
+
+.ui-card.scheme-dark {
+    background-color: #23272e;
+}
+
+.ui-title,
+.ui-text,
+.ui-caption {
+    color: var(--text-color, inherit);
+}
+
+.ui-title {
+    font-weight: 600;
+}
+
+.ui-caption {
+    font-size: 13px;
+}
+
+.ui-badge {
+    padding: 1px 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    border-radius: 999px;
+}
+
+.ui-badge.scheme-light {
+    color: #6b4a1f;
+    background-color: #f6eadb;
+}
+
+.ui-badge.scheme-dark {
+    color: #f6eadb;
+    background-color: #4a3a26;
+}
+
+.ui-button {
+    padding: 4px 10px;
+    font-size: 13px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+}
+
+.ui-button.primary {
+    font-weight: 600;
+    color: #fff;
+    background-color: #c2662d;
+}
+
+.ui-button.ghost {
+    color: inherit;
+    background: none;
+    border-color: #d8dde3;
+}
+
+.ui-button:disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+.ui-divider {
+    width: 100%;
+    margin-bottom: 0;
+    border: 0;
+    border-top: 1px solid #e1e5eb;
 }
 
 /* A streamed word fades in after its scheduled delay. */

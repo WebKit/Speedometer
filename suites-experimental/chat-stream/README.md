@@ -16,14 +16,28 @@ highlighting and scroll pinning added.
     reply's Markdown. Unchanged blocks keep their identity across parses (the
     memoized-Markdown pattern streaming chat UIs use), so `memo` skips all but
     the blocks that grew.
+-   Generated UI. Every streamed reply, and about a third of the others,
+    contains a ` ```ui ` block: an indented tree of rows, columns, cards,
+    titles, text, captions, badges, buttons and dividers, the way chat
+    replies lay out options. Typically a row of option cards, each with a
+    header row, a details section hidden until its Details button opens it,
+    and a row of buttons. The block is parsed as it streams, so cards appear
+    piece by piece, and unchanged subtrees keep their identity across
+    parses.
 -   Context reads in memoized components, of the kinds the reply renderer of
     a large chat service's web app reads (from its production bundle,
     November 2026):
-    -   Layout flow. A reply provides a new flow value every time it
-        renders, with each child's previous sibling. Every block component
-        reads it and puts the spacing that renderer's rule gives it on its
-        own element, so every block component re-renders on every chunk,
-        while `memo` skips the content of all but the blocks that grew.
+    -   Layout flow. The reply and every container of a ` ```ui ` block
+        provide their children a new flow value every time they render: the
+        direction, whether children are spaced automatically, whether
+        controls are disabled, the nodes hidden below, and each visible
+        child's previous sibling. Every block component and every node reads
+        it and computes its spacing with that renderer's rules for the reply,
+        a column and a row. So every block component and every node of a
+        growing ` ```ui ` block re-renders on every chunk, while `memo` skips
+        the content of all but the blocks that grew. A reply's buttons are
+        disabled through the flow while it streams, and opening a card's
+        details changes which sibling the nodes after them are spaced from.
     -   List layout. A list provides its items' layout (the marker kind),
         a new value on every render. Its items read it and the reply's
         flow, in which they have no previous sibling and so no spacing.
@@ -79,6 +93,8 @@ ends, so every browser paints once per step.
     to the first.
 -   `StreamIntoLongConversation`: streams one reply at the end of the
     200-message conversation.
+-   `ExpandCards`: opens the details of every card in the 200-message
+    conversation, one at a time.
 -   `TypePrompt`: types a 163-character prompt into the composer one character
     at a time.
 

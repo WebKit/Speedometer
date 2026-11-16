@@ -100,6 +100,16 @@ function chatStreamTests() {
             await sendPrompt(page, "Summarize this conversation.");
             await drain(page);
         }),
+        // Opens the details of every card in the 200-message conversation, one
+        // at a time: each card's flow hides one node fewer, and its children
+        // are spaced again.
+        new BenchmarkTestStep("ExpandCards", async (page) => {
+            const buttons = page.querySelectorAll('.ui-button[aria-expanded="false"]');
+            for (const button of buttons) {
+                button.click();
+                await flush(page);
+            }
+        }),
         // Types a prompt into the controlled composer a character at a time.
         new BenchmarkTestStep("TypePrompt", async (page) => {
             const prompt = page.querySelector(".prompt");

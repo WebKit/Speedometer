@@ -55,21 +55,47 @@ interface Block {
 	items?: ListItemData[];
 	lang?: string;
 	lines?: Line[];
+	root?: UiNodeData;
+}
+// A node of a ```ui block's tree (see parseUi in shared/markdown.js).
+interface UiNodeData {
+	id: number;
+	type: string;
+	props: { variant?: string; gap?: boolean };
+	text: string;
+	inline?: Inline;
+	children: UiNodeData[];
 }
 
-// Layout flow. The reply provides a new value every time it renders: its
-// direction, whether children are spaced automatically, and each child's
-// previous sibling. Every block component reads it to compute its own
-// spacing, and so re-renders whenever the reply does.
+// Layout flow. Every container (the reply, and the rows, columns, cards and
+// details of a ```ui block) provides a new value for its children each time
+// it renders: its direction, whether children are spaced automatically,
+// whether its controls are disabled, the nodes hidden below it, and each
+// visible child's previous sibling. Every node reads it to compute its
+// spacing, and so re-renders whenever its container does.
 interface LayoutNode {
 	type?: string;
+	props?: { variant?: string };
+	root?: UiNodeData;
 }
 interface Flow {
-	direction: 'none' | 'root';
+	direction: 'none' | 'root' | 'column' | 'row';
 	autoSpacing: boolean;
+	disabled: boolean;
+	hiddenNodes: Set<LayoutNode>;
 	previousSiblings: Map<LayoutNode, LayoutNode | undefined>;
 }
-const FlowContext = createContext<Flow>({ direction: 'none', autoSpacing: false, previousSiblings: new Map() });
+const NO_NODES = new Set<LayoutNode>();
+const FlowContext = createContext<Flow>({
+	direction: 'none',
+	autoSpacing: false,
+	disabled: false,
+	hiddenNodes: NO_NODES,
+	previousSiblings: new Map(),
+});
+// The card a node is in: whether its details are open, and how to toggle
+// them.
+const CardContext = createContext<{ open: boolean; toggle: () => void } | null>(null);
 // A list's layout, which its items read: the marker kind, and whether the
 // marker is the browser's own.
 const ListLayoutContext = createContext({ marker: 'none', native: false });
@@ -268,27 +294,83 @@ function previousSiblings(children: LayoutNode[]): Flow['previousSiblings'] {
 	return map;
 }
 
-// The reference renderer's spacing rule for a child of the reply and its
-// previous sibling, for the layout types this app renders.
-const LAYOUT_TYPE: Record<string, string> = { paragraph: 'text', heading: 'title', list: 'list', code: 'code' };
+// The reference renderer's spacing rules for a node and its previous
+// sibling, for the layout types this app renders: one for the reply's
+// children, one for a column's (block spacing) and one for a row's (inline
+// spacing). A Markdown block's layout type is the reference's equivalent; a
+// ```ui block's is its root's.
+const MARKDOWN_LAYOUT_TYPE: Record<string, string> = { paragraph: 'text', heading: 'title', list: 'list', code: 'code' };
 
-function rootSpacing(type: string, previous: string | undefined): number {
+function layoutType(node: LayoutNode): string | undefined {
+	if (node.type === 'ui') return node.root!.type;
+	return MARKDOWN_LAYOUT_TYPE[node.type ?? ''] ?? node.type;
+}
+
+function rootSpacing(type: string | undefined, previous: string | undefined): number {
 	if (previous === undefined) return 0;
-	if (type === 'title' && previous !== 'title') return 24;
+	if (type === 'title' && previous !== 'title') return previous === 'badge' ? 8 : 24;
 	if ((previous === 'title' && type === 'text') || ((previous === 'title' || previous === 'text') && type === 'list')) return 8;
-	return 16;
+	return previous !== 'text' || (type !== 'card' && type !== 'map') ? 16 : 24;
 }
 
+function columnSpacing(type: string | undefined, previous: string | undefined): number {
+	if (type === undefined) return 0;
+	let spacing = 8;
+	if (type === 'text' || type === 'list') spacing = 12;
+	if (type === 'caption') spacing = 4;
+	if (previous === 'title') spacing = 16;
+	if (previous === 'text' && type === 'text') spacing = 0;
+	if (previous === 'caption' && type === 'text') spacing = 0;
+	if (type === 'button' && previous !== undefined) spacing = previous === 'button' ? 8 : 12;
+	if (type === 'divider' || previous === 'divider') return 16;
+	return previous === undefined ? 0 : spacing;
+}
+
+function rowSpacing(node: LayoutNode, previous: LayoutNode | undefined, type: string | undefined, previousType: string | undefined): number {
+	if (previous === undefined || type === undefined) return 0;
+	if (type === 'divider' || previousType === 'divider') return 12;
+	if (type === 'button' && previousType === 'button')
+		return node.props?.variant === 'ghost' && previous.props?.variant === 'ghost' ? 2 : 6;
+	return 8;
+}
+
+// A node's block (top) and inline (start) spacing in its container's flow.
 // A node outside the flow's children (a list item, say) has no previous
-// sibling there, so its spacing is 0.
-function spacingFor(node: LayoutNode, flow: Flow): number {
-	if (!flow.autoSpacing || flow.direction !== 'root') return 0;
+// sibling there, so it is not spaced.
+function layoutSpacing(node: LayoutNode, flow: Flow): { block: number; inline: number } {
+	if (!flow.autoSpacing) return { block: 0, inline: 0 };
 	const previous = flow.previousSiblings.get(node);
-	return rootSpacing(LAYOUT_TYPE[node.type ?? ''], previous && LAYOUT_TYPE[previous.type ?? '']);
+	const type = layoutType(node);
+	const previousType = previous && layoutType(previous);
+	return {
+		block: flow.direction === 'root' ? rootSpacing(type, previousType) : flow.direction === 'column' ? columnSpacing(type, previousType) : 0,
+		inline: flow.direction === 'row' ? rowSpacing(node, previous, type, previousType) : 0,
+	};
 }
 
-// Text components resolve their colour against the colour scheme.
-function textColor(scheme: string): string {
+function spacingFor(node: LayoutNode, flow: Flow): number {
+	return layoutSpacing(node, flow).block;
+}
+
+function spacingClass(spacing: { block: number; inline: number }): string {
+	return ' gap-' + spacing.block + ' inline-' + spacing.inline;
+}
+
+// The flow a container provides its children.
+function childFlow(parent: Flow, node: UiNodeData, direction: 'column' | 'row', hiddenNodes: Set<LayoutNode>): Flow {
+	return {
+		direction,
+		autoSpacing: !node.props.gap,
+		disabled: parent.disabled,
+		hiddenNodes,
+		previousSiblings: previousSiblings(node.children.filter((child) => !hiddenNodes.has(child))),
+	};
+}
+
+// Text components resolve their colour against the colour scheme: primary
+// text, or secondary for captions and badges.
+function textColor(scheme: string, tone: 'primary' | 'secondary' = 'primary'): string {
+	if (tone === 'secondary') return scheme === 'dark' ? '#aeb6c2' : '#6b7380';
 	return scheme === 'dark' ? '#e6e9ee' : '#1d2125';
 }
 
@@ -302,8 +384,15 @@ function Markdown(props: { text: string; streaming: boolean }) @{
 		previous.current = parsed;
 		return parsed;
 	});
-	// A new flow on every render, so every block component re-reads it.
-	const flow: Flow = { direction: 'root', autoSpacing: true, previousSiblings: previousSiblings(blocks) };
+	// A new flow on every render, so every block component re-reads it. A
+	// reply's controls are disabled while it streams.
+	const flow: Flow = {
+		direction: 'root',
+		autoSpacing: true,
+		disabled: props.streaming,
+		hiddenNodes: NO_NODES,
+		previousSiblings: previousSiblings(blocks),
+	};
 	const mode: AnimationMode = 'normal';
 	// The reference also disables animation for prefers-reduced-motion.
 	const enabled = mode !== 'disabled';
@@ -337,10 +426,139 @@ const MarkdownBlock = memo(function MarkdownBlock(props: { block: Block }) @{
 		@case 'code': {
 			<CodeBlock block={block} />
 		}
+		@case 'ui': {
+			<UiNode node={block.root!} flowKey={block} />
+		}
 		@default: {
 			<Paragraph block={block} />
 		}
 	}
+});
+
+// The nodes of a ```ui block. Each reads its container's flow for its
+// spacing; containers provide their children a new flow on every render.
+// flowKey is the node's entry in its container's flow: the block, for a
+// block's root.
+const UiNode = memo(function UiNode(props: { node: UiNodeData; flowKey?: LayoutNode }) @{
+	const node = props.node;
+	const key = props.flowKey ?? node;
+	@switch (node.type) {
+		@case 'card': {
+			<UiCard node={node} flowKey={key} />
+		}
+		@case 'row': {
+			<UiStack node={node} flowKey={key} />
+		}
+		@case 'col': {
+			<UiStack node={node} flowKey={key} />
+		}
+		@case 'details': {
+			<UiStack node={node} flowKey={key} />
+		}
+		@case 'badge': {
+			<UiBadge node={node} />
+		}
+		@case 'button': {
+			<UiButton node={node} />
+		}
+		@case 'divider': {
+			<UiDivider node={node} />
+		}
+		@default: {
+			<UiText node={node} />
+		}
+	}
+});
+
+function UiChildren(props: { node: UiNodeData; flow: Flow }) @{
+	@for (const child of props.node.children; key child.id) {
+		@if (!props.flow.hiddenNodes.has(child)) {
+			<UiNode node={child} />
+		}
+	}
+}
+
+// Rows, columns and details sections: their children in a row or a column.
+const UiStack = memo(function UiStack(props: { node: UiNodeData; flowKey: LayoutNode }) @{
+	const flow = useContext(FlowContext);
+	const node = props.node;
+	const spacing = layoutSpacing(props.flowKey, flow);
+	const inner = childFlow(flow, node, node.type === 'row' ? 'row' : 'column', flow.hiddenNodes);
+	<FlowContext value={inner}>
+		<div class={'ui-' + node.type + spacingClass(spacing) + (node.props.gap ? ' fixed-gap' : '')}>
+			<UiChildren node={node} flow={inner} />
+		</div>
+	</FlowContext>
+});
+
+// A card is a column whose details sections stay hidden until its Details
+// button opens them.
+const UiCard = memo(function UiCard(props: { node: UiNodeData; flowKey: LayoutNode }) @{
+	const flow = useContext(FlowContext);
+	const scheme = useContext(ColorSchemeContext);
+	const node = props.node;
+	const [open, setOpen] = useState(false);
+	const card = useMemo(() => ({ open, toggle: () => setOpen((value) => !value) }));
+	let hidden = flow.hiddenNodes;
+	if (!open) {
+		hidden = new Set(flow.hiddenNodes);
+		for (const child of node.children) if (child.type === 'details') hidden.add(child);
+	}
+	const inner = childFlow(flow, node, 'column', hidden);
+	const spacing = layoutSpacing(props.flowKey, flow);
+	<CardContext value={card}>
+		<FlowContext value={inner}>
+			<div class={'ui-card scheme-' + scheme + spacingClass(spacing) + (open ? ' open' : '')}>
+				<UiChildren node={node} flow={inner} />
+			</div>
+		</FlowContext>
+	</CardContext>
+});
+
+// Titles, text and captions are text components: they resolve their colour
+// and their text may stream in as words.
+const UiText = memo(function UiText(props: { node: UiNodeData }) @{
+	const flow = useContext(FlowContext);
+	const scheme = useContext(ColorSchemeContext);
+	const node = props.node;
+	const tone = node.type === 'caption' ? 'secondary' : 'primary';
+	<div class={'ui-' + node.type + spacingClass(layoutSpacing(node, flow))} style={{ '--text-color': textColor(scheme, tone) }}>
+		<WordsContext value={true}>
+			<Text inline={node.inline!} />
+		</WordsContext>
+	</div>
+});
+
+const UiBadge = memo(function UiBadge(props: { node: UiNodeData }) @{
+	const flow = useContext(FlowContext);
+	const scheme = useContext(ColorSchemeContext);
+	<span class={'ui-badge scheme-' + scheme + spacingClass(layoutSpacing(props.node, flow))}>
+		{props.node.text as string}
+	</span>
+});
+
+// Buttons are disabled while their reply streams. A Details button toggles
+// its card's details.
+const UiButton = memo(function UiButton(props: { node: UiNodeData }) @{
+	const flow = useContext(FlowContext);
+	const card = useContext(CardContext);
+	const node = props.node;
+	const details = node.text === 'Details' && card !== null;
+	<button
+		class={'ui-button ' + node.props.variant + spacingClass(layoutSpacing(node, flow))}
+		disabled={flow.disabled}
+		aria-expanded={details ? String(card!.open) : undefined}
+		onClick={() => {
+			if (details) card!.toggle();
+		}}
+	>
+		{node.text as string}
+	</button>
+});
+
+const UiDivider = memo(function UiDivider(props: { node: UiNodeData }) @{
+	const flow = useContext(FlowContext);
+	<hr class={'ui-divider' + spacingClass(layoutSpacing(props.node, flow))} />
 });
 
 // Every block component reads the flow and puts its spacing on its own
