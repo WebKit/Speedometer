@@ -59,7 +59,9 @@ highlighting and scroll pinning added.
     adjusts the scroll position during its own layout, so no script reads
     layout after a commit.
 -   Mounting and unmounting whole conversations, up to 200 messages.
--   A controlled composer updated on every keystroke.
+-   A controlled composer updated on every keystroke. It owns the draft, as
+    the reference chat app's composer does, so a keystroke re-renders only
+    the composer, not the app and its transcript.
 
 ## How are we testing
 

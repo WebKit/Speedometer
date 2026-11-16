@@ -1,4 +1,4 @@
-import { createContext, flushSync, memo, useContext, useLayoutEffect, useMemo, useRef, useState } from 'octane';
+import { createContext, flushSync, memo, useCallback, useContext, useLayoutEffect, useMemo, useRef, useState } from 'octane';
 import { initialConversations, nextReply, userMessage } from '../shared/corpus.js';
 import { parseMarkdown } from '../shared/markdown.js';
 import { streamReply, streamTime } from '../shared/network.js';
@@ -137,14 +137,15 @@ function updateMessage(
 export function App() @{
 	const [conversations, setConversations] = useState<Conversation[]>(initialConversations);
 	const [activeId, setActiveId] = useState(0);
-	const [draft, setDraft] = useState('');
 	const [streamingId, setStreamingId] = useState<number | null>(null);
 
 	const active = conversations[activeId];
 
-	const send = () => {
-		const text = draft.trim();
-		if (text === '' || streamingId !== null) return;
+	// Sends a prompt from the composer, which owns the draft. The callback
+	// changes only with the active conversation and the stream, so the
+	// memoized composer skips the renders a streamed chunk causes.
+	const send = useCallback((text: string) => {
+		if (streamingId !== null) return;
 		const conversationId = activeId;
 		const reply = nextReply();
 		const replyId = reply.message.id;
@@ -156,7 +157,6 @@ export function App() @{
 			),
 		);
 		setStreamingId(replyId);
-		setDraft('');
 		// A chunk arrives outside any event, so flushSync is what renders it
 		// right away; the last chunk also ends the stream, in the same commit.
 		streamReply(reply.text, (chunk: string, done: boolean) =>
@@ -170,7 +170,7 @@ export function App() @{
 				if (done) setStreamingId(null);
 			}),
 		);
-	};
+	});
 
 	<ColorSchemeContext value="light">
 		<div class="app">
@@ -193,30 +193,43 @@ export function App() @{
 					<span class="message-count">{active.messages.length + ' messages'}</span>
 				</header>
 				<MessageList messages={active.messages} streamingId={streamingId} />
-				<footer class="composer">
-					<div class="composer-box">
-						<textarea
-							class="prompt"
-							placeholder="Ask anything"
-							value={draft}
-							onInput={(event: Event) => setDraft((event.target as HTMLTextAreaElement).value)}
-							onKeyDown={(event: KeyboardEvent) => {
-								if (event.key === 'Enter' && !event.shiftKey) {
-									event.preventDefault();
-									send();
-								}
-							}}
-						/>
-						<button class="send" disabled={draft.trim() === '' || streamingId !== null} onClick={send}>
-							Send
-						</button>
-					</div>
-					<div class="composer-hint">Enter to send, Shift+Enter for a new line</div>
-				</footer>
+				<Composer streaming={streamingId !== null} onSend={send} />
 			</main>
 		</div>
 	</ColorSchemeContext>
 }
+
+// The composer owns the draft, so a keystroke re-renders only the composer,
+// as on the reference chat app, not the app and its transcript.
+const Composer = memo(function Composer(props: { streaming: boolean; onSend: (text: string) => void }) @{
+	const [draft, setDraft] = useState('');
+	const submit = () => {
+		const text = draft.trim();
+		if (text === '' || props.streaming) return;
+		props.onSend(text);
+		setDraft('');
+	};
+	<footer class="composer">
+		<div class="composer-box">
+			<textarea
+				class="prompt"
+				placeholder="Ask anything"
+				value={draft}
+				onInput={(event: Event) => setDraft((event.target as HTMLTextAreaElement).value)}
+				onKeyDown={(event: KeyboardEvent) => {
+					if (event.key === 'Enter' && !event.shiftKey) {
+						event.preventDefault();
+						submit();
+					}
+				}}
+			/>
+			<button class="send" disabled={draft.trim() === '' || props.streaming} onClick={submit}>
+				Send
+			</button>
+		</div>
+		<div class="composer-hint">Enter to send, Shift+Enter for a new line</div>
+	</footer>
+});
 
 function ConversationItemImpl(props: {
 	id: number;
