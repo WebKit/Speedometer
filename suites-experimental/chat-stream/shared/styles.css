@@ -173,7 +173,7 @@ button {
     white-space: pre-wrap;
 }
 
-.message.streaming .markdown > :last-child > :last-child::after {
+.message.streaming .markdown > :last-child::after {
     display: inline-block;
     width: 8px;
     height: 1em;
@@ -206,18 +206,35 @@ button {
     border-color: #dfe3e8;
 }
 
-/* Markdown. Blocks and list items are spaced by the gap-* classes the layout
-   flow computes from each one's previous sibling. */
+/* Markdown. Blocks are spaced by the gap-* classes the layout flow computes
+   from each one's previous sibling; list items are not spaced. Text takes the
+   colour its component resolved against the colour scheme. */
 .markdown p,
 .markdown ul,
 .markdown ol,
+.markdown li,
 .markdown h3 {
     margin: 0;
+}
+
+.markdown p,
+.markdown h3,
+.markdown strong,
+.markdown em {
+    color: var(--text-color, inherit);
 }
 
 .markdown ul,
 .markdown ol {
     padding-left: 24px;
+}
+
+.markdown .native-bullet {
+    list-style-type: disc;
+}
+
+.markdown .native-number {
+    list-style-type: decimal;
 }
 
 .markdown h3 {

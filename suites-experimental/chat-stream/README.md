@@ -19,20 +19,24 @@ highlighting and scroll pinning added.
 -   Context reads in memoized components, of the kinds the reply renderer of
     a large chat service's web app reads (from its production bundle,
     November 2026):
-    -   Layout flow. A reply and each list provide a new flow value every
-        time they render, with each child's previous sibling; each block's
-        wrapper and each list item read it and compute their spacing with
-        that renderer's spacing rules. So on every chunk every block's
-        wrapper re-renders, while `memo` skips the content of all but the
-        blocks that grew.
-    -   The colour scheme, read by code blocks and inline code.
-    -   Streamed words. Text in a reply that streams in renders one memoized
-        span per word. Each word reads four animation contexts (whether to
-        animate, whether the reply is eligible, the animation mode, and a
-        delay scheduler) and starts its fade-in from a layout effect with
-        the delay the scheduler gives it, the way that renderer staggers
-        words. Replies that are complete when they mount render their text
-        as is.
+    -   Layout flow. A reply provides a new flow value every time it
+        renders, with each child's previous sibling. Every block component
+        reads it and puts the spacing that renderer's rule gives it on its
+        own element, so every block component re-renders on every chunk,
+        while `memo` skips the content of all but the blocks that grew.
+    -   List layout. A list provides its items' layout (the marker kind),
+        a new value on every render. Its items read it and the reply's
+        flow, in which they have no previous sibling and so no spacing.
+    -   The colour scheme, which paragraphs, headings and bold and italic
+        runs resolve their text colour against, and code reads for its
+        highlighting.
+    -   Streamed words. Text inside a text component of a reply that is
+        streaming renders one memoized span per word. Each word reads four
+        animation contexts (whether the reply is eligible, whether animation
+        is enabled, the animation mode, and a delay scheduler) and starts
+        its fade-in from a layout effect with the delay the scheduler gives
+        it, the way that renderer staggers words. Replies that are complete
+        when they mount render their text as is.
 -   Code blocks highlighted into one span per token, the way chat UIs' regex
     highlighters produce them.
 -   Scroll pinning with CSS scroll anchoring: an anchor element after the

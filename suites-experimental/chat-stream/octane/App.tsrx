@@ -12,9 +12,10 @@ import { streamReply, streamTime } from '../shared/network.js';
 //
 // The Markdown views read the kinds of context the reply renderer of a large
 // chat service's web app reads (from its production bundle, 2026-11): a
-// layout-flow context that every container provides anew and every child
-// reads to compute its spacing, the colour scheme, and the animation
-// contexts each streamed word reads.
+// layout flow the reply provides anew on every render and every block reads
+// to compute its spacing, a list layout for list items, the colour scheme
+// text components resolve their colours against, and the animation contexts
+// each streamed word reads.
 
 interface ChatMessage {
 	id: number;
@@ -56,23 +57,35 @@ interface Block {
 	lines?: Line[];
 }
 
-// Layout flow. A container provides a new value for its children every time
-// it renders: its direction, whether children are spaced automatically, and
-// each child's previous sibling. Children read it to compute their spacing.
+// Layout flow. The reply provides a new value every time it renders: its
+// direction, whether children are spaced automatically, and each child's
+// previous sibling. Every block component reads it to compute its own
+// spacing, and so re-renders whenever the reply does.
+interface LayoutNode {
+	type?: string;
+}
 interface Flow {
-	direction: 'none' | 'root' | 'column';
+	direction: 'none' | 'root';
 	autoSpacing: boolean;
-	previousSiblings: Map<number, { id: number; type: string } | undefined>;
+	previousSiblings: Map<LayoutNode, LayoutNode | undefined>;
 }
 const FlowContext = createContext<Flow>({ direction: 'none', autoSpacing: false, previousSiblings: new Map() });
+// A list's layout, which its items read: the marker kind, and whether the
+// marker is the browser's own.
+const ListLayoutContext = createContext({ marker: 'none', native: false });
+// The colour scheme, which text components and code resolve their colours
+// against.
 const ColorSchemeContext = createContext('light');
+// Whether text below may render as streamed words: text components provide
+// true for their contents.
+const WordsContext = createContext(false);
 
-// Streamed-word animation: whether words animate, whether the reply is
-// eligible to show them, the animation mode, and the scheduler that staggers
-// the words' start times.
+// Streamed-word animation: whether the reply is eligible (it is streaming),
+// whether animation is enabled, the animation mode, and the scheduler that
+// staggers the words' start times.
 type AnimationMode = 'disabled' | 'normal' | 'snappy';
-const AnimateContext = createContext(false);
-const VisibleContext = createContext(false);
+const EligibleContext = createContext(false);
+const AnimationEnabledContext = createContext(false);
 const AnimationModeContext = createContext<AnimationMode>('disabled');
 const DelaySchedulerContext = createContext<WordDelayScheduler | undefined>(undefined);
 
@@ -243,20 +256,21 @@ function MessageImpl(props: { message: ChatMessage; streaming: boolean }) @{
 }
 const Message = memo(MessageImpl);
 
-// Each child's previous sibling, as a layout container hands it down.
-function previousSiblings(children: { id: number; type: string }[]): Flow['previousSiblings'] {
+// Each child's previous sibling, as a layout container hands it down. Keyed
+// by the node itself: block and list-item ids are both positions.
+function previousSiblings(children: LayoutNode[]): Flow['previousSiblings'] {
 	const map: Flow['previousSiblings'] = new Map();
-	let previous: { id: number; type: string } | undefined;
+	let previous: LayoutNode | undefined;
 	for (const child of children) {
-		map.set(child.id, previous);
+		map.set(child, previous);
 		previous = child;
 	}
 	return map;
 }
 
-// The spacing rules for a child and its previous sibling, by layout type:
-// the reference renderer's rules for the types this app renders.
-const LAYOUT_TYPE: Record<string, string> = { paragraph: 'text', heading: 'title', list: 'list', code: 'code', item: 'list-item' };
+// The reference renderer's spacing rule for a child of the reply and its
+// previous sibling, for the layout types this app renders.
+const LAYOUT_TYPE: Record<string, string> = { paragraph: 'text', heading: 'title', list: 'list', code: 'code' };
 
 function rootSpacing(type: string, previous: string | undefined): number {
 	if (previous === undefined) return 0;
@@ -265,39 +279,38 @@ function rootSpacing(type: string, previous: string | undefined): number {
 	return 16;
 }
 
-function columnSpacing(type: string, previous: string | undefined): number {
-	if (previous === undefined) return 0;
-	let spacing = type === 'text' || type === 'list' ? 12 : 8;
-	if (previous === 'title') spacing = 16;
-	if (previous === 'text' && type === 'text') spacing = 0;
-	return spacing;
+// A node outside the flow's children (a list item, say) has no previous
+// sibling there, so its spacing is 0.
+function spacingFor(node: LayoutNode, flow: Flow): number {
+	if (!flow.autoSpacing || flow.direction !== 'root') return 0;
+	const previous = flow.previousSiblings.get(node);
+	return rootSpacing(LAYOUT_TYPE[node.type ?? ''], previous && LAYOUT_TYPE[previous.type ?? '']);
 }
 
-function spacingFor(node: { id: number; type: string }, flow: Flow): number {
-	if (!flow.autoSpacing) return 0;
-	const previous = flow.previousSiblings.get(node.id);
-	const type = LAYOUT_TYPE[node.type];
-	const previousType = previous && LAYOUT_TYPE[previous.type];
-	if (flow.direction === 'root') return rootSpacing(type, previousType);
-	if (flow.direction === 'column') return columnSpacing(type, previousType);
-	return 0;
+// Text components resolve their colour against the colour scheme.
+function textColor(scheme: string): string {
+	return scheme === 'dark' ? '#e6e9ee' : '#1d2125';
 }
 
 function Markdown(props: { text: string; streaming: boolean }) @{
 	const previous = useRef<Block[] | undefined>(undefined);
 	// Reparsing reuses every block of the previous parse whose source is
-	// unchanged, so memo(BlockContent) skips all but the one still streaming.
+	// unchanged, so memo(Inlines) skips the content of all but the one still
+	// streaming.
 	const blocks = useMemo(() => {
 		const parsed = parseMarkdown(props.text, previous.current) as Block[];
 		previous.current = parsed;
 		return parsed;
 	});
-	// A new flow on every render, so every block's wrapper re-reads it.
+	// A new flow on every render, so every block component re-reads it.
 	const flow: Flow = { direction: 'root', autoSpacing: true, previousSiblings: previousSiblings(blocks) };
+	const mode: AnimationMode = 'normal';
+	// The reference also disables animation for prefers-reduced-motion.
+	const enabled = mode !== 'disabled';
 	const [scheduler] = useState(() => new WordDelayScheduler());
-	<AnimateContext value={props.streaming}>
-		<VisibleContext value={true}>
-			<AnimationModeContext value="normal">
+	<EligibleContext value={props.streaming}>
+		<AnimationEnabledContext value={enabled}>
+			<AnimationModeContext value={mode}>
 				<DelaySchedulerContext value={scheduler}>
 					<FlowContext value={flow}>
 						<div class="markdown">
@@ -308,88 +321,93 @@ function Markdown(props: { text: string; streaming: boolean }) @{
 					</FlowContext>
 				</DelaySchedulerContext>
 			</AnimationModeContext>
-		</VisibleContext>
-	</AnimateContext>
+		</AnimationEnabledContext>
+	</EligibleContext>
 }
 
-// The wrapper every block renders in: it reads the flow and spaces the block
-// from its previous sibling. The block's content is memoized separately, so
-// when the flow changes the wrapper re-renders and the content bails out.
 const MarkdownBlock = memo(function MarkdownBlock(props: { block: Block }) @{
-	const flow = useContext(FlowContext);
-	const block = props.block;
-	<div class={'block gap-' + spacingFor(block, flow)} data-block={block.type}>
-		<BlockContent block={block} />
-	</div>
-});
-
-const BlockContent = memo(function BlockContent(props: { block: Block }) @{
 	const block = props.block;
 	@switch (block.type) {
 		@case 'heading': {
-			<h3>
-				<Inlines inlines={block.inlines!} />
-			</h3>
+			<Heading block={block} />
 		}
 		@case 'list': {
 			<List block={block} />
 		}
 		@case 'code': {
-			<CodeBlock lang={block.lang!} lines={block.lines!} />
+			<CodeBlock block={block} />
 		}
 		@default: {
-			<p>
-				<Inlines inlines={block.inlines!} />
-			</p>
+			<Paragraph block={block} />
 		}
 	}
 });
 
-// A list is a column container: it provides its items' flow.
+// Every block component reads the flow and puts its spacing on its own
+// element, so it re-renders on every chunk; memo(Inlines) then skips the
+// content of the blocks that did not grow.
+const Heading = memo(function Heading(props: { block: Block }) @{
+	const flow = useContext(FlowContext);
+	const scheme = useContext(ColorSchemeContext);
+	<h3 class={'gap-' + spacingFor(props.block, flow)} style={{ '--text-color': textColor(scheme) }}>
+		<WordsContext value={true}>
+			<Inlines inlines={props.block.inlines!} />
+		</WordsContext>
+	</h3>
+});
+
+const Paragraph = memo(function Paragraph(props: { block: Block }) @{
+	const flow = useContext(FlowContext);
+	const scheme = useContext(ColorSchemeContext);
+	<p class={'gap-' + spacingFor(props.block, flow)} style={{ '--text-color': textColor(scheme) }}>
+		<WordsContext value={true}>
+			<Inlines inlines={props.block.inlines!} />
+		</WordsContext>
+	</p>
+});
+
+// A list provides its items' layout, a new value on every render. Its items
+// read it, and the reply's flow, in which they have no previous sibling.
 const List = memo(function List(props: { block: Block }) @{
+	const flow = useContext(FlowContext);
 	const block = props.block;
-	const items = block.items!;
-	const flow: Flow = {
-		direction: 'column',
-		autoSpacing: true,
-		previousSiblings: previousSiblings(items.map((item) => ({ id: item.id, type: 'item' }))),
-	};
-	<FlowContext value={flow}>
+	const layout = { marker: block.ordered ? 'number' : 'bullet', native: true };
+	const gap = 'gap-' + spacingFor(block, flow);
+	<ListLayoutContext value={layout}>
 		@if (block.ordered) {
-			<ol>
-				@for (const item of items; key item.id) {
+			<ol class={gap}>
+				@for (const item of block.items!; key item.id) {
 					<ListItem item={item} />
 				}
 			</ol>
 		} @else {
-			<ul>
-				@for (const item of items; key item.id) {
+			<ul class={gap}>
+				@for (const item of block.items!; key item.id) {
 					<ListItem item={item} />
 				}
 			</ul>
 		}
-	</FlowContext>
+	</ListLayoutContext>
 });
 
 const ListItem = memo(function ListItem(props: { item: ListItemData }) @{
+	const layout = useContext(ListLayoutContext);
 	const flow = useContext(FlowContext);
-	<li class={'gap-' + spacingFor({ id: props.item.id, type: 'item' }, flow)}>
-		<Inlines inlines={props.item.inlines} />
+	<li class={'gap-' + spacingFor(props.item, flow) + (layout.native ? ' native-' + layout.marker : '')}>
+		<WordsContext value={true}>
+			<Inlines inlines={props.item.inlines} />
+		</WordsContext>
 	</li>
 });
 
-function Inlines(props: { inlines: Inline[] }) @{
+const Inlines = memo(function Inlines(props: { inlines: Inline[] }) @{
 	@for (const inline of props.inlines; key inline.id) {
 		@switch (inline.kind) {
 			@case 'strong': {
-				<strong>
-					<Text inline={inline} />
-				</strong>
+				<InlineSpan inline={inline} />
 			}
 			@case 'em': {
-				<em>
-					<Text inline={inline} />
-				</em>
+				<InlineSpan inline={inline} />
 			}
 			@case 'code': {
 				<InlineCode inline={inline} />
@@ -399,7 +417,22 @@ function Inlines(props: { inlines: Inline[] }) @{
 			}
 		}
 	}
-}
+});
+
+// Bold and italic runs are text components too: they resolve their colour.
+const InlineSpan = memo(function InlineSpan(props: { inline: Inline }) @{
+	const scheme = useContext(ColorSchemeContext);
+	const style = { '--text-color': textColor(scheme) };
+	@if (props.inline.kind === 'strong') {
+		<strong style={style}>
+			<Text inline={props.inline} />
+		</strong>
+	} @else {
+		<em style={style}>
+			<Text inline={props.inline} />
+		</em>
+	}
+});
 
 const InlineCode = memo(function InlineCode(props: { inline: Inline }) @{
 	const scheme = useContext(ColorSchemeContext);
@@ -412,12 +445,14 @@ const InlineCode = memo(function InlineCode(props: { inline: Inline }) @{
 // whitespace before it too.
 const WORD = /^\s*\S+\s*|\S+\s*/g;
 
-// Text in a reply that streams in renders as one span per word; a reply that
-// was already complete when it mounted renders its text as is. The choice is
-// made once, on mount, so the word spans stay after the stream ends.
+// Text inside a text component of a reply that is streaming renders as one
+// span per word; text of a reply that was already complete when it mounted
+// renders as is. The choice is made once, on mount, so the word spans stay
+// after the stream ends.
 function Text(props: { inline: Inline }) @{
-	const animate = useContext(AnimateContext);
-	const [split] = useState(animate);
+	const eligible = useContext(EligibleContext);
+	const words = useContext(WordsContext);
+	const [split] = useState(() => words && eligible);
 	@if (split) {
 		<>
 			@for (const word of props.inline.text.match(WORD) ?? []; index i; key i) {
@@ -454,18 +489,19 @@ const runningAnimations = new Set<WordAnimation>();
 		for (const animation of [...runningAnimations]) animation.finish();
 	});
 
-// One word's fade-in: it starts once the word is visible, with the delay the
-// scheduler gives it, and finishes when its animation ends.
+// One word's fade-in. A word of an eligible reply starts it once animation is
+// enabled, with the delay the scheduler gives it, and finishes it when its
+// animation ends; disabling animation finishes it too.
 class WordAnimation {
 	started = false;
 	finished: boolean;
 	publish: (state: { active: boolean; delay: number }) => void;
-	constructor(active: boolean, publish: (state: { active: boolean; delay: number }) => void) {
-		this.finished = !active;
+	constructor(eligible: boolean, publish: (state: { active: boolean; delay: number }) => void) {
+		this.finished = !eligible;
 		this.publish = publish;
 	}
-	update(visible: boolean, scheduler: WordDelayScheduler | undefined, mode: AnimationMode) {
-		if (!visible) {
+	update(enabled: boolean, scheduler: WordDelayScheduler | undefined, mode: AnimationMode) {
+		if (!enabled) {
 			this.finish();
 			return;
 		}
@@ -487,17 +523,17 @@ class WordAnimation {
 }
 
 const Word = memo(function Word(props: { text: string }) @{
-	const animate = useContext(AnimateContext);
-	const visible = useContext(VisibleContext);
+	const eligible = useContext(EligibleContext);
+	const enabled = useContext(AnimationEnabledContext);
 	const mode = useContext(AnimationModeContext);
 	const scheduler = useContext(DelaySchedulerContext);
 	const [initialMode] = useState(mode);
-	const [state, setState] = useState(() => ({ active: animate, delay: 0 }));
-	const [animation] = useState(() => new WordAnimation(animate, setState));
-	useLayoutEffect(() => animation.update(visible, scheduler, initialMode));
+	const [state, setState] = useState(() => ({ active: eligible, delay: 0 }));
+	const [animation] = useState(() => new WordAnimation(eligible, setState));
+	useLayoutEffect(() => animation.update(enabled, scheduler, initialMode));
 	useLayoutEffect(() => () => animation.dispose(), []);
 	const finish = () => animation.finish();
-	const running = state.active && visible;
+	const running = state.active && enabled;
 	<span
 		data-streaming-word=""
 		class={running ? 'word' : undefined}
@@ -511,16 +547,20 @@ const Word = memo(function Word(props: { text: string }) @{
 	</span>
 });
 
-const CodeBlock = memo(function CodeBlock(props: { lang: string; lines: Line[] }) @{
+// The code block reads the flow for its spacing, like every block, and the
+// colour scheme for its highlighting.
+const CodeBlock = memo(function CodeBlock(props: { block: Block }) @{
+	const flow = useContext(FlowContext);
 	const scheme = useContext(ColorSchemeContext);
-	<div class={'code-block scheme-' + scheme} data-lang={props.lang}>
+	const block = props.block;
+	<div class={'code-block scheme-' + scheme + ' gap-' + spacingFor(block, flow)} data-lang={block.lang}>
 		<div class="code-header">
-			<span>{(props.lang || 'text') as string}</span>
+			<span>{(block.lang || 'text') as string}</span>
 			<button>Copy code</button>
 		</div>
 		<pre>
 			<code>
-				@for (const line of props.lines; key line.id) {
+				@for (const line of block.lines!; key line.id) {
 					<CodeLine line={line} />
 				}
 			</code>
