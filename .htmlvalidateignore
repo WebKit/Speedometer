@@ -1,0 +1,7 @@
+node_modules/
+dist/
+**/dist/**
+.next/
+**/node_modules/**
+suites/
+suites-experimental/
